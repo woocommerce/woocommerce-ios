@@ -3,7 +3,7 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-final class CouponListViewController: UIViewController, GhostableViewController {
+final class CouponListViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     private let viewModel: CouponListViewModel
     private let siteID: Int64
@@ -86,7 +86,7 @@ final class CouponListViewController: UIViewController, GhostableViewController 
                 case .couponsDisabled:
                     self.displayCouponsDisabledOverlay()
                 case .loading:
-                    self.displayPlaceholderCoupons()
+                    break
                 case .coupons:
                     // the table view is reloaded when coupon view models are updated
                     // so there's no need to reload here
@@ -153,7 +153,6 @@ private extension CouponListViewController {
     ///
     func resetViews() {
         removeNoResultsOverlay()
-        removePlaceholderCoupons()
         stopFooterLoadingIndicator()
         if refreshControl.isRefreshing {
             refreshControl.endRefreshing()
@@ -270,24 +269,6 @@ private extension CouponListViewController {
         present(navigationController, animated: true, completion: nil)
     }
 }
-
-
-// MARK: - Placeholder cells
-//
-extension CouponListViewController {
-    /// Renders the Placeholder Coupons
-    ///
-    func displayPlaceholderCoupons() {
-        displayGhostContent()
-    }
-
-    /// Removes the Placeholder Coupons
-    ///
-    func removePlaceholderCoupons() {
-        removeGhostContent()
-    }
-}
-
 
 // MARK: - Empty state view controller
 //

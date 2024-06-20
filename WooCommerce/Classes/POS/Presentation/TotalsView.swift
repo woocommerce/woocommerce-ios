@@ -37,6 +37,9 @@ struct TotalsView: View {
             /// This will prepare the reader for payment, if connected
             await viewModel.totalsViewWillAppear()
         }
+        .onDisappear {
+            viewModel.onTotalsViewDisappearance()
+        }
         .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
             ProgressView {
                 Text("Creating order")

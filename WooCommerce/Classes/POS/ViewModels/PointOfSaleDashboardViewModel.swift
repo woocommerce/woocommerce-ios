@@ -278,13 +278,13 @@ private extension PointOfSaleDashboardViewModel {
                             quantity: Decimal($0.quantity))
             }
         defer {
-            self.isSyncingOrder = false
+            isSyncingOrder = false
         }
         do {
-            self.isSyncingOrder = true
-            let order = try await self.orderService.syncOrder(cart: cart,
-                                                              order: self.order,
-                                                              allProducts: self.items)
+            isSyncingOrder = true
+            let order = try await orderService.syncOrder(cart: cart,
+                                                              order: order,
+                                                              allProducts: items)
             self.order = order
             // TODO: this is temporary solution
             await totalsViewWillAppear()

@@ -25,7 +25,7 @@ public struct POSOrder {
     let items: [POSOrderItem]
 }
 
-extension POSOrder {
+public extension POSOrder {
     init(order: Order) {
         self.init(siteID: order.siteID,
                   orderID: order.orderID,

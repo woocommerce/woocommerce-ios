@@ -35,7 +35,6 @@ import enum Yosemite.Credentials
 #Preview {
     ItemListView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                          orderService: POSOrderService(siteID: Int64.min,
-                                                                                        credentials: Credentials(authToken: "token"))))
+                                                          orderService: POSOrderPreviewService()))
 }
 #endif

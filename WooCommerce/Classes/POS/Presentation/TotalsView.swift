@@ -165,12 +165,9 @@ private extension TotalsView {
 }
 
 #if DEBUG
-import class Yosemite.POSOrderService
-import enum Yosemite.Credentials
 #Preview {
     TotalsView(viewModel: .init(items: [],
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderService(siteID: Int64.min,
-                                                              credentials: Credentials(authToken: "token"))))
+                                orderService: POSOrderPreviewService()))
 }
 #endif

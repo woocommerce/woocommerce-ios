@@ -11,14 +11,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
-        let credentials = Credentials(authToken: "token")
-        let orderService = POSOrderService(siteID: siteID,
-                                                   credentials: credentials)
         cardPresentPaymentService = CardPresentPaymentPreviewService()
         sut = PointOfSaleDashboardViewModel(items: [],
                                             cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: orderService)
+                                            orderService: POSOrderPreviewService())
     }
 
     override func tearDown() {

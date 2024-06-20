@@ -17,7 +17,6 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
         case .processing:
             Text("processing...")
-                .shimmering()
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
         case .paymentSuccess:

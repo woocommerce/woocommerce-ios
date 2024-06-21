@@ -95,9 +95,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
                         onCancel(paymentEventDetails: eventDetails)
-                    case .showReaderList:
-                        // TODO: to be merged to the case above
-                        return
+                    case .showReaderList(_, let selectionHandler):
+                        selectionHandler(nil)
                     case .idle, .showOnboarding:
                         return
                 }

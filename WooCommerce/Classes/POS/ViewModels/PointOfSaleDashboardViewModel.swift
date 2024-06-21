@@ -168,21 +168,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @MainActor
-    func totalsViewWillAppear() async {
+    private func prepareConnectedReaderForPayment() async {
         // Digging in to the connection viewmodel here is a bit of a shortcut, we should improve this.
         // TODO: Have our own subscription to the connected readers
         guard cardReaderConnectionViewModel.connectionStatus == .connected else {
             return
         }
         await collectPayment()
-
-        // Once we have finalised order creation/update, this check shouldn't be required.
-        // Instead, we should have whatever code does the order creation/update kick off this connection process.
-
-        // Since this function is called from a `task`, it'll be cancelled automatically if the view is removed.
-        // Proper cancellation isn't implemented yet, so that can lead to some unwanted behaviour, but currently
-        // if you go back during a payment, it will still complete.
-        // TODO: We should consider disabling the `Add More` button when the shopper taps their card.
     }
 
     @MainActor
@@ -293,8 +285,9 @@ private extension PointOfSaleDashboardViewModel {
                                                               order: order,
                                                               allProducts: items)
             self.order = order
+            isSyncingOrder = false
             // TODO: this is temporary solution
-            await totalsViewWillAppear()
+            await prepareConnectedReaderForPayment()
             DDLogInfo("🟢 [POS] Synced order: \(order)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")

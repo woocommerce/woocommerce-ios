@@ -56,10 +56,6 @@ struct TotalsView: View {
             }
             Spacer()
         }
-        .task {
-            /// This will prepare the reader for payment, if connected
-            await viewModel.totalsViewWillAppear()
-        }
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }

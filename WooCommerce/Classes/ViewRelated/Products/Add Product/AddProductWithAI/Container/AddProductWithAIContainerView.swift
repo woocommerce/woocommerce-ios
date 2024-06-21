@@ -11,6 +11,10 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
         }
+        rootView.onEditPrice = { [weak self] product, completion in
+            self?.editPriceSettings(product: product,
+                                    completion: completion)
+        }
     }
 
     @available(*, unavailable)
@@ -23,6 +27,25 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
 
         configureTransparentNavigationBar()
         navigationController?.presentationController?.delegate = self
+    }
+
+    func editPriceSettings(product: EditableProductModel, completion: @escaping ProductPriceSettingsViewController.Completion) {
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product,
+                                                                             completion: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+            completion($0,
+                       $1,
+                       $2,
+                       $3,
+                       $4,
+                       $5,
+                       $6,
+                       $7,
+                       $8,
+                       $9)
+
+        })
+        navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
 }
 
@@ -64,6 +87,7 @@ struct AddProductWithAIContainerView: View {
     /// Closure invoked when the close button is pressed
     ///
     var onUsePackagePhoto: (String?) -> Void = { _ in }
+    var onEditPrice: (EditableProductModel, @escaping ProductPriceSettingsViewController.Completion) -> Void = { _, _ in }
 
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
@@ -96,9 +120,12 @@ struct AddProductWithAIContainerView: View {
                 ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
                                                           productName: viewModel.productName,
                                                           productDescription: viewModel.productDescription,
-                                                          productFeatures: viewModel.productFeatures) { product in
+                                                          productFeatures: viewModel.productFeatures,
+                                                          onProductCreated: { product in
                     viewModel.didCreateProduct(product)
-                }, onDismiss: {
+                }, onEditPrice: { product, completion in
+                    self.onEditPrice(product, completion)
+                }), onDismiss: {
                     viewModel.backtrackOrDismiss()
                 })
             }

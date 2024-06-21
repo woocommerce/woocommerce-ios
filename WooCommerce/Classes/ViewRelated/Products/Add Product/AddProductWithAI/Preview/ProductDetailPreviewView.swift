@@ -78,6 +78,9 @@ struct ProductDetailPreviewView: View {
                                                value: viewModel.productPrice,
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
+                        .onTapGesture {
+                            viewModel.didTapPrice()
+                        }
 
                         // Inventory
                         TitleAndValueDetailRow(title: Localization.inventory,
@@ -306,7 +309,9 @@ struct ProductDetailPreviewView_Previews: PreviewProvider {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
                                                   productName: "iPhone 15",
                                                   productDescription: "New smart phone",
-                                                  productFeatures: nil) { _ in },
+                                                  productFeatures: nil,
+                                                  onProductCreated: { _ in },
+                                                  onEditPrice: { _, _ in }),
                                  onDismiss: {})
     }
 }

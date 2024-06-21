@@ -41,6 +41,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let analytics: Analytics
     private let userDefaults: UserDefaults
     private let onProductCreated: (Product) -> Void
+    private let onEditPrice: (_ product: EditableProductModel, _ completion: @escaping ProductPriceSettingsViewController.Completion) -> Void
 
     private var currency: String
     private var currencyFormatter: CurrencyFormatter
@@ -64,6 +65,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    // Timezone of the website
+    //
+    private let siteTimezone: TimeZone = TimeZone.siteTimezone
+
     init(siteID: Int64,
          productName: String,
          productDescription: String?,
@@ -77,13 +82,15 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         onProductCreated: @escaping (Product) -> Void) {
+         onProductCreated: @escaping (Product) -> Void,
+         onEditPrice: @escaping (_ product: EditableProductModel, _ completion: @escaping ProductPriceSettingsViewController.Completion) -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.userDefaults = userDefaults
         self.onProductCreated = onProductCreated
+        self.onEditPrice = onEditPrice
 
         self.currency = currency
         self.currencyFormatter = currencyFormatter
@@ -103,6 +110,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func generateProductDetails() async {
+        guard generatedProduct == nil else {
+            return
+        }
+
         shouldShowFeedbackView = false
         isGeneratingDetails = true
         errorState = .none
@@ -150,6 +161,52 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
         shouldShowFeedbackView = false
     }
+
+    private func onEditPriceSettingsCompletion(regularPrice: String?,
+                                               subscriptionPeriod: SubscriptionPeriod?,
+                                               subscriptionPeriodInterval: String?,
+                                               subscriptionSignupFee: String?,
+                                               salePrice: String?,
+                                               dateOnSaleStart: Date?,
+                                               dateOnSaleEnd: Date?,
+                                               taxStatus: ProductTaxStatus,
+                                               taxClass: TaxClass?,
+                                               hasUnsavedChanges: Bool) {
+        guard let generatedProduct else {
+            return
+        }
+
+        // Sets "Expire after" to "0" (i.e. Never expire)
+        // if the subscription period or interval is changed
+        let subscriptionLength: String? = {
+            if generatedProduct.subscription?.period != subscriptionPeriod || generatedProduct.subscription?.periodInterval != subscriptionPeriodInterval {
+                return "0"
+            } else {
+                return generatedProduct.subscription?.length
+            }
+        }()
+
+        let subscription = generatedProduct.subscription?.copy(length: subscriptionLength,
+                                                               period: subscriptionPeriod,
+                                                               periodInterval: subscriptionPeriodInterval,
+                                                               price: regularPrice,
+                                                               signUpFee: subscriptionSignupFee)
+        self.generatedProduct = generatedProduct.copy(dateOnSaleStart: dateOnSaleStart,
+                                                      dateOnSaleEnd: dateOnSaleEnd,
+                                                      regularPrice: regularPrice,
+                                                      salePrice: salePrice,
+                                                      taxStatusKey: taxStatus.rawValue,
+                                                      taxClass: taxClass?.slug,
+                                                      subscription: subscription)
+    }
+
+    func didTapPrice() {
+        guard let product = generatedProduct else {
+            return
+        }
+        let editableProduct = EditableProductModel(product: product)
+        self.onEditPrice(editableProduct, onEditPriceSettingsCompletion)
+    }
 }
 
 // MARK: - Product details for preview
@@ -170,10 +227,7 @@ private extension ProductDetailPreviewViewModel {
         productDescription = product.fullDescription
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
-        if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
-            let formattedRegularPrice = currencyFormatter.formatAmount(regularPrice, with: currency) ?? ""
-            productPrice = String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice)
-        }
+        productPrice = priceDetails(from: product)
 
         productCategories = product.categoriesDescription()
         productTags = product.tagsDescription()
@@ -222,6 +276,57 @@ private extension ProductDetailPreviewViewModel {
         }
 
         productShippingDetails = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
+    }
+
+    func priceDetails(from generatedProduct: Product) -> String {
+        let product = EditableProductModel(product: generatedProduct)
+        var priceDetails = [String]()
+
+        // Regular price and sale price are both available only when a sale price is set.
+        if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
+            let formattedRegularPrice = currencyFormatter.formatAmount(regularPrice, with: currency) ?? ""
+            if let subscriptionPeriodDescription = product.subscriptionPeriodDescription {
+                priceDetails.append(String.localizedStringWithFormat(
+                    Localization.regularSubscriptionPriceFormat,
+                    formattedRegularPrice,
+                    subscriptionPeriodDescription
+                ))
+            } else {
+                priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
+            }
+
+            if let signupFee = product.subscription?.signUpFee,
+               signupFee.isNotEmpty,
+               let formattedFee = currencyFormatter.formatAmount(signupFee, with: currency) {
+                priceDetails.append(String.localizedStringWithFormat(Localization.subscriptionSignupFeeFormat, formattedFee))
+            }
+
+            if let salePrice = product.salePrice, salePrice.isNotEmpty {
+                let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
+                priceDetails.append(String.localizedStringWithFormat(Localization.salePriceFormat, formattedSalePrice))
+            }
+
+            if let dateOnSaleStart = product.dateOnSaleStart, let dateOnSaleEnd = product.dateOnSaleEnd {
+                let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter
+                dateIntervalFormatter.timeZone = siteTimezone
+                let formattedTimeRange = dateIntervalFormatter.string(from: dateOnSaleStart, to: dateOnSaleEnd)
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDatesFormat, formattedTimeRange))
+            }
+            else if let dateOnSaleStart = product.dateOnSaleStart, product.dateOnSaleEnd == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleStart)
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDateFormatFrom, formattedDate))
+            }
+            else if let dateOnSaleEnd = product.dateOnSaleEnd, product.dateOnSaleStart == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDateFormatTo, formattedDate))
+            }
+        }
+
+        return priceDetails.joined(separator: "\n")
     }
 }
 
@@ -534,7 +639,6 @@ private extension ProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical", comment: "Display label for simple physical product type.")
-        static let regularPriceFormat = NSLocalizedString("Regular price: %@", comment: "Format of the regular price on the Price Settings row")
 
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",
@@ -554,6 +658,30 @@ private extension ProductDetailPreviewViewModel {
             "There was an error saving product details. Please try again.",
             comment: "Error message when saving product as draft on the add product with AI Preview screen."
         )
+
+        // Price
+        static let regularPriceFormat = NSLocalizedString("Regular price: %@",
+                                                          comment: "Format of the regular price on the Price Settings row")
+        static let regularSubscriptionPriceFormat = NSLocalizedString(
+            "defaultProductFormTableViewModel.regularSubscriptionPriceFormat",
+            value: "Regular price: %1$@ %2$@",
+            comment: "Format of the regular price for a subscription product on the Price Settings row. " +
+            "Reads like: 'Regular price: $60.00 every 2 months'."
+        )
+        static let subscriptionSignupFeeFormat = NSLocalizedString(
+            "defaultProductFormTableViewModel.subscriptionSignupFeeFormat",
+            value: "Sign-up fee: %1$@",
+            comment: "Format of the sign-up fee for a subscription product on the Price Settings row. " +
+            "Reads like: 'Sign-up fee: $0.99'."
+        )
+        static let salePriceFormat = NSLocalizedString("Sale price: %@",
+                                                       comment: "Format of the sale price on the Price Settings row")
+        static let saleDatesFormat = NSLocalizedString("Sale dates: %@",
+                                                       comment: "Format of the sale period on the Price Settings row")
+        static let saleDateFormatFrom = NSLocalizedString("Sale dates: From %@",
+                                                    comment: "Format of the sale period on the Price Settings row from a certain date")
+        static let saleDateFormatTo = NSLocalizedString("Sale dates: Until %@",
+                                                    comment: "Format of the sale period on the Price Settings row until a certain date")
     }
 }
 

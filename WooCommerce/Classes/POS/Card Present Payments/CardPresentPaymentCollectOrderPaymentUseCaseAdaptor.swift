@@ -3,12 +3,20 @@ import WooFoundation
 import Combine
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
+import protocol Yosemite.StoresManager
+import enum Yosemite.CardPresentPaymentAction
 
-struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
+    @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
+    private let stores: StoresManager
 
-    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
+    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
+         paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
+         stores: StoresManager = ServiceLocator.stores) {
         self.currencyFormatter = currencyFormatter
+        self.stores = stores
+        paymentEventPublisher.assign(to: &$latestPaymentEvent)
     }
 
     func collectPaymentTask(for order: Order,
@@ -27,6 +35,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+
             let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
                                                                  CardPresentPaymentsTransactionAlertsProvider,
                                                                     CardPresentPaymentsAlertPresenterAdaptor>(
@@ -35,6 +45,7 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
@@ -81,6 +92,16 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 }
             } onCancel: {
                 // TODO: cancel any in-progress discovery, connection, or payment. #12869
+                invalidatablePaymentOrchestrator.invalidatePayment()
+                switch latestPaymentEvent {
+                    case .show(let eventDetails):
+                        onCancel(paymentEventDetails: eventDetails)
+                    case .showReaderList:
+                        // TODO: to be merged to the case above
+                        return
+                    case .idle, .showOnboarding:
+                        return
+                }
             }
         }
     }
@@ -89,4 +110,65 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
 enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
     case success
     case cancellation
+}
+
+private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+    func onCancel(paymentEventDetails: CardPresentPaymentEventDetails) {
+        switch paymentEventDetails {
+        /// Before reader connection
+        case .selectSearchType:
+            cancelReaderSearch()
+        case .scanningForReaders(let endSearch),
+                .scanningFailed(_, let endSearch),
+                .bluetoothRequired(_, let endSearch),
+                .connectingFailed(_, _, let endSearch),
+                .connectingFailedNonRetryable(_, let endSearch),
+                .connectingFailedUpdatePostalCode(_, let endSearch),
+                .connectingFailedChargeReader(_, let endSearch),
+                .connectingFailedUpdateAddress(_, _, let endSearch),
+                .foundReader(_, _, _, let endSearch):
+            endSearch()
+        case .updateProgress(_, _, let cancelUpdate):
+            cancelUpdate?()
+        case .updateFailed(_, let cancelUpdate),
+                .updateFailedNonRetryable(let cancelUpdate),
+                .updateFailedLowBattery(_, let cancelUpdate):
+            cancelUpdate()
+        case .connectingToReader:
+            // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
+            return
+        /// Connection already completed, before attempting payment
+        case .validatingOrder:
+            // No need to cancel at this stage – having invalidated the payment orchestrator is enough
+            return
+        case .preparingForPayment(cancelPayment: let cancelPayment),
+                .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
+                .paymentError(_, _, cancelPayment: let cancelPayment),
+                .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
+            cancelPayment()
+        case .processing, /// if cancellation fails here, which is likely, we may need a new order. But we can disable going back to make it unlikely.
+                .displayReaderMessage,
+                /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
+                .cancelledOnReader:
+            cancelPayment()
+        case .paymentSuccess(done: let done):
+            done()
+        }
+    }
+}
+
+private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+    func cancelReaderSearch() {
+        stores.dispatch(CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in })
+    }
+
+    func cancelReaderConnection() {
+        // TODO
+    }
+
+    func cancelPayment() {
+        stores.dispatch(CardPresentPaymentAction.cancelPayment() { _ in
+            // TODO: implement allowPassPresentation when Tap To Pay is supported following `PaymentCaptureOrchestrator.allowPassPresentation`
+        })
+    }
 }

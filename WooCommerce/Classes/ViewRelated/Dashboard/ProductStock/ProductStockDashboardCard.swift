@@ -162,7 +162,7 @@ private extension ProductStockDashboardCard {
                                     .multilineTextAlignment(.leading)
                                 }
                                 Spacer()
-                                Text("\(element.stockQuantity)")
+                                Text("\(element.stockQuantity ?? 0)")
                                     .foregroundStyle(Color(.error))
                                     .bodyStyle()
                                     .fontWeight(.semibold)

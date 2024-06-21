@@ -60,6 +60,9 @@ struct TotalsView: View {
             /// This will prepare the reader for payment, if connected
             await viewModel.totalsViewWillAppear()
         }
+        .onDisappear {
+            viewModel.onTotalsViewDisappearance()
+        }
     }
 
     private var paymentButtonsDisabled: Bool {

@@ -35,6 +35,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
+            let invalidatablePaymentOrchestrator = CardPresentPaymentInvalidatablePaymentOrchestrator()
+
             let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
                                                                  CardPresentPaymentsTransactionAlertsProvider,
                                                                     CardPresentPaymentsAlertPresenterAdaptor>(
@@ -43,6 +45,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
                 configuration: configuration,
+                paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
@@ -89,6 +92,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 }
             } onCancel: {
                 // TODO: cancel any in-progress discovery, connection, or payment. #12869
+                invalidatablePaymentOrchestrator.invalidatePayment()
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
                         onCancel(paymentEventDetails: eventDetails)
@@ -131,11 +135,12 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .updateFailedLowBattery(_, let cancelUpdate):
             cancelUpdate()
         case .connectingToReader:
-            // TODO: cancel connection if possible?
+            // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
             return
         /// Connection already completed, before attempting payment
         case .validatingOrder:
-            cancelPayment()
+            // No need to cancel at this stage – having invalidated the payment orchestrator is enough
+            return
         case .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),

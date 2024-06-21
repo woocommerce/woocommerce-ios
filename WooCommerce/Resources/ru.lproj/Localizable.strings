@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-19 09:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Добавьте цену варианта, чтобы он появился в магазине";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Добавить продукт";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Добавьте товар и сведения вручную";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Добавьте ключевые характеристики, преимущества и подробные сведения, чтобы покупателям проще было найти ваш товар онлайн.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "Добавить вручную";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Создайте скидку в процентах на выбранные товары";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Создать товар с помощью ИИ";
 
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "При поддержке";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "На основе ИИ.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "На основе ИИ. %1$@.";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Настройки конфиденциальности";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Личный";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Конфиденциальное примечание";
-
-/* Display label for the product's private status */
-"Privately published" = "Опубликован как скрытый";
 
 /* Display label for processing order status. */
 "Processing" = "В обработке";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "С начала квартала до текущего дня";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Быстро сгенерировать подробную информацию для вас";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Создайте онлайн-магазин и начните продажи в кротчайшие сроки.";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[КОММЕНТАРИЙ]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Подробнее](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Отмена";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Удержать налог";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Выбрать тип товара";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "Быстро сгенерировать подробную информацию для вас";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "Создать товар с помощью ИИ";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[Подробнее](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "Создано при помощи ИИ.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Добавить товар и сведения вручную";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Добавить вручную";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Выбрать тип товара";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Создать товар";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Подключить существующий магазин";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Уникальный физический товар, который, возможно, потребуется отправить клиенту";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Простой физический товар";
+"bottomSheetProductType.simpleProduct.title" = "Физический товар";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Уникальный цифровой товар, например: услуги, загружаемые книги, музыка или видео";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Простой виртуальный товар";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Виртуальный товар";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Подписка на уникальный товар, включающая регулярные платежи";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Товар по простой подписке";
+"bottomSheetProductType.subscriptionProduct.title" = "Простая подписка";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Товар с вариантами исполнения, например по цвету или размеру";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Подписка на товар с вариантами";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Товар с вариантами по подписке";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Подписка с вариантами";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Средняя стоимость заказа";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "ПЛАТЁЖНЫЙ АДРЕС";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Вызов";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Город";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Копировать";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "Копировать адрес электронной почты";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Скопировать номер";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Страна";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "МЕСТОПОЛОЖЕНИЕ";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Сообщение";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Заказы";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "ЗАКАЗЫ";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Связаться с клиентом по телефону";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Отсутствует номер телефона";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Почтовый индекс";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "Электронная почта";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "АДРЕС ДОСТАВКИ";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Отправить сообщение Telegram";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Общие расходы";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Имя пользователя";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "Отправить сообщение WhatsApp";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Создать новый заказ";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Клиенты не найдены";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Напомнить позже";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Другое";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Стандартный";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Подписка";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Опубликован как скрытый";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Ошибка загрузки файла. Повторите попытку.";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Откройте приложение Woo на iPhone, подключите ваш магазин и держите часы поблизости.";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "При загрузке данных магазина возникла ошибка";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Не работает";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Удостоверьтесь, что часы подключены к Интернету, а телефон находится рядом.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Ошибка при загрузке данных магазина";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Повторить";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "Сделайте ваш первый заказ!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "При загрузке списка заказов произошла ошибка.";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Удостоверьтесь, что часы подключены к Интернету, а телефон находится рядом.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Ошибка при загрузке заказов";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Повторить";

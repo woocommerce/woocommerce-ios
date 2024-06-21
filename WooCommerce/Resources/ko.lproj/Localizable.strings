@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-18 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "제품 추가";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "수동으로 상품 및 상세 정보 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "온라인에서 상품이 쉽게 검색되도록 주요 기능, 이점 또는 상세 정보를 추가하세요.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "수동으로 추가";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "선택한 제품에 대해 할인율을 설정하세요.";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "AI로 상품 생성";
 
 /* Title of the store creation web view. */
 "Create a store" = "스토어 생성";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "제공:";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "AI를 활용했습니다.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "AI를 활용했습니다. %1$@.";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "개인 정보 설정";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "비공개";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
-
-/* Display label for the product's private status */
-"Privately published" = "비공개로 게시됨";
 
 /* Display label for processing order status. */
 "Processing" = "처리 중";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "분기 누계";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "자동으로 빠르게 상세 정보 생성";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "아름다운 온라인 스토어로 빠르게 시작하고 판매하세요.";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "취소";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "세금 청구";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "상품 유형 선택";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "자동으로 빠르게 상세 정보 생성";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "AI로 상품 생성";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "AI 기반.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "수동으로 상품 및 상세 정보 추가";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "수동으로 추가";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "상품 유형 선택";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "상품 만들기";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "기존 스토어 연결";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "고객에게 배송해야 할 수 있는 고유한 실물 상품";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "단순 실물 상품";
+"bottomSheetProductType.simpleProduct.title" = "실물 상품";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "서비스, 다운로드 가능한 도서, 음악 또는 비디오 등 고유한 디지털 상품";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "단순 가상 상품";
+"bottomSheetProductType.simpleVirtualProduct.title" = "가상 상품";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "반복 결제가 활성화된 고유 상품 구독";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "단순 구독 상품";
+"bottomSheetProductType.subscriptionProduct.title" = "간편 구독";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "색상 또는 크기 등 변형이 있는 상품";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "변형이 있는 상품 구독";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "가변 구독 상품";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "가변 구독";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "평균 주문 값";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "청구 주소";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "전화";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "시\/군\/구";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "복사";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "이메일 주소 복사";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "번호 복사";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "국가";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "위치";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "메시지";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "주문";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "주문";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "전화로 고객에게 연락";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "전화번호 없음";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "우편번호";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "이메일";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "배송지";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Telegram 메시지 보내기";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "총지출";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "사용자명";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "WhatsApp 메시지 보내기";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "새 주문 생성";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "고객을 찾을 수 없음";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "나중에 다시 알림";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "기타";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standard";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "구독";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "비공개로 게시됨";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "파일 업로드 중 오류가 발생했습니다. 다시 시도하세요.";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhone에서 Woo를 열고 스토어에 연결한 다음 Watch를 가까이에 두세요.";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "스토어의 데이터를 로드하는 중 오류가 발생했습니다.";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "작동 안 함";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Watch를 인터넷에 연결하고 휴대폰을 근처에 두세요.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "스토어 데이터 로드 실패";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "다시 시도";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "첫 주문을 기다리는 중입니다!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "주문 목록을 로드하는 중 오류가 발생했습니다.";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Watch를 인터넷에 연결하고 휴대폰을 근처에 두세요.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "주문 로드 실패";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "다시 시도";

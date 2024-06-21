@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:06+0000 */
+/* Translation-Revision-Date: 2024-06-18 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "为您的变体添加价格，以在商店中显示";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "添加产品";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "手动添加产品和详细信息";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "添加产品图片";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "添加关键功能、优势或详情，提高产品在网上的曝光率。";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "手动添加";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "创建应用于选定商品的百分比折扣";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "通过 AI 创建一个产品";
 
 /* Title of the store creation web view. */
 "Create a store" = "创建商店";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "提供支持：";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "由 AI 提供支持。";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "由 AI 提供支持。%1$@。";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "隐私设置";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "非公开";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
-
-/* Display label for the product's private status */
-"Privately published" = "已私密发布";
 
 /* Display label for processing order status. */
 "Processing" = "正在处理";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "季初至今";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "为您快速生成详细信息";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "快速设置美观的在线商店并开始销售。";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[评论]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[了解更多。] (https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "取消";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "收取税费";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "选择产品类型";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "为您快速生成详情";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "通过 AI 创建产品";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[了解更多。] (https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "由 AI 提供支持。";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "手动添加产品和详情";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "手动添加";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "选择产品类型";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "创建产品";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "连接现有商店";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "您需要配送给客户的独特实体产品";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "简单实体产品";
+"bottomSheetProductType.simpleProduct.title" = "实体产品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "独特数字产品，例如服务、可下载的书籍、音乐或视频";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "简单虚拟产品";
+"bottomSheetProductType.simpleVirtualProduct.title" = "虚拟产品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "支持定期付款的独特产品订阅";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "简单订阅产品";
+"bottomSheetProductType.subscriptionProduct.title" = "简单订阅";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "包含颜色或尺寸等变体的产品";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "有变体的产品订阅";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "可变订阅产品";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "可变订阅";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "平均订单价值";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "账单地址";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "拨号";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "城市";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "复制";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "复制电子邮件地址";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "复制号码";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "国家\/地区";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "位置";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "发送短信";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "订单";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "订单";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "通过电话联系客户";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "无电话号码";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "邮政编码";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "电子邮件";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "配送地址";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "发送 Telegram 消息";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "总支出";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "用户名";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "发送 WhatsApp 消息";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "创建新订单";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "未找到客户";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "稍后提醒我";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "其他";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "标准";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "订阅";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "已私密发布";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "上传文件时出错。 请重试。";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "在您的 iPhone 上打开 Woo，连接您的商店，然后将您的手表放在附近";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "加载商店数据时出错";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "无法连接";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "确保您的手表连接到互联网，且手机就在附近。";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "商店数据加载失败";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "重试";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "正在等待您的首个订单！";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "加载订单列表时出错";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "确保您的手表连接到互联网，且手机就在附近。";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "订单加载失败";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "重试";

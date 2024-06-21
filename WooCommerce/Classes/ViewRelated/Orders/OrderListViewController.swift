@@ -25,7 +25,7 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-final class OrderListViewController: UIViewController, GhostableViewController {
+final class OrderListViewController: UIViewController {
     /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
     /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
@@ -651,23 +651,6 @@ extension OrderListViewController {
     }
 }
 
-// MARK: - Placeholders & Ghostable Table
-//
-private extension OrderListViewController {
-
-    /// Renders the Placeholder Orders
-    ///
-    func displayPlaceholderOrders() {
-        displayGhostContent()
-    }
-
-    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderOrders() {
-        removeGhostContent()
-    }
-}
-
 // MARK: - Empty state view configuration
 //
 private extension OrderListViewController {
@@ -885,7 +868,7 @@ private extension OrderListViewController {
         case .empty:
             displayEmptyViewController()
         case .placeholder:
-            displayPlaceholderOrders()
+            break
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
@@ -898,7 +881,7 @@ private extension OrderListViewController {
         case .empty:
             removeEmptyViewController()
         case .placeholder:
-            removePlaceholderOrders()
+            break
         case .syncing:
             ensureFooterSpinnerIsStopped()
         case .results:

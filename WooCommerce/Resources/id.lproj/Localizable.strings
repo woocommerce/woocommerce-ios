@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-18 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Tambahkan harga ke varian agar terlihat di toko Anda";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Tambahkan produk";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Tambahkan produk dan detail secara manual";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Tambahkan detail, manfaat, atau fitur utama agar produk Anda lebih mudah ditemukan secara online.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "Tambahkan secara manual";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Buat persentase diskon untuk produk yang dipilih";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Buat produk dengan AI";
 
 /* Title of the store creation web view. */
 "Create a store" = "Buat toko";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Didukung oleh";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Berbasis AI.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Berbasis AI. %1$@.";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Pengaturan Privasi";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Privat";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Catatan privat";
-
-/* Display label for the product's private status */
-"Privately published" = "Diterbitkan secara privat";
 
 /* Display label for processing order status. */
 "Processing" = "Memproses";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Awal Kuartal hingga Saat Ini";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Buat detail secara cepat untuk Anda";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Bangun dan jual produk dengan cepat menggunakan toko online yang menawan.";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[KOMENTAR]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Baca selengkapnya.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Batal";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Kenakan Pajak";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Pilih jenis produk";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "Minta buatkan informasi produk secara instan";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "Buat produk dengan AI";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[Baca selengkapnya.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "Berbasis AI.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Tambahkan produk dan informasi secara manual";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Tambahkan secara manual";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Pilih jenis produk";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Buat Produk";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Sambungkan toko yang sudah ada";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Produk fisik unik yang mungkin perlu dikirimkan kepada pelanggan";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Produk fisik sederhana";
+"bottomSheetProductType.simpleProduct.title" = "Produk fisik";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Produk digital unik, seperti layanan atau buku, musik, dan video yang dapat diunduh";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Produk virtual sederhana";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Produk virtual";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Langganan produk unik yang memungkinkan pembayaran berulang";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Produk langganan sederhana";
+"bottomSheetProductType.subscriptionProduct.title" = "Langganan sederhana";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Produk dengan variasi, seperti warna atau ukuran";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Langganan produk dengan variasi";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Produk langganan variabel";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Langganan variabel";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Batal";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Nilai pesanan rata-rata";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "ALAMAT PENAGIHAN";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Panggil";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Kota";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Salin";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "Salin alamat email";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Salin nomor";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Negara";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "Lokasi";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Pesan";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Pesanan";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "PESANAN";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Hubungi pelanggan via telepon";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Tidak ada nomor telepon";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Kode pos";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "Email";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "ALAMAT PENGIRIMAN";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Kirim pesan Telegram";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Total pengeluaran";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Nama pengguna";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "Kirim pesan WhatsApp";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Buat pesanan baru";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Pelanggan tidak ditemukan";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Ingatkan Saya Nanti";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Lainnya";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standar";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Langganan";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Diterbitkan secara privat";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Error saat mengunggah file. Coba lagi.";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Buka Woo di iPhone, hubungkan toko, dan dekatkan jam tangan Anda";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "Terjadi error saat memuat data toko";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Tidak bisa";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Pastikan jam tangan Anda terhubung dengan internet dan Anda tidak jauh dari telepon.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Gagal memuat data toko";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Coba lagi";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "Menunggu pesanan pertama Anda!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "Terjadi error saat memuat daftar pesanan";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Pastikan jam tangan Anda terhubung dengan internet dan Anda tidak jauh dari telepon.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Gagal memuat pesanan";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Coba lagi";

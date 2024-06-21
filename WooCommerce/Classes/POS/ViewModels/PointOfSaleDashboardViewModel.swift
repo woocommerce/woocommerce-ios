@@ -140,8 +140,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment() async {
-        guard let order,
-              cardReaderConnectionViewModel.connectionStatus == .connected else {
+        guard let order else {
             return
         }
         do {
@@ -170,9 +169,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     func totalsViewWillAppear() async {
-        await collectPayment()
         // Digging in to the connection viewmodel here is a bit of a shortcut, we should improve this.
         // TODO: Have our own subscription to the connected readers
+        guard cardReaderConnectionViewModel.connectionStatus == .connected else {
+            return
+        }
+        await collectPayment()
 
         // Once we have finalised order creation/update, this check shouldn't be required.
         // Instead, we should have whatever code does the order creation/update kick off this connection process.

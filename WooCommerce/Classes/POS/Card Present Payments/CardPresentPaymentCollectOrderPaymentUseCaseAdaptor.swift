@@ -114,31 +114,21 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         /// Before reader connection
         case .selectSearchType:
             cancelReaderSearch()
-        case .scanningForReaders(let endSearch):
-            endSearch()
-        case .scanningFailed(_, let endSearch):
-            endSearch()
-        case .bluetoothRequired(_, let endSearch):
-            endSearch()
-        case .connectingFailed(_, _, let endSearch):
-            endSearch()
-        case .connectingFailedNonRetryable(_, let endSearch):
-            endSearch()
-        case .connectingFailedUpdatePostalCode(_, let endSearch):
-            endSearch()
-        case .connectingFailedChargeReader(_, let endSearch):
-            endSearch()
-        case .connectingFailedUpdateAddress(_, _, let endSearch):
-            endSearch()
-        case .foundReader(_, _, _, let endSearch):
+        case .scanningForReaders(let endSearch),
+                .scanningFailed(_, let endSearch),
+                .bluetoothRequired(_, let endSearch),
+                .connectingFailed(_, _, let endSearch),
+                .connectingFailedNonRetryable(_, let endSearch),
+                .connectingFailedUpdatePostalCode(_, let endSearch),
+                .connectingFailedChargeReader(_, let endSearch),
+                .connectingFailedUpdateAddress(_, _, let endSearch),
+                .foundReader(_, _, _, let endSearch):
             endSearch()
         case .updateProgress(_, _, let cancelUpdate):
             cancelUpdate?()
-        case .updateFailed(_, let cancelUpdate):
-            cancelUpdate()
-        case .updateFailedNonRetryable(let cancelUpdate):
-            cancelUpdate()
-        case .updateFailedLowBattery(_, let cancelUpdate):
+        case .updateFailed(_, let cancelUpdate),
+                .updateFailedNonRetryable(let cancelUpdate),
+                .updateFailedLowBattery(_, let cancelUpdate):
             cancelUpdate()
         case .connectingToReader:
             // TODO: cancel connection if possible?
@@ -146,20 +136,15 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         /// Connection already completed, before attempting payment
         case .validatingOrder:
             cancelPayment()
-        case .preparingForPayment(cancelPayment: let cancelPayment):
+        case .preparingForPayment(cancelPayment: let cancelPayment),
+                .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
+                .paymentError(_, _, cancelPayment: let cancelPayment),
+                .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
             cancelPayment()
-        case .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment):
-            cancelPayment()
-        case .paymentError(_, _, cancelPayment: let cancelPayment):
-            cancelPayment()
-        case .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
-            cancelPayment()
-        case .processing:
-            cancelPayment()
-        case .displayReaderMessage:
-            cancelPayment()
-        /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
-        case .cancelledOnReader:
+        case .processing,
+                .displayReaderMessage,
+                /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
+                .cancelledOnReader:
             cancelPayment()
         case .paymentSuccess(done: let done):
             done()

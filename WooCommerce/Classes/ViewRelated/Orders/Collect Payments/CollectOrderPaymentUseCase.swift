@@ -24,21 +24,6 @@ protocol CollectOrderPaymentProtocol {
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void)
-
-    /// Starts the collect payment flow.
-    ///
-    /// - Parameter using: We specify a discovery method to allow us to choose between Tap to Pay and Bluetooth readers, which have distinct connection flows.
-    /// - Parameter invalidated: Closure used to check whether to continue with payment after a reader is connected. Return true to prevent the payment.
-    /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
-    /// - Parameter onCancel: Closure invoked after the flow is cancelled
-    /// - Parameter onFailure: Closure invoked when there is an error in the flow
-    /// - Parameter onPaymentCompletion: Closure invoked after any payment completes, but while the user can still continue with the flow in some way
-    func collectPayment(using: CardReaderDiscoveryMethod,
-                        invalidated: (() -> Bool)?,
-                        onFailure: @escaping (Error) -> Void,
-                        onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
-                        onCompleted: @escaping () -> Void)
 }
 
 /// Use case to collect payments from an order.
@@ -135,19 +120,6 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  orderDurationRecorder: orderDurationRecorder)
     }
 
-    func collectPayment(using: CardReaderDiscoveryMethod,
-                        onFailure: @escaping (Error) -> Void,
-                        onCancel: @escaping () -> Void,
-                        onPaymentCompletion: @escaping () -> Void,
-                        onCompleted: @escaping () -> Void) {
-        collectPayment(using: using,
-                       invalidated: nil,
-                       onFailure: onFailure,
-                       onCancel: onCancel,
-                       onPaymentCompletion: onPaymentCompletion,
-                       onCompleted: onCompleted)
-    }
-
     /// Starts the collect payment flow.
     /// 1. Checks valid total
     /// 2. Calls CardReaderPreflightController to get a connected reader
@@ -158,12 +130,10 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     /// 7. Tracks payment analytics
     ///
     ///
-    /// - Parameter invalidated: Closure used to check whether to continue with payment after a reader is connected. Return true to prevent the payment.
     /// - Parameter onFailure: Closure invoked after the payment process fails.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
-                        invalidated: (() -> Bool)?,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,
@@ -173,11 +143,6 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
-                if let invalidated,
-                   invalidated() == true {
-                    return onCancel()
-                }
-
                 let paymentAlertProvider = paymentAlertProvider(for: reader)
                 self.attemptPayment(alertProvider: paymentAlertProvider,
                                     paymentGatewayAccount: paymentGatewayAccount,

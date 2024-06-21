@@ -173,6 +173,13 @@ private extension HubMenu {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
                 }
+            case HubMenuViewModel.GoogleAds.id:
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     viewModel: GoogleAdsWebViewModel(
+                                        siteURL: viewModel.storeURL.absoluteString,
+                                        onCampaignCreated: {}
+                                     ),
+                                     skipsAuthentication: !viewModel.shouldAuthenticateAdminPage)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

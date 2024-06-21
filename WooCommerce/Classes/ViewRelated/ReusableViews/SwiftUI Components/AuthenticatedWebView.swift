@@ -48,26 +48,31 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
         }
     }
 
-    let viewModel: AuthenticatedWebViewModel
+    private let viewModel: AuthenticatedWebViewModel
+    private let skipsAuthentication: Bool
 
     init(isPresented: Binding<Bool>,
-             viewModel: AuthenticatedWebViewModel) {
-            self._isPresented = isPresented
-            self.viewModel = viewModel
-        }
+         viewModel: AuthenticatedWebViewModel,
+         skipsAuthentication: Bool = false) {
+        self._isPresented = isPresented
+        self.viewModel = viewModel
+        self.skipsAuthentication = skipsAuthentication
+    }
 
     init(isPresented: Binding<Bool>,
-             url: URL,
-             urlToTriggerExit: String? = nil,
-             exitTrigger: ((URL?) -> Void)? = nil) {
-            self._isPresented = isPresented
-            viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
-                                                         urlToTriggerExit: urlToTriggerExit,
-                                                         exitTrigger: exitTrigger)
-        }
+         url: URL,
+         urlToTriggerExit: String? = nil,
+         exitTrigger: ((URL?) -> Void)? = nil) {
+        self._isPresented = isPresented
+        viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
+                                                     urlToTriggerExit: urlToTriggerExit,
+                                                     exitTrigger: exitTrigger)
+        skipsAuthentication = false
+    }
 
     func makeUIViewController(context: Context) -> AuthenticatedWebViewController {
-        return AuthenticatedWebViewController(viewModel: viewModel)
+        return AuthenticatedWebViewController(viewModel: viewModel,
+                                              skipsAuthentication: skipsAuthentication)
     }
 
     func updateUIViewController(_ uiViewController: AuthenticatedWebViewController, context: Context) {

@@ -38,7 +38,9 @@ final class AuthenticatedWebViewController: UIViewController {
     private let wpcomCredentials: Credentials?
 
 
-    init(viewModel: AuthenticatedWebViewModel, extraCredentials: Credentials? = nil) {
+    init(viewModel: AuthenticatedWebViewModel,
+         skipsAuthentication: Bool = false,
+         extraCredentials: Credentials? = nil) {
         self.viewModel = viewModel
         let currentCredentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -58,7 +60,9 @@ final class AuthenticatedWebViewController: UIViewController {
         }()
 
         self.wpcomCredentials = {
-            if case .wpcom = extraCredentials {
+            if skipsAuthentication {
+                return nil
+            } else if case .wpcom = extraCredentials {
                 return extraCredentials
             } else if case .wpcom = currentCredentials {
                 return currentCredentials

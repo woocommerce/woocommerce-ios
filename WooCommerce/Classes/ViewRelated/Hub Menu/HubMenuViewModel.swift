@@ -232,6 +232,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
 
+        generalElements.append(GoogleAds())
         generalElements.append(Customers())
     }
 
@@ -371,6 +372,18 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .clear
         let accessibilityIdentifier: String = "menu-blaze"
         let trackingOption: String = "blaze"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
+    struct GoogleAds: HubMenuItem {
+        static var id = "googleAds"
+
+        let title: String = "Google Ads"
+        let description: String = "Testing google ads"
+        let icon: UIImage = .advertisingIcon
+        let iconColor: UIColor = .clear
+        let accessibilityIdentifier: String = "menu-google-ads"
+        let trackingOption: String = "goggle-ads"
         let iconBadge: HubMenuBadgeType? = nil
     }
 

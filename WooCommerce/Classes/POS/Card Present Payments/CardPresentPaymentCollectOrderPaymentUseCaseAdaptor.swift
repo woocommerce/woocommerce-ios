@@ -11,6 +11,8 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     @Published private var latestPaymentEvent: CardPresentPaymentEvent = .idle
     private let stores: StoresManager
 
+    private var invalidatePayment: Bool = false
+
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
          stores: StoresManager = ServiceLocator.stores) {
@@ -55,6 +57,13 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
 
                     orderPaymentUseCase.collectPayment(
                         using: connectionMethod.discoveryMethod,
+                        invalidated: { [weak self] in
+                            guard let self else {
+                                // If this doesn't exist any more, the payment shouldn't be attempted
+                                return true
+                            }
+                            return invalidatePayment
+                        },
                         onFailure: { error in
                             guard let continuation = nillableContinuation else { return }
                             nillableContinuation = nil
@@ -89,6 +98,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 }
             } onCancel: {
                 // TODO: cancel any in-progress discovery, connection, or payment. #12869
+                invalidatePayment = true
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
                         onCancel(paymentEventDetails: eventDetails)
@@ -131,7 +141,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .updateFailedLowBattery(_, let cancelUpdate):
             cancelUpdate()
         case .connectingToReader:
-            // TODO: cancel connection if possible?
+            // This can't be cancelled, but when it completes the payment will not start
+            // because we've set `invalidatePayment = true`
             return
         /// Connection already completed, before attempting payment
         case .validatingOrder:

@@ -91,7 +91,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                     )
                 }
             } onCancel: {
-                // TODO: cancel any in-progress discovery, connection, or payment. #12869
                 invalidatablePaymentOrchestrator.invalidatePayment()
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
@@ -162,13 +161,10 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         stores.dispatch(CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in })
     }
 
-    func cancelReaderConnection() {
-        // TODO
-    }
-
     func cancelPayment() {
         stores.dispatch(CardPresentPaymentAction.cancelPayment() { _ in
-            // TODO: implement allowPassPresentation when Tap To Pay is supported following `PaymentCaptureOrchestrator.allowPassPresentation`
+            // TODO: implement allowPassPresentation similar to `PaymentCaptureOrchestrator.allowPassPresentation` to
+            // recover Apple Pay / Wallet capability
         })
     }
 }

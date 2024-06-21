@@ -152,7 +152,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .paymentError(_, _, cancelPayment: let cancelPayment),
                 .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
             cancelPayment()
-        case .processing,
+        case .processing, /// if cancellation fails here, which is likely, we may need a new order. But we can disable going back to make it unlikely.
                 .displayReaderMessage,
                 /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
                 .cancelledOnReader:

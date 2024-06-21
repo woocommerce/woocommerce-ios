@@ -111,58 +111,58 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func onCancel(paymentEventDetails: CardPresentPaymentEventDetails) {
         switch paymentEventDetails {
-            case .scanningForReaders(let endSearch):
-                endSearch()
-            case .scanningFailed(_, let endSearch):
-                endSearch()
-            case .bluetoothRequired(_, let endSearch):
-                endSearch()
-            case .connectingToReader:
-                // TODO: cancel connection if possible?
-                return
-            case .connectingFailed(_, _, let endSearch):
-                endSearch()
-            case .connectingFailedNonRetryable(_, let endSearch):
-                endSearch()
-            case .connectingFailedUpdatePostalCode(_, let endSearch):
-                endSearch()
-            case .connectingFailedChargeReader(_, let endSearch):
-                endSearch()
-            case .connectingFailedUpdateAddress(_, _, let endSearch):
-                endSearch()
-            case .foundReader(_, _, _, let endSearch):
-                endSearch()
-            case .updateProgress(_, _, let cancelUpdate):
-                cancelUpdate?()
-            case .updateFailed(_, let cancelUpdate):
-                cancelUpdate()
-            case .updateFailedNonRetryable(let cancelUpdate):
-                cancelUpdate()
-            case .updateFailedLowBattery(_, let cancelUpdate):
-                cancelUpdate()
-            case .preparingForPayment(cancelPayment: let cancelPayment):
-                cancelPayment()
-            case .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment):
-                cancelPayment()
-            case .paymentSuccess(done: let done):
-                done()
-            case .paymentError(_, _, cancelPayment: let cancelPayment):
-                cancelPayment()
-            case .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
-                cancelPayment()
-            case .processing:
-                cancelPayment()
-            case .displayReaderMessage:
-                cancelPayment()
-            /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
-            case .cancelledOnReader:
-                cancelPayment()
-            /// Before reader connection
-            case .selectSearchType:
-                cancelReaderSearch()
-            /// Connection already completed, before attempting payment
-            case .validatingOrder:
-                cancelPayment()
+        /// Before reader connection
+        case .selectSearchType:
+            cancelReaderSearch()
+        case .scanningForReaders(let endSearch):
+            endSearch()
+        case .scanningFailed(_, let endSearch):
+            endSearch()
+        case .bluetoothRequired(_, let endSearch):
+            endSearch()
+        case .connectingFailed(_, _, let endSearch):
+            endSearch()
+        case .connectingFailedNonRetryable(_, let endSearch):
+            endSearch()
+        case .connectingFailedUpdatePostalCode(_, let endSearch):
+            endSearch()
+        case .connectingFailedChargeReader(_, let endSearch):
+            endSearch()
+        case .connectingFailedUpdateAddress(_, _, let endSearch):
+            endSearch()
+        case .foundReader(_, _, _, let endSearch):
+            endSearch()
+        case .updateProgress(_, _, let cancelUpdate):
+            cancelUpdate?()
+        case .updateFailed(_, let cancelUpdate):
+            cancelUpdate()
+        case .updateFailedNonRetryable(let cancelUpdate):
+            cancelUpdate()
+        case .updateFailedLowBattery(_, let cancelUpdate):
+            cancelUpdate()
+        case .connectingToReader:
+            // TODO: cancel connection if possible?
+            return
+        /// Connection already completed, before attempting payment
+        case .validatingOrder:
+            cancelPayment()
+        case .preparingForPayment(cancelPayment: let cancelPayment):
+            cancelPayment()
+        case .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment):
+            cancelPayment()
+        case .paymentError(_, _, cancelPayment: let cancelPayment):
+            cancelPayment()
+        case .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
+            cancelPayment()
+        case .processing:
+            cancelPayment()
+        case .displayReaderMessage:
+            cancelPayment()
+        /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
+        case .cancelledOnReader:
+            cancelPayment()
+        case .paymentSuccess(done: let done):
+            done()
         }
     }
 }

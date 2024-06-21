@@ -9,16 +9,16 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
         invalidated = true
     }
 
-    func collectPayment(for order: Yosemite.Order,
+    func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
-                        paymentGatewayAccount: Yosemite.PaymentGatewayAccount,
+                        paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         onPreparingReader: @escaping () -> Void,
-                        onWaitingForInput: @escaping (Yosemite.CardReaderInput) -> Void,
+                        onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
-                        onProcessingCompletion: @escaping (Yosemite.PaymentIntent) -> Void,
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
         guard invalidated == false else {
             return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
@@ -36,7 +36,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                                            onCompletion: onCompletion)
     }
 
-    func retryPayment(for order: Yosemite.Order,
+    func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, any Error>) -> Void) {
         guard invalidated == false else {
             return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
@@ -49,19 +49,19 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
         paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
     }
 
-    func emailReceipt(for order: Yosemite.Order,
-                      params: Yosemite.CardPresentReceiptParameters,
+    func emailReceipt(for order: Order,
+                      params: CardPresentReceiptParameters,
                       onContent: @escaping (String) -> Void) {
         paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
     }
 
-    func saveReceipt(for order: Yosemite.Order,
-                     params: Yosemite.CardPresentReceiptParameters) {
+    func saveReceipt(for order: Order,
+                     params: CardPresentReceiptParameters) {
         paymentOrchestrator.saveReceipt(for: order, params: params)
     }
 
-    func presentBackendReceipt(for order: Yosemite.Order,
-                               onCompletion: @escaping (Result<Yosemite.Receipt, any Error>) -> Void) {
+    func presentBackendReceipt(for order: Order,
+                               onCompletion: @escaping (Result<Receipt, any Error>) -> Void) {
         paymentOrchestrator.presentBackendReceipt(for: order, onCompletion: onCompletion)
     }
 }

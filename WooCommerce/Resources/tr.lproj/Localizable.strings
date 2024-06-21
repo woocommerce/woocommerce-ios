@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-10 12:54:03+0000 */
+/* Translation-Revision-Date: 2024-06-20 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Mağazanızda görünmesi için varyasyonunuza bir fiyat ekleyin";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Ürün ekleyin";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Bir ürünü ve ayrıntılarını manuel olarak ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Ürününüzün internette bulunmasına yardımcı olmak için temel özellikler, avantajlar veya ayrıntılar ekleyin.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "El ile ekle";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Seçilen ürünler için indirim yüzdesini oluşturun";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Yapay zeka ile ürün oluşturun";
 
 /* Title of the store creation web view. */
 "Create a store" = "Mağaza oluştur";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Destekleyen:";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Yapay zeka destekli.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Yapay zeka destekli. %1$@.";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Gizlilik Ayarları";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Özel";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Özel not";
-
-/* Display label for the product's private status */
-"Privately published" = "Özel olarak yayınlanan";
 
 /* Display label for processing order status. */
 "Processing" = "İşlemde";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Çeyrekten tarihe";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Ayrıntıları sizin için hızlıca oluşturur";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Güzel bir çevrimiçi mağaza ile hızla işinizi kurup satış yapın.";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Daha fazla bilgi alın.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "İptal Et";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Vergileri Alın";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Bir ürün türü seç";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "Ayrıntıları sizin için hızlıca oluşturur";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "Yapay zeka ile ürün oluşturun";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[Daha fazla bilgi alın.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "Yapay zeka destekli.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Bir ürünü ve ayrıntılarını manuel olarak ekleyin";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Manuel olarak ekle";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Bir ürün türü seç";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Ürün Oluştur";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Mevcut bir mağazayı bağla";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Müşteriye göndermeniz gerekebilecek benzersiz bir fiziksel ürün";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Basit fiziksel ürün";
+"bottomSheetProductType.simpleProduct.title" = "Fiziksel ürün";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Hizmetler, indirilebilir kitaplar, müzik veya videolar gibi benzersiz bir dijital ürün";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Basit sanal ürün";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Sanal ürün";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Tekrarlanan ödemeler sağlayan benzersiz bir ürün aboneliği";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Basit abonelik ürünü";
+"bottomSheetProductType.subscriptionProduct.title" = "Kolay abonelik";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Renk veya beden gibi çeşitleri olan bir ürün";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Varyasyonlar içeren bir ürün aboneliği";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Değişken abonelik ürünü";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Değişken abonelik";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "İptal et";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Ortalama sipariş değeri";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "FATURA ADRESİ";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Ara";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Şehir";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Kopyala";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "E-posta adresini kopyala";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Numarayı kopyala";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Ülke";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "KONUM";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Mesaj";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Siparişler";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "SİPARİŞLER";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Müşteriyle telefon üzerinden iletişime geçin";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Telefon numarası yok";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Posta kodu";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "E-posta";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "GÖNDERİM ADRESİ";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Telegram mesajı gönder";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Toplam harcama";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Kullanıcı adı";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "WhatsApp mesajı gönder";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Yeni sipariş oluştur";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Müşteri bulunamadı";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Daha Sonra Hatırlat";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Diğer";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standart";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Abonelik";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Özel olarak yayınlandı";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Dosya yüklenirken hata oldu. Lütfen tekrar deneyin.";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhone'unuzda Woo'yu açın, mağazanızı bağlayın ve Watch'ınızı yakında tutun";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "Mağazanın verileri yüklenriken bir hata oluştu";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Çalışmıyor";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Saatinizin internete bağlı ve telefonunuzun yakında olduğundan emin olun.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Mağaza verileri yüklenemedi";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Tekrar dene";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "İlk siparişiniz bekleniyor!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "Sipariş listesi yüklenirken bir hata oluştu";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Saatinizin internete bağlı ve telefonunuzun yakında olduğundan emin olun.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Siparişler yüklenemedi";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Tekrar dene";

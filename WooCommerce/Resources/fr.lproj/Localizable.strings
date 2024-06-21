@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-17 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Ajouter un prix à votre variante pour la rendre visible sur votre boutique";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Ajouter un produit";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Ajouter un produit et les détails manuellement";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Ajouter une image du produit";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Ajoutez les fonctionnalités, les avantages ou les détails clés pour faciliter la recherche de votre produit en ligne.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "Ajouter manuellement";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Créer une remise sous forme de pourcentage pour les produits sélectionnés";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Créer un produit avec l’IA";
 
 /* Title of the store creation web view. */
 "Create a store" = "Créer une boutique";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Propulsé par";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Alimenté par l’IA.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Alimenté par l’IA. %1$@.";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Réglages de confidentialité";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Privé";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Note privée";
-
-/* Display label for the product's private status */
-"Privately published" = "Publié en privé";
 
 /* Display label for processing order status. */
 "Processing" = "En cours";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Trimestre jusqu’à aujourd’hui";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Générer rapidement des détails pour vous";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Devenez rapidement opérationnel et vendez vos produits grâce à une belle boutique en ligne.";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENTAIRE]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lire la suite.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Annuler";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Facturer les taxes";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Sélectionner un type de produit";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "Générer rapidement des détails pour vous";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "Créer un produit avec l’IA";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[Lire la suite.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "Propulsé par l’IA.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Ajouter un produit et les détails manuellement";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Ajouter manuellement";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Sélectionner un type de produit";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Créer un produit";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Associer une boutique existante";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Un produit physique unique que vous devrez peut-être expédier au client";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Produit physique simple";
+"bottomSheetProductType.simpleProduct.title" = "Produit physique";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Un produit numérique unique comme des services, des livres téléchargeables, de la musique ou des vidéos";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Produit virtuel simple";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Produit virtuel";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Un abonnement à un produit unique qui permet les paiements récurrents";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Produit à abonnement simple";
+"bottomSheetProductType.subscriptionProduct.title" = "Abonnement simple";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Un produit avec des variantes comme la couleur ou la taille";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Un abonnement à un produit avec des variantes";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Produit à abonnement variable";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Abonnement variable";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuler";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Valeur moyenne des commandes";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "ADRESSE DE FACTURATION";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Appeler";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Ville";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Copier";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "Copier l’adresse e-mail";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Copier le numéro";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Pays";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "EMPLACEMENT";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Message";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Commandes";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "COMMANDES";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Contacter le client par téléphone";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Pas de numéro de téléphone";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Code postal";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "E-mail";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "ADRESSE D’EXPÉDITION";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Envoyer un message Telegram";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Dépense totale";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Identifiant";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "Envoyer un message WhatsApp";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Créer une nouvelle commande";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Aucun client";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Me le rappeler ultérieurement";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Autres";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standard";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Abonnement";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Publié en privé";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Erreur lors de la mise en ligne du fichier. Veuillez réessayer.";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Ouvrez Woo sur votre iPhone, connectez votre boutique et tenez votre Watch à proximité";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "Une erreur s’est produite lors du chargement des données de la boutique";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Cela ne fonctionne pas";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Assurez-vous que votre montre est connectée à Internet et que votre téléphone se trouve à proximité.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Échec du chargement des données de la boutique";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Réessayer";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "En attente de votre première commande !";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "Une erreur est survenue lors du chargement de la liste des commandes";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Assurez-vous que votre montre est connectée à Internet et que votre téléphone se trouve à proximité.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Échec du chargement des commandes";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Réessayer";

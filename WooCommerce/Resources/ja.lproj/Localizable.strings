@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-18 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -539,12 +539,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "バリエーションの価格を追加してストアで表示";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "商品を追加";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "手動で商品と詳細を追加します";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "商品画像を追加";
@@ -588,8 +584,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "主要な機能や利点、詳細を追加して商品をオンラインで見つけられるようにします。";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "手動で追加";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -2126,9 +2121,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "選択した商品の割引率を作成します";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "AI で商品を登録する";
 
 /* Title of the store creation web view. */
 "Create a store" = "ストアを作成する";
@@ -5683,9 +5675,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "提供";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "AI を活用しています。";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "AI を活用しています。%1$@。";
 
@@ -5801,14 +5790,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "プライバシー設定";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "プライベート";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
-
-/* Display label for the product's private status */
-"Privately published" = "非公開";
 
 /* Display label for processing order status. */
 "Processing" = "処理中";
@@ -6021,9 +6008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "今四半期の現在まで";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "詳細をすぐに生成できます";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "美しいオンラインストアをすぐに立ち上げてそこで販売しましょう。";
@@ -9517,9 +9501,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[コメント]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[詳細はこちら。](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "キャンセル";
 
@@ -9541,8 +9522,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "税金を請求";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "商品タイプを選択";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "詳細をすぐに生成できます";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "AI で商品を作成";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[詳細はこちら。](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "AI を活用しています。";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "手動で商品と詳細を追加します";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "手動で追加";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "商品タイプを選択";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "商品を作成";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "既存のストアを連携";
@@ -10260,19 +10262,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "顧客に配送する必要がある可能性のある独自の物理的商品";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "基本的な物理的商品";
+"bottomSheetProductType.simpleProduct.title" = "実在商品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "サービス、ダウンロードできる書籍、音楽、動画などの独自のデジタル商品";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "基本的な仮想商品";
+"bottomSheetProductType.simpleVirtualProduct.title" = "仮想商品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "定期支払いを可能にする独自商品の定期購入";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "シンプルな定期購入商品";
+"bottomSheetProductType.subscriptionProduct.title" = "基本的な定期購入";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "色やサイズのバリエーションがある商品";
@@ -10284,7 +10286,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "バリエーションのある商品の定期購入";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "バリエーションのある定期購入商品";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "バリエーションのある定期購入";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
@@ -10452,11 +10454,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "平均注文金額";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "請求先住所";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "通話";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "市区町村";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "コピー";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "メールアドレスをコピー";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "番号をコピー";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "国";
@@ -10482,11 +10496,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "場所";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "メッセージ";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "注文";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "注文";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "電話で顧客に連絡";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "電話番号がありません";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "郵便番号";
@@ -10500,11 +10523,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "メールアドレス";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "配送先住所";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Telegram メッセージを送信";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "総支出";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "ユーザー名";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "WhatsApp メッセージを送信";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "新規注文を作成";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "お客様が見つかりません";
@@ -11272,6 +11307,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "後で再通知";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "その他";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "標準";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "サブスクリプション";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "非公開";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "ファイルのアップロードの際にエラーが発生しました。 もう一度お試しください。";
 
@@ -11832,8 +11879,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhoneで Woo を開き、ストアに接続すれば、Watch を手軽にお使いいただけます";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "ストアのデータの読み込み時にエラーが発生しました";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "作動していません";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "ウォッチがインターネットに接続されており、スマートフォンが近くにあることを確認してください。";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "ストアデータの読み込みに失敗しました";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "再試行";
@@ -11862,8 +11915,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "最初の注文を待っています";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "注文リストの読み込み時にエラーが発生しました";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "ウォッチがインターネットに接続されており、スマートフォンが近くにあることを確認してください。";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "注文の読み込みに失敗しました";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "再試行";

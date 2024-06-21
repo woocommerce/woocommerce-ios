@@ -94,7 +94,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 invalidatablePaymentOrchestrator.invalidatePayment()
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
-                        onCancel(paymentEventDetails: eventDetails)
+                        onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
                     case .showReaderList(_, let selectionHandler):
                         selectionHandler(nil)
                     case .idle, .showOnboarding:
@@ -111,7 +111,7 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 }
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
-    func onCancel(paymentEventDetails: CardPresentPaymentEventDetails) {
+    func onCancel(paymentEventDetails: CardPresentPaymentEventDetails, paymentOrchestrator: PaymentCaptureOrchestrating) {
         switch paymentEventDetails {
         /// Before reader connection
         case .selectSearchType:
@@ -148,7 +148,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .displayReaderMessage,
                 /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
                 .cancelledOnReader:
-            cancelPayment()
+            cancelPayment(paymentOrchestrator: paymentOrchestrator)
         case .paymentSuccess(done: let done):
             done()
         }
@@ -160,10 +160,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         stores.dispatch(CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in })
     }
 
-    func cancelPayment() {
-        stores.dispatch(CardPresentPaymentAction.cancelPayment() { _ in
-            // TODO: implement allowPassPresentation similar to `PaymentCaptureOrchestrator.allowPassPresentation` to
-            // recover Apple Pay / Wallet capability
-        })
+    func cancelPayment(paymentOrchestrator: PaymentCaptureOrchestrating) {
+        paymentOrchestrator.cancelPayment { _ in }
     }
 }

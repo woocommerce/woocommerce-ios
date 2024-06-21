@@ -69,13 +69,13 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.cancellation)
                         },
                         onPaymentCompletion: {
-                            // This isn't required for our use case yet.
-                        },
-                        onCompleted: {
                             guard let continuation = nillableContinuation else { return }
                             nillableContinuation = nil
-                            paymentEventSubject.send(.idle)
                             continuation.resume(returning: CardPresentPaymentAdaptedCollectOrderPaymentResult.success)
+                        },
+                        onCompleted: {
+                            // This isn't required for our use case yet.
+                            // In the IPP implementation is only called when the receipt is dismissed or discarded
                         }
                     )
                 }

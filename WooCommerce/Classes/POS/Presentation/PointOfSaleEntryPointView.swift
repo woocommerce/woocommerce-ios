@@ -1,5 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSItemProvider
+import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
@@ -8,12 +9,14 @@ struct PointOfSaleEntryPointView: View {
 
     init(itemProvider: POSItemProvider,
          hideAppTabBar: @escaping ((Bool) -> Void),
-         cardPresentPaymentService: CardPresentPaymentFacade) {
+         cardPresentPaymentService: CardPresentPaymentFacade,
+         orderService: POSOrderServiceProtocol) {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             items: itemProvider.providePointOfSaleItems(),
-            cardPresentPaymentService: cardPresentPaymentService)
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderService: orderService)
         )
     }
 
@@ -32,6 +35,7 @@ struct PointOfSaleEntryPointView: View {
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               hideAppTabBar: { _ in },
-                              cardPresentPaymentService: CardPresentPaymentPreviewService())
+                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                              orderService: POSOrderPreviewService())
 }
 #endif

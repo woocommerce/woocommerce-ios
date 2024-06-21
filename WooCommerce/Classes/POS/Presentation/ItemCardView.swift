@@ -37,7 +37,7 @@ struct ItemCardView: View {
                     .foregroundStyle(Color.posPrimaryTexti3)
             }
             Spacer()
-            Text(item.price)
+            Text(item.formattedPrice)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .padding()
         }

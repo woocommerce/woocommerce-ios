@@ -29,7 +29,7 @@ struct ItemRowView: View {
             VStack(alignment: .leading) {
                 Text(cartItem.item.name)
                     .foregroundColor(Color.posPrimaryTexti3)
-                Text(cartItem.item.price)
+                Text(cartItem.item.formattedPrice)
                     .foregroundColor(Color.posPrimaryTexti3)
             }
             Spacer()

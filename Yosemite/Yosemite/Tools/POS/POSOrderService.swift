@@ -25,7 +25,7 @@ public struct POSOrder {
     let items: [POSOrderItem]
 }
 
-extension POSOrder {
+public extension POSOrder {
     init(order: Order) {
         self.init(siteID: order.siteID,
                   orderID: order.orderID,
@@ -101,7 +101,11 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Initialization
 
-    public convenience init(siteID: Int64, credentials: Credentials) {
+    public convenience init?(siteID: Int64, credentials: Credentials?) {
+        guard let credentials else {
+            DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
+            return nil
+        }
         self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
     }
 
@@ -125,16 +129,6 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return POSOrder(order: syncedOrder)
     }
 
-    private func createInitialOrder(from posOrder: POSOrder?) -> Order {
-        if let posOrder {
-            return order(from: posOrder)
-        }
-        else {
-            //    TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
-            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
-        }
-    }
-
     public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
         let order: Order = order(from: posOrder)
 
@@ -150,6 +144,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
                                                total: posOrder.total,
                                                totalTax: posOrder.totalTax,
                                                items: posOrder.items.map { $0.toOrderItem() })
+    }
+}
+
+private extension POSOrderService {
+    func createInitialOrder(from posOrder: POSOrder?) -> Order {
+        if let posOrder {
+            return order(from: posOrder)
+        }
+        else {
+            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
+        }
     }
 }
 

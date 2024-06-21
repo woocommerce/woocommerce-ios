@@ -49,4 +49,12 @@ extension Color {
     static var posBackgroundWhitei3: Color {
         Color.white
     }
+
+    static var posTotalsSeparator: Color {
+        Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
+    }
+
+    static var posTotalsGradientPurple: Color {
+        Color(red: 231.0 / 255.0, green: 227.0 / 255.0, blue: 243.0 / 255.0)
+    }
 }

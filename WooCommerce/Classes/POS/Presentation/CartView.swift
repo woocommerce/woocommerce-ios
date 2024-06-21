@@ -102,6 +102,7 @@ private extension CartView {
 #if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                      orderService: POSOrderPreviewService()))
 }
 #endif

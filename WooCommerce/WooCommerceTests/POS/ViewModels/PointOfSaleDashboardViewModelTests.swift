@@ -1,6 +1,8 @@
 import XCTest
 @testable import struct Yosemite.POSProduct
 @testable import WooCommerce
+@testable import class Yosemite.POSOrderService
+@testable import enum Yosemite.Credentials
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
@@ -11,7 +13,8 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.setUp()
         cardPresentPaymentService = CardPresentPaymentPreviewService()
         sut = PointOfSaleDashboardViewModel(items: [],
-                                            cardPresentPaymentService: cardPresentPaymentService)
+                                            cardPresentPaymentService: cardPresentPaymentService,
+                                            orderService: POSOrderPreviewService())
     }
 
     override func tearDown() {
@@ -34,6 +37,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                  productID: 0,
                                  name: "Choco",
                                  price: "2.00",
+                                 formattedPrice: "$2.00",
                                  itemCategories: [],
                                  productImageSource: nil,
                                  productType: .simple)

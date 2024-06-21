@@ -3,8 +3,6 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    @State var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
-
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
     }
@@ -12,36 +10,56 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 32) {
-                    HStack(spacing: 40) {
-                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
-                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice ?? "-")
+                VStack {
+                    cardReaderView
+                        .font(.title)
+                        .padding()
+                    // Temporarily removed because the CardReaderView is doing this job right now.
+    //                paymentsView
+    //                    .padding()
+                    VStack(alignment: .leading, spacing: 32) {
+                        Spacer()
+                        HStack {
+                            VStack(spacing: 10) {
+                                priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                                Divider()
+                                    .overlay(Color.posTotalsSeparator)
+                                priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                                Divider()
+                                    .overlay(Color.posTotalsSeparator)
+                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                            }
+                            .padding()
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.posTotalsSeparator, lineWidth: 1)
+                        )
+                        if viewModel.showRecalculateButton {
+                            Button("Calculate amounts") {
+                                viewModel.calculateAmountsTapped()
+                            }
+                        }
                     }
-                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
+                    .padding(50)
                 }
-                .padding()
-                Spacer()
-                cardReaderView
-                    .font(.title)
-                    .padding()
-                // Temporarily removed because the CardReaderView is doing this job right now.
-//                paymentsView
-//                    .padding()
-                Spacer()
+                .background(
+                    LinearGradient(gradient: Gradient(stops: [
+                        Gradient.Stop(color: Color.clear, location: 0.0),
+                        Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
+                    ]),
+                                   startPoint: .top,
+                                   endPoint: .bottom)
+                )
                 paymentsActionButtons
                     .padding()
             }
             Spacer()
         }
-        .task {
-            /// This will prepare the reader for payment, if connected
-            await viewModel.totalsViewWillAppear()
-        }
-        .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
-            ProgressView {
-                Text("Creating order")
-            }
-        }
+    }
+
+    private var paymentButtonsDisabled: Bool {
+        return !viewModel.areAmountsFullyCalculated
     }
 }
 
@@ -56,7 +74,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsTextView: some View {
-        switch paymentState {
+        switch viewModel.paymentState {
         case .acceptingCard:
             tapInsertCardView
         case .processingCard:
@@ -67,42 +85,16 @@ private extension TotalsView {
     }
 
     @ViewBuilder
-    private var paymentsIconView: some View {
-        switch paymentState {
-        case .acceptingCard:
-            EmptyView()
-        case .processingCard:
-            EmptyView()
-        case .cardPaymentSuccessful:
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
     private var paymentsView: some View {
         VStack {
             paymentsTextView
                 .font(.title)
-            paymentsIconView
         }
-    }
-
-    private var provideReceiptButton: some View {
-        Button("Provide receipt") {}
-        .padding(30)
-        .font(.title)
-        .foregroundColor(Color.primaryText)
-        .background(Color.secondaryBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
-        )
     }
 
     private var newTransactionButton: some View {
         Button("New transaction") {
-            paymentState = .acceptingCard
+            viewModel.startNewTransaction()
         }
         .padding(30)
         .font(.title)
@@ -115,19 +107,11 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        VStack {
-            switch paymentState {
-            case .acceptingCard:
-                EmptyView()
-            case .processingCard:
-                EmptyView()
-            case .cardPaymentSuccessful:
-                HStack {
-                    provideReceiptButton
-                    Spacer()
-                    newTransactionButton
-                }
-            }
+        if viewModel.paymentState == .cardPaymentSuccessful {
+            newTransactionButton
+        }
+        else {
+            EmptyView()
         }
     }
 
@@ -138,32 +122,42 @@ private extension TotalsView {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
                 Text("Reader connected")
+                Button(action: viewModel.cardPaymentTapped) {
+                    Text("Collect Payment")
+                }
             }
         case .disconnected:
+            Text("Reader disconnected")
             Button(action: viewModel.cardPaymentTapped) {
                 Text("Collect Payment")
             }
         }
     }
 
-    @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
+        HStack(alignment: .center, spacing: .zero) {
             Text(title)
-            Text(formattedPrice)
-                .font(.title2)
-                .fontWeight(.medium)
+                .font(Font.system(size: 20))
+            Spacer()
+            Text(formattedPrice ?? "-----")
+                .font(Font.system(size: 20))
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }
 
-    @ViewBuilder func totalPriceView(formattedPrice: String) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+    @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
+        HStack(alignment: .center, spacing: .zero) {
             Text("Total")
-                .font(.title2)
-                .fontWeight(.medium)
-            Text(formattedPrice)
-                .font(.largeTitle)
+                .font(Font.system(size: 21))
+                .fontWeight(.semibold)
+            Spacer()
+            Text(formattedPrice ?? "-----")
+                .font(Font.system(size: 40))
                 .bold()
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: viewModel.isSyncingOrder)
         }
         .foregroundColor(Color.primaryText)
     }
@@ -172,6 +166,7 @@ private extension TotalsView {
 #if DEBUG
 #Preview {
     TotalsView(viewModel: .init(items: [],
-                                cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                orderService: POSOrderPreviewService()))
 }
 #endif

@@ -24,6 +24,8 @@ final class HubMenuViewModel: ObservableObject {
 
     let siteID: Int64
 
+    let credentials: Credentials?
+
     var avatarURL: URL? {
         guard let urlString = stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
             return nil
@@ -112,7 +114,7 @@ final class HubMenuViewModel: ObservableObject {
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
-                                                                     credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)),
+                                                                     credentials: credentials)),
             navigationPath: navigationPathBinding)
     }()
 
@@ -126,6 +128,7 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
+        self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
         self.featureFlagService = featureFlagService

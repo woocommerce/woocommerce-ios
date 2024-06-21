@@ -1063,10 +1063,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Play square image
+    /// Switching mode image
     ///
-    static var playSquareImage: UIImage {
-        UIImage(systemName: "play.square")!
+    static var switchingModeImage: UIImage {
+        UIImage(systemName: "arrow.left.arrow.right")!
     }
 
     /// Plus Icon

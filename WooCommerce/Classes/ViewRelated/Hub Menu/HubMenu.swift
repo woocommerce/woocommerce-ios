@@ -252,7 +252,7 @@ private extension HubMenu {
                 case .leading:
                     return .chevronImage
                 case .enteringMode:
-                    return .playSquareImage
+                    return .switchingModeImage
                         .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }

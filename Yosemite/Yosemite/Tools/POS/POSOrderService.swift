@@ -101,7 +101,11 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Initialization
 
-    public convenience init(siteID: Int64, credentials: Credentials) {
+    public convenience init?(siteID: Int64, credentials: Credentials?) {
+        guard let credentials else {
+            DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
+            return nil
+        }
         self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
     }
 

@@ -1023,6 +1023,7 @@ private extension StripeCardReaderService {
     func switchStatusToIdle() {
         updateDiscoveryStatus(to: .idle)
         resetDiscoveredReadersSubject()
+        discoveredStripeReadersCache.clear()
     }
 
     func switchStatusToDiscovering() {
@@ -1032,6 +1033,7 @@ private extension StripeCardReaderService {
     func switchStatusToFault(error: Error) {
         updateDiscoveryStatus(to: .fault)
         resetDiscoveredReadersSubject(error: error)
+        discoveredStripeReadersCache.clear()
     }
 
     func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {

@@ -22,7 +22,7 @@ final class POSProductProviderTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_products() {
+    func test_POSItemProvider_provides_no_items_when_store_has_no_products_in_storage() {
         // Given
         itemProvider = POSProductProvider(storageManager: storageManager,
                                           siteID: siteID,
@@ -36,7 +36,7 @@ final class POSProductProviderTests: XCTestCase {
         XCTAssertTrue(items.isEmpty)
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_eligible_products() {
+    func test_POSItemProvider_provides_no_items_when_store_has_no_eligible_products_in_storage() {
         // Given
         let nonEligibleProduct = Product.fake().copy(siteID: siteID,
                                                 productID: 789,
@@ -58,7 +58,7 @@ final class POSProductProviderTests: XCTestCase {
         XCTAssertTrue(items.isEmpty)
     }
 
-    func test_POSItemProvider_when_store_has_eligible_products_then_provides_correctly_formatted_product() {
+    func test_POSItemProvider_when_store_has_eligible_products_in_storage_then_provides_correctly_formatted_product() {
         // Given
         let productPrice = "2"
         let expectedFormattedPrice = "$2.00"

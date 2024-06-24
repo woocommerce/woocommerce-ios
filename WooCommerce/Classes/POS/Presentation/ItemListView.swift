@@ -8,24 +8,34 @@ struct ItemListView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Products")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-                .font(.title)
-                .foregroundColor(Color.posPrimaryTexti3)
-            ScrollView {
-                ForEach(viewModel.items, id: \.productID) { item in
-                    Button(action: {
-                        viewModel.addItemToCart(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+        switch viewModel.isSyncingItems {
+        case true:
+            VStack {
+                Spacer()
+                Text("Loading...")
+                ActivityIndicator(isAnimating: .constant(true), style: .large)
+                Spacer()
+            }
+        case false:
+            VStack {
+                Text("Products")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 8)
+                    .font(.title)
+                    .foregroundColor(Color.posPrimaryTexti3)
+                ScrollView {
+                    ForEach(viewModel.items, id: \.productID) { item in
+                        Button(action: {
+                            viewModel.addItemToCart(item)
+                        }, label: {
+                            ItemCardView(item: item)
+                        })
+                    }
                 }
             }
+            .padding(.horizontal, 32)
+            .background(Color.posBackgroundGreyi3)
         }
-        .padding(.horizontal, 32)
-        .background(Color.posBackgroundGreyi3)
     }
 }
 

@@ -54,6 +54,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
+    @Published private(set) var isSyncingItems: Bool = true
 
     private let orderService: POSOrderServiceProtocol
     private let itemProvider: POSItemProvider
@@ -78,10 +79,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private func populatePointOfSaleItems() {
         Task { @MainActor in
             do {
-                // TODO:
-                // Loading screen while awaits for the task to complete
-                // https://github.com/woocommerce/woocommerce-ios/issues/12837
                 items = try await itemProvider.providePointOfSaleItemsFromNetwork()
+                isSyncingItems = false
             } catch {
                 debugPrint("\(error)")
             }

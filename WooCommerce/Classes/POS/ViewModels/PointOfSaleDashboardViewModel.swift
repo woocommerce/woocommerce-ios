@@ -203,6 +203,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         paymentState = .acceptingCard
         order = nil
     }
+
+    @MainActor
+    func onTotalsViewDisappearance() {
+        cardPresentPaymentService.cancelPayment()
+    }
 }
 
 private extension PointOfSaleDashboardViewModel {

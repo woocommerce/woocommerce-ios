@@ -56,6 +56,9 @@ struct TotalsView: View {
             }
             Spacer()
         }
+        .onDisappear {
+            viewModel.onTotalsViewDisappearance()
+        }
     }
 
     private var paymentButtonsDisabled: Bool {

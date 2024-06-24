@@ -1,5 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSItem
+import protocol Yosemite.POSItemProvider
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import protocol Yosemite.POSOrderServiceProtocol
@@ -16,7 +17,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case cardPaymentSuccessful
     }
 
-    @Published private(set) var items: [POSItem]
+    @Published private(set) var items: [POSItem] = []
     @Published private(set) var itemsInCart: [CartItem] = []
 
     // Total amounts
@@ -53,21 +54,38 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
-    private let orderService: POSOrderServiceProtocol
 
+    private let orderService: POSOrderServiceProtocol
+    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-    init(items: [POSItem],
+    init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol) {
-        self.items = items
+        self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
+
+        populatePointOfSaleItems()
+
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+    }
+
+    private func populatePointOfSaleItems() {
+        Task { @MainActor in
+            do {
+                // TODO:
+                // Loading screen while awaits for the task to complete
+                // https://github.com/woocommerce/woocommerce-ios/issues/12837
+                items = try await itemProvider.providePointOfSaleItemsFromNetwork()
+            } catch {
+                debugPrint("\(error)")
+            }
+        }
     }
 
     var isCartCollapsed: Bool {

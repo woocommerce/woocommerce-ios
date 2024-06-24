@@ -12,7 +12,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = CardPresentPaymentPreviewService()
-        sut = PointOfSaleDashboardViewModel(items: [],
+        sut = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: POSOrderPreviewService())
     }

@@ -1,4 +1,7 @@
 import Foundation
+import protocol Networking.Network
+import class Networking.ProductsRemote
+import class Networking.AlamofireNetwork
 import protocol Storage.StorageManagerType
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -9,11 +12,23 @@ public final class POSProductProvider: POSItemProvider {
     private let storageManager: StorageManagerType
     private var siteID: Int64
     private var currencySettings: CurrencySettings
+    private let productsRemote: ProductsRemote
 
-    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings) {
+    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.storageManager = storageManager
         self.siteID = siteID
         self.currencySettings = currencySettings
+        self.productsRemote = ProductsRemote(network: network)
+    }
+
+    public convenience init(storageManager: StorageManagerType,
+                     siteID: Int64,
+                     currencySettings: CurrencySettings,
+                     credentials: Credentials?) {
+        self.init(storageManager: storageManager,
+                  siteID: siteID,
+                  currencySettings: currencySettings,
+                  network: AlamofireNetwork(credentials: credentials))
     }
 
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
@@ -24,6 +39,15 @@ public final class POSProductProvider: POSItemProvider {
                                                                   sortedBy: [descriptor])
         return resultsController
     }()
+
+    func providePointOfSaleItemsFromNetwork() async throws {
+        do {
+            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
+            debugPrint("\(products)")
+        } catch {
+            debugPrint("\(error)")
+        }
+    }
 
     /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///

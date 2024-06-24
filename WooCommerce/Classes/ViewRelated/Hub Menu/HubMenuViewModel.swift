@@ -73,16 +73,16 @@ final class HubMenuViewModel: ObservableObject {
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
 
-    // TODO:
-    // Is this the right place to instantiate the product provider and use property injection?
     private(set) lazy var posItemProvider: POSItemProvider = {
         let storageManager = ServiceLocator.storageManager
         let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
         let currencySettings = ServiceLocator.currencySettings
 
         return POSProductProvider(storageManager: storageManager,
                                   siteID: siteID,
-                                  currencySettings: currencySettings)
+                                  currencySettings: currencySettings,
+                                  credentials: credentials)
     }()
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?

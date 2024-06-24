@@ -25,8 +25,9 @@ final class POSProductProviderTests: XCTestCase {
     func test_POSItemProvider_provides_no_items_when_store_has_no_products() {
         // Given
         itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
+                                          siteID: siteID,
+                                          currencySettings: currencySettings,
+                                          credentials: nil)
 
         // When
         let items = itemProvider.providePointOfSaleItemsFromStorage()
@@ -46,8 +47,9 @@ final class POSProductProviderTests: XCTestCase {
 
         storageManager.insertSampleProduct(readOnlyProduct: nonEligibleProduct)
         itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
+                                          siteID: siteID,
+                                          currencySettings: currencySettings,
+                                          credentials: nil)
 
         // When
         let items = itemProvider.providePointOfSaleItemsFromStorage()
@@ -69,8 +71,9 @@ final class POSProductProviderTests: XCTestCase {
 
         storageManager.insertSampleProduct(readOnlyProduct: eligibleProduct)
         itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
+                                          siteID: siteID,
+                                          currencySettings: currencySettings,
+                                          credentials: nil)
 
         // When
         let items = itemProvider.providePointOfSaleItemsFromStorage()

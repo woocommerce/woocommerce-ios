@@ -186,7 +186,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
     ///
-    func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
+    public func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
         let parameters = [
             // TODO: Handle pagination
             // Currently we just fetch the 1st page and 100 products

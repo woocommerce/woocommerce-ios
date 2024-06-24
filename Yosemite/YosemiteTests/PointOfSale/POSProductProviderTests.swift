@@ -29,7 +29,7 @@ final class POSProductProviderTests: XCTestCase {
                                      currencySettings: currencySettings)
 
         // When
-        let items = itemProvider.providePointOfSaleItems()
+        let items = itemProvider.providePointOfSaleItemsFromStorage()
 
         // Then
         XCTAssertTrue(items.isEmpty)
@@ -50,7 +50,7 @@ final class POSProductProviderTests: XCTestCase {
                                      currencySettings: currencySettings)
 
         // When
-        let items = itemProvider.providePointOfSaleItems()
+        let items = itemProvider.providePointOfSaleItemsFromStorage()
 
         // Then
         XCTAssertTrue(items.isEmpty)
@@ -73,7 +73,7 @@ final class POSProductProviderTests: XCTestCase {
                                      currencySettings: currencySettings)
 
         // When
-        let items = itemProvider.providePointOfSaleItems()
+        let items = itemProvider.providePointOfSaleItemsFromStorage()
 
         // Then
         guard let product = items.first else {

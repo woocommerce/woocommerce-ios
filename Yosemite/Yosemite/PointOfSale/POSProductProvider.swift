@@ -27,7 +27,7 @@ public final class POSProductProvider: POSItemProvider {
 
     /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///
-    public func providePointOfSaleItems() -> [POSItem] {
+    public func providePointOfSaleItemsFromStorage() -> [POSItem] {
         var loadedProducts: [Product] = []
 
         // Fetch products from storage, and filter them by `purchasable` and `simple`

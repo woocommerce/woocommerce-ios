@@ -33,7 +33,7 @@ struct ItemListView: View {
 import class Yosemite.POSOrderService
 import enum Yosemite.Credentials
 #Preview {
-    ItemListView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+    ItemListView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItemsFromStorage(),
                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                           orderService: POSOrderPreviewService()))
 }

@@ -18,7 +18,7 @@ struct POSProductPreview: POSItem {
 }
 
 final class POSItemProviderPreview: POSItemProvider {
-    func providePointOfSaleItems() -> [POSItem] {
+    func providePointOfSaleItemsFromStorage() -> [POSItem] {
         return [
             POSProductPreview(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00", itemCategories: [], productType: .simple),
             POSProductPreview(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00", itemCategories: [], productType: .simple),

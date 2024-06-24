@@ -103,7 +103,7 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItemsFromStorage(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                      orderService: POSOrderPreviewService()))
     }

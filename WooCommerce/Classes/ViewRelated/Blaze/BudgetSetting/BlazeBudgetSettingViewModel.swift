@@ -24,7 +24,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     // Start date needs to be inside the accepted range that is max 60 days from today
     // (internally, we validate 61 to simplify the logic related to timezones).
-    let maxDayAllowedInPicketSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
+    let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
 
     var dailyAmountText: String {
         let formattedAmount = String(format: "$%.0f", dailyAmount)

@@ -622,7 +622,7 @@ public extension ProductsRemote {
         static let itemsSold = "items_sold"
     }
 }
- 
+
 private extension ProductsRemote {
     enum POSConstants {
         static let page = "1"

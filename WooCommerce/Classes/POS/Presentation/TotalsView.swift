@@ -17,23 +17,29 @@ struct TotalsView: View {
                     // Temporarily removed because the CardReaderView is doing this job right now.
     //                paymentsView
     //                    .padding()
+                    Spacer()
                     VStack(alignment: .leading, spacing: 32) {
-                        Spacer()
                         HStack {
-                            VStack(spacing: 10) {
-                                priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                            VStack(spacing: Constants.totalsVerticalSpacing) {
+                                priceFieldView(title: "Subtotal",
+                                               formattedPrice: viewModel.formattedCartTotalPrice,
+                                               shimmeringActive: false)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                                priceFieldView(title: "Taxes",
+                                               formattedPrice:
+                                                viewModel.formattedOrderTotalTaxPrice,
+                                               shimmeringActive: viewModel.isSyncingOrder)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
                             }
                             .padding()
+                            .frame(idealWidth: Constants.pricesIdealWidth)
                         }
                         .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.posTotalsSeparator, lineWidth: 1)
+                            RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
+                                .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
                         if viewModel.showRecalculateButton {
                             Button("Calculate amounts") {
@@ -41,20 +47,31 @@ struct TotalsView: View {
                             }
                         }
                     }
-                    .padding(50)
+                    .padding(Constants.totalsPadding)
                 }
                 .background(
-                    LinearGradient(gradient: Gradient(stops: [
-                        Gradient.Stop(color: Color.clear, location: 0.0),
-                        Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
-                    ]),
+                    LinearGradient(gradient: Gradient(stops: gradientStops),
                                    startPoint: .top,
                                    endPoint: .bottom)
                 )
                 paymentsActionButtons
                     .padding()
             }
-            Spacer()
+        }
+    }
+
+    private var gradientStops: [Gradient.Stop] {
+        if viewModel.paymentState == .cardPaymentSuccessful {
+            return [
+                Gradient.Stop(color: Color.clear, location: 0.0),
+                Gradient.Stop(color: Color.posTotalsGradientGreen, location: 1.0)
+            ]
+        }
+        else {
+            return [
+                Gradient.Stop(color: Color.clear, location: 0.0),
+                Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
+            ]
         }
     }
 
@@ -93,15 +110,22 @@ private extension TotalsView {
     }
 
     private var newTransactionButton: some View {
-        Button("New transaction") {
+        Button(action: {
             viewModel.startNewTransaction()
-        }
-        .padding(30)
-        .font(.title)
+        }, label: {
+            HStack(spacing: Constants.newTransactionButtonSpacing) {
+                Spacer()
+                Image("pos_new_transaction_icon")
+                Text("New transaction")
+                    .font(Constants.newTransactionButtonFont)
+                Spacer()
+            }
+        })
+        .padding(Constants.newTransactionButtonPadding)
         .foregroundColor(Color.primaryText)
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
+            RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
+                .stroke(Color.primaryText, lineWidth: Constants.defaultBorderLineWidth)
         )
     }
 
@@ -135,12 +159,12 @@ private extension TotalsView {
     }
 
     @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
-        HStack(alignment: .center, spacing: .zero) {
+        HStack(alignment: .top, spacing: .zero) {
             Text(title)
-                .font(Font.system(size: 20))
+                .font(Constants.subtotalTitleFont)
             Spacer()
             Text(formattedPrice ?? "-----")
-                .font(Font.system(size: 20))
+                .font(Constants.subtotalAmountFont)
                 .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
                 .shimmering(active: shimmeringActive)
         }
@@ -148,18 +172,36 @@ private extension TotalsView {
     }
 
     @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
-        HStack(alignment: .center, spacing: .zero) {
+        HStack(alignment: .top, spacing: .zero) {
             Text("Total")
-                .font(Font.system(size: 21))
+                .font(Constants.totalTitleFont)
                 .fontWeight(.semibold)
             Spacer()
             Text(formattedPrice ?? "-----")
-                .font(Font.system(size: 40))
-                .bold()
+                .font(Constants.totalAmountFont)
                 .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
                 .shimmering(active: viewModel.isSyncingOrder)
         }
         .foregroundColor(Color.primaryText)
+    }
+}
+
+private extension TotalsView {
+    enum Constants {
+        static let pricesIdealWidth: CGFloat = 380
+        static let defaultBorderLineWidth: CGFloat = 1
+        static let defaultBorderLineCornerRadius: CGFloat = 8
+
+        static let totalsVerticalSpacing: CGFloat = 10
+        static let totalsPadding: CGFloat = 50
+        static let subtotalTitleFont: Font = Font.system(size: 20)
+        static let subtotalAmountFont: Font = Font.system(size: 20)
+        static let totalTitleFont: Font = Font.system(size: 21, weight: .semibold)
+        static let totalAmountFont: Font = Font.system(size: 40, weight: .bold)
+
+        static let newTransactionButtonSpacing: CGFloat = 20
+        static let newTransactionButtonPadding: CGFloat = 16
+        static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
     }
 }
 

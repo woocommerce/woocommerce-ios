@@ -8,15 +8,13 @@ struct ItemListView: View {
     }
 
     var body: some View {
-        switch viewModel.isSyncingItems {
-        case true:
+        if viewModel.isSyncingItems {
             VStack {
                 Spacer()
                 Text("Loading...")
-                ActivityIndicator(isAnimating: .constant(true), style: .large)
                 Spacer()
             }
-        case false:
+        } else {
             VStack {
                 Text("Products")
                     .frame(maxWidth: .infinity, alignment: .leading)

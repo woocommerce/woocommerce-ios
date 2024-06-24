@@ -43,7 +43,6 @@ public final class POSProductProvider: POSItemProvider {
     public func providePointOfSaleItemsFromNetwork() async throws -> [POSItem] {
         do {
             let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
-            debugPrint("\(products)")
             return mapProductsToPOSItems(products: products)
         }
     }

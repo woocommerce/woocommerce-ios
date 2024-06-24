@@ -494,8 +494,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.print)
     }
 
-    func test_playSquareImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.playSquareImage)
+    func test_switchingModeImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.switchingModeImage)
     }
 
     func testPlusImageIconIsNotNil() {

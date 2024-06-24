@@ -2,7 +2,7 @@
 
 19.3
 -----
-
+- [*] Payments: fixed issue when connecting to a card reader after cancelling reader discovery [https://github.com/woocommerce/woocommerce-ios/issues/13125]
 
 19.2
 -----

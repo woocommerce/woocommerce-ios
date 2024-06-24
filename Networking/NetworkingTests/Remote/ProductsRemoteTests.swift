@@ -864,6 +864,35 @@ final class ProductsRemoteTests: XCTestCase {
             $0 as? NetworkError == .notFound()
         })
     }
+
+    func test_loadAllSimpleProductsForPointOfSale_loads_simple_products() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedProductsFromResponse = 6
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+
+        let products = try await remote.loadAllSimpleProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(products.count, expectedProductsFromResponse)
+        for product in products {
+            XCTAssertEqual(try XCTUnwrap(product).productType, .simple)
+        }
+    }
+
+    func test_loadAllSimpleProductsForPointOfSale_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When/Then
+        await assertThrowsError({
+            let _ = try await remote.loadAllSimpleProductsForPointOfSale(for: sampleSiteID)
+        }, errorAssert: {
+            $0 as? NetworkError == .notFound()
+        })
+    }
 }
 
 // MARK: - Private Helpers

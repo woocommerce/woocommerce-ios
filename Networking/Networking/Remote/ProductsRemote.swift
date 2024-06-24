@@ -181,6 +181,32 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves simple products
+    ///
+    /// - Parameters:
+    /// - siteID: Site for which we'll fetch remote products.
+    ///
+    func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
+        let parameters = [
+            // TODO: Handle pagination
+            // Currently we just fetch the 1st page and 100 products
+            // https://github.com/woocommerce/woocommerce-ios/issues/12837
+            ParameterKey.page: POSConstants.page,
+            ParameterKey.perPage: POSConstants.productsPerPage,
+            ParameterKey.productType: POSConstants.productType,
+            ParameterKey.orderBy: OrderKey.name.value,
+            ParameterKey.order: Order.ascending.value
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.products,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductListMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Retrieves a specific list of `Product`s by `productID`.
     ///
     /// - Note: this method makes a single request for a list of products.
@@ -594,6 +620,14 @@ public extension ProductsRemote {
         static let skuFieldValues: String = "sku"
         static let productSegment = "product"
         static let itemsSold = "items_sold"
+    }
+}
+ 
+private extension ProductsRemote {
+    enum POSConstants {
+        static let page = "1"
+        static let productsPerPage = "100"
+        static let productType = "simple"
     }
 }
 

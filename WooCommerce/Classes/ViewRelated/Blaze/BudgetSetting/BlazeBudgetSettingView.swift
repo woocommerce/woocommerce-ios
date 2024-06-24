@@ -207,7 +207,9 @@ private extension BlazeBudgetSettingView {
 
                         Spacer()
 
-                        DatePicker(selection: $startDate, in: viewModel.minDayAllowedInPickerSelection..., displayedComponents: [.date]) {
+                        DatePicker(selection: $startDate,
+                                   in: viewModel.minDayAllowedInPickerSelection...viewModel.maxDayAllowedInPicketSelection,
+                                   displayedComponents: [.date]) {
                             EmptyView()
                         }
                         .datePickerStyle(.compact)

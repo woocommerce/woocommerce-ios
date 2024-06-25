@@ -803,6 +803,8 @@
 		CE1BE7062A2A5E9A00C6B53B /* IdentifiableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BE7052A2A5E9A00C6B53B /* IdentifiableObject.swift */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
 		CE21FB142C2AC87000303832 /* google-ads-reports-programs-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */; };
+		CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */; };
+		CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */; };
 		CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
 		CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = CE2678422A26102A00FD9AEB /* order-alternative-types.json */; };
@@ -1939,6 +1941,8 @@
 		CE1BE7052A2A5E9A00C6B53B /* IdentifiableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableObject.swift; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
 		CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs-without-data.json"; sourceTree = "<group>"; };
+		CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStats.swift; sourceTree = "<group>"; };
+		CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsTotals.swift; sourceTree = "<group>"; };
 		CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
 		CE2678422A26102A00FD9AEB /* order-alternative-types.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-alternative-types.json"; sourceTree = "<group>"; };
@@ -2553,6 +2557,8 @@
 				CE070A292BBC3C0A00017578 /* GiftCardStats.swift */,
 				CE070A2B2BBC3C2B00017578 /* GiftCardStatsInterval.swift */,
 				CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */,
+				CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */,
+				CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -4818,6 +4824,7 @@
 				0359EA1B27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift in Sources */,
 				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,
 				020D07B823D852BB00FD9580 /* Media.swift in Sources */,
+				CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */,
@@ -5149,6 +5156,7 @@
 				E1BAB2C52913FB1800C3982B /* WordPressApiValidator.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,
+				CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */,
 				CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */,
 				DE2E8E9D29530EEF002E4B14 /* WordPressSite.swift in Sources */,
 				DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */,

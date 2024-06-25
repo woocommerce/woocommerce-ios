@@ -801,6 +801,45 @@ extension Networking.GiftCardStatsTotals {
     }
 }
 
+extension Networking.GoogleAdsCampaignStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        totals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy
+    ) -> Networking.GoogleAdsCampaignStats {
+        let siteID = siteID ?? self.siteID
+        let totals = totals ?? self.totals
+
+        return Networking.GoogleAdsCampaignStats(
+            siteID: siteID,
+            totals: totals
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsTotals {
+    public func copy(
+        sales: CopiableProp<Decimal> = .copy,
+        spend: CopiableProp<Decimal> = .copy,
+        clicks: CopiableProp<Int> = .copy,
+        impressions: CopiableProp<Int> = .copy,
+        conversions: CopiableProp<Decimal> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsTotals {
+        let sales = sales ?? self.sales
+        let spend = spend ?? self.spend
+        let clicks = clicks ?? self.clicks
+        let impressions = impressions ?? self.impressions
+        let conversions = conversions ?? self.conversions
+
+        return Networking.GoogleAdsCampaignStatsTotals(
+            sales: sales,
+            spend: spend,
+            clicks: clicks,
+            impressions: impressions,
+            conversions: conversions
+        )
+    }
+}
+
 extension Networking.GoogleAdsConnection {
     public func copy(
         id: CopiableProp<Int64> = .copy,

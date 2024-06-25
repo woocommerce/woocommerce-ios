@@ -75,8 +75,14 @@ public enum OrderAction: Action {
     case resetStoredOrders(onCompletion: () -> Void)
 
     /// Retrieves the specified OrderID.
+    /// If the order exists in storage, it syncs the order's last modified date and if it is different, it syncs the order remotely.
+    /// Otherwise, the order in storage is returned.
     ///
     case retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: (Order?, Error?) -> Void)
+
+    /// Retrieves the specified OrderID remotely.
+    ///
+    case retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: (Result<Order, Error>) -> Void)
 
     /// Updates a given Order's Status.
     ///

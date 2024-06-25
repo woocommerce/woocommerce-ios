@@ -39,6 +39,8 @@ public class OrderStore: Store {
             resetStoredOrders(onCompletion: onCompletion)
         case .retrieveOrder(let siteID, let orderID, let onCompletion):
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .retrieveOrderRemotely(let siteID, let orderID, let onCompletion):
+            retrieveOrderRemotely(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, writeStrategy, pageSize, onCompletion):
@@ -332,6 +334,18 @@ private extension OrderStore {
                     return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
                 }
                 onCompletion(storedOrder, nil)
+            }
+        }
+    }
+
+    func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        loadOrderFromRemote(siteID: siteID, orderID: orderID) { order, error in
+            if let error {
+                onCompletion(.failure(error))
+            } else if let order {
+                onCompletion(.success(order))
+            } else {
+                onCompletion(.failure(RetrieveOrderError.noErrorAndOrderFromRemote))
             }
         }
     }
@@ -755,6 +769,10 @@ private extension OrderStore {
 extension OrderStore {
     enum MarkOrderAsPaidLocallyError: Error {
         case orderNotFoundInStorage
+    }
+
+    enum RetrieveOrderError: Error {
+        case noErrorAndOrderFromRemote
     }
 
     public enum GiftCardError: Error, Equatable {

@@ -67,6 +67,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
     @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+    @Published private(set) var isAddMoreDisabled: Bool = false
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
@@ -87,6 +88,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.orderService = orderService
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+        observePaymentStateForButtonDisabledProperties()
     }
 
     var isCartCollapsed: Bool {
@@ -273,6 +275,22 @@ private extension PointOfSaleDashboardViewModel {
         cardPresentPaymentService.paymentEventPublisher
             .compactMap({ PaymentState(from: $0) })
             .assign(to: &$paymentState)
+    }
+
+    func observePaymentStateForButtonDisabledProperties() {
+        $paymentState
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment,
+                        .cardPaymentSuccessful:
+                    return true
+                case .idle,
+                        .acceptingCard,
+                        .preparingReader:
+                    return false
+                }
+            }
+            .assign(to: &$isAddMoreDisabled)
     }
 
     @MainActor

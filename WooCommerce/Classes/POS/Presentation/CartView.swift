@@ -51,6 +51,7 @@ struct CartView: View {
             case .finalizing:
                 addMoreButton
                     .padding(32)
+                    .disabled(viewModel.isAddMoreDisabled)
             }
         }
         .frame(maxWidth: .infinity)

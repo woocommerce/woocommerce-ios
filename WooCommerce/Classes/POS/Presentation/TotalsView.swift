@@ -62,6 +62,9 @@ struct TotalsView: View {
                     .padding()
             }
         }
+        .onDisappear {
+            viewModel.onTotalsViewDisappearance()
+        }
     }
 
     private var gradientStops: [Gradient.Stop] {
@@ -76,9 +79,6 @@ struct TotalsView: View {
                 Gradient.Stop(color: Color.clear, location: 0.0),
                 Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
             ]
-        }
-        .onDisappear {
-            viewModel.onTotalsViewDisappearance()
         }
     }
 

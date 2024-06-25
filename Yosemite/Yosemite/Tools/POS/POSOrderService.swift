@@ -132,14 +132,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            // Upserting synced order to storage is necessary because `OrderAction.retrieveOrder` dispatched in `CollectOrderPaymentUseCase`
-            // returns the order in storage after the first time.
-            // Otherwise, the order total could be outdated for payment collection if it differs from the first synced order.
-            upsertStoredOrdersInBackground(readOnlyOrders: [syncedOrder]) {
-                continuation.resume(returning: POSOrder(order: syncedOrder))
-            }
-        }
+        return POSOrder(order: syncedOrder)
     }
 
     public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
@@ -229,32 +222,5 @@ private extension POSOrderService {
             }
             return result
         }
-    }
-}
-
-// MARK: - Storage actions
-
-private extension POSOrderService {
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
-    /// on the main thread.
-    func upsertStoredOrdersInBackground(readOnlyOrders: [Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    func upsertStoredOrders(readOnlyOrders: [Order],
-                            insertingSearchResults: Bool = false,
-                            in storage: StorageType) {
-        let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
     }
 }

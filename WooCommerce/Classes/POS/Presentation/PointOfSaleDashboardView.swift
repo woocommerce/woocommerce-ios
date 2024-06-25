@@ -33,7 +33,8 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
+                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
             }
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)

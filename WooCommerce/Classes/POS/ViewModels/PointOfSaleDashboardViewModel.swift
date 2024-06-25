@@ -68,6 +68,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var orderStage: OrderStage = .building
     @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
     @Published private(set) var isAddMoreDisabled: Bool = false
+    @Published var isExitPOSDisabled: Bool = false
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
@@ -291,6 +292,20 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isAddMoreDisabled)
+
+        $paymentState
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment:
+                    return true
+                case .idle,
+                        .acceptingCard,
+                        .preparingReader,
+                        .cardPaymentSuccessful:
+                    return false
+                }
+            }
+            .assign(to: &$isExitPOSDisabled)
     }
 
     @MainActor

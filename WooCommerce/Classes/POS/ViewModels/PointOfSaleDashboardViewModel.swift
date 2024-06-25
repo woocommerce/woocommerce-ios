@@ -84,6 +84,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
+    var canDeleteItemsFromCart: Bool {
+        return orderStage != .finalizing
+    }
+
     var isCartCollapsed: Bool {
         itemsInCart.isEmpty
     }
@@ -95,19 +99,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
-
-        if orderStage == .finalizing {
-            startSyncingOrder()
-        }
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
         checkIfCartEmpty()
-
-        if orderStage == .finalizing {
-            startSyncingOrder()
-        }
     }
 
     var itemsInCartLabel: String? {

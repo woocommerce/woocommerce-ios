@@ -6,7 +6,7 @@ extension BlazeCampaignListItem.Status {
     var displayText: String {
         switch self {
         case .pending:
-            return Localization.pending
+            return Localization.inModeration
         case .scheduled:
             return Localization.scheduled
         case .active:
@@ -16,7 +16,7 @@ extension BlazeCampaignListItem.Status {
         case .canceled:
             return Localization.canceled
         case .finished:
-            return Localization.finished
+            return Localization.completed
         case .unknown:
             return Localization.unknown
         }
@@ -53,12 +53,12 @@ extension BlazeCampaignListItem.Status {
     }
 
     private enum Localization {
-        static let pending = NSLocalizedString("Pending", comment: "Status name of an active Blaze campaign")
+        static let inModeration = NSLocalizedString("In Moderation", comment: "Status name of a pending Blaze campaign")
         static let scheduled = NSLocalizedString("Scheduled", comment: "Status name of a scheduled Blaze campaign")
         static let active = NSLocalizedString("Active", comment: "Status name of an approved Blaze campaign")
         static let rejected = NSLocalizedString("Rejected", comment: "Status name of a rejected Blaze campaign")
         static let canceled = NSLocalizedString("Canceled", comment: "Status name of a canceled Blaze campaign")
-        static let finished = NSLocalizedString("Finished", comment: "Status name of a completed Blaze campaign")
+        static let completed = NSLocalizedString("Completed", comment: "Status name of a completed Blaze campaign")
         static let unknown = NSLocalizedString("Unknown", comment: "Status name of a Blaze campaign without specified state")
     }
 }

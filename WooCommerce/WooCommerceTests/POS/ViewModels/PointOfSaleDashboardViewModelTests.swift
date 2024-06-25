@@ -49,4 +49,14 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.itemsInCart.isEmpty)
         XCTAssertFalse(sut.isCartCollapsed)
     }
+
+    func test_isSyncingItems_is_true_when_populatePointOfSaleItems_is_invoked_then_switches_to_false_when_completed() async {
+        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
+
+        // Given/When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.isSyncingItems, false)
+    }
 }

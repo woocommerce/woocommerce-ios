@@ -70,20 +70,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
 
-        populatePointOfSaleItems()
-
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
     }
 
-    private func populatePointOfSaleItems() {
-        Task { @MainActor in
-            do {
-                items = try await itemProvider.providePointOfSaleItems()
-                isSyncingItems = false
-            } catch {
-                debugPrint("\(error)")
-            }
+    @MainActor
+    func populatePointOfSaleItems() async {
+        do {
+            items = try await itemProvider.providePointOfSaleItems()
+            isSyncingItems = false
+        } catch {
+            debugPrint("\(error)")
         }
     }
 

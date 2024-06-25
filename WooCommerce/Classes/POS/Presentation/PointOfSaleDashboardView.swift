@@ -29,6 +29,9 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {

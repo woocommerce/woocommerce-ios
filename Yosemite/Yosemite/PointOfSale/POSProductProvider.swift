@@ -51,7 +51,6 @@ public final class POSProductProvider: POSItemProvider {
         // https://github.com/woocommerce/woocommerce-ios/issues/12816
         // - Handle case for error when fetching products
         // https://github.com/woocommerce/woocommerce-ios/issues/12846
-        
     }
 
     // Maps result to POSProduct, and populate the output with:

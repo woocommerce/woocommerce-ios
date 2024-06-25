@@ -1027,6 +1027,7 @@
 		DEB3877A2C2A9B1E0025256E /* gla-connection-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB387792C2A9B1E0025256E /* gla-connection-without-data-envelope.json */; };
 		DEB3877C2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */; };
 		DEB3877E2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877D2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift */; };
+		DEB387802C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
 		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
@@ -2157,6 +2158,7 @@
 		DEB387792C2A9B1E0025256E /* gla-connection-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "gla-connection-without-data-envelope.json"; sourceTree = "<group>"; };
 		DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsConnectionMapperTests.swift; sourceTree = "<group>"; };
 		DEB3877D2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleListingsAndAdsRemote.swift; sourceTree = "<group>"; };
+		DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleListingsAndAdsRemoteTests.swift; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
 		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
@@ -2585,6 +2587,7 @@
 			children = (
 				B5969E1420A47F99005E9DF1 /* RemoteTests.swift */,
 				DED91DE62AD64ED500CDCC53 /* BlazeRemoteTests.swift */,
+				DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */,
 				DEDA8DAA2B18407D0076BF0F /* WordPressThemeRemoteTests.swift */,
 				B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */,
 				93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */,
@@ -5372,6 +5375,7 @@
 				E18152C428F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift in Sources */,
 				68BFF9022B677F1D00B15FF2 /* ReceiptRemoteTests.swift in Sources */,
 				DE2004742BFB53DD00660A72 /* ProductReportListMapperTests.swift in Sources */,
+				DEB387802C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift in Sources */,
 				CCE5F39729F00B5200087332 /* SubscriptionsRemoteTests.swift in Sources */,
 				DED91DE72AD64ED500CDCC53 /* BlazeRemoteTests.swift in Sources */,
 				D8A2849A25FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift in Sources */,

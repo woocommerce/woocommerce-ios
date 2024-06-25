@@ -115,7 +115,7 @@ private extension TotalsView {
         }, label: {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
-                Image("pos_new_transaction_icon")
+                Image(uiImage: .posNewTransactionImage)
                 Text("New transaction")
                     .font(Constants.newTransactionButtonFont)
                 Spacer()

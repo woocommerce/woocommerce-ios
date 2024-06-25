@@ -960,4 +960,8 @@ final class IconsTests: XCTestCase {
     func test_tooltipImage_is_not_nil() {
         XCTAssertNotNil(UIImage.tooltipImage)
     }
+
+    func test_posNewTransactionImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posNewTransactionImage)
+    }
 }

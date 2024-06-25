@@ -46,7 +46,7 @@ public final class POSProductProvider: POSItemProvider {
     private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return products.map { product in
-            let formattedPrice = currencyFormatter.formatAmount(product.price, with: currencySettings.currencyCode.rawValue) ?? "-"
+            let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
             let thumbnailSource = product.images.first?.src
             let productCategories = product.categories.map { $0.name }
 

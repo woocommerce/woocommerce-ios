@@ -354,6 +354,30 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual("woo_ios_product_creation", featureValue)
     }
 
+    func test_generateAIProduct_sends_correct_response_format_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateAIProduct(siteID: sampleSiteID,
+                                               productName: "Cookie",
+                                               keywords: "Crunchy, Crispy",
+                                               language: "en",
+                                               tone: "Casual",
+                                               currencySymbol: "INR",
+                                               dimensionUnit: "cm",
+                                               weightUnit: "kg",
+                                               categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                               tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let responseFormatValue = try XCTUnwrap(request.parameters?["response_format"] as? String)
+        XCTAssertEqual("json_object", responseFormatValue)
+    }
+
     func test_generateAIProduct_question_has_existing_categories() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)

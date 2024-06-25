@@ -69,15 +69,13 @@ private extension CartView {
             HStack {
                 Spacer()
                 Text("Checkout")
+                    .font(.title)
+                    .padding(20)
                 Spacer()
             }
         }
-        .padding(.all, 20)
-        .frame(maxWidth: .infinity, idealHeight: 120)
-        .font(.title)
-        .foregroundColor(Color.primaryBackground)
-        .background(Color.init(uiColor: .wooCommercePurple(.shade60)))
-        .cornerRadius(10)
+        .buttonStyle(.borderedProminent)
+        .tint(Color.primaryTint)
     }
 
     var addMoreButton: some View {
@@ -86,17 +84,12 @@ private extension CartView {
         } label: {
             Spacer()
             Text("Add More")
+                .font(.title)
+                .padding(20)
             Spacer()
         }
-        .padding(20)
-        .frame(maxWidth: .infinity, idealHeight: 120)
-        .font(.title)
-        .foregroundColor(Color.white)
-        .background(Color.secondaryBackground)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(.white, lineWidth: 2)
-        )
+        .buttonStyle(.borderedProminent)
+        .tint(Color.secondaryBackground)
     }
 }
 

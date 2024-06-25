@@ -164,16 +164,24 @@ private extension GenerativeContentRemote {
                       feature: GenerativeContentRemoteFeature,
                       responseFormat: GenerativeContentRemoteResponseFormat?,
                       token: JWToken) async throws -> String {
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: base,
-                          ParameterKey.feature: feature.rawValue,
-                          ParameterKey.fields: ParameterValue.completion,
-                          ParameterKey.responseFormat: responseFormat?.rawValue].compactMapValues { $0 }
+        let parameters: [String: Any] = {
+            var params = [String: Any]()
+            params[ParameterKey.token] = token.token
+            params[ParameterKey.question] = base
+            params[ParameterKey.stream] = ParameterValue.stream
+            params[ParameterKey.gptModel] = ParameterValue.gptModel
+            params[ParameterKey.feature] = feature.rawValue
+            params[ParameterKey.fields] = ParameterValue.choices
+            if let responseFormat {
+                params[ParameterKey.responseFormat] = responseFormat.rawValue
+            }
+            return params
+        }()
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
-        let mapper = TextCompletionResponseMapper()
+        let mapper = JetpackAIQueryResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -186,15 +194,17 @@ private extension GenerativeContentRemote {
             "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: prompt,
-                          ParameterKey.feature: feature.rawValue,
-                          ParameterKey.fields: ParameterValue.completion]
+        let parameters: [String: Any] = [ParameterKey.token: token.token,
+                                         ParameterKey.question: prompt,
+                                         ParameterKey.stream: ParameterValue.stream,
+                                         ParameterKey.gptModel: ParameterValue.gptModel,
+                                         ParameterKey.feature: feature.rawValue,
+                                         ParameterKey.fields: ParameterValue.choices]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
-        let mapper = TextCompletionResponseMapper()
+        let mapper = JetpackAIQueryResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -270,13 +280,16 @@ private extension GenerativeContentRemote {
 
         let prompt = input + "\n" + expectedJsonFormat
 
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: prompt,
-                          ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
-                          ParameterKey.fields: ParameterValue.completion]
+        let parameters: [String: Any] = [ParameterKey.token: token.token,
+                                         ParameterKey.question: prompt,
+                                         ParameterKey.stream: ParameterValue.stream,
+                                         ParameterKey.gptModel: ParameterValue.gptModel,
+                                         ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
+                                         ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
+                                         ParameterKey.fields: ParameterValue.choices]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
 
         let mapper = AIProductMapper(siteID: siteID)

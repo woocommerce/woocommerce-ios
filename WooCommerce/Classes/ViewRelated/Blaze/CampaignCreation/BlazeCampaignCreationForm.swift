@@ -83,6 +83,11 @@ struct BlazeCampaignCreationForm: View {
                 }
                 .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
+                .padding(.bottom, Layout.contentMargin)
+
+                Text(Localization.audience)
+                    .subheadlineStyle()
+                    .foregroundColor(.init(uiColor: .text))
 
                 VStack(spacing: 0) {
                     // Language
@@ -379,6 +384,11 @@ private extension BlazeCampaignCreationForm {
             "blazeCampaignCreationForm.budget",
             value: "Budget",
             comment: "Title of the Budget field on the Blaze campaign creation screen"
+        )
+        static let audience = NSLocalizedString(
+            "blazeCampaignCreationForm.audience",
+            value: "Audience",
+            comment: "Section title on the Blaze campaign creation screen"
         )
         static let language = NSLocalizedString(
             "blazeCampaignCreationForm.language",

@@ -2,43 +2,29 @@ import Foundation
 import protocol Networking.Network
 import class Networking.ProductsRemote
 import class Networking.AlamofireNetwork
-import protocol Storage.StorageManagerType
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 /// Product provider for the Point of Sale feature
 ///
 public final class POSProductProvider: POSItemProvider {
-    private let storageManager: StorageManagerType
     private var siteID: Int64
     private var currencySettings: CurrencySettings
     private let productsRemote: ProductsRemote
 
-    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings, network: Network) {
-        self.storageManager = storageManager
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.productsRemote = ProductsRemote(network: network)
     }
 
-    public convenience init(storageManager: StorageManagerType,
-                     siteID: Int64,
-                     currencySettings: CurrencySettings,
-                     credentials: Credentials?) {
-        self.init(storageManager: storageManager,
-                  siteID: siteID,
+    public convenience init(siteID: Int64,
+                            currencySettings: CurrencySettings,
+                            credentials: Credentials?) {
+        self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   network: AlamofireNetwork(credentials: credentials))
     }
-
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
-        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
-                                                                  matching: predicate,
-                                                                  sortedBy: [descriptor])
-        return resultsController
-    }()
 
     public func providePointOfSaleItems() async throws -> [POSItem] {
         do {

@@ -3,20 +3,17 @@ import WooFoundation
 @testable import Yosemite
 
 final class POSProductProviderTests: XCTestCase {
-    private var storageManager: MockStorageManager!
     private var currencySettings: CurrencySettings!
     private var itemProvider: MockPOSItemProvider!
     private let siteID: Int64 = 123
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
         itemProvider = MockPOSItemProvider()
         currencySettings = CurrencySettings()
     }
 
     override func tearDown() {
-        storageManager = nil
         currencySettings = nil
         itemProvider = nil
         super.tearDown()

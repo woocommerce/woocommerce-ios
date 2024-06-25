@@ -74,11 +74,9 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
 
     private(set) lazy var posItemProvider: POSItemProvider = {
-        let storageManager = ServiceLocator.storageManager
         let currencySettings = ServiceLocator.currencySettings
 
-        return POSProductProvider(storageManager: storageManager,
-                                  siteID: siteID,
+        return POSProductProvider(siteID: siteID,
                                   currencySettings: currencySettings,
                                   credentials: credentials)
     }()

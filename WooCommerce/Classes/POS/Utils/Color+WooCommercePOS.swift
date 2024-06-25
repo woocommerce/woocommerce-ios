@@ -24,6 +24,10 @@ extension Color {
         Color(uiColor: .systemBackground)
     }
 
+    static var primaryTint: Color {
+        Color(uiColor: .wooCommercePurple(.shade60))
+    }
+
     static var wooAmberShade40: Color {
         Color(red: 255.0 / 255.0, green: 166.0 / 255.0, blue: 14.0 / 255.0)
     }
@@ -56,5 +60,9 @@ extension Color {
 
     static var posTotalsGradientPurple: Color {
         Color(red: 231.0 / 255.0, green: 227.0 / 255.0, blue: 243.0 / 255.0)
+    }
+
+    static var posTotalsGradientGreen: Color {
+        Color(red: 239.0 / 255.0, green: 246.0 / 255.0, blue: 235.0 / 255.0)
     }
 }

@@ -3,23 +3,26 @@ import SwiftUI
 struct POSToolbarView: View {
     @Environment(\.presentationMode) private var presentationMode
     private let readerConnectionViewModel: CardReaderConnectionViewModel
+    @Binding private var isExitPOSDisabled: Bool
 
-    init(readerConnectionViewModel: CardReaderConnectionViewModel) {
+    init(readerConnectionViewModel: CardReaderConnectionViewModel,
+         isExitPOSDisabled: Binding<Bool>) {
         self.readerConnectionViewModel = readerConnectionViewModel
+        self._isExitPOSDisabled = isExitPOSDisabled
     }
 
     var body: some View {
         HStack {
             Button {
-                // TODO: we need to cancel any prepared reader payment before we exit, or the reader can't be disconnected.
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 HStack(spacing: Layout.buttonImageAndTextSpacing) {
                     Image(uiImage: .swapHorizontal)
                     Text("Exit POS")
                 }
-                .foregroundColor(Color(uiColor: .gray(.shade60)))
             }
+            .tint(Color(uiColor: .gray(.shade60)))
+            .disabled(isExitPOSDisabled)
 
             Spacer()
 
@@ -37,7 +40,8 @@ private extension POSToolbarView {
 #if DEBUG
 
 #Preview {
-    POSToolbarView(readerConnectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
+    POSToolbarView(readerConnectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()),
+                   isExitPOSDisabled: .constant(false))
 }
 
 #endif

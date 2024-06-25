@@ -88,7 +88,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         // TODO: Update the connected reader subject when we get a connection here.
 
-        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor().collectPaymentTask(
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher).collectPaymentTask(
             for: order,
             using: connectionMethod,
             siteID: siteID,

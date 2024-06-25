@@ -1,5 +1,6 @@
 import SwiftUI
 import protocol Yosemite.POSItem
+import protocol Yosemite.POSItemProvider
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import protocol Yosemite.POSOrderServiceProtocol
@@ -11,12 +12,31 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
+        case idle
         case acceptingCard
-        case processingCard
+        case preparingReader
+        case processingPayment
         case cardPaymentSuccessful
+
+        init?(from cardPaymentEvent: CardPresentPaymentEvent) {
+            switch cardPaymentEvent {
+            case .idle:
+                self = .idle
+            case .show(.validatingOrder):
+                self = .preparingReader
+            case .show(.tapSwipeOrInsertCard):
+                self = .acceptingCard
+            case .show(.processing):
+                self = .processingPayment
+            case .show(.paymentSuccess):
+                self = .cardPaymentSuccessful
+            default:
+                return nil
+            }
+        }
     }
 
-    @Published private(set) var items: [POSItem]
+    @Published private(set) var items: [POSItem] = []
     @Published private(set) var itemsInCart: [CartItem] = []
 
     // Total amounts
@@ -48,26 +68,42 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
     @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+    @Published private(set) var isAddMoreDisabled: Bool = false
+    @Published var isExitPOSDisabled: Bool = false
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
-    private let orderService: POSOrderServiceProtocol
+    @Published private(set) var isSyncingItems: Bool = true
 
+    private let orderService: POSOrderServiceProtocol
+    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-    init(items: [POSItem],
+    init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol) {
-        self.items = items
+        self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
+
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+        observePaymentStateForButtonDisabledProperties()
+    }
+
+    @MainActor
+    func populatePointOfSaleItems() async {
+        do {
+            items = try await itemProvider.providePointOfSaleItems()
+            isSyncingItems = false
+        } catch {
+            debugPrint("\(error)")
+        }
     }
 
     var isCartCollapsed: Bool {
@@ -153,18 +189,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        paymentState = .processingCard
-
         let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-
-        // TODO: Here we should present something to show the payment was successful or not,
-        // and then clear the screen ready for the next transaction.
-        switch paymentResult {
-        case .success(let cardPresentPaymentTransaction):
-            paymentState = .cardPaymentSuccessful
-        case .cancellation:
-            paymentState = .acceptingCard
-        }
     }
 
     @MainActor
@@ -202,6 +227,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         orderStage = .building
         paymentState = .acceptingCard
         order = nil
+    }
+
+    @MainActor
+    func onTotalsViewDisappearance() {
+        cardPresentPaymentService.cancelPayment()
     }
 }
 
@@ -257,6 +287,39 @@ private extension PointOfSaleDashboardViewModel {
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)
+        cardPresentPaymentService.paymentEventPublisher
+            .compactMap({ PaymentState(from: $0) })
+            .assign(to: &$paymentState)
+    }
+
+    func observePaymentStateForButtonDisabledProperties() {
+        $paymentState
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment,
+                        .cardPaymentSuccessful:
+                    return true
+                case .idle,
+                        .acceptingCard,
+                        .preparingReader:
+                    return false
+                }
+            }
+            .assign(to: &$isAddMoreDisabled)
+
+        $paymentState
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment:
+                    return true
+                case .idle,
+                        .acceptingCard,
+                        .preparingReader,
+                        .cardPaymentSuccessful:
+                    return false
+                }
+            }
+            .assign(to: &$isExitPOSDisabled)
     }
 
     @MainActor

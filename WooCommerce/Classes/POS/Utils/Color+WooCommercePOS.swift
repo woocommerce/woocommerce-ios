@@ -57,4 +57,8 @@ extension Color {
     static var posTotalsGradientPurple: Color {
         Color(red: 231.0 / 255.0, green: 227.0 / 255.0, blue: 243.0 / 255.0)
     }
+
+    static var posTotalsGradientGreen: Color {
+        Color(red: 239.0 / 255.0, green: 246.0 / 255.0, blue: 235.0 / 255.0)
+    }
 }

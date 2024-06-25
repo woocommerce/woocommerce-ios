@@ -76,6 +76,7 @@ private extension PointOfSaleDashboardView {
         TotalsView(viewModel: viewModel)
             .background(Color(UIColor.systemBackground))
             .frame(maxWidth: .infinity)
+            .cornerRadius(16)
     }
 
     var productGridView: some View {

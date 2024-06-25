@@ -75,8 +75,6 @@ final class HubMenuViewModel: ObservableObject {
 
     private(set) lazy var posItemProvider: POSItemProvider = {
         let storageManager = ServiceLocator.storageManager
-        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
         let currencySettings = ServiceLocator.currencySettings
 
         return POSProductProvider(storageManager: storageManager,

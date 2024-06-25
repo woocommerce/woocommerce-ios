@@ -12,7 +12,7 @@ import struct Yosemite.Order
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
         case acceptingCard
-        case processingCard
+        case preparingReader
         case cardPaymentSuccessful
     }
 
@@ -153,7 +153,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        paymentState = .processingCard
+        paymentState = .preparingReader
 
         let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
 

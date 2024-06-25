@@ -752,8 +752,9 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             "be replaced with further error details.")
 
         static let orderTotalChangedLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. Order total has changed since the beginning of payment.",
-            comment: "Error message when collecting an In-Person Payment and unable to update the order.")
+            "collectOrderPaymentUseCase.error.message.orderTotalChanged",
+            value: "Unable to process payment. Order total has changed since the beginning of payment.",
+            comment: "Error message when collecting an In-Person Payment and the order total has changed remotely.")
 
         static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
             "Unable to process payment. This order is already paid, taking a further payment would result in the " +

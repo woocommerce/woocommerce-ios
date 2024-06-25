@@ -40,11 +40,18 @@ public final class POSProductProvider: POSItemProvider {
         return resultsController
     }()
 
-    public func providePointOfSaleItemsFromNetwork() async throws -> [POSItem] {
+    public func providePointOfSaleItems() async throws -> [POSItem] {
         do {
             let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
             return mapProductsToPOSItems(products: products)
         }
+        // TODO:
+        // - Handle case for empty product list, or not empty but no eligible products
+        // https://github.com/woocommerce/woocommerce-ios/issues/12815
+        // https://github.com/woocommerce/woocommerce-ios/issues/12816
+        // - Handle case for error when fetching products
+        // https://github.com/woocommerce/woocommerce-ios/issues/12846
+        
     }
 
     // Maps result to POSProduct, and populate the output with:
@@ -67,32 +74,6 @@ public final class POSProductProvider: POSItemProvider {
                               productImageSource: thumbnailSource,
                               productType: product.productType)
         }
-    }
-
-    /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
-    ///
-    public func providePointOfSaleItemsFromStorage() -> [POSItem] {
-        var loadedProducts: [Product] = []
-
-        // Fetch products from storage, and filter them by `purchasable` and `simple`
-        do {
-            try productsResultsController.performFetch()
-            if productsResultsController.fetchedObjects.isEmpty {
-                // TODO: Handle case for empty product list, or not empty but no eligible products
-                // https://github.com/woocommerce/woocommerce-ios/issues/12815
-                // https://github.com/woocommerce/woocommerce-ios/issues/12816
-                DDLogWarn("No products eligible for POS, or empty storage.")
-            } else {
-                // Ideally we should handle the filtering through a policy that can be easily modified,
-                // rather than having this declared implicitly:
-                loadedProducts = productsResultsController.fetchedObjects.filter { $0.productType == .simple && $0.purchasable }
-            }
-        } catch {
-            // TODO: Handle case for error when fetching products
-            // https://github.com/woocommerce/woocommerce-ios/issues/12846
-            DDLogError("Error fetching products from storage")
-        }
-        return mapProductsToPOSItems(products: loadedProducts)
     }
 
     // TODO: Mechanism to reload/sync product data.

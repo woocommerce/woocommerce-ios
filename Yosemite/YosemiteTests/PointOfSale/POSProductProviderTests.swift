@@ -3,15 +3,15 @@ import WooFoundation
 @testable import Yosemite
 
 final class POSProductProviderTests: XCTestCase {
-
     private var storageManager: MockStorageManager!
     private var currencySettings: CurrencySettings!
-    private var itemProvider: POSItemProvider!
+    private var itemProvider: MockPOSItemProvider!
     private let siteID: Int64 = 123
 
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        itemProvider = MockPOSItemProvider()
         currencySettings = CurrencySettings()
     }
 
@@ -22,69 +22,54 @@ final class POSProductProviderTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_products_in_storage() {
-        // Given
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                          siteID: siteID,
-                                          currencySettings: currencySettings,
-                                          credentials: nil)
-
-        // When
-        let items = itemProvider.providePointOfSaleItemsFromStorage()
+    func test_POSItemProvider_provides_no_items_when_store_has_no_products() async throws {
+        // Given/When
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        XCTAssertTrue(items.isEmpty)
+        XCTAssertTrue(expectedItems.isEmpty)
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_eligible_products_in_storage() {
-        // Given
-        let nonEligibleProduct = Product.fake().copy(siteID: siteID,
-                                                productID: 789,
-                                                name: "Choco",
-                                                productTypeKey: "not simple",
-                                                price: "2",
-                                                purchasable: true)
-
-        storageManager.insertSampleProduct(readOnlyProduct: nonEligibleProduct)
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                          siteID: siteID,
-                                          currencySettings: currencySettings,
-                                          credentials: nil)
-
-        // When
-        let items = itemProvider.providePointOfSaleItemsFromStorage()
-
-        // Then
-        XCTAssertTrue(items.isEmpty)
-    }
-
-    func test_POSItemProvider_when_store_has_eligible_products_in_storage_then_provides_correctly_formatted_product() {
+    func test_POSItemProvider_provides_items_when_store_has_eligible_products() async throws {
         // Given
         let productPrice = "2"
         let expectedFormattedPrice = "$2.00"
-        let eligibleProduct = Product.fake().copy(siteID: siteID,
-                                                productID: 789,
-                                                name: "Choco",
-                                                productTypeKey: "simple",
-                                                price: productPrice,
-                                                purchasable: true)
-
-        storageManager.insertSampleProduct(readOnlyProduct: eligibleProduct)
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                          siteID: siteID,
-                                          currencySettings: currencySettings,
-                                          credentials: nil)
+        let item = POSProduct(itemID: UUID(),
+                              productID: 789,
+                              name: "Choco",
+                              price: productPrice,
+                              formattedPrice: "$2.00",
+                              itemCategories: [],
+                              productImageSource: nil,
+                              productType: .simple)
 
         // When
-        let items = itemProvider.providePointOfSaleItemsFromStorage()
+        itemProvider.simulate(items: [item])
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        guard let product = items.first else {
+        guard let product = expectedItems.first else {
             return XCTFail("No eligible products")
         }
         XCTAssertEqual(product.name, "Choco")
         XCTAssertEqual(product.productID, 789)
         XCTAssertEqual(product.price, productPrice)
         XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
+    }
+}
+
+private extension POSProductProviderTests {
+    final class MockPOSItemProvider: POSItemProvider {
+        var items: [POSItem] = []
+
+        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            return items
+        }
+
+        func simulate(items: [POSItem]) {
+            for item in items {
+                self.items.append(item)
+            }
+        }
     }
 }

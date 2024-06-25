@@ -79,7 +79,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private func populatePointOfSaleItems() {
         Task { @MainActor in
             do {
-                items = try await itemProvider.providePointOfSaleItemsFromNetwork()
+                items = try await itemProvider.providePointOfSaleItems()
                 isSyncingItems = false
             } catch {
                 debugPrint("\(error)")

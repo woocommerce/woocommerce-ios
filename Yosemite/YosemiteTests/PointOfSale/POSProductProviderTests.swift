@@ -1,16 +1,21 @@
 import XCTest
 import WooFoundation
+@testable import Networking
 @testable import Yosemite
 
 final class POSProductProviderTests: XCTestCase {
     private var currencySettings: CurrencySettings!
-    private var itemProvider: MockPOSItemProvider!
+    private var itemProvider: POSItemProvider!
+    private var network: MockNetwork!
     private let siteID: Int64 = 123
 
     override func setUp() {
         super.setUp()
-        itemProvider = MockPOSItemProvider()
+        network = MockNetwork()
         currencySettings = CurrencySettings()
+        itemProvider = POSProductProvider(siteID: siteID,
+                                          currencySettings: currencySettings,
+                                          network: network)
     }
 
     override func tearDown() {
@@ -29,44 +34,22 @@ final class POSProductProviderTests: XCTestCase {
 
     func test_POSItemProvider_provides_items_when_store_has_eligible_products() async throws {
         // Given
-        let productPrice = "2"
-        let expectedFormattedPrice = "$2.00"
-        let item = POSProduct(itemID: UUID(),
-                              productID: 789,
-                              name: "Choco",
-                              price: productPrice,
-                              formattedPrice: "$2.00",
-                              itemCategories: [],
-                              productImageSource: nil,
-                              productType: .simple)
+        let expectedProductName = "Dymo LabelWriter 4XL"
+        let expectedProductID: Int64 = 208
+        let expectedProductPrice = "216"
+        let expectedFormattedPrice = "$216.00"
 
         // When
-        itemProvider.simulate(items: [item])
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
         let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
         guard let product = expectedItems.first else {
             return XCTFail("No eligible products")
         }
-        XCTAssertEqual(product.name, "Choco")
-        XCTAssertEqual(product.productID, 789)
-        XCTAssertEqual(product.price, productPrice)
+        XCTAssertEqual(product.name, expectedProductName)
+        XCTAssertEqual(product.productID, expectedProductID)
+        XCTAssertEqual(product.price, expectedProductPrice)
         XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
-    }
-}
-
-private extension POSProductProviderTests {
-    final class MockPOSItemProvider: POSItemProvider {
-        var items: [POSItem] = []
-
-        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
-            return items
-        }
-
-        func simulate(items: [POSItem]) {
-            for item in items {
-                self.items.append(item)
-            }
-        }
     }
 }

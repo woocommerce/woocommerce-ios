@@ -3,22 +3,27 @@ import XCTest
 @testable import WooCommerce
 @testable import class Yosemite.POSOrderService
 @testable import enum Yosemite.Credentials
+@testable import protocol Yosemite.POSItemProvider
+@testable import protocol Yosemite.POSItem
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
     private var cardPresentPaymentService: CardPresentPaymentPreviewService!
+    private var itemProvider: MockPOSItemProvider!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = CardPresentPaymentPreviewService()
-        sut = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+        itemProvider = MockPOSItemProvider()
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: POSOrderPreviewService())
     }
 
     override func tearDown() {
         cardPresentPaymentService = nil
+        itemProvider = nil
         sut = nil
         super.tearDown()
     }
@@ -58,5 +63,21 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.isSyncingItems, false)
+    }
+}
+
+private extension PointOfSaleDashboardViewModelTests {
+    final class MockPOSItemProvider: POSItemProvider {
+        var items: [POSItem] = []
+
+        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            return items
+        }
+
+        func simulate(items: [POSItem]) {
+            for item in items {
+                self.items.append(item)
+            }
+        }
     }
 }

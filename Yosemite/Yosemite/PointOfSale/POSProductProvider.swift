@@ -30,13 +30,16 @@ public final class POSProductProvider: POSItemProvider {
         do {
             let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
             return mapProductsToPOSItems(products: products)
+        } catch {
+            // TODO:
+            // - Handle case for empty product list, or not empty but no eligible products
+            // https://github.com/woocommerce/woocommerce-ios/issues/12815
+            // https://github.com/woocommerce/woocommerce-ios/issues/12816
+            // - Handle case for error when fetching products
+            // https://github.com/woocommerce/woocommerce-ios/issues/12846
+            DDLogError("No POS items")
+            return []
         }
-        // TODO:
-        // - Handle case for empty product list, or not empty but no eligible products
-        // https://github.com/woocommerce/woocommerce-ios/issues/12815
-        // https://github.com/woocommerce/woocommerce-ios/issues/12816
-        // - Handle case for error when fetching products
-        // https://github.com/woocommerce/woocommerce-ios/issues/12846
     }
 
     // Maps result to POSProduct, and populate the output with:

@@ -5,11 +5,14 @@ import Codegen
 public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let totals: GoogleAdsCampaignStatsTotals
+    public let campaigns: [GoogleAdsCampaignStatsItem]
 
     public init(siteID: Int64,
-                totals: GoogleAdsCampaignStatsTotals) {
+                totals: GoogleAdsCampaignStatsTotals,
+                campaigns: [GoogleAdsCampaignStatsItem]) {
         self.siteID = siteID
         self.totals = totals
+        self.campaigns = campaigns
     }
 
     public init(from decoder: Decoder) throws {
@@ -19,9 +22,12 @@ public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, G
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let totals = try container.decode(GoogleAdsCampaignStatsTotals.self, forKey: .totals)
+        // Campaigns are `nil` if there are no campaigns; we convert this to an empty array.
+        let campaigns = (try? container.decode([GoogleAdsCampaignStatsItem].self, forKey: .campaigns)) ?? []
 
         self.init(siteID: siteID,
-                  totals: totals)
+                  totals: totals,
+                  campaigns: campaigns)
     }
 }
 
@@ -31,7 +37,8 @@ public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, G
 private extension GoogleAdsCampaignStats {
 
     enum CodingKeys: String, CodingKey {
-        case totals = "totals"
+        case totals
+        case campaigns
     }
 }
 

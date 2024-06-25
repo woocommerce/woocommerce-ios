@@ -577,7 +577,20 @@ extension Networking.GoogleAdsCampaignStats {
     public static func fake() -> Networking.GoogleAdsCampaignStats {
         .init(
             siteID: .fake(),
-            totals: .fake()
+            totals: .fake(),
+            campaigns: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsItem {
+        .init(
+            campaignID: .fake(),
+            campaignName: .fake(),
+            status: .fake(),
+            subtotals: .fake()
         )
     }
 }

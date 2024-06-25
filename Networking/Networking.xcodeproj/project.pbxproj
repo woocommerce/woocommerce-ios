@@ -805,6 +805,7 @@
 		CE21FB142C2AC87000303832 /* google-ads-reports-programs-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */; };
 		CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */; };
 		CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */; };
+		CE21FB1C2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */; };
 		CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
 		CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = CE2678422A26102A00FD9AEB /* order-alternative-types.json */; };
@@ -1943,6 +1944,7 @@
 		CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs-without-data.json"; sourceTree = "<group>"; };
 		CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStats.swift; sourceTree = "<group>"; };
 		CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsTotals.swift; sourceTree = "<group>"; };
+		CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsItem.swift; sourceTree = "<group>"; };
 		CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
 		CE2678422A26102A00FD9AEB /* order-alternative-types.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-alternative-types.json"; sourceTree = "<group>"; };
@@ -2559,6 +2561,7 @@
 				CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */,
 				CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */,
 				CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */,
+				CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -5075,6 +5078,7 @@
 				E18152BE28F85B5B0011A0EC /* InAppPurchasesRemote.swift in Sources */,
 				0329CF9B27A82E19008AFF91 /* WCPayCharge.swift in Sources */,
 				035BA3AA29113CBD0056F0AD /* DataBoolMapper.swift in Sources */,
+				CE21FB1C2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift in Sources */,
 				74749B97224134FF005C4CF2 /* ProductMapper.swift in Sources */,
 				EE2C09C229AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift in Sources */,
 				26455E2A25F669F0008A1D32 /* ProductAttributeTermMapper.swift in Sources */,

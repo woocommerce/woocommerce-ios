@@ -11,9 +11,28 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
+        case idle
         case acceptingCard
         case preparingReader
+        case processingPayment
         case cardPaymentSuccessful
+
+        init?(from cardPaymentEvent: CardPresentPaymentEvent) {
+            switch cardPaymentEvent {
+            case .idle:
+                self = .idle
+            case .show(.validatingOrder):
+                self = .preparingReader
+            case .show(.tapSwipeOrInsertCard):
+                self = .acceptingCard
+            case .show(.processing):
+                self = .processingPayment
+            case .show(.paymentSuccess):
+                self = .cardPaymentSuccessful
+            default:
+                return nil
+            }
+        }
     }
 
     @Published private(set) var items: [POSItem]
@@ -153,18 +172,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        paymentState = .preparingReader
-
         let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-
-        // TODO: Here we should present something to show the payment was successful or not,
-        // and then clear the screen ready for the next transaction.
-        switch paymentResult {
-        case .success(let cardPresentPaymentTransaction):
-            paymentState = .cardPaymentSuccessful
-        case .cancellation:
-            paymentState = .acceptingCard
-        }
     }
 
     @MainActor
@@ -262,6 +270,9 @@ private extension PointOfSaleDashboardViewModel {
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)
+        cardPresentPaymentService.paymentEventPublisher
+            .compactMap({ PaymentState(from: $0) })
+            .assign(to: &$paymentState)
     }
 
     @MainActor

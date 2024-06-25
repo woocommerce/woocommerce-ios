@@ -543,6 +543,8 @@ extension StripeCardReaderService: CardReaderService {
                     let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
                         .softwareUpdate(underlyingError: underlyingError, batteryLevel: batteryLevel) :
                         .connection(underlyingError: underlyingError)
+
+                    self.switchStatusToFault(error: serviceError)
                     promise(.failure(serviceError))
                 }
 

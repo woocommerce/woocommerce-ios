@@ -1025,6 +1025,7 @@
 		DEB387762C2A9A140025256E /* GoogleAdsConnectionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387752C2A9A140025256E /* GoogleAdsConnectionMapper.swift */; };
 		DEB387782C2A9ADC0025256E /* gla-connection-with-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB387772C2A9ADC0025256E /* gla-connection-with-data-envelope.json */; };
 		DEB3877A2C2A9B1E0025256E /* gla-connection-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB387792C2A9B1E0025256E /* gla-connection-without-data-envelope.json */; };
+		DEB3877C2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
 		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
@@ -2153,6 +2154,7 @@
 		DEB387752C2A9A140025256E /* GoogleAdsConnectionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsConnectionMapper.swift; sourceTree = "<group>"; };
 		DEB387772C2A9ADC0025256E /* gla-connection-with-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "gla-connection-with-data-envelope.json"; sourceTree = "<group>"; };
 		DEB387792C2A9B1E0025256E /* gla-connection-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "gla-connection-without-data-envelope.json"; sourceTree = "<group>"; };
+		DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsConnectionMapperTests.swift; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
 		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
@@ -3686,6 +3688,7 @@
 				CEB9BF442BB19EDE0007978A /* ProductBundleStatsMapperTests.swift */,
 				DE20045C2BF614A300660A72 /* ProductStockListMapperTests.swift */,
 				DE2004732BFB53DD00660A72 /* ProductReportListMapperTests.swift */,
+				DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -5202,6 +5205,7 @@
 				DE02ABB72B563F3A008E0AC4 /* BlazePaymentInfoMapperTests.swift in Sources */,
 				2661547B242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift in Sources */,
 				4513382227A8409000AE5E78 /* InboxNotesRemoteTests.swift in Sources */,
+				DEB3877C2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift in Sources */,
 				025F9A252B020F1900B91F1D /* MockURLProtocol.swift in Sources */,
 				45E461BE26837DB900011BF2 /* DataRemoteTests.swift in Sources */,
 				DEDA8DB92B187EC90076BF0F /* WordPressThemeMapperTests.swift in Sources */,

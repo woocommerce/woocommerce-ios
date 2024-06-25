@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 
 struct PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel {
     let readerIDs: [String]

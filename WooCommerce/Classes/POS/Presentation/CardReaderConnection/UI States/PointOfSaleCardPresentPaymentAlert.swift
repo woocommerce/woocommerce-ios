@@ -18,7 +18,7 @@ struct PointOfSaleCardPresentPaymentAlert: View {
         case .foundReader(let alertViewModel):
             PointOfSaleCardPresentPaymentFoundReadersView(viewModel: alertViewModel)
         case .foundMultipleReaders(let alertViewModel):
-            FoundCardReaderListView(viewModel: alertViewModel)
+            PointOfSaleCardPresentPaymentFoundMultipleReadersView(viewModel: alertViewModel)
         case .requiredReaderUpdateInProgress(let alertViewModel):
             PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView(viewModel: alertViewModel)
         case .optionalReaderUpdateInProgress(let alertViewModel):

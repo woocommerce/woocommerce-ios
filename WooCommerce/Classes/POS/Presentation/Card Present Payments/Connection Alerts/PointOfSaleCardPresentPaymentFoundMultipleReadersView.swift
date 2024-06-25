@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Displays a list of card readers that are found, with a CTA to connect to a reader and a CTA to cancel reader search.
-struct FoundCardReaderListView: View {
+struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     private let readerIDs: [String]
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
@@ -42,7 +42,7 @@ struct FoundCardReaderListView: View {
     }
 }
 
-private extension FoundCardReaderListView {
+private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func readerRow(readerID: String) -> some View {
         HStack {
             Text(readerID)
@@ -64,7 +64,7 @@ private extension FoundCardReaderListView {
     }
 }
 
-private extension FoundCardReaderListView {
+private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     enum Layout {
         static let padding: EdgeInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
         static let headerPadding: EdgeInsets = .init(top: 20, leading: 4, bottom: 20, trailing: 4)
@@ -74,6 +74,6 @@ private extension FoundCardReaderListView {
 }
 
 #Preview {
-    FoundCardReaderListView(viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
-                                             selectionHandler: { _ in }))
+    PointOfSaleCardPresentPaymentFoundMultipleReadersView(viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
+                                                                           selectionHandler: { _ in }))
 }

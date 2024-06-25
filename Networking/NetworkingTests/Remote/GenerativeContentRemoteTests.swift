@@ -25,7 +25,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generative-text-success")
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
@@ -36,14 +36,14 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
-        XCTAssertEqual("completion", fieldsValue)
+        XCTAssertEqual("choices", fieldsValue)
     }
 
     func test_generateText_sends_correct_response_format_value() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generative-text-success")
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
@@ -61,7 +61,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generative-text-success")
 
         // When
         let generatedText = try await remote.generateText(siteID: sampleSiteID,
@@ -77,7 +77,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generative-text-failure")
 
         // When
         await assertThrowsError {
@@ -95,7 +95,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-failure")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generative-text-failure")
 
         // When
         await assertThrowsError {
@@ -112,10 +112,10 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_generateText_retries_after_regenarating_token_upon_receiving_403_error() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generative-text-success")
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
@@ -137,7 +137,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
 
         // When
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-invalid-token")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generative-text-invalid-token")
         _ = try? await remote.generateText(siteID: sampleSiteID,
                                            base: "generate a product description for wapuu pencil",
                                            feature: .productDescription,
@@ -145,16 +145,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
-        XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+        XCTAssertEqual(numberOfJetpackAIQueryRequests(in: network.requestsForResponseData), 4)
     }
 
     func test_generateText_generates_token_if_token_expired() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generative-text-success")
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
@@ -181,7 +181,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "identify-language-success")
 
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -191,14 +191,14 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
-        XCTAssertEqual("completion", fieldsValue)
+        XCTAssertEqual("choices", fieldsValue)
     }
 
     func test_identifyLanguage_with_success_returns_language_code() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "identify-language-success")
 
         // When
         let language = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -213,7 +213,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "identify-language-failure")
 
         // When
         await assertThrowsError {
@@ -230,7 +230,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-failure")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "identify-language-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "identify-language-failure")
 
         // When
         await assertThrowsError {
@@ -246,10 +246,10 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_identifyLanguage_retries_after_regenarating_token_upon_receiving_403_error() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "identify-language-success")
 
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -269,23 +269,23 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
 
         // When
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-invalid-token")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "identify-language-invalid-token")
         _ = try? await remote.identifyLanguage(siteID: sampleSiteID,
                                                string: "Woo is awesome.",
                                                feature: .productDescription)
 
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
-        XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+        XCTAssertEqual(numberOfJetpackAIQueryRequests(in: network.requestsForResponseData), 4)
     }
 
     func test_identifyLanguage_generates_token_if_token_expired() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "identify-language-success")
 
         // When
         _ = try await remote.identifyLanguage(siteID: sampleSiteID,
@@ -310,7 +310,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -327,14 +327,14 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
-        XCTAssertEqual("completion", fieldsValue)
+        XCTAssertEqual("choices", fieldsValue)
     }
 
     func test_generateAIProduct_sends_correct_feature_value() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -354,11 +354,11 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual("woo_ios_product_creation", featureValue)
     }
 
-    func test_generateAIProduct_prompt_has_existing_categories() async throws {
+    func test_generateAIProduct_question_has_existing_categories() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -376,16 +376,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("\"categories\":\"Given the list of available categories ```Snacks, Makeup, Clothes```, "
+        let question = try XCTUnwrap(request.parameters?["question"] as? String)
+        XCTAssertTrue(question.contains("\"categories\":\"Given the list of available categories ```Snacks, Makeup, Clothes```, "
                                       + "suggest an array of the best matching categories for this product. You can suggest new categories as well.\""))
     }
 
-    func test_generateAIProduct_prompt_asks_for_new_categories_if_no_categories_available() async throws {
+    func test_generateAIProduct_question_asks_for_new_categories_if_no_categories_available() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -402,15 +402,15 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("\"categories\":\"Suggest an array of the best matching categories for this product.\""))
+        let question = try XCTUnwrap(request.parameters?["question"] as? String)
+        XCTAssertTrue(question.contains("\"categories\":\"Suggest an array of the best matching categories for this product.\""))
     }
 
-    func test_generateAIProduct_prompt_has_existing_tags() async throws {
+    func test_generateAIProduct_question_has_existing_tags() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -427,16 +427,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("\"tags\":\"Given the list of available tags ```Food, Grocery```, "
+        let question = try XCTUnwrap(request.parameters?["question"] as? String)
+        XCTAssertTrue(question.contains("\"tags\":\"Given the list of available tags ```Food, Grocery```, "
                                       + "suggest an array of the best matching tags for this product. You can suggest new tags as well.\""))
     }
 
-    func test_generateAIProduct_prompt_asks_for_new_tags_if_no_tags_available() async throws {
+    func test_generateAIProduct_question_asks_for_new_tags_if_no_tags_available() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -452,15 +452,15 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
-        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("\"tags\":\"Suggest an array of the best matching tags for this product.\""))
+        let question = try XCTUnwrap(request.parameters?["question"] as? String)
+        XCTAssertTrue(question.contains("\"tags\":\"Suggest an array of the best matching tags for this product.\""))
     }
 
     func test_generateAIProduct_with_success_returns_AIProduct() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success")
 
         // When
         let product = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -493,7 +493,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-failure")
 
         // When
         await assertThrowsError {
@@ -517,7 +517,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-failure")
-        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-failure")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-failure")
 
         // When
         await assertThrowsError {
@@ -540,10 +540,10 @@ final class GenerativeContentRemoteTests: XCTestCase {
     func test_generateAIProduct_retries_after_regenarating_token_upon_receiving_403_error() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-success")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -577,7 +577,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
 
         // When
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-invalid-token")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generate-product-invalid-token")
         _ = try? await remote.generateAIProduct(siteID: sampleSiteID,
                                                 productName: "Cookie",
                                                 keywords: "Crunchy, Crispy",
@@ -591,16 +591,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
-        XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+        XCTAssertEqual(numberOfJetpackAIQueryRequests(in: network.requestsForResponseData), 4)
     }
 
     func test_generateAIProduct_generates_token_if_token_expired() async throws {
         // Given
         let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
-        let textCompletionPath = "text-completion"
+        let jetpackAIQueryPath = "jetpack-ai-query"
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
-        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-success")
+        network.simulateResponse(requestUrlSuffix: jetpackAIQueryPath, filename: "generate-product-success")
 
         // When
         _ = try await remote.generateAIProduct(siteID: sampleSiteID,
@@ -647,13 +647,13 @@ private extension GenerativeContentRemoteTests {
         }).count
     }
 
-    func numberOfTextCompletionRequests(in array: [URLRequestConvertible]) -> Int {
-        let textCompletionPath = "text-completion"
+    func numberOfJetpackAIQueryRequests(in array: [URLRequestConvertible]) -> Int {
+        let jetpackAIQueryPath = "jetpack-ai-query"
         return array.filter({ request in
             guard let dotcomRequest = request as? DotcomRequest else {
                 return false
             }
-            return dotcomRequest.path == textCompletionPath
+            return dotcomRequest.path == jetpackAIQueryPath
         }).count
     }
 }

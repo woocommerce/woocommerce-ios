@@ -23,16 +23,20 @@ struct TotalsView: View {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
                                 priceFieldView(title: "Subtotal",
                                                formattedPrice: viewModel.formattedCartTotalPrice,
-                                               shimmeringActive: false)
+                                               shimmeringActive: false,
+                                               redacted: false)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
                                                 viewModel.formattedOrderTotalTaxPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder)
+                                               shimmeringActive: viewModel.isSyncingOrder,
+                                               redacted: viewModel.formattedOrderTotalTaxPrice == nil || viewModel.isSyncingOrder)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice,
+                                               shimmeringActive: viewModel.isSyncingOrder,
+                                               redacted: viewModel.formattedOrderTotalPrice == nil || viewModel.isSyncingOrder)
                             }
                             .padding()
                             .frame(idealWidth: Constants.pricesIdealWidth)
@@ -158,20 +162,20 @@ private extension TotalsView {
         }
     }
 
-    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         HStack(alignment: .top, spacing: .zero) {
             Text(title)
                 .font(Constants.subtotalTitleFont)
             Spacer()
             Text(formattedPrice ?? "-----")
                 .font(Constants.subtotalAmountFont)
-                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .redacted(reason: redacted ? [.placeholder] : [])
                 .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }
 
-    @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
+    @ViewBuilder func totalPriceView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         HStack(alignment: .top, spacing: .zero) {
             Text("Total")
                 .font(Constants.totalTitleFont)
@@ -179,8 +183,8 @@ private extension TotalsView {
             Spacer()
             Text(formattedPrice ?? "-----")
                 .font(Constants.totalAmountFont)
-                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
-                .shimmering(active: viewModel.isSyncingOrder)
+                .redacted(reason: redacted ? [.placeholder] : [])
+                .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }

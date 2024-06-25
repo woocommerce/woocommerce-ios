@@ -164,8 +164,7 @@ private extension HubMenu {
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
                 if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
                    let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                      credentials: viewModel.credentials,
-                                                      storageManager: ServiceLocator.storageManager) {
+                                                      credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
                         hideAppTabBar: { isHidden in

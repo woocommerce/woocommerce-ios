@@ -1,6 +1,5 @@
 import Foundation
 import Networking
-import Storage
 
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
@@ -99,23 +98,19 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     private let siteID: Int64
     private let ordersRemote: OrdersRemote
-    private let storageManager: StorageManagerType
-
-    private lazy var sharedDerivedStorage: StorageType = storageManager.writerDerivedStorage
 
     // MARK: - Initialization
 
-    public convenience init?(siteID: Int64, credentials: Credentials?, storageManager: StorageManagerType) {
+    public convenience init?(siteID: Int64, credentials: Credentials?) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials), storageManager: storageManager)
+        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
     }
 
-    public init(siteID: Int64, network: Network, storageManager: StorageManagerType) {
+    public init(siteID: Int64, network: Network) {
         self.siteID = siteID
-        self.storageManager = storageManager
         self.ordersRemote = OrdersRemote(network: network)
     }
 

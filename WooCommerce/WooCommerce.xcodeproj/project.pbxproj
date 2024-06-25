@@ -7588,6 +7588,7 @@
 				203163BA2C1C5F72001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */,
 				203163B62C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift */,
 				026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */,
+				0220F4942C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift */,
 				203163B82C1C5F42001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView.swift */,
 				026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift */,
 				029D025D2C231F2A00CB1E75 /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView.swift */,
@@ -7632,7 +7633,6 @@
 				026225202C21F01F00700977 /* PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel.swift */,
 				02B9243E2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift */,
 				029048282C2B5825009B77F9 /* PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel.swift */,
-				0220F4942C16DC98003723C2 /* PointOfSaleCardPresentPaymentFoundMultipleReadersView.swift */,
 			);
 			path = "Connection Alerts";
 			sourceTree = "<group>";

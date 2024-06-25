@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(SeveralReadersFoundViewController.Localization.headline)
+            Text(Localization.headline)
                 .font(.headline)
                 .padding(Layout.headerPadding)
 
@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             Button(action: {
                 cancelSearch()
             }) {
-                Text(SeveralReadersFoundViewController.Localization.cancel)
+                Text(Localization.cancel)
             }
             .buttonStyle(SecondaryButtonStyle())
             .padding(Layout.buttonPadding)
@@ -47,7 +47,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
         HStack {
             Text(readerID)
             Spacer()
-            Button(SeveralReadersFoundViewController.Localization.connect) {
+            Button(Localization.connect) {
                 connect(readerID)
             }
             .buttonStyle(TextButtonStyle())
@@ -57,10 +57,38 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func scanningText() -> some View {
         HStack(spacing: Layout.horizontalSpacing) {
             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-            Text(SeveralReadersFoundViewController.Localization.scanningLabel)
+            Text(Localization.scanningLabel)
                 .font(.footnote)
             Spacer()
         }
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
+    enum Localization {
+        static let headline = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline",
+            value: "Several readers found",
+            comment: "Title of a modal presenting a list of readers to choose from."
+        )
+
+        static let connect = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title",
+            value: "Connect",
+            comment: "Button in a cell to allow the user to connect to that reader for that cell"
+        )
+
+        static let scanningLabel = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label",
+            value: "Scanning for readers",
+            comment: "Label for a cell informing the user that reader scanning is ongoing."
+        )
+
+        static let cancel = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title",
+            value: "Cancel",
+            comment: "Button to allow the user to close the modal without connecting."
+        )
     }
 }
 

@@ -288,20 +288,24 @@ private extension GenerativeContentRemote {
 //
 private extension GenerativeContentRemote {
     enum Path {
-        static let textCompletion = "text-completion"
+        static let jetpackAIQuery = "jetpack-ai-query"
         static let jwtToken = "jetpack-openai-query/jwt"
     }
 
     enum ParameterKey {
         static let token = "token"
-        static let prompt = "prompt"
+        static let question = "question"
         static let feature = "feature"
         static let fields = "_fields"
+        static let stream = "stream"
         static let responseFormat = "response_format"
+        static let gptModel = "model"
     }
 
     enum ParameterValue {
-        static let completion = "completion"
+        static let choices = "choices"
+        static let stream = false
+        static let gptModel = "gpt-4o"
     }
 
     enum TokenExpiredError {

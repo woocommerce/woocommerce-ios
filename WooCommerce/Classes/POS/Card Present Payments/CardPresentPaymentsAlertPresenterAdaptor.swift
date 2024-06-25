@@ -53,7 +53,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             self?.latestReaderConnectionHandler = nil
         }
         self.latestReaderConnectionHandler = wrappedConnectionHandler
-        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: wrappedConnectionHandler))
+        paymentEventSubject.send(.show(eventDetails: .foundMultipleReaders(readerIDs: readerIDs, selectionHandler: wrappedConnectionHandler)))
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {
@@ -61,7 +61,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             paymentEventSubject.send(.idle) // TODO: Consider more error handling here
             return
         }
-        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: latestReaderConnectionHandler))
+        paymentEventSubject.send(.show(eventDetails: .foundMultipleReaders(readerIDs: readerIDs, selectionHandler: latestReaderConnectionHandler)))
     }
 
     func dismiss() {

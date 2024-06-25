@@ -282,8 +282,7 @@ private extension PointOfSaleDashboardViewModel {
                 case .message, .none:
                     return false
                 }
-            case .showReaderList,
-                    .showOnboarding:
+            case .showOnboarding:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

@@ -6,12 +6,10 @@ struct FoundCardReaderListView: View {
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
 
-    init(readerIDs: [String],
-         connect: @escaping ((String) -> Void),
-         cancelSearch: @escaping (() -> Void)) {
-        self.readerIDs = readerIDs
-        self.connect = connect
-        self.cancelSearch = cancelSearch
+    init(viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel) {
+        self.readerIDs = viewModel.readerIDs
+        self.connect = viewModel.connect
+        self.cancelSearch = viewModel.cancelSearch
     }
 
     var body: some View {
@@ -76,7 +74,6 @@ private extension FoundCardReaderListView {
 }
 
 #Preview {
-    FoundCardReaderListView(readerIDs: ["Reader 1", "Reader 2"],
-                            connect: { _ in },
-                            cancelSearch: {})
+    FoundCardReaderListView(viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
+                                             selectionHandler: { _ in }))
 }

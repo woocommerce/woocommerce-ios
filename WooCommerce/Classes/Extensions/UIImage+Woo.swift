@@ -1559,6 +1559,10 @@ extension UIImage {
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
+
+    static var posNewTransactionImage: UIImage {
+        UIImage(named: "pos_new_transaction_icon")!
+    }
 }
 
 private extension UIImage {

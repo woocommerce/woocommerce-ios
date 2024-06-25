@@ -10,5 +10,5 @@ public protocol POSItem {
 }
 
 public protocol POSItemProvider {
-    func providePointOfSaleItems() -> [POSItem]
+    func providePointOfSaleItems() async throws -> [POSItem]
 }

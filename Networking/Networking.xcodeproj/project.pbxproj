@@ -529,6 +529,7 @@
 		68F48B0F28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F48B0E28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift */; };
 		68F48B1128E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */; };
 		68F48B1328E3E5750045C15B /* wc-analytics-customers.json in Resources */ = {isa = PBXBuildFile; fileRef = 68F48B1228E3E5750045C15B /* wc-analytics-customers.json */; };
+		68FBA53C2C290A5F0067B377 /* products-load-all-type-simple.json in Resources */ = {isa = PBXBuildFile; fileRef = 68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */; };
 		68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68FBC5B728928C8C00A05461 /* WooFoundation.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteStatsRemoteTests.swift */; };
@@ -1646,6 +1647,7 @@
 		68F48B0E28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCAnalyticsCustomerRemoteTests.swift; sourceTree = "<group>"; };
 		68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCAnalyticsCustomerMapperTests.swift; sourceTree = "<group>"; };
 		68F48B1228E3E5750045C15B /* wc-analytics-customers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wc-analytics-customers.json"; sourceTree = "<group>"; };
+		68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-type-simple.json"; sourceTree = "<group>"; };
 		68FBC5B728928C8C00A05461 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
@@ -3375,6 +3377,7 @@
 				CEA455B62BB2D64400D932CF /* product-bundle-top-bundles.json */,
 				CE070A2F2BBC527900017578 /* gift-card-stats.json */,
 				CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */,
+				68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -4338,6 +4341,7 @@
 				EEE846A32A54745F005239B6 /* identify-language-failure.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				31054718262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json in Resources */,
+				68FBA53C2C290A5F0067B377 /* products-load-all-type-simple.json in Resources */,
 				EE1CB9162B4BCFA800AD24D5 /* blaze-ai-suggestions.json in Resources */,
 				DE66C5672977CEB800DAA978 /* shipping-label-status-success-without-data.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,

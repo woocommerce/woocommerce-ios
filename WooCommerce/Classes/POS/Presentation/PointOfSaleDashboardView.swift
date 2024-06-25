@@ -29,11 +29,15 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
+                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
             }
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
@@ -76,6 +80,7 @@ private extension PointOfSaleDashboardView {
         TotalsView(viewModel: viewModel)
             .background(Color(UIColor.systemBackground))
             .frame(maxWidth: .infinity)
+            .cornerRadius(16)
     }
 
     var productGridView: some View {
@@ -103,7 +108,7 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                      orderService: POSOrderPreviewService()))
     }

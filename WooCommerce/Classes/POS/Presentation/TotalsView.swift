@@ -214,7 +214,7 @@ private extension TotalsView {
 
 #if DEBUG
 #Preview {
-    TotalsView(viewModel: .init(items: [],
+    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                 orderService: POSOrderPreviewService()))
 }

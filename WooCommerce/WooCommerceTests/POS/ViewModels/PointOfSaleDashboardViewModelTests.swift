@@ -3,22 +3,27 @@ import XCTest
 @testable import WooCommerce
 @testable import class Yosemite.POSOrderService
 @testable import enum Yosemite.Credentials
+@testable import protocol Yosemite.POSItemProvider
+@testable import protocol Yosemite.POSItem
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
     private var cardPresentPaymentService: CardPresentPaymentPreviewService!
+    private var itemProvider: MockPOSItemProvider!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = CardPresentPaymentPreviewService()
-        sut = PointOfSaleDashboardViewModel(items: [],
+        itemProvider = MockPOSItemProvider()
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: POSOrderPreviewService())
     }
 
     override func tearDown() {
         cardPresentPaymentService = nil
+        itemProvider = nil
         sut = nil
         super.tearDown()
     }
@@ -48,5 +53,31 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.itemsInCart.isEmpty)
         XCTAssertFalse(sut.isCartCollapsed)
+    }
+
+    func test_isSyncingItems_is_true_when_populatePointOfSaleItems_is_invoked_then_switches_to_false_when_completed() async {
+        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
+
+        // Given/When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.isSyncingItems, false)
+    }
+}
+
+private extension PointOfSaleDashboardViewModelTests {
+    final class MockPOSItemProvider: POSItemProvider {
+        var items: [POSItem] = []
+
+        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            return items
+        }
+
+        func simulate(items: [POSItem]) {
+            for item in items {
+                self.items.append(item)
+            }
+        }
     }
 }

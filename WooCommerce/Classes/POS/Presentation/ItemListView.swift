@@ -8,24 +8,32 @@ struct ItemListView: View {
     }
 
     var body: some View {
-        VStack {
-            Text("Products")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-                .font(.title)
-                .foregroundColor(Color.posPrimaryTexti3)
-            ScrollView {
-                ForEach(viewModel.items, id: \.productID) { item in
-                    Button(action: {
-                        viewModel.addItemToCart(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+        if viewModel.isSyncingItems {
+            VStack {
+                Spacer()
+                Text("Loading...")
+                Spacer()
+            }
+        } else {
+            VStack {
+                Text("Products")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 8)
+                    .font(.title)
+                    .foregroundColor(Color.posPrimaryTexti3)
+                ScrollView {
+                    ForEach(viewModel.items, id: \.productID) { item in
+                        Button(action: {
+                            viewModel.addItemToCart(item)
+                        }, label: {
+                            ItemCardView(item: item)
+                        })
+                    }
                 }
             }
+            .padding(.horizontal, 32)
+            .background(Color.posBackgroundGreyi3)
         }
-        .padding(.horizontal, 32)
-        .background(Color.posBackgroundGreyi3)
     }
 }
 
@@ -33,7 +41,7 @@ struct ItemListView: View {
 import class Yosemite.POSOrderService
 import enum Yosemite.Credentials
 #Preview {
-    ItemListView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+    ItemListView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                           orderService: POSOrderPreviewService()))
 }

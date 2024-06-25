@@ -29,6 +29,9 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -104,7 +107,7 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                      orderService: POSOrderPreviewService()))
     }

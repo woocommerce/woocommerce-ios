@@ -14,7 +14,7 @@ struct PointOfSaleEntryPointView: View {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            items: itemProvider.providePointOfSaleItems(),
+            itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: orderService)
         )

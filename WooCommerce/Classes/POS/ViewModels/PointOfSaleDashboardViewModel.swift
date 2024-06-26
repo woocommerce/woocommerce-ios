@@ -205,7 +205,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
     }
 
     @MainActor

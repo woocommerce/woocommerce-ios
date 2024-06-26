@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Enables new dashboard cards on the My Store screen.
     ///
     case dynamicDashboardM2
+
+    /// Enables M1 updates of product creation AI version 2
+    ///
+    case productCreationAIv2M1
 }

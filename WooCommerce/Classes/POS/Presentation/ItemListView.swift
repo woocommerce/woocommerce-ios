@@ -8,19 +8,17 @@ struct ItemListView: View {
     }
 
     var body: some View {
-        if viewModel.isSyncingItems {
-            VStack {
+        VStack {
+            Text("Products")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 8)
+                .font(.title)
+                .foregroundColor(Color.posPrimaryTexti3)
+            if viewModel.isSyncingItems {
                 Spacer()
                 Text("Loading...")
                 Spacer()
-            }
-        } else {
-            VStack {
-                Text("Products")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 8)
-                    .font(.title)
-                    .foregroundColor(Color.posPrimaryTexti3)
+            } else {
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
@@ -31,9 +29,9 @@ struct ItemListView: View {
                     }
                 }
             }
-            .padding(.horizontal, 32)
-            .background(Color.posBackgroundGreyi3)
         }
+        .padding(.horizontal, 32)
+        .background(Color.posBackgroundGreyi3)
     }
 }
 

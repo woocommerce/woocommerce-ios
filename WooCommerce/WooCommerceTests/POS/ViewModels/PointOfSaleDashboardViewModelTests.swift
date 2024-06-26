@@ -5,25 +5,29 @@ import XCTest
 @testable import enum Yosemite.Credentials
 @testable import protocol Yosemite.POSItemProvider
 @testable import protocol Yosemite.POSItem
+@testable import protocol Yosemite.POSOrderServiceProtocol
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
     private var cardPresentPaymentService: CardPresentPaymentPreviewService!
     private var itemProvider: MockPOSItemProvider!
+    private var orderService: POSOrderServiceProtocol!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = CardPresentPaymentPreviewService()
         itemProvider = MockPOSItemProvider()
+        orderService = POSOrderPreviewService()
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: POSOrderPreviewService())
+                                            orderService: orderService)
     }
 
     override func tearDown() {
         cardPresentPaymentService = nil
         itemProvider = nil
+        orderService = nil
         sut = nil
         super.tearDown()
     }
@@ -64,13 +68,59 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.isSyncingItems, false)
     }
+
+    func test_isSyncingItems_is_true_when_reload_is_invoked_then_toggled_to_false_when_completed() async throws {
+        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
+
+        // Given/When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.isSyncingItems, false)
+    }
+
+    func test_isSyncingItems_is_true_when_reload_is_invoked_then_toggled_to_false_when_error() async throws {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldThrowError = true
+
+        let sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+                                                cardPresentPaymentService: cardPresentPaymentService,
+                                                orderService: orderService)
+        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
+
+        // Given/When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.isSyncingItems, false)
+    }
+
+    func test_reload_invokes_providePointOfSaleItems() async {
+        // Given/When
+        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 0)
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 1)
+    }
 }
 
 private extension PointOfSaleDashboardViewModelTests {
+    enum POSError: Error {
+        case forcedError
+    }
+
     final class MockPOSItemProvider: POSItemProvider {
         var items: [POSItem] = []
+        var shouldThrowError: Bool = false
+        var provideItemsInvocationCount = 0
 
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            provideItemsInvocationCount += 1
+            if shouldThrowError {
+                throw POSError.forcedError
+            }
             return items
         }
 

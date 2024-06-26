@@ -367,6 +367,10 @@ private extension BlazeCampaignCreationFormViewModel {
         })
     }
 
+    // Updates the `isUsingAISuggestions` property based on whether the current
+    // `tagline` and `description` match any of the provided AI suggestions.
+    // The property will be set to `true` if there is at least one suggestion
+    // that matches both the `tagline` and `description`, and the suggestions list is not empty.
     func updateIsUsingAISuggestions() {
         isUsingAISuggestions = suggestions.contains { element in
             element.siteName == tagline && element.textSnippet == description && !suggestions.isEmpty

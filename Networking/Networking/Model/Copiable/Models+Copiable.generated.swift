@@ -801,6 +801,27 @@ extension Networking.GiftCardStatsTotals {
     }
 }
 
+extension Networking.GoogleAdsConnection {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        currency: CopiableProp<String> = .copy,
+        symbol: CopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy
+    ) -> Networking.GoogleAdsConnection {
+        let id = id ?? self.id
+        let currency = currency ?? self.currency
+        let symbol = symbol ?? self.symbol
+        let rawStatus = rawStatus ?? self.rawStatus
+
+        return Networking.GoogleAdsConnection(
+            id: id,
+            currency: currency,
+            symbol: symbol,
+            rawStatus: rawStatus
+        )
+    }
+}
+
 extension Networking.InboxAction {
     public func copy(
         id: CopiableProp<Int64> = .copy,

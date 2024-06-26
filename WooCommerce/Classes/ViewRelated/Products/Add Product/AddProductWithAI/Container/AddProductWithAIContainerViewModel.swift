@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
+import Experiments
 
 enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1
@@ -23,6 +24,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     let siteID: Int64
     let source: AddProductCoordinator.Source
+    let featureFlagService: FeatureFlagService
 
     var canBeDismissed: Bool {
         currentStep == .productName && addProductNameViewModel.productName == nil
@@ -47,12 +49,14 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
          source: AddProductCoordinator.Source,
          analytics: Analytics = ServiceLocator.analytics,
          onCancel: @escaping () -> Void,
-         onCompletion: @escaping (Product) -> Void) {
+         onCompletion: @escaping (Product) -> Void,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.source = source
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
+        self.featureFlagService = featureFlagService
         isFirstAttemptGeneratingDetails = true
     }
 

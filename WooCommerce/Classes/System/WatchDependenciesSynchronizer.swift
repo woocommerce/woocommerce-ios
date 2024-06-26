@@ -72,6 +72,12 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .sink { [watchSession] dependencies, isSessionActive, _ in
                 guard isSessionActive else { return }
                 do {
+
+                    // If dependencies is nil, send an empty dictionary. This is most likely a logged out state
+                    guard let dependencies else {
+                        return try watchSession.updateApplicationContext([:])
+                    }
+
                     let data = try JSONEncoder().encode(dependencies)
                     if let jsonObject = try JSONSerialization.jsonObject(with: data, options: .topLevelDictionaryAssumed) as? [String: Any] {
                         try watchSession.updateApplicationContext(jsonObject)

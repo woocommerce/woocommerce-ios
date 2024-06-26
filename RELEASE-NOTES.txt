@@ -4,6 +4,7 @@
 -----
 - [*] Payments: fixed issue when connecting to a card reader after cancelling reader discovery [https://github.com/woocommerce/woocommerce-ios/issues/13125]
 - [*] Payments: fixed issue when connecting to a card reader after an error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/13126]
+- [*] Implemented user experience improvements within Blaze i3 for a more intuitive and streamlined interface. [https://github.com/woocommerce/woocommerce-ios/pull/13172]
 
 19.2
 -----

@@ -140,10 +140,6 @@ public enum FeatureFlag: Int {
     ///
     case hazmatShipping
 
-    /// Enables product creation with AI.
-    ///
-    case productCreationAI
-
     /// Enables gift card support in order creation/editing
     ///
     case giftCardInOrderForm

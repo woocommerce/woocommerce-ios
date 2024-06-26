@@ -125,6 +125,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
+    func removeAllItemsFromCart() {
+        itemsInCart.removeAll()
+    }
+
     var itemsInCartLabel: String? {
         switch itemsInCart.count {
         case 0:

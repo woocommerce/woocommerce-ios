@@ -43,6 +43,7 @@ public typealias DotcomDevice = Networking.DotcomDevice
 public typealias DotcomUser = Networking.DotcomUser
 public typealias Feature = Networking.Feature
 public typealias FreeDomainSuggestion = Networking.FreeDomainSuggestion
+public typealias GoogleAdsConnection = Networking.GoogleAdsConnection
 public typealias GiftCardStats = Networking.GiftCardStats
 public typealias GiftCardStatsInterval = Networking.GiftCardStatsInterval
 public typealias GiftCardStatsTotals = Networking.GiftCardStatsTotals

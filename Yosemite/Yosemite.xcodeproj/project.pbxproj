@@ -446,6 +446,8 @@
 		DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */; };
 		DEB387822C2AB4370025256E /* GoogleAdsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387812C2AB4370025256E /* GoogleAdsStore.swift */; };
 		DEB387842C2AB50B0025256E /* GoogleAdsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387832C2AB50B0025256E /* GoogleAdsAction.swift */; };
+		DEB387862C2C09A70025256E /* GoogleAdsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387852C2C09A70025256E /* GoogleAdsStoreTests.swift */; };
+		DEB387882C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387872C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift */; };
 		DED91DEE2AD673CF00CDCC53 /* BlazeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */; };
 		DED91DF02AD6756600CDCC53 /* BlazeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */; };
 		DED91DF42AD67E9400CDCC53 /* BlazeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF32AD67E9400CDCC53 /* BlazeStoreTests.swift */; };
@@ -949,6 +951,8 @@
 		DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeTargetTopic+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		DEB387812C2AB4370025256E /* GoogleAdsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsStore.swift; sourceTree = "<group>"; };
 		DEB387832C2AB50B0025256E /* GoogleAdsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsAction.swift; sourceTree = "<group>"; };
+		DEB387852C2C09A70025256E /* GoogleAdsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsStoreTests.swift; sourceTree = "<group>"; };
+		DEB387872C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleListingsAndAdsRemote.swift; sourceTree = "<group>"; };
 		DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAction.swift; sourceTree = "<group>"; };
 		DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStore.swift; sourceTree = "<group>"; };
 		DED91DF32AD67E9400CDCC53 /* BlazeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStoreTests.swift; sourceTree = "<group>"; };
@@ -1384,6 +1388,7 @@
 				0286A1BD2A0CC4810099EF94 /* MockFeatureFlagRemote.swift */,
 				02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */,
 				EE4D51B72ACD3C9800783D77 /* MockProductCategoriesRemote.swift */,
+				DEB387872C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1718,6 +1723,7 @@
 				0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */,
 				0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */,
 				DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */,
+				DEB387852C2C09A70025256E /* GoogleAdsStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -2587,6 +2593,7 @@
 				B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */,
 				578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */,
 				7455263022305F88003F8932 /* OrderStatusStoreTests.swift in Sources */,
+				DEB387862C2C09A70025256E /* GoogleAdsStoreTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				455A931D2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift in Sources */,
 				D88303E925E459DC00C877F9 /* CardPresentPaymentStoreTests.swift in Sources */,
@@ -2621,6 +2628,7 @@
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */,
 				FEEB2F5F268A1C5E0075A6E0 /* User+RolesTests.swift in Sources */,
+				DEB387882C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
 				68BD37B928DB323D00C2A517 /* CustomerStoreTests.swift in Sources */,
 				DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */,

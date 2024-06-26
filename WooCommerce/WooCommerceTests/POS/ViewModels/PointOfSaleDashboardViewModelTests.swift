@@ -104,6 +104,29 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(itemProvider.provideItemsInvocationCount, 1)
     }
+
+    func test_removeAllItemsFromCart_removes_all_items_from_cart() {
+        // Given
+        let numberOfItems = Int.random(in: 1...5)
+        for i in 1...numberOfItems {
+            let product = POSProduct(itemID: UUID(),
+                                     productID: Int64(i),
+                                     name: "Choco",
+                                     price: "2.00",
+                                     formattedPrice: "$2.00",
+                                     itemCategories: [],
+                                     productImageSource: nil,
+                                     productType: .simple)
+            sut.addItemToCart(product)
+        }
+        XCTAssertEqual(sut.itemsInCart.count, numberOfItems)
+
+        // When
+        sut.removeAllItemsFromCart()
+
+        // Then
+        XCTAssertEqual(sut.itemsInCart.count, 0)
+    }
 }
 
 private extension PointOfSaleDashboardViewModelTests {

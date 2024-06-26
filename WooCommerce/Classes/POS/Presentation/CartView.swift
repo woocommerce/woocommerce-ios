@@ -16,6 +16,13 @@ struct CartView: View {
                 if let temsInCartLabel = viewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
                         .foregroundColor(Color.posPrimaryTexti3)
+                    Button {
+                        viewModel.removeAllItemsFromCart()
+                    } label: {
+                        Text("Clear all")
+                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                    }
+                    .padding(.horizontal, 8)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

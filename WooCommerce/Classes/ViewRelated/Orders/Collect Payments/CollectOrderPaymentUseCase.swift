@@ -820,11 +820,11 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
 extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
     var retryApproach: CardPaymentRetryApproach {
         switch self {
-        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried:
+        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried, .orderTotalChanged:
             return .dontRetry
         case .paymentGatewayNotFound:
             return .restart
-        case .couldNotRefreshOrder, .orderTotalChanged:
+        case .couldNotRefreshOrder:
             return .reuseIntent
         }
     }

@@ -267,7 +267,8 @@ private extension CollectOrderPaymentUseCase {
             }
 
             guard self.isOrderAwaitingPayment() else {
-                return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.orderAlreadyPaid))
+                return onPaymentCompletion(.success(CardPresentCapturedPaymentData(paymentMethod: .unknown,
+                                                                                   receiptParameters: nil)))
             }
 
             onCheckCompletion(.success(()))
@@ -766,7 +767,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
     case paymentGatewayNotFound
     case orderTotalChanged
     case couldNotRefreshOrder(Error)
-    case orderAlreadyPaid
     case alreadyRetried(Error)
 
     var errorDescription: String? {
@@ -781,8 +781,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             return error.errorDescription
         case .couldNotRefreshOrder(let error):
             return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
-        case .orderAlreadyPaid:
-            return Localization.orderAlreadyPaidLocalizedDescription
         case .alreadyRetried(let error as LocalizedError):
             return error.errorDescription
         case .alreadyRetried(let error):
@@ -802,11 +800,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             value: "Order total has changed since the beginning of payment. Please go back and check the order is " +
             "correct, then try the payment again.",
             comment: "Error message when collecting an In-Person Payment and the order total has changed remotely.")
-
-        static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. This order is already paid, taking a further payment would result in the " +
-            "customer being charged twice for their order.",
-            comment: "Error message shown during In-Person Payments when the order is found to be paid after it's refreshed.")
 
         static let paymentGatewayNotFoundLocalizedDescription = NSLocalizedString(
             "Unable to process payment. We could not connect to the payment system. Please contact support if this " +
@@ -867,7 +860,7 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
 extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
     var retryApproach: CardPaymentRetryApproach {
         switch self {
-        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried, .orderTotalChanged:
+        case .flowCanceledByUser, .alreadyRetried, .orderTotalChanged:
             return .dontRetry
         case .paymentGatewayNotFound:
             return .restart

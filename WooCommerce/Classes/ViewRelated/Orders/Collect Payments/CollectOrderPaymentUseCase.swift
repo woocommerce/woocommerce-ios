@@ -167,8 +167,8 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                 self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
                             case false:
                                 self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                         alertProvider: paymentAlertProvider,
-                                                         onCompleted: onCompleted)
+                                                              alertProvider: paymentAlertProvider,
+                                                              onCompleted: onCompleted)
                             }
                         }
                     }
@@ -612,7 +612,7 @@ private extension CollectOrderPaymentUseCase {
 
         let noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: CollectOrderPaymentUseCaseDefinitions.Localization.failedReceiptPrintNoticeText,
-                                    feedbackType: .error)
+                            feedbackType: .error)
         noticePresenter.presentingViewController = rootViewController
         noticePresenter.enqueue(notice: notice)
 

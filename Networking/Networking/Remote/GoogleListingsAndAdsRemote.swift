@@ -14,7 +14,11 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
 
     public func checkConnection(for siteID: Int64) async throws -> GoogleAdsConnection {
         let path = Paths.connection
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
         let mapper = GoogleAdsConnectionMapper()
         return try await enqueue(request, mapper: mapper)
     }

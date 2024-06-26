@@ -19,6 +19,9 @@ struct POSCardPresentPaymentMessageView: View {
 
     var body: some View {
         VStack {
+            Rectangle()
+                .frame(width: 100, height: 100)
+                .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
             if let showProgress = viewModel.showProgress, showProgress == true {
                 ProgressView()
                     .progressViewStyle(IndefiniteCircularProgressViewStyle(

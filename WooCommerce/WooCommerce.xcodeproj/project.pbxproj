@@ -7655,8 +7655,8 @@
 		205E79492C204B2D001BA266 /* Reader Messages */ = {
 			isa = PBXGroup;
 			children = (
-				205E79472C204B21001BA266 /* PointOfSaleCardPresentPaymentPreparingForPaymentMessageView.swift */,
 				DA41043B2C2C15AD00E8456A /* POSCardPresentPaymentMessageView.swift */,
+				205E79472C204B21001BA266 /* PointOfSaleCardPresentPaymentPreparingForPaymentMessageView.swift */,
 				205E794A2C2051B5001BA266 /* PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView.swift */,
 				205E794C2C2057B9001BA266 /* PointOfSaleCardPresentPaymentErrorMessageView.swift */,
 				205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */,

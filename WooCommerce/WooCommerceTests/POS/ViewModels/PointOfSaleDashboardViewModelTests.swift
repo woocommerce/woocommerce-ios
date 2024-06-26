@@ -95,6 +95,15 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.isSyncingItems, false)
     }
+
+    func test_reload_invokes_providePointOfSaleItems() async {
+        // Given/When
+        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 0)
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 1)
+    }
 }
 
 private extension PointOfSaleDashboardViewModelTests {
@@ -105,8 +114,10 @@ private extension PointOfSaleDashboardViewModelTests {
     final class MockPOSItemProvider: POSItemProvider {
         var items: [POSItem] = []
         var shouldThrowError: Bool = false
+        var provideItemsInvocationCount = 0
 
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            provideItemsInvocationCount += 1
             if shouldThrowError {
                 throw POSError.forcedError
             }

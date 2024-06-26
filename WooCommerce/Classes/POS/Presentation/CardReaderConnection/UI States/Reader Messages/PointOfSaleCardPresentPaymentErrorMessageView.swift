@@ -5,18 +5,12 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel
 
     var body: some View {
-        HStack {
-            VStack {
-                Text(viewModel.title)
-                Text(viewModel.message)
-            }
-
-            Button(viewModel.tryAgainButtonViewModel.title,
-                   action: viewModel.tryAgainButtonViewModel.actionHandler)
-
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-        }
+        POSCardPresentPaymentMessageView(viewModel: .init(title: viewModel.title,
+                                                          message: viewModel.message,
+                                                          buttons: [
+                                                            viewModel.tryAgainButtonViewModel,
+                                                            viewModel.cancelButtonViewModel
+                                                          ]))
     }
 }
 

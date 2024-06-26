@@ -4,7 +4,7 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
 
     var body: some View {
-        Text(viewModel.message)
+        POSCardPresentPaymentMessageView(viewModel: .init(message: viewModel.message))
     }
 }
 

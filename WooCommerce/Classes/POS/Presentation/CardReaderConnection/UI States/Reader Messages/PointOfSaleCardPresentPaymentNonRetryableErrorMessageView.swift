@@ -5,15 +5,9 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
 
     var body: some View {
-        HStack {
-            VStack {
-                Text(viewModel.title)
-                Text(viewModel.message)
-            }
-
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-        }
+        POSCardPresentPaymentMessageView(viewModel: .init(title: viewModel.title,
+                                                          message: viewModel.message,
+                                                          buttons: [viewModel.cancelButtonViewModel]))
     }
 }
 

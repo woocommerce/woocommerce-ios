@@ -11,6 +11,7 @@ struct TotalsView: View {
         HStack {
             VStack(alignment: .leading) {
                 VStack {
+                    Spacer()
                     cardReaderView
                         .font(.title)
                         .padding()
@@ -121,16 +122,14 @@ private extension TotalsView {
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
-                Text("Reader connected")
-                Button(action: viewModel.cardPaymentTapped) {
-                    Text("Collect Payment")
-                }
+                POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader connected",
+                                                                  buttons: [.init(title: "Collect Payment",
+                                                                                  actionHandler: viewModel.cardPaymentTapped)]))
             }
         case .disconnected:
-            Text("Reader disconnected")
-            Button(action: viewModel.cardPaymentTapped) {
-                Text("Collect Payment")
-            }
+            POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader disconnected",
+                                                              buttons: [.init(title: "Collect Payment",
+                                                                              actionHandler: viewModel.cardPaymentTapped)]))
         }
     }
 

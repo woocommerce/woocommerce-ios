@@ -1117,6 +1117,8 @@
 		EE2C09C829AF6357009396F9 /* StoreOnboardingTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */; };
 		EE338A0E294AF9BD00183934 /* ApplicationPasswordMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */; };
 		EE3D1E962B8F0CF40016B132 /* BlazeCampaignListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3D1E952B8F0CF40016B132 /* BlazeCampaignListItem.swift */; };
+		EE3F89842C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3F89832C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift */; };
+		EE3F89862C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3F89852C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift */; };
 		EE4D51B22ACC6F1E00783D77 /* ProductCategoryFromBatchCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4D51B12ACC6F1E00783D77 /* ProductCategoryFromBatchCreation.swift */; };
 		EE4D51B52ACD331300783D77 /* product-categories-created.json in Resources */ = {isa = PBXBuildFile; fileRef = EE4D51B32ACD331300783D77 /* product-categories-created.json */; };
 		EE4D51B62ACD331300783D77 /* product-categories-created-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EE4D51B42ACD331300783D77 /* product-categories-created-without-data.json */; };
@@ -2249,6 +2251,8 @@
 		EE2C09C729AF6357009396F9 /* StoreOnboardingTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTask.swift; sourceTree = "<group>"; };
 		EE338A0D294AF9BD00183934 /* ApplicationPasswordMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordMapperTests.swift; sourceTree = "<group>"; };
 		EE3D1E952B8F0CF40016B132 /* BlazeCampaignListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListItem.swift; sourceTree = "<group>"; };
+		EE3F89832C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackAIQueryResponseMapper.swift; sourceTree = "<group>"; };
+		EE3F89852C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackAIQueryResponseMapperTests.swift; sourceTree = "<group>"; };
 		EE4D51B12ACC6F1E00783D77 /* ProductCategoryFromBatchCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryFromBatchCreation.swift; sourceTree = "<group>"; };
 		EE4D51B32ACD331300783D77 /* product-categories-created.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-categories-created.json"; sourceTree = "<group>"; };
 		EE4D51B42ACD331300783D77 /* product-categories-created-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-categories-created-without-data.json"; sourceTree = "<group>"; };
@@ -3520,6 +3524,7 @@
 				EE078D902AD2EFBA00C1199E /* JWTokenMapper.swift */,
 				DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */,
 				DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */,
+				EE3F89832C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3697,6 +3702,7 @@
 				CEB9BF442BB19EDE0007978A /* ProductBundleStatsMapperTests.swift */,
 				DE20045C2BF614A300660A72 /* ProductStockListMapperTests.swift */,
 				DE2004732BFB53DD00660A72 /* ProductReportListMapperTests.swift */,
+				EE3F89852C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift */,
 				DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */,
 			);
 			path = Mapper;
@@ -4775,6 +4781,7 @@
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
 				EE57C10E2979277300BC31E7 /* ApplicationPasswordNameAndUUID.swift in Sources */,
+				EE3F89842C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift in Sources */,
 				B59325D3217E4206000B0E8E /* NoteMedia.swift in Sources */,
 				26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */,
 				09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */,
@@ -5184,6 +5191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */,
+				EE3F89862C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift in Sources */,
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
 				03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */,
 				CCE5F39129F000AC00087332 /* SubscriptionListMapperTests.swift in Sources */,

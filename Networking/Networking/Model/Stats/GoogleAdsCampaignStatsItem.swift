@@ -13,9 +13,15 @@ public struct GoogleAdsCampaignStatsItem: Decodable, Equatable, GeneratedCopiabl
     ///
     public let campaignName: String?
 
+    /// Campaign status (raw value)
+    ///
+    public let rawStatus: String
+
     /// Campaign status
     ///
-    public let status: String
+    public var status: Status {
+        Status(rawValue: rawStatus) ?? .removed
+    }
 
     /// Subtotal stats
     ///
@@ -24,11 +30,19 @@ public struct GoogleAdsCampaignStatsItem: Decodable, Equatable, GeneratedCopiabl
 
     /// Designated Initializer.
     ///
-    public init(campaignID: Int64, campaignName: String?, status: String, subtotals: GoogleAdsCampaignStatsTotals) {
+    public init(campaignID: Int64, campaignName: String?, rawStatus: String, subtotals: GoogleAdsCampaignStatsTotals) {
         self.campaignID = campaignID
         self.campaignName = campaignName ?? ""
-        self.status = status
+        self.rawStatus = rawStatus
         self.subtotals = subtotals
+    }
+}
+
+public extension GoogleAdsCampaignStatsItem {
+    enum Status: String {
+        case enabled
+        case paused
+        case removed
     }
 }
 
@@ -39,7 +53,7 @@ private extension GoogleAdsCampaignStatsItem {
     enum CodingKeys: String, CodingKey {
         case campaignID     = "id"
         case campaignName   = "name"
-        case status
+        case rawStatus      = "status"
         case subtotals
     }
 }

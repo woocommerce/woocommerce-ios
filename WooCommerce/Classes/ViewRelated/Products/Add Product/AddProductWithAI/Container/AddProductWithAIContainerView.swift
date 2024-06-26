@@ -79,13 +79,23 @@ struct AddProductWithAIContainerView: View {
 
             switch viewModel.currentStep {
             case .productName:
-                AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
-                                         onUsePackagePhoto: onUsePackagePhoto,
-                                         onContinueWithProductName: { name in
-                    withAnimation {
-                        viewModel.onContinueWithProductName(name: name)
-                    }
-                })
+                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+                    ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
+                                                      onUsePackagePhoto: onUsePackagePhoto,
+                                                      onContinueWithFeatures: { features in
+                        withAnimation {
+                            viewModel.onProductFeaturesAdded(features: features)
+                        }
+                    })
+                } else {
+                    AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
+                                             onUsePackagePhoto: onUsePackagePhoto,
+                                             onContinueWithProductName: { name in
+                        withAnimation {
+                            viewModel.onContinueWithProductName(name: name)
+                        }
+                    })
+                }
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
                                                         productName: viewModel.productName,

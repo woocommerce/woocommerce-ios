@@ -32,6 +32,9 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.populatePointOfSaleItems()
         }
+        .refreshable {
+            await viewModel.reload()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {

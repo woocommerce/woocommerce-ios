@@ -31,8 +31,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(order, nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
             default:
                 break
             }
@@ -111,8 +111,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(order, nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
             default:
                 break
             }
@@ -154,8 +154,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
             default:
@@ -187,8 +187,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
             default:

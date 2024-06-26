@@ -145,6 +145,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func removeAllItemsFromCart() {
         itemsInCart.removeAll()
+        checkIfCartEmpty()
     }
 
     var itemsInCartLabel: String? {

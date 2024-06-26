@@ -157,7 +157,7 @@ private extension ProductCreationAIStartingInfoView {
         )
         static let placeholder = NSLocalizedString(
             "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design",
-            comment: "Placeholder text on the product name field"
+            comment: "Placeholder text on the product features field"
         )
         static let readTextFromPhoto = NSLocalizedString(
             "Read text from product photo",

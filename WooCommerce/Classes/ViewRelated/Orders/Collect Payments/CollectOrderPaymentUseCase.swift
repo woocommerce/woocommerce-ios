@@ -247,18 +247,20 @@ private extension CollectOrderPaymentUseCase {
             }
         }))
 
-        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { [weak self] (order, error) in
+        let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
             guard let self = self else { return }
-            guard let order = order else {
-                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
-                if let error = error {
-                    return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.couldNotRefreshOrder(error)))
-                } else {
-                    return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.unknownErrorRefreshingOrder))
-                }
-            }
 
-            self.order = order
+            switch result {
+                case .success(let order):
+                    guard order.total == self.order.total else {
+                        return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.orderTotalChanged))
+                    }
+
+                    self.order = order
+                case .failure(let error):
+                    DDLogError("⛔️ Error synchronizing Order: \(error.localizedDescription)")
+                    return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.couldNotRefreshOrder(error)))
+            }
 
             guard self.isTotalAmountValid() else {
                 return onCheckCompletion(.failure(self.totalAmountInvalidError()))
@@ -716,7 +718,7 @@ enum CollectOrderPaymentUseCaseNotValidAmountError: Error, LocalizedError, Equat
 enum CollectOrderPaymentUseCaseError: LocalizedError {
     case flowCanceledByUser
     case paymentGatewayNotFound
-    case unknownErrorRefreshingOrder
+    case orderTotalChanged
     case couldNotRefreshOrder(Error)
     case orderAlreadyPaid
     case alreadyRetried(Error)
@@ -727,8 +729,8 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             return Localization.paymentCancelledLocalizedDescription
         case .paymentGatewayNotFound:
             return Localization.paymentGatewayNotFoundLocalizedDescription
-        case .unknownErrorRefreshingOrder:
-            return Localization.unknownErrorWhileRefreshingOrderLocalizedDescription
+        case .orderTotalChanged:
+            return Localization.orderTotalChangedLocalizedDescription
         case .couldNotRefreshOrder(let error as LocalizedError):
             return error.errorDescription
         case .couldNotRefreshOrder(let error):
@@ -749,10 +751,11 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             comment: "Error message when collecting an In-Person Payment and unable to update the order. %!$@ will " +
             "be replaced with further error details.")
 
-        static let unknownErrorWhileRefreshingOrderLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. We could not fetch the latest order details. Please check your network " +
-            "connection and try again.",
-            comment: "Error message when collecting an In-Person Payment and unable to update the order.")
+        static let orderTotalChangedLocalizedDescription = NSLocalizedString(
+            "collectOrderPaymentUseCase.error.message.orderTotalChanged",
+            value: "Order total has changed since the beginning of payment. Please go back and check the order is " +
+            "correct, then try the payment again.",
+            comment: "Error message when collecting an In-Person Payment and the order total has changed remotely.")
 
         static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
             "Unable to process payment. This order is already paid, taking a further payment would result in the " +
@@ -818,11 +821,11 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
 extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
     var retryApproach: CardPaymentRetryApproach {
         switch self {
-        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried:
+        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried, .orderTotalChanged:
             return .dontRetry
         case .paymentGatewayNotFound:
             return .restart
-        case .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
+        case .couldNotRefreshOrder:
             return .reuseIntent
         }
     }

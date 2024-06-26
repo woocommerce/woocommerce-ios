@@ -32,6 +32,9 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.populatePointOfSaleItems()
         }
+        .refreshable {
+            await viewModel.reload()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -48,13 +51,6 @@ struct PointOfSaleDashboardView: View {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
             } else {
                 switch viewModel.cardPresentPaymentEvent {
-                case let .showReaderList(readerIDs, selectionHandler):
-                    // TODO: make this an instance of `showAlert` so we can handle it above too.
-                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
-                        selectionHandler(readerID)
-                    }, cancelSearch: {
-                        selectionHandler(nil)
-                    })
                 case .idle,
                         .show, // handled above
                         .showOnboarding:
@@ -96,8 +92,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Idle"
         case .show:
             return "Event"
-        case .showReaderList(let readerIDs, _):
-            return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
         }

@@ -130,7 +130,6 @@ private extension ProductCreationAIStartingInfoView {
         static let titleBlockBottomPadding: CGFloat = 40
 
         static let titleBlockSpacing: CGFloat = 16
-        static let horizontalPadding: CGFloat = 16
 
         static let editorBlockSpacing: CGFloat = 8
         static let minimumEditorHeight: CGFloat = 70

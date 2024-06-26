@@ -33,9 +33,10 @@ struct CartView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
-                        ItemRowView(cartItem: cartItem) {
+                        ItemRowView(cartItem: cartItem,
+                                    onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
                             viewModel.removeItemFromCart(cartItem)
-                        }
+                        } : nil)
                         .id(cartItem.id)
                         .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)

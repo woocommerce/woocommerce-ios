@@ -73,7 +73,9 @@ struct AddProductWithAIContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            progressView
+            if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) == false {
+                progressView
+            }
 
             switch viewModel.currentStep {
             case .productName:

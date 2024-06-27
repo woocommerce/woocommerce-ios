@@ -37,7 +37,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var itemsInCart: [CartItem] = []
+    @Published private(set) var itemsInCart: [CartItem] = [] {
+        didSet {
+            checkIfCartEmpty()
+        }
+    }
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
@@ -140,12 +144,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
-        checkIfCartEmpty()
     }
 
     func removeAllItemsFromCart() {
         itemsInCart.removeAll()
-        checkIfCartEmpty()
     }
 
     var itemsInCartLabel: String? {

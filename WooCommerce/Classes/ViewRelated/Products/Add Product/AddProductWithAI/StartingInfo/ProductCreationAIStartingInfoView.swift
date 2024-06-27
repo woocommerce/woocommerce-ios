@@ -148,23 +148,28 @@ private extension ProductCreationAIStartingInfoView {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "Starting information",
+            "productCreationAIStartingInfoView.title",
+            value: "Starting information",
             comment: "Title on the starting info screen."
         )
         static let subtitle = NSLocalizedString(
-            "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.",
+            "productCreationAIStartingInfoView.subtitle",
+            value: "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.",
             comment: "Subtitle on the starting info screen."
         )
         static let placeholder = NSLocalizedString(
-            "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design",
+            "productCreationAIStartingInfoView.placeholder",
+            value: "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design",
             comment: "Placeholder text on the product features field"
         )
         static let readTextFromPhoto = NSLocalizedString(
-            "Read text from product photo",
+            "productCreationAIStartingInfoView.readTextFromPhoto",
+            value: "Read text from product photo",
             comment: "Upload package photo button on the text field"
         )
         static let continueText = NSLocalizedString(
-            "Continue",
+            "productCreationAIStartingInfoView.continueText",
+            value: "Continue",
             comment: "Continue button on the starting info screen."
         )
     }

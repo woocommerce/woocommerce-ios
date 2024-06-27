@@ -16,7 +16,7 @@ struct PointOfSaleDashboardView: View {
                 case .building:
                     productGridView
                     Spacer()
-                    if viewModel.cartViewModel.isCartCollapsed {
+                    if viewModel.isCartCollapsed {
                         collapsedCartView
                     } else {
                         cartView
@@ -43,19 +43,6 @@ struct PointOfSaleDashboardView: View {
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
         .toolbarBackground(.visible, for: .bottomBar)
-        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch viewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
-        })
     }
 }
 
@@ -88,26 +75,13 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-fileprivate extension CardPresentPaymentEvent {
-    var temporaryEventDescription: String {
-        switch self {
-        case .idle:
-            return "Idle"
-        case .show:
-            return "Event"
-        case .showOnboarding(let onboardingViewModel):
-            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        }
-    }
-}
-
 #if DEBUG
-#Preview {
-    NavigationStack {
-        PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                     orderService: POSOrderPreviewService()))
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        PointOfSaleDashboardView(
+//            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+//                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                                     orderService: POSOrderPreviewService()))
+//    }
+//}
 #endif

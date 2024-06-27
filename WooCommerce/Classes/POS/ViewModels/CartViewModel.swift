@@ -21,10 +21,6 @@ final class CartViewModel: ObservableObject {
         orderStage.assign(to: &$orderStage)
     }
 
-    var isCartCollapsed: Bool {
-        itemsInCart.isEmpty
-    }
-
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
     }

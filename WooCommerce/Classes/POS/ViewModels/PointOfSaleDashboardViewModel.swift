@@ -81,11 +81,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observePaymentStateForButtonDisabledProperties()
     }
 
-//    func submitCart() {
-//        cartViewModel.submitCart()
-//        startSyncingOrder()
-//    }
-
     func cardPaymentTapped() {
         Task { @MainActor in
             await collectPayment()
@@ -118,15 +113,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             return
         }
         await collectPayment()
-    }
-
-    @MainActor
-    func updateOrderStatus(_ status: OrderStatusEnum) async throws -> POSOrder? {
-        guard let order else {
-            return nil
-        }
-        let updatedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
-        return updatedOrder
     }
 
     func calculateAmountsTapped() {

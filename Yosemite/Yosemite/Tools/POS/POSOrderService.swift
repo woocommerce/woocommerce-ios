@@ -79,13 +79,6 @@ public protocol POSOrderServiceProtocol {
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [POSCartItem], order: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder
 
-    /// Updates status of an order and syncs it
-    /// - Parameters:
-    ///   - posOrder: POS order.
-    ///   - status: New order status.
-    /// - Returns: Updated and synced POS order.
-    func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder
-
     /// Creates WOO Order from POS Order.
     /// - Parameters:
     ///   - posOrder: POS order.

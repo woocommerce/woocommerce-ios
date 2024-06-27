@@ -29,7 +29,7 @@ extension MockGoogleListingsAndAdsRemote: GoogleListingsAndAdsRemoteProtocol {
         }
     }
 
-    func fetchAdsCampaign(for siteID: Int64) async throws -> [GoogleAdsCampaign] {
+    func fetchAdsCampaigns(for siteID: Int64) async throws -> [GoogleAdsCampaign] {
         guard let result = fetchingAdsCampaignsResult else {
             XCTFail("Could not find result for fetching GLA campaigns.")
             throw NetworkError.notFound()

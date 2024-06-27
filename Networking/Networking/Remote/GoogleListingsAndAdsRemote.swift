@@ -9,7 +9,7 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
 
     /// Fetch ads campaigns for the given site
     ///
-    func fetchAdsCampaign(for siteID: Int64) async throws -> [GoogleAdsCampaign]
+    func fetchAdsCampaigns(for siteID: Int64) async throws -> [GoogleAdsCampaign]
 }
 
 /// Google Listings & Ads: Endpoints
@@ -27,7 +27,7 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func fetchAdsCampaign(for siteID: Int64) async throws -> [GoogleAdsCampaign] {
+    public func fetchAdsCampaigns(for siteID: Int64) async throws -> [GoogleAdsCampaign] {
         let path = Paths.adsCampaigns
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,

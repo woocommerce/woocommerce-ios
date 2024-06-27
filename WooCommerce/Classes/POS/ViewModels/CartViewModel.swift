@@ -2,15 +2,15 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 final class CartViewModel: ObservableObject {
+    enum OrderStage {
+        case building
+        case finalizing
+    }
+
     @Published private(set) var itemsInCart: [CartItem] = []
-    // TODO: Move order stage here as well
-    // @Published private(set) var orderStage: OrderStage = .building
+    @Published private(set) var orderStage: OrderStage = .building
 
     init() { }
-
-    var isEmpty: Bool {
-        itemsInCart.isEmpty
-    }
 
     var isCartCollapsed: Bool {
         itemsInCart.isEmpty
@@ -38,9 +38,30 @@ final class CartViewModel: ObservableObject {
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        checkIfCartEmpty()
     }
 
     func removeAllItemsFromCart() {
         itemsInCart.removeAll()
+        checkIfCartEmpty()
+    }
+
+    private func checkIfCartEmpty() {
+        if itemsInCart.isEmpty {
+            orderStage = .building
+        }
+    }
+
+    func submitCart() {
+        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
+    }
+
+    func startNewTransaction() {
+        orderStage = .building
     }
 }

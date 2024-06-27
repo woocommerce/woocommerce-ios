@@ -12,7 +12,7 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         VStack {
             HStack {
-                switch viewModel.orderStage {
+                switch viewModel.cartViewModel.orderStage {
                 case .building:
                     productGridView
                     Spacer()

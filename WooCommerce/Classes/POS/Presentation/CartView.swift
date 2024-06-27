@@ -45,7 +45,7 @@ struct CartView: View {
                     }
                 }
                 .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
-                    if dashboardViewModel.orderStage == .building,
+                    if cartViewModel.orderStage == .building,
                        let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                         withAnimation {
                             proxy.scrollTo(last)
@@ -54,7 +54,7 @@ struct CartView: View {
                 }
             }
             Spacer()
-            switch dashboardViewModel.orderStage {
+            switch cartViewModel.orderStage {
             case .building:
                 checkoutButton
                     .padding(32)

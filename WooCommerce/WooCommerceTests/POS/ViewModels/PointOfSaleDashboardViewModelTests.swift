@@ -80,6 +80,12 @@ final class CartViewModelTests: XCTestCase {
         sut.removeAllItemsFromCart()
         XCTAssertTrue(sut.isCartCollapsed)
     }
+    
+    // TODO:
+    func test_cart_is_empty_switches_orderStage_to_building() { }
+    func test_submitCart_switches_orderStage_to_finalizing() { }
+    func test_addMoreToCart_switches_orderStage_to_building() { }
+    func test_startNewTransaction_switches_orderStage_to_building() { }
 }
 
 // Helpers

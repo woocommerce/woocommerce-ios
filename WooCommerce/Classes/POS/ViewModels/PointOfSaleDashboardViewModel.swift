@@ -62,12 +62,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
-    enum OrderStage {
-        case building
-        case finalizing
-    }
-
-    @Published private(set) var orderStage: OrderStage = .building
     @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
@@ -123,24 +117,16 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     var canDeleteItemsFromCart: Bool {
-        return orderStage != .finalizing
-    }
-
-    private func checkIfCartEmpty() {
-        if cartViewModel.isEmpty {
-            orderStage = .building
-        }
+        return cartViewModel.orderStage != .finalizing
     }
 
     func submitCart() {
-        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
-        orderStage = .finalizing
-
+        cartViewModel.submitCart()
         startSyncingOrder()
     }
 
     func addMoreToCart() {
-        orderStage = .building
+        cartViewModel.addMoreToCart()
     }
 
     var areAmountsFullyCalculated: Bool {
@@ -207,7 +193,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func startNewTransaction() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
-        orderStage = .building
+        cartViewModel.startNewTransaction()
         paymentState = .acceptingCard
         order = nil
     }

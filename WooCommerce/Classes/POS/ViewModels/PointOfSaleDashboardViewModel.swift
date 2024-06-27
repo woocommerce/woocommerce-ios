@@ -1,14 +1,8 @@
 import SwiftUI
-import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
+import Yosemite
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
-import protocol Yosemite.POSOrderServiceProtocol
-import struct Yosemite.POSOrder
 import Combine
-import enum Yosemite.OrderStatusEnum
-import struct Yosemite.POSCartItem
-import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
@@ -37,24 +31,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @ObservedObject var cartViewModel: CartViewModel = CartViewModel()
+    @ObservedObject var totalsViewModel: TotalsViewModel = TotalsViewModel()
 
     @Published private(set) var items: [POSItem] = []
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
-    var formattedOrderTotalPrice: String? {
-        return formattedPrice(order?.total, currency: order?.currency)
-    }
-    var formattedOrderTotalTaxPrice: String? {
-        return formattedPrice(order?.totalTax, currency: order?.currency)
-    }
-
-    private func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(price, with: currency)
-    }
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
@@ -69,7 +51,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
-    @Published private(set) var isSyncingOrder: Bool = false
     @Published private(set) var isSyncingItems: Bool = true
 
     private let orderService: POSOrderServiceProtocol
@@ -119,14 +100,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func submitCart() {
         cartViewModel.submitCart()
         startSyncingOrder()
-    }
-
-    var areAmountsFullyCalculated: Bool {
-        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
-    }
-
-    var showRecalculateButton: Bool {
-        return !areAmountsFullyCalculated && isSyncingOrder == false
     }
 
     func cardPaymentTapped() {
@@ -284,10 +257,10 @@ private extension PointOfSaleDashboardViewModel {
 
     @MainActor
     private func syncOrder(for cartProducts: [CartItem]) async {
-        guard isSyncingOrder == false else {
+        guard totalsViewModel.isSyncingOrder == false else {
             return
         }
-        isSyncingOrder = true
+        totalsViewModel.doSync()
         let cart = cartProducts
             .map {
                 POSCartItem(itemID: nil,
@@ -295,15 +268,15 @@ private extension PointOfSaleDashboardViewModel {
                             quantity: Decimal($0.quantity))
             }
         defer {
-            isSyncingOrder = false
+            totalsViewModel.stopSync()
         }
         do {
-            isSyncingOrder = true
+            totalsViewModel.doSync()
             let order = try await orderService.syncOrder(cart: cart,
                                                               order: order,
                                                               allProducts: items)
             self.order = order
-            isSyncingOrder = false
+            totalsViewModel.stopSync()
             // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()
             DDLogInfo("🟢 [POS] Synced order: \(order)")

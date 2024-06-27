@@ -1,10 +1,59 @@
 import SwiftUI
+import WooFoundation // currencyformatter
+import Yosemite
+
+final class TotalsViewModel: ObservableObject {
+    @Published private(set) var isSyncingOrder: Bool = false
+    
+    func doSync() {
+        isSyncingOrder = true
+    }
+    
+    func stopSync() {
+        isSyncingOrder = false
+    }
+
+    /// Order created the first time the checkout is shown for a given transaction.
+    /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
+    @Published private var order: POSOrder?
+
+    var areAmountsFullyCalculated: Bool {
+        isSyncingOrder == false &&
+        formattedOrderTotalTaxPrice != nil &&
+        formattedOrderTotalPrice != nil
+    }
+
+    var formattedOrderTotalTaxPrice: String? {
+        formattedPrice(order?.totalTax, currency: order?.currency)
+    }
+
+    private func formattedPrice(_ price: String?, currency: String?) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        // TODO: CurrencySettings dependency
+        guard let formattedPrice = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatAmount(price, with: currency) else {
+            return nil
+        }
+        return formattedPrice
+    }
+
+    var formattedOrderTotalPrice: String? {
+        return formattedPrice(order?.total, currency: order?.currency)
+    }
+
+    var showRecalculateButton: Bool {
+        return !areAmountsFullyCalculated && isSyncingOrder == false
+    }
+}
 
 struct TotalsView: View {
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var dashboardViewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+    init(dashboardViewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
+        self.dashboardViewModel = dashboardViewModel
+        self.totalsViewModel = totalsViewModel
     }
 
     var body: some View {
@@ -19,21 +68,22 @@ struct TotalsView: View {
                         HStack {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
                                 priceFieldView(title: "Subtotal",
-                                               formattedPrice: viewModel.formattedCartTotalPrice,
+                                               // Relies on Cart and itemsInCart
+                                               formattedPrice: dashboardViewModel.formattedCartTotalPrice,
                                                shimmeringActive: false,
                                                redacted: false)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
-                                                viewModel.formattedOrderTotalTaxPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalTaxPrice == nil || viewModel.isSyncingOrder)
+                                                totalsViewModel.formattedOrderTotalTaxPrice,
+                                               shimmeringActive: totalsViewModel.isSyncingOrder,
+                                               redacted: totalsViewModel.formattedOrderTotalTaxPrice == nil || totalsViewModel.isSyncingOrder)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalPrice == nil || viewModel.isSyncingOrder)
+                                totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
+                                               shimmeringActive: totalsViewModel.isSyncingOrder,
+                                               redacted: totalsViewModel.formattedOrderTotalPrice == nil || totalsViewModel.isSyncingOrder)
                             }
                             .padding()
                             .frame(idealWidth: Constants.pricesIdealWidth)
@@ -42,9 +92,10 @@ struct TotalsView: View {
                             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
                                 .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
-                        if viewModel.showRecalculateButton {
+                        if totalsViewModel.showRecalculateButton {
                             Button("Calculate amounts") {
-                                viewModel.calculateAmountsTapped()
+                                // Relies on syncing the order
+                                dashboardViewModel.calculateAmountsTapped()
                             }
                         }
                     }
@@ -60,12 +111,14 @@ struct TotalsView: View {
             }
         }
         .onDisappear {
-            viewModel.onTotalsViewDisappearance()
+            // Relies on CardPresentService
+            dashboardViewModel.onTotalsViewDisappearance()
         }
     }
 
     private var gradientStops: [Gradient.Stop] {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        // Relies on CardPresentService
+        if dashboardViewModel.paymentState == .cardPaymentSuccessful {
             return [
                 Gradient.Stop(color: Color.clear, location: 0.0),
                 Gradient.Stop(color: Color.posTotalsGradientGreen, location: 1.0)
@@ -80,14 +133,14 @@ struct TotalsView: View {
     }
 
     private var paymentButtonsDisabled: Bool {
-        return !viewModel.areAmountsFullyCalculated
+        return !totalsViewModel.areAmountsFullyCalculated
     }
 }
 
 private extension TotalsView {
     private var newTransactionButton: some View {
         Button(action: {
-            viewModel.startNewTransaction()
+            dashboardViewModel.startNewTransaction()
         }, label: {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
@@ -107,7 +160,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if dashboardViewModel.paymentState == .cardPaymentSuccessful {
             newTransactionButton
         }
         else {
@@ -116,19 +169,19 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.cardReaderConnectionViewModel.connectionStatus {
+        switch dashboardViewModel.cardReaderConnectionViewModel.connectionStatus {
         case .connected:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = dashboardViewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
                 Text("Reader connected")
-                Button(action: viewModel.cardPaymentTapped) {
+                Button(action: dashboardViewModel.cardPaymentTapped) {
                     Text("Collect Payment")
                 }
             }
         case .disconnected:
             Text("Reader disconnected")
-            Button(action: viewModel.cardPaymentTapped) {
+            Button(action: dashboardViewModel.cardPaymentTapped) {
                 Text("Collect Payment")
             }
         }
@@ -181,10 +234,10 @@ private extension TotalsView {
     }
 }
 
-#if DEBUG
-#Preview {
-    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
-                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService()))
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
+//                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                orderService: POSOrderPreviewService()))
+//}
+//#endif

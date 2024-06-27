@@ -108,18 +108,28 @@ class StoreOnboardingViewModel: ObservableObject {
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
         await update(state: .loading)
+
+        var tasks: [StoreOnboardingTaskViewModel] = []
+        var syncingError: Error?
         do {
-            let tasks = try await loadTasks()
-            if tasks.isNotEmpty {
-                await checkIfAllTasksAreCompleted(tasks)
-                await update(state: .loaded(rows: tasks))
-            } else {
-                await update(state: .loaded(rows: taskViewModels))
-            }
-            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .onboarding))
+            tasks = try await loadTasks()
         } catch {
+            syncingError = error
+        }
+
+        if tasks.isNotEmpty {
+            await checkIfAllTasksAreCompleted(tasks)
+            await update(state: .loaded(rows: tasks))
+        } else if taskViewModels.isNotEmpty {
+            await update(state: .loaded(rows: taskViewModels))
+        } else {
             await update(state: .failed)
-            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .onboarding, error: error))
+        }
+
+        if let syncingError {
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .onboarding, error: syncingError))
+        } else {
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .onboarding))
         }
     }
 

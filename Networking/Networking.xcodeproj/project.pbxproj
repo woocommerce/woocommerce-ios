@@ -806,6 +806,8 @@
 		CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */; };
 		CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */; };
 		CE21FB1C2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */; };
+		CE21FB1E2C2ADA4300303832 /* GoogleAdsCampaignStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB1D2C2ADA4300303832 /* GoogleAdsCampaignStatsMapper.swift */; };
+		CE21FB202C2ADAC500303832 /* GoogleAdsCampaignStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB1F2C2ADAC500303832 /* GoogleAdsCampaignStatsMapperTests.swift */; };
 		CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
 		CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = CE2678422A26102A00FD9AEB /* order-alternative-types.json */; };
@@ -1945,6 +1947,8 @@
 		CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStats.swift; sourceTree = "<group>"; };
 		CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsTotals.swift; sourceTree = "<group>"; };
 		CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsItem.swift; sourceTree = "<group>"; };
+		CE21FB1D2C2ADA4300303832 /* GoogleAdsCampaignStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsMapper.swift; sourceTree = "<group>"; };
+		CE21FB1F2C2ADAC500303832 /* GoogleAdsCampaignStatsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsMapperTests.swift; sourceTree = "<group>"; };
 		CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
 		CE2678422A26102A00FD9AEB /* order-alternative-types.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-alternative-types.json"; sourceTree = "<group>"; };
@@ -3437,6 +3441,7 @@
 				CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */,
 				2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */,
 				CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */,
+				CE21FB1D2C2ADA4300303832 /* GoogleAdsCampaignStatsMapper.swift */,
 				DE50295C28C6068B00551736 /* JetpackUserMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
 				E18152BF28F85D4A0011A0EC /* InAppPurchasesProductMapper.swift */,
@@ -3632,6 +3637,7 @@
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				CE865AA42A4209A70049B03C /* EntityDateModifiedMapperTests.swift */,
 				CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */,
+				CE21FB1F2C2ADAC500303832 /* GoogleAdsCampaignStatsMapperTests.swift */,
 				AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */,
 				E18152C328F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift */,
 				E1A5C27128F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift */,
@@ -5061,6 +5067,7 @@
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
 				CE070A2E2BBC3C3500017578 /* GiftCardStatsTotals.swift in Sources */,
 				CEE9187D29F7D636004B23FF /* OrderGiftCard.swift in Sources */,
+				CE21FB1E2C2ADA4300303832 /* GoogleAdsCampaignStatsMapper.swift in Sources */,
 				020EF5E92A8BC957009D2169 /* ProductsTotalMapper.swift in Sources */,
 				02C254A025636F6900A04423 /* ShippingLabelRefund.swift in Sources */,
 				CCF48B24262890BB0034EA83 /* ShippingLabelPaymentCardType.swift in Sources */,
@@ -5213,6 +5220,7 @@
 				CEE02EEB2B34811400162F63 /* DecodingError+CodingPathTests.swift in Sources */,
 				EE3F89862C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift in Sources */,
 				45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */,
+				CE21FB202C2ADAC500303832 /* GoogleAdsCampaignStatsMapperTests.swift in Sources */,
 				03EB998A2906AB0C00F06A39 /* JustInTimeMessagesRemoteTests.swift in Sources */,
 				CCE5F39129F000AC00087332 /* SubscriptionListMapperTests.swift in Sources */,
 				DEDA8D9B2B05BEF80076BF0F /* CreateProductVariationTests.swift in Sources */,

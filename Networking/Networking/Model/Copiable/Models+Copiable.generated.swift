@@ -842,11 +842,11 @@ extension Networking.GoogleAdsCampaignStatsItem {
 
 extension Networking.GoogleAdsCampaignStatsTotals {
     public func copy(
-        sales: CopiableProp<Decimal> = .copy,
-        spend: CopiableProp<Decimal> = .copy,
-        clicks: CopiableProp<Int> = .copy,
-        impressions: CopiableProp<Int> = .copy,
-        conversions: CopiableProp<Decimal> = .copy
+        sales: NullableCopiableProp<Decimal> = .copy,
+        spend: NullableCopiableProp<Decimal> = .copy,
+        clicks: NullableCopiableProp<Int> = .copy,
+        impressions: NullableCopiableProp<Int> = .copy,
+        conversions: NullableCopiableProp<Decimal> = .copy
     ) -> Networking.GoogleAdsCampaignStatsTotals {
         let sales = sales ?? self.sales
         let spend = spend ?? self.spend

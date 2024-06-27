@@ -10,6 +10,48 @@ import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
+final class CartViewModel: ObservableObject {
+    @Published private(set) var itemsInCart: [CartItem] = []
+
+    init() { }
+
+    var isEmpty: Bool {
+        itemsInCart.isEmpty
+    }
+
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
+    }
+
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        itemsInCart.last
+    }
+
+    var itemsInCartLabel: String? {
+        switch itemsInCart.count {
+        case 0:
+            return nil
+        default:
+            return String.pluralize(itemsInCart.count,
+                                    singular: "%1$d item",
+                                    plural: "%1$d items")
+        }
+    }
+
+    func addItemToCart(_ item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        itemsInCart.append(cartItem)
+    }
+
+    func removeItemFromCart(_ cartItem: CartItem) {
+        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+    }
+
+    func removeAllItemsFromCart() {
+        itemsInCart.removeAll()
+    }
+}
+
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
         case idle
@@ -36,8 +78,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
+    @ObservedObject var cartViewModel: CartViewModel = CartViewModel()
+
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var itemsInCart: [CartItem] = []
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
@@ -126,40 +169,33 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     var isCartCollapsed: Bool {
-        itemsInCart.isEmpty
+        cartViewModel.isCartCollapsed
     }
 
     var itemToScrollToWhenCartUpdated: CartItem? {
-        return itemsInCart.last
+        cartViewModel.itemToScrollToWhenCartUpdated
     }
 
     func addItemToCart(_ item: POSItem) {
-        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.append(cartItem)
+        cartViewModel.addItemToCart(item)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
-        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        cartViewModel.removeItemFromCart(cartItem)
         checkIfCartEmpty()
     }
 
     func removeAllItemsFromCart() {
-        itemsInCart.removeAll()
+        cartViewModel.removeAllItemsFromCart()
+        checkIfCartEmpty()
     }
 
     var itemsInCartLabel: String? {
-        switch itemsInCart.count {
-        case 0:
-            return nil
-        default:
-            return String.pluralize(itemsInCart.count,
-                                    singular: "%1$d item",
-                                    plural: "%1$d items")
-        }
+        cartViewModel.itemsInCartLabel
     }
 
     private func checkIfCartEmpty() {
-        if itemsInCart.isEmpty {
+        if cartViewModel.isEmpty {
             orderStage = .building
         }
     }
@@ -232,13 +268,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private func startSyncingOrder() {
         Task { @MainActor in
-            await syncOrder(for: itemsInCart)
+            await syncOrder(for: cartViewModel.itemsInCart)
         }
     }
 
     func startNewTransaction() {
         // clear cart
-        itemsInCart.removeAll()
+        cartViewModel.removeAllItemsFromCart()
         orderStage = .building
         paymentState = .acceptingCard
         order = nil
@@ -252,7 +288,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
 private extension PointOfSaleDashboardViewModel {
     func observeItemsInCartForCartTotal() {
-        $itemsInCart
+        cartViewModel.$itemsInCart
             .map { [weak self] in
                 guard let self else { return "-" }
                 let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in

@@ -32,7 +32,7 @@ struct CartView: View {
             .foregroundColor(Color.white)
             ScrollViewReader { proxy in
                 ScrollView {
-                    ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                    ForEach(viewModel.cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
                                     onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
                             viewModel.removeItemFromCart(cartItem)

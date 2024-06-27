@@ -1030,6 +1030,7 @@
 		DEB3877E2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877D2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift */; };
 		DEB387802C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */; };
 		DEB3878A2C2D6E470025256E /* GoogleAdsCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387892C2D6E470025256E /* GoogleAdsCampaign.swift */; };
+		DEB3878C2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3878B2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
 		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
@@ -2165,6 +2166,7 @@
 		DEB3877D2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleListingsAndAdsRemote.swift; sourceTree = "<group>"; };
 		DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleListingsAndAdsRemoteTests.swift; sourceTree = "<group>"; };
 		DEB387892C2D6E470025256E /* GoogleAdsCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaign.swift; sourceTree = "<group>"; };
+		DEB3878B2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignListMapper.swift; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
 		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
@@ -3803,6 +3805,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB387752C2A9A140025256E /* GoogleAdsConnectionMapper.swift */,
+				DEB3878B2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift */,
 			);
 			path = GoogleAds;
 			sourceTree = "<group>";
@@ -5041,6 +5044,7 @@
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,
 				261870782540A252006522A1 /* ShippingLineTax.swift in Sources */,
+				DEB3878C2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift in Sources */,
 				EE998150295AACE10074AE68 /* RequestConverter.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				0359EA1D27AADE000048DE2D /* WCPayChargeMapper.swift in Sources */,

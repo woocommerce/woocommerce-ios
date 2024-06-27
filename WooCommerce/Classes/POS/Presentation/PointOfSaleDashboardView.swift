@@ -16,7 +16,7 @@ struct PointOfSaleDashboardView: View {
                 case .building:
                     productGridView
                     Spacer()
-                    if viewModel.isCartCollapsed {
+                    if viewModel.cartViewModel.isCartCollapsed {
                         collapsedCartView
                     } else {
                         cartView

@@ -22,7 +22,7 @@ struct ItemListView: View {
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
-                            viewModel.addItemToCart(item)
+                            viewModel.cartViewModel.addItemToCart(item)
                         }, label: {
                             ItemCardView(item: item)
                         })

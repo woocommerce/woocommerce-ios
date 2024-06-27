@@ -1031,6 +1031,8 @@
 		DEB387802C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */; };
 		DEB3878A2C2D6E470025256E /* GoogleAdsCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387892C2D6E470025256E /* GoogleAdsCampaign.swift */; };
 		DEB3878C2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3878B2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift */; };
+		DEB3878F2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB3878D2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json */; };
+		DEB387902C2D71A10025256E /* gla-campaign-list-with-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DEB3878E2C2D71A10025256E /* gla-campaign-list-with-data-envelope.json */; };
 		DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */; };
 		DEC2B08D297AA048003923FB /* reviews-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08C297AA048003923FB /* reviews-all-without-data.json */; };
 		DEC2B08F297AA123003923FB /* reviews-single-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEC2B08E297AA123003923FB /* reviews-single-without-data.json */; };
@@ -2167,6 +2169,8 @@
 		DEB3877F2C2AA05D0025256E /* GoogleListingsAndAdsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleListingsAndAdsRemoteTests.swift; sourceTree = "<group>"; };
 		DEB387892C2D6E470025256E /* GoogleAdsCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaign.swift; sourceTree = "<group>"; };
 		DEB3878B2C2D70EF0025256E /* GoogleAdsCampaignListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignListMapper.swift; sourceTree = "<group>"; };
+		DEB3878D2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "gla-campaign-list-without-data-envelope.json"; sourceTree = "<group>"; };
+		DEB3878E2C2D71A10025256E /* gla-campaign-list-with-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "gla-campaign-list-with-data-envelope.json"; sourceTree = "<group>"; };
 		DEC2961B26BBE764005A056B /* ShippingLabelCustomsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomsForm.swift; sourceTree = "<group>"; };
 		DEC2B08C297AA048003923FB /* reviews-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-all-without-data.json"; sourceTree = "<group>"; };
 		DEC2B08E297AA123003923FB /* reviews-single-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-single-without-data.json"; sourceTree = "<group>"; };
@@ -2965,6 +2969,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DEB3878E2C2D71A10025256E /* gla-campaign-list-with-data-envelope.json */,
+				DEB3878D2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json */,
 				DEB387772C2A9ADC0025256E /* gla-connection-with-data-envelope.json */,
 				DEB387792C2A9B1E0025256E /* gla-connection-without-data-envelope.json */,
 				DE970D832C23E3F60019EF42 /* product-report-string-stock-quantity.json */,
@@ -4356,6 +4362,7 @@
 				31054724262E2FC600C5C02B /* wcpay-payment-intent-requires-capture.json in Resources */,
 				DE66C5692977D62700DAA978 /* plugins-without-data.json in Resources */,
 				EE9826902B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json in Resources */,
+				DEB387902C2D71A10025256E /* gla-campaign-list-with-data-envelope.json in Resources */,
 				7492FAE3217FBDBC00ED2C69 /* settings-general-alt.json in Resources */,
 				93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */,
 				74C947842193A6C70024CB60 /* comment-moderate-approved.json in Resources */,
@@ -4505,6 +4512,7 @@
 				3158FE7826129DF300E566B9 /* wcpay-account-restricted.json in Resources */,
 				EE065ACE2B8E51AD009848CB /* blaze-campaigns-list-success.json in Resources */,
 				45A4B85625D2E75300776FB4 /* shipping-label-address-validation-success.json in Resources */,
+				DEB3878F2C2D71A10025256E /* gla-campaign-list-without-data-envelope.json in Resources */,
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE71E2292A4C35C900DB5376 /* reports-products.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,

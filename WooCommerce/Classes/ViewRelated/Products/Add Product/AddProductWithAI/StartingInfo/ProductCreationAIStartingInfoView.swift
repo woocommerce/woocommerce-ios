@@ -86,13 +86,13 @@ private extension ProductCreationAIStartingInfoView {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .renderingMode(.template)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(.brand))
+                        .foregroundColor(Color.accentColor)
                         .bodyStyle()
                         .padding(Layout.UsePackagePhoto.padding)
 
                     Text(Localization.readTextFromPhoto)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color(.brand))
+                        .foregroundColor(Color.accentColor)
                         .bodyStyle()
                 }
             }

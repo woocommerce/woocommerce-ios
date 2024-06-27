@@ -644,6 +644,7 @@ private extension CardReaderConnectionController {
             alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailedIncompleteAddress(
                     wcSettingsAdminURL: adminUrl,
+                    showsInAuthenticatedWebView: isWPCOMStore(),
                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
                                                          retrySearch: retrySearch),
                     retrySearch: retrySearch,
@@ -672,8 +673,7 @@ private extension CardReaderConnectionController {
     private func openWCSettingsAction(adminUrl: URL?,
                                       retrySearch: @escaping () -> Void) -> (() -> Void)? {
         if let adminUrl = adminUrl {
-            if let site = stores.sessionManager.defaultSite,
-               site.isWordPressComStore {
+            if isWPCOMStore() {
                 return { [weak self] in
                     self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)
                 }
@@ -685,6 +685,10 @@ private extension CardReaderConnectionController {
             }
         }
         return nil
+    }
+
+    private func isWPCOMStore() -> Bool {
+        stores.sessionManager.defaultSite?.isWordPressComStore == true
     }
 
     private func showIncompleteAddressErrorWithRefreshButton() {

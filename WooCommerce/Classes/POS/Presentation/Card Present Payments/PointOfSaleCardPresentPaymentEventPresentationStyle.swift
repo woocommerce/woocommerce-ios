@@ -53,10 +53,11 @@ extension CardPresentPaymentEventDetails {
                     retryButtonAction: retrySearch,
                     cancelButtonAction: endSearch)))
 
-        case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
+        case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
             return .alert(.connectingFailedUpdateAddress(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
                     settingsAdminUrl: wcSettingsAdminURL,
+                    showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                     retrySearchAction: retrySearch,
                     cancelSearchAction: endSearch)))
 

@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct CartView: View {
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var dashboardViewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+    init(dashboardViewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
+        self.dashboardViewModel = dashboardViewModel
+        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -13,11 +15,11 @@ struct CartView: View {
                 Text("Cart")
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
-                if let temsInCartLabel = viewModel.itemsInCartLabel {
+                if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
                         .foregroundColor(Color.posPrimaryTexti3)
                     Button {
-                        viewModel.removeAllItemsFromCart()
+                        cartViewModel.removeAllItemsFromCart()
                     } label: {
                         Text("Clear all")
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
@@ -32,19 +34,19 @@ struct CartView: View {
             .foregroundColor(Color.white)
             ScrollViewReader { proxy in
                 ScrollView {
-                    ForEach(viewModel.cartViewModel.itemsInCart, id: \.id) { cartItem in
+                    ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
-                            viewModel.removeItemFromCart(cartItem)
+                                    onItemRemoveTapped: dashboardViewModel.canDeleteItemsFromCart ? {
+                            cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
                         .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
                     }
                 }
-                .onChange(of: viewModel.itemToScrollToWhenCartUpdated?.id) { _ in
-                    if viewModel.orderStage == .building,
-                       let last = viewModel.itemToScrollToWhenCartUpdated?.id {
+                .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                    if dashboardViewModel.orderStage == .building,
+                       let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                         withAnimation {
                             proxy.scrollTo(last)
                         }
@@ -52,14 +54,14 @@ struct CartView: View {
                 }
             }
             Spacer()
-            switch viewModel.orderStage {
+            switch dashboardViewModel.orderStage {
             case .building:
                 checkoutButton
                     .padding(32)
             case .finalizing:
                 addMoreButton
                     .padding(32)
-                    .disabled(viewModel.isAddMoreDisabled)
+                    .disabled(dashboardViewModel.isAddMoreDisabled)
             }
         }
         .frame(maxWidth: .infinity)
@@ -72,7 +74,7 @@ struct CartView: View {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            viewModel.submitCart()
+            dashboardViewModel.submitCart()
         } label: {
             HStack {
                 Spacer()
@@ -88,7 +90,7 @@ private extension CartView {
 
     var addMoreButton: some View {
         Button {
-            viewModel.addMoreToCart()
+            dashboardViewModel.addMoreToCart()
         } label: {
             Spacer()
             Text("Add More")
@@ -101,10 +103,10 @@ private extension CartView {
     }
 }
 
-#if DEBUG
-#Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                      orderService: POSOrderPreviewService()))
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+//                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                                      orderService: POSOrderPreviewService()))
+//}
+//#endif

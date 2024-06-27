@@ -571,6 +571,21 @@ extension Networking.GiftCardStatsTotals {
         )
     }
 }
+extension Networking.GoogleAdsCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaign {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            rawStatus: .fake(),
+            rawType: .fake(),
+            amount: .fake(),
+            country: .fake(),
+            targetedLocations: .fake()
+        )
+    }
+}
 extension Networking.GoogleAdsConnection {
     /// Returns a "ready to use" type filled with fake values.
     ///

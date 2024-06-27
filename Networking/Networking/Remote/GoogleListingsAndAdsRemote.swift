@@ -15,13 +15,13 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
     ///   - earliestDateToInclude: The earliest date to include in the results.
     ///   - latestDateToInclude: The latest date to include in the results.
     ///   - totals: Optionally limit the stats totals to fetch. Defaults to all stats totals.
-    ///   - orderby: Optionally define the stats total to use for ordering the list of campaigns in the response.
+    ///   - orderby: Define the stats total to use for ordering the list of campaigns in the response.
     func loadCampaignStats(for siteID: Int64,
                            timeZone: TimeZone,
                            earliestDateToInclude: Date,
                            latestDateToInclude: Date,
-                           totals: [GoogleListingsAndAdsRemote.StatsField]?,
-                           orderby: GoogleListingsAndAdsRemote.StatsField?) async throws -> GoogleAdsCampaignStats
+                           totals: [GoogleListingsAndAdsRemote.StatsField],
+                           orderby: GoogleListingsAndAdsRemote.StatsField) async throws -> GoogleAdsCampaignStats
 }
 
 /// Google Listings & Ads: Endpoints
@@ -43,18 +43,17 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
                                   timeZone: TimeZone,
                                   earliestDateToInclude: Date,
                                   latestDateToInclude: Date,
-                                  totals: [GoogleListingsAndAdsRemote.StatsField]?,
-                                  orderby: GoogleListingsAndAdsRemote.StatsField?) async throws -> GoogleAdsCampaignStats {
+                                  totals: [GoogleListingsAndAdsRemote.StatsField] = StatsField.allCases,
+                                  orderby: GoogleListingsAndAdsRemote.StatsField) async throws -> GoogleAdsCampaignStats {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
         var parameters: [String: Any] = [
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
-            ParameterKeys.before: dateFormatter.string(from: latestDateToInclude)
+            ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKeys.totals: totals.map { $0.rawValue }.joined(separator: ","),
+            ParameterKeys.orderby: orderby.rawValue
         ]
-        // Only include these parameters if not `nil`
-        parameters[ParameterKeys.totals] = totals?.map { $0.rawValue }.joined(separator: ",")
-        parameters[ParameterKeys.orderby] = orderby?.rawValue
 
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
@@ -70,7 +69,7 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
 public extension GoogleListingsAndAdsRemote {
     /// Stats total fields for Google analytics reports
     ///
-    enum StatsField: String {
+    enum StatsField: String, CaseIterable {
         case sales
         case spend
         case clicks

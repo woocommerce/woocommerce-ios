@@ -27,9 +27,9 @@ final class GoogleAdsCampaignStatsMapperTests: XCTestCase {
         // Stats report totals are parsed
         XCTAssertEqual(adsCampaignStats.totals.sales, 0)
         XCTAssertEqual(adsCampaignStats.totals.spend, 0)
-        XCTAssertEqual(adsCampaignStats.totals.clicks, 0)
-        XCTAssertEqual(adsCampaignStats.totals.impressions, 0)
-        XCTAssertEqual(adsCampaignStats.totals.conversions, 0)
+        XCTAssertNil(adsCampaignStats.totals.clicks)
+        XCTAssertNil(adsCampaignStats.totals.impressions)
+        XCTAssertNil(adsCampaignStats.totals.conversions)
 
         // Stats report campaigns are parsed
         XCTAssertTrue(adsCampaignStats.campaigns.isEmpty)

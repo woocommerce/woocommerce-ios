@@ -71,8 +71,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
                                                          timeZone: .current,
                                                          earliestDateToInclude: Date(),
                                                          latestDateToInclude: Date(),
-                                                         totals: nil,
-                                                         orderby: nil)
+                                                         orderby: .sales)
 
         // Then
         XCTAssertEqual(results.siteID, sampleSiteID)
@@ -94,8 +93,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
                                                    timeZone: .current,
                                                    earliestDateToInclude: Date(),
                                                    latestDateToInclude: Date(),
-                                                   totals: nil,
-                                                   orderby: nil)
+                                                   orderby: .sales)
 
             // Then
             XCTFail("Request should fail")

@@ -53,12 +53,33 @@ extension BlazeCampaignListItem.Status {
     }
 
     private enum Localization {
-        static let inModeration = NSLocalizedString("In Moderation", comment: "Status name of a pending Blaze campaign")
-        static let scheduled = NSLocalizedString("Scheduled", comment: "Status name of a scheduled Blaze campaign")
-        static let active = NSLocalizedString("Active", comment: "Status name of an approved Blaze campaign")
-        static let rejected = NSLocalizedString("Rejected", comment: "Status name of a rejected Blaze campaign")
-        static let canceled = NSLocalizedString("Canceled", comment: "Status name of a canceled Blaze campaign")
-        static let completed = NSLocalizedString("Completed", comment: "Status name of a completed Blaze campaign")
-        static let unknown = NSLocalizedString("Unknown", comment: "Status name of a Blaze campaign without specified state")
+        static let inModeration = NSLocalizedString("blazeCampaignListItem.status.inModeration",
+                                                    value: "In Moderation",
+                                                    comment: "Status name of a pending Blaze campaign"
+        )
+        static let scheduled = NSLocalizedString("blazeCampaignListItem.status.scheduled",
+                                                 value: "Scheduled",
+                                                 comment: "Status name of a scheduled Blaze campaign"
+        )
+        static let active = NSLocalizedString("blazeCampaignListItem.status.active",
+                                              value: "Active",
+                                              comment: "Status name of an approved Blaze campaign"
+        )
+        static let rejected = NSLocalizedString("blazeCampaignListItem.status.rejected",
+                                                value: "Rejected",
+                                                comment: "Status name of a rejected Blaze campaign"
+        )
+        static let canceled = NSLocalizedString("blazeCampaignListItem.status.canceled",
+                                                value: "Canceled",
+                                                comment: "Status name of a canceled Blaze campaign"
+        )
+        static let completed = NSLocalizedString("blazeCampaignListItem.status.completed",
+                                                 value: "Completed",
+                                                 comment: "Status name of a completed Blaze campaign"
+        )
+        static let unknown = NSLocalizedString("blazeCampaignListItem.status.unknown",
+                                               value: "Unknown",
+                                               comment: "Status name of a Blaze campaign without specified state"
+        )
     }
 }

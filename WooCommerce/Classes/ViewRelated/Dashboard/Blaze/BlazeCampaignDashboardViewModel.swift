@@ -121,10 +121,17 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     @MainActor
+    func checkAvailability() async {
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        try? await synchronizePublishedProducts()
+        updateAvailability()
+    }
+
+    @MainActor
     func reload() async {
         syncingError = nil
         update(state: .loading)
-        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
         guard isSiteEligibleForBlaze else {
@@ -247,9 +254,11 @@ private extension BlazeCampaignDashboardViewModel {
         onStateChange?()
     }
 
-    func updateResults() {
+    func updateAvailability() {
         canShowInDashboard = isSiteEligibleForBlaze && latestPublishedProduct != nil
+    }
 
+    func updateResults() {
         guard isSiteEligibleForBlaze else {
             return update(state: .empty)
         }
@@ -273,9 +282,11 @@ private extension BlazeCampaignDashboardViewModel {
         }
 
         productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateAvailability()
             self?.updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
+            self?.updateAvailability()
             self?.updateResults()
         }
 

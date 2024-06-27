@@ -30,6 +30,7 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
 
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {

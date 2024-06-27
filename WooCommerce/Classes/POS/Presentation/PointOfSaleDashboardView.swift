@@ -32,9 +32,6 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.populatePointOfSaleItems()
         }
-        .refreshable {
-            await viewModel.reload()
-        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -82,6 +79,9 @@ private extension PointOfSaleDashboardView {
     var productGridView: some View {
         ItemListView(viewModel: viewModel)
             .frame(maxWidth: .infinity)
+            .refreshable {
+                await viewModel.reload()
+            }
     }
 }
 

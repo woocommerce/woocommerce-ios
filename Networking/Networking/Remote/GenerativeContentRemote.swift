@@ -164,16 +164,24 @@ private extension GenerativeContentRemote {
                       feature: GenerativeContentRemoteFeature,
                       responseFormat: GenerativeContentRemoteResponseFormat?,
                       token: JWToken) async throws -> String {
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: base,
-                          ParameterKey.feature: feature.rawValue,
-                          ParameterKey.fields: ParameterValue.completion,
-                          ParameterKey.responseFormat: responseFormat?.rawValue].compactMapValues { $0 }
+        let parameters: [String: Any] = {
+            var params = [String: Any]()
+            params[ParameterKey.token] = token.token
+            params[ParameterKey.question] = base
+            params[ParameterKey.stream] = ParameterValue.stream
+            params[ParameterKey.gptModel] = ParameterValue.gptModel
+            params[ParameterKey.feature] = feature.rawValue
+            params[ParameterKey.fields] = ParameterValue.choices
+            if let responseFormat {
+                params[ParameterKey.responseFormat] = responseFormat.rawValue
+            }
+            return params
+        }()
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
-        let mapper = TextCompletionResponseMapper()
+        let mapper = JetpackAIQueryResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -186,15 +194,17 @@ private extension GenerativeContentRemote {
             "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: prompt,
-                          ParameterKey.feature: feature.rawValue,
-                          ParameterKey.fields: ParameterValue.completion]
+        let parameters: [String: Any] = [ParameterKey.token: token.token,
+                                         ParameterKey.question: prompt,
+                                         ParameterKey.stream: ParameterValue.stream,
+                                         ParameterKey.gptModel: ParameterValue.gptModel,
+                                         ParameterKey.feature: feature.rawValue,
+                                         ParameterKey.fields: ParameterValue.choices]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
-        let mapper = TextCompletionResponseMapper()
+        let mapper = JetpackAIQueryResponseMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -270,13 +280,16 @@ private extension GenerativeContentRemote {
 
         let prompt = input + "\n" + expectedJsonFormat
 
-        let parameters = [ParameterKey.token: token.token,
-                          ParameterKey.prompt: prompt,
-                          ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
-                          ParameterKey.fields: ParameterValue.completion]
+        let parameters: [String: Any] = [ParameterKey.token: token.token,
+                                         ParameterKey.question: prompt,
+                                         ParameterKey.stream: ParameterValue.stream,
+                                         ParameterKey.gptModel: ParameterValue.gptModel,
+                                         ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
+                                         ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
+                                         ParameterKey.fields: ParameterValue.choices]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
-                                    method: .post,
-                                    path: Path.textCompletion,
+                                    method: .get,
+                                    path: Path.jetpackAIQuery,
                                     parameters: parameters)
 
         let mapper = AIProductMapper(siteID: siteID)
@@ -288,38 +301,29 @@ private extension GenerativeContentRemote {
 //
 private extension GenerativeContentRemote {
     enum Path {
-        static let textCompletion = "text-completion"
+        static let jetpackAIQuery = "jetpack-ai-query"
         static let jwtToken = "jetpack-openai-query/jwt"
     }
 
     enum ParameterKey {
         static let token = "token"
-        static let prompt = "prompt"
+        static let question = "question"
         static let feature = "feature"
         static let fields = "_fields"
+        static let stream = "stream"
         static let responseFormat = "response_format"
+        static let gptModel = "model"
     }
 
     enum ParameterValue {
-        static let completion = "completion"
+        static let choices = "choices"
+        static let stream = false
+        static let gptModel = "gpt-4o"
     }
 
     enum TokenExpiredError {
         static let code = "rest_forbidden"
         static let message = "Sorry, you are not allowed to do that."
-    }
-}
-
-// MARK: - Mapper to parse the `text-completion` endpoint response
-//
-private struct TextCompletionResponseMapper: Mapper {
-    func map(response: Data) throws -> String {
-        let decoder = JSONDecoder()
-        return try decoder.decode(TextCompletionResponse.self, from: response).completion
-    }
-
-    struct TextCompletionResponse: Decodable {
-        let completion: String
     }
 }
 

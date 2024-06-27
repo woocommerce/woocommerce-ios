@@ -14,9 +14,6 @@ struct TotalsView: View {
                     cardReaderView
                         .font(.title)
                         .padding()
-                    // Temporarily removed because the CardReaderView is doing this job right now.
-    //                paymentsView
-    //                    .padding()
                     Spacer()
                     VStack(alignment: .leading, spacing: 32) {
                         HStack {
@@ -88,34 +85,6 @@ struct TotalsView: View {
 }
 
 private extension TotalsView {
-    private var tapInsertCardView: some View {
-        Text("Tap or insert card to pay")
-    }
-
-    private var paymentSuccessfulView: some View {
-        Text("Payment successful")
-    }
-
-    @ViewBuilder
-    private var paymentsTextView: some View {
-        switch viewModel.paymentState {
-        case .acceptingCard:
-            tapInsertCardView
-        case .processingCard:
-            tapInsertCardView
-        case .cardPaymentSuccessful:
-            paymentSuccessfulView
-        }
-    }
-
-    @ViewBuilder
-    private var paymentsView: some View {
-        VStack {
-            paymentsTextView
-                .font(.title)
-        }
-    }
-
     private var newTransactionButton: some View {
         Button(action: {
             viewModel.startNewTransaction()
@@ -214,7 +183,7 @@ private extension TotalsView {
 
 #if DEBUG
 #Preview {
-    TotalsView(viewModel: .init(items: [],
+    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                 orderService: POSOrderPreviewService()))
 }

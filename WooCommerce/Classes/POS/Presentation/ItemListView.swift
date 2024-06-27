@@ -14,13 +14,19 @@ struct ItemListView: View {
                 .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.posPrimaryTexti3)
-            ScrollView {
-                ForEach(viewModel.items, id: \.productID) { item in
-                    Button(action: {
-                        viewModel.addItemToCart(item)
-                    }, label: {
-                        ItemCardView(item: item)
-                    })
+            if viewModel.isSyncingItems {
+                Spacer()
+                Text("Loading...")
+                Spacer()
+            } else {
+                ScrollView {
+                    ForEach(viewModel.items, id: \.productID) { item in
+                        Button(action: {
+                            viewModel.addItemToCart(item)
+                        }, label: {
+                            ItemCardView(item: item)
+                        })
+                    }
                 }
             }
         }
@@ -33,7 +39,7 @@ struct ItemListView: View {
 import class Yosemite.POSOrderService
 import enum Yosemite.Credentials
 #Preview {
-    ItemListView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+    ItemListView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                           orderService: POSOrderPreviewService()))
 }

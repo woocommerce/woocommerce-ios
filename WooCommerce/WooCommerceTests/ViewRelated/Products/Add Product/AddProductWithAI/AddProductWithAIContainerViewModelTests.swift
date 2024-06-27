@@ -30,7 +30,11 @@ final class AddProductWithAIContainerViewModelTests: XCTestCase {
 
     func test_canBeDismissed_returns_false_if_current_step_is_productName_and_the_name_field_is_not_empty() {
         // Given
-        let viewModel = AddProductWithAIContainerViewModel(siteID: 123, source: .productsTab, onCancel: {}, onCompletion: { _ in })
+        let viewModel = AddProductWithAIContainerViewModel(siteID: 123,
+                                                           source: .productsTab,
+                                                           onCancel: {},
+                                                           onCompletion: { _ in },
+                                                           featureFlagService: MockFeatureFlagService(isProductCreationAIv2M1Enabled: false))
 
         // When
         viewModel.addProductNameViewModel.productNameContent = "iPhone 15"

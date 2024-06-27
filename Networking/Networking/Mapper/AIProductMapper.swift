@@ -7,11 +7,7 @@ struct AIProductMapper: Mapper {
 
     func map(response: Data) throws -> AIProduct {
         let decoder = JSONDecoder()
-        let textCompletion = try decoder.decode(TextCompletionResponse.self, from: response).completion
+        let textCompletion = try decoder.decode(JetpackAIQueryResponse.self, from: response).aiResponse()
         return try decoder.decode(AIProduct.self, from: Data(textCompletion.utf8))
     }
-}
-
-private struct TextCompletionResponse: Decodable {
-    let completion: String
 }

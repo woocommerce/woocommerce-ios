@@ -1,6 +1,5 @@
 import Foundation
 import Networking
-import Storage
 
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
@@ -99,23 +98,19 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     private let siteID: Int64
     private let ordersRemote: OrdersRemote
-    private let storageManager: StorageManagerType
-
-    private lazy var sharedDerivedStorage: StorageType = storageManager.writerDerivedStorage
 
     // MARK: - Initialization
 
-    public convenience init?(siteID: Int64, credentials: Credentials?, storageManager: StorageManagerType) {
+    public convenience init?(siteID: Int64, credentials: Credentials?) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials), storageManager: storageManager)
+        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
     }
 
-    public init(siteID: Int64, network: Network, storageManager: StorageManagerType) {
+    public init(siteID: Int64, network: Network) {
         self.siteID = siteID
-        self.storageManager = storageManager
         self.ordersRemote = OrdersRemote(network: network)
     }
 
@@ -132,14 +127,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            // Upserting synced order to storage is necessary because `OrderAction.retrieveOrder` dispatched in `CollectOrderPaymentUseCase`
-            // returns the order in storage after the first time.
-            // Otherwise, the order total could be outdated for payment collection if it differs from the first synced order.
-            upsertStoredOrdersInBackground(readOnlyOrders: [syncedOrder]) {
-                continuation.resume(returning: POSOrder(order: syncedOrder))
-            }
-        }
+        return POSOrder(order: syncedOrder)
     }
 
     public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
@@ -229,32 +217,5 @@ private extension POSOrderService {
             }
             return result
         }
-    }
-}
-
-// MARK: - Storage actions
-
-private extension POSOrderService {
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
-    /// on the main thread.
-    func upsertStoredOrdersInBackground(readOnlyOrders: [Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    func upsertStoredOrders(readOnlyOrders: [Order],
-                            insertingSearchResults: Bool = false,
-                            in storage: StorageType) {
-        let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
     }
 }

@@ -16,6 +16,13 @@ struct CartView: View {
                 if let temsInCartLabel = viewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
                         .foregroundColor(Color.posPrimaryTexti3)
+                    Button {
+                        viewModel.removeAllItemsFromCart()
+                    } label: {
+                        Text("Clear all")
+                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                    }
+                    .padding(.horizontal, 8)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -26,9 +33,10 @@ struct CartView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
-                        ItemRowView(cartItem: cartItem) {
+                        ItemRowView(cartItem: cartItem,
+                                    onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
                             viewModel.removeItemFromCart(cartItem)
-                        }
+                        } : nil)
                         .id(cartItem.id)
                         .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
@@ -51,6 +59,7 @@ struct CartView: View {
             case .finalizing:
                 addMoreButton
                     .padding(32)
+                    .disabled(viewModel.isAddMoreDisabled)
             }
         }
         .frame(maxWidth: .infinity)
@@ -68,15 +77,13 @@ private extension CartView {
             HStack {
                 Spacer()
                 Text("Checkout")
+                    .font(.title)
+                    .padding(20)
                 Spacer()
             }
         }
-        .padding(.all, 20)
-        .frame(maxWidth: .infinity, idealHeight: 120)
-        .font(.title)
-        .foregroundColor(Color.primaryBackground)
-        .background(Color.init(uiColor: .wooCommercePurple(.shade60)))
-        .cornerRadius(10)
+        .buttonStyle(.borderedProminent)
+        .tint(Color.primaryTint)
     }
 
     var addMoreButton: some View {
@@ -85,23 +92,18 @@ private extension CartView {
         } label: {
             Spacer()
             Text("Add More")
+                .font(.title)
+                .padding(20)
             Spacer()
         }
-        .padding(20)
-        .frame(maxWidth: .infinity, idealHeight: 120)
-        .font(.title)
-        .foregroundColor(Color.white)
-        .background(Color.secondaryBackground)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(.white, lineWidth: 2)
-        )
+        .buttonStyle(.borderedProminent)
+        .tint(Color.secondaryBackground)
     }
 }
 
 #if DEBUG
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                       cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                       orderService: POSOrderPreviewService()))
 }

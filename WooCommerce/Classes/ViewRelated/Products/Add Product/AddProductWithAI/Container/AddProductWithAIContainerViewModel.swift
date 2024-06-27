@@ -27,7 +27,11 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let featureFlagService: FeatureFlagService
 
     var canBeDismissed: Bool {
-        currentStep == .productName && addProductNameViewModel.productName == nil
+        if featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+            currentStep == .productName && startingInfoViewModel.productFeatures == nil
+        } else {
+            currentStep == .productName && addProductNameViewModel.productName == nil
+        }
     }
 
     private let analytics: Analytics

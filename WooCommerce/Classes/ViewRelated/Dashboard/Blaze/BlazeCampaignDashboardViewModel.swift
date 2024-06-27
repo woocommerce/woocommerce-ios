@@ -131,7 +131,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     func reload() async {
         syncingError = nil
         update(state: .loading)
-        
+
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
         guard isSiteEligibleForBlaze else {

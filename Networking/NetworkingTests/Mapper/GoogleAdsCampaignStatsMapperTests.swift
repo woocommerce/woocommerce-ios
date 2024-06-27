@@ -23,6 +23,7 @@ final class GoogleAdsCampaignStatsMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(adsCampaignStats.siteID, Constants.siteID)
+        XCTAssertFalse(adsCampaignStats.hasNextPage)
 
         // Stats report totals are parsed
         XCTAssertEqual(adsCampaignStats.totals.sales, 0)
@@ -49,6 +50,7 @@ final class GoogleAdsCampaignStatsMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(adsCampaignStats.siteID, Constants.siteID)
+        XCTAssertTrue(adsCampaignStats.hasNextPage)
 
         // Stats report totals are parsed
         XCTAssertEqual(adsCampaignStats.totals.sales, 11)

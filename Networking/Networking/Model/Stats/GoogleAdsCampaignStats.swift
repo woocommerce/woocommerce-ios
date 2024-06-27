@@ -7,12 +7,22 @@ public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, G
     public let totals: GoogleAdsCampaignStatsTotals
     public let campaigns: [GoogleAdsCampaignStatsItem]
 
+    /// Token to request another page of stats data.
+    public let nextPageToken: String?
+
+    /// Whether there is another page of stats data.
+    public var hasNextPage: Bool {
+        nextPageToken != nil
+    }
+
     public init(siteID: Int64,
                 totals: GoogleAdsCampaignStatsTotals,
-                campaigns: [GoogleAdsCampaignStatsItem]) {
+                campaigns: [GoogleAdsCampaignStatsItem],
+                nextPageToken: String?) {
         self.siteID = siteID
         self.totals = totals
         self.campaigns = campaigns
+        self.nextPageToken = nextPageToken
     }
 
     public init(from decoder: Decoder) throws {
@@ -24,10 +34,12 @@ public struct GoogleAdsCampaignStats: Decodable, Equatable, GeneratedCopiable, G
         let totals = try container.decode(GoogleAdsCampaignStatsTotals.self, forKey: .totals)
         // Campaigns are `nil` if there are no campaigns; we convert this to an empty array.
         let campaigns = (try? container.decode([GoogleAdsCampaignStatsItem].self, forKey: .campaigns)) ?? []
+        let nextPageToken = try? container.decodeIfPresent(String.self, forKey: .nextPageToken)
 
         self.init(siteID: siteID,
                   totals: totals,
-                  campaigns: campaigns)
+                  campaigns: campaigns,
+                  nextPageToken: nextPageToken)
     }
 }
 
@@ -39,6 +51,7 @@ private extension GoogleAdsCampaignStats {
     enum CodingKeys: String, CodingKey {
         case totals
         case campaigns
+        case nextPageToken = "next_page"
     }
 }
 

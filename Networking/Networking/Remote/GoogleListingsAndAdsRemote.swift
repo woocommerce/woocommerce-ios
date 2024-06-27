@@ -16,12 +16,14 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
     ///   - latestDateToInclude: The latest date to include in the results.
     ///   - totals: Optionally limit the stats totals to fetch. Defaults to all stats totals.
     ///   - orderby: Define the stats total to use for ordering the list of campaigns in the response.
+    ///   - nextPageToken: Token to retrieve the next page of stats data.
     func loadCampaignStats(for siteID: Int64,
                            timeZone: TimeZone,
                            earliestDateToInclude: Date,
                            latestDateToInclude: Date,
                            totals: [GoogleListingsAndAdsRemote.StatsField],
-                           orderby: GoogleListingsAndAdsRemote.StatsField) async throws -> GoogleAdsCampaignStats
+                           orderby: GoogleListingsAndAdsRemote.StatsField,
+                           nextPageToken: String?) async throws -> GoogleAdsCampaignStats
 }
 
 /// Google Listings & Ads: Endpoints
@@ -44,7 +46,8 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
                                   earliestDateToInclude: Date,
                                   latestDateToInclude: Date,
                                   totals: [GoogleListingsAndAdsRemote.StatsField] = StatsField.allCases,
-                                  orderby: GoogleListingsAndAdsRemote.StatsField) async throws -> GoogleAdsCampaignStats {
+                                  orderby: GoogleListingsAndAdsRemote.StatsField,
+                                  nextPageToken: String? = nil) async throws -> GoogleAdsCampaignStats {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
@@ -54,6 +57,8 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
             ParameterKeys.totals: totals.map { $0.rawValue }.joined(separator: ","),
             ParameterKeys.orderby: orderby.rawValue
         ]
+        // Only include this parameter if the value is non-nil.
+        parameters[ParameterKeys.nextPageToken] = nextPageToken
 
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
@@ -85,9 +90,10 @@ private extension GoogleListingsAndAdsRemote {
     }
 
     enum ParameterKeys {
-        static let after    = "after"
-        static let before   = "before"
-        static let totals   = "fields"
-        static let orderby  = "orderby"
+        static let after            = "after"
+        static let before           = "before"
+        static let totals           = "fields"
+        static let orderby          = "orderby"
+        static let nextPageToken    = "next_page"
     }
 }

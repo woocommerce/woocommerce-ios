@@ -36,7 +36,7 @@ struct CartView: View {
                 ScrollView {
                     ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: dashboardViewModel.canDeleteItemsFromCart ? {
+                                    onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
                             cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
@@ -74,6 +74,8 @@ struct CartView: View {
 private extension CartView {
     var checkoutButton: some View {
         Button {
+            // TODO:
+            // submitCart cannot be moved to `CartViewModel` unless startSyncingOrder() is resolved first. Once done, we can get rid of the PointOfSaleDashboardViewModel dependency
             dashboardViewModel.submitCart()
         } label: {
             HStack {
@@ -90,7 +92,7 @@ private extension CartView {
 
     var addMoreButton: some View {
         Button {
-            dashboardViewModel.addMoreToCart()
+            cartViewModel.addMoreToCart()
         } label: {
             Spacer()
             Text("Add More")

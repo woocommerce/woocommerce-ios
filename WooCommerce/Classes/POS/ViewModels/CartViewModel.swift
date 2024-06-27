@@ -16,6 +16,10 @@ final class CartViewModel: ObservableObject {
         itemsInCart.isEmpty
     }
 
+    var canDeleteItemsFromCart: Bool {
+        orderStage != .finalizing
+    }
+
     var itemToScrollToWhenCartUpdated: CartItem? {
         itemsInCart.last
     }

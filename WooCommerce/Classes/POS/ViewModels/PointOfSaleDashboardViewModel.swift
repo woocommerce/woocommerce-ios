@@ -116,17 +116,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         isSyncingItems = false
     }
 
-    var canDeleteItemsFromCart: Bool {
-        return cartViewModel.orderStage != .finalizing
-    }
-
     func submitCart() {
         cartViewModel.submitCart()
         startSyncingOrder()
-    }
-
-    func addMoreToCart() {
-        cartViewModel.addMoreToCart()
     }
 
     var areAmountsFullyCalculated: Bool {
@@ -191,7 +183,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func startNewTransaction() {
-        // clear cart
+        // Q: Do we need 2 cart methods if removing all items already implies moving to .building state?
         cartViewModel.removeAllItemsFromCart()
         cartViewModel.startNewTransaction()
         paymentState = .acceptingCard

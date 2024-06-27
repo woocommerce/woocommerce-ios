@@ -164,11 +164,10 @@ private extension ProductStockDashboardCardViewModel {
                 }
             }
 
-            while !group.isEmpty {
-                // gather the results and re-throw any failure.
-                if let items = try await group.next() {
-                    allReports.append(contentsOf: items)
-                }
+            // rethrow any failure.
+            for try await items in group {
+                // gather the results
+                allReports.append(contentsOf: items)
             }
 
             return allReports

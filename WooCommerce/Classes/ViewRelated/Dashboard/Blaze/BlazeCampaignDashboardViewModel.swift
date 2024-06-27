@@ -152,7 +152,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
             syncingError = error
         }
 
-        trackingSyncingResult()
+        trackSyncingResult()
         updateResults()
     }
 
@@ -316,7 +316,8 @@ private extension BlazeCampaignDashboardViewModel {
             }
             .store(in: &subscriptions)
     }
-    func trackingSyncingResult() {
+
+    func trackSyncingResult() {
         if let syncingError {
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .blaze, error: syncingError))
         } else {

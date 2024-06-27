@@ -8,6 +8,8 @@ final class CartViewModel: ObservableObject {
     }
 
     @Published private(set) var itemsInCart: [CartItem] = []
+    // TODO:
+    // Call `checkIfCartEmpty` on orderStage didSet, rather than after deleting/clearing
     @Published private(set) var orderStage: OrderStage = .building
 
     init() { }

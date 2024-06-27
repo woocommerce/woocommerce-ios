@@ -109,11 +109,12 @@ class StoreOnboardingViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
         await update(state: .loading)
 
-        var tasks: [StoreOnboardingTaskViewModel] = []
+        let tasks: [StoreOnboardingTaskViewModel]
         var syncingError: Error?
         do {
             tasks = try await loadTasks()
         } catch {
+            tasks = []
             syncingError = error
         }
 

@@ -56,7 +56,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
     private var waitingTracker: WaitingTimeTracker?
-    private let syncingDidFinishPublisher = PassthroughSubject<Void, Never>()
+    private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -133,6 +133,7 @@ final class StorePerformanceViewModel: ObservableObject {
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
@@ -147,15 +148,17 @@ final class StorePerformanceViewModel: ObservableObject {
             case .thisWeek, .thisMonth, .thisYear:
                 siteVisitStatMode = .default
             }
+            syncingDidFinishPublisher.send(nil)
         } catch DotcomError.noRestRoute {
             statsVersion = .v3
+            syncingDidFinishPublisher.send(DotcomError.noRestRoute)
         } catch {
             statsVersion = .v4
             DDLogError("⛔️ Error loading store stats: \(error)")
             handleSyncError(error: error)
+            syncingDidFinishPublisher.send(error)
         }
         syncingData = false
-        syncingDidFinishPublisher.send()
     }
 
     func hideStorePerformance() {
@@ -235,10 +238,15 @@ private extension StorePerformanceViewModel {
     func observeSyncingCompletion() {
         syncingDidFinishPublisher
             .receive(on: DispatchQueue.global(qos: .background))
-            .sink { [weak self] in
+            .sink { [weak self] error in
                 guard let self else { return }
                 waitingTracker?.end()
                 analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
+                if let error {
+                    analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .performance, error: error))
+                } else {
+                    analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .performance))
+                }
             }
             .store(in: &subscriptions)
     }
@@ -404,9 +412,9 @@ private extension StorePerformanceViewModel {
                 try await self?.syncSiteSummaryStats(latestDateToInclude: latestDateToInclude)
             }
 
-            while !group.isEmpty {
-                // rethrow any failure.
-                try await group.next()
+            // rethrow any failure.
+            for try await result in group {
+                // no-op if result doesn't throw any error
             }
         }
     }

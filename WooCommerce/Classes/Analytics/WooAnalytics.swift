@@ -221,13 +221,25 @@ private extension Analytics {
         let err = error as NSError
         let errorCode: String = {
             if let networkError = error as? AFError {
-                return "\(networkError.responseCode ?? 0)"
+                if let responseCode = networkError.responseCode {
+                    return "\(responseCode)"
+                } else if let underlyingError = networkError.underlyingError as? NSError {
+                    return "\(underlyingError.code)"
+                }
             } else if let loginError = error as? SiteCredentialLoginError {
                 return "\(loginError.underlyingError.code)"
             }
             return "\(err.code)"
         }()
-        let errorDomain = err.domain
+
+        let errorDomain: String = {
+            if let networkError = error as? AFError,
+               let underlyingError = networkError.underlyingError as? NSError {
+                return underlyingError.domain
+            }
+            return err.domain
+        }()
+
         let errorDescription = err.description
 
         return [

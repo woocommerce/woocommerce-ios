@@ -3,25 +3,25 @@ import Codegen
 /// Represents the data associated with Google Listings & Ads paid campaign stats over a specific period.
 public struct GoogleAdsCampaignStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
     /// Amount in sales attributed to ads campaign
-    public let sales: Decimal
+    public let sales: Decimal?
 
     /// Amount spent on ads campaign
-    public let spend: Decimal
+    public let spend: Decimal?
 
     /// Number of clicks on ads campaign
-    public let clicks: Int
+    public let clicks: Int?
 
     /// Number of impressions of ads campaign
-    public let impressions: Int
+    public let impressions: Int?
 
     /// Number of conversions from ads campaign
-    public let conversions: Decimal
+    public let conversions: Decimal?
 
-    public init(sales: Decimal,
-                spend: Decimal,
-                clicks: Int,
-                impressions: Int,
-                conversions: Decimal) {
+    public init(sales: Decimal?,
+                spend: Decimal?,
+                clicks: Int?,
+                impressions: Int?,
+                conversions: Decimal?) {
         self.sales = sales
         self.spend = spend
         self.clicks = clicks
@@ -31,11 +31,11 @@ public struct GoogleAdsCampaignStatsTotals: Decodable, Equatable, GeneratedCopia
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let sales = try container.decode(Decimal.self, forKey: .sales)
-        let spend = try container.decode(Decimal.self, forKey: .spend)
-        let clicks = try container.decode(Int.self, forKey: .clicks)
-        let impressions = try container.decode(Int.self, forKey: .impressions)
-        let conversions = try container.decode(Decimal.self, forKey: .conversions)
+        let sales = try container.decodeIfPresent(Decimal.self, forKey: .sales)
+        let spend = try container.decodeIfPresent(Decimal.self, forKey: .spend)
+        let clicks = try container.decodeIfPresent(Int.self, forKey: .clicks)
+        let impressions = try container.decodeIfPresent(Int.self, forKey: .impressions)
+        let conversions = try container.decodeIfPresent(Decimal.self, forKey: .conversions)
 
         self.init(sales: sales,
                   spend: spend,

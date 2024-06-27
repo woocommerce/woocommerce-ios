@@ -801,6 +801,69 @@ extension Networking.GiftCardStatsTotals {
     }
 }
 
+extension Networking.GoogleAdsCampaignStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        totals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy,
+        campaigns: CopiableProp<[GoogleAdsCampaignStatsItem]> = .copy
+    ) -> Networking.GoogleAdsCampaignStats {
+        let siteID = siteID ?? self.siteID
+        let totals = totals ?? self.totals
+        let campaigns = campaigns ?? self.campaigns
+
+        return Networking.GoogleAdsCampaignStats(
+            siteID: siteID,
+            totals: totals,
+            campaigns: campaigns
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsItem {
+    public func copy(
+        campaignID: CopiableProp<Int64> = .copy,
+        campaignName: NullableCopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsItem {
+        let campaignID = campaignID ?? self.campaignID
+        let campaignName = campaignName ?? self.campaignName
+        let rawStatus = rawStatus ?? self.rawStatus
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.GoogleAdsCampaignStatsItem(
+            campaignID: campaignID,
+            campaignName: campaignName,
+            rawStatus: rawStatus,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsTotals {
+    public func copy(
+        sales: CopiableProp<Decimal> = .copy,
+        spend: CopiableProp<Decimal> = .copy,
+        clicks: CopiableProp<Int> = .copy,
+        impressions: CopiableProp<Int> = .copy,
+        conversions: CopiableProp<Decimal> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsTotals {
+        let sales = sales ?? self.sales
+        let spend = spend ?? self.spend
+        let clicks = clicks ?? self.clicks
+        let impressions = impressions ?? self.impressions
+        let conversions = conversions ?? self.conversions
+
+        return Networking.GoogleAdsCampaignStatsTotals(
+            sales: sales,
+            spend: spend,
+            clicks: clicks,
+            impressions: impressions,
+            conversions: conversions
+        )
+    }
+}
+
 extension Networking.GoogleAdsConnection {
     public func copy(
         id: CopiableProp<Int64> = .copy,

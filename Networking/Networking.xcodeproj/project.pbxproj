@@ -802,6 +802,11 @@
 		CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */ = {isa = PBXBuildFile; fileRef = CE19CB10222486A500E8AF7A /* order-statuses.json */; };
 		CE1BE7062A2A5E9A00C6B53B /* IdentifiableObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BE7052A2A5E9A00C6B53B /* IdentifiableObject.swift */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
+		CE21FB142C2AC87000303832 /* google-ads-reports-programs-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */; };
+		CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */; };
+		CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */; };
+		CE21FB1C2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */; };
+		CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */ = {isa = PBXBuildFile; fileRef = CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
 		CE2678432A26102A00FD9AEB /* order-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = CE2678422A26102A00FD9AEB /* order-alternative-types.json */; };
 		CE43066A23465F340073CBFF /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066923465F340073CBFF /* Refund.swift */; };
@@ -1936,6 +1941,11 @@
 		CE19CB10222486A500E8AF7A /* order-statuses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-statuses.json"; sourceTree = "<group>"; };
 		CE1BE7052A2A5E9A00C6B53B /* IdentifiableObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiableObject.swift; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
+		CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs-without-data.json"; sourceTree = "<group>"; };
+		CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStats.swift; sourceTree = "<group>"; };
+		CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsTotals.swift; sourceTree = "<group>"; };
+		CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignStatsItem.swift; sourceTree = "<group>"; };
+		CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "google-ads-reports-programs.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
 		CE2678422A26102A00FD9AEB /* order-alternative-types.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-alternative-types.json"; sourceTree = "<group>"; };
 		CE43066923465F340073CBFF /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
@@ -2549,6 +2559,9 @@
 				CE070A292BBC3C0A00017578 /* GiftCardStats.swift */,
 				CE070A2B2BBC3C2B00017578 /* GiftCardStatsInterval.swift */,
 				CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */,
+				CE21FB152C2AC90E00303832 /* GoogleAdsCampaignStats.swift */,
+				CE21FB172C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift */,
+				CE21FB1B2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -3397,6 +3410,8 @@
 				CE070A2F2BBC527900017578 /* gift-card-stats.json */,
 				CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */,
 				68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */,
+				CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */,
+				CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -4202,6 +4217,7 @@
 				DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */,
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
 				03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */,
+				CE21FB142C2AC87000303832 /* google-ads-reports-programs-without-data.json in Resources */,
 				02B41A94296C04BC00FE3311 /* load-site-plans-no-current-plan.json in Resources */,
 				DE66C5612977CB5F00DAA978 /* shipping-label-eligibility-success-without-data.json in Resources */,
 				028CB716290223CB00331C09 /* create-account-success.json in Resources */,
@@ -4439,6 +4455,7 @@
 				02B41A90296BC85800FE3311 /* site-domains.json in Resources */,
 				DE2004702BFB535500660A72 /* product-report.json in Resources */,
 				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,
+				CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
 				DE2004762C001F7500660A72 /* variation-report.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,
@@ -4810,6 +4827,7 @@
 				0359EA1B27AAC7CC0048DE2D /* WCPayCardPresentReceiptDetails.swift in Sources */,
 				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,
 				020D07B823D852BB00FD9580 /* Media.swift in Sources */,
+				CE21FB182C2AC97200303832 /* GoogleAdsCampaignStatsTotals.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				DEFBA7542949CE6600C35BA9 /* RequestProcessor.swift in Sources */,
@@ -5060,6 +5078,7 @@
 				E18152BE28F85B5B0011A0EC /* InAppPurchasesRemote.swift in Sources */,
 				0329CF9B27A82E19008AFF91 /* WCPayCharge.swift in Sources */,
 				035BA3AA29113CBD0056F0AD /* DataBoolMapper.swift in Sources */,
+				CE21FB1C2C2AD7E200303832 /* GoogleAdsCampaignStatsItem.swift in Sources */,
 				74749B97224134FF005C4CF2 /* ProductMapper.swift in Sources */,
 				EE2C09C229AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift in Sources */,
 				26455E2A25F669F0008A1D32 /* ProductAttributeTermMapper.swift in Sources */,
@@ -5141,6 +5160,7 @@
 				E1BAB2C52913FB1800C3982B /* WordPressApiValidator.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
 				CE6D666C2379E19D007835A1 /* Array+Woo.swift in Sources */,
+				CE21FB162C2AC90E00303832 /* GoogleAdsCampaignStats.swift in Sources */,
 				CCF48B1E26288FEC0034EA83 /* ShippingLabelPaymentMethod.swift in Sources */,
 				DE2E8E9D29530EEF002E4B14 /* WordPressSite.swift in Sources */,
 				DEC51AE927687AAF009F3DF4 /* SystemPluginMapper.swift in Sources */,

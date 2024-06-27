@@ -40,11 +40,11 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private var isFirstAttemptGeneratingDetails: Bool
 
     private(set) lazy var startingInfoViewModel: ProductCreationAIStartingInfoViewModel = {
-        .init(siteID: siteID)
+        ProductCreationAIStartingInfoViewModel(siteID: siteID)
     }()
 
     private(set) lazy var addProductNameViewModel: AddProductNameWithAIViewModel = {
-        .init(siteID: siteID)
+        AddProductNameWithAIViewModel(siteID: siteID)
     }()
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName

@@ -14,7 +14,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
-    private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
     private let isScanToUpdateInventoryEnabled: Bool
@@ -24,6 +23,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
     private let isDisplayPointOfSaleToggleEnabled: Bool
     private let isDynamicDashboardM2Enabled: Bool
+    private let isProductCreationAIv2M1Enabled: Bool
 
     init(isInboxOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
@@ -37,7 +37,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
-         productCreationAI: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
@@ -46,7 +45,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isDisplayPointOfSaleToggleEnabled: Bool = false,
-         isDynamicDashboardM2Enabled: Bool = false) {
+         isDynamicDashboardM2Enabled: Bool = false,
+         isProductCreationAIv2M1Enabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
@@ -59,7 +59,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
-        self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
@@ -69,6 +68,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
         self.isDynamicDashboardM2Enabled = isDynamicDashboardM2Enabled
+        self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -95,8 +95,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
-        case .productCreationAI:
-            return productCreationAI
         case .productBundles:
             return productBundles
         case .productBundlesInOrderForm:
@@ -115,6 +113,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDisplayPointOfSaleToggleEnabled
         case .dynamicDashboardM2:
             return isDynamicDashboardM2Enabled
+        case .productCreationAIv2M1:
+            return isProductCreationAIv2M1Enabled
         default:
             return false
         }

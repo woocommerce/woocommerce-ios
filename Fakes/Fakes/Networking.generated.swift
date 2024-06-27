@@ -571,6 +571,54 @@ extension Networking.GiftCardStatsTotals {
         )
     }
 }
+extension Networking.GoogleAdsCampaignStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStats {
+        .init(
+            siteID: .fake(),
+            totals: .fake(),
+            campaigns: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsItem {
+        .init(
+            campaignID: .fake(),
+            campaignName: .fake(),
+            rawStatus: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsTotals {
+        .init(
+            sales: .fake(),
+            spend: .fake(),
+            clicks: .fake(),
+            impressions: .fake(),
+            conversions: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsConnection {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsConnection {
+        .init(
+            id: .fake(),
+            currency: .fake(),
+            symbol: .fake(),
+            rawStatus: .fake()
+        )
+    }
+}
 extension Networking.InboxAction {
     /// Returns a "ready to use" type filled with fake values.
     ///

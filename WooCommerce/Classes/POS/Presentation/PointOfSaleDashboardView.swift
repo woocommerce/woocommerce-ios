@@ -29,11 +29,15 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
+                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
             }
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
@@ -44,13 +48,6 @@ struct PointOfSaleDashboardView: View {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
             } else {
                 switch viewModel.cardPresentPaymentEvent {
-                case let .showReaderList(readerIDs, selectionHandler):
-                    // TODO: make this an instance of `showAlert` so we can handle it above too.
-                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
-                        selectionHandler(readerID)
-                    }, cancelSearch: {
-                        selectionHandler(nil)
-                    })
                 case .idle,
                         .show, // handled above
                         .showOnboarding:
@@ -82,6 +79,9 @@ private extension PointOfSaleDashboardView {
     var productGridView: some View {
         ItemListView(viewModel: viewModel)
             .frame(maxWidth: .infinity)
+            .refreshable {
+                await viewModel.reload()
+            }
     }
 }
 
@@ -92,8 +92,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Idle"
         case .show:
             return "Event"
-        case .showReaderList(let readerIDs, _):
-            return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
         }
@@ -104,7 +102,7 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                      orderService: POSOrderPreviewService()))
     }

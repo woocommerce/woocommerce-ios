@@ -72,8 +72,18 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .sink { [watchSession] dependencies, isSessionActive, _ in
                 guard isSessionActive else { return }
                 do {
-                    let dependenciesDic = dependencies?.toDictionary() ?? [:]
-                    try watchSession.updateApplicationContext(dependenciesDic)
+
+                    // If dependencies is nil, send an empty dictionary. This is most likely a logged out state
+                    guard let dependencies else {
+                        return try watchSession.updateApplicationContext([:])
+                    }
+
+                    let data = try JSONEncoder().encode(dependencies)
+                    if let jsonObject = try JSONSerialization.jsonObject(with: data, options: .topLevelDictionaryAssumed) as? [String: Any] {
+                        try watchSession.updateApplicationContext(jsonObject)
+                    } else {
+                        DDLogError("⛔️ Unable to encode watch dependencies for synchronization. Resulting object is not a dictionary")
+                    }
                 } catch {
                     DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
                 }

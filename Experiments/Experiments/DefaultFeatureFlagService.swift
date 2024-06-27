@@ -62,8 +62,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
-        case .productCreationAI:
-            return true
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
@@ -90,6 +88,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dynamicDashboardM2:
             return true
+        case .productCreationAIv2M1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

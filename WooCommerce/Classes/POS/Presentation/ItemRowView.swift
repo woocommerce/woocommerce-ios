@@ -33,14 +33,16 @@ struct ItemRowView: View {
                     .foregroundColor(Color.posPrimaryTexti3)
             }
             Spacer()
-            Button(action: {
-                onItemRemoveTapped?()
-            }, label: {
-                Image(systemName: "x.circle")
-            })
-            .frame(width: 56, height: 56, alignment: .trailing)
-            .padding(.horizontal, 32)
-            .foregroundColor(Color.posIconGrayi3)
+            if let onItemRemoveTapped {
+                Button(action: {
+                    onItemRemoveTapped()
+                }, label: {
+                    Image(systemName: "x.circle")
+                })
+                .frame(width: 56, height: 56, alignment: .trailing)
+                .padding(.horizontal, 32)
+                .foregroundColor(Color.posIconGrayi3)
+            }
         }
         .frame(maxWidth: .infinity, idealHeight: 120)
     }

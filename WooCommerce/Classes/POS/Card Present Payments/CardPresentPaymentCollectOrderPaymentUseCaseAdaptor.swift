@@ -95,8 +95,6 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 switch latestPaymentEvent {
                     case .show(let eventDetails):
                         onCancel(paymentEventDetails: eventDetails, paymentOrchestrator: invalidatablePaymentOrchestrator)
-                    case .showReaderList(_, let selectionHandler):
-                        selectionHandler(nil)
                     case .idle, .showOnboarding:
                         return
                 }
@@ -126,6 +124,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .connectingFailedUpdateAddress(_, _, let endSearch),
                 .foundReader(_, _, _, let endSearch):
             endSearch()
+        case .foundMultipleReaders(_, let selectionHandler):
+            selectionHandler(nil)
         case .updateProgress(_, _, let cancelUpdate):
             cancelUpdate?()
         case .updateFailed(_, let cancelUpdate),

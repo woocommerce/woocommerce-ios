@@ -68,6 +68,12 @@ extension CardPresentPaymentEventDetails {
                     continueSearchAction: continueSearch,
                     endSearchAction: endSearch)))
 
+        case .foundMultipleReaders(let readerIDs, let selectionHandler):
+            return .alert(.foundMultipleReaders(
+                viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel(
+                    readerIDs: readerIDs,
+                    selectionHandler: selectionHandler)))
+
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
                 if progress == 1.0 {
                     return .alert(.readerUpdateCompletion(viewModel: .init()))

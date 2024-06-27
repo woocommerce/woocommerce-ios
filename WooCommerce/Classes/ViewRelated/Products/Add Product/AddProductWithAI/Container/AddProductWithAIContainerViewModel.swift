@@ -97,7 +97,12 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     func backtrackOrDismiss() {
         if let previousStep = currentStep.previousStep {
-            currentStep = previousStep
+            if previousStep == .aboutProduct,
+               featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+                currentStep = .productName
+            } else {
+                currentStep = previousStep
+            }
         } else {
             onCancel()
         }

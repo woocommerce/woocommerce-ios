@@ -76,46 +76,75 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     /// Load stored dependencies
     ///
     private func loadDependencies() -> WatchDependencies? {
-        guard let secret = keychain[WooConstants.authToken],
-              let username: String = userDefaults[.defaultUsername],
-              let type: String = userDefaults[.defaultCredentialsType],
-              let siteAddress: String = userDefaults[.defaultSiteAddress],
-              let storeID: Int64 = userDefaults[.defaultStoreID],
-              let storeName: String = userDefaults[.defaultStoreName],
-              let credentials = Credentials(rawType: type, username: username, secret: secret, siteAddress: siteAddress) else {
+        guard let dependenciesData = userDefaults[.watchDependencies] as? Data,
+              let secret = keychain[WooConstants.authToken] else {
             return nil
         }
 
-        let currencySettings: CurrencySettings = {
-            guard let currencySettingsData = userDefaults[.defaultStoreCurrencySettings] as? Data,
-                  let currencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: currencySettingsData) else {
-                return CurrencySettings()
-            }
-            return currencySettings
-        }()
-
-        return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: currencySettings, credentials: credentials)
+        let safeDependencies = try? JSONDecoder().decode(WatchDependencies.self, from: dependenciesData)
+        return safeDependencies?.updatingSecret(secret: secret) // Inject stored secret
     }
 
     /// Store dependencies from the app context
     /// Receiving an empty dictionary will clear the store as it likely mean that the user has logged out of the app.
     ///
     private func storeDependencies(appContext: [String: Any]) {
-        let dependencies = WatchDependencies(dictionary: appContext)
+        let dependencies: WatchDependencies? = {
+            do {
+                let data = try JSONSerialization.data(withJSONObject: appContext)
+                return try JSONDecoder().decode(WatchDependencies.self, from: data)
+            } catch {
+                print ("Error decoding dependencies: \(error)")
+                return nil
+            }
+        }()
 
         // Only store the dependencies if we get new values to store.
         guard self.dependencies != dependencies else {
             return
         }
 
-        userDefaults[.defaultStoreID] = dependencies?.storeID
-        userDefaults[.defaultStoreName] = dependencies?.storeName
-        userDefaults[.defaultUsername] = dependencies?.credentials.username
-        userDefaults[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(dependencies?.currencySettings)
-        userDefaults[.defaultCredentialsType] = dependencies?.credentials.rawType
-        userDefaults[.defaultSiteAddress] = dependencies?.credentials.siteAddress
-        keychain[WooConstants.authToken] = dependencies?.credentials.secret
+        // Remove the secret from the dependencies object to not store the secret on a non-secure store.
+        // The secret should be stored in the keychain
+        let secret = dependencies?.credentials.secret
+        let safeDependencies = dependencies?.removingSecret()
+
+        userDefaults[.watchDependencies] = try? JSONEncoder().encode(safeDependencies)
+        keychain[WooConstants.authToken] = secret
 
         tracksProvider?.sendTracksEvent(.watchStoreDataSynced)
+    }
+}
+
+
+private extension WatchDependencies {
+    /// Removes the secret/auth token from the credential type.
+    ///
+    func removingSecret() -> WatchDependencies {
+        updatingSecret(secret: "")
+    }
+
+    /// Replaces the secret/auth token with the provided value.
+    ///
+    func updatingSecret(secret: String) -> WatchDependencies {
+        return WatchDependencies(storeID: storeID,
+                                 storeName: storeName,
+                                 currencySettings: currencySettings,
+                                 credentials: credentials.replacingSecret(secret))
+    }
+}
+
+private extension Credentials {
+    /// Replaces the secret/auth token with the provided value.
+    ///
+    func replacingSecret(_ secret: String) -> Credentials {
+        switch self {
+        case let .applicationPassword(username, _, siteAddress):
+            return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+        case let .wpcom(username, _, siteAddress):
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        case let .wporg(username, _, siteAddress):
+            return .wporg(username: username, password: secret, siteAddress: siteAddress)
+        }
     }
 }

@@ -47,13 +47,16 @@ final class InboxDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .inbox))
         syncingData = true
         syncingError = nil
         do {
             // Ignoring the result from remote as we're using storage as the single source of truth
             _ = try await loadInboxMessages()
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .inbox))
         } catch {
             syncingError = error
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .inbox, error: error))
         }
         syncingData = false
     }

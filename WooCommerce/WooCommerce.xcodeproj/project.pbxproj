@@ -2694,6 +2694,8 @@
 		E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */; };
 		E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */; };
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
+		EE09DE062C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */; };
+		EE09DE082C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */; };
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
 		EE1905822B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905812B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift */; };
@@ -5653,6 +5655,8 @@
 		E1E649EA28461EDF0070B194 /* BetaFeaturesConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesConfiguration.swift; sourceTree = "<group>"; };
 		E1ED16E3266E10A10037B8DB /* ApplicationLogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewModel.swift; sourceTree = "<group>"; };
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
+		EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAIStartingInfoView.swift; sourceTree = "<group>"; };
+		EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAIStartingInfoViewModel.swift; sourceTree = "<group>"; };
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
 		EE1905812B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationFormViewModelTests.swift; sourceTree = "<group>"; };
@@ -12776,6 +12780,15 @@
 			path = "In-Person Payments";
 			sourceTree = "<group>";
 		};
+		EE09DE042C2C0C7600A32680 /* StartingInfo */ = {
+			isa = PBXGroup;
+			children = (
+				EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */,
+				EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */,
+			);
+			path = StartingInfo;
+			sourceTree = "<group>";
+		};
 		EE3272A229A88F670015F8D0 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -12885,6 +12898,7 @@
 		EE5B5BB12AB30BF9009BCBD6 /* AddProductWithAI */ = {
 			isa = PBXGroup;
 			children = (
+				EE09DE042C2C0C7600A32680 /* StartingInfo */,
 				EEA6935A2B231A3100BAECA6 /* Survey */,
 				EE7707C62ABBF473009FD564 /* AIToneVoice */,
 				DE8BEB942ABC195C00F5E56C /* Preview */,
@@ -15752,6 +15766,7 @@
 				0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */,
 				571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */,
 				DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */,
+				EE09DE082C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift in Sources */,
 				02B1AA6529A4705A00D54FCB /* TabbedViewController.swift in Sources */,
 				4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */,
 				02A723282AB2E1C2003AEC7E /* GiftCardInputViewModel.swift in Sources */,
@@ -15784,6 +15799,7 @@
 				FE28F7182684EE6A004465C7 /* RoleErrorViewModel.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,
 				B9D19A442AE7B66B00D944D8 /* CustomAmountRowView.swift in Sources */,
+				EE09DE062C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift in Sources */,
 				03E471C8293A3076001A58AD /* CardPresentModalBuiltInConnectingToReader.swift in Sources */,
 				EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */,
 				EE5B5BC72AB8379C009BCBD6 /* AddProductWithAIContainerViewModel.swift in Sources */,

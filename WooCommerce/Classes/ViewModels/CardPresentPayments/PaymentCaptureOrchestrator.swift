@@ -8,7 +8,7 @@ struct CardPresentCapturedPaymentData {
     let paymentMethod: PaymentMethod
 
     /// Used for receipt generation for display in the app.
-    let receiptParameters: CardPresentReceiptParameters
+    let receiptParameters: CardPresentReceiptParameters?
 }
 
 protocol PaymentCaptureOrchestrating {

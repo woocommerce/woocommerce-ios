@@ -34,6 +34,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .stock))
         syncingData = true
         syncingError = nil
         do {
@@ -43,8 +44,10 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
                 savedReports[item.productID]
             }
             .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
             syncingError = error
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .stock, error: error))
         }
         syncingData = false
     }
@@ -161,11 +164,10 @@ private extension ProductStockDashboardCardViewModel {
                 }
             }
 
-            while !group.isEmpty {
-                // gather the results and re-throw any failure.
-                if let items = try await group.next() {
-                    allReports.append(contentsOf: items)
-                }
+            // rethrow any failure.
+            for try await items in group {
+                // gather the results
+                allReports.append(contentsOf: items)
             }
 
             return allReports

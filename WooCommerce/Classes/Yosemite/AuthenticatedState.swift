@@ -96,7 +96,8 @@ class AuthenticatedState: StoresManagerState {
                                network: network,
                                fileStorage: PListFileStorage()),
             WordPressSiteStore(network: network, dispatcher: dispatcher),
-            StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 

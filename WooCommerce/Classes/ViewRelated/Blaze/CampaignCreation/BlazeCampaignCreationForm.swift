@@ -258,6 +258,22 @@ private extension BlazeCampaignCreationForm {
                         .background(Color(uiColor: .systemGray6))
                         .cornerRadius(Layout.adButtonCornerRadius)
                 }
+
+                // Label "Suggested by AI"
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(uiImage: .sparklesImage)
+                            .renderingMode(.template)
+                            .resizable()
+                            .foregroundColor(Color(uiColor: .textSubtle))
+                            .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
+
+                        Text(Localization.suggestedByAI)
+                            .subheadlineStyle()
+                    }
+                    Spacer()
+                }
+                .renderedIf(viewModel.isUsingAISuggestions)
             }
             .padding(Layout.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -266,22 +282,6 @@ private extension BlazeCampaignCreationForm {
                     radius: Layout.shadowRadius,
                     x: 0,
                     y: Layout.shadowYOffset)
-
-            // Label "Suggested by AI"
-            HStack {
-                HStack(spacing: 0) {
-                    Image(uiImage: .sparklesImage)
-                        .renderingMode(.template)
-                        .resizable()
-                        .foregroundColor(Color(uiColor: .textSubtle))
-                        .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
-
-                    Text(Localization.suggestedByAI)
-                        .subheadlineStyle()
-                }
-                Spacer()
-            }
-            .renderedIf(viewModel.isUsingAISuggestions)
 
             // Button to edit ad details
             Button(action: {

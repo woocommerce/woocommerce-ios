@@ -823,18 +823,18 @@ extension Networking.GoogleAdsCampaignStatsItem {
     public func copy(
         campaignID: CopiableProp<Int64> = .copy,
         campaignName: NullableCopiableProp<String> = .copy,
-        status: CopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
         subtotals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy
     ) -> Networking.GoogleAdsCampaignStatsItem {
         let campaignID = campaignID ?? self.campaignID
         let campaignName = campaignName ?? self.campaignName
-        let status = status ?? self.status
+        let rawStatus = rawStatus ?? self.rawStatus
         let subtotals = subtotals ?? self.subtotals
 
         return Networking.GoogleAdsCampaignStatsItem(
             campaignID: campaignID,
             campaignName: campaignName,
-            status: status,
+            rawStatus: rawStatus,
             subtotals: subtotals
         )
     }

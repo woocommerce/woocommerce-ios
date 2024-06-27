@@ -589,7 +589,7 @@ extension Networking.GoogleAdsCampaignStatsItem {
         .init(
             campaignID: .fake(),
             campaignName: .fake(),
-            status: .fake(),
+            rawStatus: .fake(),
             subtotals: .fake()
         )
     }

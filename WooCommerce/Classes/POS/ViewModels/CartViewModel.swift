@@ -1,18 +1,25 @@
+import Combine
 import SwiftUI
 import protocol Yosemite.POSItem
 
 final class CartViewModel: ObservableObject {
-    enum OrderStage {
-        case building
-        case finalizing
-    }
+    /// Emits cart items when the CTA is tapped to submit the cart.
+    let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
+
+    /// Emits a signal when the CTA is tapped to update the cart.
+    let addMoreToCartPublisher: AnyPublisher<Void, Never>
 
     @Published private(set) var itemsInCart: [CartItem] = []
-    // TODO:
-    // Call `checkIfCartEmpty` on orderStage didSet, rather than after deleting/clearing
-    @Published private(set) var orderStage: OrderStage = .building
+    @Published private(set) var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
 
-    init() { }
+    private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
+    private let addMoreToCartSubject: PassthroughSubject<Void, Never> = .init()
+
+    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
+        cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
+        addMoreToCartPublisher = addMoreToCartSubject.eraseToAnyPublisher()
+        orderStage.assign(to: &$orderStage)
+    }
 
     var isCartCollapsed: Bool {
         itemsInCart.isEmpty
@@ -44,30 +51,19 @@ final class CartViewModel: ObservableObject {
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
-        checkIfCartEmpty()
     }
 
     func removeAllItemsFromCart() {
         itemsInCart.removeAll()
-        checkIfCartEmpty()
-    }
-
-    private func checkIfCartEmpty() {
-        if itemsInCart.isEmpty {
-            orderStage = .building
-        }
     }
 
     func submitCart() {
+        // Q-JC: is this TODO comment still a pending task?
         // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
-        orderStage = .finalizing
+        cartSubmissionSubject.send(itemsInCart)
     }
 
     func addMoreToCart() {
-        orderStage = .building
-    }
-
-    func startNewTransaction() {
-        orderStage = .building
+        addMoreToCartSubject.send(())
     }
 }

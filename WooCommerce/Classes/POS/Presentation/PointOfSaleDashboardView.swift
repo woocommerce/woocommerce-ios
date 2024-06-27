@@ -12,7 +12,7 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         VStack {
             HStack {
-                switch viewModel.cartViewModel.orderStage {
+                switch viewModel.orderStage {
                 case .building:
                     productGridView
                     Spacer()
@@ -30,7 +30,8 @@ struct PointOfSaleDashboardView: View {
             .padding()
         }
         .task {
-            await viewModel.populatePointOfSaleItems()
+            // Q-JC: can this task be moved to `ItemListView`?
+            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
         }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
@@ -79,10 +80,10 @@ private extension PointOfSaleDashboardView {
     }
 
     var productGridView: some View {
-        ItemListView(viewModel: viewModel)
+        ItemListView(viewModel: viewModel.itemSelectorViewModel)
             .frame(maxWidth: .infinity)
             .refreshable {
-                await viewModel.reload()
+                await viewModel.itemSelectorViewModel.reload()
             }
     }
 }

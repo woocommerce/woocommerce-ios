@@ -5,6 +5,11 @@ import class WooFoundation.CurrencySettings
 import Combine
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
+    enum OrderStage {
+        case building
+        case finalizing
+    }
+
     enum PaymentState {
         case idle
         case acceptingCard
@@ -30,10 +35,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
-    @ObservedObject var cartViewModel: CartViewModel = CartViewModel()
+    let itemSelectorViewModel: ItemSelectorViewModel
+    private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
     @ObservedObject var totalsViewModel: TotalsViewModel = TotalsViewModel()
 
-    @Published private(set) var items: [POSItem] = []
+    @Published private(set) var orderStage: OrderStage = .building
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
@@ -51,56 +57,34 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
-    @Published private(set) var isSyncingItems: Bool = true
 
     private let orderService: POSOrderServiceProtocol
-    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol) {
-        self.itemProvider = itemProvider
+        self.itemSelectorViewModel = .init(itemProvider: itemProvider)
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
 
+        observeSelectedItemToAddToCart()
+        observeCartAddMoreTaps()
+        observeCartSubmissions()
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
     }
 
-    @MainActor
-    func populatePointOfSaleItems() async {
-        isSyncingItems = true
-        do {
-            items = try await itemProvider.providePointOfSaleItems()
-        } catch {
-            DDLogError("Error on load while fetching product data: \(error)")
-        }
-        isSyncingItems = false
-    }
-
-    @MainActor
-    func reload() async {
-        isSyncingItems = true
-        do {
-            let newItems = try await itemProvider.providePointOfSaleItems()
-            // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
-            items.removeAll()
-            items = newItems
-        } catch {
-            DDLogError("Error on reload while updating product data: \(error)")
-        }
-        isSyncingItems = false
-    }
-
-    func submitCart() {
-        cartViewModel.submitCart()
-        startSyncingOrder()
-    }
+//    func submitCart() {
+//        cartViewModel.submitCart()
+//        startSyncingOrder()
+//    }
 
     func cardPaymentTapped() {
         Task { @MainActor in
@@ -158,7 +142,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func startNewTransaction() {
         // Q: Do we need 2 cart methods if removing all items already implies moving to .building state?
         cartViewModel.removeAllItemsFromCart()
-        cartViewModel.startNewTransaction()
+        orderStage = .building
         paymentState = .acceptingCard
         order = nil
     }
@@ -170,6 +154,30 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 }
 
 private extension PointOfSaleDashboardViewModel {
+    func observeSelectedItemToAddToCart() {
+        itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
+            self?.cartViewModel.addItemToCart(selectedItem)
+        }
+        .store(in: &subscriptions)
+    }
+
+    func observeCartAddMoreTaps() {
+        cartViewModel.addMoreToCartPublisher.sink { [weak self] in
+            guard let self else { return }
+            orderStage = .building
+        }
+        .store(in: &subscriptions)
+    }
+
+    func observeCartSubmissions() {
+        cartViewModel.cartSubmissionPublisher.sink { [weak self] cartItems in
+            guard let self else { return }
+            orderStage = .finalizing
+            startSyncingOrder()
+        }
+        .store(in: &subscriptions)
+    }
+
     func observeItemsInCartForCartTotal() {
         cartViewModel.$itemsInCart
             .map { [weak self] in
@@ -274,7 +282,7 @@ private extension PointOfSaleDashboardViewModel {
             totalsViewModel.doSync()
             let order = try await orderService.syncOrder(cart: cart,
                                                               order: order,
-                                                              allProducts: items)
+                                                         allProducts: itemSelectorViewModel.items)
             self.order = order
             totalsViewModel.stopSync()
             // TODO: this is temporary solution

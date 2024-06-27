@@ -74,9 +74,7 @@ struct CartView: View {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            // TODO:
-            // submitCart cannot be moved to `CartViewModel` unless startSyncingOrder() is resolved first. Once done, we can get rid of the PointOfSaleDashboardViewModel dependency
-            dashboardViewModel.submitCart()
+            cartViewModel.submitCart()
         } label: {
             HStack {
                 Spacer()

@@ -134,6 +134,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
+        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
             return

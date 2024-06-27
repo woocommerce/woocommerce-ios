@@ -9,6 +9,13 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     let siteID: Int64
     private let analytics: Analytics
 
+    var productFeatures: String? {
+        guard features.isNotEmpty else {
+            return nil
+        }
+        return features
+    }
+
     init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.features = ""

@@ -578,7 +578,8 @@ extension Networking.GoogleAdsCampaignStats {
         .init(
             siteID: .fake(),
             totals: .fake(),
-            campaigns: .fake()
+            campaigns: .fake(),
+            nextPageToken: .fake()
         )
     }
 }

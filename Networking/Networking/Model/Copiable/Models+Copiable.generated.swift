@@ -805,16 +805,19 @@ extension Networking.GoogleAdsCampaignStats {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         totals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy,
-        campaigns: CopiableProp<[GoogleAdsCampaignStatsItem]> = .copy
+        campaigns: CopiableProp<[GoogleAdsCampaignStatsItem]> = .copy,
+        nextPageToken: NullableCopiableProp<String> = .copy
     ) -> Networking.GoogleAdsCampaignStats {
         let siteID = siteID ?? self.siteID
         let totals = totals ?? self.totals
         let campaigns = campaigns ?? self.campaigns
+        let nextPageToken = nextPageToken ?? self.nextPageToken
 
         return Networking.GoogleAdsCampaignStats(
             siteID: siteID,
             totals: totals,
-            campaigns: campaigns
+            campaigns: campaigns,
+            nextPageToken: nextPageToken
         )
     }
 }

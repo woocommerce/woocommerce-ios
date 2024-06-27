@@ -62,8 +62,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
-        case .productCreationAI:
-            return true
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:

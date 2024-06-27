@@ -412,9 +412,9 @@ private extension StorePerformanceViewModel {
                 try await self?.syncSiteSummaryStats(latestDateToInclude: latestDateToInclude)
             }
 
-            while !group.isEmpty {
-                // rethrow any failure.
-                try await group.next()
+            // rethrow any failure.
+            for try await result in group {
+                // no-op if result doesn't throw any error
             }
         }
     }

@@ -122,6 +122,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .lastOrders))
         syncingData = true
         syncingError = nil
         rows = []
@@ -131,9 +132,11 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             try? await loadOrderStatuses()
             rows = try await orders
                 .map { LastOrderDashboardRowViewModel(order: $0) }
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Last orders) — Error loading orders: \(error)")
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .lastOrders, error: error))
         }
         syncingData = false
     }

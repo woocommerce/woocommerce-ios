@@ -121,7 +121,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 .connectingFailedNonRetryable(_, let endSearch),
                 .connectingFailedUpdatePostalCode(_, let endSearch),
                 .connectingFailedChargeReader(_, let endSearch),
-                .connectingFailedUpdateAddress(_, _, let endSearch),
+                .connectingFailedUpdateAddress(_, _, _, let endSearch),
                 .foundReader(_, _, _, let endSearch):
             endSearch()
         case .foundMultipleReaders(_, let selectionHandler):

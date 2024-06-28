@@ -167,8 +167,8 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                 self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
                             case false:
                                 self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                         alertProvider: paymentAlertProvider,
-                                                         onCompleted: onCompleted)
+                                                              alertProvider: paymentAlertProvider,
+                                                              onCompleted: onCompleted)
                             }
                         }
                     }
@@ -285,10 +285,10 @@ private extension CollectOrderPaymentUseCase {
             guard let self = self else { return }
             switch result {
             case .failure(let error):
-                return self.handlePaymentFailureAndRetryPayment(error,
-                                                               alertProvider: paymentAlerts,
-                                                               paymentGatewayAccount: paymentGatewayAccount,
-                                                               onCompletion: onCompletion)
+                return self.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                         alertProvider: paymentAlerts,
+                                                                         paymentGatewayAccount: paymentGatewayAccount,
+                                                                         onCompletion: onCompletion)
             case .success:
                 guard let orderTotal = self.orderTotal else {
                     onCompletion(.failure(CollectOrderPaymentUseCaseNotValidAmountError.other))
@@ -350,10 +350,10 @@ private extension CollectOrderPaymentUseCase {
                                 self?.handlePaymentCancellation(from: .other)
                             }
                         case .failure(let error):
-                            self?.handlePaymentFailureAndRetryPayment(error,
-                                                                      alertProvider: paymentAlerts,
-                                                                      paymentGatewayAccount: paymentGatewayAccount,
-                                                                      onCompletion: onCompletion)
+                            self?.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                               alertProvider: paymentAlerts,
+                                                                               paymentGatewayAccount: paymentGatewayAccount,
+                                                                               onCompletion: onCompletion)
                         }
                     })
             }
@@ -379,7 +379,41 @@ private extension CollectOrderPaymentUseCase {
         alertsPresenter.present(viewModel: dismissedOnReaderAlert)
     }
 
-    /// Log the failure reason, cancel the current payment and retry it if possible.
+    /// Check whether payment was actually successful (for some errors which may hide success) – return success if it was.
+    /// If it wasn't, log the failure reason, inform the user, and offer them the chance to retry it if possible.
+    ///
+    func checkThenHandlePaymentFailureAndRetryPayment(_ error: Error,
+                                                      alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+                                                      paymentGatewayAccount: PaymentGatewayAccount,
+                                                      onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard case ServerSidePaymentCaptureError.paymentGateway(.otherError) = error else {
+            return handlePaymentFailureAndRetryPayment(error,
+                                                       alertProvider: paymentAlerts,
+                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                       onCompletion: onCompletion)
+        }
+
+        // This is an unknown error during payment capture.
+        // The first time this happens, we check if the order's actually paid, and return success if it is.
+        let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: order.orderID) { [weak self] result in
+            guard let self else { return }
+            guard let refreshedOrder = try? result.get(),
+                  refreshedOrder.datePaid != nil else {
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           onCompletion: onCompletion)
+            }
+
+            // Since the order's paid, we can return success
+            onCompletion(.success(CardPresentCapturedPaymentData(
+                paymentMethod: .unknown,
+                receiptParameters: nil)))
+        }
+        stores.dispatch(action)
+    }
+
+    /// Log the failure reason, inform the user, and offer them the chance to retry it if possible.
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error,
                                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
@@ -455,10 +489,10 @@ private extension CollectOrderPaymentUseCase {
                     self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
                         switch result {
                         case .failure(let error):
-                            return self.handlePaymentFailureAndRetryPayment(error,
-                                                                            alertProvider: paymentAlerts,
-                                                                            paymentGatewayAccount: paymentGatewayAccount,
-                                                                            onCompletion: onCompletion)
+                            return self.checkThenHandlePaymentFailureAndRetryPayment(error,
+                                                                                     alertProvider: paymentAlerts,
+                                                                                     paymentGatewayAccount: paymentGatewayAccount,
+                                                                                     onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
                                 guard let self = self else { return }
@@ -475,10 +509,10 @@ private extension CollectOrderPaymentUseCase {
                                     }
                                 case .failure(let error):
                                     let retryError = CollectOrderPaymentUseCaseError.alreadyRetried(error)
-                                    self.handlePaymentFailureAndRetryPayment(retryError,
-                                                                             alertProvider: paymentAlerts,
-                                                                             paymentGatewayAccount: paymentGatewayAccount,
-                                                                             onCompletion: onCompletion)
+                                    self.checkThenHandlePaymentFailureAndRetryPayment(retryError,
+                                                                                      alertProvider: paymentAlerts,
+                                                                                      paymentGatewayAccount: paymentGatewayAccount,
+                                                                                      onCompletion: onCompletion)
                                 }
                             }
                         }
@@ -523,7 +557,7 @@ private extension CollectOrderPaymentUseCase {
                 case let .success(receipt):
                     self.presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
                 case let .failure(error):
-                    self.presentBackedReceiptFailedNotice(with: error, onCompleted: onCompleted)
+                    self.presentReceiptFailedNotice(with: error, onCompleted: onCompleted)
                 }
             })
         }
@@ -535,12 +569,18 @@ private extension CollectOrderPaymentUseCase {
 
     /// Allow merchants to print or email locally-generated receipts.
     ///
-    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters,
+    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters?,
                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
+
+            guard let receiptParameters else {
+                return self.presentReceiptFailedNotice(
+                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
+                    onCompleted: onCompleted)
+            }
 
             // Delegate print action
             Task { @MainActor in
@@ -557,6 +597,12 @@ private extension CollectOrderPaymentUseCase {
             guard let self = self else { return }
 
             analyticsTracker.trackEmailTapped()
+
+            guard let receiptParameters else {
+                return self.presentReceiptFailedNotice(
+                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
+                    onCompleted: onCompleted)
+            }
 
             // Request & present email
             paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
@@ -602,7 +648,7 @@ private extension CollectOrderPaymentUseCase {
         rootViewController.present(navigationController, animated: true)
     }
 
-    func presentBackedReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
+    func presentReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
         // TODO: consider removing this under #12864, when we have some other way to handle notices.
         guard let rootViewController = rootViewController as? UIViewController else {
             return
@@ -612,7 +658,7 @@ private extension CollectOrderPaymentUseCase {
 
         let noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: CollectOrderPaymentUseCaseDefinitions.Localization.failedReceiptPrintNoticeText,
-                                    feedbackType: .error)
+                            feedbackType: .error)
         noticePresenter.presentingViewController = rootViewController
         noticePresenter.enqueue(notice: notice)
 
@@ -829,4 +875,8 @@ extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
             return .reuseIntent
         }
     }
+}
+
+enum CollectOrderPaymentReceiptError: Error {
+    case noReceiptDataBecauseSuccessInferred
 }

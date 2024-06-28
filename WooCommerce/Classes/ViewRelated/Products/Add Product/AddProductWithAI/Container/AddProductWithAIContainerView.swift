@@ -12,8 +12,8 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
         }
-        rootView.onPickPackagePhoto = { [weak self] source in
-            self?.presentImageSelectionFlow(source: source)
+        viewModel.startingInfoViewModel.onPickPackagePhoto = { [weak self] source in
+            await self?.presentImageSelectionFlow(source: source)
         }
     }
 
@@ -64,18 +64,22 @@ private extension AddProductWithAIContainerHostingController {
 
     /// Presents the image selection flow to select package photo
     ///
-    func presentImageSelectionFlow(source: MediaPickingSource) {
-        guard let navigationController else {
-            return
+    @MainActor
+    func presentImageSelectionFlow(source: MediaPickingSource) async -> MediaPickerImage? {
+        await withCheckedContinuation { continuation in
+            guard let navigationController else {
+                continuation.resume(returning: nil)
+                return
+            }
+            let coordinator = SelectPackageImageCoordinator(siteID: viewModel.siteID,
+                                                            mediaSource: source,
+                                                            sourceNavigationController: navigationController,
+                                                            onImageSelected: { image in
+                continuation.resume(returning: image)
+            })
+            selectPackageImageCoordinator = coordinator
+            coordinator.start()
         }
-        let coordinator = SelectPackageImageCoordinator(siteID: viewModel.siteID,
-                                                        mediaSource: source,
-                                                        sourceNavigationController: navigationController,
-                                                        onImageSelected: { [weak self] image in
-            self?.viewModel.didSelectImage(image)
-        })
-        selectPackageImageCoordinator = coordinator
-        coordinator.start()
     }
 }
 
@@ -84,7 +88,6 @@ struct AddProductWithAIContainerView: View {
     /// Closure invoked when the close button is pressed
     ///
     var onUsePackagePhoto: (String?) -> Void = { _ in }
-    var onPickPackagePhoto: (MediaPickingSource) -> Void = { _ in }
 
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
@@ -102,7 +105,6 @@ struct AddProductWithAIContainerView: View {
             case .productName:
                 if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
                     ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
-                                                      onPickPackagePhoto: onPickPackagePhoto,
                                                       onContinueWithFeatures: { features in
                         withAnimation {
                             viewModel.onProductFeaturesAdded(features: features)

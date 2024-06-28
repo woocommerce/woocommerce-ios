@@ -1,13 +1,19 @@
 import Foundation
 import protocol WooFoundation.Analytics
+import UIKit
 
 /// View model for `ProductCreationAIStartingInfoView`.
 ///
 final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     @Published var features: String
+    @Published private var packageMedia: MediaPickerImage?
 
     let siteID: Int64
     private let analytics: Analytics
+
+    var packagePhoto: UIImage? {
+        packageMedia?.image
+    }
 
     var productFeatures: String? {
         guard features.isNotEmpty else {

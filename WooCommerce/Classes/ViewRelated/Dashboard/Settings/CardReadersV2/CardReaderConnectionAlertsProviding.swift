@@ -37,6 +37,7 @@ protocol CardReaderConnectionAlertsProviding<AlertDetails> {
     /// The user may try again or cancel
     ///
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> AlertDetails

@@ -108,4 +108,92 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
+
+    // MARK: - Load campaign stats
+
+    func test_loadCampaignStats_returns_parsed_stats() async throws {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "google-ads-reports-programs-without-data")
+
+        // When
+        let results = try await remote.loadCampaignStats(for: sampleSiteID,
+                                                         timeZone: .current,
+                                                         earliestDateToInclude: Date(),
+                                                         latestDateToInclude: Date(),
+                                                         orderby: .sales)
+
+        // Then
+        XCTAssertEqual(results.siteID, sampleSiteID)
+        XCTAssertEqual(results.totals, GoogleAdsCampaignStatsTotals(sales: 11, spend: 73.01, clicks: 154, impressions: 16938, conversions: 3))
+        XCTAssertEqual(results.campaigns.count, 2)
+    }
+
+    func test_loadCampaignStats_excludes_next_page_parameter_when_not_provided() async throws {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "google-ads-reports-programs-without-data")
+
+        // When
+        _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               timeZone: .current,
+                                               earliestDateToInclude: Date(),
+                                               latestDateToInclude: Date(),
+                                               orderby: .sales)
+
+        // Then
+        let excludedParam = "next_page"
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        XCTAssertFalse(queryParameters.contains(where: { $0.contains(excludedParam) }), "Query parameters contain unexpected param: \(excludedParam)")
+    }
+
+    func test_loadCampaignStats_includes_next_page_parameter_when_provided() async throws {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "google-ads-reports-programs-without-data")
+        let nextPageToken = "abcdefg"
+
+        // When
+        _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               timeZone: .current,
+                                               earliestDateToInclude: Date(),
+                                               latestDateToInclude: Date(),
+                                               orderby: .sales,
+                                               nextPageToken: nextPageToken)
+
+        // Then
+        let expectedParam = "next_page=\(nextPageToken)"
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Query parameters missing expected param: \(expectedParam)")
+    }
+
+    func test_loadCampaignStats_properly_relays_networking_errors() async {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                                   timeZone: .current,
+                                                   earliestDateToInclude: Date(),
+                                                   latestDateToInclude: Date(),
+                                                   orderby: .sales)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
 }

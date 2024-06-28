@@ -30,6 +30,7 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
@@ -39,6 +40,7 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
                 endSearch: cancelSearch)
         }
         return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
+                                              showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                                               retrySearch: retrySearch,
                                               endSearch: cancelSearch)
     }

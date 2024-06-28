@@ -28,6 +28,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,
+            showsInAuthenticatedWebView: true,
             retrySearchAction: {},
             cancelSearchAction: {}))
 }

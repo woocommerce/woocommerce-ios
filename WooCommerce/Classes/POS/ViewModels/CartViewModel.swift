@@ -12,8 +12,9 @@ final class CartViewModel: ObservableObject {
     private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
     @Published private(set) var itemsInCart: [CartItem] = []
+
     // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
-    @Published private(set) var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+    @Published private var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing

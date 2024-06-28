@@ -537,6 +537,7 @@ platform :ios do
       error_message = <<-MESSAGE
         Error removing branch protection or finalization of milestone `#{version}`: #{e.message}
         - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
+          Just ensure the branch protection for `release/#{version}` is no more and that the milestone `#{version}` is indeed closed.
         - If this is the first run of the lane, please investigate the error.
       MESSAGE
 

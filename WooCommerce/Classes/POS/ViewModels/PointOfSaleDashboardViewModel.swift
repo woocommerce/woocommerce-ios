@@ -37,7 +37,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     let itemSelectorViewModel: ItemSelectorViewModel
-    let cartViewModel: CartViewModel = CartViewModel()
+    private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
 
     @Published private(set) var isCartCollapsed: Bool = true
 

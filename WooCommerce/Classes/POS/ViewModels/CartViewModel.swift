@@ -12,16 +12,17 @@ final class CartViewModel: ObservableObject {
     private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
     @Published private(set) var itemsInCart: [CartItem] = []
-
-    private let orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+    // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
+    @Published private(set) var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
     }
 
-    init() {
+    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
+        orderStage.assign(to: &$orderStage)
     }
 
     func addItemToCart(_ item: POSItem) {

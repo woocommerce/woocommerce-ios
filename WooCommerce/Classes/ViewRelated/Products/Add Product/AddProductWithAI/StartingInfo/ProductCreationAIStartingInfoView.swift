@@ -123,6 +123,93 @@ private extension ProductCreationAIStartingInfoView {
         .disabled(viewModel.features.isEmpty)
     }
 }
+
+private extension ProductCreationAIStartingInfoView {
+    struct PackagePhotoView: View {
+        @ScaledMetric private var scale: CGFloat = 1.0
+
+        let image: UIImage
+
+        let onTapViewPhoto: () -> Void
+        let onTapReplacePhoto: () -> Void
+        let onTapRemovePhoto: () -> Void
+
+        var body: some View {
+            HStack(alignment: .center, spacing: Layout.spacing) {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
+                    .cornerRadius(Layout.cornerRadius)
+
+                Text(Localization.photoUploaded)
+                    .bodyStyle()
+
+                Spacer()
+
+                Menu {
+                    Button(Localization.viewPhoto) {
+                        onTapViewPhoto()
+                    }
+                    Button(Localization.replacePhoto) {
+                        onTapReplacePhoto()
+                    }
+                    Button(role: .destructive) {
+                        onTapRemovePhoto()
+                    } label: {
+                        Text(Localization.removePhoto)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .frame(width: Layout.ellipisButtonSize * scale, height: Layout.ellipisButtonSize * scale)
+                        .bodyStyle()
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+            .padding(Layout.padding)
+            .background(Color(.systemColor(.systemGray6)))
+            .clipShape(
+                .rect(
+                    bottomLeadingRadius: Layout.textFieldOverlayCornerRadius,
+                    bottomTrailingRadius: Layout.textFieldOverlayCornerRadius
+                )
+            )
+        }
+
+        enum Layout {
+            static let spacing: CGFloat = 16
+            static let cornerRadius: CGFloat = 4
+            static let padding = EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            static let textFieldOverlayCornerRadius: CGFloat = 8
+            static let packagePhotoSize: CGFloat = 48
+            static let ellipisButtonSize: CGFloat = 24
+        }
+
+        enum Localization {
+            static let photoUploaded = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",
+                value: "Photo uploaded",
+                comment: "Button title in starting info screen."
+            )
+            static let viewPhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",
+                value: "View Photo",
+                comment: "Menu button title in starting info screen."
+            )
+            static let replacePhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.replacePhoto",
+                value: "Replace Photo",
+                comment: "Menu button title in starting info screen."
+            )
+            static let removePhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.removePhoto",
+                value: "Remove Photo",
+                comment: "Menu button title in starting info screen."
+            )
+        }
+    }
+}
+
 private extension ProductCreationAIStartingInfoView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)

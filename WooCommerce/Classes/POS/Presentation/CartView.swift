@@ -11,11 +11,6 @@ final class CartViewModel: ObservableObject {
         orderStage != .finalizing
     }
 
-    // TODO: Currently unused
-    var isCartCollapsed: Bool {
-        itemsInCart.isEmpty
-    }
-
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)

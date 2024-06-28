@@ -45,6 +45,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             checkIfCartEmpty()
         }
     }
+    @Published private(set) var isCartCollapsed: Bool = true
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
@@ -102,6 +103,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.itemSelectorViewModel = .init(itemProvider: itemProvider)
 
         observeSelectedItemToAddToCart()
+        observeCartItemsForCollapsedState()
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
@@ -205,6 +207,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             self?.cartViewModel.addItemToCart(selectedItem)
         }
         .store(in: &cancellables)
+    }
+
+    private func observeCartItemsForCollapsedState() {
+        cartViewModel.$itemsInCart
+            .map { $0.isEmpty }
+            .assign(to: &$isCartCollapsed)
     }
 }
 

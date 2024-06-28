@@ -83,7 +83,7 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Campaigns data to render.
     ///
     var campaignsData: [TopPerformersRow.Data] {
-        isRedacted ? [.init(name: "Campaign", details: "Spend: $100", value: "$500")] : campaignRows(from: currentPeriodStats)
+        isRedacted ? [.init(showImage: false, name: "Campaign", details: "Spend: $100", value: "$500")] : campaignRows(from: currentPeriodStats)
     }
 
     /// Indicates if there was an error loading campaigns part of the card.

@@ -1,9 +1,51 @@
 import SwiftUI
+import protocol Yosemite.POSItem
+import protocol Yosemite.POSItemProvider
+
+final class ItemSelectorViewModel: ObservableObject {
+    @Published private(set) var items: [POSItem] = []
+    @Published private(set) var isSyncingItems: Bool = true
+    
+    private let itemProvider: POSItemProvider
+    
+    init(itemProvider: POSItemProvider) {
+        self.itemProvider = itemProvider
+    }
+
+    func addItemToCart(_: POSItem) {
+        fatalError("Not implemented")
+    }
+
+    @MainActor
+    func populatePointOfSaleItems() async {
+        isSyncingItems = true
+        do {
+            items = try await itemProvider.providePointOfSaleItems()
+        } catch {
+            DDLogError("Error on load while fetching product data: \(error)")
+        }
+        isSyncingItems = false
+    }
+
+    @MainActor
+    func reload() async {
+        isSyncingItems = true
+        do {
+            let newItems = try await itemProvider.providePointOfSaleItems()
+            // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
+            items.removeAll()
+            items = newItems
+        } catch {
+            DDLogError("Error on reload while updating product data: \(error)")
+        }
+        isSyncingItems = false
+    }
+}
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject var viewModel: ItemSelectorViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: ItemSelectorViewModel) {
         self.viewModel = viewModel
     }
 
@@ -35,12 +77,12 @@ struct ItemListView: View {
     }
 }
 
-#if DEBUG
-import class Yosemite.POSOrderService
-import enum Yosemite.Credentials
-#Preview {
-    ItemListView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                          orderService: POSOrderPreviewService()))
-}
-#endif
+//#if DEBUG
+//import class Yosemite.POSOrderService
+//import enum Yosemite.Credentials
+//#Preview {
+//    ItemListView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+//                                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                                          orderService: POSOrderPreviewService()))
+//}
+//#endif

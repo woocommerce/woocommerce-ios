@@ -36,6 +36,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
+    let itemSelectorViewModel: ItemSelectorViewModel
+
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var itemsInCart: [CartItem] = [] {
         didSet {
@@ -95,34 +97,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
 
+        self.itemSelectorViewModel = .init(itemProvider: itemProvider)
+
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
-    }
-
-    @MainActor
-    func populatePointOfSaleItems() async {
-        isSyncingItems = true
-        do {
-            items = try await itemProvider.providePointOfSaleItems()
-        } catch {
-            DDLogError("Error on load while fetching product data: \(error)")
-        }
-        isSyncingItems = false
-    }
-
-    @MainActor
-    func reload() async {
-        isSyncingItems = true
-        do {
-            let newItems = try await itemProvider.providePointOfSaleItems()
-            // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
-            items.removeAll()
-            items = newItems
-        } catch {
-            DDLogError("Error on reload while updating product data: \(error)")
-        }
-        isSyncingItems = false
     }
 
     var canDeleteItemsFromCart: Bool {

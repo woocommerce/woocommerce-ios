@@ -14,7 +14,7 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    productGridView
+                    productListView
                     Spacer()
                     if viewModel.isCartCollapsed {
                         collapsedCartView
@@ -30,7 +30,7 @@ struct PointOfSaleDashboardView: View {
             .padding()
         }
         .task {
-            await viewModel.populatePointOfSaleItems()
+            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
         }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
@@ -76,11 +76,11 @@ private extension PointOfSaleDashboardView {
             .cornerRadius(16)
     }
 
-    var productGridView: some View {
-        ItemListView(viewModel: viewModel)
+    var productListView: some View {
+        ItemListView(viewModel: viewModel.itemSelectorViewModel)
             .frame(maxWidth: .infinity)
             .refreshable {
-                await viewModel.reload()
+                await viewModel.itemSelectorViewModel.reload()
             }
     }
 }

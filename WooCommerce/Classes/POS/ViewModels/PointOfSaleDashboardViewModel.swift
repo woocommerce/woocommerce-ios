@@ -85,7 +85,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var isSyncingOrder: Bool = false
 
     private let orderService: POSOrderServiceProtocol
-    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -95,7 +94,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol) {
-        self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
@@ -199,8 +197,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func onTotalsViewDisappearance() {
         cardPresentPaymentService.cancelPayment()
     }
+}
 
-    private func observeSelectedItemToAddToCart() {
+private extension PointOfSaleDashboardViewModel {
+    func observeSelectedItemToAddToCart() {
         itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
             self?.cartViewModel.addItemToCart(selectedItem)
         }

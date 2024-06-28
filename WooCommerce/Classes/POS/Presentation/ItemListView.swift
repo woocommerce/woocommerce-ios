@@ -43,7 +43,6 @@ struct ItemListView: View {
 }
 
 #if DEBUG
-import class Yosemite.POSOrderService
 #Preview {
     ItemListView(viewModel: ItemSelectorViewModel(itemProvider: POSItemProviderPreview()))
 }

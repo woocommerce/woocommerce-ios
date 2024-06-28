@@ -10,6 +10,7 @@ struct AnalyticsWebReport {
         case products
         case bundles
         case giftCards
+        case googlePrograms
     }
 
     /// Provides the URL for a web analytics report
@@ -62,6 +63,8 @@ struct AnalyticsWebReport {
             return "/analytics/bundles"
         case .giftCards:
             return "/analytics/gift-cards"
+        case .googlePrograms:
+            return "/google/reports&reportKey=programs"
         }
     }
 

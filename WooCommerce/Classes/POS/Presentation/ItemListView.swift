@@ -1,19 +1,24 @@
+import Combine
 import SwiftUI
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 
 final class ItemSelectorViewModel: ObservableObject {
+    let selectedItemPublisher: AnyPublisher<POSItem, Never>
+
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var isSyncingItems: Bool = true
-    
+
     private let itemProvider: POSItemProvider
-    
+    private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
+
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
+        selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
     }
 
-    func addItemToCart(_: POSItem) {
-        fatalError("Not implemented")
+    func select(_ item: POSItem) {
+        selectedItemSubject.send(item)
     }
 
     @MainActor
@@ -64,7 +69,7 @@ struct ItemListView: View {
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
-                            viewModel.addItemToCart(item)
+                            viewModel.select(item)
                         }, label: {
                             ItemCardView(item: item)
                         })

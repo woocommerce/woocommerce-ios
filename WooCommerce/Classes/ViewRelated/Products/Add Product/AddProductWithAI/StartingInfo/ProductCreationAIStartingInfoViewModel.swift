@@ -5,15 +5,17 @@ import UIKit
 /// View model for `ProductCreationAIStartingInfoView`.
 ///
 final class ProductCreationAIStartingInfoViewModel: ObservableObject {
+    typealias ImageState = EditableImageViewState
+
+    // Image selection
+    var onPickPackagePhoto: ((MediaPickingSource) async -> MediaPickerImage?)?
+
+    @Published private(set) var imageState: ImageState
+    @Published var isShowingMediaPickerSourceSheet: Bool = false
     @Published var features: String
-    @Published private var packageMedia: MediaPickerImage?
 
     let siteID: Int64
     private let analytics: Analytics
-
-    var packagePhoto: UIImage? {
-        packageMedia?.image
-    }
 
     var productFeatures: String? {
         guard features.isNotEmpty else {
@@ -26,18 +28,16 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         self.siteID = siteID
         self.features = ""
         self.analytics = analytics
+        imageState = .empty
     }
 
     func didTapReadTextFromPhoto() {
         // TODO: 13103 - Add tracking
+        isShowingMediaPickerSourceSheet = true
     }
 
     func didTapContinue() {
         // TODO: 13103 - Add tracking
-    }
-
-    func onSelectImage(_ image: MediaPickerImage?) {
-        packageMedia = image
     }
 
     func didTapViewPhoto() {
@@ -46,9 +46,24 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     func didTapReplacePhoto() {
         // TODO: 13103 Add tracking
+        isShowingMediaPickerSourceSheet = true
     }
 
     func didTapRemovePhoto() {
-        packageMedia = nil
+        imageState = .empty
+    }
+
+    func selectImage(from source: MediaPickingSource) {
+        guard let onPickPackagePhoto else {
+            return
+        }
+        let previousState = imageState
+        imageState = .loading
+        Task { @MainActor in
+            guard let image = await onPickPackagePhoto(source) else {
+                return imageState = previousState
+            }
+            imageState = .success(image)
+        }
     }
 }

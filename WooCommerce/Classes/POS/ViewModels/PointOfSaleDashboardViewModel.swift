@@ -88,7 +88,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-    
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(itemProvider: POSItemProvider,
@@ -233,7 +233,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func onTotalsViewDisappearance() {
         cardPresentPaymentService.cancelPayment()
     }
- 
+
     private func observeSelectedItemToAddToCart() {
         itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
             self?.addItemToCart(selectedItem)

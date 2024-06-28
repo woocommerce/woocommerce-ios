@@ -7,6 +7,10 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
     ///
     func checkConnection(for siteID: Int64) async throws -> GoogleAdsConnection
 
+    /// Fetch ads campaigns for the given site
+    ///
+    func fetchAdsCampaigns(for siteID: Int64) async throws -> [GoogleAdsCampaign]
+
     /// Fetch the paid campaign stats for the given site.
     ///
     /// - Parameters:
@@ -38,6 +42,17 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
                                      path: path,
                                      availableAsRESTRequest: true)
         let mapper = GoogleAdsConnectionMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func fetchAdsCampaigns(for siteID: Int64) async throws -> [GoogleAdsCampaign] {
+        let path = Paths.adsCampaigns
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     availableAsRESTRequest: true)
+        let mapper = GoogleAdsCampaignListMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -86,6 +101,7 @@ public extension GoogleListingsAndAdsRemote {
 private extension GoogleListingsAndAdsRemote {
     enum Paths {
         static let connection = "wc/gla/ads/connection"
+        static let adsCampaigns = "wc/gla/ads/campaigns"
         static let campaignsReport = "wc/gla/ads/reports/programs"
     }
 

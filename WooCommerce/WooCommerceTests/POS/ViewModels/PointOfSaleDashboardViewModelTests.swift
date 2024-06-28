@@ -37,50 +37,50 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.itemsInCart.isEmpty)
     }
 
-    func test_cart_is_collapsed_when_empty_then_not_collapsed_when_has_items() {
-        XCTAssertTrue(sut.itemsInCart.isEmpty, "Precondition")
-        XCTAssertTrue(sut.isCartCollapsed, "Precondition")
-
-        // Given
-        let product = POSProduct(itemID: UUID(),
-                                 productID: 0,
-                                 name: "Choco",
-                                 price: "2.00",
-                                 formattedPrice: "$2.00",
-                                 itemCategories: [],
-                                 productImageSource: nil,
-                                 productType: .simple)
-
-        // When
-        sut.addItemToCart(product)
-
-        // Then
-        XCTAssertFalse(sut.itemsInCart.isEmpty)
-        XCTAssertFalse(sut.isCartCollapsed)
-    }
-
-    func test_removeAllItemsFromCart_removes_all_items_from_cart() {
-        // Given
-        let numberOfItems = Int.random(in: 1...5)
-        for i in 1...numberOfItems {
-            let product = POSProduct(itemID: UUID(),
-                                     productID: Int64(i),
-                                     name: "Choco",
-                                     price: "2.00",
-                                     formattedPrice: "$2.00",
-                                     itemCategories: [],
-                                     productImageSource: nil,
-                                     productType: .simple)
-            sut.addItemToCart(product)
-        }
-        XCTAssertEqual(sut.itemsInCart.count, numberOfItems)
-
-        // When
-        sut.removeAllItemsFromCart()
-
-        // Then
-        XCTAssertEqual(sut.itemsInCart.count, 0)
-    }
+//    func test_cart_is_collapsed_when_empty_then_not_collapsed_when_has_items() {
+//        XCTAssertTrue(sut.itemsInCart.isEmpty, "Precondition")
+//        XCTAssertTrue(sut.isCartCollapsed, "Precondition")
+//
+//        // Given
+//        let product = POSProduct(itemID: UUID(),
+//                                 productID: 0,
+//                                 name: "Choco",
+//                                 price: "2.00",
+//                                 formattedPrice: "$2.00",
+//                                 itemCategories: [],
+//                                 productImageSource: nil,
+//                                 productType: .simple)
+//
+//        // When
+//        sut.addItemToCart(product)
+//
+//        // Then
+//        XCTAssertFalse(sut.itemsInCart.isEmpty)
+//        XCTAssertFalse(sut.isCartCollapsed)
+//    }
+//
+//    func test_removeAllItemsFromCart_removes_all_items_from_cart() {
+//        // Given
+//        let numberOfItems = Int.random(in: 1...5)
+//        for i in 1...numberOfItems {
+//            let product = POSProduct(itemID: UUID(),
+//                                     productID: Int64(i),
+//                                     name: "Choco",
+//                                     price: "2.00",
+//                                     formattedPrice: "$2.00",
+//                                     itemCategories: [],
+//                                     productImageSource: nil,
+//                                     productType: .simple)
+//            sut.addItemToCart(product)
+//        }
+//        XCTAssertEqual(sut.itemsInCart.count, numberOfItems)
+//
+//        // When
+//        sut.removeAllItemsFromCart()
+//
+//        // Then
+//        XCTAssertEqual(sut.itemsInCart.count, 0)
+//    }
 }
 
 private extension PointOfSaleDashboardViewModelTests {

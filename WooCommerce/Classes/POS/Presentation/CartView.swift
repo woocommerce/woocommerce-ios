@@ -1,7 +1,11 @@
 import SwiftUI
+import Combine
 import protocol Yosemite.POSItem
 
 final class CartViewModel: ObservableObject {
+    let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
+    private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
+    // TODO: Handle "add more to cart"
 
     @Published private(set) var itemsInCart: [CartItem] = []
 
@@ -9,6 +13,10 @@ final class CartViewModel: ObservableObject {
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
+    }
+
+    init() {
+        cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
     }
 
     func addItemToCart(_ item: POSItem) {
@@ -23,7 +31,7 @@ final class CartViewModel: ObservableObject {
     func removeAllItemsFromCart() {
         itemsInCart.removeAll()
     }
-    
+
     var itemToScrollToWhenCartUpdated: CartItem? {
         return itemsInCart.last
     }
@@ -37,6 +45,10 @@ final class CartViewModel: ObservableObject {
                                     singular: "%1$d item",
                                     plural: "%1$d items")
         }
+    }
+
+    func submitCart() {
+        cartSubmissionSubject.send(itemsInCart)
     }
 }
 
@@ -114,7 +126,7 @@ struct CartView: View {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            viewModel.submitCart()
+            cartViewModel.submitCart()
         } label: {
             HStack {
                 Spacer()

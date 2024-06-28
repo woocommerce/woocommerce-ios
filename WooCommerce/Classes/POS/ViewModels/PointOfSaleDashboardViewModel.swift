@@ -104,6 +104,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()
+        observeCartSubmission()
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
@@ -115,13 +116,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         if itemsInCart.isEmpty {
             orderStage = .building
         }
-    }
-
-    func submitCart() {
-        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
-        orderStage = .finalizing
-
-        startSyncingOrder()
     }
 
     func addMoreToCart() {
@@ -180,10 +174,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func calculateAmountsTapped() {
-        startSyncingOrder()
+        // TODO:
+        // This is called from the TotalsView
+        // startSyncingOrder(cartItems: cartItems)
     }
 
-    private func startSyncingOrder() {
+    private func startSyncingOrder(cartItems: [CartItem]) {
+        // TODO: 
+        // At this point, this should happen in the TotalsViewModel
         Task { @MainActor in
             await syncOrder(for: itemsInCart)
         }
@@ -213,6 +211,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         cartViewModel.$itemsInCart
             .map { $0.isEmpty }
             .assign(to: &$isCartCollapsed)
+    }
+
+    private func observeCartSubmission() {
+        cartViewModel.cartSubmissionPublisher.sink { [weak self] cartItems in
+            self?.orderStage = .finalizing
+            self?.startSyncingOrder(cartItems: cartItems)
+        }
+        .store(in: &cancellables)
     }
 }
 

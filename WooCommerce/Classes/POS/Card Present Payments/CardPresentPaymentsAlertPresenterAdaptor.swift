@@ -15,6 +15,9 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
         switch eventDetails {
+        case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _),
+                .paymentErrorNonRetryable(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _):
+            paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         case .paymentError(let error, let tryAgain, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentError(

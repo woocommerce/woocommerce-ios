@@ -161,13 +161,20 @@ private extension GoogleAdsCampaignReportCardViewModel {
         static let reportTitle = NSLocalizedString("analyticsHub.googleCampaigns.reportTitle",
                                                    value: "Programs Report",
                                                    comment: "Title for the Google Programs report linked in the Analytics Hub")
-        static let title = NSLocalizedString("Google Campaigns", comment: "Title for the Google campaigns card on the analytics hub screen.").localizedUppercase
-        static let totalSales = NSLocalizedString("Total Sales",
+        static let title = NSLocalizedString("analyticsHub.googleCampaigns.title",
+                                             value: "Google Campaigns",
+                                             comment: "Title for the Google campaigns card on the analytics hub screen.").localizedUppercase
+        static let totalSales = NSLocalizedString("analyticsHub.googleCampaigns.totalSalesTitle",
+                                                  value: "Total Sales",
                                                   comment: "Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen.")
-        static let noCampaignStats = NSLocalizedString("Unable to load Google campaigns analytics",
+        static let noCampaignStats = NSLocalizedString("analyticsHub.googleCampaigns.noCampaignStats",
+                                                       value: "Unable to load Google campaigns analytics",
                                                        comment: "Text displayed when there is an error loading Google Ads campaigns stats data.")
         static func spend(value: String) -> String {
-            String.localizedStringWithFormat(NSLocalizedString("Spend: %@", comment: "Label for the total spend on a Google Ads campaign in the Analytics Hub"),
+            String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.spendSubtitle",
+                                                               value: "Spend: %@",
+                                                               comment: "Label for the total spend amount on a Google Ads campaign in the Analytics Hub."
+                                                               + "The placeholder is a formatted monetary amount, e.g. Spend: $123."),
                                              value)
         }
     }

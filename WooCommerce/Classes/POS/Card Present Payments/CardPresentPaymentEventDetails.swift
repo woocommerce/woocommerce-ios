@@ -18,6 +18,7 @@ enum CardPresentPaymentEventDetails {
     case connectingFailedChargeReader(retrySearch: () -> Void,
                                       endSearch: () -> Void)
     case connectingFailedUpdateAddress(wcSettingsAdminURL: URL,
+                                       showsInAuthenticatedWebView: Bool,
                                        retrySearch: () -> Void,
                                        endSearch: () -> Void)
     case preparingForPayment(cancelPayment: () -> Void)

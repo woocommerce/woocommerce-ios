@@ -1,0 +1,58 @@
+{
+    "campaigns": [
+        {
+            "id": 123,
+            "name": "One",
+            "status": "enabled",
+            "subtotals": {
+                "sales": 11,
+                "spend": 63.14,
+                "clicks": 139,
+                "impressions": 16037,
+                "conversions": 3
+            }
+        },
+        {
+            "id": 234,
+            "name": "Two",
+            "status": "enabled",
+            "subtotals": {
+                "sales": 0,
+                "spend": 9.87,
+                "clicks": 15,
+                "impressions": 901,
+                "conversions": 0
+            }
+        }
+    ],
+    "intervals": [
+        {
+            "interval": "2021-09",
+            "subtotals": {
+                "sales": 0,
+                "spend": 38,
+                "clicks": 90,
+                "impressions": 9941,
+                "conversions": 0
+            }
+        },
+        {
+            "interval": "2021-10",
+            "subtotals": {
+                "sales": 11,
+                "spend": 35.01,
+                "clicks": 64,
+                "impressions": 6997,
+                "conversions": 3
+            }
+        }
+    ],
+    "totals": {
+        "sales": 11,
+        "spend": 73.01,
+        "clicks": 154,
+        "impressions": 16938,
+        "conversions": 3
+    },
+    "next_page": "abcdefg"
+}

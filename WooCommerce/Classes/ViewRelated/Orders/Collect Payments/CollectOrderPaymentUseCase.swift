@@ -576,7 +576,7 @@ private extension CollectOrderPaymentUseCase {
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in
             guard let self = self else { return }
 
-            guard let receiptParameters = receiptParameters else {
+            guard let receiptParameters else {
                 return self.presentReceiptFailedNotice(
                     with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
                     onCompleted: onCompleted)
@@ -598,7 +598,7 @@ private extension CollectOrderPaymentUseCase {
 
             analyticsTracker.trackEmailTapped()
 
-            guard let receiptParameters = receiptParameters else {
+            guard let receiptParameters else {
                 return self.presentReceiptFailedNotice(
                     with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
                     onCompleted: onCompleted)

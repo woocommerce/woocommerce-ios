@@ -148,8 +148,6 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
-        observeValuesForDashboardCards()
-        observeDashboardCardsAndReload()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -269,6 +267,8 @@ private extension DashboardViewModel {
             }))
         }
         savedCards = storageCards ?? []
+        observeValuesForDashboardCards()
+        observeDashboardCardsAndReload()
     }
 
     func saveDashboardCards(cards: [DashboardCard]) {
@@ -290,7 +290,7 @@ private extension DashboardViewModel {
                 await self.syncAnnouncements(for: self.siteID)
             }
             group.addTask { [weak self] in
-                await self?.reloadBlazeCampaignView()
+                await self?.blazeCampaignDashboardViewModel.checkAvailability()
             }
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()

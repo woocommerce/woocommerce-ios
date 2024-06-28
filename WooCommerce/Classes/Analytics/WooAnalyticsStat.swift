@@ -188,6 +188,9 @@ enum WooAnalyticsStat: String {
     case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
     case dynamicDashboardCardInteracted = "dynamic_dashboard_card_interacted"
     case dynamicDashboardAddNewSectionsTapped = "dynamic_dashboard_add_new_sections_tapped"
+    case dynamicDashboardCardDataLoadingStarted = "dynamic_dashboard_card_data_loading_started"
+    case dynamicDashboardCardDataLoadingCompleted = "dynamic_dashboard_card_data_loading_completed"
+    case dynamicDashboardCardDataLoadingFailed = "dynamic_dashboard_card_data_loading_failed"
 
     // MARK: Analytics Hub Events
     //

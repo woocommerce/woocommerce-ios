@@ -1,0 +1,24 @@
+[
+    {
+        "id": 21401695859,
+        "name": "Campaign 2024-06-21 04:26:32",
+        "status": "enabled",
+        "type": "performance_max",
+        "amount": 10,
+        "country": "US",
+        "targeted_locations": [
+            "US"
+        ]
+    },
+    {
+        "id": 21402492606,
+        "name": "Campaign 2024-06-24 05:08:41",
+        "status": "disabled",
+        "type": "performance_max",
+        "amount": 30,
+        "country": "US",
+        "targeted_locations": [
+            "US"
+        ]
+    }
+]

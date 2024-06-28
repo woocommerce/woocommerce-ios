@@ -64,6 +64,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .coupons))
         syncingData = true
         syncingError = nil
         rows = []
@@ -87,9 +88,12 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                     }
                 }
             }
+
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .coupons))
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Most active coupons) — Error loading most active coupons: \(error)")
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .coupons, error: error))
         }
         syncingData = false
     }

@@ -801,6 +801,102 @@ extension Networking.GiftCardStatsTotals {
     }
 }
 
+extension Networking.GoogleAdsCampaign {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        country: CopiableProp<String> = .copy,
+        targetedLocations: CopiableProp<[String]> = .copy
+    ) -> Networking.GoogleAdsCampaign {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let rawStatus = rawStatus ?? self.rawStatus
+        let rawType = rawType ?? self.rawType
+        let amount = amount ?? self.amount
+        let country = country ?? self.country
+        let targetedLocations = targetedLocations ?? self.targetedLocations
+
+        return Networking.GoogleAdsCampaign(
+            id: id,
+            name: name,
+            rawStatus: rawStatus,
+            rawType: rawType,
+            amount: amount,
+            country: country,
+            targetedLocations: targetedLocations
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        totals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy,
+        campaigns: CopiableProp<[GoogleAdsCampaignStatsItem]> = .copy,
+        nextPageToken: NullableCopiableProp<String> = .copy
+    ) -> Networking.GoogleAdsCampaignStats {
+        let siteID = siteID ?? self.siteID
+        let totals = totals ?? self.totals
+        let campaigns = campaigns ?? self.campaigns
+        let nextPageToken = nextPageToken ?? self.nextPageToken
+
+        return Networking.GoogleAdsCampaignStats(
+            siteID: siteID,
+            totals: totals,
+            campaigns: campaigns,
+            nextPageToken: nextPageToken
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsItem {
+    public func copy(
+        campaignID: CopiableProp<Int64> = .copy,
+        campaignName: NullableCopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsItem {
+        let campaignID = campaignID ?? self.campaignID
+        let campaignName = campaignName ?? self.campaignName
+        let rawStatus = rawStatus ?? self.rawStatus
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.GoogleAdsCampaignStatsItem(
+            campaignID: campaignID,
+            campaignName: campaignName,
+            rawStatus: rawStatus,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsTotals {
+    public func copy(
+        sales: NullableCopiableProp<Decimal> = .copy,
+        spend: NullableCopiableProp<Decimal> = .copy,
+        clicks: NullableCopiableProp<Int> = .copy,
+        impressions: NullableCopiableProp<Int> = .copy,
+        conversions: NullableCopiableProp<Decimal> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsTotals {
+        let sales = sales ?? self.sales
+        let spend = spend ?? self.spend
+        let clicks = clicks ?? self.clicks
+        let impressions = impressions ?? self.impressions
+        let conversions = conversions ?? self.conversions
+
+        return Networking.GoogleAdsCampaignStatsTotals(
+            sales: sales,
+            spend: spend,
+            clicks: clicks,
+            impressions: impressions,
+            conversions: conversions
+        )
+    }
+}
+
 extension Networking.GoogleAdsConnection {
     public func copy(
         id: CopiableProp<Int64> = .copy,

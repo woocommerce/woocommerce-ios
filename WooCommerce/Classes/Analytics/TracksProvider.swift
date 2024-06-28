@@ -32,7 +32,14 @@ public extension TracksProvider {
             guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                 return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
             }
-            DDLogInfo("🔵 Tracked \(eventName), properties: \(properties)")
+
+            let keyValuePairs = properties
+                .map { key, value in
+                    "\(key): \(value)"
+                }
+                .joined(separator: ", ")
+
+            DDLogInfo("🔵 Tracked \(eventName), properties: [\(keyValuePairs)]")
         } else {
             Self.tracksService.trackEventName(eventName)
             DDLogInfo("🔵 Tracked \(eventName)")

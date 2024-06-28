@@ -78,6 +78,12 @@ extension GoogleAdsCampaignReportCardViewModel {
 
     // MARK: Campaigns report
 
+    /// Title for campaigns list.
+    ///
+    var campaignsTitle: String {
+        Localization.campaignsTitle
+    }
+
     /// Campaigns data to render.
     ///
     var campaignsData: [TopPerformersRow.Data] {
@@ -148,6 +154,7 @@ extension AnalyticsTopPerformersCard {
         self.reportViewModel = campaignsViewModel.reportViewModel
 
         // Top performers (campaigns) list
+        self.topPerformersTitle = campaignsViewModel.campaignsTitle
         self.topPerformersData = campaignsViewModel.campaignsData
         self.isTopPerformersRedacted = campaignsViewModel.isRedacted
         self.showTopPerformersError = campaignsViewModel.showCampaignsError
@@ -164,6 +171,9 @@ private extension GoogleAdsCampaignReportCardViewModel {
         static let title = NSLocalizedString("analyticsHub.googleCampaigns.title",
                                              value: "Google Campaigns",
                                              comment: "Title for the Google campaigns card on the analytics hub screen.").localizedUppercase
+        static let campaignsTitle = NSLocalizedString("analyticsHub.googleCampaigns.campaignsList.title",
+                                                      value: "Campaigns",
+                                                      comment: "Title for the list of campaigns on the Google campaigns card on the analytics hub screen.")
         static let totalSales = NSLocalizedString("analyticsHub.googleCampaigns.totalSalesTitle",
                                                   value: "Total Sales",
                                                   comment: "Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen.")

@@ -37,6 +37,10 @@ struct AnalyticsTopPerformersCard: View {
     ///
     let statsErrorMessage: String
 
+    /// Title for top performers list.
+    ///
+    let topPerformersTitle: String
+
     /// Top performers data to render.
     ///
     let topPerformersData: [TopPerformersRow.Data]
@@ -90,7 +94,7 @@ struct AnalyticsTopPerformersCard: View {
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: title.localizedCapitalized,
+            TopPerformersView(itemTitle: topPerformersTitle.localizedCapitalized,
                               valueTitle: statTitle,
                               rows: topPerformersData,
                               isRedacted: isTopPerformersRedacted)
@@ -134,7 +138,8 @@ struct AnalyticsItemsSoldCardPreviews: PreviewProvider {
                                deltaTextColor: .textInverted,
                                isStatsRedacted: false,
                                showStatsError: false,
-                               statsErrorMessage: "Unable to load product analytics",
+                                   statsErrorMessage: "Unable to load product analytics",
+                                   topPerformersTitle: "Products",
                                topPerformersData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
@@ -160,6 +165,7 @@ struct AnalyticsItemsSoldCardPreviews: PreviewProvider {
                                isStatsRedacted: false,
                                showStatsError: true,
                                statsErrorMessage: "Unable to load product analytics",
+                                   topPerformersTitle: "Products",
                                topPerformersData: [],
                                isTopPerformersRedacted: false,
                                showTopPerformersError: true,

@@ -158,6 +158,7 @@ extension AnalyticsTopPerformersCard {
         self.reportViewModel = bundlesViewModel.reportViewModel
 
         // Top performers list
+        self.topPerformersTitle = bundlesViewModel.title
         self.topPerformersData = bundlesViewModel.bundlesSoldData
         self.isTopPerformersRedacted = bundlesViewModel.isRedacted
         self.showTopPerformersError = bundlesViewModel.showBundlesSoldError

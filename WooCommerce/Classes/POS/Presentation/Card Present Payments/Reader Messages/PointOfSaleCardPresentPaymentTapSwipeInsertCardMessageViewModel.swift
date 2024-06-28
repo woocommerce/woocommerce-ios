@@ -2,7 +2,7 @@ import Foundation
 import struct Yosemite.CardReaderInput
 
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel {
-    let title = Localization.readerIsReady
+    let title = Localization.readyForPayment
     let message: String
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
@@ -31,9 +31,9 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel {
 
 private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel {
     enum Localization {
-        static let readerIsReady = NSLocalizedString(
+        static let readyForPayment = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.title",
-            value: "Reader is ready",
+            value: "Ready for payment",
             comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
         )
 

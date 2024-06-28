@@ -15,13 +15,10 @@ struct StatsDataTextFormatter {
                                        currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                                        currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                                        numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-        if let revenue = totalRevenue(at: selectedIntervalIndex, orderStats: orderStats) {
-            // If revenue is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-            return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
-        } else {
-            return Constants.placeholderText
-        }
+        return formatAmount(totalRevenue(at: selectedIntervalIndex, orderStats: orderStats),
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
     }
 
     /// Creates the text to display for the net revenue.
@@ -30,13 +27,10 @@ struct StatsDataTextFormatter {
                                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                                      currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                                      numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-        guard let revenue = orderStats?.totals.netRevenue else {
-            return Constants.placeholderText
-        }
-
-        // If revenue is an integer, no decimal points are shown.
-        let numberOfDecimals: Int? = revenue.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-        return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+        return formatAmount(orderStats?.totals.netRevenue,
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
     }
 
     // MARK: Orders Stats
@@ -57,13 +51,10 @@ struct StatsDataTextFormatter {
                                             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                                             numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-        if let value = averageOrderValue(orderStats: orderStats) {
-            // If order value is an integer, no decimal points are shown.
-            let numberOfDecimals: Int? = value.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-            return currencyFormatter.formatAmount(value, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
-        } else {
-            return Constants.placeholderText
-        }
+        return formatAmount(averageOrderValue(orderStats: orderStats),
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
     }
 
     // MARK: Views and Visitors Stats
@@ -160,14 +151,29 @@ struct StatsDataTextFormatter {
                                              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                                              currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                                              numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-        guard let giftCardStats else {
-            return Constants.placeholderText
-        }
-        // If net amount is an integer, no decimal points are shown.
-        let netAmount = giftCardStats.totals.netAmount
-        let numberOfDecimals: Int? = netAmount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-        return currencyFormatter.formatAmount(netAmount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+        return formatAmount(giftCardStats?.totals.netAmount,
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
     }
+
+    // MARK: Generic helpers
+
+    /// Creates the text to display for an amount with currency settings.
+    ///
+    /// If the amount is an integer, no decimal points are shown, e.g. `$12.34` or `$12` (not `$12.00`).
+    ///
+    static func formatAmount(_ amount: Decimal?,
+                             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                             numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+      guard let amount else {
+          return Constants.placeholderText
+      }
+      // If amount is an integer, no decimal points are shown.
+      let numberOfDecimals: Int? = amount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
+      return currencyFormatter.formatAmount(amount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+  }
 }
 
 extension StatsDataTextFormatter {

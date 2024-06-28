@@ -1,7 +1,5 @@
 import Foundation
-import class UIKit.UIColor
 import Yosemite
-import WooFoundation
 
 /// Analytics Hub Google Ads Campaign Card ViewModel.
 /// Used to transmit Google Ads campaigns analytics data.

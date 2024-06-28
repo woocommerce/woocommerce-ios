@@ -39,7 +39,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemSelectorViewModel: ItemSelectorViewModel
     let cartViewModel: CartViewModel = CartViewModel()
 
-    @Published private(set) var items: [POSItem] = []
     @Published private(set) var isCartCollapsed: Bool = true
 
     // Total amounts
@@ -334,7 +333,7 @@ private extension PointOfSaleDashboardViewModel {
             isSyncingOrder = true
             let order = try await orderService.syncOrder(cart: cart,
                                                          order: order,
-                                                         allProducts: items)
+                                                         allProducts: itemSelectorViewModel.items)
             self.order = order
             isSyncingOrder = false
             // TODO: this is temporary solution

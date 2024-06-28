@@ -37,6 +37,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     let itemSelectorViewModel: ItemSelectorViewModel
+    let cartViewModel: CartViewModel = CartViewModel()
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var itemsInCart: [CartItem] = [] {
@@ -104,10 +105,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
-    }
-
-    var canDeleteItemsFromCart: Bool {
-        return orderStage != .finalizing
     }
 
     var isCartCollapsed: Bool {

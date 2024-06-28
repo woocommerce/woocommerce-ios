@@ -1,10 +1,21 @@
 import SwiftUI
 
+final class CartViewModel: ObservableObject {
+
+    private let orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+
+    var canDeleteItemsFromCart: Bool {
+        orderStage != .finalizing
+    }
+}
+
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
+        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -34,7 +45,7 @@ struct CartView: View {
                 ScrollView {
                     ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
+                                    onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
                             viewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
@@ -101,10 +112,10 @@ private extension CartView {
     }
 }
 
-#if DEBUG
-#Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                      orderService: POSOrderPreviewService()))
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+//                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                                      orderService: POSOrderPreviewService()))
+//}
+//#endif

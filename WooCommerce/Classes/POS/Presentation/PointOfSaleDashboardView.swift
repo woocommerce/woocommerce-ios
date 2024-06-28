@@ -62,8 +62,9 @@ private extension PointOfSaleDashboardView {
     }
 
     var cartView: some View {
-        CartView(viewModel: viewModel)
-            .frame(maxWidth: .infinity)
+        CartView(viewModel: viewModel,
+                 cartViewModel: viewModel.cartViewModel)
+        .frame(maxWidth: .infinity)
     }
 
     var totalsView: some View {

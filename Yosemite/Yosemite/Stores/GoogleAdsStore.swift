@@ -57,6 +57,12 @@ public final class GoogleAdsStore: Store {
             checkConnection(siteID: siteID, onCompletion: onCompletion)
         case let .fetchAdsCampaigns(siteID, onCompletion):
             fetchAdsCampaign(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveCampaignStats(siteID, timeZone, earliestDateToInclude, latestDateToInclude, onCompletion):
+            retrieveCampaignStats(siteID: siteID,
+                                  timeZone: timeZone,
+                                  earliestDateToInclude: earliestDateToInclude,
+                                  latestDateToInclude: latestDateToInclude,
+                                  onCompletion: onCompletion)
         }
     }
 }
@@ -80,6 +86,27 @@ private extension GoogleAdsStore {
             do {
                 let campaigns = try await remote.fetchAdsCampaigns(for: siteID)
                 onCompletion(.success(campaigns))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func retrieveCampaignStats(siteID: Int64,
+                               timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               onCompletion: @escaping (Result<GoogleAdsCampaignStats, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let campaignStats = try await remote.loadCampaignStats(for: siteID,
+                                                                       timeZone: timeZone,
+                                                                       earliestDateToInclude: earliestDateToInclude,
+                                                                       latestDateToInclude: latestDateToInclude,
+                                                                       totals: GoogleListingsAndAdsRemote.StatsField.allCases,
+                                                                       orderby: .sales,
+                                                                       nextPageToken: nil)
+                onCompletion(.success(campaignStats))
             } catch {
                 onCompletion(.failure(error))
             }

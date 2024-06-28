@@ -1,6 +1,1 @@
-- [*] Blaze Campaigns: Added date range checks to ensure campaign start dates are within 60 days from today to avoid validation errors. [https://github.com/woocommerce/woocommerce-ios/pull/13124]
-- [*] Payments: fixed issue when connecting to a card reader after cancelling reader discovery [https://github.com/woocommerce/woocommerce-ios/issues/13125]
-- [*] Payments: fixed issue when connecting to a card reader after an error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/13126]
-- [*] Blaze i3: Implemented ux improvements for a more intuitive and streamlined interface. [https://github.com/woocommerce/woocommerce-ios/pull/13172]
-- [*] Payments: improved collect payment error handling, by checking whether the payment was actually successful on some errors [https://github.com/woocommerce/woocommerce-ios/pull/13165]
-
+Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!

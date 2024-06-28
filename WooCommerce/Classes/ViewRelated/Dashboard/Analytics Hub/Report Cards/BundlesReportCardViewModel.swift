@@ -143,12 +143,12 @@ extension AnalyticsBundlesReportCardViewModel {
 
 /// Convenience extension to create an `AnalyticsItemsSoldCard` from a view model.
 ///
-extension AnalyticsItemsSoldCard {
+extension AnalyticsTopPerformersCard {
     init(bundlesViewModel: AnalyticsBundlesReportCardViewModel) {
         // Header with stats
         self.title = bundlesViewModel.title
-        self.itemsSoldTitle = bundlesViewModel.bundlesSoldTitle
-        self.itemsSold = bundlesViewModel.bundlesSold
+        self.statTitle = bundlesViewModel.bundlesSoldTitle
+        self.statValue = bundlesViewModel.bundlesSold
         self.delta = bundlesViewModel.delta.string
         self.deltaBackgroundColor = bundlesViewModel.delta.direction.deltaBackgroundColor
         self.deltaTextColor = bundlesViewModel.delta.direction.deltaTextColor
@@ -158,10 +158,10 @@ extension AnalyticsItemsSoldCard {
         self.reportViewModel = bundlesViewModel.reportViewModel
 
         // Top performers list
-        self.itemsSoldData = bundlesViewModel.bundlesSoldData
-        self.isItemsSoldRedacted = bundlesViewModel.isRedacted
-        self.showItemsSoldError = bundlesViewModel.showBundlesSoldError
-        self.itemsSoldErrorMessage = bundlesViewModel.bundlesSoldErrorMessage
+        self.topPerformersData = bundlesViewModel.bundlesSoldData
+        self.isTopPerformersRedacted = bundlesViewModel.isRedacted
+        self.showTopPerformersError = bundlesViewModel.showBundlesSoldError
+        self.topPerformersErrorMessage = bundlesViewModel.bundlesSoldErrorMessage
     }
 }
 

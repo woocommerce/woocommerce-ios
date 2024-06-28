@@ -14,7 +14,8 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
-    init(stores: StoresManager = ServiceLocator.stores, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.featureFlagService = featureFlagService
     }

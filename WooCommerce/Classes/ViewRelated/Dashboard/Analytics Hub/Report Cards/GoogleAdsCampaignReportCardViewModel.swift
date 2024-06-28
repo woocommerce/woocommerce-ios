@@ -119,7 +119,7 @@ extension GoogleAdsCampaignReportCardViewModel {
 
         return topCampaigns.map { campaign in
             // Currency we only support showing the campaign spend and total sales amounts.
-            return TopPerformersRow.Data(imageURL: nil,
+            return TopPerformersRow.Data(showImage: false,
                                          name: campaign.campaignName ?? "",
                                          details: Localization.spend(value: StatsDataTextFormatter.formatAmount(campaign.subtotals.spend)),
                                          value: StatsDataTextFormatter.formatAmount(campaign.subtotals.sales))

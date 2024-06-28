@@ -33,7 +33,17 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
             }
         }()
 
-        return isPluginSatisfied
+        guard isPluginSatisfied else {
+            return false
+        }
+
+        do {
+            let connection = try await checkGoogleAdsConnection(siteID: siteID)
+            return connection.status == .connected
+        } catch {
+            DDLogError("⛔️ Error checking Google ads connection: \(error)")
+            return false
+        }
     }
 
 }
@@ -69,6 +79,15 @@ private extension DefaultGoogleAdsEligibilityChecker {
         }
         return VersionHelpers.isVersionSupported(version: plugin.version,
                                                  minimumRequired: Constants.pluginMinimumVersion)
+    }
+
+    @MainActor
+    func checkGoogleAdsConnection(siteID: Int64) async throws -> GoogleAdsConnection {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.checkConnection(siteID: siteID, onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
     }
 
     enum Constants {

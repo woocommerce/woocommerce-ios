@@ -233,7 +233,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func onTotalsViewDisappearance() {
         cardPresentPaymentService.cancelPayment()
     }
-
+ 
     private func observeSelectedItemToAddToCart() {
         itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
             self?.addItemToCart(selectedItem)

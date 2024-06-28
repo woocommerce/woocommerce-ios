@@ -1468,6 +1468,7 @@
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
 		6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */; };
 		683421642ACE9391009021D7 /* ProductDiscountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683421632ACE9391009021D7 /* ProductDiscountView.swift */; };
+		683763162C2E44B800AD51D0 /* ItemSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683763152C2E44B800AD51D0 /* ItemSelectorViewModel.swift */; };
 		683AA9D62A303CB70099F7BA /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */; };
 		684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */; };
 		684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */; };
@@ -4387,6 +4388,7 @@
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabeledTextViewTableViewCell.xib; sourceTree = "<group>"; };
 		683421632ACE9391009021D7 /* ProductDiscountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDiscountView.swift; sourceTree = "<group>"; };
+		683763152C2E44B800AD51D0 /* ItemSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemSelectorViewModel.swift; sourceTree = "<group>"; };
 		683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsView.swift; sourceTree = "<group>"; };
 		684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModel.swift; sourceTree = "<group>"; };
@@ -6615,6 +6617,7 @@
 			isa = PBXGroup;
 			children = (
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
+				683763152C2E44B800AD51D0 /* ItemSelectorViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -14702,6 +14705,7 @@
 				02BAB02724D13A6400F8B06E /* ProductVariationFormActionsFactory.swift in Sources */,
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
+				683763162C2E44B800AD51D0 /* ItemSelectorViewModel.swift in Sources */,
 				DE2E8EB729547771002E4B14 /* ApplicationPasswordDisabledViewModel.swift in Sources */,
 				0259D65D2582248D003B1CD6 /* PrintShippingLabelViewController.swift in Sources */,
 				D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */,

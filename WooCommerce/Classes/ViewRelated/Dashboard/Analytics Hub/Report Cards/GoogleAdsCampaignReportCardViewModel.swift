@@ -54,24 +54,24 @@ extension GoogleAdsCampaignReportCardViewModel {
         Localization.title
     }
 
-    // MARK: Selected metric
+    // MARK: Total Sales
 
-    /// Selected metric title
+    /// Total Sales title
     ///
-    var selectedMetricTitle: String {
-        return Localization.totalSales // Currently we only support the Total Sales metric.
+    var totalSalesTitle: String {
+        return Localization.totalSales
     }
 
-    /// Selected metric value
+    /// Total Sales value
     ///
-    var selectedMetricValue: String {
+    var totalSales: String {
         guard !isRedacted else {
             return "1000"
         }
-        return StatsDataTextFormatter.formatAmount(currentPeriodStats?.totals.sales) // Currently we only support the Total Sales metric.
+        return StatsDataTextFormatter.formatAmount(currentPeriodStats?.totals.sales)
     }
 
-    /// Selected metric delta percentage
+    /// Total Sales delta percentage
     ///
     var delta: DeltaPercentage {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
@@ -118,7 +118,6 @@ extension GoogleAdsCampaignReportCardViewModel {
         let topCampaigns = Array(stats?.campaigns.prefix(5) ?? [])
 
         return topCampaigns.map { campaign in
-            // Currency we only support showing the campaign spend and total sales amounts.
             return TopPerformersRow.Data(showImage: false,
                                          name: campaign.campaignName ?? "",
                                          details: Localization.spend(value: StatsDataTextFormatter.formatAmount(campaign.subtotals.spend)),
@@ -133,8 +132,8 @@ extension AnalyticsTopPerformersCard {
     init(campaignsViewModel: GoogleAdsCampaignReportCardViewModel) {
         // Header with selected metric stats
         self.title = campaignsViewModel.title
-        self.statTitle = campaignsViewModel.selectedMetricTitle
-        self.statValue = campaignsViewModel.selectedMetricValue
+        self.statTitle = campaignsViewModel.totalSalesTitle
+        self.statValue = campaignsViewModel.totalSales
         self.delta = campaignsViewModel.delta.string
         self.deltaBackgroundColor = campaignsViewModel.delta.direction.deltaBackgroundColor
         self.deltaTextColor = campaignsViewModel.delta.direction.deltaTextColor

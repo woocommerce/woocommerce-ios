@@ -4,12 +4,16 @@ import SwiftUI
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var selectPackageImageCoordinator: SelectPackageImageCoordinator?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
+        }
+        rootView.onPickPackagePhoto = { [weak self] source in
+            self?.presentImageSelectionFlow(source: source)
         }
     }
 
@@ -57,6 +61,22 @@ private extension AddProductWithAIContainerHostingController {
         self.addProductFromImageCoordinator = coordinator
         coordinator.start()
     }
+
+    /// Presents the image selection flow to select package photo
+    ///
+    func presentImageSelectionFlow(source: MediaPickingSource) {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = SelectPackageImageCoordinator(siteID: viewModel.siteID,
+                                                        mediaSource: source,
+                                                        sourceNavigationController: navigationController,
+                                                        onImageSelected: { [weak self] image in
+            self?.viewModel.didSelectImage(image)
+        })
+        self.selectPackageImageCoordinator = coordinator
+        coordinator.start()
+    }
 }
 
 /// Container view for the product creation with AI flow.
@@ -64,6 +84,7 @@ struct AddProductWithAIContainerView: View {
     /// Closure invoked when the close button is pressed
     ///
     var onUsePackagePhoto: (String?) -> Void = { _ in }
+    var onPickPackagePhoto: (MediaPickingSource) -> Void = { _ in }
 
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
@@ -81,7 +102,7 @@ struct AddProductWithAIContainerView: View {
             case .productName:
                 if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
                     ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
-                                                      onUsePackagePhoto: onUsePackagePhoto,
+                                                      onPickPackagePhoto: onPickPackagePhoto,
                                                       onContinueWithFeatures: { features in
                         withAnimation {
                             viewModel.onProductFeaturesAdded(features: features)

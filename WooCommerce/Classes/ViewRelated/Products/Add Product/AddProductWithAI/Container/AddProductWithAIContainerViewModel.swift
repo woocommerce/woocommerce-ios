@@ -111,4 +111,8 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
             onCancel()
         }
     }
+
+    func didSelectImage(_ image: MediaPickerImage?) {
+        startingInfoViewModel.onSelectImage(image)
+    }
 }

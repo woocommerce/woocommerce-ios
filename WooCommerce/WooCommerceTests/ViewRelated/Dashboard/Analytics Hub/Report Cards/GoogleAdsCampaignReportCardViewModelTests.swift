@@ -108,4 +108,29 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showCampaignsError)
     }
 
+    func test_campaignData_includes_top_five_campaigns() throws {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(
+            currentPeriodStats: GoogleAdsCampaignStats.fake().copy(campaigns: [.fake().copy(subtotals: .fake().copy(sales: 123)),
+                                                                               .fake().copy(subtotals: .fake().copy(sales: 234)),
+                                                                               .fake().copy(subtotals: .fake().copy(sales: 345)),
+                                                                               .fake().copy(subtotals: .fake().copy(sales: 456)),
+                                                                               .fake().copy(subtotals: .fake().copy(sales: 567)),
+                                                                               .fake().copy(subtotals: .fake().copy(sales: 678))]),
+            previousPeriodStats: nil,
+            timeRange: .today,
+            usageTracksEventEmitter: eventEmitter)
+
+        // Then
+        // Only five campaigns are included
+        assertEqual(5, vm.campaignsData.count)
+
+        // First campaign has the top sales amount
+        let firstCampaign = try XCTUnwrap(vm.campaignsData.first)
+        assertEqual("$678", firstCampaign.value)
+
+        // Campaign with lowest sales amount was dropped
+        XCTAssertFalse(vm.campaignsData.contains(where: { $0.value == "$123" }))
+    }
+
 }

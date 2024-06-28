@@ -112,8 +112,13 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Helper functions to create `TopPerformersRow.Data` items from the provided `GoogleAdsCampaignStats`.
     ///
     private func campaignRows(from stats: GoogleAdsCampaignStats?) -> [TopPerformersRow.Data] {
-        // Extract top five campaigns from stats.
-        let topCampaigns = Array(stats?.campaigns.prefix(5) ?? [])
+        // Sort campaigns by their total sales.
+        guard let sortedCampaigns = stats?.campaigns.sorted(by: { $0.subtotals.sales ?? 0 > $1.subtotals.sales ?? 0 }) else {
+            return []
+        }
+
+        // Extract top five campaigns for display.
+        let topCampaigns = Array(sortedCampaigns.prefix(5))
 
         return topCampaigns.map { campaign in
             return TopPerformersRow.Data(showImage: false,

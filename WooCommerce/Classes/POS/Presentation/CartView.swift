@@ -26,6 +26,7 @@ struct CartView: View {
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
                     .padding(.horizontal, 8)
+                    .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

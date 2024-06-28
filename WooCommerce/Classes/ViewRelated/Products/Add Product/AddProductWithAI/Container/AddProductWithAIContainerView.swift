@@ -74,7 +74,7 @@ private extension AddProductWithAIContainerHostingController {
                                                         onImageSelected: { [weak self] image in
             self?.viewModel.didSelectImage(image)
         })
-        self.selectPackageImageCoordinator = coordinator
+        selectPackageImageCoordinator = coordinator
         coordinator.start()
     }
 }

@@ -37,7 +37,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     }
 
     func onSelectImage(_ image: MediaPickerImage?) {
-        self.packageMedia = image
+        packageMedia = image
     }
 
     func didTapViewPhoto() {

@@ -39,7 +39,7 @@ extension MockGoogleListingsAndAdsRemote: GoogleListingsAndAdsRemoteProtocol {
             throw error
         }
     }
-    
+
     func checkConnection(for siteID: Int64) async throws -> Networking.GoogleAdsConnection {
         guard let result = checkingConnectionResult else {
             XCTFail("Could not find result for checking GLA connection.")

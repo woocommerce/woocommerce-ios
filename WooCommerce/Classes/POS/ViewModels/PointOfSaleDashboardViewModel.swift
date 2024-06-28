@@ -38,7 +38,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     let itemSelectorViewModel: ItemSelectorViewModel
 
-    @Published private(set) var items: [POSItem] = []
     @Published private(set) var itemsInCart: [CartItem] = [] {
         didSet {
             checkIfCartEmpty()
@@ -345,8 +344,8 @@ private extension PointOfSaleDashboardViewModel {
         do {
             isSyncingOrder = true
             let order = try await orderService.syncOrder(cart: cart,
-                                                              order: order,
-                                                              allProducts: items)
+                                                         order: order,
+                                                         allProducts: itemSelectorViewModel.items)
             self.order = order
             isSyncingOrder = false
             // TODO: this is temporary solution

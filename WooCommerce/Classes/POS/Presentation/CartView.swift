@@ -1,11 +1,24 @@
 import SwiftUI
+import protocol Yosemite.POSItem
 
 final class CartViewModel: ObservableObject {
+
+    @Published private(set) var itemsInCart: [CartItem] = []
 
     private let orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
+    }
+
+    // TODO: Currently unused
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
+    }
+
+    func addItemToCart(_ item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        itemsInCart.append(cartItem)
     }
 }
 
@@ -43,7 +56,7 @@ struct CartView: View {
             .foregroundColor(Color.white)
             ScrollViewReader { proxy in
                 ScrollView {
-                    ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                    ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
                                     onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
                             viewModel.removeItemFromCart(cartItem)

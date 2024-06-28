@@ -16,11 +16,7 @@ struct PointOfSaleDashboardView: View {
                 case .building:
                     productListView
                     Spacer()
-                    if viewModel.isCartCollapsed {
-                        collapsedCartView
-                    } else {
-                        cartView
-                    }
+                    cartView
                 case .finalizing:
                     cartView
                     Spacer()

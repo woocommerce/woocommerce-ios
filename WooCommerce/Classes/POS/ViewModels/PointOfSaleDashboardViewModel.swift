@@ -107,10 +107,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observePaymentStateForButtonDisabledProperties()
     }
 
-    var isCartCollapsed: Bool {
-        itemsInCart.isEmpty
-    }
-
     var itemToScrollToWhenCartUpdated: CartItem? {
         return itemsInCart.last
     }
@@ -232,7 +228,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private func observeSelectedItemToAddToCart() {
         itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
-            self?.addItemToCart(selectedItem)
+            self?.cartViewModel.addItemToCart(selectedItem)
         }
         .store(in: &cancellables)
     }

@@ -24,7 +24,11 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         let vm = GoogleAdsCampaignReportCardViewModel(
             currentPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 12345),
                                                                    campaigns: [.fake().copy(campaignName: campaignName,
-                                                                                            subtotals: .init(sales: 1234.56, spend: 200, clicks: 0, impressions: 0, conversions: 0)),
+                                                                                            subtotals: .init(sales: 1234.56,
+                                                                                                             spend: 200,
+                                                                                                             clicks: 0,
+                                                                                                             impressions: 0,
+                                                                                                             conversions: 0)),
                                                                                .fake()]),
             previousPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 6172.5)),
             timeRange: .today,

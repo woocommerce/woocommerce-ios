@@ -74,4 +74,47 @@ final class GoogleAdsStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetch campaigns
+
+    func test_checkCampaigns_returns_campaign_list_on_success() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        let campaign = GoogleAdsCampaign.fake().copy(id: 1355234, amount: 30, country: "VN")
+        remote.whenFetchingAdsCampaigns(thenReturn: .success([campaign]))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.fetchAdsCampaigns(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        let receivedCampaigns = try result.get()
+        assertEqual([campaign], receivedCampaigns)
+    }
+
+    func test_fetchCampaigns_returns_error_on_failure() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        remote.whenFetchingAdsCampaigns(thenReturn: .failure(NetworkError.timeout()))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.fetchAdsCampaigns(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }

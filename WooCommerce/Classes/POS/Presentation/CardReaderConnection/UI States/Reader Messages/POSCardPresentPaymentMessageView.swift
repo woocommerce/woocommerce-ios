@@ -1,12 +1,18 @@
 import SwiftUI
 
 struct POSCardPresentPaymentMessageViewModel {
+    let imageName: String?
     let showProgress: Bool?
     let title: String?
     let message: String?
     let buttons: [CardPresentPaymentsModalButtonViewModel]
 
-    init(showProgress: Bool? = nil, title: String? = nil, message: String? = nil, buttons: [CardPresentPaymentsModalButtonViewModel] = []) {
+    init(imageName: String? = nil,
+         showProgress: Bool? = nil,
+         title: String? = nil,
+         message: String? = nil,
+         buttons: [CardPresentPaymentsModalButtonViewModel] = []) {
+        self.imageName = imageName
         self.showProgress = showProgress
         self.title = title
         self.message = message
@@ -19,9 +25,17 @@ struct POSCardPresentPaymentMessageView: View {
 
     var body: some View {
         VStack {
-            Rectangle()
-                .frame(width: 100, height: 100)
-                .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
+            if let imageName = viewModel.imageName {
+                Image(imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.imageSize, height: Layout.imageSize)
+            }
+            else {
+                Circle()
+                    .frame(width: Layout.imageSize, height: Layout.imageSize)
+                    .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
+            }
             if let showProgress = viewModel.showProgress, showProgress == true {
                 ProgressView()
                     .progressViewStyle(IndefiniteCircularProgressViewStyle(
@@ -50,5 +64,6 @@ private extension POSCardPresentPaymentMessageView {
     enum Layout {
         static let progressViewSize: CGFloat = 24
         static let progressViewLineWidth: CGFloat = 4
+        static let imageSize: CGFloat = 104
     }
 }

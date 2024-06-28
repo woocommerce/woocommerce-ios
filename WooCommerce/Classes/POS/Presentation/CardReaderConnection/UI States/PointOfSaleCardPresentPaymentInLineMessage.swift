@@ -16,11 +16,11 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .tapSwipeOrInsertCard(let viewModel):
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
         case .processing:
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: "processing..."))
+            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: "pos_processing_payment", title: "processing..."))
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
         case .paymentSuccess:
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: "Payment successful!"))
+            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: "pos_payment_successful", title: "Payment successful!"))
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):

@@ -6,15 +6,16 @@ struct ProductCreationAIStartingInfoView: View {
     @ObservedObject private var viewModel: ProductCreationAIStartingInfoViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
+    @State private var isShowingMediaPickerSourceSheet: Bool = false
 
-    private let onUsePackagePhoto: (String?) -> Void
+    private let onPickPackagePhoto: (MediaPickingSource) -> Void
     private let onContinueWithFeatures: (String) -> Void
 
     init(viewModel: ProductCreationAIStartingInfoViewModel,
-         onUsePackagePhoto: @escaping (String?) -> Void,
+         onPickPackagePhoto: @escaping (MediaPickingSource) -> Void,
          onContinueWithFeatures: @escaping (String) -> Void) {
         self.viewModel = viewModel
-        self.onUsePackagePhoto = onUsePackagePhoto
+        self.onPickPackagePhoto = onPickPackagePhoto
         self.onContinueWithFeatures = onContinueWithFeatures
     }
 
@@ -53,8 +54,22 @@ struct ProductCreationAIStartingInfoView: View {
                                 .frame(height: Layout.dividerHeight)
                                 .foregroundColor(Color(.separator))
 
-                            readTextFromPhotoButton
-                                .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                            if let image = viewModel.packagePhoto {
+                                PackagePhotoView(image: image,
+                                                 onTapViewPhoto: {
+                                    viewModel.didTapViewPhoto()
+                                },
+                                                 onTapReplacePhoto: {
+                                    viewModel.didTapReplacePhoto()
+                                    isShowingMediaPickerSourceSheet = true
+                                },
+                                                 onTapRemovePhoto: {
+                                    viewModel.didTapRemovePhoto()
+                                })
+                            } else {
+                                readTextFromPhotoButton
+                                    .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                            }
                         }
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
@@ -72,6 +87,9 @@ struct ProductCreationAIStartingInfoView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .mediaSourceActionSheet(showsActionSheet: $isShowingMediaPickerSourceSheet, selectMedia: { source in
+            onPickPackagePhoto(source)
+        })
     }
 }
 
@@ -79,6 +97,7 @@ private extension ProductCreationAIStartingInfoView {
     var readTextFromPhotoButton: some View {
         HStack {
             Button {
+                isShowingMediaPickerSourceSheet = true
                 viewModel.didTapReadTextFromPhoto()
                 // TODO: Launch photo selection flow
             } label: {
@@ -264,6 +283,6 @@ private extension ProductCreationAIStartingInfoView {
 
 struct ProductCreationAIStartingInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductCreationAIStartingInfoView(viewModel: .init(siteID: 123), onUsePackagePhoto: { _ in }, onContinueWithFeatures: { _ in })
+        ProductCreationAIStartingInfoView(viewModel: .init(siteID: 123), onPickPackagePhoto: { _ in }, onContinueWithFeatures: { _ in })
     }
 }

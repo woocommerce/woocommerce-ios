@@ -35,4 +35,20 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     func didTapContinue() {
         // TODO: 13103 - Add tracking
     }
+
+    func onSelectImage(_ image: MediaPickerImage?) {
+        self.packageMedia = image
+    }
+
+    func didTapViewPhoto() {
+        // TODO: 13104 - Open image in a new screen
+    }
+
+    func didTapReplacePhoto() {
+        // TODO: 13103 Add tracking
+    }
+
+    func didTapRemovePhoto() {
+        packageMedia = nil
+    }
 }

@@ -3,9 +3,13 @@ import Combine
 import protocol Yosemite.POSItem
 
 final class CartViewModel: ObservableObject {
+    /// Emits cart items when the CTA is tapped to submit the cart.
     let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
     private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
-    // TODO: Handle "add more to cart"
+
+    /// Emits a signal when the CTA is tapped to update the cart.
+    let addMoreToCartActionPublisher: AnyPublisher<Void, Never>
+    private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
     @Published private(set) var itemsInCart: [CartItem] = []
 
@@ -17,6 +21,7 @@ final class CartViewModel: ObservableObject {
 
     init() {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
+        addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }
 
     func addItemToCart(_ item: POSItem) {
@@ -49,5 +54,9 @@ final class CartViewModel: ObservableObject {
 
     func submitCart() {
         cartSubmissionSubject.send(itemsInCart)
+    }
+
+    func addMoreToCart() {
+        addMoreToCartActionSubject.send(())
     }
 }

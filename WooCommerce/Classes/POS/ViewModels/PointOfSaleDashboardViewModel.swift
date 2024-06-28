@@ -40,11 +40,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let cartViewModel: CartViewModel = CartViewModel()
 
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var itemsInCart: [CartItem] = [] {
-        didSet {
-            checkIfCartEmpty()
-        }
-    }
     @Published private(set) var isCartCollapsed: Bool = true
 
     // Total amounts
@@ -75,9 +70,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
-    @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    // TODO: 12998 - move the following properties to totals view model
+    @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+    private var itemsInCart: [CartItem] = []
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
@@ -88,8 +89,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
-    private var cancellables: Set<AnyCancellable> = []
 
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
@@ -103,21 +102,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()
         observeCartSubmission()
+        observeCartAddMoreAction()
+        observeCartItemsToCheckIfCartIsEmpty()
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
-    }
-
-
-
-    private func checkIfCartEmpty() {
-        if itemsInCart.isEmpty {
-            orderStage = .building
-        }
-    }
-
-    func addMoreToCart() {
-        orderStage = .building
     }
 
     var areAmountsFullyCalculated: Bool {
@@ -172,22 +161,22 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func calculateAmountsTapped() {
-        // TODO:
-        // This is called from the TotalsView
-        // startSyncingOrder(cartItems: cartItems)
+        // TODO: 12998 - move to the totals view model
+        startSyncingOrder(cartItems: itemsInCart)
     }
 
     private func startSyncingOrder(cartItems: [CartItem]) {
-        // TODO: 
+        // TODO: 12998 - move to the totals view model
         // At this point, this should happen in the TotalsViewModel
         Task { @MainActor in
-            await syncOrder(for: itemsInCart)
+            itemsInCart = cartItems
+            await syncOrder(for: cartItems)
         }
     }
 
     func startNewTransaction() {
         // clear cart
-        itemsInCart.removeAll()
+        cartViewModel.removeAllItemsFromCart()
         orderStage = .building
         paymentState = .acceptingCard
         order = nil
@@ -207,24 +196,42 @@ private extension PointOfSaleDashboardViewModel {
         .store(in: &cancellables)
     }
 
-    private func observeCartItemsForCollapsedState() {
+    func observeCartItemsForCollapsedState() {
         cartViewModel.$itemsInCart
             .map { $0.isEmpty }
             .assign(to: &$isCartCollapsed)
     }
 
-    private func observeCartSubmission() {
+    func observeCartSubmission() {
         cartViewModel.cartSubmissionPublisher.sink { [weak self] cartItems in
-            self?.orderStage = .finalizing
-            self?.startSyncingOrder(cartItems: cartItems)
+            guard let self else { return }
+            orderStage = .finalizing
+            startSyncingOrder(cartItems: cartItems)
         }
+        .store(in: &cancellables)
+    }
+
+    func observeCartAddMoreAction() {
+        cartViewModel.addMoreToCartActionPublisher.sink { [weak self] in
+            guard let self else { return }
+            orderStage = .building
+        }
+        .store(in: &cancellables)
+    }
+
+    func observeCartItemsToCheckIfCartIsEmpty() {
+        cartViewModel.$itemsInCart
+            .filter { $0.isEmpty }
+            .sink { [weak self] _ in
+                self?.orderStage = .building
+            }
         .store(in: &cancellables)
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
     func observeItemsInCartForCartTotal() {
-        $itemsInCart
+        cartViewModel.$itemsInCart
             .map { [weak self] in
                 guard let self else { return "-" }
                 let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
@@ -326,8 +333,8 @@ private extension PointOfSaleDashboardViewModel {
         do {
             isSyncingOrder = true
             let order = try await orderService.syncOrder(cart: cart,
-                                                              order: order,
-                                                              allProducts: items)
+                                                         order: order,
+                                                         allProducts: items)
             self.order = order
             isSyncingOrder = false
             // TODO: this is temporary solution

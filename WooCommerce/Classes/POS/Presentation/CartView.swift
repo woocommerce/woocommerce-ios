@@ -91,7 +91,7 @@ private extension CartView {
 
     var addMoreButton: some View {
         Button {
-            viewModel.addMoreToCart()
+            cartViewModel.addMoreToCart()
         } label: {
             Spacer()
             Text("Add More")

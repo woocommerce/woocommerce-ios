@@ -20,6 +20,29 @@ final class CartViewModel: ObservableObject {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
     }
+
+    func removeItemFromCart(_ cartItem: CartItem) {
+        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+    }
+
+    func removeAllItemsFromCart() {
+        itemsInCart.removeAll()
+    }
+    
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        return itemsInCart.last
+    }
+
+    var itemsInCartLabel: String? {
+        switch itemsInCart.count {
+        case 0:
+            return nil
+        default:
+            return String.pluralize(itemsInCart.count,
+                                    singular: "%1$d item",
+                                    plural: "%1$d items")
+        }
+    }
 }
 
 struct CartView: View {
@@ -37,11 +60,11 @@ struct CartView: View {
                 Text("Cart")
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
-                if let temsInCartLabel = viewModel.itemsInCartLabel {
+                if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
                         .foregroundColor(Color.posPrimaryTexti3)
                     Button {
-                        viewModel.removeAllItemsFromCart()
+                        cartViewModel.removeAllItemsFromCart()
                     } label: {
                         Text("Clear all")
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
@@ -59,16 +82,16 @@ struct CartView: View {
                     ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
                                     onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
-                            viewModel.removeItemFromCart(cartItem)
+                            cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
                         .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
                     }
                 }
-                .onChange(of: viewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                     if viewModel.orderStage == .building,
-                       let last = viewModel.itemToScrollToWhenCartUpdated?.id {
+                       let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                         withAnimation {
                             proxy.scrollTo(last)
                         }

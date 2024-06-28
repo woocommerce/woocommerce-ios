@@ -31,6 +31,12 @@ struct ItemListView: View {
                 }
             }
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
+        .refreshable {
+            await viewModel.reload()
+        }
         .padding(.horizontal, 32)
         .background(Color.posBackgroundGreyi3)
     }

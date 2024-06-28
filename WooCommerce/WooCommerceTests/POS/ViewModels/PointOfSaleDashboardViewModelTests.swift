@@ -59,52 +59,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isCartCollapsed)
     }
 
-    func test_isSyncingItems_is_true_when_populatePointOfSaleItems_is_invoked_then_switches_to_false_when_completed() async {
-        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
-
-        // Given/When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isSyncingItems, false)
-    }
-
-    func test_isSyncingItems_is_true_when_reload_is_invoked_then_toggled_to_false_when_completed() async throws {
-        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
-
-        // Given/When
-        await sut.reload()
-
-        // Then
-        XCTAssertEqual(sut.isSyncingItems, false)
-    }
-
-    func test_isSyncingItems_is_true_when_reload_is_invoked_then_toggled_to_false_when_error() async throws {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-
-        let sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
-                                                cardPresentPaymentService: cardPresentPaymentService,
-                                                orderService: orderService)
-        XCTAssertEqual(sut.isSyncingItems, true, "Precondition")
-
-        // Given/When
-        await sut.reload()
-
-        // Then
-        XCTAssertEqual(sut.isSyncingItems, false)
-    }
-
-    func test_reload_invokes_providePointOfSaleItems() async {
-        // Given/When
-        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 0)
-        await sut.reload()
-
-        // Then
-        XCTAssertEqual(itemProvider.provideItemsInvocationCount, 1)
-    }
-
     func test_removeAllItemsFromCart_removes_all_items_from_cart() {
         // Given
         let numberOfItems = Int.random(in: 1...5)
@@ -130,27 +84,11 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 }
 
 private extension PointOfSaleDashboardViewModelTests {
-    enum POSError: Error {
-        case forcedError
-    }
-
     final class MockPOSItemProvider: POSItemProvider {
         var items: [POSItem] = []
-        var shouldThrowError: Bool = false
-        var provideItemsInvocationCount = 0
 
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
-            provideItemsInvocationCount += 1
-            if shouldThrowError {
-                throw POSError.forcedError
-            }
-            return items
-        }
-
-        func simulate(items: [POSItem]) {
-            for item in items {
-                self.items.append(item)
-            }
+            []
         }
     }
 }

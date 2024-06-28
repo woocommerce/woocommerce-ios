@@ -81,7 +81,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
-    @Published private(set) var isSyncingItems: Bool = true
 
     private let orderService: POSOrderServiceProtocol
     private let itemProvider: POSItemProvider

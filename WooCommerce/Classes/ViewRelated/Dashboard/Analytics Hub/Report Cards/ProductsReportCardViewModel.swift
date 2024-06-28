@@ -156,12 +156,12 @@ extension AnalyticsItemsSoldViewModel {
 
 /// Convenience extension to create an `AnalyticsItemsSoldCard` from a view model.
 ///
-extension AnalyticsItemsSoldCard {
+extension AnalyticsTopPerformersCard {
     init(statsViewModel: AnalyticsProductsStatsCardViewModel, itemsViewModel: AnalyticsItemsSoldViewModel) {
         // Header with stats
         self.title = statsViewModel.title
-        self.itemsSoldTitle = statsViewModel.itemsSoldTitle
-        self.itemsSold = statsViewModel.itemsSold
+        self.statTitle = statsViewModel.itemsSoldTitle
+        self.statValue = statsViewModel.itemsSold
         self.delta = statsViewModel.delta.string
         self.deltaBackgroundColor = statsViewModel.delta.direction.deltaBackgroundColor
         self.deltaTextColor = statsViewModel.delta.direction.deltaTextColor
@@ -171,10 +171,10 @@ extension AnalyticsItemsSoldCard {
         self.reportViewModel = statsViewModel.reportViewModel
 
         // Top performers list
-        self.itemsSoldData = itemsViewModel.itemsSoldData
-        self.isItemsSoldRedacted = itemsViewModel.isRedacted
-        self.showItemsSoldError = itemsViewModel.showItemsSoldError
-        self.itemsSoldErrorMessage = itemsViewModel.itemsSoldErrorMessage
+        self.topPerformersData = itemsViewModel.itemsSoldData
+        self.isTopPerformersRedacted = itemsViewModel.isRedacted
+        self.showTopPerformersError = itemsViewModel.showItemsSoldError
+        self.topPerformersErrorMessage = itemsViewModel.itemsSoldErrorMessage
     }
 }
 

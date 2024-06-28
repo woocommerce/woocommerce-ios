@@ -54,6 +54,7 @@ struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @Environment(\.colorScheme) var colorScheme
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
@@ -83,6 +84,11 @@ struct BlazeCampaignCreationForm: View {
                 }
                 .background(Constants.cellColor)
                 .overlay { roundedRectangleBorder }
+                .padding(.bottom, Layout.contentMargin)
+
+                Text(Localization.audience)
+                    .subheadlineStyle()
+                    .foregroundColor(.init(uiColor: .text))
 
                 VStack(spacing: 0) {
                     // Language
@@ -252,6 +258,22 @@ private extension BlazeCampaignCreationForm {
                         .background(Color(uiColor: .systemGray6))
                         .cornerRadius(Layout.adButtonCornerRadius)
                 }
+
+                // Label "Suggested by AI"
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(uiImage: .sparklesImage)
+                            .renderingMode(.template)
+                            .resizable()
+                            .foregroundColor(Color(uiColor: .textSubtle))
+                            .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
+
+                        Text(Localization.suggestedByAI)
+                            .subheadlineStyle()
+                    }
+                    Spacer()
+                }
+                .renderedIf(viewModel.isUsingAISuggestions)
             }
             .padding(Layout.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -343,6 +365,7 @@ private extension BlazeCampaignCreationForm {
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 2
         static let maxWidth: CGFloat = 525
+        static let sparkleIconSize: CGFloat = 24
     }
 
     enum Constants {
@@ -365,6 +388,11 @@ private extension BlazeCampaignCreationForm {
             value: "Shop Now",
             comment: "Button to shop on the Blaze ad preview"
         )
+        static let suggestedByAI = NSLocalizedString(
+            "blazeCampaignCreationForm.suggestedByAI",
+            value: "Suggested by AI",
+            comment: "Suggested by AI title in the Blaze Campaign Creation Form."
+        )
         static let editAd = NSLocalizedString(
             "blazeCampaignCreationForm.editAd",
             value: "Edit ad",
@@ -379,6 +407,11 @@ private extension BlazeCampaignCreationForm {
             "blazeCampaignCreationForm.budget",
             value: "Budget",
             comment: "Title of the Budget field on the Blaze campaign creation screen"
+        )
+        static let audience = NSLocalizedString(
+            "blazeCampaignCreationForm.audience",
+            value: "Audience",
+            comment: "Section title on the Blaze campaign creation screen"
         )
         static let language = NSLocalizedString(
             "blazeCampaignCreationForm.language",

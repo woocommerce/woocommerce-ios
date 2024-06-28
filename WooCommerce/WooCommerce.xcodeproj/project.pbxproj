@@ -1081,7 +1081,7 @@
 		26E1BECC251BE5570096D0A1 /* RefundItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E1BECB251BE5570096D0A1 /* RefundItemTableViewCell.xib */; };
 		26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */; };
 		26E7EE6A292D688900793045 /* AnalyticsHubViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */; };
-		26E7EE6E29300E8100793045 /* AnalyticsItemsSoldCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6D29300E8100793045 /* AnalyticsItemsSoldCard.swift */; };
+		26E7EE6E29300E8100793045 /* AnalyticsTopPerformersCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6D29300E8100793045 /* AnalyticsTopPerformersCard.swift */; };
 		26E7EE7029300F6200793045 /* DeltaTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6F29300F6200793045 /* DeltaTag.swift */; };
 		26E7EE7229301EBC00793045 /* ProductsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */; };
 		26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7329365F0700793045 /* TopPerformersView.swift */; };
@@ -2136,6 +2136,7 @@
 		CE21B3D820FE669A00A259D5 /* BasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */; };
 		CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */; };
 		CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */; };
+		CE21FB262C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */; };
 		CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */; };
 		CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227096228F152400C0626C /* WooBasicTableViewCell.swift */; };
 		CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */; };
@@ -2202,6 +2203,7 @@
 		CE6A8FB42B724D7C0063564D /* AnalyticsReportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */; };
 		CE6A8FB62B725A690063564D /* AnalyticsReportLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */; };
 		CE6A8FB82B7291760063564D /* AnalyticsReportLinkViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */; };
+		CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */; };
 		CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */; };
 		CE7F778D2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
@@ -4020,7 +4022,7 @@
 		26E1BECB251BE5570096D0A1 /* RefundItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundItemTableViewCell.xib; sourceTree = "<group>"; };
 		26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModel.swift; sourceTree = "<group>"; };
 		26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubViewModel.swift; sourceTree = "<group>"; };
-		26E7EE6D29300E8100793045 /* AnalyticsItemsSoldCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsItemsSoldCard.swift; sourceTree = "<group>"; };
+		26E7EE6D29300E8100793045 /* AnalyticsTopPerformersCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTopPerformersCard.swift; sourceTree = "<group>"; };
 		26E7EE6F29300F6200793045 /* DeltaTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaTag.swift; sourceTree = "<group>"; };
 		26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportCardViewModel.swift; sourceTree = "<group>"; };
 		26E7EE7329365F0700793045 /* TopPerformersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersView.swift; sourceTree = "<group>"; };
@@ -5094,6 +5096,7 @@
 		CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModel.swift; sourceTree = "<group>"; };
 		CE227096228F152400C0626C /* WooBasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooBasicTableViewCell.swift; sourceTree = "<group>"; };
 		CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WooBasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE22709E2293052700C0626C /* WebviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebviewHelper.swift; path = Classes/Tools/WebviewHelper.swift; sourceTree = SOURCE_ROOT; };
@@ -5159,6 +5162,7 @@
 		CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLink.swift; sourceTree = "<group>"; };
 		CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModel.swift; sourceTree = "<group>"; };
 		CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModelTests.swift; sourceTree = "<group>"; };
+		CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModel.swift; sourceTree = "<group>"; };
 		CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModelTests.swift; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -11803,7 +11807,7 @@
 			children = (
 				CEA455BF2BB340C100D932CF /* Components */,
 				2647F7B9292BE2F900D59FDF /* AnalyticsReportCard.swift */,
-				26E7EE6D29300E8100793045 /* AnalyticsItemsSoldCard.swift */,
+				26E7EE6D29300E8100793045 /* AnalyticsTopPerformersCard.swift */,
 				CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */,
 				CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */,
 				CEA455C82BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift */,
@@ -11814,6 +11818,7 @@
 				26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */,
 				CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */,
 				CE070A3D2BBC608A00017578 /* GiftCardsReportCardViewModel.swift */,
+				CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -11826,6 +11831,7 @@
 				CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */,
 				CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */,
 				CE070A412BBDAED200017578 /* GiftCardsReportCardViewModelTests.swift */,
+				CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -14303,7 +14309,7 @@
 				03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */,
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
-				26E7EE6E29300E8100793045 /* AnalyticsItemsSoldCard.swift in Sources */,
+				26E7EE6E29300E8100793045 /* AnalyticsTopPerformersCard.swift in Sources */,
 				03E471DA29424E82001A58AD /* CardPresentModalBuiltInSuccess.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
@@ -15703,6 +15709,7 @@
 				68E674AB2A4DAB8C0034BA1E /* CompletedUpgradeView.swift in Sources */,
 				26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */,
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
+				CE21FB262C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */,
 				EE8B42122BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift in Sources */,
@@ -16394,6 +16401,7 @@
 				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */,
+				CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */,
 				03EF250028C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift in Sources */,
 				EE5B5BB62AB31C7D009BCBD6 /* ProductCreationAIEligibilityCheckerTests.swift in Sources */,
 				DE2FE5832924DA2F0018040A /* JetpackSetupRequiredViewModelTests.swift in Sources */,

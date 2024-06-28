@@ -55,6 +55,8 @@ public final class GoogleAdsStore: Store {
         switch action {
         case let .checkConnection(siteID, onCompletion):
             checkConnection(siteID: siteID, onCompletion: onCompletion)
+        case let .fetchAdsCampaigns(siteID, onCompletion):
+            fetchAdsCampaign(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -66,6 +68,18 @@ private extension GoogleAdsStore {
             do {
                 let connection = try await remote.checkConnection(for: siteID)
                 onCompletion(.success(connection))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func fetchAdsCampaign(siteID: Int64,
+                          onCompletion: @escaping (Result<[GoogleAdsCampaign], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let campaigns = try await remote.fetchAdsCampaigns(for: siteID)
+                onCompletion(.success(campaigns))
             } catch {
                 onCompletion(.failure(error))
             }

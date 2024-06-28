@@ -14,4 +14,14 @@ public enum GoogleAdsAction: Action {
     ///
     case checkConnection(siteID: Int64,
                          onCompletion: (Result<GoogleAdsConnection, Error>) -> Void)
+
+    /// Fetches Google ads campaigns for a given site.
+    ///
+    /// - `siteID`: the site to fetch campaigns for.
+    /// - `onCompletion`: invoked when the fetch request finishes.
+    ///     - `result.success([GoogleAdsCampaign])`: Successfully fetched campaigns.
+    ///     - `result.failure(Error)`: error indicates issues fetching campaigns.
+    ///
+    case fetchAdsCampaigns(siteID: Int64,
+                           onCompletion: (Result<[GoogleAdsCampaign], Error>) -> Void)
 }

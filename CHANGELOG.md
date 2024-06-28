@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.3
+Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
+
 ## 19.2
 Enhance your WooCommerce experience with our latest update! Now you can pick videos from your local library for downloadable files and view private tags on the product list tab. We've fixed the customer list loading issue in order creation and improved dashboard stability. Plus, bookable products are now disabled in order forms. Enjoy smoother payments with added log insights. Update today!
 

@@ -25,8 +25,16 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var onEditAd: (() -> Void)?
 
     @Published private(set) var image: MediaPickerImage?
-    @Published private(set) var tagline: String = ""
-    @Published private(set) var description: String = ""
+    @Published private(set) var tagline: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
+    @Published private(set) var description: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
 
     // Budget details
     private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
@@ -159,6 +167,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = false
+
+    // Indicates whether AI suggestions are currently being used in the campaign creation form.
+    @Published private(set) var isUsingAISuggestions: Bool = false
+
     private let storage: StorageManagerType
     private var product: Product? {
         guard let product = productsResultsController.fetchedObjects.first else {
@@ -353,6 +365,16 @@ private extension BlazeCampaignCreationFormViewModel {
                 }
             })
         })
+    }
+
+    // Updates the `isUsingAISuggestions` property based on whether the current
+    // `tagline` and `description` match any of the provided AI suggestions.
+    // The property will be set to `true` if there is at least one suggestion
+    // that matches both the `tagline` and `description`, and the suggestions list is not empty.
+    func updateIsUsingAISuggestions() {
+        isUsingAISuggestions = suggestions.contains { element in
+            element.siteName == tagline && element.textSnippet == description && !suggestions.isEmpty
+        }
     }
 
     enum FetchAISuggestionsError: Error {

@@ -171,7 +171,8 @@ private extension HubMenu {
                             AppDelegate.shared.setShouldHideTabBar(isHidden)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
-                        orderService: orderService)
+                        orderService: orderService,
+                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

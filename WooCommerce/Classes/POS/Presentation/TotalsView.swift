@@ -64,12 +64,25 @@ struct TotalsView: View {
             }
         }
         .onDisappear {
-            viewModel.onTotalsViewDisappearance()
+            totalsViewModel.onTotalsViewDisappearance()
         }
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch totalsViewModel.cardPresentPaymentEvent {
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
+        })
     }
 
     private var gradientStops: [Gradient.Stop] {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if totalsViewModel.paymentState == .cardPaymentSuccessful {
             return [
                 Gradient.Stop(color: Color.clear, location: 0.0),
                 Gradient.Stop(color: Color.posTotalsGradientGreen, location: 1.0)
@@ -107,7 +120,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if totalsViewModel.paymentState == .cardPaymentSuccessful {
             newTransactionButton
         }
         else {
@@ -118,17 +131,17 @@ private extension TotalsView {
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.cardReaderConnectionViewModel.connectionStatus {
         case .connected:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = totalsViewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
                 Text("Reader connected")
-                Button(action: viewModel.cardPaymentTapped) {
+                Button(action: totalsViewModel.cardPaymentTapped) {
                     Text("Collect Payment")
                 }
             }
         case .disconnected:
             Text("Reader disconnected")
-            Button(action: viewModel.cardPaymentTapped) {
+            Button(action: totalsViewModel.cardPaymentTapped) {
                 Text("Collect Payment")
             }
         }
@@ -181,10 +194,27 @@ private extension TotalsView {
     }
 }
 
-//#if DEBUG
-//#Preview {
-//    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
-//                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-//                                orderService: POSOrderPreviewService()))
-//}
-//#endif
+fileprivate extension CardPresentPaymentEvent {
+    var temporaryEventDescription: String {
+        switch self {
+        case .idle:
+            return "Idle"
+        case .show:
+            return "Event"
+        case .showOnboarding(let onboardingViewModel):
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        }
+    }
+}
+
+#if DEBUG
+#Preview {
+    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
+                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                orderService: POSOrderPreviewService(),
+                                currencyFormatter: .init(currencySettings: .init())),
+               totalsViewModel: .init(orderService: POSOrderPreviewService(),
+                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                      currencyFormatter: .init(currencySettings: .init())))
+}
+#endif

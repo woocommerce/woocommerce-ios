@@ -2,7 +2,7 @@
 
 19.4
 -----
-
+- [***] Inbox Notes have been enabled in both the Dynamic Dashboard and the Hub Menu, offering users a centralized and non-intrusive method for receiving important updates, feature announcements, and pertinent information. [https://github.com/woocommerce/woocommerce-ios/pull/13214]
 
 19.3
 -----

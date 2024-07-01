@@ -77,6 +77,24 @@ final class CartViewModelTests: XCTestCase {
          */
     }
 
+    func test_removeItemFromCart_after_adding_2_items_removes_item() throws {
+        // Given
+        let item = Self.makeItem(name: "Item 1")
+        let anotherItem = Self.makeItem(name: "Item 2")
+        sut.addItemToCart(item)
+        sut.addItemToCart(anotherItem)
+        XCTAssertEqual(sut.itemsInCart.count, 2)
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [item, anotherItem].map { $0.name })
+
+        // When
+        let firstCartItem = try XCTUnwrap(sut.itemsInCart.first)
+        sut.removeItemFromCart(firstCartItem)
+
+        // Then
+        XCTAssertEqual(sut.itemsInCart.count, 1)
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [anotherItem.name])
+    }
+
     func test_cart_when_removeAllItemsFromCart_is_invoked_then_removes_all_items_from_cart() {
         // Given
         let item = Self.makeItem()
@@ -126,10 +144,10 @@ final class CartViewModelTests: XCTestCase {
 }
 
 private extension CartViewModelTests {
-    static func makeItem() -> POSItem {
+    static func makeItem(name: String = "") -> POSItem {
         return POSProduct(itemID: UUID(),
                           productID: 0,
-                          name: "",
+                          name: name,
                           price: "",
                           formattedPrice: "",
                           itemCategories: [],

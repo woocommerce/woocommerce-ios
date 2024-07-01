@@ -38,14 +38,23 @@ final class HubMenuViewModelTests: XCTestCase {
 
     @MainActor
     func test_menuElements_include_inbox_when_store_has_eligible_wc_version() {
+        // Given
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
+
         let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
                                          inboxEligibilityChecker: inboxEligibilityChecker)
+        waitUntil {
+            inboxEligibilityChecker.isSiteEligibleInvoked
+        }
         viewModel.setupMenuElements()
 
         // Then inbox is in the menu

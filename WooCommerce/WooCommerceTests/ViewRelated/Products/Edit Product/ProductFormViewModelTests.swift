@@ -767,7 +767,10 @@ private extension ProductFormViewModelTests {
                          analytics: Analytics = ServiceLocator.analytics,
                          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let siteID: Int64 = 123
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID, product: model)
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,

@@ -28,6 +28,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         super.setUp()
         WordPressAuthenticator.initializeAuthenticator()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)

@@ -105,10 +105,19 @@ private extension CartView {
     }
 }
 
-//#if DEBUG
-//#Preview {
-//    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-//                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-//                                                      orderService: POSOrderPreviewService()))
-//}
-//#endif
+#if DEBUG
+import Combine
+#Preview {
+    // TODO:
+    // Simplify this by mocking `CartViewModel`
+    // https://github.com/woocommerce/woocommerce-ios/issues/13207
+    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
+    let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
+    let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                           orderService: POSOrderPreviewService())
+    let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
+
+    return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
+}
+#endif

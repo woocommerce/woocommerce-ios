@@ -14,9 +14,13 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Displays the Inbox option under the Hub Menu.
+    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
     ///
     case inbox
+    
+    /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
+    ///
+    case showInboxCTA
 
     /// Displays the OrderForm side by side with the Product Selector
     ///

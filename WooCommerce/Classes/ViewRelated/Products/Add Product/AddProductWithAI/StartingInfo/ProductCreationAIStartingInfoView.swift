@@ -89,7 +89,9 @@ struct ProductCreationAIStartingInfoView: View {
             }
         })
         .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-            viewModel.selectImage(from: source)
+            Task { @MainActor in
+                await viewModel.selectImage(from: source)
+            }
         })
         .notice($viewModel.notice)
     }

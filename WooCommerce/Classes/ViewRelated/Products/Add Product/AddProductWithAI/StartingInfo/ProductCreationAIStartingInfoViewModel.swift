@@ -64,18 +64,19 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         })
     }
 
-    func selectImage(from source: MediaPickingSource) {
+    @MainActor
+    func selectImage(from source: MediaPickingSource) async {
         guard let onPickPackagePhoto else {
             return
         }
         let previousState = imageState
         imageState = .loading
-        Task { @MainActor in
-            guard let image = await onPickPackagePhoto(source) else {
-                return imageState = previousState
-            }
-            imageState = .success(image)
+
+        guard let image = await onPickPackagePhoto(source) else {
+            return imageState = previousState
         }
+
+        imageState = .success(image)
     }
 }
 

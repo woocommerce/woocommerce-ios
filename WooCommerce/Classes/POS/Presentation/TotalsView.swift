@@ -36,7 +36,7 @@ struct TotalsView: View {
                         HStack {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
                                 priceFieldView(title: "Subtotal",
-                                               formattedPrice: viewModel.formattedCartTotalPrice,
+                                               formattedPrice: totalsViewModel.formattedCartTotalPrice,
                                                shimmeringActive: false,
                                                redacted: false)
                                 Divider()
@@ -61,7 +61,9 @@ struct TotalsView: View {
                         )
                         if totalsViewModel.showRecalculateButton {
                             Button("Calculate amounts") {
-                                viewModel.calculateAmountsTapped()
+                                totalsViewModel.calculateAmountsTapped(
+                                    with: viewModel.cartViewModel.itemsInCart,
+                                    allItems: viewModel.itemSelectorViewModel.items)
                             }
                         }
                     }

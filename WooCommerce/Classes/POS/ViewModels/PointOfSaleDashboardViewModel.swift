@@ -11,6 +11,8 @@ import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
+    // TODO:
+    // Move PaymentState to TotalsViewModel along with Card reader service
     enum PaymentState {
         case idle
         case acceptingCard
@@ -38,11 +40,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     let itemSelectorViewModel: ItemSelectorViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
-    let totalsViewModel: TotalsViewModel = TotalsViewModel()
+    let totalsViewModel: TotalsViewModel
 
     @Published private(set) var isCartCollapsed: Bool = true
-    @Published private(set) var formattedCartTotalPrice: String?
-
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
@@ -79,6 +79,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.orderService = orderService
 
         self.itemSelectorViewModel = .init(itemProvider: itemProvider)
+        self.totalsViewModel = TotalsViewModel(orderService: orderService)
 
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()
@@ -86,7 +87,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
         observeCardPresentPaymentEvents()
-        observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
     }
 
@@ -133,18 +133,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         return updatedOrder
     }
 
-    func calculateAmountsTapped() {
-        // TODO: 12998 - move to the totals view model
-        startSyncingOrder(cartItems: itemsInCart)
-    }
-
     private func startSyncingOrder(cartItems: [CartItem]) {
-        // TODO: 12998 - move to the totals view model
-        // At this point, this should happen in the TotalsViewModel
-        Task { @MainActor in
-            itemsInCart = cartItems
-            await syncOrder(for: cartItems)
-        }
+        totalsViewModel.startSyncingOrder(with: cartItems, 
+                                          allItems: itemSelectorViewModel.items)
     }
 
     func startNewTransaction() {
@@ -203,21 +194,6 @@ private extension PointOfSaleDashboardViewModel {
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeItemsInCartForCartTotal() {
-        cartViewModel.$itemsInCart
-            .map { [weak self] in
-                guard let self else { return "-" }
-                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
-                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
-                    let quantity = cartItem.quantity
-                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                    return partialResult + total
-                }
-                return currencyFormatter.formatAmount(totalValue)
-            }
-            .assign(to: &$formattedCartTotalPrice)
-    }
-
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher
@@ -286,36 +262,6 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isExitPOSDisabled)
-    }
-
-    @MainActor
-    private func syncOrder(for cartProducts: [CartItem]) async {
-        guard totalsViewModel.isSyncingOrder == false else {
-            return
-        }
-        totalsViewModel.startSyncOrder()
-        let cart = cartProducts
-            .map {
-                POSCartItem(itemID: nil,
-                            product: $0.item,
-                            quantity: Decimal($0.quantity))
-            }
-        defer {
-            totalsViewModel.stopSyncOrder()
-        }
-        do {
-            totalsViewModel.startSyncOrder()
-            let order = try await orderService.syncOrder(cart: cart,
-                                                         order: totalsViewModel.order,
-                                                         allProducts: itemSelectorViewModel.items)
-            totalsViewModel.setOrder(updatedOrder: order)
-            totalsViewModel.stopSyncOrder()
-            // TODO: this is temporary solution
-            await prepareConnectedReaderForPayment()
-            DDLogInfo("🟢 [POS] Synced order: \(order)")
-        } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
-        }
     }
 }
 

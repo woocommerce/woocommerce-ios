@@ -321,7 +321,7 @@ private extension HubMenuViewModel {
         /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
 
         Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
         }
 
         Task { @MainActor in

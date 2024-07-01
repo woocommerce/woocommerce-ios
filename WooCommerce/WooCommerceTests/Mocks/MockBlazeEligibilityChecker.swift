@@ -1,5 +1,6 @@
 @testable import WooCommerce
 import Foundation
+import Yosemite
 
 /// Mock version of `BlazeEligibilityChecker` for easier unit testing.
 final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
@@ -13,12 +14,12 @@ final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
         self.isProductEligible = isProductEligible
     }
 
-    func isSiteEligible() async -> Bool {
+    func isSiteEligible(_ site: Site) async -> Bool {
         isSiteEligibleInvoked = true
         return isSiteEligible
     }
 
-    func isProductEligible(product: WooCommerce.ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
+    func isProductEligible(site: Site, product: WooCommerce.ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
         isProductEligible
     }
 }

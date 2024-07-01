@@ -783,12 +783,17 @@ private extension ProductFormViewModel {
 
 private extension ProductFormViewModel {
     func updateBlazeEligibility() {
-        guard formType == .edit else {
+        guard formType == .edit,
+              let site = stores.sessionManager.defaultSite else {
             isEligibleForBlaze = false
             return
         }
         Task { @MainActor in
-            let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            let isEligible = await blazeEligibilityChecker.isProductEligible(
+                site: site,
+                product: originalProduct,
+                isPasswordProtected: password?.isNotEmpty == true
+            )
             isEligibleForBlaze = isEligible
             updateActionsFactory()
             blazeEligiblityUpdateSubject.send()

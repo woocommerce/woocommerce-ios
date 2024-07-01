@@ -46,7 +46,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_readonly_simple_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
+    func test_readonly_simple_product_with_decimal_stock_quantities_has_editable_inventory_settings() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
@@ -55,7 +55,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: false)))
+        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
     }
 
     // MARK: - Affiliate products
@@ -204,7 +204,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_readonly_variable_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
+    func test_readonly_variable_product_with_decimal_stock_quantities_has_editable_inventory_settings() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
         let model = EditableProductModel(product: product)
@@ -213,7 +213,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
         // Assert
-        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: false)))
+        XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
     }
 }
 

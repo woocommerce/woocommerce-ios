@@ -14,7 +14,8 @@ extension Product {
 
     static func createStockQuantityViewModel(stockQuantity: Decimal?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity", comment: "Title of the cell in Product Inventory Settings > Quantity")
-        let value = NumberFormatter.localizedString(from: (stockQuantity ?? 0) as NSDecimalNumber, number: .decimal)
+        let stockQuantity = stockQuantity ?? 0
+        let value = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
         let accessibilityHint = NSLocalizedString(
             "The stock quantity for this product. Editable.",
             comment: "VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product.")
@@ -27,6 +28,7 @@ extension Product {
                                   keyboardType: .numberPad,
                                   inputFormatter: IntegerInputFormatter(),
                                   style: .primary,
+                                  isInputEnabled: stockQuantity.isInteger,
                                   onInputChange: onInputChange)
     }
 }

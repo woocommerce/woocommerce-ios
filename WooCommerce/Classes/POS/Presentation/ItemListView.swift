@@ -1,9 +1,10 @@
 import SwiftUI
+import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject var viewModel: ItemSelectorViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: ItemSelectorViewModel) {
         self.viewModel = viewModel
     }
 
@@ -22,7 +23,7 @@ struct ItemListView: View {
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
-                            viewModel.addItemToCart(item)
+                            viewModel.select(item)
                         }, label: {
                             ItemCardView(item: item)
                         })
@@ -30,17 +31,19 @@ struct ItemListView: View {
                 }
             }
         }
+        .task {
+            await viewModel.populatePointOfSaleItems()
+        }
+        .refreshable {
+            await viewModel.reload()
+        }
         .padding(.horizontal, 32)
         .background(Color.posBackgroundGreyi3)
     }
 }
 
 #if DEBUG
-import class Yosemite.POSOrderService
-import enum Yosemite.Credentials
 #Preview {
-    ItemListView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                          orderService: POSOrderPreviewService()))
+    ItemListView(viewModel: ItemSelectorViewModel(itemProvider: POSItemProviderPreview()))
 }
 #endif

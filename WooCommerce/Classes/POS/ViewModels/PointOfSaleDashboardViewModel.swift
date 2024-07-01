@@ -36,7 +36,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
-    @Published private(set) var items: [POSItem] = []
+    let itemSelectorViewModel: ItemSelectorViewModel
+
     @Published private(set) var itemsInCart: [CartItem] = [] {
         didSet {
             checkIfCartEmpty()
@@ -79,50 +80,27 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
-    @Published private(set) var isSyncingItems: Bool = true
 
     private let orderService: POSOrderServiceProtocol
-    private let itemProvider: POSItemProvider
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
+    private var cancellables: Set<AnyCancellable> = []
+
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol) {
-        self.itemProvider = itemProvider
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.orderService = orderService
 
+        self.itemSelectorViewModel = .init(itemProvider: itemProvider)
+
+        observeSelectedItemToAddToCart()
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
-    }
-
-    @MainActor
-    func populatePointOfSaleItems() async {
-        isSyncingItems = true
-        do {
-            items = try await itemProvider.providePointOfSaleItems()
-        } catch {
-            DDLogError("Error on load while fetching product data: \(error)")
-        }
-        isSyncingItems = false
-    }
-
-    @MainActor
-    func reload() async {
-        isSyncingItems = true
-        do {
-            let newItems = try await itemProvider.providePointOfSaleItems()
-            // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
-            items.removeAll()
-            items = newItems
-        } catch {
-            DDLogError("Error on reload while updating product data: \(error)")
-        }
-        isSyncingItems = false
     }
 
     var canDeleteItemsFromCart: Bool {
@@ -254,6 +232,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 }
 
 private extension PointOfSaleDashboardViewModel {
+    func observeSelectedItemToAddToCart() {
+        itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
+            self?.addItemToCart(selectedItem)
+        }
+        .store(in: &cancellables)
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
     func observeItemsInCartForCartTotal() {
         $itemsInCart
             .map { [weak self] in
@@ -357,8 +344,8 @@ private extension PointOfSaleDashboardViewModel {
         do {
             isSyncingOrder = true
             let order = try await orderService.syncOrder(cart: cart,
-                                                              order: order,
-                                                              allProducts: items)
+                                                         order: order,
+                                                         allProducts: itemSelectorViewModel.items)
             self.order = order
             isSyncingOrder = false
             // TODO: this is temporary solution

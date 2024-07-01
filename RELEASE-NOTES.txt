@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.4
+-----
+
+
 19.3
 -----
 - [*] Blaze Campaigns: Added date range checks to ensure campaign start dates are within 60 days from today to avoid validation errors. [https://github.com/woocommerce/woocommerce-ios/pull/13124]

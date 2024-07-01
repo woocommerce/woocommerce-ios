@@ -71,6 +71,10 @@ struct TopPerformersRow: View {
         ///
         let imageURL: URL?
 
+        /// Whether to show the item image
+        ///
+        let showImage: Bool
+
         /// Image placeholder.
         ///
         let placeHolder = UIImage.productPlaceholderImage
@@ -90,8 +94,9 @@ struct TopPerformersRow: View {
         /// Handles the tap action if the row is tappable. If the row is not tappable, `nil` is set.
         let tapHandler: (() -> Void)?
 
-        init(imageURL: URL? = nil, name: String, details: String, value: String, tapHandler: (() -> Void)? = nil) {
+        init(imageURL: URL? = nil, showImage: Bool = true, name: String, details: String, value: String, tapHandler: (() -> Void)? = nil) {
             self.imageURL = imageURL
+            self.showImage = showImage
             self.name = name
             self.details = details
             self.value = value
@@ -115,6 +120,7 @@ struct TopPerformersRow: View {
                 .resizable()
                 .frame(width: imageWidth, height: imageWidth)
                 .cornerRadius(Layout.imageCornerRadius)
+                .renderedIf(data.showImage)
 
             // Text Labels + Value + Divider
             VStack {

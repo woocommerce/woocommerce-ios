@@ -38,6 +38,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     let itemSelectorViewModel: ItemSelectorViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
+    let totalsViewModel: TotalsViewModel = TotalsViewModel()
 
     @Published private(set) var isCartCollapsed: Bool = true
 
@@ -82,7 +83,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private var order: POSOrder?
-    @Published private(set) var isSyncingOrder: Bool = false
 
     private let orderService: POSOrderServiceProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
@@ -109,11 +109,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     var areAmountsFullyCalculated: Bool {
-        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
+        totalsViewModel.isSyncingOrder == false &&
+        formattedOrderTotalTaxPrice != nil &&
+        formattedOrderTotalPrice != nil
     }
 
     var showRecalculateButton: Bool {
-        return !areAmountsFullyCalculated && isSyncingOrder == false
+        !areAmountsFullyCalculated &&
+        totalsViewModel.isSyncingOrder == false
     }
 
     func cardPaymentTapped() {
@@ -316,10 +319,10 @@ private extension PointOfSaleDashboardViewModel {
 
     @MainActor
     private func syncOrder(for cartProducts: [CartItem]) async {
-        guard isSyncingOrder == false else {
+        guard totalsViewModel.isSyncingOrder == false else {
             return
         }
-        isSyncingOrder = true
+        totalsViewModel.startSyncOrder()
         let cart = cartProducts
             .map {
                 POSCartItem(itemID: nil,
@@ -327,15 +330,15 @@ private extension PointOfSaleDashboardViewModel {
                             quantity: Decimal($0.quantity))
             }
         defer {
-            isSyncingOrder = false
+            totalsViewModel.stopSyncOrder()
         }
         do {
-            isSyncingOrder = true
+            totalsViewModel.startSyncOrder()
             let order = try await orderService.syncOrder(cart: cart,
                                                          order: order,
                                                          allProducts: itemSelectorViewModel.items)
             self.order = order
-            isSyncingOrder = false
+            totalsViewModel.stopSyncOrder()
             // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()
             DDLogInfo("🟢 [POS] Synced order: \(order)")

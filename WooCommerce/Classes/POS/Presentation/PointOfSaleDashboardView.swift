@@ -68,10 +68,11 @@ private extension PointOfSaleDashboardView {
     }
 
     var totalsView: some View {
-        TotalsView(viewModel: viewModel)
-            .background(Color(UIColor.systemBackground))
-            .frame(maxWidth: .infinity)
-            .cornerRadius(16)
+        TotalsView(viewModel: viewModel,
+                   totalsViewModel: viewModel.totalsViewModel)
+        .background(Color(UIColor.systemBackground))
+        .frame(maxWidth: .infinity)
+        .cornerRadius(16)
     }
 
     var productListView: some View {

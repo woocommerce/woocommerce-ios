@@ -2,9 +2,23 @@ import SwiftUI
 
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = totalsViewModel
+    }
+
+    var isShimmering: Bool {
+        totalsViewModel.isSyncingOrder
+    }
+
+    var isPriceFieldRedacted: Bool {
+        viewModel.formattedOrderTotalTaxPrice == nil || totalsViewModel.isSyncingOrder
+    }
+
+    var isTotalPriceFieldRedacted: Bool {
+        viewModel.formattedOrderTotalPrice == nil || totalsViewModel.isSyncingOrder
     }
 
     var body: some View {
@@ -27,13 +41,13 @@ struct TotalsView: View {
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
                                                 viewModel.formattedOrderTotalTaxPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalTaxPrice == nil || viewModel.isSyncingOrder)
+                                               shimmeringActive: isShimmering,
+                                               redacted: isPriceFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalPrice == nil || viewModel.isSyncingOrder)
+                                               shimmeringActive: isShimmering,
+                                               redacted: isTotalPriceFieldRedacted)
                             }
                             .padding()
                             .frame(idealWidth: Constants.pricesIdealWidth)
@@ -181,10 +195,10 @@ private extension TotalsView {
     }
 }
 
-#if DEBUG
-#Preview {
-    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
-                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService()))
-}
-#endif
+//#if DEBUG
+//#Preview {
+//    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
+//                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                                orderService: POSOrderPreviewService()))
+//}
+//#endif

@@ -85,7 +85,11 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
-    @Published private var isSiteEligibleForBlaze: Bool = false
+    @Published private var isSiteEligibleForBlaze = false
+
+    @Published private var isSiteEligibleForGoogleAds = false
+
+    @Published private var isSiteEligibleForInbox = false
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
@@ -210,50 +214,54 @@ private extension HubMenuViewModel {
         settingsElements.append(Subscriptions())
     }
 
-    private func setupGeneralElements() {
-        generalElements = [Payments(iconBadge: shouldShowNewFeatureBadgeOnPayments ? .dot : nil),
-                           WoocommerceAdmin(),
-                           ViewStore(),
-                           Reviews()]
-        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            generalElements.append(InAppPurchases())
-        }
-
-        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
-            guard let self = self else { return }
-            if let index = self.generalElements.firstIndex(where: { item in
-                type(of: item).id == Reviews.id
-            }), isInboxMenuShown {
-                self.generalElements.insert(Inbox(), at: index + 1)
+    func setupGeneralElements() {
+        $shouldShowNewFeatureBadgeOnPayments
+            .combineLatest($isSiteEligibleForInbox,
+                           $isSiteEligibleForBlaze,
+                           $isSiteEligibleForGoogleAds)
+            .map { [weak self] combinedResult -> [HubMenuItem] in
+                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
+                return self?.createGeneralElements(
+                    shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
+                    eligibleForGoogleAds: eligibleForGoogleAds,
+                    eligibleForBlaze: eligibleForBlaze,
+                    eligibleForInbox: eligibleForInbox
+                ) ?? []
             }
-        }
-
-        if let index = self.generalElements.firstIndex(where: { item in
-            type(of: item).id == Reviews.id
-        }) {
-            self.generalElements.insert(Coupons(), at: index)
-        } else {
-            self.generalElements.append(Coupons())
-        }
-
-
-        // Blaze menu.
-        if isSiteEligibleForBlaze {
-            if let index = generalElements.firstIndex(where: { $0.id == Payments.id }) {
-                generalElements.insert(Blaze(), at: index + 1)
-            } else {
-                generalElements.append(Blaze())
-            }
-        } else {
-            generalElements.removeAll(where: { $0.id == Blaze.id })
-        }
-
-        generalElements.append(Customers())
+            .assign(to: &$generalElements)
     }
 
-    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
-        productReviewFromNoteParcel = parcel
-        showingReviewDetail = true
+    func createGeneralElements(shouldShowBadgeOnPayments: Bool,
+                               eligibleForGoogleAds: Bool,
+                               eligibleForBlaze: Bool,
+                               eligibleForInbox: Bool) -> [HubMenuItem] {
+        var items: [HubMenuItem] = [
+            Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
+        ]
+
+        if eligibleForGoogleAds {
+            items.append(GoogleAds())
+        }
+
+        if eligibleForBlaze {
+            items.append(Blaze())
+        }
+
+        items.append(WoocommerceAdmin())
+        items.append(ViewStore())
+        items.append(Reviews())
+
+        if eligibleForInbox {
+            items.append(Inbox())
+        }
+
+        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
+            items.append(InAppPurchases())
+        }
+
+        items.append(Customers())
+
+        return items
     }
 
     func observeSiteForUIUpdates() {
@@ -294,18 +302,33 @@ private extension HubMenuViewModel {
             }
             .assign(to: &$shouldAuthenticateAdminPage)
 
-        // Blaze menu.
-        stores.site
+        let updatedSite = stores.site
             .compactMap { $0 }
-            .removeDuplicates()
+            .removeDuplicates(by: { $0.siteID == $1.siteID })
+
+        // Blaze menu.
+        updatedSite
             .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await self.blazeEligibilityChecker.isSiteEligible()
+                await self?.blazeEligibilityChecker.isSiteEligible() ?? false
             }
             .receive(on: DispatchQueue.main)
             .assign(to: &$isSiteEligibleForBlaze)
+
+        // Google Ads menu.
+        updatedSite
+            .asyncMap { [weak self] site -> Bool in
+                await self?.googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID) ?? false
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$isSiteEligibleForGoogleAds)
+
+        // Inbox menu
+        updatedSite
+            .asyncMap { [weak self] site -> Bool in
+                await self?.inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID) ?? false
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$isSiteEligibleForInbox)
     }
 
     /// Observe the current site's plan name and assign it to the `planName` published property.

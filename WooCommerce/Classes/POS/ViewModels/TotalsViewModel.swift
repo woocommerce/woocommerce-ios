@@ -33,7 +33,19 @@ final class TotalsViewModel: ObservableObject {
         formattedOrderTotalTaxPrice != nil &&
         formattedOrderTotalPrice != nil
     }
-    
+
+    var isShimmering: Bool {
+        isSyncingOrder
+    }
+
+    var isPriceFieldRedacted: Bool {
+        formattedOrderTotalTaxPrice == nil || isSyncingOrder
+    }
+
+    var isTotalPriceFieldRedacted: Bool {
+        formattedOrderTotalPrice == nil || isSyncingOrder
+    }
+
     init(orderService: POSOrderServiceProtocol) {
         self.orderService = orderService
         // TODO:

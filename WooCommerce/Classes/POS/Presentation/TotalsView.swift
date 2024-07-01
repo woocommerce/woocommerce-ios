@@ -9,21 +9,6 @@ struct TotalsView: View {
         self.totalsViewModel = totalsViewModel
     }
 
-    var isShimmering: Bool {
-        // TODO: Move to VM
-        totalsViewModel.isSyncingOrder
-    }
-
-    var isPriceFieldRedacted: Bool {
-        // TODO: Move to VM
-        totalsViewModel.formattedOrderTotalTaxPrice == nil || totalsViewModel.isSyncingOrder
-    }
-
-    var isTotalPriceFieldRedacted: Bool {
-        // TODO: Move to VM
-        totalsViewModel.formattedOrderTotalPrice == nil || totalsViewModel.isSyncingOrder
-    }
-
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -44,13 +29,13 @@ struct TotalsView: View {
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
                                                 totalsViewModel.formattedOrderTotalTaxPrice,
-                                               shimmeringActive: isShimmering,
-                                               redacted: isPriceFieldRedacted)
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isPriceFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
-                                               shimmeringActive: isShimmering,
-                                               redacted: isTotalPriceFieldRedacted)
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isTotalPriceFieldRedacted)
                             }
                             .padding()
                             .frame(idealWidth: Constants.pricesIdealWidth)

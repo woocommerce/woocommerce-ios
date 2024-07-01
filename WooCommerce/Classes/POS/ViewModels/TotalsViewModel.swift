@@ -121,16 +121,6 @@ final class TotalsViewModel: ObservableObject {
         }
     }
 
-    // TODO: remove because it is unused
-//    @MainActor
-//    func updateOrderStatus(_ status: OrderStatusEnum) async throws -> POSOrder? {
-//        guard let order = totalsViewModel.order else {
-//            return nil
-//        }
-//        let updatedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
-//        return updatedOrder
-//    }
-
     func startNewTransaction() {
         paymentState = .acceptingCard
         clearOrder()

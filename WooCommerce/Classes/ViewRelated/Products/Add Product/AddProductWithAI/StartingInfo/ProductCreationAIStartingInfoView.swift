@@ -206,17 +206,17 @@ private extension ProductCreationAIStartingInfoView {
             static let viewPhoto = NSLocalizedString(
                 "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",
                 value: "View Photo",
-                comment: "Menu button title in starting info screen."
+                comment: "Title of button which opens the selected package photo in starting info screen."
             )
             static let replacePhoto = NSLocalizedString(
                 "productCreationAIStartingInfoView.packagePhotoView.replacePhoto",
                 value: "Replace Photo",
-                comment: "Menu button title in starting info screen."
+                comment: "Title of the button which opens photo selection flow to replace selected package photo in starting info screen."
             )
             static let removePhoto = NSLocalizedString(
                 "productCreationAIStartingInfoView.packagePhotoView.removePhoto",
                 value: "Remove Photo",
-                comment: "Menu button title in starting info screen."
+                comment: "Title of button which removes selected package photo in starting info screen."
             )
         }
     }
@@ -254,7 +254,7 @@ private extension ProductCreationAIStartingInfoView {
         static let subtitle = NSLocalizedString(
             "productCreationAIStartingInfoView.subtitle",
             value: "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.",
-            comment: "Subtitle on the starting info screen."
+            comment: "Subtitle on the starting info screen explaining what text to enter in the textfield."
         )
         static let placeholder = NSLocalizedString(
             "productCreationAIStartingInfoView.placeholder",
@@ -264,7 +264,7 @@ private extension ProductCreationAIStartingInfoView {
         static let readTextFromPhoto = NSLocalizedString(
             "productCreationAIStartingInfoView.readTextFromPhoto",
             value: "Read text from product photo",
-            comment: "Upload package photo button on the text field"
+            comment: "Button to upload package photo to read text from the photo"
         )
         static let continueText = NSLocalizedString(
             "productCreationAIStartingInfoView.continueText",

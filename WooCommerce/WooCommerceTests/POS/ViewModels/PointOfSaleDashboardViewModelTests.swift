@@ -31,7 +31,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         sut = nil
         super.tearDown()
     }
-    
+
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210
 }

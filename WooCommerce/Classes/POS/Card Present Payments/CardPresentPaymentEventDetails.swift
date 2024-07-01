@@ -47,6 +47,7 @@ enum CardPresentPaymentEventDetails {
                       cancelPayment: () -> Void)
     case paymentErrorNonRetryable(error: any Error,
                                   cancelPayment: () -> Void)
+    case paymentCaptureError(cancelPayment: () -> Void)
     case processing
     case displayReaderMessage(message: String)
     case cancelledOnReader

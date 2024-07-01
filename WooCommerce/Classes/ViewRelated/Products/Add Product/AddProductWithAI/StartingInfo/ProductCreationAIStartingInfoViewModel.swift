@@ -15,6 +15,8 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     @Published var isShowingViewPhotoSheet: Bool = false
     @Published var features: String
 
+    @Published var notice: Notice?
+
     let siteID: Int64
     private let analytics: Analytics
 
@@ -52,7 +54,14 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     }
 
     func didTapRemovePhoto() {
+        let previousState = imageState
         imageState = .empty
+        notice = Notice(title: Localization.PhotoRemovedNotice.title,
+                        feedbackType: .success,
+                        actionTitle: Localization.PhotoRemovedNotice.undo,
+                        actionHandler: { [weak self] in
+            self?.imageState = previousState
+        })
     }
 
     func selectImage(from source: MediaPickingSource) {
@@ -66,6 +75,23 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
                 return imageState = previousState
             }
             imageState = .success(image)
+        }
+    }
+}
+
+private extension ProductCreationAIStartingInfoViewModel {
+    enum Localization {
+        enum PhotoRemovedNotice {
+            static let title = NSLocalizedString(
+                "productCreationAIStartingInfoViewModel.photoRemovedNotice.title",
+                value: "Photo removed",
+                comment: "Title of the notice that confirms that the package photo is removed."
+            )
+            static let undo = NSLocalizedString(
+                "productCreationAIStartingInfoViewModel.photoRemovedNotice.undo",
+                value: "Undo",
+                comment: "Button to undo the package photo removal action."
+            )
         }
     }
 }

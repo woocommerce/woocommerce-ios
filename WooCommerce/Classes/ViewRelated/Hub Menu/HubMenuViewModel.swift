@@ -373,6 +373,18 @@ extension HubMenuViewModel {
         let iconBadge: HubMenuBadgeType? = nil
     }
 
+    struct GoogleAds: HubMenuItem {
+        static var id = "google-ads"
+
+        let title: String = Localization.googleAds
+        let description: String = Localization.googleAdsDescription
+        let icon: UIImage = .googleLogo
+        let iconColor: UIColor = .clear
+        let accessibilityIdentifier: String = "menu-google-ads"
+        let trackingOption: String = "google-ads"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
     struct WoocommerceAdmin: HubMenuItem {
         static var id = "woocommerceAdmin"
 
@@ -506,6 +518,18 @@ extension HubMenuViewModel {
         static let blazeDescription = NSLocalizedString(
             "Promote products with Blaze",
             comment: "Description of the hub menu Blaze button")
+
+        static let googleAds = NSLocalizedString(
+            "hubMenuViewModel.googleAds",
+            value: "Google for WooCommerce",
+            comment: "Title of the hub menu Google Ads button"
+        )
+
+        static let googleAdsDescription = NSLocalizedString(
+            "hubMenuViewModel.googleAdsDescription",
+            value: "Drive sales and generate more traffic with Google Ads",
+            comment: "Description of the hub menu Google Ads button"
+        )
 
         static let myStore = NSLocalizedString(
             "My Store",

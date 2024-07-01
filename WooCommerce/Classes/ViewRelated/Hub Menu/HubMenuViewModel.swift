@@ -171,7 +171,20 @@ final class HubMenuViewModel: ObservableObject {
         navigationPath.append(HubMenuNavigationDestination.payments)
     }
 
-    private func setupPOSElement() {
+    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
+        productReviewFromNoteParcel = parcel
+        showingReviewDetail = true
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
+
+// MARK: - Helper methods
+//
+private extension HubMenuViewModel {
+    func setupPOSElement() {
         cardPresentPaymentsOnboarding.refreshIfNecessary()
         Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
             .map { isBetaFeatureEnabled, isEligibleForPOS in
@@ -184,7 +197,7 @@ final class HubMenuViewModel: ObservableObject {
             .assign(to: &$posElement)
     }
 
-    private func setupSettingsElements() {
+    func setupSettingsElements() {
         settingsElements = [Settings()]
 
         guard let site = stores.sessionManager.defaultSite,
@@ -243,7 +256,7 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
-    private func observeSiteForUIUpdates() {
+    func observeSiteForUIUpdates() {
         stores.site
             .compactMap { site -> URL? in
                 guard let urlString = site?.url, let url = URL(string: urlString) else {
@@ -310,10 +323,6 @@ final class HubMenuViewModel: ObservableObject {
             }
         }
         .assign(to: &$planName)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }
 }
 

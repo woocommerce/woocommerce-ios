@@ -153,6 +153,66 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_generalElements_does_not_include_google_ads_when_default_site_is_not_set() {
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.GoogleAds.id }))
+    }
+
+    @MainActor
+    func test_generalElements_does_not_include_google_ads_when_site_is_not_eligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let checker = MockGoogleAdsEligibilityChecker(isEligible: false)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         googleAdsEligibilityChecker: checker)
+        waitUntil {
+            checker.siteEligibilityCheckTriggered
+        }
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.GoogleAds.id }))
+    }
+
+    @MainActor
+    func test_generalElements_includes_google_ads_when_site_is_eligible() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         googleAdsEligibilityChecker: checker)
+        waitUntil {
+            checker.siteEligibilityCheckTriggered
+        }
+        viewModel.setupMenuElements()
+
+        // Then
+        let index = try XCTUnwrap(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.GoogleAds.id }))
+        XCTAssertEqual(viewModel.generalElements[index - 1].id, HubMenuViewModel.Payments.id)
+    }
+
+    @MainActor
     func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"

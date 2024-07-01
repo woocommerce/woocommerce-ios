@@ -2576,6 +2576,7 @@
 		DEACB8872A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */; };
 		DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */; };
 		DEB387982C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */; };
+		DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */; };
 		DEBAB70B2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */; };
 		DEBAB70D2A7A6F1100743185 /* MockStorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */; };
 		DEBAB70F2A7A6F3800743185 /* MockConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */; };
@@ -5539,6 +5540,7 @@
 		DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AddProductFromImage.swift"; sourceTree = "<group>"; };
 		DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGoogleAdsEligibilityCheckTests.swift; sourceTree = "<group>"; };
+		DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanBannerPresenterTests.swift; sourceTree = "<group>"; };
 		DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStorePlanSynchronizer.swift; sourceTree = "<group>"; };
 		DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConnectivityObserver.swift; sourceTree = "<group>"; };
@@ -9300,6 +9302,7 @@
 				DE2004772C05C36900660A72 /* MockInboxEligibilityChecker.swift */,
 				204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */,
 				DE7B17F82C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift */,
+				DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -16038,6 +16041,7 @@
 				45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */,
 				035BA3A8291000E90056F0AD /* JustInTimeMessageViewModelTests.swift in Sources */,
 				20BCF6F72B0E5AF000954840 /* MockSystemStatusService.swift in Sources */,
+				DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */,
 				DE5C19C52AC3F0700064600A /* AddProductNameWithAIViewModelTests.swift in Sources */,
 				023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */,
 				09BE3A9127C921A70070B69D /* BulkUpdatePriceSettingsViewModelTests.swift in Sources */,

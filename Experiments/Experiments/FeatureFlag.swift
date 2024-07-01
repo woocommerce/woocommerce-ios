@@ -17,7 +17,7 @@ public enum FeatureFlag: Int {
     /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
     ///
     case inbox
-    
+
     /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
     ///
     case showInboxCTA

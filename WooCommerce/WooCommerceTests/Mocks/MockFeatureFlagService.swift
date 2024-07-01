@@ -3,6 +3,7 @@ import Experiments
 
 struct MockFeatureFlagService: FeatureFlagService {
     private let isInboxOn: Bool
+    private let isShowInboxCTAEnabled: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isDomainSettingsEnabled: Bool
@@ -27,6 +28,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let googleAdsCampaignCreationOnWebView: Bool
 
     init(isInboxOn: Bool = false,
+         isShowInboxCTAEnabled: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isDomainSettingsEnabled: Bool = false,
@@ -50,6 +52,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductCreationAIv2M1Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false) {
         self.isInboxOn = isInboxOn
+        self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
@@ -78,6 +81,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .inbox:
             return isInboxOn
+        case .showInboxCTA:
+            return isShowInboxCTAEnabled
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:

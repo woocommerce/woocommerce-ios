@@ -129,7 +129,7 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.cardReaderConnectionViewModel.connectionStatus {
+        switch totalsViewModel.connectionStatus {
         case .connected:
             if let inlinePaymentMessage = totalsViewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)

@@ -25,15 +25,14 @@ final class TotalsViewModel: ObservableObject {
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private(set) var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
-    @Published private(set) var formattedCartTotalPrice: String?
 
     @Published private(set) var paymentState: PaymentState = .acceptingCard
 
-    @Published private var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
-    private let orderService: POSOrderServiceProtocol
-    private let cardPresentPaymentService: CardPresentPaymentFacade
-    private let currencyFormatter: CurrencyFormatter
+    // MARK: - Order total amounts
+
+    @Published private(set) var formattedCartTotalPrice: String?
 
     var formattedOrderTotalPrice: String? {
         formattedPrice(order?.total, currency: order?.currency)
@@ -42,6 +41,8 @@ final class TotalsViewModel: ObservableObject {
     var formattedOrderTotalTaxPrice: String? {
         formattedPrice(order?.totalTax, currency: order?.currency)
     }
+
+    // MARK: - View states
 
     var showRecalculateButton: Bool {
         !areAmountsFullyCalculated &&
@@ -66,6 +67,10 @@ final class TotalsViewModel: ObservableObject {
         formattedOrderTotalPrice == nil || isSyncingOrder
     }
 
+    private let orderService: POSOrderServiceProtocol
+    private let cardPresentPaymentService: CardPresentPaymentFacade
+    private let currencyFormatter: CurrencyFormatter
+
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter) {
@@ -75,33 +80,6 @@ final class TotalsViewModel: ObservableObject {
 
         observeConnectedReaderForStatus()
         observeCardPresentPaymentEvents()
-    }
-
-    func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        // TODO:
-        // Remove ServiceLocator dependency. Inject from the app through point of entry
-        return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatAmount(price, with: currency)
-    }
-
-    func startSyncOrder() {
-        // TODO: 
-        // Start & stop methods may no longer be needed, since sync state it's only internal
-        isSyncingOrder = true
-    }
-
-    func stopSyncOrder() {
-        isSyncingOrder = false
-    }
-
-    func clearOrder() {
-        order = nil
-    }
-
-    func setOrder(updatedOrder: POSOrder) {
-        order = updatedOrder
     }
 
     func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
@@ -132,13 +110,15 @@ final class TotalsViewModel: ObservableObject {
     }
 }
 
+// MARK: - Order syncing
+
 private extension TotalsViewModel {
     @MainActor
     func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
         guard isSyncingOrder == false else {
             return
         }
-        startSyncOrder()
+        isSyncingOrder = true
         let cart = cartProducts
             .map {
                 POSCartItem(itemID: nil,
@@ -146,19 +126,17 @@ private extension TotalsViewModel {
                             quantity: Decimal($0.quantity))
             }
         defer {
-            stopSyncOrder()
+            isSyncingOrder = false
         }
-        
         do {
-            startSyncOrder()
+            isSyncingOrder = true
             let order = try await orderService.syncOrder(cart: cart,
                                                          order: order,
                                                          allProducts: allItems)
-            setOrder(updatedOrder: order)
-            stopSyncOrder()
+            self.order = order
+            isSyncingOrder = false
             // TODO: this is temporary solution
-            // TODO: Move card present here as well.
-            // await prepareConnectedReaderForPayment()
+            await prepareConnectedReaderForPayment()
             DDLogInfo("🟢 [POS] Synced order: \(order)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
@@ -173,10 +151,23 @@ private extension TotalsViewModel {
                 let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
                 return partialResult + total
             }
-            return CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatAmount(totalValue)
+            return currencyFormatter.formatAmount(totalValue)
         }(cartItems)
     }
+
+    func formattedPrice(_ price: String?, currency: String?) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    func clearOrder() {
+        order = nil
+    }
 }
+
+// MARK: - Payment collection
 
 private extension TotalsViewModel {
     @MainActor

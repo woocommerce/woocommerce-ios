@@ -86,9 +86,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
     @Published private var isSiteEligibleForBlaze = false
-
     @Published private var isSiteEligibleForGoogleAds = false
-
     @Published private var isSiteEligibleForInbox = false
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
@@ -302,38 +300,42 @@ private extension HubMenuViewModel {
             }
             .assign(to: &$shouldAuthenticateAdminPage)
 
-        let updatedSite = stores.site
+        stores.site
             .compactMap { $0 }
-            .removeDuplicates(by: { $0.siteID == $1.siteID })
-
-        // Blaze menu.
-        updatedSite
-            .asyncMap { [weak self] site -> Bool in
-                await self?.blazeEligibilityChecker.isSiteEligible() ?? false
+            .filter { [weak self] site in
+                site.siteID == self?.siteID
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$isSiteEligibleForBlaze)
-
-        // Google Ads menu.
-        updatedSite
-            .asyncMap { [weak self] site -> Bool in
-                await self?.googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID) ?? false
+            .prefix(1)
+            .sink { [weak self] site in
+                self?.updateMenuItemEligibility(with: site)
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$isSiteEligibleForGoogleAds)
+            .store(in: &cancellables)
+    }
 
-        // Inbox menu
-        updatedSite
-            .asyncMap { [weak self] site -> Bool in
-                await self?.inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID) ?? false
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$isSiteEligibleForInbox)
+    func updateMenuItemEligibility(with site: Yosemite.Site) {
+
+        /// We're dispatching 3 separate tasks because using task group to
+        /// asynchronously update variables in the main thread is considered unsafe
+        /// when enabling concurrency checks.
+        /// Using task group would require more effort like this:
+        /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
+
+        Task { @MainActor in
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        }
+
+        Task { @MainActor in
+            isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
+        }
+
+        Task { @MainActor in
+            isSiteEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+        }
     }
 
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
-    private func observePlanName() {
+    func observePlanName() {
         ServiceLocator.storePlanSynchronizer.planStatePublisher.map { [weak self] planState in
             guard let self else { return "" }
             switch planState {

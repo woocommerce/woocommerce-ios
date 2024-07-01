@@ -1,20 +1,20 @@
 import SwiftUI
 
-/// Card to display items sold on the Analytics Hub
+/// Card to display a stat and a list of top performers for that stat on the Analytics Hub
 ///
-struct AnalyticsItemsSoldCard: View {
+struct AnalyticsTopPerformersCard: View {
 
-    /// Title for the items sold card.
+    /// Title for the top performers card.
     ///
     let title: String
 
-    /// Title for the items sold metric.
+    /// Title for the top performers stat.
     ///
-    let itemsSoldTitle: String
+    let statTitle: String
 
-    /// Items sold quantity. Needs to be formatted.
+    /// Value for the top performers stat. Needs to be formatted.
     ///
-    let itemsSold: String
+    let statValue: String
 
     /// Delta Tag Value. Needs to be formatted
     let delta: String
@@ -37,21 +37,25 @@ struct AnalyticsItemsSoldCard: View {
     ///
     let statsErrorMessage: String
 
-    /// Items Solds data to render.
+    /// Title for top performers list.
     ///
-    let itemsSoldData: [TopPerformersRow.Data]
+    let topPerformersTitle: String
+
+    /// Top performers data to render.
+    ///
+    let topPerformersData: [TopPerformersRow.Data]
 
     /// Indicates if the values should be hidden (for loading state)
     ///
-    let isItemsSoldRedacted: Bool
+    let isTopPerformersRedacted: Bool
 
-    /// Indicates if there was an error loading items sold part of the card.
+    /// Indicates if there was an error loading top performers part of the card.
     ///
-    let showItemsSoldError: Bool
+    let showTopPerformersError: Bool
 
-    /// Error message to display if there was an error loading items sold part of the card.
+    /// Error message to display if there was an error loading top performers part of the card.
     ///
-    let itemsSoldErrorMessage: String
+    let topPerformersErrorMessage: String
 
     /// URL for the products analytics web report
     ///
@@ -65,13 +69,13 @@ struct AnalyticsItemsSoldCard: View {
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            Text(itemsSoldTitle)
+            Text(statTitle)
                 .headlineStyle()
                 .padding(.top, Layout.titleSpacing)
                 .padding(.bottom, Layout.columnSpacing)
 
             HStack {
-                Text(itemsSold)
+                Text(statValue)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .redacted(reason: isStatsRedacted ? .placeholder : [])
@@ -90,14 +94,14 @@ struct AnalyticsItemsSoldCard: View {
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: title.localizedCapitalized,
-                              valueTitle: itemsSoldTitle,
-                              rows: itemsSoldData,
-                              isRedacted: isItemsSoldRedacted)
+            TopPerformersView(itemTitle: topPerformersTitle.localizedCapitalized,
+                              valueTitle: statTitle,
+                              rows: topPerformersData,
+                              isRedacted: isTopPerformersRedacted)
                 .padding(.vertical, Layout.columnSpacing)
 
-            if showItemsSoldError {
-                Text(itemsSoldErrorMessage)
+            if showTopPerformersError {
+                Text(topPerformersErrorMessage)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -113,7 +117,7 @@ struct AnalyticsItemsSoldCard: View {
 }
 
 // MARK: Constants
-private extension AnalyticsItemsSoldCard {
+private extension AnalyticsTopPerformersCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
@@ -126,24 +130,25 @@ private extension AnalyticsItemsSoldCard {
 struct AnalyticsItemsSoldCardPreviews: PreviewProvider {
     static var previews: some View {
         let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        AnalyticsItemsSoldCard(title: "Products",
-                               itemsSoldTitle: "Items Sold",
-                               itemsSold: "2,234",
+        AnalyticsTopPerformersCard(title: "Products",
+                               statTitle: "Items Sold",
+                               statValue: "2,234",
                                delta: "+23%",
                                deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
                                deltaTextColor: .textInverted,
                                isStatsRedacted: false,
                                showStatsError: false,
-                               statsErrorMessage: "Unable to load product analytics",
-                               itemsSoldData: [
+                                   statsErrorMessage: "Unable to load product analytics",
+                                   topPerformersTitle: "Products",
+                               topPerformersData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
                                 .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
                                ],
-                               isItemsSoldRedacted: false,
-                               showItemsSoldError: false,
-                               itemsSoldErrorMessage: "Unable to load product items sold analytics",
+                               isTopPerformersRedacted: false,
+                               showTopPerformersError: false,
+                               topPerformersErrorMessage: "Unable to load product items sold analytics",
                                reportViewModel: .init(reportType: .products,
                                                       period: .today,
                                                       webViewTitle: "Products Report",
@@ -151,19 +156,20 @@ struct AnalyticsItemsSoldCardPreviews: PreviewProvider {
                                                       usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
 
-        AnalyticsItemsSoldCard(title: "Products",
-                               itemsSoldTitle: "Items Sold",
-                               itemsSold: "-",
+        AnalyticsTopPerformersCard(title: "Products",
+                               statTitle: "Items Sold",
+                               statValue: "-",
                                delta: "0%",
                                deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
                                deltaTextColor: .text,
                                isStatsRedacted: false,
                                showStatsError: true,
                                statsErrorMessage: "Unable to load product analytics",
-                               itemsSoldData: [],
-                               isItemsSoldRedacted: false,
-                               showItemsSoldError: true,
-                               itemsSoldErrorMessage: "Unable to load product items sold analytics",
+                                   topPerformersTitle: "Products",
+                               topPerformersData: [],
+                               isTopPerformersRedacted: false,
+                               showTopPerformersError: true,
+                               topPerformersErrorMessage: "Unable to load product items sold analytics",
                                reportViewModel: .init(reportType: .products,
                                                       period: .today,
                                                       webViewTitle: "Products Report",

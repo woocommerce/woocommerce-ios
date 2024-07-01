@@ -411,7 +411,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Active";
 
@@ -656,16 +655,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Charge Taxes";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "Quickly generate details for you";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Let us generate product details for you";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "Create a product with AI";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Create a product with AI";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[Learn more.](https://automattic.com/ai-guidelines/)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Learn more.](https://automattic.com/ai-guidelines/)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "Powered by AI.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Powered by AI.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "Add a product and the details manually";
@@ -1503,6 +1502,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Retry";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Audience";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
 
@@ -1545,6 +1547,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Shop Now";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Suggested by AI";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Preview";
 
@@ -1583,6 +1588,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Increase visibility and get your products sold quickly.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Active";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "Canceled";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Completed";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "In Moderation";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Rejected";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Scheduled";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Unknown";
 
 /* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.addPaymentMethod" = "Add a payment method";
@@ -1651,7 +1677,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Learn how Blaze works";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD daily.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Quick start, big impact";
@@ -2172,9 +2198,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Cancel Upgrade";
 
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "Canceled";
-
 /* Display label for cancelled order status.
    Display label for the subscription status type */
 "Cancelled" = "Cancelled";
@@ -2593,6 +2616,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
 
 /* Country option for a site address. */
 "Colombia" = "Colombia";
@@ -4534,9 +4560,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Finish Setup in Store Admin";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "Finished";
 
 /* Country option for a site address. */
 "Finland" = "Finland";
@@ -7117,8 +7140,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "Pending";
 
 /* Display label for the subscription status type */
@@ -7524,6 +7546,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Connecting to reader";
 
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Cancel";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Connect";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Several readers found";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Scanning for readers";
+
 /* Label for a button that when tapped, cancels the process of connecting to a card reader  */
 "pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Cancel";
 
@@ -7848,6 +7882,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
+
+/* Continue button on the starting info screen. */
+"productCreationAIStartingInfoView.continueText" = "Continue";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design";
+
+/* Upload package photo button on the text field */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Read text from product photo";
+
+/* Subtitle on the starting info screen. */
+"productCreationAIStartingInfoView.subtitle" = "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Starting information";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Got a minute? Help us improve our AI-assisted features with your quick feedback.";
@@ -8313,9 +8362,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
 
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Rejected";
-
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Remind me later";
@@ -8676,9 +8722,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schedule sale";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Scheduled";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Search";
@@ -10967,9 +11010,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@";
 
@@ -11060,8 +11100,7 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "unknown";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Unknown";

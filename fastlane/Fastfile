@@ -519,25 +519,31 @@ platform :ios do
 
     # Wrap up
     version = release_version_current
-    remove_branch_protection(
-      repository: GITHUB_REPO,
-      branch: "release/#{version}"
-    )
-    set_milestone_frozen_marker(
-      repository: GITHUB_REPO,
-      milestone: version,
-      freeze: false
-    )
-    create_new_milestone(
-      repository: GITHUB_REPO,
-      need_appstore_submission: true,
-      milestone_duration: 7,
-      number_of_days_from_code_freeze_to_release: 10
-    )
-    close_milestone(
-      repository: GITHUB_REPO,
-      milestone: version
-    )
+    begin
+      remove_branch_protection(
+        repository: GITHUB_REPO,
+        branch: "release/#{version}"
+      )
+      set_milestone_frozen_marker(
+        repository: GITHUB_REPO,
+        milestone: version,
+        freeze: false
+      )
+      close_milestone(
+        repository: GITHUB_REPO,
+        milestone: version
+      )
+    rescue StandardError => e
+      error_message = <<-MESSAGE
+        Error removing branch protection or finalization of milestone `#{version}`: #{e.message}
+        - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
+          Just ensure the branch protection for `release/#{version}` is no more and that the milestone `#{version}` is indeed closed.
+        - If this is the first run of the lane, please investigate the error.
+      MESSAGE
+
+      UI.error(error_message)
+      buildkite_annotate(style: 'warning', context: 'finalize-release-error-milestone', message: error_message) if is_ci
+    end
 
     # Start the build
     UI.important('Pushing changes to remote and triggering the release build')

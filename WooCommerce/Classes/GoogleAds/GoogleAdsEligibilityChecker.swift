@@ -25,16 +25,8 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
             return false
         }
 
-        let isPluginSatisfied: Bool = await {
-            if let savedPlugin = await fetchPluginFromStorage(siteID: siteID) {
-                return checkIfGoogleAdsIsSupported(plugin: savedPlugin)
-            } else {
-                let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
-                return checkIfGoogleAdsIsSupported(plugin: remotePlugin)
-            }
-        }()
-
-        guard isPluginSatisfied else {
+        let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
+        guard checkIfGoogleAdsIsSupported(plugin: remotePlugin) else {
             return false
         }
 
@@ -51,22 +43,13 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
 
 private extension DefaultGoogleAdsEligibilityChecker {
     @MainActor
-    func fetchPluginFromStorage(siteID: Int64) async -> SystemPlugin? {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: Constants.pluginSlug) { plugin in
-                continuation.resume(returning: plugin)
-            })
-        }
-    }
-
-    @MainActor
     func fetchPluginFromRemote(siteID: Int64) async -> SystemPlugin? {
         await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let wcPlugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
-                    continuation.resume(returning: wcPlugin)
+                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)
                 }
@@ -92,7 +75,7 @@ private extension DefaultGoogleAdsEligibilityChecker {
     }
 
     enum Constants {
-        static let pluginSlug = "google-listings-and-ads/google-listings-and-ads"
+        static let pluginSlug = "google-listings-and-ads/google-listings-and-ads.php"
 
         /// Version 2.7.5 is required to check for campaign creation success on the web.
         /// Ref: https://github.com/woocommerce/google-listings-and-ads/releases/tag/2.7.5.

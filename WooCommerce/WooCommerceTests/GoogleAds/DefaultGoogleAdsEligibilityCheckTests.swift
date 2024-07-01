@@ -4,7 +4,7 @@ import Yosemite
 
 final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     private let sampleSite: Int64 = 325
-    private let pluginSlug = "google-listings-and-ads/google-listings-and-ads"
+    private let pluginSlug = "google-listings-and-ads/google-listings-and-ads.php"
 
     private var stores: MockStoresManager!
 
@@ -36,7 +36,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
         let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
-        mockRequests(syncedPlugins: [], fetchedPluginWithPath: nil)
+        mockRequests(syncedPlugins: [])
 
         // When
         let result = await checker.isSiteEligible(siteID: sampleSite)
@@ -71,7 +71,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
                                               plugin: pluginSlug,
                                               version: "2.7.4",
                                               active: true)
-        mockRequests(fetchedPluginWithPath: plugin)
+        mockRequests(syncedPlugins: [plugin])
 
         // When
         let result = await checker.isSiteEligible(siteID: sampleSite)
@@ -90,7 +90,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
                                               version: "2.7.5",
                                               active: true)
         let connection = GoogleAdsConnection.fake().copy(rawStatus: "incomplete")
-        mockRequests(fetchedPluginWithPath: plugin, adsConnection: connection)
+        mockRequests(syncedPlugins: [plugin], adsConnection: connection)
 
         // When
         let result = await checker.isSiteEligible(siteID: sampleSite)
@@ -109,7 +109,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
                                               version: "2.7.5",
                                               active: true)
         let connection = GoogleAdsConnection.fake().copy(rawStatus: "connected")
-        mockRequests(fetchedPluginWithPath: plugin, adsConnection: connection)
+        mockRequests(syncedPlugins: [plugin], adsConnection: connection)
 
         // When
         let result = await checker.isSiteEligible(siteID: sampleSite)
@@ -122,15 +122,12 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
 // MARK: - Helpers
 private extension DefaultGoogleAdsEligibilityCheckerTests {
     func mockRequests(syncedPlugins: [SystemPlugin] = [],
-                      fetchedPluginWithPath: SystemPlugin? = nil,
                       adsConnection: GoogleAdsConnection? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .synchronizeSystemInformation(_, onCompletion):
                 let systemInfo = SystemInformation.fake().copy(systemPlugins: syncedPlugins)
                 onCompletion(.success(systemInfo))
-            case let .fetchSystemPluginWithPath(_, _, onCompletion):
-                onCompletion(fetchedPluginWithPath)
             default:
                 break
             }

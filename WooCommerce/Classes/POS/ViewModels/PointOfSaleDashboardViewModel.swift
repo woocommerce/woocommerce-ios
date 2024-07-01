@@ -41,22 +41,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let totalsViewModel: TotalsViewModel = TotalsViewModel()
 
     @Published private(set) var isCartCollapsed: Bool = true
-
-    // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
-    var formattedOrderTotalPrice: String? {
-        return formattedPrice(order?.total, currency: order?.currency)
-    }
-    var formattedOrderTotalTaxPrice: String? {
-        return formattedPrice(order?.totalTax, currency: order?.currency)
-    }
 
-    private func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(price, with: currency)
-    }
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
@@ -79,10 +65,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     // TODO: 12998 - move the following properties to totals view model
     @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
     private var itemsInCart: [CartItem] = []
-
-    /// Order created the first time the checkout is shown for a given transaction.
-    /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    @Published private var order: POSOrder?
 
     private let orderService: POSOrderServiceProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
@@ -108,17 +90,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observePaymentStateForButtonDisabledProperties()
     }
 
-    var areAmountsFullyCalculated: Bool {
-        totalsViewModel.isSyncingOrder == false &&
-        formattedOrderTotalTaxPrice != nil &&
-        formattedOrderTotalPrice != nil
-    }
-
-    var showRecalculateButton: Bool {
-        !areAmountsFullyCalculated &&
-        totalsViewModel.isSyncingOrder == false
-    }
-
     func cardPaymentTapped() {
         Task { @MainActor in
             await collectPayment()
@@ -127,7 +98,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment() async {
-        guard let order else {
+        guard let order = totalsViewModel.order else {
             return
         }
         do {
@@ -155,7 +126,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     func updateOrderStatus(_ status: OrderStatusEnum) async throws -> POSOrder? {
-        guard let order else {
+        guard let order = totalsViewModel.order else {
             return nil
         }
         let updatedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
@@ -181,7 +152,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
         paymentState = .acceptingCard
-        order = nil
+        totalsViewModel.clearOrder()
     }
 
     @MainActor
@@ -335,9 +306,9 @@ private extension PointOfSaleDashboardViewModel {
         do {
             totalsViewModel.startSyncOrder()
             let order = try await orderService.syncOrder(cart: cart,
-                                                         order: order,
+                                                         order: totalsViewModel.order,
                                                          allProducts: itemSelectorViewModel.items)
-            self.order = order
+            totalsViewModel.setOrder(updatedOrder: order)
             totalsViewModel.stopSyncOrder()
             // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()

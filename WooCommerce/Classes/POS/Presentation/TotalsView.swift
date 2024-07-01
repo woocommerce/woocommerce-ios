@@ -10,15 +10,18 @@ struct TotalsView: View {
     }
 
     var isShimmering: Bool {
+        // TODO: Move to VM
         totalsViewModel.isSyncingOrder
     }
 
     var isPriceFieldRedacted: Bool {
-        viewModel.formattedOrderTotalTaxPrice == nil || totalsViewModel.isSyncingOrder
+        // TODO: Move to VM
+        totalsViewModel.formattedOrderTotalTaxPrice == nil || totalsViewModel.isSyncingOrder
     }
 
     var isTotalPriceFieldRedacted: Bool {
-        viewModel.formattedOrderTotalPrice == nil || totalsViewModel.isSyncingOrder
+        // TODO: Move to VM
+        totalsViewModel.formattedOrderTotalPrice == nil || totalsViewModel.isSyncingOrder
     }
 
     var body: some View {
@@ -40,12 +43,12 @@ struct TotalsView: View {
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
-                                                viewModel.formattedOrderTotalTaxPrice,
+                                                totalsViewModel.formattedOrderTotalTaxPrice,
                                                shimmeringActive: isShimmering,
                                                redacted: isPriceFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice,
+                                totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
                                                shimmeringActive: isShimmering,
                                                redacted: isTotalPriceFieldRedacted)
                             }
@@ -56,7 +59,7 @@ struct TotalsView: View {
                             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
                                 .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
-                        if viewModel.showRecalculateButton {
+                        if totalsViewModel.showRecalculateButton {
                             Button("Calculate amounts") {
                                 viewModel.calculateAmountsTapped()
                             }
@@ -91,10 +94,6 @@ struct TotalsView: View {
                 Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
             ]
         }
-    }
-
-    private var paymentButtonsDisabled: Bool {
-        return !viewModel.areAmountsFullyCalculated
     }
 }
 

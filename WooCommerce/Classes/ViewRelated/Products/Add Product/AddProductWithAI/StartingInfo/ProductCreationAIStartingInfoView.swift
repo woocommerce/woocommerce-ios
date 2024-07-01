@@ -154,7 +154,7 @@ private extension ProductCreationAIStartingInfoView {
                 .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
                 .cornerRadius(Layout.cornerRadius)
 
-                Text(Localization.photoUploaded)
+                Text(Localization.photoSelected)
                     .bodyStyle()
 
                 Spacer()
@@ -198,10 +198,10 @@ private extension ProductCreationAIStartingInfoView {
         }
 
         enum Localization {
-            static let photoUploaded = NSLocalizedString(
-                "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",
-                value: "Photo uploaded",
-                comment: "Button title in starting info screen."
+            static let photoSelected = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.photoSelected",
+                value: "Photo selected",
+                comment: "Text to explain that a package photo has been selected in starting info screen."
             )
             static let viewPhoto = NSLocalizedString(
                 "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",

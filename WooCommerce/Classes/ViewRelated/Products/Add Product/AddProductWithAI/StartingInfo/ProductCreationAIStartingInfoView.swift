@@ -223,6 +223,44 @@ private extension ProductCreationAIStartingInfoView {
 }
 
 private extension ProductCreationAIStartingInfoView {
+    struct ViewPhoto: View {
+        let image: UIImage
+        @Binding var isShowing: Bool
+
+        var body: some View {
+            NavigationStack {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(Localization.done) {
+                                isShowing = false
+                            }
+                        }
+                    }
+                    .navigationTitle(Localization.packagePhoto)
+                    .wooNavigationBarStyle()
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+        }
+
+        enum Localization {
+            static let packagePhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.viewPhoto.packagePhoto",
+                value: "Package photo",
+                comment: "Title of the view package photo screen."
+            )
+            static let done = NSLocalizedString(
+                "productCreationAIStartingInfoView.viewPhoto.done",
+                value: "Done",
+                comment: "Title of the button to dismiss the view package photo screen."
+            )
+        }
+    }
+}
+
+private extension ProductCreationAIStartingInfoView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
 

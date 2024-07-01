@@ -83,6 +83,11 @@ struct ProductCreationAIStartingInfoView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
+            if case let .success(image) = viewModel.imageState {
+                ViewPhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
+            }
+        })
         .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
             viewModel.selectImage(from: source)
         })

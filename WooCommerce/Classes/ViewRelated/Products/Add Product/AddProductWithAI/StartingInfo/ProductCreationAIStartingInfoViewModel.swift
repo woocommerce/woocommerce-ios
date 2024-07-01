@@ -12,6 +12,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     @Published private(set) var imageState: ImageState
     @Published var isShowingMediaPickerSourceSheet: Bool = false
+    @Published var isShowingViewPhotoSheet: Bool = false
     @Published var features: String
 
     let siteID: Int64
@@ -42,6 +43,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     func didTapViewPhoto() {
         // TODO: 13104 - Open image in a new screen
+        isShowingViewPhotoSheet = true
     }
 
     func didTapReplacePhoto() {

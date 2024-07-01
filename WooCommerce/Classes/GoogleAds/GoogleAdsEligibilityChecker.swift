@@ -25,16 +25,8 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
             return false
         }
 
-        let isPluginSatisfied: Bool = await {
-            if let savedPlugin = await fetchPluginFromStorage(siteID: siteID) {
-                return checkIfGoogleAdsIsSupported(plugin: savedPlugin)
-            } else {
-                let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
-                return checkIfGoogleAdsIsSupported(plugin: remotePlugin)
-            }
-        }()
-
-        guard isPluginSatisfied else {
+        let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
+        guard checkIfGoogleAdsIsSupported(plugin: remotePlugin) else {
             return false
         }
 
@@ -65,8 +57,8 @@ private extension DefaultGoogleAdsEligibilityChecker {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let wcPlugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
-                    continuation.resume(returning: wcPlugin)
+                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)
                 }

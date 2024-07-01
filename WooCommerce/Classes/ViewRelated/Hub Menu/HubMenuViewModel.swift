@@ -89,6 +89,8 @@ final class HubMenuViewModel: ObservableObject {
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
@@ -122,7 +124,8 @@ final class HubMenuViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -132,6 +135,7 @@ final class HubMenuViewModel: ObservableObject {
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
                                                            siteSettings: ServiceLocator.selectedSiteSettings,

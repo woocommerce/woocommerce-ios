@@ -1,6 +1,7 @@
 import Foundation
 import protocol WooFoundation.Analytics
 import UIKit
+import Combine
 
 /// View model for `ProductCreationAIStartingInfoView`.
 ///
@@ -23,6 +24,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     let siteID: Int64
     private let analytics: Analytics
     private let imageTextScanner: ImageTextScannerProtocol
+    private var subscriptions: Set<AnyCancellable> = []
 
     var productFeatures: String? {
         guard features.isNotEmpty else {
@@ -39,6 +41,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         self.imageTextScanner = imageTextScanner
         self.analytics = analytics
         imageState = .empty
+        listenToImageStateAndClearTextDetectionError()
     }
 
     func didTapReadTextFromPhoto() {
@@ -110,6 +113,24 @@ private extension ProductCreationAIStartingInfoViewModel {
             }
         }
     }
+
+    func listenToImageStateAndClearTextDetectionError() {
+        $imageState
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] imageState in
+                guard let self else { return }
+                switch imageState {
+                case .success:
+                    return
+                case .empty, .loading:
+                    textDetectionErrorMessage = nil
+                }
+            })
+            .store(in: &subscriptions)
+    }
+}
+
+extension ProductCreationAIStartingInfoViewModel {
     enum Localization {
         static let noTextDetected = NSLocalizedString(
             "productCreationAIStartingInfoViewModel.noTextDetected",

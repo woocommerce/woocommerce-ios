@@ -170,7 +170,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .giftCards:
             isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         case .googleCampaigns:
-            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce)
+            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce) && isGoogleAdsConnected
         default:
             true
         }
@@ -187,6 +187,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Whether Jetpack Stats are disabled on the store
     ///
     private var isJetpackStatsDisabled = false
+
+    /// Whether Google Ads is connected on the store
+    ///
+    /// Optimistically defaults to `true` so we can display the card and fetch its data.
+    /// This connection should be checked before fetching stats.
+    ///
+    @Published private var isGoogleAdsConnected: Bool = true
 
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
@@ -473,6 +480,11 @@ private extension AnalyticsHubViewModel {
             isLoadingGoogleCampaignStats = false
         }
 
+        // Only retrieve stats if Google Ads is connected on the store.
+        guard await checkGoogleAdsConnection() else {
+            return
+        }
+
         async let currentPeriodRequest = retrieveGoogleCampaignStats(timeZone: timeZone,
                                                                      earliestDateToInclude: currentTimeRange.start,
                                                                      latestDateToInclude: currentTimeRange.end)
@@ -626,6 +638,29 @@ private extension AnalyticsHubViewModel {
     /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
     private func isPluginActive(_ plugin: [String]) -> Bool {
         activePlugins.contains(where: plugin.contains)
+    }
+
+    /// Checks if a Google Ads account is connected for the Google extension.
+    /// Sets and returns `isGoogleAdsConnected` with the remote connection status.
+    ///
+    @MainActor
+    func checkGoogleAdsConnection() async -> Bool {
+        guard isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce) else {
+            return false
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.checkConnection(siteID: siteID, onCompletion: { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(connection):
+                    isGoogleAdsConnected = connection.status == .connected
+                case let .failure(error):
+                    isGoogleAdsConnected = false
+                    DDLogError("⛔️ Error checking Google Ads connection: \(error)")
+                }
+                continuation.resume(returning: isGoogleAdsConnected)
+            }))
+        }
     }
 }
 

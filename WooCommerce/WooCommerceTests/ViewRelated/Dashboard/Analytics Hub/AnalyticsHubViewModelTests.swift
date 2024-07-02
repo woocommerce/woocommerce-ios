@@ -58,6 +58,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {
+            case let .checkConnection(_, completion):
+                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
             case let .retrieveCampaignStats(_, _, _, _, completion):
                 let campaignStats = GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 285))
                 completion(.success(campaignStats))
@@ -141,10 +143,11 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         }
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {
+            case let .checkConnection(_, completion):
+                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
             case let .retrieveCampaignStats(_, _, _, _, completion):
-                let campaignStats = GoogleAdsCampaignStats.fake()
                 loadingGoogleCampaignsCardRedacted = vm.googleCampaignsCard.isRedacted
-                completion(.success(campaignStats))
+                completion(.success(GoogleAdsCampaignStats.fake()))
             default:
                 break
             }
@@ -585,18 +588,77 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_google_campaigns_card_is_displayed_when_plugin_active() {
+    func test_google_campaigns_card_is_displayed_when_plugin_active_and_google_ads_connected() async {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
                                                                             name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
                                                                             active: true))
+        let vm = createViewModel(storage: storage)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .checkConnection(_, completion):
+                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
+            case let .retrieveCampaignStats(_, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
 
         // When
-        let vm = createViewModel(storage: storage)
+        await vm.updateData()
 
         // Then
         XCTAssertTrue(vm.enabledCards.contains(.googleCampaigns))
+    }
+
+    @MainActor
+    func test_google_campaigns_card_not_displayed_when_plugin_active_and_google_ads_disconnected() async {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .checkConnection(_, completion):
+                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "disconnected")))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.updateData()
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.googleCampaigns))
     }
 
     @MainActor

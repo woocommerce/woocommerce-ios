@@ -66,6 +66,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var shouldAuthenticateAdminPage = false
 
+    @Published private var currentSite: Yosemite.Site?
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
@@ -85,9 +87,13 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
-    @Published private var isSiteEligibleForBlaze: Bool = false
+    @Published private var isSiteEligibleForBlaze = false
+    @Published private var isSiteEligibleForGoogleAds = false
+    @Published private var isSiteEligibleForInbox = false
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+
+    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -122,7 +128,8 @@ final class HubMenuViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -132,6 +139,7 @@ final class HubMenuViewModel: ObservableObject {
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
                                                            siteSettings: ServiceLocator.selectedSiteSettings,
@@ -145,12 +153,6 @@ final class HubMenuViewModel: ObservableObject {
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
-    }
-
-    private func createCardPresentPaymentService() {
-        Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
-        }
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -167,7 +169,26 @@ final class HubMenuViewModel: ObservableObject {
         navigationPath.append(HubMenuNavigationDestination.payments)
     }
 
-    private func setupPOSElement() {
+    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
+        productReviewFromNoteParcel = parcel
+        showingReviewDetail = true
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
+
+// MARK: - Helper methods
+//
+private extension HubMenuViewModel {
+    func createCardPresentPaymentService() {
+        Task {
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+        }
+    }
+
+    func setupPOSElement() {
         cardPresentPaymentsOnboarding.refreshIfNecessary()
         Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
             .map { isBetaFeatureEnabled, isEligibleForPOS in
@@ -180,7 +201,7 @@ final class HubMenuViewModel: ObservableObject {
             .assign(to: &$posElement)
     }
 
-    private func setupSettingsElements() {
+    func setupSettingsElements() {
         settingsElements = [Settings()]
 
         guard let site = stores.sessionManager.defaultSite,
@@ -193,54 +214,70 @@ final class HubMenuViewModel: ObservableObject {
         settingsElements.append(Subscriptions())
     }
 
-    private func setupGeneralElements() {
-        generalElements = [Payments(iconBadge: shouldShowNewFeatureBadgeOnPayments ? .dot : nil),
-                           WoocommerceAdmin(),
-                           ViewStore(),
-                           Reviews()]
+    func setupGeneralElements() {
+        $shouldShowNewFeatureBadgeOnPayments
+            .combineLatest($isSiteEligibleForInbox,
+                           $isSiteEligibleForBlaze,
+                           $isSiteEligibleForGoogleAds)
+            .map { [weak self] combinedResult -> [HubMenuItem] in
+                guard let self else { return [] }
+                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
+                return createGeneralElements(
+                    shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
+                    eligibleForGoogleAds: eligibleForGoogleAds,
+                    eligibleForBlaze: eligibleForBlaze,
+                    eligibleForInbox: eligibleForInbox
+                )
+            }
+            .assign(to: &$generalElements)
+    }
+
+    func createGeneralElements(shouldShowBadgeOnPayments: Bool,
+                               eligibleForGoogleAds: Bool,
+                               eligibleForBlaze: Bool,
+                               eligibleForInbox: Bool) -> [HubMenuItem] {
+        var items: [HubMenuItem] = [
+            Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
+        ]
+
+        if eligibleForGoogleAds {
+            items.append(GoogleAds())
+        }
+
+        if eligibleForBlaze {
+            items.append(Blaze())
+        }
+
+        items.append(WoocommerceAdmin())
+        items.append(ViewStore())
+        items.append(Reviews())
+
+        if eligibleForInbox {
+            items.append(Inbox())
+        }
+
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            generalElements.append(InAppPurchases())
+            items.append(InAppPurchases())
         }
 
-        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
-            guard let self = self else { return }
-            if let index = self.generalElements.firstIndex(where: { item in
-                type(of: item).id == Reviews.id
-            }), isInboxMenuShown {
-                self.generalElements.insert(Inbox(), at: index + 1)
-            }
-        }
+        items.append(Customers())
 
-        if let index = self.generalElements.firstIndex(where: { item in
-            type(of: item).id == Reviews.id
-        }) {
-            self.generalElements.insert(Coupons(), at: index)
-        } else {
-            self.generalElements.append(Coupons())
-        }
-
-
-        // Blaze menu.
-        if isSiteEligibleForBlaze {
-            if let index = generalElements.firstIndex(where: { $0.id == Payments.id }) {
-                generalElements.insert(Blaze(), at: index + 1)
-            } else {
-                generalElements.append(Blaze())
-            }
-        } else {
-            generalElements.removeAll(where: { $0.id == Blaze.id })
-        }
-
-        generalElements.append(Customers())
+        return items
     }
 
-    func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
-        productReviewFromNoteParcel = parcel
-        showingReviewDetail = true
-    }
-
-    private func observeSiteForUIUpdates() {
+    func observeSiteForUIUpdates() {
         stores.site
+            .filter { [weak self] site in
+                /// When switching sites, `HubMenuViewModel` is created with a new site ID.
+                /// However, the site info needs some time to be fetched and updated in stores manager.
+                /// That's why this stream's first element would be the info of previous site.
+                /// Adding this filter avoids redundantly checking eligibility of previous site.
+                site?.siteID == self?.siteID
+            }
+            .removeDuplicates()
+            .assign(to: &$currentSite)
+
+        $currentSite
             .compactMap { site -> URL? in
                 guard let urlString = site?.url, let url = URL(string: urlString) else {
                     return nil
@@ -249,11 +286,11 @@ final class HubMenuViewModel: ObservableObject {
             }
             .assign(to: &$storeURL)
 
-        stores.site
+        $currentSite
             .compactMap { $0?.name }
             .assign(to: &$storeTitle)
 
-        stores.site
+        $currentSite
             .compactMap { site -> URL? in
                 guard let urlString = site?.adminURL, let url = URL(string: urlString) else {
                     return site?.adminURLWithFallback()
@@ -262,7 +299,7 @@ final class HubMenuViewModel: ObservableObject {
             }
             .assign(to: &$woocommerceAdminURL)
 
-        stores.site
+        $currentSite
             .map { [weak self] site in
                 guard let self, let site else {
                     return false
@@ -277,23 +314,38 @@ final class HubMenuViewModel: ObservableObject {
             }
             .assign(to: &$shouldAuthenticateAdminPage)
 
-        // Blaze menu.
-        stores.site
+        $currentSite
             .compactMap { $0 }
-            .removeDuplicates()
-            .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await self.blazeEligibilityChecker.isSiteEligible()
+            .sink { [weak self] site in
+                self?.updateMenuItemEligibility(with: site)
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$isSiteEligibleForBlaze)
+            .store(in: &cancellables)
+    }
+
+    func updateMenuItemEligibility(with site: Yosemite.Site) {
+
+        /// We're dispatching 3 separate tasks because using task group to
+        /// asynchronously update variables in the main thread is considered unsafe
+        /// when enabling concurrency checks.
+        /// Using task group would require more effort like this:
+        /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
+
+        Task { @MainActor in
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
+        }
+
+        Task { @MainActor in
+            isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
+        }
+
+        Task { @MainActor in
+            isSiteEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+        }
     }
 
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
-    private func observePlanName() {
+    func observePlanName() {
         ServiceLocator.storePlanSynchronizer.planStatePublisher.map { [weak self] planState in
             guard let self else { return "" }
             switch planState {
@@ -306,10 +358,6 @@ final class HubMenuViewModel: ObservableObject {
             }
         }
         .assign(to: &$planName)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }
 }
 
@@ -370,6 +418,18 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .clear
         let accessibilityIdentifier: String = "menu-blaze"
         let trackingOption: String = "blaze"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
+    struct GoogleAds: HubMenuItem {
+        static var id = "google-ads"
+
+        let title: String = Localization.googleAds
+        let description: String = Localization.googleAdsDescription
+        let icon: UIImage = .googleLogo
+        let iconColor: UIColor = .clear
+        let accessibilityIdentifier: String = "menu-google-ads"
+        let trackingOption: String = "google-ads"
         let iconBadge: HubMenuBadgeType? = nil
     }
 
@@ -506,6 +566,18 @@ extension HubMenuViewModel {
         static let blazeDescription = NSLocalizedString(
             "Promote products with Blaze",
             comment: "Description of the hub menu Blaze button")
+
+        static let googleAds = NSLocalizedString(
+            "hubMenuViewModel.googleAds",
+            value: "Google for WooCommerce",
+            comment: "Title of the hub menu Google Ads button"
+        )
+
+        static let googleAdsDescription = NSLocalizedString(
+            "hubMenuViewModel.googleAdsDescription",
+            value: "Drive sales and generate more traffic with Google Ads",
+            comment: "Description of the hub menu Google Ads button"
+        )
 
         static let myStore = NSLocalizedString(
             "My Store",

@@ -278,10 +278,10 @@ final class OrderListViewModelTests: XCTestCase {
         // Given
         let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
-        viewModel.activate()
 
         // When
         viewModel.dataLoadingError = expectedError
+        viewModel.activate()
 
         // Then
         waitUntil {

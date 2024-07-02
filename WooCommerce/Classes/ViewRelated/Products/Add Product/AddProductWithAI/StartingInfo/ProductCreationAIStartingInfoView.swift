@@ -85,8 +85,8 @@ struct ProductCreationAIStartingInfoView: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                // CTA to continue to next screen.
-                continueButton
+                // CTA to generate product details.
+                generateButton
                     .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -139,14 +139,14 @@ private extension ProductCreationAIStartingInfoView {
             .renderedIf(viewModel.features.isEmpty)
     }
 
-    var continueButton: some View {
+    var generateButton: some View {
         Button {
             // continue
             editorIsFocused = false
             viewModel.didTapContinue()
             onContinueWithFeatures(viewModel.features)
         } label: {
-            Text(Localization.continueText)
+            Text(Localization.generateProductDetails)
         }
         .buttonStyle(PrimaryButtonStyle())
         .disabled(viewModel.features.isEmpty)
@@ -320,10 +320,10 @@ private extension ProductCreationAIStartingInfoView {
             value: "Read text from product photo",
             comment: "Button to upload package photo to read text from the photo"
         )
-        static let continueText = NSLocalizedString(
-            "productCreationAIStartingInfoView.continueText",
-            value: "Continue",
-            comment: "Continue button on the starting info screen."
+        static let generateProductDetails = NSLocalizedString(
+            "productCreationAIStartingInfoView.generateProductDetails",
+            value: "Generate Product Details",
+            comment: "Button to generate product details in the starting info screen."
         )
     }
 }

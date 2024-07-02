@@ -17,7 +17,7 @@ struct ProductCreationAIStartingInfoView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: Layout.parentSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
                     // Title label.
                     Text(Localization.title)
@@ -29,9 +29,8 @@ struct ProductCreationAIStartingInfoView: View {
                         .foregroundStyle(Color(.secondaryLabel))
                         .bodyStyle()
                 }
-                .padding(.bottom, Layout.titleBlockBottomPadding)
 
-                VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
+                VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
                     VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
                         VStack(spacing: 0) {
                             ZStack(alignment: .topLeading) {
@@ -324,11 +323,12 @@ private extension ProductCreationAIStartingInfoView {
 
 private extension ProductCreationAIStartingInfoView {
     enum Layout {
-        static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
+        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
 
-        static let titleBlockBottomPadding: CGFloat = 40
+        static let parentSpacing: CGFloat = 24
 
         static let titleBlockSpacing: CGFloat = 16
+        static let textFieldBlockSpacing: CGFloat = 24
 
         static let editorBlockSpacing: CGFloat = 8
         static let minimumEditorHeight: CGFloat = 70

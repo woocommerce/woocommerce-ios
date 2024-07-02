@@ -638,6 +638,12 @@ private extension AnalyticsHubViewModel {
         self.previousOrderStats = nil
         self.itemsSoldStats = nil
         self.siteStats = nil
+        self.currentBundleStats = nil
+        self.previousBundleStats = nil
+        self.currentGiftCardStats = nil
+        self.previousGiftCardStats = nil
+        self.currentGoogleCampaignStats = nil
+        self.previousGoogleCampaignStats = nil
     }
 
     func bindViewModelsWithData() {

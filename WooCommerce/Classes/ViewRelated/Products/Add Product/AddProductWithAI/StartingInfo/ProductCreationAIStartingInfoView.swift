@@ -26,7 +26,7 @@ struct ProductCreationAIStartingInfoView: View {
 
                     // Subtitle label.
                     Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
+                        .foregroundStyle(Color(.secondaryLabel))
                         .bodyStyle()
                 }
                 .padding(.bottom, Layout.titleBlockBottomPadding)
@@ -37,7 +37,7 @@ struct ProductCreationAIStartingInfoView: View {
                             ZStack(alignment: .topLeading) {
                                 TextEditor(text: $viewModel.features)
                                     .bodyStyle()
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                                     .padding(insets: Layout.messageContentInsets)
                                     .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
                                     .focused($editorIsFocused)
@@ -115,13 +115,13 @@ private extension ProductCreationAIStartingInfoView {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .renderingMode(.template)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .bodyStyle()
                         .padding(Layout.UsePackagePhoto.padding)
 
                     Text(Localization.readTextFromPhoto)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .bodyStyle()
                 }
             }

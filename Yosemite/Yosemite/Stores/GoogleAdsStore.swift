@@ -153,32 +153,33 @@ private extension GoogleAdsStore {
     /// This method can be used to compile multiple pages of campaign stats, by summing all of the stats totals and creating a single list of campaigns.
     ///
     func compileCampaignStats(siteID: Int64, stats: [GoogleAdsCampaignStats]) -> GoogleAdsCampaignStats {
-        stats.reduce(GoogleAdsCampaignStats.init(siteID: siteID,
-                                                 totals: GoogleAdsCampaignStatsTotals(sales: nil, spend: nil, clicks: nil, impressions: nil, conversions: nil),
-                                                 campaigns: [],
-                                                 nextPageToken: nil)) { partialResult, nextPage in
-            let totalSales = addOptionalValues(partialResult.totals.sales, and: nextPage.totals.sales)
-            let totalSpend = addOptionalValues(partialResult.totals.spend, and: nextPage.totals.spend)
-            let totalClicks = addOptionalValues(partialResult.totals.clicks, and: nextPage.totals.clicks)
-            let totalImpressions = addOptionalValues(partialResult.totals.impressions, and: nextPage.totals.impressions)
-            let totalConversions = addOptionalValues(partialResult.totals.conversions, and: nextPage.totals.conversions)
-            return GoogleAdsCampaignStats(siteID: siteID,
-                                          totals: GoogleAdsCampaignStatsTotals(sales: totalSales,
-                                                                               spend: totalSpend,
-                                                                               clicks: totalClicks,
-                                                                               impressions: totalImpressions,
-                                                                               conversions: totalConversions),
-                                          campaigns: partialResult.campaigns + nextPage.campaigns,
-                                          nextPageToken: nil)
-        }
+        let totalSales = sum(stats.map { $0.totals.sales })
+        let totalSpend = sum(stats.map { $0.totals.spend })
+        let totalClicks = sum(stats.map { $0.totals.clicks })
+        let totalImpressions = sum(stats.map { $0.totals.impressions })
+        let totalConversions = sum(stats.map { $0.totals.conversions })
+        let allCampaigns = stats.flatMap { $0.campaigns }
+
+        return GoogleAdsCampaignStats(siteID: siteID,
+                                      totals: GoogleAdsCampaignStatsTotals(sales: totalSales,
+                                                                           spend: totalSpend,
+                                                                           clicks: totalClicks,
+                                                                           impressions: totalImpressions,
+                                                                           conversions: totalConversions),
+                                      campaigns: allCampaigns,
+                                      nextPageToken: nil)
     }
 
-    /// Adds two optional values of the same `Numeric` type.
+    /// Sums an array of optional `Numeric` values.
     ///
-    func addOptionalValues<T: Numeric>(_ firstValue: T?, and secondValue: T?) -> T? {
-        guard firstValue != nil || secondValue != nil else {
-            return nil
+    /// Returns the sum of all values, or `nil` if all values are `nil`.
+    ///
+    func sum<T: Numeric>(_ values: [T?]) -> T? {
+        values.reduce(nil as T?) { result, nextValue in
+            guard result != nil || nextValue != nil else {
+                return nil
+            }
+            return (result ?? 0) + (nextValue ?? 0)
         }
-        return (firstValue ?? 0) + (secondValue ?? 0)
     }
 }

@@ -152,7 +152,7 @@ final class GoogleAdsStoreTests: XCTestCase {
                                    network: network,
                                    remote: remote)
         let campaignStats = GoogleAdsCampaignStats.fake().copy(siteID: sampleSiteID,
-                                                               totals: .fake().copy(sales: 12345),
+                                                               totals: .fake().copy(sales: 12345, spend: nil),
                                                                campaigns: [.fake().copy(campaignName: "Spring Ads Campaign")],
                                                                nextPageToken: "next")
         remote.whenLoadingCampaignStatsResults(thenReturn: .success(campaignStats))
@@ -171,6 +171,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         // Then
         let receivedCampaignStats = try result.get()
         assertEqual(24690, receivedCampaignStats.totals.sales)
+        XCTAssertNil(receivedCampaignStats.totals.spend)
         assertEqual(2, receivedCampaignStats.campaigns.count)
     }
 

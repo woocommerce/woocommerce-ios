@@ -1,14 +1,26 @@
-import Foundation
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentCaptureFailedAlertViewModel {
-    let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
-    let errorDetails = Localization.errorDetails
-    let cancelButtonTitle = Localization.cancel
+struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack {
+            Text(Localization.title)
+
+            Image(uiImage: .paymentErrorImage)
+
+            Text(Localization.errorDetails)
+
+            Button(Localization.cancel,
+                   action: {
+                dismiss()
+            })
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
 }
 
-private extension PointOfSaleCardPresentPaymentCaptureFailedAlertViewModel {
+private extension PointOfSaleCardPresentPaymentCaptureFailedView {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.cardPresentPayment.alert.paymentCaptureError.title",
@@ -29,4 +41,8 @@ private extension PointOfSaleCardPresentPaymentCaptureFailedAlertViewModel {
             comment: "Button to dismiss the alert presented when payment capture fails."
         )
     }
+}
+
+#Preview {
+    PointOfSaleCardPresentPaymentCaptureFailedView()
 }

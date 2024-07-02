@@ -18,7 +18,7 @@ struct CartView: View {
                 Spacer()
                 if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
-                        .foregroundColor(Color.posPrimaryTexti3)
+                        .foregroundColor(Color.posSecondaryTexti3)
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {

@@ -86,6 +86,16 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
 private extension ProductCreationAIStartingInfoViewModel {
     enum Localization {
+        static let noTextDetected = NSLocalizedString(
+            "productCreationAIStartingInfoViewModel.noTextDetected",
+            value: "No text detected. Please select another packaging photo or enter product details manually.",
+            comment: "No text detected message while adding package photo in the starting information screen."
+        )
+        static let textDetectionFailed = NSLocalizedString(
+            "productCreationAIStartingInfoViewModel.textDetectionFailed",
+            value: "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.",
+            comment: "Text detection failed error message on the starting information screen."
+        )
         enum PhotoRemovedNotice {
             static let title = NSLocalizedString(
                 "productCreationAIStartingInfoViewModel.photoRemovedNotice.title",

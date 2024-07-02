@@ -126,7 +126,7 @@ final class GoogleAdsStoreTests: XCTestCase {
                                    storageManager: storageManager,
                                    network: network,
                                    remote: remote)
-        let campaignStats = GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 12345), campaigns: [.fake().copy(campaignName: "Spring Ads Campaign")])
+        let campaignStats = GoogleAdsCampaignStats.fake().copy(siteID: sampleSiteID)
         remote.whenLoadingCampaignStatsResults(thenReturn: .success(campaignStats))
 
         // When
@@ -143,6 +143,35 @@ final class GoogleAdsStoreTests: XCTestCase {
         // Then
         let receivedCampaignStats = try result.get()
         assertEqual(campaignStats, receivedCampaignStats)
+    }
+
+    func test_retrieveCampaigns_compiles_multiple_pages_of_campaign_stats() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        let campaignStats = GoogleAdsCampaignStats.fake().copy(siteID: sampleSiteID,
+                                                               totals: .fake().copy(sales: 12345),
+                                                               campaigns: [.fake().copy(campaignName: "Spring Ads Campaign")],
+                                                               nextPageToken: "next")
+        remote.whenLoadingCampaignStatsResults(thenReturn: .success(campaignStats))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.retrieveCampaignStats(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        let receivedCampaignStats = try result.get()
+        assertEqual(24690, receivedCampaignStats.totals.sales)
+        assertEqual(2, receivedCampaignStats.campaigns.count)
     }
 
     func test_retrieveCampaignStats_returns_error_on_failure() throws {

@@ -99,17 +99,86 @@ private extension GoogleAdsStore {
                                onCompletion: @escaping (Result<GoogleAdsCampaignStats, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let campaignStats = try await remote.loadCampaignStats(for: siteID,
+                let combinedStats = try await retrieveAllCampaignStats(siteID: siteID,
                                                                        timeZone: timeZone,
                                                                        earliestDateToInclude: earliestDateToInclude,
-                                                                       latestDateToInclude: latestDateToInclude,
-                                                                       totals: GoogleListingsAndAdsRemote.StatsField.allCases,
-                                                                       orderby: .sales,
-                                                                       nextPageToken: nil)
-                onCompletion(.success(campaignStats))
+                                                                       latestDateToInclude: latestDateToInclude)
+                onCompletion(.success(combinedStats))
             } catch {
                 onCompletion(.failure(error))
             }
         }
+    }
+}
+
+// MARK: retrieveCampaignStats helpers
+
+private extension GoogleAdsStore {
+
+    /// Requests all pages of Google Ads campaign stats for the requested period.
+    ///
+    /// Each page contains partial stats. This continues to request new pages until there are no more pages to request, and compiles the results.
+    ///
+    func retrieveAllCampaignStats(siteID: Int64,
+                                  timeZone: TimeZone,
+                                  earliestDateToInclude: Date,
+                                  latestDateToInclude: Date) async throws -> GoogleAdsCampaignStats {
+        var campaignStats = try await remote.loadCampaignStats(for: siteID,
+                                                               timeZone: timeZone,
+                                                               earliestDateToInclude: earliestDateToInclude,
+                                                               latestDateToInclude: latestDateToInclude,
+                                                               totals: GoogleListingsAndAdsRemote.StatsField.allCases,
+                                                               orderby: .sales,
+                                                               nextPageToken: nil)
+        var statsArray: [GoogleAdsCampaignStats] = [campaignStats]
+        while campaignStats.hasNextPage {
+            guard let token = campaignStats.nextPageToken else {
+                break
+            }
+            campaignStats = try await remote.loadCampaignStats(for: siteID,
+                                                               timeZone: timeZone,
+                                                               earliestDateToInclude: earliestDateToInclude,
+                                                               latestDateToInclude: latestDateToInclude,
+                                                               totals: GoogleListingsAndAdsRemote.StatsField.allCases,
+                                                               orderby: .sales,
+                                                               nextPageToken: token)
+            statsArray.append(campaignStats)
+        }
+        return compileCampaignStats(siteID: siteID, stats: statsArray)
+    }
+
+    /// Creates a single Google Ads campaign stats object from an array of stats.
+    ///
+    /// Each page of campaign stats only contains the totals for the campaigns in that page.
+    /// This method can be used to compile multiple pages of campaign stats, by summing all of the stats totals and creating a single list of campaigns.
+    ///
+    func compileCampaignStats(siteID: Int64, stats: [GoogleAdsCampaignStats]) -> GoogleAdsCampaignStats {
+        stats.reduce(GoogleAdsCampaignStats.init(siteID: siteID,
+                                                 totals: GoogleAdsCampaignStatsTotals(sales: nil, spend: nil, clicks: nil, impressions: nil, conversions: nil),
+                                                 campaigns: [],
+                                                 nextPageToken: nil)) { partialResult, nextPage in
+            let totalSales = addOptionalValues(partialResult.totals.sales, and: nextPage.totals.sales)
+            let totalSpend = addOptionalValues(partialResult.totals.spend, and: nextPage.totals.spend)
+            let totalClicks = addOptionalValues(partialResult.totals.clicks, and: nextPage.totals.clicks)
+            let totalImpressions = addOptionalValues(partialResult.totals.impressions, and: nextPage.totals.impressions)
+            let totalConversions = addOptionalValues(partialResult.totals.conversions, and: nextPage.totals.conversions)
+            return GoogleAdsCampaignStats(siteID: siteID,
+                                          totals: GoogleAdsCampaignStatsTotals(sales: totalSales,
+                                                                               spend: totalSpend,
+                                                                               clicks: totalClicks,
+                                                                               impressions: totalImpressions,
+                                                                               conversions: totalConversions),
+                                          campaigns: partialResult.campaigns + nextPage.campaigns,
+                                          nextPageToken: nil)
+        }
+    }
+
+    /// Adds two optional values of the same `Numeric` type.
+    ///
+    func addOptionalValues<T: Numeric>(_ firstValue: T?, and secondValue: T?) -> T? {
+        guard firstValue != nil || secondValue != nil else {
+            return nil
+        }
+        return (firstValue ?? 0) + (secondValue ?? 0)
     }
 }

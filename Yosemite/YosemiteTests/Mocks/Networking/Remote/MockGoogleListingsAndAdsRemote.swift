@@ -7,6 +7,8 @@ final class MockGoogleListingsAndAdsRemote {
     private var fetchingAdsCampaignsResult: Result<[GoogleAdsCampaign], Error>?
     private var loadingCampaignStatsResults: Result<GoogleAdsCampaignStats, Error>?
 
+    private var invocationCountOfLoadingCampaignStats: Int = 0
+
     func whenCheckingConnection(thenReturn result: Result<GoogleAdsConnection, Error>) {
         checkingConnectionResult = result
     }
@@ -34,6 +36,9 @@ extension MockGoogleListingsAndAdsRemote: GoogleListingsAndAdsRemoteProtocol {
         }
         switch result {
         case .success(let stats):
+            // If we have already returned a page of stats, make this the final page.
+            let stats = invocationCountOfLoadingCampaignStats > 0 ? stats.copy(nextPageToken: .some(nil)) : stats
+            invocationCountOfLoadingCampaignStats += 1
             return stats
         case .failure(let error):
             throw error

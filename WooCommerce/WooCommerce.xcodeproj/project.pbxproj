@@ -2744,6 +2744,7 @@
 		EE45E2C22A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */; };
 		EE45E2C42A4A85350085F227 /* TooltipPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */; };
 		EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */; };
+		EE4C45632C343041001A3D94 /* AIToneVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45622C343041001A3D94 /* AIToneVoice.swift */; };
 		EE505DDD2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */; };
 		EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */; };
 		EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */; };
@@ -5717,6 +5718,7 @@
 		EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAITooltipUseCaseTests.swift; sourceTree = "<group>"; };
 		EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterTests.swift; sourceTree = "<group>"; };
 		EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingStoreDetailsCoordinator.swift; sourceTree = "<group>"; };
+		EE4C45622C343041001A3D94 /* AIToneVoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToneVoice.swift; sourceTree = "<group>"; };
 		EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroView.swift; sourceTree = "<group>"; };
 		EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLearnHowView.swift; sourceTree = "<group>"; };
 		EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModel.swift; sourceTree = "<group>"; };
@@ -12835,6 +12837,7 @@
 			children = (
 				EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */,
 				EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */,
+				EE4C45622C343041001A3D94 /* AIToneVoice.swift */,
 			);
 			path = StartingInfo;
 			sourceTree = "<group>";
@@ -15065,6 +15068,7 @@
 				03E471C4293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift in Sources */,
 				20CC1EDD2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift in Sources */,
 				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,
+				EE4C45632C343041001A3D94 /* AIToneVoice.swift in Sources */,
 				DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */,
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
 				028B68BA2A57410500FE03A8 /* AddProductFromImageView.swift in Sources */,

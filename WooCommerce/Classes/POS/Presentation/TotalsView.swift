@@ -66,19 +66,6 @@ struct TotalsView: View {
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }
-        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
-        })
     }
 
     private var gradientStops: [Gradient.Stop] {
@@ -191,19 +178,6 @@ private extension TotalsView {
         static let newTransactionButtonSpacing: CGFloat = 20
         static let newTransactionButtonPadding: CGFloat = 16
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
-    }
-}
-
-fileprivate extension CardPresentPaymentEvent {
-    var temporaryEventDescription: String {
-        switch self {
-        case .idle:
-            return "Idle"
-        case .show:
-            return "Event"
-        case .showOnboarding(let onboardingViewModel):
-            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        }
     }
 }
 

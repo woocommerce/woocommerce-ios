@@ -156,3 +156,7 @@ extension ProductCreationAIStartingInfoViewModel {
         }
     }
 }
+
+private enum ScanError: Error {
+    case noTextDetected
+}

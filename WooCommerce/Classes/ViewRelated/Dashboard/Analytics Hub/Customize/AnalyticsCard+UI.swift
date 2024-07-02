@@ -18,6 +18,8 @@ extension AnalyticsCard {
             return Localization.bundles
         case .giftCards:
             return Localization.giftCards
+        case .googleCampaigns:
+            return Localization.googleCampaigns
         }
     }
 }
@@ -43,5 +45,8 @@ private extension AnalyticsCard {
         static let giftCards = NSLocalizedString("analyticsHub.customize.giftCards",
                                                  value: "Gift Cards",
                                                  comment: "Name for the Gift Cards analytics card in the Customize Analytics screen")
+        static let googleCampaigns = NSLocalizedString("analyticsHub.customize.googleCampaigns",
+                                                       value: "Google Campaigns",
+                                                       comment: "Name for the Google Campaigns analytics card in the Customize Analytics screen")
     }
 }

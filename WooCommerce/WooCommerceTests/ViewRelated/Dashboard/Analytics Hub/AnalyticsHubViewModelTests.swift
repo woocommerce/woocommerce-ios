@@ -300,7 +300,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .products, enabled: false),
                              AnalyticsCard(type: .sessions, enabled: false),
                              AnalyticsCard(type: .bundles, enabled: true),
-                             AnalyticsCard(type: .giftCards, enabled: true)]
+                             AnalyticsCard(type: .giftCards, enabled: true),
+                             AnalyticsCard(type: .googleCampaigns, enabled: true)]
         assertEqual(expectedCards, storedAnalyticsCards)
     }
 

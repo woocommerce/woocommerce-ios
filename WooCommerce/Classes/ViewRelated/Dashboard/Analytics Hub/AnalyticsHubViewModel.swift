@@ -159,6 +159,8 @@ final class AnalyticsHubViewModel: ObservableObject {
             isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
         case .giftCards:
             isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+        case .googleCampaigns:
+            false // TODO: Check Google extension status
         default:
             true
         }

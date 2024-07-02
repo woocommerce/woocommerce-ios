@@ -133,6 +133,8 @@ private extension AnalyticsHubView {
             AnalyticsTopPerformersCard(bundlesViewModel: viewModel.bundlesCard)
         case .giftCards:
             AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
+        case .googleCampaigns:
+            EmptyView() // TODO: Return Google Campaigns card
         }
     }
 }

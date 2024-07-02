@@ -6,8 +6,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
 
     var body: some View {
         POSCardPresentPaymentMessageView(viewModel: .init(title: viewModel.title,
-                                                          message: viewModel.message,
-                                                          buttons: [viewModel.cancelButtonViewModel]))
+                                                          message: viewModel.message))
     }
 }
 
@@ -15,6 +14,5 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
-                underlyingError: .paymentDeclinedByCardReader),
-            cancelButtonAction: {}))
+                underlyingError: .paymentDeclinedByCardReader)))
 }

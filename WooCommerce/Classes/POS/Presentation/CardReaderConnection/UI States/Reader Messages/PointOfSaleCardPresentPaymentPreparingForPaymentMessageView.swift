@@ -5,12 +5,12 @@ struct PointOfSaleCardPresentPaymentPreparingForPaymentMessageView: View {
 
     var body: some View {
         POSCardPresentPaymentMessageView(viewModel: .init(showProgress: true,
-                                                          title: viewModel.message,
-                                                          buttons: [viewModel.cancelButtonViewModel]))
+                                                          title: viewModel.title,
+                                                          message: viewModel.message))
     }
 }
 
 #Preview {
     PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(
-        viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel(cancelAction: {}))
+        viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel())
 }

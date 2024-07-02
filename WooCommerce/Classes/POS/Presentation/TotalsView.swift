@@ -170,7 +170,7 @@ private extension TotalsView {
                 .redacted(reason: redacted ? [.placeholder] : [])
                 .shimmering(active: shimmeringActive)
         }
-        .foregroundColor(Color.primaryText)
+        .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
     }
 }
 

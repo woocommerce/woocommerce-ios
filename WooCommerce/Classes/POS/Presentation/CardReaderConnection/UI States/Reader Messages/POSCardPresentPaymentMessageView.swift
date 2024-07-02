@@ -31,11 +31,6 @@ struct POSCardPresentPaymentMessageView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Layout.imageSize, height: Layout.imageSize)
             }
-            else {
-                Circle()
-                    .frame(width: Layout.imageSize, height: Layout.imageSize)
-                    .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
-            }
             if let showProgress = viewModel.showProgress, showProgress == true {
                 ProgressView()
                     .progressViewStyle(IndefiniteCircularProgressViewStyle(
@@ -52,8 +47,13 @@ struct POSCardPresentPaymentMessageView: View {
                     .font(Font.system(size: 20))
                     .foregroundColor(Color(UIColor.wooCommercePurple(.shade70)))
             }
-            ForEach(viewModel.buttons) { buttonModel in
-                Button(buttonModel.title, action: buttonModel.actionHandler)
+            if viewModel.buttons.isNotEmpty {
+                HStack {
+                    ForEach(viewModel.buttons) { buttonModel in
+                        Button(buttonModel.title, action: buttonModel.actionHandler)
+                    }
+                }
+                .padding()
             }
         }
         .multilineTextAlignment(.center)
@@ -62,7 +62,7 @@ struct POSCardPresentPaymentMessageView: View {
 
 private extension POSCardPresentPaymentMessageView {
     enum Layout {
-        static let progressViewSize: CGFloat = 24
+        static let progressViewSize: CGFloat = 80
         static let progressViewLineWidth: CGFloat = 4
         static let imageSize: CGFloat = 104
     }

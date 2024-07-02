@@ -8,25 +8,24 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     }
 
     var body: some View {
-
         // TODO: replace temporary inline message UI based on design
         switch messageType {
         case .preparingForPayment(let viewModel):
             PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
         case .tapSwipeOrInsertCard(let viewModel):
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
-        case .processing:
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: "pos_processing_payment", title: "processing..."))
+        case .processing(let viewModel):
+            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: viewModel.imageName, title: viewModel.title))
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
-        case .paymentSuccess:
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: "pos_payment_successful", title: "Payment successful!"))
+        case .paymentSuccess(let viewModel):
+            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: viewModel.imageName, title: viewModel.title))
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):
             PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
-        case .cancelledOnReader:
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: "Payment cancelled on reader"))
+        case .cancelledOnReader(let viewModel):
+            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: viewModel.title))
         }
     }
 }

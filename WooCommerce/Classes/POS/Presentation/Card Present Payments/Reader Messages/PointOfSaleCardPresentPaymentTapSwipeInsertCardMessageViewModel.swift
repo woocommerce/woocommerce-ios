@@ -2,16 +2,12 @@ import Foundation
 import struct Yosemite.CardReaderInput
 
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel {
+    let imageName = "pos_ready_for_payment"
     let title = Localization.readyForPayment
     let message: String
-    let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    init(inputMethods: CardReaderInput,
-         cancelAction: @escaping () -> Void) {
+    init(inputMethods: CardReaderInput) {
         self.message = Self.message(for: inputMethods)
-        self.cancelButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.cancel,
-            actionHandler: cancelAction)
     }
 
     private static func message(for inputMethods: CardReaderInput) -> String {
@@ -65,12 +61,6 @@ private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewMode
             "pointOfSale.cardPresent.presentCard.present",
             value: "Present card to pay",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
-        )
-
-        static let cancel = NSLocalizedString(
-            "pointOfSale.cardPresent.presentCard.cancel.button.title",
-            value: "Cancel",
-            comment: "Button to cancel a payment"
         )
     }
 }

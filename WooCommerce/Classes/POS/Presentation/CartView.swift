@@ -13,7 +13,12 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
+                Image(uiImage: .shoppingCartIcon)
+                    .resizable()
+                    .frame(width: Constants.fontSize, height: Constants.fontSize)
+                    .foregroundColor(.black)
                 Text("Cart")
+                    .font(.system(size: Constants.fontSize, weight: .bold, design: .default))
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
                 if let temsInCartLabel = cartViewModel.itemsInCartLabel {
@@ -66,6 +71,12 @@ struct CartView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color.posBackgroundWhitei3)
+    }
+}
+
+private extension CartView {
+    enum Constants {
+        static let fontSize: CGFloat = 40
     }
 }
 

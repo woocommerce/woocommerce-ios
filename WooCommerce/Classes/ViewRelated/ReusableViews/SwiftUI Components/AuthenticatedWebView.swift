@@ -24,9 +24,13 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
+        guard let url else {
+            return
+        }
         if let urlToTriggerExit,
-            let url,
             url.absoluteString.contains(urlToTriggerExit) {
+            exitTrigger?(url)
+        } else {
             exitTrigger?(url)
         }
     }
@@ -57,9 +61,9 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
         }
 
     init(isPresented: Binding<Bool>,
-             url: URL,
-             urlToTriggerExit: String? = nil,
-             exitTrigger: ((URL?) -> Void)? = nil) {
+         url: URL,
+         urlToTriggerExit: String? = nil,
+         exitTrigger: ((URL?) -> Void)? = nil) {
             self._isPresented = isPresented
             viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,

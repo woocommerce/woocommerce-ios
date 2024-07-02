@@ -99,10 +99,26 @@ private extension GoogleAdsStore {
                                onCompletion: @escaping (Result<GoogleAdsCampaignStats, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let combinedStats = try await retrieveAllCampaignStats(siteID: siteID,
-                                                                       timeZone: timeZone,
-                                                                       earliestDateToInclude: earliestDateToInclude,
-                                                                       latestDateToInclude: latestDateToInclude)
+                var hasNextPage = true
+                var nextPageToken: String? = nil
+                var statsPages: [GoogleAdsCampaignStats] = []
+
+                // Each page contains only partial stats.
+                // We request new pages until there are no more pages to request, so they can be compiled into a single set of stats.
+                while hasNextPage {
+                    let campaignStats = try await remote.loadCampaignStats(for: siteID,
+                                                                           timeZone: timeZone,
+                                                                           earliestDateToInclude: earliestDateToInclude,
+                                                                           latestDateToInclude: latestDateToInclude,
+                                                                           totals: GoogleListingsAndAdsRemote.StatsField.allCases,
+                                                                           orderby: .sales,
+                                                                           nextPageToken: nextPageToken)
+                    hasNextPage = campaignStats.hasNextPage
+                    nextPageToken = campaignStats.nextPageToken
+                    statsPages.append(campaignStats)
+                }
+
+                let combinedStats = compileCampaignStats(siteID: siteID, stats: statsPages)
                 onCompletion(.success(combinedStats))
             } catch {
                 onCompletion(.failure(error))
@@ -114,39 +130,6 @@ private extension GoogleAdsStore {
 // MARK: retrieveCampaignStats helpers
 
 private extension GoogleAdsStore {
-
-    /// Requests all pages of Google Ads campaign stats for the requested period.
-    ///
-    /// Each page contains partial stats. This continues to request new pages until there are no more pages to request, and compiles the results.
-    ///
-    func retrieveAllCampaignStats(siteID: Int64,
-                                  timeZone: TimeZone,
-                                  earliestDateToInclude: Date,
-                                  latestDateToInclude: Date) async throws -> GoogleAdsCampaignStats {
-        var campaignStats = try await remote.loadCampaignStats(for: siteID,
-                                                               timeZone: timeZone,
-                                                               earliestDateToInclude: earliestDateToInclude,
-                                                               latestDateToInclude: latestDateToInclude,
-                                                               totals: GoogleListingsAndAdsRemote.StatsField.allCases,
-                                                               orderby: .sales,
-                                                               nextPageToken: nil)
-        var statsArray: [GoogleAdsCampaignStats] = [campaignStats]
-        while campaignStats.hasNextPage {
-            guard let token = campaignStats.nextPageToken else {
-                break
-            }
-            campaignStats = try await remote.loadCampaignStats(for: siteID,
-                                                               timeZone: timeZone,
-                                                               earliestDateToInclude: earliestDateToInclude,
-                                                               latestDateToInclude: latestDateToInclude,
-                                                               totals: GoogleListingsAndAdsRemote.StatsField.allCases,
-                                                               orderby: .sales,
-                                                               nextPageToken: token)
-            statsArray.append(campaignStats)
-        }
-        return compileCampaignStats(siteID: siteID, stats: statsArray)
-    }
-
     /// Creates a single Google Ads campaign stats object from an array of stats.
     ///
     /// Each page of campaign stats only contains the totals for the campaigns in that page.

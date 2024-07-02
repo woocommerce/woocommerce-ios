@@ -22,8 +22,10 @@ struct PointOfSaleDashboardView: View {
                         cartView
                     }
                 case .finalizing:
-                    cartView
-                    Spacer()
+                    if !viewModel.isCartViewBlocked {
+                        cartView
+                        Spacer()
+                    }
                     totalsView
                 }
             }

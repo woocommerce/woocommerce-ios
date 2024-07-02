@@ -28,6 +28,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
+    @Published var isCartViewBlocked: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -135,6 +136,20 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isExitPOSDisabled)
+
+        totalsViewModel.$paymentState
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment,
+                        .cardPaymentSuccessful:
+                    return true
+                case .idle,
+                        .preparingReader,
+                        .acceptingCard:
+                    return false
+                }
+            }
+            .assign(to: &$isCartViewBlocked)
     }
 }
 

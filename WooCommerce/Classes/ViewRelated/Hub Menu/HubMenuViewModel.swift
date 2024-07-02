@@ -64,9 +64,20 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
 
-    @Published var shouldAuthenticateAdminPage = false
+    @Published private(set) var shouldAuthenticateAdminPage = false
 
-    @Published private(set) var hasGoogleAdsCampaigns = false
+    @Published private var hasGoogleAdsCampaigns = false
+
+    var googleAdsCampaignURL: URL {
+        let path: String = {
+            if hasGoogleAdsCampaigns {
+                Constants.GoogleAds.campaignDashboardPath
+            } else {
+                Constants.GoogleAds.campaignCreationPath
+            }
+        }()
+        return URL(string: woocommerceAdminURL.absoluteString.appending(path))!
+    }
 
     @Published private var currentSite: Yosemite.Site?
 
@@ -174,6 +185,24 @@ final class HubMenuViewModel: ObservableObject {
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
+    }
+
+    func checkIfCampaignCreationSucceeded(url: URL?) {
+        guard let url, let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+            return
+        }
+        let queryItems = components.queryItems
+        let creationSucceeded = queryItems?.first(where: {
+            $0.name == Constants.GoogleAds.campaignParam &&
+            $0.value == Constants.GoogleAds.savedValue
+        }) != nil
+        if creationSucceeded {
+            // dismisses the web view
+            selectedMenuID = nil
+
+            // TODO: show success bottom sheet
+            DDLogDebug("🎉 Campaign creation success")
+        }
     }
 
     deinit {
@@ -412,6 +441,15 @@ extension HubMenuItem {
 }
 
 extension HubMenuViewModel {
+
+    enum Constants {
+        enum GoogleAds {
+            static let campaignDashboardPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
+            static let campaignCreationPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard&subpath=%2Fcampaigns%2Fcreate"
+            static let campaignParam = "campaign"
+            static let savedValue = "saved"
+        }
+    }
 
     struct Settings: HubMenuItem {
         static var id = "settings"

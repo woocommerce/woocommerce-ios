@@ -11,8 +11,8 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     var onPickPackagePhoto: ((MediaPickingSource) async -> MediaPickerImage?)?
 
     @Published private(set) var imageState: ImageState
-    @Published var isShowingMediaPickerSourceSheet: Bool = false
-    @Published var isShowingViewPhotoSheet: Bool = false
+    @Published var isShowingMediaPickerSourceSheet = false
+    @Published var isShowingViewPhotoSheet = false
     @Published var features: String
 
     @Published var notice: Notice?

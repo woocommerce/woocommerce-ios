@@ -153,12 +153,6 @@ final class HubMenuViewModel: ObservableObject {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
     }
 
-    private func createCardPresentPaymentService() {
-        Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
-        }
-    }
-
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
@@ -186,6 +180,12 @@ final class HubMenuViewModel: ObservableObject {
 // MARK: - Helper methods
 //
 private extension HubMenuViewModel {
+    func createCardPresentPaymentService() {
+        Task {
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+        }
+    }
+
     func setupPOSElement() {
         cardPresentPaymentsOnboarding.refreshIfNecessary()
         Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)

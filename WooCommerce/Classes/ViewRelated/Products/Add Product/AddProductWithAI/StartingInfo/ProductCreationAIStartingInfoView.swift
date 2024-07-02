@@ -72,6 +72,8 @@ struct ProductCreationAIStartingInfoView: View {
                         )
                     }
 
+                    ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
+
                     if let message = viewModel.textDetectionErrorMessage {
                         Text(message)
                             .font(.footnote)

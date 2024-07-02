@@ -20,5 +20,4 @@ enum PointOfSaleCardPresentPaymentAlertType {
     case connectingFailedChargeReader(viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
     case connectingFailedUpdateAddress(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
     case connectingFailedUpdatePostalCode(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
-    case paymentCaptureFailed(viewModel: PointOfSaleCardPresentPaymentCaptureFailedAlertViewModel)
 }

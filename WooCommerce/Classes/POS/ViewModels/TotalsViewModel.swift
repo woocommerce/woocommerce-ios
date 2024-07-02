@@ -211,29 +211,19 @@ private extension TotalsViewModel {
         cardPresentPaymentService.paymentEventPublisher
             .map { event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard case let .show(eventDetails) = event,
-                      let presentationStyle = eventDetails.pointOfSalePresentationStyle else {
+                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                switch presentationStyle {
-                    case .alert(let alertType), .messageAndAlert(_, let alertType):
-                        return alertType
-                    default:
-                        return nil
-                }
+                return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
             .map { event -> PointOfSaleCardPresentPaymentMessageType? in
                 guard case let .show(eventDetails) = event,
-                      let presentationStyle = eventDetails.pointOfSalePresentationStyle else {
+                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                switch presentationStyle {
-                    case .message(let messageType), .messageAndAlert(let messageType, _):
-                        return messageType
-                    default:
-                        return nil
-                }
+                return messageType
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
@@ -242,7 +232,7 @@ private extension TotalsViewModel {
                 return false
             case .show(let eventDetails):
                 switch eventDetails.pointOfSalePresentationStyle {
-                case .alert, .messageAndAlert:
+                case .alert:
                     return true
                 case .message, .none:
                     return false

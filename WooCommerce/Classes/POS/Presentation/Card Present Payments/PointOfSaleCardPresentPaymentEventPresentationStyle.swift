@@ -3,8 +3,6 @@ import Foundation
 enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case message(PointOfSaleCardPresentPaymentMessageType)
     case alert(PointOfSaleCardPresentPaymentAlertType)
-    /// In-line message with an alert on top for important messages, e.g. payment capture error.
-    case messageAndAlert(PointOfSaleCardPresentPaymentMessageType, PointOfSaleCardPresentPaymentAlertType)
 }
 
 extension CardPresentPaymentEventDetails {
@@ -139,10 +137,8 @@ extension CardPresentPaymentEventDetails {
                     cancelButtonAction: cancelPayment)))
 
         case .paymentCaptureError(let cancelPayment):
-            return .messageAndAlert(.paymentCaptureError(
-                viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(cancelButtonAction: cancelPayment)),
-                                    .paymentCaptureFailed(
-                                        viewModel: PointOfSaleCardPresentPaymentCaptureFailedAlertViewModel()))
+            return .message(.paymentCaptureError(
+                viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(cancelButtonAction: cancelPayment)))
 
         case .processing:
             return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))

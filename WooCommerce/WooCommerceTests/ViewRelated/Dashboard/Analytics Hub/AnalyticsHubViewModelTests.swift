@@ -27,7 +27,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
+                             SitePlugin.SupportedPlugin.WCGiftCards.first,
+                             SitePlugin.SupportedPlugin.GoogleForWooCommerce.first],
+                            to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -53,6 +56,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, completion):
+                let campaignStats = GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 285))
+                completion(.success(campaignStats))
+            default:
+                break
+            }
+        }
 
         // When
         await vm.updateData()
@@ -65,6 +77,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.sessionsCard.isRedacted)
         XCTAssertFalse(vm.bundlesCard.isRedacted)
         XCTAssertFalse(vm.giftCardsCard.isRedacted)
+        XCTAssertFalse(vm.googleCampaignsCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
@@ -74,6 +87,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
         XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
         XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
+        XCTAssertEqual(vm.googleCampaignsCard.totalSales, "$285")
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -86,8 +100,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingBundlesStatsCardRedacted: Bool = false
         var loadingBundlesSoldCardRedacted: Bool = false
         var loadingGiftCardsCardRedacted: Bool = false
+        var loadingGoogleCampaignsCardRedacted: Bool = false
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
+                             SitePlugin.SupportedPlugin.WCGiftCards.first,
+                             SitePlugin.SupportedPlugin.GoogleForWooCommerce.first],
+                            to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -121,6 +139,16 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, completion):
+                let campaignStats = GoogleAdsCampaignStats.fake()
+                loadingGoogleCampaignsCardRedacted = vm.googleCampaignsCard.isRedacted
+                completion(.success(campaignStats))
+            default:
+                break
+            }
+        }
 
         // When
         await vm.updateData()
@@ -134,6 +162,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(loadingBundlesStatsCardRedacted)
         XCTAssertTrue(loadingBundlesSoldCardRedacted)
         XCTAssertTrue(loadingGiftCardsCardRedacted)
+        XCTAssertTrue(loadingGoogleCampaignsCardRedacted)
     }
 
     func test_bundles_card_shows_correct_loading_state_and_data_with_network_update() {

@@ -351,6 +351,12 @@ private extension AnalyticsHubViewModel {
                 }
                 await self.retrieveGiftCardStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
             }
+            group.addTask {
+                guard cards.contains(.googleCampaigns) else {
+                    return
+                }
+                await self.retrieveGoogleCampaignStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
         }
     }
 
@@ -458,6 +464,26 @@ private extension AnalyticsHubViewModel {
         allStats = try? await (currentPeriodRequest, previousPeriodRequest)
         self.currentGiftCardStats = allStats?.currentPeriodStats
         self.previousGiftCardStats = allStats?.previousPeriodStats
+    }
+
+    @MainActor
+    func retrieveGoogleCampaignStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingGoogleCampaignStats = true
+        defer {
+            isLoadingGoogleCampaignStats = false
+        }
+
+        async let currentPeriodRequest = retrieveGoogleCampaignStats(timeZone: timeZone,
+                                                                     earliestDateToInclude: currentTimeRange.start,
+                                                                     latestDateToInclude: currentTimeRange.end)
+        async let previousPeriodRequest = retrieveGoogleCampaignStats(timeZone: timeZone,
+                                                                      earliestDateToInclude: previousTimeRange.start,
+                                                                      latestDateToInclude: previousTimeRange.end)
+
+        let allStats: (currentPeriodStats: GoogleAdsCampaignStats, previousPeriodStats: GoogleAdsCampaignStats)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        currentGoogleCampaignStats = allStats?.currentPeriodStats
+        previousGoogleCampaignStats = allStats?.previousPeriodStats
     }
 
     @MainActor
@@ -572,6 +598,23 @@ private extension AnalyticsHubViewModel {
                                                                  latestDateToInclude: latestDateToInclude,
                                                                  quantity: timeRangeSelectionType.intervalSize,
                                                                  forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves Google campaign stats using the `retrieveGoogleCampaignStats` action.
+    ///
+    func retrieveGoogleCampaignStats(timeZone: TimeZone,
+                                     earliestDateToInclude: Date,
+                                     latestDateToInclude: Date) async throws -> GoogleAdsCampaignStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = GoogleAdsAction.retrieveCampaignStats(siteID: siteID,
+                                                               timeZone: timeZone,
+                                                               earliestDateToInclude: earliestDateToInclude,
+                                                               latestDateToInclude: latestDateToInclude) { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

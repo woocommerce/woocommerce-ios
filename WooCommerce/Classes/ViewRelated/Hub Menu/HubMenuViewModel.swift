@@ -204,6 +204,11 @@ final class HubMenuViewModel: ObservableObject {
             // dismisses the web view
             displayingGoogleAdsCampaigns = false
 
+            // updates the check for campaigns
+            Task { @MainActor in
+                hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+            }
+
             // TODO: show success bottom sheet
             DDLogDebug("🎉 Campaign creation success")
         }

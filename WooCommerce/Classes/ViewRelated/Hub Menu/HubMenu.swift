@@ -176,6 +176,13 @@ private extension HubMenu {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
                 }
+            case HubMenuViewModel.GoogleAds.id:
+                webView(url: viewModel.googleAdsCampaignURL,
+                        title: "Google for WooCommerce",
+                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage,
+                        exitTrigger: { url in
+                    viewModel.checkIfCampaignCreationSucceeded(url: url)
+                })
             default:
                 fatalError("🚨 Unsupported menu item")
             }
@@ -195,14 +202,22 @@ private extension HubMenu {
     }
 
     @ViewBuilder
-    func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
+    func webView(url: URL,
+                 title: String,
+                 shouldAuthenticate: Bool,
+                 urlToTriggerExit: String? = nil,
+                 exitTrigger: ((URL?) -> Void)? = nil) -> some View {
         Group {
             if shouldAuthenticate {
                 AuthenticatedWebView(isPresented: .constant(true),
-                                     url: url)
+                                     url: url,
+                                     urlToTriggerExit: urlToTriggerExit,
+                                     exitTrigger: exitTrigger)
             } else {
                 WebView(isPresented: .constant(true),
-                        url: url)
+                        url: url,
+                        urlToTriggerExit: urlToTriggerExit,
+                        exitTrigger: exitTrigger)
             }
         }
         .navigationTitle(title)

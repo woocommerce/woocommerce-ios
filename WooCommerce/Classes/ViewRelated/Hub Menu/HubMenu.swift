@@ -38,22 +38,9 @@ struct HubMenu: View {
                     viewModel.setupMenuElements()
                 }
         }
-    }
-
-    /// Handle navigation when tapping a list menu row.
-    ///
-    private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
-
-        if menu.id == HubMenuViewModel.Settings.id {
-            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
-            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        .sheet(isPresented: $viewModel.displayingGoogleAdsCampaigns) {
+            googleAdsView
         }
-
-        viewModel.selectedMenuID = menu.id
     }
 }
 
@@ -111,7 +98,7 @@ private extension HubMenu {
     @ViewBuilder
     func menuItemView(menu: HubMenuItem, chevron: Row.Chevron = .leading) -> some View {
         Button {
-            handleTap(menu: menu)
+            viewModel.handleTap(menu: menu)
         } label: {
             Row(title: menu.title,
                 titleBadge: nil,
@@ -123,10 +110,12 @@ private extension HubMenu {
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
         .overlay {
-            NavigationLink(value: menu.id) {
-                EmptyView()
+            if menu.id != HubMenuViewModel.GoogleAds.id {
+                NavigationLink(value: menu.id) {
+                    EmptyView()
+                }
+                .opacity(0)
             }
-            .opacity(0)
         }
     }
 
@@ -176,13 +165,6 @@ private extension HubMenu {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
                 }
-            case HubMenuViewModel.GoogleAds.id:
-                webView(url: viewModel.googleAdsCampaignURL,
-                        title: Localization.googleForWooCommerce,
-                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage,
-                        exitTrigger: { url in
-                    viewModel.checkIfCampaignCreationSucceeded(url: url)
-                })
             default:
                 fatalError("🚨 Unsupported menu item")
             }
@@ -240,6 +222,25 @@ private extension HubMenu {
     var couponListView: some View {
         EnhancedCouponListView(siteID: viewModel.siteID)
             .navigationBarTitleDisplayMode(.inline)
+    }
+
+    var googleAdsView: some View {
+        NavigationStack {
+            webView(url: viewModel.googleAdsCampaignURL,
+                    title: Localization.googleForWooCommerce,
+                    shouldAuthenticate: viewModel.shouldAuthenticateAdminPage,
+                    exitTrigger: { url in
+                viewModel.checkIfCampaignCreationSucceeded(url: url)
+            })
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel) {
+                        viewModel.displayingGoogleAdsCampaigns = false
+                    }
+                }
+            }
+        }
     }
 
     /// Reusable List row for the hub menu
@@ -392,7 +393,6 @@ private extension HubMenu {
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
-        static let trackingOptionKey = "option"
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
 
@@ -415,6 +415,11 @@ private extension HubMenu {
             "hubMenu.googleForWooCommerce",
             value: "Google for WooCommerce",
             comment: "Title of the Google Ads campaign view"
+        )
+        static let cancel = NSLocalizedString(
+            "hubMenu.cancelButton",
+            value: "Cancel",
+            comment: "Button to dismiss a modal from the Hub menu"
         )
     }
 }

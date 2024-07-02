@@ -4,7 +4,8 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
-import Storage
+import struct Storage.GeneralAppSettingsStorage
+import protocol WooFoundation.Analytics
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -67,6 +68,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var shouldAuthenticateAdminPage = false
 
     @Published private(set) var hasGoogleAdsCampaigns = false
+    @Published var displayingGoogleAdsCampaigns = false
 
     var googleAdsCampaignURL: URL {
         let path: String = {
@@ -87,6 +89,9 @@ final class HubMenuViewModel: ObservableObject {
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+    private let analytics: Analytics
 
     private(set) lazy var posItemProvider: POSItemProvider = {
         let currencySettings = ServiceLocator.currencySettings
@@ -103,10 +108,6 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
-
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
-
-    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -142,7 +143,8 @@ final class HubMenuViewModel: ObservableObject {
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -158,6 +160,7 @@ final class HubMenuViewModel: ObservableObject {
                                                            siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
+        self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
@@ -188,20 +191,44 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     func checkIfCampaignCreationSucceeded(url: URL?) {
-        guard let url, let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        guard let url, url != googleAdsCampaignURL else {
             return
         }
-        let queryItems = components.queryItems
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        let queryItems = components?.queryItems
         let creationSucceeded = queryItems?.first(where: {
             $0.name == Constants.GoogleAds.campaignParam &&
             $0.value == Constants.GoogleAds.savedValue
         }) != nil
         if creationSucceeded {
             // dismisses the web view
-            selectedMenuID = nil
+            displayingGoogleAdsCampaigns = false
 
             // TODO: show success bottom sheet
             DDLogDebug("🎉 Campaign creation success")
+        }
+    }
+
+    /// Handle navigation when tapping a list menu row.
+    ///
+    func handleTap(menu: HubMenuItem) {
+        analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        if menu.id == HubMenuViewModel.Settings.id {
+            analytics.track(.hubMenuSettingsTapped)
+        } else if menu.id == HubMenuViewModel.Blaze.id {
+            analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        }
+
+        if menu.id == HubMenuViewModel.GoogleAds.id {
+            /// Displaying GLA in a modal because it's not straightforward
+            /// to dismiss the detail view in `NavigationStack` programmatically.
+            /// When we support a native experience, we can revise this navigation flow.
+            displayingGoogleAdsCampaigns = true
+        } else {
+            selectedMenuID = menu.id
         }
     }
 
@@ -443,6 +470,8 @@ extension HubMenuItem {
 extension HubMenuViewModel {
 
     enum Constants {
+        static let trackingOptionKey = "option"
+
         enum GoogleAds {
             static let campaignDashboardPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
             static let campaignCreationPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard&subpath=%2Fcampaigns%2Fcreate"

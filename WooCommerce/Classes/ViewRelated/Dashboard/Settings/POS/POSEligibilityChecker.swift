@@ -24,7 +24,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isOnboardingComplete(), isWooCommerceVersionSupported())
+        return Publishers.CombineLatest(isOnboardingComplete, isWooCommerceVersionSupported)
             .map { $0 && $1 }
             .eraseToAnyPublisher()
     }
@@ -52,10 +52,10 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 }
 
 private extension POSEligibilityChecker {
-    func isOnboardingComplete() -> AnyPublisher<Bool, Never> {
+    var isOnboardingComplete: AnyPublisher<Bool, Never> {
         return cardPresentPaymentsOnboarding.statePublisher
             .filter { [weak self] _ in
-                self?.isEligibleFromSiteChecks() ?? false
+                self?.isEligibleFromSiteChecks ?? false
             }
             .map { onboardingState in
                 // Woo Payments plugin enabled and user setup complete
@@ -64,8 +64,8 @@ private extension POSEligibilityChecker {
             .eraseToAnyPublisher()
     }
 
-    func isWooCommerceVersionSupported() -> AnyPublisher<Bool, Never> {
-        return Future<Bool, Never> { [weak self] promise in
+    var isWooCommerceVersionSupported: AnyPublisher<Bool, Never> {
+        Future<Bool, Never> { [weak self] promise in
             guard let self else {
                 promise(.success(false))
                 return
@@ -87,7 +87,7 @@ private extension POSEligibilityChecker {
         .eraseToAnyPublisher()
     }
 
-    func isEligibleFromSiteChecks() -> Bool {
+    var isEligibleFromSiteChecks: Bool {
         // Conditions that can change if site settings are synced during the lifetime.
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode == .US
         let isCurrencyUSD = currencySettings.currencyCode == .USD

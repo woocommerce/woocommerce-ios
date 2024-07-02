@@ -178,7 +178,7 @@ private extension HubMenu {
                 }
             case HubMenuViewModel.GoogleAds.id:
                 webView(url: viewModel.googleAdsCampaignURL,
-                        title: "Google for WooCommerce",
+                        title: Localization.googleForWooCommerce,
                         shouldAuthenticate: viewModel.shouldAuthenticateAdminPage,
                         exitTrigger: { url in
                     viewModel.checkIfCampaignCreationSucceeded(url: url)
@@ -410,6 +410,11 @@ private extension HubMenu {
             "hubMenu.productReview",
             value: "Product Review",
             comment: "Title of the view containing a single Product Review"
+        )
+        static let googleForWooCommerce = NSLocalizedString(
+            "hubMenu.googleForWooCommerce",
+            value: "Google for WooCommerce",
+            comment: "Title of the Google Ads campaign view"
         )
     }
 }

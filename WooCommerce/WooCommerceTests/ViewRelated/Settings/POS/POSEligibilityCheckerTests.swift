@@ -18,6 +18,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
         onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayPreferred))
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
+        setupWooCommerceVersion()
         storageManager = MockStorageManager()
         siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
     }
@@ -38,6 +39,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
                                             featureFlagService: featureFlagService)
         checker.isEligible.assign(to: &$isEligible)
 
@@ -55,6 +57,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                                     cardPresentPaymentsOnboarding: onboardingUseCase,
                                                     siteSettings: siteSettings,
                                                     currencySettings: Fixtures.usdCurrencySettings,
+                                                    stores: stores,
                                                     featureFlagService: featureFlagService)
                 checker.isEligible.assign(to: &$isEligible)
 
@@ -73,6 +76,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                                 cardPresentPaymentsOnboarding: onboardingUseCase,
                                                 siteSettings: siteSettings,
                                                 currencySettings: Fixtures.usdCurrencySettings,
+                                                stores: stores,
                                                 featureFlagService: featureFlagService)
             checker.isEligible.assign(to: &$isEligible)
 
@@ -89,6 +93,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.nonUSDCurrencySettings,
+                                            stores: stores,
                                             featureFlagService: featureFlagService)
         checker.isEligible.assign(to: &$isEligible)
 
@@ -104,6 +109,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
                                             featureFlagService: featureFlagService)
         checker.isEligible.assign(to: &$isEligible)
 
@@ -119,6 +125,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
                                             featureFlagService: featureFlagService)
         checker.isEligible.assign(to: &$isEligible)
         XCTAssertTrue(isEligible)
@@ -148,6 +155,48 @@ final class POSEligibilityCheckerTests: XCTestCase {
         // Then
         XCTAssertFalse(isEligible)
     }
+
+    func test_is_not_eligible_when_woo_commerce_version_low() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        setupCountry(country: .us)
+
+        // Unsupported WooCommerce version
+        setupWooCommerceVersion("6.5.0")
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            cardPresentPaymentsOnboarding: onboardingUseCase,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_is_eligible_when_woo_commerce_version_supported() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        setupCountry(country: .us)
+
+        // Supported WooCommerce version
+        setupWooCommerceVersion("6.8.0")
+
+        // When
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            cardPresentPaymentsOnboarding: onboardingUseCase,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
 }
 
 private extension POSEligibilityCheckerTests {
@@ -161,6 +210,17 @@ private extension POSEligibilityCheckerTests {
             )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
         siteSettings.refresh()
+    }
+
+    func setupWooCommerceVersion(_ version: String = "6.6.0") {
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case .fetchSystemPlugin(_, _, let completion):
+                completion(SystemPlugin.fake().copy(name: "WooCommerce", version: version, active: true))
+            default:
+                break
+            }
+        }
     }
 
     enum Fixtures {

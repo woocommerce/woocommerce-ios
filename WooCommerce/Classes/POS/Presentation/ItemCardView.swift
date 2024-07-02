@@ -11,7 +11,7 @@ struct ItemCardView: View {
     }
 
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: Constants.horizontalCardSpacing) {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardHeight,
@@ -26,13 +26,14 @@ struct ItemCardView: View {
                            height: Constants.productCardHeight * scale)
                     .foregroundColor(.gray)
             }
-            VStack(alignment: .leading) {
-                Text(item.name)
-                    .foregroundStyle(Color.posPrimaryTexti3)
-            }
+            Text(item.name)
+                .foregroundStyle(Color.posPrimaryTexti3)
+                .font(.system(size: Constants.fontSize, weight: .medium, design: .default))
+                .padding(.horizontal, Constants.horizontalElementSpacing)
             Spacer()
             Text(item.formattedPrice)
                 .foregroundStyle(Color.posPrimaryTexti3)
+                .font(.system(size: Constants.fontSize, weight: .light, design: .default))
                 .padding()
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
@@ -53,6 +54,9 @@ private extension ItemCardView {
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0
+        static let horizontalCardSpacing: CGFloat = 0
+        static let horizontalElementSpacing: CGFloat = 16
+        static let fontSize: CGFloat = 24
     }
 }
 

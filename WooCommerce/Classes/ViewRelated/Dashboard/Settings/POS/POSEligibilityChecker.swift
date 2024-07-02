@@ -16,10 +16,18 @@ protocol POSEligibilityCheckerProtocol {
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
 final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
-        $isEligibleValue.eraseToAnyPublisher()
-    }
+        // Conditions that are fixed for its lifetime.
+        let isTablet = userInterfaceIdiom == .pad
+        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
+        guard isTablet && isFeatureFlagEnabled else {
+            return Just(false)
+                .eraseToAnyPublisher()
+        }
 
-    @Published private var isEligibleValue: Bool = false
+        return Publishers.CombineLatest(isOnboardingComplete(), isWooCommerceVersionSupported())
+            .map { $0 && $1 }
+            .eraseToAnyPublisher()
+    }
 
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -40,26 +48,10 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
         self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
         self.stores = stores
         self.featureFlagService = featureFlagService
-        observeEligibility()
     }
 }
 
 private extension POSEligibilityChecker {
-    /// Returns whether the selected store is eligible for POS.
-    func observeEligibility() {
-        // Conditions that are fixed for its lifetime.
-        let isTablet = userInterfaceIdiom == .pad
-        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
-        guard isTablet && isFeatureFlagEnabled else {
-            isEligibleValue = false
-            return
-        }
-
-        Publishers.CombineLatest(isOnboardingComplete(), isWooCommerceVersionSupported())
-            .map { $0 && $1 }
-            .assign(to: &$isEligibleValue)
-    }
-
     func isOnboardingComplete() -> AnyPublisher<Bool, Never> {
         return cardPresentPaymentsOnboarding.statePublisher
             .filter { [weak self] _ in

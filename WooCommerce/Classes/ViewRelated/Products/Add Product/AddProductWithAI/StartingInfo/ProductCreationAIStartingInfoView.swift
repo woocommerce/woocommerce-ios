@@ -77,7 +77,6 @@ struct ProductCreationAIStartingInfoView: View {
                             .font(.footnote)
                             .fontWeight(.semibold)
                             .foregroundStyle(Color(uiColor: .secondaryLabel))
-                            .padding(insets: Layout.messageContentInsets)
                     }
                 }
             }

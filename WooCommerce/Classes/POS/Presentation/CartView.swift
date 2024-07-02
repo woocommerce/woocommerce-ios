@@ -1,10 +1,13 @@
 import SwiftUI
+import protocol Yosemite.POSItem
 
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
+        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -13,16 +16,17 @@ struct CartView: View {
                 Text("Cart")
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
-                if let temsInCartLabel = viewModel.itemsInCartLabel {
+                if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
                         .foregroundColor(Color.posPrimaryTexti3)
                     Button {
-                        viewModel.removeAllItemsFromCart()
+                        cartViewModel.removeAllItemsFromCart()
                     } label: {
                         Text("Clear all")
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
                     .padding(.horizontal, 8)
+                    .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -32,19 +36,19 @@ struct CartView: View {
             .foregroundColor(Color.white)
             ScrollViewReader { proxy in
                 ScrollView {
-                    ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                    ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
                         ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: viewModel.canDeleteItemsFromCart ? {
-                            viewModel.removeItemFromCart(cartItem)
+                                    onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
+                            cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
                         .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
                     }
                 }
-                .onChange(of: viewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                     if viewModel.orderStage == .building,
-                       let last = viewModel.itemToScrollToWhenCartUpdated?.id {
+                       let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                         withAnimation {
                             proxy.scrollTo(last)
                         }
@@ -72,7 +76,7 @@ struct CartView: View {
 private extension CartView {
     var checkoutButton: some View {
         Button {
-            viewModel.submitCart()
+            cartViewModel.submitCart()
         } label: {
             HStack {
                 Spacer()
@@ -88,7 +92,7 @@ private extension CartView {
 
     var addMoreButton: some View {
         Button {
-            viewModel.addMoreToCart()
+            cartViewModel.addMoreToCart()
         } label: {
             Spacer()
             Text("Add More")
@@ -102,9 +106,19 @@ private extension CartView {
 }
 
 #if DEBUG
+import Combine
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                      orderService: POSOrderPreviewService()))
+    // TODO:
+    // Simplify this by mocking `CartViewModel`
+    // https://github.com/woocommerce/woocommerce-ios/issues/13207
+    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
+    let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
+    let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                           orderService: POSOrderPreviewService(),
+                                                           currencyFormatter: .init(currencySettings: .init()))
+    let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
+
+    return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

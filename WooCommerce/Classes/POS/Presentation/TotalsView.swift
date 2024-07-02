@@ -2,16 +2,17 @@ import SwiftUI
 
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = totalsViewModel
     }
 
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 VStack {
-                    Spacer()
                     cardReaderView
                         .font(.title)
                         .padding()
@@ -20,21 +21,21 @@ struct TotalsView: View {
                         HStack {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
                                 priceFieldView(title: "Subtotal",
-                                               formattedPrice: viewModel.formattedCartTotalPrice,
+                                               formattedPrice: totalsViewModel.formattedCartTotalPrice,
                                                shimmeringActive: false,
                                                redacted: false)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
-                                                viewModel.formattedOrderTotalTaxPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalTaxPrice == nil || viewModel.isSyncingOrder)
+                                                totalsViewModel.formattedOrderTotalTaxPrice,
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isPriceFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice,
-                                               shimmeringActive: viewModel.isSyncingOrder,
-                                               redacted: viewModel.formattedOrderTotalPrice == nil || viewModel.isSyncingOrder)
+                                totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isTotalPriceFieldRedacted)
                             }
                             .padding()
                             .frame(idealWidth: Constants.pricesIdealWidth)
@@ -43,9 +44,11 @@ struct TotalsView: View {
                             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
                                 .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
-                        if viewModel.showRecalculateButton {
+                        if totalsViewModel.showRecalculateButton {
                             Button("Calculate amounts") {
-                                viewModel.calculateAmountsTapped()
+                                totalsViewModel.calculateAmountsTapped(
+                                    with: viewModel.cartViewModel.itemsInCart,
+                                    allItems: viewModel.itemSelectorViewModel.items)
                             }
                         }
                     }
@@ -61,12 +64,25 @@ struct TotalsView: View {
             }
         }
         .onDisappear {
-            viewModel.onTotalsViewDisappearance()
+            totalsViewModel.onTotalsViewDisappearance()
         }
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch totalsViewModel.cardPresentPaymentEvent {
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
+        })
     }
 
     private var gradientStops: [Gradient.Stop] {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if totalsViewModel.paymentState == .cardPaymentSuccessful {
             return [
                 Gradient.Stop(color: Color.clear, location: 0.0),
                 Gradient.Stop(color: Color.posTotalsGradientGreen, location: 1.0)
@@ -78,10 +94,6 @@ struct TotalsView: View {
                 Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
             ]
         }
-    }
-
-    private var paymentButtonsDisabled: Bool {
-        return !viewModel.areAmountsFullyCalculated
     }
 }
 
@@ -108,7 +120,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if viewModel.paymentState == .cardPaymentSuccessful {
+        if totalsViewModel.paymentState == .cardPaymentSuccessful {
             newTransactionButton
         }
         else {
@@ -117,19 +129,21 @@ private extension TotalsView {
     }
 
     @ViewBuilder private var cardReaderView: some View {
-        switch viewModel.cardReaderConnectionViewModel.connectionStatus {
+        switch totalsViewModel.connectionStatus {
         case .connected:
-            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+            if let inlinePaymentMessage = totalsViewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
-                POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader connected",
-                                                                  buttons: [.init(title: "Collect Payment",
-                                                                                  actionHandler: viewModel.cardPaymentTapped)]))
+                Text("Reader connected")
+                Button(action: totalsViewModel.cardPaymentTapped) {
+                    Text("Collect Payment")
+                }
             }
         case .disconnected:
-            POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader disconnected",
-                                                              buttons: [.init(title: "Collect Payment",
-                                                                              actionHandler: viewModel.cardPaymentTapped)]))
+            Text("Reader disconnected")
+            Button(action: totalsViewModel.cardPaymentTapped) {
+                Text("Collect Payment")
+            }
         }
     }
 
@@ -180,10 +194,27 @@ private extension TotalsView {
     }
 }
 
+fileprivate extension CardPresentPaymentEvent {
+    var temporaryEventDescription: String {
+        switch self {
+        case .idle:
+            return "Idle"
+        case .show:
+            return "Event"
+        case .showOnboarding(let onboardingViewModel):
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        }
+    }
+}
+
 #if DEBUG
 #Preview {
     TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService()))
+                                orderService: POSOrderPreviewService(),
+                                currencyFormatter: .init(currencySettings: .init())),
+               totalsViewModel: .init(orderService: POSOrderPreviewService(),
+                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                      currencyFormatter: .init(currencySettings: .init())))
 }
 #endif

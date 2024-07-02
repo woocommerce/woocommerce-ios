@@ -48,11 +48,13 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         var isBlazeEligibilityUpdated: Bool? = nil
         let expectationForBlazeEligibility = self.expectation(description: "blazeEligibilityUpdateSubject is called")
         expectationForBlazeEligibility.expectedFulfillmentCount = 1
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(siteID: defaultSiteID)))
 
         // Action
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler)
+                                             productImageActionHandler: productImageActionHandler,
+                                             stores: stores)
         blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink {
             isBlazeEligibilityUpdated = true
             expectationForBlazeEligibility.fulfill()

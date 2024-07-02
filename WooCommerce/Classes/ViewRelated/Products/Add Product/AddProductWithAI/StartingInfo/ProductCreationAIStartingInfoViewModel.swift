@@ -59,7 +59,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         notice = Notice(title: Localization.PhotoRemovedNotice.title,
                         feedbackType: .success,
                         actionTitle: Localization.PhotoRemovedNotice.undo,
-                        actionHandler: { [weak self] in
+                        actionHandler: { [weak self, previousState] in
             self?.imageState = previousState
         })
     }

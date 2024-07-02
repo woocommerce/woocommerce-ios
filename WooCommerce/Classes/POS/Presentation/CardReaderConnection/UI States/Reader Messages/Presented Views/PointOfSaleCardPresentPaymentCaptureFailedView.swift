@@ -37,7 +37,7 @@ private extension PointOfSaleCardPresentPaymentCaptureFailedView {
 
         static let cancel = NSLocalizedString(
             "pointOfSale.cardPresentPayment.alert.paymentCaptureError.cancel.button.title",
-            value: "I understand that order should be checked",
+            value: "I understand",
             comment: "Button to dismiss the alert presented when payment capture fails."
         )
     }

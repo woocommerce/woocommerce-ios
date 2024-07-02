@@ -11,14 +11,15 @@ struct ItemCardView: View {
     }
 
     private var commaSeparatedItemCategories: String {
+        // TODO: Delete
         item.itemCategories.prefix(Constants.maxNumberOfCategories).joined(separator: ", ")
     }
 
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: Constants.productImageWidth,
+                                      productImageSize: Constants.productCardHeight,
                                       scale: scale,
                                       productImageCornerRadius: Constants.productImageCornerRadius,
                                       foregroundColor: .clear)
@@ -26,8 +27,8 @@ struct ItemCardView: View {
                 // TODO:
                 // Handle what we'll show when there's lack of images:
                 Rectangle()
-                    .frame(width: Constants.productImageWidth * scale,
-                           height: Constants.productImageWidth * scale)
+                    .frame(width: Constants.productCardHeight * scale,
+                           height: Constants.productCardHeight * scale)
                     .foregroundColor(.gray)
             }
             VStack(alignment: .leading) {
@@ -43,15 +44,23 @@ struct ItemCardView: View {
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
         .background(Color.posBackgroundWhitei3)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
+                .stroke(Color.black, lineWidth: Constants.nilOutline)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
     }
 }
 
 private extension ItemCardView {
     enum Constants {
         static let productCardHeight: CGFloat = 120
-        static let productImageWidth: CGFloat = 60
+        static let productCardCornerRadius: CGFloat = 20
         static let productImageCornerRadius: CGFloat = 0
         static let maxNumberOfCategories = 3
+        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
+        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
+        static let nilOutline: CGFloat = 0
     }
 }
 

@@ -115,7 +115,8 @@ import Combine
     let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
     let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                           orderService: POSOrderPreviewService())
+                                                           orderService: POSOrderPreviewService(),
+                                                           currencyFormatter: .init(currencySettings: .init()))
     let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
 
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)

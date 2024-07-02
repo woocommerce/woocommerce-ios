@@ -218,13 +218,14 @@ private extension HubMenuViewModel {
                            $isSiteEligibleForBlaze,
                            $isSiteEligibleForGoogleAds)
             .map { [weak self] combinedResult -> [HubMenuItem] in
+                guard let self else { return [] }
                 let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
-                return self?.createGeneralElements(
+                return createGeneralElements(
                     shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
                     eligibleForGoogleAds: eligibleForGoogleAds,
                     eligibleForBlaze: eligibleForBlaze,
                     eligibleForInbox: eligibleForInbox
-                ) ?? []
+                )
             }
             .assign(to: &$generalElements)
     }

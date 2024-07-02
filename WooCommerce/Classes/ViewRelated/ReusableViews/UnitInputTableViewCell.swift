@@ -26,6 +26,7 @@ struct UnitInputViewModel {
     let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
     let style: Style
+    var isInputEnabled: Bool = true
     let onInputChange: ((_ input: String?) -> Void)?
 }
 
@@ -70,6 +71,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         onInputChange = viewModel.onInputChange
 
         configureStyle(viewModel.style)
+        configureInputTextFieldState(enabled: viewModel.isInputEnabled)
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
     }
@@ -137,6 +139,11 @@ private extension UnitInputTableViewCell {
 
         // If auto font size adjustment is enabled, the text field does not know the appropriate width and the font size shrinks even though space is available.
         inputTextField.adjustsFontSizeToFitWidth = false
+    }
+
+    func configureInputTextFieldState(enabled: Bool) {
+        inputTextField.isEnabled = enabled
+        enabled ? inputTextField.applyBodyStyle() : inputTextField.applySecondaryBodyStyle()
     }
 
     private func configureStyle(_ style: UnitInputViewModel.Style) {

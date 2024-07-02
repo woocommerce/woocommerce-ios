@@ -7,6 +7,12 @@ extension UITextField {
         textColor = .text
     }
 
+    func applySecondaryBodyStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = .textSubtle
+    }
+
     func applyHeadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .headline

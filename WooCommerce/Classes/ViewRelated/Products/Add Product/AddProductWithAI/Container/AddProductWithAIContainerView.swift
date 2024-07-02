@@ -4,12 +4,16 @@ import SwiftUI
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var selectPackageImageCoordinator: SelectPackageImageCoordinator?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
+        }
+        viewModel.startingInfoViewModel.onPickPackagePhoto = { [weak self] source in
+            await self?.presentImageSelectionFlow(source: source)
         }
     }
 
@@ -57,6 +61,26 @@ private extension AddProductWithAIContainerHostingController {
         self.addProductFromImageCoordinator = coordinator
         coordinator.start()
     }
+
+    /// Presents the image selection flow to select package photo
+    ///
+    @MainActor
+    func presentImageSelectionFlow(source: MediaPickingSource) async -> MediaPickerImage? {
+        await withCheckedContinuation { continuation in
+            guard let navigationController else {
+                continuation.resume(returning: nil)
+                return
+            }
+            let coordinator = SelectPackageImageCoordinator(siteID: viewModel.siteID,
+                                                            mediaSource: source,
+                                                            sourceNavigationController: navigationController,
+                                                            onImageSelected: { image in
+                continuation.resume(returning: image)
+            })
+            selectPackageImageCoordinator = coordinator
+            coordinator.start()
+        }
+    }
 }
 
 /// Container view for the product creation with AI flow.
@@ -81,7 +105,6 @@ struct AddProductWithAIContainerView: View {
             case .productName:
                 if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
                     ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
-                                                      onUsePackagePhoto: onUsePackagePhoto,
                                                       onContinueWithFeatures: { features in
                         withAnimation {
                             viewModel.onProductFeaturesAdded(features: features)

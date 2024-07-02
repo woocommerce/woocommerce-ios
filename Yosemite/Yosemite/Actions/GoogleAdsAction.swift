@@ -24,4 +24,20 @@ public enum GoogleAdsAction: Action {
     ///
     case fetchAdsCampaigns(siteID: Int64,
                            onCompletion: (Result<[GoogleAdsCampaign], Error>) -> Void)
+
+    /// Retrieves the Google ads paid campaign stats for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site ID.
+    ///   - timeZone: The time zone to set the earliest/latest date strings in the API request.
+    ///   - earliestDateToInclude: The earliest date to include in the results.
+    ///   - latestDateToInclude: The latest date to include in the results.
+    ///   - onCompletion: Invoked when the request finishes.
+    ///     - `result.success(GoogleAdsCampaignStats)`: Successfully retrieved campaign stats.
+    ///     - `result.failure(Error)`: Error indicates issues retrieving campaign stats.
+    case retrieveCampaignStats(siteID: Int64,
+                               timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               onCompletion: (Result<GoogleAdsCampaignStats, Error>) -> Void)
 }

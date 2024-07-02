@@ -17,6 +17,9 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     @Published var notice: Notice?
 
+    /// Text detection
+    @Published private(set) var textDetectionErrorMessage: String? = nil
+
     let siteID: Int64
     private let analytics: Analytics
     private let imageTextScanner: ImageTextScannerProtocol
@@ -80,11 +83,33 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
             return imageState = previousState
         }
 
+        await detectTexts(from: image.image)
+
         imageState = .success(image)
     }
 }
 
 private extension ProductCreationAIStartingInfoViewModel {
+    @MainActor
+    func detectTexts(from image: UIImage) async {
+        do {
+            let texts = try await imageTextScanner.scanText(from: image)
+            if texts.isEmpty {
+                throw ScanError.noTextDetected
+            }
+            self.features = texts.joined(separator: " ")
+        } catch {
+            switch error {
+            case ScanError.noTextDetected:
+                textDetectionErrorMessage = Localization.noTextDetected
+                DDLogError("⛔️ No text detected from image.")
+            default:
+                // TODO: 13103 - Add tracking
+                textDetectionErrorMessage = Localization.textDetectionFailed
+                DDLogError("⛔️ Error scanning text from image: \(error)")
+            }
+        }
+    }
     enum Localization {
         static let noTextDetected = NSLocalizedString(
             "productCreationAIStartingInfoViewModel.noTextDetected",

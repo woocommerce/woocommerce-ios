@@ -122,7 +122,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @MainActor
     func checkAvailability() async {
-        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        isSiteEligibleForBlaze = await checkSiteEligibility()
         try? await synchronizePublishedProducts()
         updateAvailability()
     }
@@ -134,7 +134,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
-        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+        isSiteEligibleForBlaze = await checkSiteEligibility()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
@@ -196,6 +196,14 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
 // MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
+    @MainActor
+    func checkSiteEligibility() async -> Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return await blazeEligibilityChecker.isSiteEligible(site)
+    }
+
     @MainActor
     func synchronizeBlazeCampaigns() async throws {
         try await withCheckedThrowingContinuation({ continuation in

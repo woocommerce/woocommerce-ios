@@ -1395,6 +1395,12 @@ extension UIImage {
         return UIImage(named: "icon-circular-time")!
     }
 
+    /// Google Icon
+    ///
+    static var googleLogo: UIImage {
+        return UIImage(named: "google-logo")!
+    }
+
     /// Lock Image
     ///
     static var lockImage: UIImage {

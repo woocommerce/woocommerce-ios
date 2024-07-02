@@ -829,6 +829,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.circularTimeIcon)
     }
 
+    func test_google_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.googleLogo)
+    }
+
     func test_lock_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.lockImage)
     }

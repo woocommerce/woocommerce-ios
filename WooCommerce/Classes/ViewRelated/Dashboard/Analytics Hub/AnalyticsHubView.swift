@@ -134,7 +134,7 @@ private extension AnalyticsHubView {
         case .giftCards:
             AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
         case .googleCampaigns:
-            EmptyView() // TODO: Return Google Campaigns card
+            AnalyticsTopPerformersCard(campaignsViewModel: viewModel.googleCampaignsCard)
         }
     }
 }

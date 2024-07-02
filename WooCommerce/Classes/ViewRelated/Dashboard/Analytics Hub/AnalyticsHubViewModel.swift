@@ -126,6 +126,16 @@ final class AnalyticsHubViewModel: ObservableObject {
                                      usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
+    /// Google Campaigns Card ViewModel
+    ///
+    var googleCampaignsCard: GoogleAdsCampaignReportCardViewModel {
+        GoogleAdsCampaignReportCardViewModel(currentPeriodStats: currentGoogleCampaignStats,
+                                             previousPeriodStats: previousGoogleCampaignStats,
+                                             timeRange: timeRangeSelectionType,
+                                             isRedacted: isLoadingGoogleCampaignStats,
+                                             usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -226,6 +236,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var previousGiftCardStats: GiftCardStats? = nil
 
+    /// Google campaigns stats for the current selected time period. Used in the Google campaigns card.
+    ///
+    @Published private var currentGoogleCampaignStats: GoogleAdsCampaignStats? = nil
+
+    /// Google campaigns stats for the previous selected time period. Used in the Google campaigns card.
+    ///
+    @Published private var previousGoogleCampaignStats: GoogleAdsCampaignStats? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -245,6 +263,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Loading stats for gift card stats.
     ///
     @Published private var isLoadingGiftCardStats = false
+
+    /// Loading state for Google campaign stats.
+    ///
+    @Published private var isLoadingGoogleCampaignStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///

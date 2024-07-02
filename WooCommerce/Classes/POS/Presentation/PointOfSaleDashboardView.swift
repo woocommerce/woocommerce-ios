@@ -22,7 +22,7 @@ struct PointOfSaleDashboardView: View {
                         cartView
                     }
                 case .finalizing:
-                    if !viewModel.areTotalsFullScreen {
+                    if !viewModel.isTotalsViewFullScreen {
                         cartView
                         Spacer()
                     }

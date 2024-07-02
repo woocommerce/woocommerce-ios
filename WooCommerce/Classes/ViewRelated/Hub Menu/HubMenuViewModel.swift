@@ -66,7 +66,7 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var shouldAuthenticateAdminPage = false
 
-    @Published private var hasGoogleAdsCampaigns = false
+    @Published private(set) var hasGoogleAdsCampaigns = false
 
     var googleAdsCampaignURL: URL {
         let path: String = {

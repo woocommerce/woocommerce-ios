@@ -19,6 +19,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     let siteID: Int64
     private let analytics: Analytics
+    private let imageTextScanner: ImageTextScannerProtocol
 
     var productFeatures: String? {
         guard features.isNotEmpty else {
@@ -27,9 +28,12 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         return features
     }
 
-    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteID: Int64,
+         imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.features = ""
+        self.imageTextScanner = imageTextScanner
         self.analytics = analytics
         imageState = .empty
     }

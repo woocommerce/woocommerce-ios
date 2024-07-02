@@ -490,7 +490,7 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_hasGoogleAdsCampaigns_returns_false_if_site_has_no_campaigns() {
+    func test_googleAdsCampaignURL_is_correct_when_site_has_no_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -517,11 +517,12 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertFalse(viewModel.hasGoogleAdsCampaigns)
+        let campaignCreationPath = HubMenuViewModel.Constants.GoogleAds.campaignCreationPath
+        XCTAssertTrue(viewModel.googleAdsCampaignURL.absoluteString.hasSuffix(campaignCreationPath))
     }
 
     @MainActor
-    func test_hasGoogleAdsCampaigns_returns_false_if_site_has_campaigns() {
+    func test_googleAdsCampaignURL_is_correct_when_site_has_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
@@ -549,7 +550,70 @@ final class HubMenuViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
+        let campaignCreationPath = HubMenuViewModel.Constants.GoogleAds.campaignDashboardPath
+        XCTAssertTrue(viewModel.googleAdsCampaignURL.absoluteString.hasSuffix(campaignCreationPath))
+    }
+
+    @MainActor
+    func test_checkIfCampaignCreationSucceeded_sets_displayingGoogleAdsCampaigns_to_false_if_creation_succeeds() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.displayingGoogleAdsCampaigns = true
+
+        // When
+        let path = "https://example.com/wp-admin/admin.php?page=wc-admin&campaign=saved"
+        viewModel.checkIfCampaignCreationSucceeded(url: URL(string: path))
+
+        // Then
+        XCTAssertFalse(viewModel.displayingGoogleAdsCampaigns)
+    }
+
+    @MainActor
+    func test_checkIfCampaignCreationSucceeded_does_not_set_displayingGoogleAdsCampaigns_to_false_if_creation_does_not_complete() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.displayingGoogleAdsCampaigns = true
+
+        // When
+        let path = "https://example.com/wp-admin/admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
+        viewModel.checkIfCampaignCreationSucceeded(url: URL(string: path))
+
+        // Then
+        XCTAssertTrue(viewModel.displayingGoogleAdsCampaigns)
+    }
+
+    @MainActor
+    func test_handleTap_sets_displayingGoogleAdsCampaigns_to_true_if_menu_item_is_googleAds() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        XCTAssertFalse(viewModel.displayingGoogleAdsCampaigns)
+        XCTAssertNil(viewModel.selectedMenuID)
+
+        // When
+        viewModel.handleTap(menu: HubMenuViewModel.GoogleAds())
+
+        // Then
+        XCTAssertTrue(viewModel.displayingGoogleAdsCampaigns)
+        XCTAssertNil(viewModel.selectedMenuID)
+    }
+
+    @MainActor
+    func test_handleTap_does_not_set_displayingGoogleAdsCampaigns_to_true_if_menu_item_is_not_googleAds() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        XCTAssertFalse(viewModel.displayingGoogleAdsCampaigns)
+        XCTAssertNil(viewModel.selectedMenuID)
+
+        // When
+        viewModel.handleTap(menu: HubMenuViewModel.Blaze())
+
+        // Then
+        XCTAssertFalse(viewModel.displayingGoogleAdsCampaigns)
+        assertEqual(HubMenuViewModel.Blaze.id, viewModel.selectedMenuID)
     }
 }
 

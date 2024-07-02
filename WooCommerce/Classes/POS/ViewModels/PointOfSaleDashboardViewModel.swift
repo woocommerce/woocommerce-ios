@@ -28,7 +28,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
-    @Published var isCartViewBlocked: Bool = false
+    @Published var areTotalsFullScreen: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -149,7 +149,7 @@ private extension PointOfSaleDashboardViewModel {
                     return false
                 }
             }
-            .assign(to: &$isCartViewBlocked)
+            .assign(to: &$areTotalsFullScreen)
     }
 }
 

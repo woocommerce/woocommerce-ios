@@ -46,11 +46,13 @@ struct ItemRowView: View {
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
+        .background(Color.posBackgroundGreyi3)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)
         }
         .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 }
 
@@ -61,6 +63,7 @@ private extension ItemRowView {
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0
+        static let horizontalPadding: CGFloat = 32
     }
 }
 

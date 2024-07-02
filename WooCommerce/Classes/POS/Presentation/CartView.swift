@@ -42,8 +42,6 @@ struct CartView: View {
                             cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
-                        .background(Color.posBackgroundGreyi3)
-                        .padding(.horizontal, 32)
                     }
                 }
                 .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in

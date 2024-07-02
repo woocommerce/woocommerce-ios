@@ -66,6 +66,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var shouldAuthenticateAdminPage = false
 
+    @Published private var currentSite: Yosemite.Site?
+
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
@@ -265,6 +267,17 @@ private extension HubMenuViewModel {
 
     func observeSiteForUIUpdates() {
         stores.site
+            .filter { [weak self] site in
+                /// When switching sites, `HubMenuViewModel` is created with a new site ID.
+                /// However, the site info needs some time to be fetched and updated in stores manager.
+                /// That's why this stream's first element would be the info of previous site.
+                /// Adding this filter avoids redundantly checking eligibility of previous site.
+                site?.siteID == self?.siteID
+            }
+            .removeDuplicates()
+            .assign(to: &$currentSite)
+
+        $currentSite
             .compactMap { site -> URL? in
                 guard let urlString = site?.url, let url = URL(string: urlString) else {
                     return nil
@@ -273,11 +286,11 @@ private extension HubMenuViewModel {
             }
             .assign(to: &$storeURL)
 
-        stores.site
+        $currentSite
             .compactMap { $0?.name }
             .assign(to: &$storeTitle)
 
-        stores.site
+        $currentSite
             .compactMap { site -> URL? in
                 guard let urlString = site?.adminURL, let url = URL(string: urlString) else {
                     return site?.adminURLWithFallback()
@@ -286,7 +299,7 @@ private extension HubMenuViewModel {
             }
             .assign(to: &$woocommerceAdminURL)
 
-        stores.site
+        $currentSite
             .map { [weak self] site in
                 guard let self, let site else {
                     return false
@@ -301,12 +314,8 @@ private extension HubMenuViewModel {
             }
             .assign(to: &$shouldAuthenticateAdminPage)
 
-        stores.site
+        $currentSite
             .compactMap { $0 }
-            .filter { [weak self] site in
-                site.siteID == self?.siteID
-            }
-            .prefix(1)
             .sink { [weak self] site in
                 self?.updateMenuItemEligibility(with: site)
             }

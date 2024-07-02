@@ -29,7 +29,7 @@ final class ProductCreationAIStartingInfoViewModelTests: XCTestCase {
         let sut = ProductCreationAIStartingInfoViewModel(siteID: siteID)
 
         // When
-        sut.didTapReadTextFromPhoto()
+        sut.didTapReplacePhoto()
 
         // Then
         XCTAssertTrue(sut.isShowingMediaPickerSourceSheet)

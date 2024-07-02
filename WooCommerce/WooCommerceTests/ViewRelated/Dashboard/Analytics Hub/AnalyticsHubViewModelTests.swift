@@ -554,6 +554,36 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(vm.enabledCards.contains(.giftCards))
     }
+
+    @MainActor
+    func test_google_campaigns_card_is_displayed_when_plugin_active() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
+                                                                            active: true))
+
+        // When
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertTrue(vm.enabledCards.contains(.googleCampaigns))
+    }
+
+    @MainActor
+    func test_google_campaigns_card_not_displayed_when_plugin_inactive() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
+                                                                            active: false))
+
+        // When
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.googleCampaigns))
+    }
 }
 
 private extension AnalyticsHubViewModelTests {

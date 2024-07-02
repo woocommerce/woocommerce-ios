@@ -170,7 +170,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .giftCards:
             isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         case .googleCampaigns:
-            false // TODO: Check Google extension status
+            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce)
         default:
             true
         }

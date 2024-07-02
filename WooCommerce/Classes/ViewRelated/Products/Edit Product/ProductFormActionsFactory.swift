@@ -171,7 +171,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let canEditInventorySettingsRow = editable
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
@@ -238,7 +238,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let canEditProductType = editable
-        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let canEditInventorySettingsRow = editable
         let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowNoPriceWarningRow: Bool = {
             let variationsHaveNoPriceSet = variationsPrice == .notSet
@@ -314,7 +314,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
-        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let canEditInventorySettingsRow = editable
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
 
@@ -344,7 +344,7 @@ private extension ProductFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = {
             let canEditProductType = editable
-            let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+            let canEditInventorySettingsRow = editable
             let shouldShowNoPriceWarningRow: Bool = {
                 let variationsHaveNoPriceSet = variationsPrice == .notSet
                 let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty

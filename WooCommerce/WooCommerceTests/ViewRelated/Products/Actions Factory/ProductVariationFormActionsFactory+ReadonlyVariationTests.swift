@@ -55,7 +55,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_variation_with_decimal_stock_quantities_has_read_only_inventory() {
+    func test_variation_with_decimal_stock_quantities_has_editable_inventory() {
         // Arrange
         let productVariation = Fixtures.variationWithDecimalStockQuantity
         let model = EditableProductVariationModel(productVariation: productVariation)
@@ -67,7 +67,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
                                                                        .attributes(editable: true),
                                                                        .status(editable: true),
-                                                                       .inventorySettings(editable: false)]
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
     }
 }

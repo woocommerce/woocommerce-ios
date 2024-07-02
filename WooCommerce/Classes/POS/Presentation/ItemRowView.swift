@@ -12,18 +12,19 @@ struct ItemRowView: View {
     }
 
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             if let imageSource = cartItem.item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: 60,
+                                      productImageSize: Constants.productCardHeight,
                                       scale: scale,
-                                      productImageCornerRadius: 1,
+                                      productImageCornerRadius: Constants.productCardCornerRadius,
                                       foregroundColor: .clear)
             } else {
                 // TODO:
                 // Handle what we'll show when there's lack of images:
                 Rectangle()
-                    .frame(width: 60 * scale, height: 60 * scale)
+                    .frame(width: Constants.productCardHeight * scale,
+                           height: Constants.productCardHeight * scale)
                     .foregroundColor(.gray)
             }
             VStack(alignment: .leading) {
@@ -44,7 +45,22 @@ struct ItemRowView: View {
                 .foregroundColor(Color.posIconGrayi3)
             }
         }
-        .frame(maxWidth: .infinity, idealHeight: 120)
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
+                .stroke(Color.black, lineWidth: Constants.nilOutline)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+    }
+}
+
+private extension ItemRowView {
+    enum Constants {
+        static let productCardHeight: CGFloat = 64
+        static let productCardCornerRadius: CGFloat = 20
+        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
+        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
+        static let nilOutline: CGFloat = 0
     }
 }
 

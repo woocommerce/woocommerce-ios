@@ -7,14 +7,11 @@ struct ProductCreationAIStartingInfoView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
 
-    private let onUsePackagePhoto: (String?) -> Void
     private let onContinueWithFeatures: (String) -> Void
 
     init(viewModel: ProductCreationAIStartingInfoViewModel,
-         onUsePackagePhoto: @escaping (String?) -> Void,
          onContinueWithFeatures: @escaping (String) -> Void) {
         self.viewModel = viewModel
-        self.onUsePackagePhoto = onUsePackagePhoto
         self.onContinueWithFeatures = onContinueWithFeatures
     }
 
@@ -53,8 +50,22 @@ struct ProductCreationAIStartingInfoView: View {
                                 .frame(height: Layout.dividerHeight)
                                 .foregroundColor(Color(.separator))
 
-                            readTextFromPhotoButton
-                                .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                            switch viewModel.imageState {
+                            case .empty:
+                                readTextFromPhotoButton
+                                    .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                            case .loading, .success:
+                                PackagePhotoView(imageState: viewModel.imageState,
+                                                 onTapViewPhoto: {
+                                    viewModel.didTapViewPhoto()
+                                },
+                                                 onTapReplacePhoto: {
+                                    viewModel.didTapReplacePhoto()
+                                },
+                                                 onTapRemovePhoto: {
+                                    viewModel.didTapRemovePhoto()
+                                })
+                            }
                         }
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
@@ -72,6 +83,9 @@ struct ProductCreationAIStartingInfoView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+            viewModel.selectImage(from: source)
+        })
     }
 }
 
@@ -80,7 +94,6 @@ private extension ProductCreationAIStartingInfoView {
         HStack {
             Button {
                 viewModel.didTapReadTextFromPhoto()
-                // TODO: Launch photo selection flow
             } label: {
                 HStack(alignment: .center, spacing: Layout.UsePackagePhoto.spacing) {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
@@ -123,6 +136,92 @@ private extension ProductCreationAIStartingInfoView {
         .disabled(viewModel.features.isEmpty)
     }
 }
+
+private extension ProductCreationAIStartingInfoView {
+    struct PackagePhotoView: View {
+        @ScaledMetric private var scale: CGFloat = 1.0
+
+        let imageState: EditableImageViewState
+
+        let onTapViewPhoto: () -> Void
+        let onTapReplacePhoto: () -> Void
+        let onTapRemovePhoto: () -> Void
+
+        var body: some View {
+            HStack(alignment: .center, spacing: Layout.spacing) {
+                EditableImageView(imageState: imageState,
+                                  emptyContent: {})
+                .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
+                .cornerRadius(Layout.cornerRadius)
+
+                Text(Localization.photoSelected)
+                    .bodyStyle()
+
+                Spacer()
+
+                Menu {
+                    Button(Localization.viewPhoto) {
+                        onTapViewPhoto()
+                    }
+                    Button(Localization.replacePhoto) {
+                        onTapReplacePhoto()
+                    }
+                    Button(role: .destructive) {
+                        onTapRemovePhoto()
+                    } label: {
+                        Text(Localization.removePhoto)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .frame(width: Layout.ellipisButtonSize * scale, height: Layout.ellipisButtonSize * scale)
+                        .bodyStyle()
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+            .padding(Layout.padding)
+            .background(Color(.systemColor(.systemGray6)))
+            .clipShape(
+                .rect(
+                    bottomLeadingRadius: Layout.textFieldOverlayCornerRadius,
+                    bottomTrailingRadius: Layout.textFieldOverlayCornerRadius
+                )
+            )
+        }
+
+        enum Layout {
+            static let spacing: CGFloat = 16
+            static let cornerRadius: CGFloat = 4
+            static let padding = EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            static let textFieldOverlayCornerRadius: CGFloat = 8
+            static let packagePhotoSize: CGFloat = 48
+            static let ellipisButtonSize: CGFloat = 24
+        }
+
+        enum Localization {
+            static let photoSelected = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.photoSelected",
+                value: "Photo selected",
+                comment: "Text to explain that a package photo has been selected in starting info screen."
+            )
+            static let viewPhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.viewPhoto",
+                value: "View Photo",
+                comment: "Title of button which opens the selected package photo in starting info screen."
+            )
+            static let replacePhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.replacePhoto",
+                value: "Replace Photo",
+                comment: "Title of the button which opens photo selection flow to replace selected package photo in starting info screen."
+            )
+            static let removePhoto = NSLocalizedString(
+                "productCreationAIStartingInfoView.packagePhotoView.removePhoto",
+                value: "Remove Photo",
+                comment: "Title of button which removes selected package photo in starting info screen."
+            )
+        }
+    }
+}
+
 private extension ProductCreationAIStartingInfoView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
@@ -155,7 +254,7 @@ private extension ProductCreationAIStartingInfoView {
         static let subtitle = NSLocalizedString(
             "productCreationAIStartingInfoView.subtitle",
             value: "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.",
-            comment: "Subtitle on the starting info screen."
+            comment: "Subtitle on the starting info screen explaining what text to enter in the textfield."
         )
         static let placeholder = NSLocalizedString(
             "productCreationAIStartingInfoView.placeholder",
@@ -165,7 +264,7 @@ private extension ProductCreationAIStartingInfoView {
         static let readTextFromPhoto = NSLocalizedString(
             "productCreationAIStartingInfoView.readTextFromPhoto",
             value: "Read text from product photo",
-            comment: "Upload package photo button on the text field"
+            comment: "Button to upload package photo to read text from the photo"
         )
         static let continueText = NSLocalizedString(
             "productCreationAIStartingInfoView.continueText",
@@ -177,6 +276,6 @@ private extension ProductCreationAIStartingInfoView {
 
 struct ProductCreationAIStartingInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductCreationAIStartingInfoView(viewModel: .init(siteID: 123), onUsePackagePhoto: { _ in }, onContinueWithFeatures: { _ in })
+        ProductCreationAIStartingInfoView(viewModel: .init(siteID: 123), onContinueWithFeatures: { _ in })
     }
 }

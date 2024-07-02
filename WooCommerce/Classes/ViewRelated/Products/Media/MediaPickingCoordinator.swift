@@ -162,5 +162,6 @@ extension MediaPickingCoordinator {
         case productForm = "product_form"
         case productFromImageForm = "product_from_image_form"
         case blazeEditAdForm = "blaze_edit_ad_form"
+        case readTextFromProductPhoto = "read_text_from_product_photo"
     }
 }

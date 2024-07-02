@@ -2704,6 +2704,7 @@
 		E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */; };
 		EE09DE062C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */; };
 		EE09DE082C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */; };
+		EE09DE0B2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE09DE0A2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift */; };
 		EE0EE7A628B7415200F6061E /* CustomHelpCenterContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */; };
 		EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */; };
 		EE1905822B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905812B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift */; };
@@ -5673,6 +5674,7 @@
 		E1F52DC52668E03B00349D75 /* CardPresentModalBluetoothRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalBluetoothRequired.swift; sourceTree = "<group>"; };
 		EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAIStartingInfoView.swift; sourceTree = "<group>"; };
 		EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAIStartingInfoViewModel.swift; sourceTree = "<group>"; };
+		EE09DE0A2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPackageImageCoordinator.swift; sourceTree = "<group>"; };
 		EE0EE7A528B7415200F6061E /* CustomHelpCenterContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContent.swift; sourceTree = "<group>"; };
 		EE0EE7A728B74EF300F6061E /* CustomHelpCenterContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomHelpCenterContentTests.swift; sourceTree = "<group>"; };
 		EE1905812B50289100617C53 /* BlazeCampaignCreationFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationFormViewModelTests.swift; sourceTree = "<group>"; };
@@ -12829,6 +12831,14 @@
 			path = StartingInfo;
 			sourceTree = "<group>";
 		};
+		EE09DE092C2D6E1E00A32680 /* ImageSelection */ = {
+			isa = PBXGroup;
+			children = (
+				EE09DE0A2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift */,
+			);
+			path = ImageSelection;
+			sourceTree = "<group>";
+		};
 		EE3272A229A88F670015F8D0 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -12938,6 +12948,7 @@
 		EE5B5BB12AB30BF9009BCBD6 /* AddProductWithAI */ = {
 			isa = PBXGroup;
 			children = (
+				EE09DE092C2D6E1E00A32680 /* ImageSelection */,
 				EE09DE042C2C0C7600A32680 /* StartingInfo */,
 				EEA6935A2B231A3100BAECA6 /* Survey */,
 				EE7707C62ABBF473009FD564 /* AIToneVoice */,
@@ -15447,6 +15458,7 @@
 				4520A15E2722BA3E001FA573 /* OrderDateRangeFilter+Utils.swift in Sources */,
 				DEF8CF0F29A890E900800A60 /* JetpackBenefitsViewModel.swift in Sources */,
 				B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */,
+				EE09DE0B2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift in Sources */,
 				DE621F6A29D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift in Sources */,
 				DE78DE422B2813E4002E58DE /* ThemesCarouselViewModel.swift in Sources */,
 				DEE183F1292E0ED0008818AB /* JetpackSetupInterruptedView.swift in Sources */,

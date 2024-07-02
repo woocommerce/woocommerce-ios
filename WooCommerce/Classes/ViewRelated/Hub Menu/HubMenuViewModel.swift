@@ -66,6 +66,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var shouldAuthenticateAdminPage = false
 
+    @Published private(set) var hasGoogleAdsCampaigns = false
+
     @Published private var currentSite: Yosemite.Site?
 
     private let stores: StoresManager
@@ -320,6 +322,17 @@ private extension HubMenuViewModel {
                 self?.updateMenuItemEligibility(with: site)
             }
             .store(in: &cancellables)
+
+        $currentSite
+            .compactMap { $0 }
+            .asyncMap { [weak self] site -> Bool in
+                guard let self else {
+                    return false
+                }
+                return await checkIfSiteHasGoogleAdsCampaigns()
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$hasGoogleAdsCampaigns)
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
@@ -343,6 +356,17 @@ private extension HubMenuViewModel {
         }
     }
 
+    @MainActor
+    func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
+        do {
+            let campaigns = try await fetchGoogleAdsCampaigns()
+            return campaigns.isNotEmpty
+        } catch {
+            DDLogError("⛔️ Error fetching Google Ads campaigns: \(error)")
+            return false
+        }
+    }
+
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
     func observePlanName() {
@@ -358,6 +382,15 @@ private extension HubMenuViewModel {
             }
         }
         .assign(to: &$planName)
+    }
+
+    @MainActor
+    func fetchGoogleAdsCampaigns() async throws -> [GoogleAdsCampaign] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

@@ -21,7 +21,8 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         orderService = POSOrderPreviewService()
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: orderService)
+                                            orderService: orderService,
+                                            currencyFormatter: .init(currencySettings: .init()))
     }
 
     override func tearDown() {

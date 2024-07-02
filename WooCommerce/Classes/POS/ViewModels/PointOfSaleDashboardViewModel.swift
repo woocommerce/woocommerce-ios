@@ -11,56 +11,12 @@ import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    enum PaymentState {
-        case idle
-        case acceptingCard
-        case preparingReader
-        case processingPayment
-        case cardPaymentSuccessful
-
-        init?(from cardPaymentEvent: CardPresentPaymentEvent) {
-            switch cardPaymentEvent {
-            case .idle:
-                self = .idle
-            case .show(.validatingOrder):
-                self = .preparingReader
-            case .show(.tapSwipeOrInsertCard):
-                self = .acceptingCard
-            case .show(.processing):
-                self = .processingPayment
-            case .show(.paymentSuccess):
-                self = .cardPaymentSuccessful
-            default:
-                return nil
-            }
-        }
-    }
-
     let itemSelectorViewModel: ItemSelectorViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
+    let totalsViewModel: TotalsViewModel
 
     @Published private(set) var isCartCollapsed: Bool = true
 
-    // Total amounts
-    @Published private(set) var formattedCartTotalPrice: String?
-    var formattedOrderTotalPrice: String? {
-        return formattedPrice(order?.total, currency: order?.currency)
-    }
-    var formattedOrderTotalTaxPrice: String? {
-        return formattedPrice(order?.totalTax, currency: order?.currency)
-    }
-
-    private func formattedPrice(_ price: String?, currency: String?) -> String? {
-        guard let price, let currency else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(price, with: currency)
-    }
-
-    @Published var showsCardReaderSheet: Bool = false
-    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
-    @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     enum OrderStage {
@@ -75,115 +31,30 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    // TODO: 12998 - move the following properties to totals view model
-    @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
-    private var itemsInCart: [CartItem] = []
-
-    /// Order created the first time the checkout is shown for a given transaction.
-    /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    @Published private var order: POSOrder?
-    @Published private(set) var isSyncingOrder: Bool = false
-
-    private let orderService: POSOrderServiceProtocol
-    private let cardPresentPaymentService: CardPresentPaymentFacade
-
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol) {
-        self.cardPresentPaymentService = cardPresentPaymentService
+         orderService: POSOrderServiceProtocol,
+         currencyFormatter: CurrencyFormatter) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
-        self.orderService = orderService
 
         self.itemSelectorViewModel = .init(itemProvider: itemProvider)
+        self.totalsViewModel = TotalsViewModel(orderService: orderService,
+                                               cardPresentPaymentService: cardPresentPaymentService,
+                                               currencyFormatter: currencyFormatter)
 
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()
         observeCartSubmission()
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
-        observeCardPresentPaymentEvents()
-        observeItemsInCartForCartTotal()
         observePaymentStateForButtonDisabledProperties()
-    }
-
-    var areAmountsFullyCalculated: Bool {
-        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
-    }
-
-    var showRecalculateButton: Bool {
-        return !areAmountsFullyCalculated && isSyncingOrder == false
-    }
-
-    func cardPaymentTapped() {
-        Task { @MainActor in
-            await collectPayment()
-        }
-    }
-
-    @MainActor
-    private func collectPayment() async {
-        guard let order else {
-            return
-        }
-        do {
-            let finalOrder = orderService.order(from: order)
-            try await collectPayment(for: finalOrder)
-        } catch {
-            DDLogError("Error taking payment: \(error)")
-        }
-    }
-
-    @MainActor
-    private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-    }
-
-    @MainActor
-    private func prepareConnectedReaderForPayment() async {
-        // Digging in to the connection viewmodel here is a bit of a shortcut, we should improve this.
-        // TODO: Have our own subscription to the connected readers
-        guard cardReaderConnectionViewModel.connectionStatus == .connected else {
-            return
-        }
-        await collectPayment()
-    }
-
-    @MainActor
-    func updateOrderStatus(_ status: OrderStatusEnum) async throws -> POSOrder? {
-        guard let order else {
-            return nil
-        }
-        let updatedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
-        return updatedOrder
-    }
-
-    func calculateAmountsTapped() {
-        // TODO: 12998 - move to the totals view model
-        startSyncingOrder(cartItems: itemsInCart)
-    }
-
-    private func startSyncingOrder(cartItems: [CartItem]) {
-        // TODO: 12998 - move to the totals view model
-        // At this point, this should happen in the TotalsViewModel
-        Task { @MainActor in
-            itemsInCart = cartItems
-            await syncOrder(for: cartItems)
-        }
     }
 
     func startNewTransaction() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        paymentState = .acceptingCard
-        order = nil
-    }
-
-    @MainActor
-    func onTotalsViewDisappearance() {
-        cardPresentPaymentService.cancelPayment()
+        totalsViewModel.startNewTransaction()
     }
 }
 
@@ -229,63 +100,15 @@ private extension PointOfSaleDashboardViewModel {
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeItemsInCartForCartTotal() {
-        cartViewModel.$itemsInCart
-            .map { [weak self] in
-                guard let self else { return "-" }
-                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
-                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
-                    let quantity = cartItem.quantity
-                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                    return partialResult + total
-                }
-                return currencyFormatter.formatAmount(totalValue)
-            }
-            .assign(to: &$formattedCartTotalPrice)
+    func startSyncingOrder(cartItems: [CartItem]) {
+        totalsViewModel.startSyncingOrder(with: cartItems,
+                                          allItems: itemSelectorViewModel.items)
     }
+}
 
-    func observeCardPresentPaymentEvents() {
-        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
-        cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentAlertType? in
-                guard case let .show(eventDetails) = event,
-                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
-                    return nil
-                }
-                return alertType
-            }
-            .assign(to: &$cardPresentPaymentAlertViewModel)
-        cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard case let .show(eventDetails) = event,
-                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
-                    return nil
-                }
-                return messageType
-            }
-            .assign(to: &$cardPresentPaymentInlineMessage)
-        cardPresentPaymentService.paymentEventPublisher.map { event in
-            switch event {
-            case .idle:
-                return false
-            case .show(let eventDetails):
-                switch eventDetails.pointOfSalePresentationStyle {
-                case .alert:
-                    return true
-                case .message, .none:
-                    return false
-                }
-            case .showOnboarding:
-                return true
-            }
-        }.assign(to: &$showsCardReaderSheet)
-        cardPresentPaymentService.paymentEventPublisher
-            .compactMap({ PaymentState(from: $0) })
-            .assign(to: &$paymentState)
-    }
-
+private extension PointOfSaleDashboardViewModel {
     func observePaymentStateForButtonDisabledProperties() {
-        $paymentState
+        totalsViewModel.$paymentState
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,
@@ -299,7 +122,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isAddMoreDisabled)
 
-        $paymentState
+        totalsViewModel.$paymentState
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment:
@@ -312,36 +135,6 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isExitPOSDisabled)
-    }
-
-    @MainActor
-    private func syncOrder(for cartProducts: [CartItem]) async {
-        guard isSyncingOrder == false else {
-            return
-        }
-        isSyncingOrder = true
-        let cart = cartProducts
-            .map {
-                POSCartItem(itemID: nil,
-                            product: $0.item,
-                            quantity: Decimal($0.quantity))
-            }
-        defer {
-            isSyncingOrder = false
-        }
-        do {
-            isSyncingOrder = true
-            let order = try await orderService.syncOrder(cart: cart,
-                                                         order: order,
-                                                         allProducts: itemSelectorViewModel.items)
-            self.order = order
-            isSyncingOrder = false
-            // TODO: this is temporary solution
-            await prepareConnectedReaderForPayment()
-            DDLogInfo("🟢 [POS] Synced order: \(order)")
-        } catch {
-            DDLogError("🔴 [POS] Error syncing order: \(error)")
-        }
     }
 }
 

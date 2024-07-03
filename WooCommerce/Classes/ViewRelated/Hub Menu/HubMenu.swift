@@ -394,10 +394,9 @@ private extension HubMenu {
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
+        static let trackingOptionKey = "option"
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
-
-        static let trackingOptionKey = "option"
 
         /// Spacing for the badge view in the avatar row.
         ///

@@ -67,7 +67,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var shouldAuthenticateAdminPage = false
 
     @Published private(set) var hasGoogleAdsCampaigns = false
-    @Published private(set) var currentSite: Yosemite.Site?
+    @Published private var currentSite: Yosemite.Site?
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

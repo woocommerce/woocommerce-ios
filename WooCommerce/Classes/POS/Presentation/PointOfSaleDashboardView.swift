@@ -4,9 +4,11 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = viewModel.totalsViewModel
     }
 
     var body: some View {
@@ -41,6 +43,19 @@ struct PointOfSaleDashboardView: View {
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
         .toolbarBackground(.visible, for: .bottomBar)
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch totalsViewModel.cardPresentPaymentEvent {
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
+        })
     }
 }
 
@@ -67,6 +82,19 @@ private extension PointOfSaleDashboardView {
     var productListView: some View {
         ItemListView(viewModel: viewModel.itemSelectorViewModel)
             .frame(maxWidth: .infinity)
+    }
+}
+
+fileprivate extension CardPresentPaymentEvent {
+    var temporaryEventDescription: String {
+        switch self {
+        case .idle:
+            return "Idle"
+        case .show:
+            return "Event"
+        case .showOnboarding(let onboardingViewModel):
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        }
     }
 }
 

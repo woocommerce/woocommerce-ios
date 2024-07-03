@@ -1,7 +1,29 @@
+import Combine
 import SwiftUI
 import WebKit
 import Alamofire
 import class Networking.UserAgent
+
+/// Hosting controller for WebView
+///
+final class WebViewHostingController: UIHostingController<WebView> {
+    init(url: URL,
+         disableLinkClicking: Bool = false,
+         onCommit: ((WKWebView)->Void)? = nil,
+         urlToTriggerExit: String? = nil,
+         redirectHandler: ((URL) -> Void)? = nil) {
+        super.init(rootView: WebView(isPresented: .constant(true),
+                                     url: url,
+                                     disableLinkClicking: disableLinkClicking,
+                                     onCommit: onCommit,
+                                     urlToTriggerExit: urlToTriggerExit,
+                                     redirectHandler: redirectHandler))
+    }
+
+    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 /// Mirror of AuthenticatedWebView, for equivalent display of URLs in `WKWebView` that do not need authentication on WPCom.
 struct WebView: UIViewRepresentable {
@@ -14,7 +36,7 @@ struct WebView: UIViewRepresentable {
         }
     }
 
-    private let webView = WKWebView()
+    let webView = WKWebView()
     private let progressView = WebProgressView()
 
     private let url: URL
@@ -22,12 +44,21 @@ struct WebView: UIViewRepresentable {
     /// Callback that will be triggered in when the underlying `WKWebView` delegate method `didCommit` is triggered.
     /// This happens when the web view has received data and is starting to render the content.
     ///
-    private var onCommit: ((WKWebView) -> Void)?
+    private let onCommit: ((WKWebView) -> Void)?
 
     /// Check whether to prevent any link clicking to open the link.
     /// This is used in ThemesPreviewView, as it is intended to only display a single demo URL without allowing navigation to
     /// other webpages.
-    private var disableLinkClicking: Bool
+    private let disableLinkClicking: Bool
+
+    /// A url to trigger dismissing of the web view.
+    let urlToTriggerExit: String?
+
+    /// Closure to determine the action given the redirect URL.
+    /// If `urlToTriggerExit` is provided, this closure is triggered only when
+    /// a redirect URL matches `urlToTriggerExit`.
+    /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
+    let redirectHandler: ((URL) -> Void)?
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -35,12 +66,16 @@ struct WebView: UIViewRepresentable {
         isPresented: Binding<Bool>,
         url: URL,
         disableLinkClicking: Bool = false,
-        onCommit: ((WKWebView)->Void)? = nil
+        onCommit: ((WKWebView)->Void)? = nil,
+        urlToTriggerExit: String? = nil,
+        redirectHandler: ((URL) -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.url = url
         self.disableLinkClicking = disableLinkClicking
         self.onCommit = onCommit
+        self.urlToTriggerExit = urlToTriggerExit
+        self.redirectHandler = redirectHandler
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -71,9 +106,30 @@ struct WebView: UIViewRepresentable {
 
     class WebViewCoordinator: NSObject, WKNavigationDelegate {
         private var parent: WebView
+        private var urlSubscription: AnyCancellable?
 
         init(_ uiWebView: WebView) {
             parent = uiWebView
+            super.init()
+
+            observeURL()
+        }
+
+        func observeURL() {
+            urlSubscription = parent.webView.publisher(for: \.url)
+                .sink { [weak self] url in
+                    guard let self, let url else { return }
+
+                    guard let urlToTriggerExit = parent.urlToTriggerExit else {
+                        // always trigger `redirectHandler` if `urlToTriggerExit` is not specified.
+                        parent.redirectHandler?(url)
+                        return
+                    }
+
+                    if url.absoluteString.contains(urlToTriggerExit) {
+                        parent.redirectHandler?(url)
+                    }
+                }
         }
 
         func webView(_ webView: WKWebView, decidePolicyFor

@@ -4,7 +4,7 @@ import SwiftUI
 import Combine
 import Experiments
 import Yosemite
-import Storage
+import struct Storage.GeneralAppSettingsStorage
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -64,8 +64,9 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
 
-    @Published var shouldAuthenticateAdminPage = false
+    @Published private(set) var shouldAuthenticateAdminPage = false
 
+    @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
 
     private let stores: StoresManager
@@ -74,6 +75,8 @@ final class HubMenuViewModel: ObservableObject {
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private(set) lazy var posItemProvider: POSItemProvider = {
         let currencySettings = ServiceLocator.currencySettings
@@ -90,10 +93,6 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
-
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
-
-    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -320,6 +319,17 @@ private extension HubMenuViewModel {
                 self?.updateMenuItemEligibility(with: site)
             }
             .store(in: &cancellables)
+
+        $currentSite
+            .compactMap { $0 }
+            .asyncMap { [weak self] site -> Bool in
+                guard let self else {
+                    return false
+                }
+                return await checkIfSiteHasGoogleAdsCampaigns()
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$hasGoogleAdsCampaigns)
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
@@ -343,6 +353,17 @@ private extension HubMenuViewModel {
         }
     }
 
+    @MainActor
+    func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
+        do {
+            let campaigns = try await fetchGoogleAdsCampaigns()
+            return campaigns.isNotEmpty
+        } catch {
+            DDLogError("⛔️ Error fetching Google Ads campaigns: \(error)")
+            return false
+        }
+    }
+
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
     func observePlanName() {
@@ -358,6 +379,15 @@ private extension HubMenuViewModel {
             }
         }
         .assign(to: &$planName)
+    }
+
+    @MainActor
+    func fetchGoogleAdsCampaigns() async throws -> [GoogleAdsCampaign] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

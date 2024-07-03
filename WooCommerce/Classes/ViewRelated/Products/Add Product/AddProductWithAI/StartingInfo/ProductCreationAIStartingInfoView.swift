@@ -17,7 +17,7 @@ struct ProductCreationAIStartingInfoView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: Layout.parentSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
                     // Title label.
                     Text(Localization.title)
@@ -26,18 +26,17 @@ struct ProductCreationAIStartingInfoView: View {
 
                     // Subtitle label.
                     Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
+                        .foregroundStyle(Color(.secondaryLabel))
                         .bodyStyle()
                 }
-                .padding(.bottom, Layout.titleBlockBottomPadding)
 
-                VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
+                VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
                     VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
                         VStack(spacing: 0) {
                             ZStack(alignment: .topLeading) {
                                 TextEditor(text: $viewModel.features)
                                     .bodyStyle()
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                                     .padding(insets: Layout.messageContentInsets)
                                     .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
                                     .focused($editorIsFocused)
@@ -71,14 +70,23 @@ struct ProductCreationAIStartingInfoView: View {
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
                         )
                     }
+
+                    ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
+
+                    if let message = viewModel.textDetectionErrorMessage {
+                        Text(message)
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                    }
                 }
             }
             .padding(insets: Layout.insets)
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                // CTA to continue to next screen.
-                continueButton
+                // CTA to generate product details.
+                generateButton
                     .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -107,13 +115,13 @@ private extension ProductCreationAIStartingInfoView {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .renderingMode(.template)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .bodyStyle()
                         .padding(Layout.UsePackagePhoto.padding)
 
                     Text(Localization.readTextFromPhoto)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.accentColor)
+                        .foregroundStyle(Color.accentColor)
                         .bodyStyle()
                 }
             }
@@ -131,14 +139,14 @@ private extension ProductCreationAIStartingInfoView {
             .renderedIf(viewModel.features.isEmpty)
     }
 
-    var continueButton: some View {
+    var generateButton: some View {
         Button {
             // continue
             editorIsFocused = false
             viewModel.didTapContinue()
             onContinueWithFeatures(viewModel.features)
         } label: {
-            Text(Localization.continueText)
+            Text(Localization.generateProductDetails)
         }
         .buttonStyle(PrimaryButtonStyle())
         .disabled(viewModel.features.isEmpty)
@@ -270,11 +278,12 @@ private extension ProductCreationAIStartingInfoView {
 
 private extension ProductCreationAIStartingInfoView {
     enum Layout {
-        static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
+        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
 
-        static let titleBlockBottomPadding: CGFloat = 40
+        static let parentSpacing: CGFloat = 24
 
         static let titleBlockSpacing: CGFloat = 16
+        static let textFieldBlockSpacing: CGFloat = 24
 
         static let editorBlockSpacing: CGFloat = 8
         static let minimumEditorHeight: CGFloat = 70
@@ -312,10 +321,10 @@ private extension ProductCreationAIStartingInfoView {
             value: "Read text from product photo",
             comment: "Button to upload package photo to read text from the photo"
         )
-        static let continueText = NSLocalizedString(
-            "productCreationAIStartingInfoView.continueText",
-            value: "Continue",
-            comment: "Continue button on the starting info screen."
+        static let generateProductDetails = NSLocalizedString(
+            "productCreationAIStartingInfoView.generateProductDetails",
+            value: "Generate Product Details",
+            comment: "Button to generate product details in the starting info screen."
         )
     }
 }

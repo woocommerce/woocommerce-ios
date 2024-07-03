@@ -8,6 +8,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
 
     init(siteID: Int64,
          navigationController: UINavigationController?,
@@ -18,8 +19,13 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+
         rootView.switchStoreHandler = { [weak self] in
             self?.presentSwitchStore()
+        }
+
+        rootView.googleAdsCampaignHandler = { [weak self] in
+            self?.presentGoogleAds()
         }
     }
 
@@ -80,6 +86,20 @@ private extension HubMenuViewController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }
+    }
+
+    func presentGoogleAds() {
+        guard let navigationController else {
+            return
+        }
+        googleAdsCampaignCoordinator = GoogleAdsCampaignCoordinator(
+            siteID: viewModel.siteID,
+            siteAdminURL: viewModel.woocommerceAdminURL.absoluteString,
+            hasGoogleAdsCampaigns: viewModel.hasGoogleAdsCampaigns,
+            shouldAuthenticateAdminPage: viewModel.shouldAuthenticateAdminPage,
+            navigationController: navigationController
+        )
+        googleAdsCampaignCoordinator?.start()
     }
 }
 

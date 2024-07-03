@@ -67,21 +67,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var shouldAuthenticateAdminPage = false
 
-    @Published private var hasGoogleAdsCampaigns = false
-    @Published var displayingGoogleAdsCampaigns = false
-
-    var googleAdsCampaignURL: URL {
-        let path: String = {
-            if hasGoogleAdsCampaigns {
-                Constants.GoogleAds.campaignDashboardPath
-            } else {
-                Constants.GoogleAds.campaignCreationPath
-            }
-        }()
-        return URL(string: woocommerceAdminURL.absoluteString.appending(path))!
-    }
-
-    @Published private var currentSite: Yosemite.Site?
+    @Published private(set) var hasGoogleAdsCampaigns = false
+    @Published private(set) var currentSite: Yosemite.Site?
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -188,53 +175,6 @@ final class HubMenuViewModel: ObservableObject {
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func checkIfCampaignCreationSucceeded(url: URL?) {
-        guard let url, url != googleAdsCampaignURL else {
-            return
-        }
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        let queryItems = components?.queryItems
-        let creationSucceeded = queryItems?.first(where: {
-            $0.name == Constants.GoogleAds.campaignParam &&
-            $0.value == Constants.GoogleAds.savedValue
-        }) != nil
-        if creationSucceeded {
-            // dismisses the web view
-            displayingGoogleAdsCampaigns = false
-
-            // updates the check for campaigns
-            Task { @MainActor in
-                hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
-            }
-
-            // TODO: show success bottom sheet
-            DDLogDebug("🎉 Campaign creation success")
-        }
-    }
-
-    /// Handle navigation when tapping a list menu row.
-    ///
-    func handleTap(menu: HubMenuItem) {
-        analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
-
-        if menu.id == HubMenuViewModel.Settings.id {
-            analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
-            analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-        }
-
-        if menu.id == HubMenuViewModel.GoogleAds.id {
-            /// Displaying GLA in a modal because it's not straightforward
-            /// to dismiss the detail view in `NavigationStack` programmatically.
-            /// When we support a native experience, we can revise this navigation flow.
-            displayingGoogleAdsCampaigns = true
-        } else {
-            selectedMenuID = menu.id
-        }
     }
 
     deinit {
@@ -473,17 +413,6 @@ extension HubMenuItem {
 }
 
 extension HubMenuViewModel {
-
-    enum Constants {
-        static let trackingOptionKey = "option"
-
-        enum GoogleAds {
-            static let campaignDashboardPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
-            static let campaignCreationPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard&subpath=%2Fcampaigns%2Fcreate"
-            static let campaignParam = "campaign"
-            static let savedValue = "saved"
-        }
-    }
 
     struct Settings: HubMenuItem {
         static var id = "settings"

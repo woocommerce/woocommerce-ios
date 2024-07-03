@@ -9,6 +9,9 @@ struct HubMenu: View {
     /// Set from the hosting controller to handle switching store.
     var switchStoreHandler: () -> Void = {}
 
+    /// Set from the hosting controller to open Google Ads campaigns.
+    var googleAdsCampaignHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
@@ -38,8 +41,25 @@ struct HubMenu: View {
                     viewModel.setupMenuElements()
                 }
         }
-        .sheet(isPresented: $viewModel.displayingGoogleAdsCampaigns) {
-            googleAdsView
+    }
+
+    /// Handle navigation when tapping a list menu row.
+    ///
+    private func handleTap(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        if menu.id == HubMenuViewModel.Settings.id {
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+        } else if menu.id == HubMenuViewModel.Blaze.id {
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        }
+
+        if menu.id == HubMenuViewModel.GoogleAds.id {
+            googleAdsCampaignHandler()
+        } else {
+            viewModel.selectedMenuID = menu.id
         }
     }
 }
@@ -98,7 +118,7 @@ private extension HubMenu {
     @ViewBuilder
     func menuItemView(menu: HubMenuItem, chevron: Row.Chevron = .leading) -> some View {
         Button {
-            viewModel.handleTap(menu: menu)
+            handleTap(menu: menu)
         } label: {
             Row(title: menu.title,
                 titleBadge: nil,
@@ -222,25 +242,6 @@ private extension HubMenu {
     var couponListView: some View {
         EnhancedCouponListView(siteID: viewModel.siteID)
             .navigationBarTitleDisplayMode(.inline)
-    }
-
-    var googleAdsView: some View {
-        NavigationStack {
-            webView(url: viewModel.googleAdsCampaignURL,
-                    title: Localization.googleForWooCommerce,
-                    shouldAuthenticate: viewModel.shouldAuthenticateAdminPage,
-                    exitTrigger: { url in
-                viewModel.checkIfCampaignCreationSucceeded(url: url)
-            })
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        viewModel.displayingGoogleAdsCampaigns = false
-                    }
-                }
-            }
-        }
     }
 
     /// Reusable List row for the hub menu
@@ -396,6 +397,8 @@ private extension HubMenu {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
 
+        static let trackingOptionKey = "option"
+
         /// Spacing for the badge view in the avatar row.
         ///
         static func badgeSpacing(sizeCategory: ContentSizeCategory) -> CGFloat {
@@ -410,16 +413,6 @@ private extension HubMenu {
             "hubMenu.productReview",
             value: "Product Review",
             comment: "Title of the view containing a single Product Review"
-        )
-        static let googleForWooCommerce = NSLocalizedString(
-            "hubMenu.googleForWooCommerce",
-            value: "Google for WooCommerce",
-            comment: "Title of the Google Ads campaign view"
-        )
-        static let cancel = NSLocalizedString(
-            "hubMenu.cancelButton",
-            value: "Cancel",
-            comment: "Button to dismiss a modal from the Hub menu"
         )
     }
 }

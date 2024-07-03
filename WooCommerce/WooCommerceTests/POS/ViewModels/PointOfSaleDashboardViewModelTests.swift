@@ -33,6 +33,31 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_plain_setup() {
+        XCTAssertEqual(sut.orderStage, .building)
+        XCTAssertEqual(sut.isCartCollapsed, true)
+        XCTAssertEqual(sut.isAddMoreDisabled, false)
+        XCTAssertEqual(sut.isExitPOSDisabled, false)
+    }
+
+    func test_startNewTransaction() {
+        sut.startNewTransaction()
+
+        XCTAssertEqual(sut.orderStage, .building)
+        XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, true)
+        XCTAssertEqual(sut.totalsViewModel.paymentState, .acceptingCard)
+        XCTAssertNil(sut.totalsViewModel.order)
+    }
+
+    func test_items_added_to_cart() {
+        let item = Self.makeItem()
+
+        sut.itemSelectorViewModel.select(item)
+
+        XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, false)
+        XCTAssertEqual(sut.isCartCollapsed, false)
+    }
+
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210
 }
@@ -44,5 +69,16 @@ private extension PointOfSaleDashboardViewModelTests {
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
             []
         }
+    }
+
+    static func makeItem() -> POSItem {
+        return POSProduct(itemID: UUID(),
+                          productID: 0,
+                          name: "",
+                          price: "",
+                          formattedPrice: "",
+                          itemCategories: [],
+                          productImageSource: nil,
+                          productType: .simple)
     }
 }

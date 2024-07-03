@@ -42,8 +42,8 @@ private extension GoogleAdsCampaignCoordinator {
     }
 
     func createCampaignViewController(with url: URL) -> UIViewController {
-        let exitTriggerClosure: (URL?) -> Void = { [weak self] newURL in
-            if let newURL, newURL != url {
+        let redirectHandler: (URL) -> Void = { [weak self] newURL in
+            if newURL != url {
                 self?.checkIfCampaignCreationSucceeded(url: newURL)
             }
         }
@@ -51,11 +51,11 @@ private extension GoogleAdsCampaignCoordinator {
             let viewModel = DefaultAuthenticatedWebViewModel(
                 title: Localization.googleForWooCommerce,
                 initialURL: url,
-                exitTrigger: exitTriggerClosure
+                redirectHandler: redirectHandler
             )
             return AuthenticatedWebViewController(viewModel: viewModel)
         } else {
-            let controller = WebViewHostingController(url: url, exitTrigger: exitTriggerClosure)
+            let controller = WebViewHostingController(url: url, redirectHandler: redirectHandler)
             controller.title = Localization.googleForWooCommerce
             return controller
         }
@@ -73,7 +73,7 @@ private extension GoogleAdsCampaignCoordinator {
             navigationController.dismiss(animated: true)
 
             // TODO: show success bottom sheet
-            DDLogDebug("🎉 Campaign creation success")
+            DDLogDebug("🎉 Google Ads campaign creation success")
         }
     }
 

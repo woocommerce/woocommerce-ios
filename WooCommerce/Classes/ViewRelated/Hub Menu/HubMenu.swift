@@ -208,18 +208,18 @@ private extension HubMenu {
                  title: String,
                  shouldAuthenticate: Bool,
                  urlToTriggerExit: String? = nil,
-                 exitTrigger: ((URL?) -> Void)? = nil) -> some View {
+                 redirectHandler: ((URL) -> Void)? = nil) -> some View {
         Group {
             if shouldAuthenticate {
                 AuthenticatedWebView(isPresented: .constant(true),
                                      url: url,
                                      urlToTriggerExit: urlToTriggerExit,
-                                     exitTrigger: exitTrigger)
+                                     redirectHandler: redirectHandler)
             } else {
                 WebView(isPresented: .constant(true),
                         url: url,
                         urlToTriggerExit: urlToTriggerExit,
-                        exitTrigger: exitTrigger)
+                        redirectHandler: redirectHandler)
             }
         }
         .navigationTitle(title)

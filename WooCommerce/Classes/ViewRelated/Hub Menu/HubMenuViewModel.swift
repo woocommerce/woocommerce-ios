@@ -5,7 +5,6 @@ import Combine
 import Experiments
 import Yosemite
 import struct Storage.GeneralAppSettingsStorage
-import protocol WooFoundation.Analytics
 
 extension NSNotification.Name {
     /// Posted whenever the hub menu view did appear.
@@ -78,7 +77,6 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
-    private let analytics: Analytics
 
     private(set) lazy var posItemProvider: POSItemProvider = {
         let currencySettings = ServiceLocator.currencySettings
@@ -130,8 +128,7 @@ final class HubMenuViewModel: ObservableObject {
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -147,7 +144,6 @@ final class HubMenuViewModel: ObservableObject {
                                                            siteSettings: ServiceLocator.selectedSiteSettings,
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
-        self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)

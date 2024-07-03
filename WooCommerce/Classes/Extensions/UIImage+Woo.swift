@@ -1567,19 +1567,19 @@ extension UIImage {
     }
 
     static var posNewTransactionImage: UIImage {
-        UIImage(named: "pos-new-transaction-icon")!
+        UIImage(named: String.posNewTransactionImageName)!
     }
 
     static var posPaymentSuccessfulImage: UIImage {
-        UIImage(named: "pos-payment-successful")!
+        UIImage(named: String.posPaymentSuccessfulImageName)!
     }
 
     static var posProcessingPaymentImage: UIImage {
-        UIImage(named: "pos-processing-payment")!
+        UIImage(named: String.posProcessingPaymentImageName)!
     }
 
     static var posReadyForPaymentImage: UIImage {
-        UIImage(named: "pos-ready-for-payment")!
+        UIImage(named: String.posReadyForPaymentImageName)!
     }
 }
 

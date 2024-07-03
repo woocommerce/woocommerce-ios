@@ -1567,7 +1567,7 @@ extension UIImage {
     }
 
     static var posNewTransactionImage: UIImage {
-        UIImage(named: "pos_new_transaction_icon")!
+        UIImage(named: "pos-new-transaction-icon")!
     }
 }
 

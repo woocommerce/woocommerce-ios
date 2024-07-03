@@ -1,7 +1,7 @@
 import Foundation
 
 struct PointOfSaleCardPresentPaymentProcessingMessageViewModel {
-    let imageName = "pos_processing_payment"
+    let imageName = "pos-processing-payment"
     let title = Localization.paymentProcessing
 }
 

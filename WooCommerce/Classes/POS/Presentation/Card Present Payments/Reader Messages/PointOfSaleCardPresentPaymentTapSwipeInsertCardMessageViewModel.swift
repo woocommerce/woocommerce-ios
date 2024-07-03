@@ -2,7 +2,7 @@ import Foundation
 import struct Yosemite.CardReaderInput
 
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel {
-    let imageName = "pos_ready_for_payment"
+    let imageName = "pos-ready-for-payment"
     let title = Localization.readyForPayment
     let message: String
 

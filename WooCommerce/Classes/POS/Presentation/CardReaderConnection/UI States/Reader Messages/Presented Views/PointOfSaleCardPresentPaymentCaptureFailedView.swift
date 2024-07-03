@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
 
             Text(Localization.errorDetails)
 
-            Button(Localization.cancel,
+            Button(Localization.understandButtonTitle,
                    action: {
                 dismiss()
             })
@@ -35,8 +35,8 @@ private extension PointOfSaleCardPresentPaymentCaptureFailedView {
             comment: "Subtitle of the alert presented when payment capture fails."
         )
 
-        static let cancel = NSLocalizedString(
-            "pointOfSale.cardPresentPayment.alert.paymentCaptureError.cancel.button.title",
+        static let understandButtonTitle = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title",
             value: "I understand",
             comment: "Button to dismiss the alert presented when payment capture fails."
         )

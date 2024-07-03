@@ -117,4 +117,85 @@ final class GoogleAdsStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Retrieve campaign stats
+
+    func test_retrieveCampaignStats_returns_campaign_stats_on_success() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        let campaignStats = GoogleAdsCampaignStats.fake().copy(siteID: sampleSiteID)
+        remote.whenLoadingCampaignStatsResults(thenReturn: .success(campaignStats))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.retrieveCampaignStats(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        let receivedCampaignStats = try result.get()
+        assertEqual(campaignStats, receivedCampaignStats)
+    }
+
+    func test_retrieveCampaigns_compiles_multiple_pages_of_campaign_stats() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        let campaignStats = GoogleAdsCampaignStats.fake().copy(siteID: sampleSiteID,
+                                                               totals: .fake().copy(sales: 12345, spend: nil),
+                                                               campaigns: [.fake().copy(campaignName: "Spring Ads Campaign")],
+                                                               nextPageToken: "next")
+        remote.whenLoadingCampaignStatsResults(thenReturn: .success(campaignStats))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.retrieveCampaignStats(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        let receivedCampaignStats = try result.get()
+        assertEqual(24690, receivedCampaignStats.totals.sales)
+        XCTAssertNil(receivedCampaignStats.totals.spend)
+        assertEqual(2, receivedCampaignStats.campaigns.count)
+    }
+
+    func test_retrieveCampaignStats_returns_error_on_failure() throws {
+        // Given
+        let store = GoogleAdsStore(dispatcher: Dispatcher(),
+                                   storageManager: storageManager,
+                                   network: network,
+                                   remote: remote)
+        remote.whenLoadingCampaignStatsResults(thenReturn: .failure(NetworkError.timeout()))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(GoogleAdsAction.retrieveCampaignStats(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }

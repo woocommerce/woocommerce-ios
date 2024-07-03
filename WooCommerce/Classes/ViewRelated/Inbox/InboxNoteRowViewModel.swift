@@ -41,7 +41,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
 
     /// Indicate if the call to actions of the Inbox Note Row should be hidden
     var showInboxCTA: Bool {
-        return featureFlagService.isFeatureFlagEnabled(.showInboxCTA)
+        featureFlagService.isFeatureFlagEnabled(.showInboxCTA)
     }
 
     init(note: InboxNote,

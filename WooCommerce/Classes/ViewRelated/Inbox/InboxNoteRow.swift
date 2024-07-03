@@ -68,7 +68,8 @@ struct InboxNoteRow: View {
                                 Text(action.title)
                                     .font(Font(contentFont))
                             }
-                        }.renderedIf(viewModel.showInboxCTA)
+                        }
+                        .renderedIf(viewModel.showInboxCTA)
 
                         Text(Localization.surveyCompleted)
                             .secondaryBodyStyle()

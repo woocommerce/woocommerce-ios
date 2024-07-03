@@ -71,6 +71,13 @@ struct ProductCreationAIStartingInfoView: View {
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
                         )
                     }
+
+                    if let message = viewModel.textDetectionErrorMessage {
+                        Text(message)
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                    }
                 }
             }
             .padding(insets: Layout.insets)

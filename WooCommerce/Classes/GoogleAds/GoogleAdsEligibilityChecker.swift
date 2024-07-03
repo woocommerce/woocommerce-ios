@@ -25,18 +25,18 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
             return false
         }
 
-        let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
-        guard checkIfGoogleAdsIsSupported(plugin: remotePlugin) else {
-            return false
-        }
-
         do {
             let connection = try await checkGoogleAdsConnection(siteID: siteID)
-            return connection.status == .connected
+            guard connection.status == .connected else {
+                return false
+            }
         } catch {
             DDLogError("⛔️ Error checking Google ads connection: \(error)")
-            return false
         }
+
+        /// Ensures that the plugin is running the correct version.
+        let remotePlugin = await fetchPluginFromRemote(siteID: siteID)
+        return checkIfGoogleAdsIsSupported(plugin: remotePlugin)
     }
 
 }

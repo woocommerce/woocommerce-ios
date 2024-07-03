@@ -2585,6 +2585,8 @@
 		DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */; };
 		DEB387982C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */; };
 		DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */; };
+		DEB3879E2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3879D2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift */; };
+		DEB387A02C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */; };
 		DEBAB70B2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */; };
 		DEBAB70D2A7A6F1100743185 /* MockStorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */; };
 		DEBAB70F2A7A6F3800743185 /* MockConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */; };
@@ -5559,6 +5561,8 @@
 		DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGoogleAdsEligibilityCheckTests.swift; sourceTree = "<group>"; };
 		DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
+		DEB3879D2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignCoordinator.swift; sourceTree = "<group>"; };
+		DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignCoordinatorTests.swift; sourceTree = "<group>"; };
 		DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanBannerPresenterTests.swift; sourceTree = "<group>"; };
 		DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStorePlanSynchronizer.swift; sourceTree = "<group>"; };
 		DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConnectivityObserver.swift; sourceTree = "<group>"; };
@@ -12554,6 +12558,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */,
+				DEB3879D2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift */,
 			);
 			path = GoogleAds;
 			sourceTree = "<group>";
@@ -12562,6 +12567,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */,
+				DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */,
 			);
 			path = GoogleAds;
 			sourceTree = "<group>";
@@ -14883,6 +14889,7 @@
 				DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */,
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
+				DEB3879E2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift in Sources */,
 				EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */,
 				023D69BC2589BF5900F7DA72 /* PrintShippingLabelCoordinator.swift in Sources */,
 				45F627B8253603AE00894B86 /* ProductDownloadSettingsViewController.swift in Sources */,
@@ -16568,6 +16575,7 @@
 				20B0D65E2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift in Sources */,
 				453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */,
 				2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */,
+				DEB387A02C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift in Sources */,
 				020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */,
 				DE4D23B429B58C5A003A4B5D /* MockWordPressComAccountService.swift in Sources */,
 				57A5D8D92534FEBB00AA54D6 /* TotalRefundedCalculationUseCaseTests.swift in Sources */,

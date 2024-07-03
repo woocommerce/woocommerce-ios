@@ -71,7 +71,12 @@ private extension POSEligibilityChecker {
                 return
             }
 
-            let siteID = stores.sessionManager.defaultStoreID ?? 0
+            guard let siteID = stores.sessionManager.defaultStoreID else {
+                DDLogError("⛔️ Default store ID value is nil")
+                promise(.success(false))
+                return
+            }
+
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 guard let wcPlugin = wcPlugin, wcPlugin.active else {
                     promise(.success(false))

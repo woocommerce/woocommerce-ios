@@ -4,6 +4,27 @@ import WebKit
 import Alamofire
 import class Networking.UserAgent
 
+/// Hosting controller for WebView
+///
+final class WebViewHostingController: UIHostingController<WebView> {
+    init(url: URL,
+         disableLinkClicking: Bool = false,
+         onCommit: ((WKWebView)->Void)? = nil,
+         urlToTriggerExit: String? = nil,
+         exitTrigger: ((URL?) -> Void)? = nil) {
+        super.init(rootView: WebView(isPresented: .constant(true),
+                                     url: url,
+                                     disableLinkClicking: disableLinkClicking,
+                                     onCommit: onCommit,
+                                     urlToTriggerExit: urlToTriggerExit,
+                                     exitTrigger: exitTrigger))
+    }
+    
+    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// Mirror of AuthenticatedWebView, for equivalent display of URLs in `WKWebView` that do not need authentication on WPCom.
 struct WebView: UIViewRepresentable {
     @Environment(\.presentationMode) var presentation

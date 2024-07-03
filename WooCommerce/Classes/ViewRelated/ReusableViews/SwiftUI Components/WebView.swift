@@ -19,7 +19,7 @@ final class WebViewHostingController: UIHostingController<WebView> {
                                      urlToTriggerExit: urlToTriggerExit,
                                      exitTrigger: exitTrigger))
     }
-    
+
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

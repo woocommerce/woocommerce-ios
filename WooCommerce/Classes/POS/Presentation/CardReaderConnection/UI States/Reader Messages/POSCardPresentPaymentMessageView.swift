@@ -3,13 +3,13 @@ import SwiftUI
 struct POSCardPresentPaymentMessageViewModel {
     let imageName: String?
     let showProgress: Bool?
-    let title: String?
+    let title: String
     let message: String?
     let buttons: [CardPresentPaymentsModalButtonViewModel]
 
     init(imageName: String? = nil,
          showProgress: Bool? = nil,
-         title: String? = nil,
+         title: String,
          message: String? = nil,
          buttons: [CardPresentPaymentsModalButtonViewModel] = []) {
         self.imageName = imageName
@@ -37,11 +37,9 @@ struct POSCardPresentPaymentMessageView: View {
                         size: Layout.progressViewSize,
                         lineWidth: Layout.progressViewLineWidth))
             }
-            if let title = viewModel.title {
-                Text(title)
-                    .font(Font.system(size: 48, weight: .bold))
-                    .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
-            }
+            Text(viewModel.title)
+                .font(Font.system(size: 48, weight: .bold))
+                .foregroundColor(Color(UIColor.wooCommercePurple(.shade80)))
             if let message = viewModel.message {
                 Text(message)
                     .font(Font.system(size: 20))

@@ -136,6 +136,10 @@ extension CardPresentPaymentEventDetails {
                     error: error,
                     cancelButtonAction: cancelPayment)))
 
+        case .paymentCaptureError(let cancelPayment):
+            return .message(.paymentCaptureError(
+                viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(cancelButtonAction: cancelPayment)))
+
         case .processing:
             return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
 

@@ -2744,7 +2744,8 @@
 		EE45E2C22A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */; };
 		EE45E2C42A4A85350085F227 /* TooltipPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */; };
 		EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */; };
-		EE4C45632C343041001A3D94 /* AIToneVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45622C343041001A3D94 /* AIToneVoice.swift */; };
+		EE4C45652C352D60001A3D94 /* AIToneVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45642C352D60001A3D94 /* AIToneVoice.swift */; };
+		EE4C45672C352D7F001A3D94 /* ToneOfVoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45662C352D7F001A3D94 /* ToneOfVoiceView.swift */; };
 		EE505DDD2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */; };
 		EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */; };
 		EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */; };
@@ -5718,7 +5719,8 @@
 		EE45E2C12A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAITooltipUseCaseTests.swift; sourceTree = "<group>"; };
 		EE45E2C32A4A85350085F227 /* TooltipPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipPresenterTests.swift; sourceTree = "<group>"; };
 		EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingStoreDetailsCoordinator.swift; sourceTree = "<group>"; };
-		EE4C45622C343041001A3D94 /* AIToneVoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToneVoice.swift; sourceTree = "<group>"; };
+		EE4C45642C352D60001A3D94 /* AIToneVoice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIToneVoice.swift; sourceTree = "<group>"; };
+		EE4C45662C352D7F001A3D94 /* ToneOfVoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToneOfVoiceView.swift; sourceTree = "<group>"; };
 		EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroView.swift; sourceTree = "<group>"; };
 		EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLearnHowView.swift; sourceTree = "<group>"; };
 		EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModel.swift; sourceTree = "<group>"; };
@@ -12837,7 +12839,6 @@
 			children = (
 				EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */,
 				EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */,
-				EE4C45622C343041001A3D94 /* AIToneVoice.swift */,
 			);
 			path = StartingInfo;
 			sourceTree = "<group>";
@@ -13029,8 +13030,10 @@
 		EE7707C62ABBF473009FD564 /* AIToneVoice */ = {
 			isa = PBXGroup;
 			children = (
+				EE4C45642C352D60001A3D94 /* AIToneVoice.swift */,
 				EE7707C42ABB3F55009FD564 /* AIToneVoiceView.swift */,
 				EE7707C72ABBF4BB009FD564 /* AIToneVoiceViewModel.swift */,
+				EE4C45662C352D7F001A3D94 /* ToneOfVoiceView.swift */,
 			);
 			path = AIToneVoice;
 			sourceTree = "<group>";
@@ -14669,6 +14672,7 @@
 				26838358296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift in Sources */,
 				EE3BC28C2BE3905400195AF0 /* InAppFeedbackCardView.swift in Sources */,
 				2004E2E32C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift in Sources */,
+				EE4C45672C352D7F001A3D94 /* ToneOfVoiceView.swift in Sources */,
 				038BC38329C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift in Sources */,
 				CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
@@ -15068,7 +15072,7 @@
 				03E471C4293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift in Sources */,
 				20CC1EDD2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift in Sources */,
 				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,
-				EE4C45632C343041001A3D94 /* AIToneVoice.swift in Sources */,
+				EE4C45652C352D60001A3D94 /* AIToneVoice.swift in Sources */,
 				DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */,
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
 				028B68BA2A57410500FE03A8 /* AddProductFromImageView.swift in Sources */,

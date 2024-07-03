@@ -1569,6 +1569,18 @@ extension UIImage {
     static var posNewTransactionImage: UIImage {
         UIImage(named: "pos-new-transaction-icon")!
     }
+
+    static var posPaymentSuccessfulImage: UIImage {
+        UIImage(named: "pos-payment-successful")!
+    }
+
+    static var posProcessingPaymentImage: UIImage {
+        UIImage(named: "pos-processing-payment")!
+    }
+
+    static var posReadyForPaymentImage: UIImage {
+        UIImage(named: "pos-ready-for-payment")!
+    }
 }
 
 private extension UIImage {

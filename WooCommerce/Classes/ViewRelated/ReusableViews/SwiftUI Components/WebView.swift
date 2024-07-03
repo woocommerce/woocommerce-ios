@@ -11,13 +11,13 @@ final class WebViewHostingController: UIHostingController<WebView> {
          disableLinkClicking: Bool = false,
          onCommit: ((WKWebView)->Void)? = nil,
          urlToTriggerExit: String? = nil,
-         exitTrigger: ((URL?) -> Void)? = nil) {
+         redirectHandler: ((URL) -> Void)? = nil) {
         super.init(rootView: WebView(isPresented: .constant(true),
                                      url: url,
                                      disableLinkClicking: disableLinkClicking,
                                      onCommit: onCommit,
                                      urlToTriggerExit: urlToTriggerExit,
-                                     exitTrigger: exitTrigger))
+                                     redirectHandler: redirectHandler))
     }
 
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
@@ -51,8 +51,14 @@ struct WebView: UIViewRepresentable {
     /// other webpages.
     private let disableLinkClicking: Bool
 
+    /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
-    let exitTrigger: ((URL?) -> Void)?
+
+    /// Closure to determine the action given the redirect URL.
+    /// If `urlToTriggerExit` is provided, this closure is triggered only when
+    /// a redirect URL matches `urlToTriggerExit`.
+    /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
+    let redirectHandler: ((URL) -> Void)?
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -62,14 +68,14 @@ struct WebView: UIViewRepresentable {
         disableLinkClicking: Bool = false,
         onCommit: ((WKWebView)->Void)? = nil,
         urlToTriggerExit: String? = nil,
-        exitTrigger: ((URL?) -> Void)? = nil
+        redirectHandler: ((URL) -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.url = url
         self.disableLinkClicking = disableLinkClicking
         self.onCommit = onCommit
         self.urlToTriggerExit = urlToTriggerExit
-        self.exitTrigger = exitTrigger
+        self.redirectHandler = redirectHandler
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -113,12 +119,15 @@ struct WebView: UIViewRepresentable {
             urlSubscription = parent.webView.publisher(for: \.url)
                 .sink { [weak self] url in
                     guard let self, let url else { return }
-                    DDLogDebug("🧭 Current URL: \(url.absoluteString)")
-                    if let urlToTriggerExit = parent.urlToTriggerExit,
-                        url.absoluteString.contains(urlToTriggerExit) {
-                        parent.exitTrigger?(url)
-                    } else {
-                        parent.exitTrigger?(url)
+
+                    guard let urlToTriggerExit = parent.urlToTriggerExit else {
+                        // always trigger `redirectHandler` if `urlToTriggerExit` is not specified.
+                        parent.redirectHandler?(url)
+                        return
+                    }
+
+                    if url.absoluteString.contains(urlToTriggerExit) {
+                        parent.redirectHandler?(url)
                     }
                 }
         }

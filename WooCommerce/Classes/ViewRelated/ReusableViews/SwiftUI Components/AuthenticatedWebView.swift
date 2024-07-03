@@ -6,17 +6,24 @@ import WebKit
 final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     let title: String
     let initialURL: URL?
+
+    /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
-    let exitTrigger: ((URL?) -> Void)?
+
+    /// Closure to determine the action given the redirect URL.
+    /// If `urlToTriggerExit` is provided, this closure is triggered only when
+    /// a redirect URL matches `urlToTriggerExit`.
+    /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
+    let redirectHandler: ((URL) -> Void)?
 
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
-         exitTrigger: ((URL?) -> Void)? = nil) {
+         redirectHandler: ((URL) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
-        self.exitTrigger = exitTrigger
+        self.redirectHandler = redirectHandler
     }
 
     func handleDismissal() {
@@ -27,11 +34,13 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
         guard let url else {
             return
         }
-        if let urlToTriggerExit,
-            url.absoluteString.contains(urlToTriggerExit) {
-            exitTrigger?(url)
-        } else {
-            exitTrigger?(url)
+        guard let urlToTriggerExit else {
+            // always trigger `redirectHandler` if `urlToTriggerExit` is not specified.
+            redirectHandler?(url)
+            return
+        }
+        if url.absoluteString.contains(urlToTriggerExit) {
+            redirectHandler?(url)
         }
     }
 
@@ -55,19 +64,19 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
     let viewModel: AuthenticatedWebViewModel
 
     init(isPresented: Binding<Bool>,
-             viewModel: AuthenticatedWebViewModel) {
-            self._isPresented = isPresented
-            self.viewModel = viewModel
-        }
+         viewModel: AuthenticatedWebViewModel) {
+        self._isPresented = isPresented
+        self.viewModel = viewModel
+    }
 
     init(isPresented: Binding<Bool>,
          url: URL,
          urlToTriggerExit: String? = nil,
-         exitTrigger: ((URL?) -> Void)? = nil) {
+         redirectHandler: ((URL) -> Void)? = nil) {
             self._isPresented = isPresented
             viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,
-                                                         exitTrigger: exitTrigger)
+                                                         redirectHandler: redirectHandler)
         }
 
     func makeUIViewController(context: Context) -> AuthenticatedWebViewController {

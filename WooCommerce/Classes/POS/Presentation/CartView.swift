@@ -13,16 +13,23 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
+                Image(uiImage: .shoppingCartIcon)
+                    .resizable()
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                    .foregroundColor(.black)
                 Text("Cart")
+                    .font(Constants.primaryFont)
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
                 if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
-                        .foregroundColor(Color.posPrimaryTexti3)
+                        .font(Constants.secondaryFont)
+                        .foregroundColor(Color.posSecondaryTexti3)
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {
                         Text("Clear all")
+                            .font(Constants.secondaryFont)
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
                     .padding(.horizontal, 8)
@@ -42,8 +49,6 @@ struct CartView: View {
                             cartViewModel.removeItemFromCart(cartItem)
                         } : nil)
                         .id(cartItem.id)
-                        .background(Color.posBackgroundGreyi3)
-                        .padding(.horizontal, 32)
                     }
                 }
                 .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
@@ -68,6 +73,14 @@ struct CartView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color.posBackgroundWhitei3)
+    }
+}
+
+private extension CartView {
+    enum Constants {
+        static let iconSize: CGFloat = 40
+        static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
+        static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
     }
 }
 

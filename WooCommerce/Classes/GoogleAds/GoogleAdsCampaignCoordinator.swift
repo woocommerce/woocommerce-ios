@@ -3,7 +3,7 @@ import Yosemite
 
 /// Reusable coordinator to handle Google Ads campaigns.
 ///
-final class GoogleAdsCampaignCoordinator: Coordinator {
+final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
     let navigationController: UINavigationController
 
     private let siteID: Int64
@@ -13,16 +13,20 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
     private let shouldAuthenticateAdminPage: Bool
     private var bottomSheetPresenter: BottomSheetPresenter?
 
+    private let onCompletion: () -> Void
+
     init(siteID: Int64,
          siteAdminURL: String,
          hasGoogleAdsCampaigns: Bool,
          shouldAuthenticateAdminPage: Bool,
-         navigationController: UINavigationController) {
+         navigationController: UINavigationController,
+         onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
         self.shouldAuthenticateAdminPage = shouldAuthenticateAdminPage
         self.hasGoogleAdsCampaigns = hasGoogleAdsCampaigns
         self.navigationController = navigationController
+        self.onCompletion = onCompletion
     }
 
     func start() {
@@ -31,7 +35,17 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
         }
         let controller = createCampaignViewController(with: url)
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissCampaignView))
-        navigationController.present(UINavigationController(rootViewController: controller), animated: true)
+
+        let parentController = UINavigationController(rootViewController: controller)
+        navigationController.present(parentController, animated: true)
+        parentController.presentationController?.delegate = self
+    }
+}
+
+extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate {
+    // Triggered when swiping to dismiss the view.
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onCompletion()
     }
 }
 
@@ -39,6 +53,7 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
 //
 private extension GoogleAdsCampaignCoordinator {
     @objc func dismissCampaignView() {
+        onCompletion()
         navigationController.dismiss(animated: true)
     }
 
@@ -74,6 +89,7 @@ private extension GoogleAdsCampaignCoordinator {
             navigationController.dismiss(animated: true) { [self] in
                 showSuccessView()
             }
+            onCompletion()
             DDLogDebug("🎉 Google Ads campaign creation success")
         }
     }
@@ -108,7 +124,7 @@ private extension GoogleAdsCampaignCoordinator {
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [.medium()]
         })
     }
 }

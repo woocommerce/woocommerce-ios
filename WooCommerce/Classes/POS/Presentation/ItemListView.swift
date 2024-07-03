@@ -13,7 +13,7 @@ struct ItemListView: View {
             Text("Products")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
-                .font(.system(size: Constants.fontSize, weight: .bold, design: .default))
+                .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
             if viewModel.isSyncingItems {
                 Spacer()
@@ -44,7 +44,7 @@ struct ItemListView: View {
 
 private extension ItemListView {
     enum Constants {
-        static let fontSize: CGFloat = 40
+        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
     }
 }
 

@@ -15,21 +15,21 @@ struct CartView: View {
             HStack {
                 Image(uiImage: .shoppingCartIcon)
                     .resizable()
-                    .frame(width: Constants.primaryFontSize, height: Constants.primaryFontSize)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .foregroundColor(.black)
                 Text("Cart")
-                    .font(.system(size: Constants.primaryFontSize, weight: .bold, design: .default))
+                    .font(Constants.primaryFont)
                     .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
                 if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
-                        .font(.system(size: Constants.secondaryFontSize, weight: .semibold, design: .default))
+                        .font(Constants.secondaryFont)
                         .foregroundColor(Color.posSecondaryTexti3)
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {
                         Text("Clear all")
-                            .font(.system(size: Constants.secondaryFontSize, weight: .semibold, design: .default))
+                            .font(Constants.secondaryFont)
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
                     .padding(.horizontal, 8)
@@ -78,8 +78,9 @@ struct CartView: View {
 
 private extension CartView {
     enum Constants {
-        static let primaryFontSize: CGFloat = 40
-        static let secondaryFontSize: CGFloat = 20
+        static let iconSize: CGFloat = 40
+        static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
+        static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
     }
 }
 

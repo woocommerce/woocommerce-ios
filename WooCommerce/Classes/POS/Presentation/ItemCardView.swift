@@ -28,12 +28,12 @@ struct ItemCardView: View {
             }
             Text(item.name)
                 .foregroundStyle(Color.posPrimaryTexti3)
-                .font(.system(size: Constants.fontSize, weight: .medium, design: .default))
+                .font(Constants.itemNameFont)
                 .padding(.horizontal, Constants.horizontalElementSpacing)
             Spacer()
             Text(item.formattedPrice)
                 .foregroundStyle(Color.posPrimaryTexti3)
-                .font(.system(size: Constants.fontSize, weight: .light, design: .default))
+                .font(Constants.itemPriceFont)
                 .padding()
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
@@ -56,7 +56,8 @@ private extension ItemCardView {
         static let nilOutline: CGFloat = 0
         static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
-        static let fontSize: CGFloat = 24
+        static let itemNameFont: Font = .system(size: 24, weight: .medium, design: .default)
+        static let itemPriceFont: Font = .system(size: 24, weight: .light, design: .default)
     }
 }
 

@@ -3,10 +3,21 @@ import Combine
 import struct Yosemite.Order
 @testable import WooCommerce
 
-struct MockCardPresentPaymentService: CardPresentPaymentFacade {
-    let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> = Just(.idle).eraseToAnyPublisher()
+final class MockCardPresentPaymentService: CardPresentPaymentFacade {
+    // MARK: - Variables for emitting events in unit tests
 
-    let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> = Just(nil).eraseToAnyPublisher()
+    @Published var paymentEvent: CardPresentPaymentEvent = .idle
+    @Published var connectedReader: CardPresentPaymentCardReader?
+
+    // MARK: - CardPresentPaymentFacade
+
+    var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
+        $paymentEvent.eraseToAnyPublisher()
+    }
+
+    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> {
+        $connectedReader.eraseToAnyPublisher()
+    }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))

@@ -16,6 +16,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     private let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
     private let inboxEligibilityChecker = MockInboxEligibilityChecker()
+    private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
     /// Mock Storage: InMemory
     private var storageManager: MockStorageManager!
@@ -414,7 +415,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -446,7 +448,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -476,7 +479,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -503,7 +507,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData(storeHasOrders: true)
 
@@ -529,7 +534,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData()
 
         // Last orders cards need to be set with availability: .show and enabled: false to make them available.
@@ -553,7 +559,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData()
 
@@ -578,7 +585,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
                            DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -607,7 +615,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -624,6 +633,31 @@ final class DashboardViewModelTests: XCTestCase {
 
         let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
         XCTAssertFalse(topPerformersCard.enabled)
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_google_ads_card_when_store_is_eligible() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        mockReloadingData()
+
+        // Google card need to be set with availability: .show and enabled: true by default if available.
+        let expectedGoogleCard = DashboardCard(type: .googleAds, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedGoogleCard))
     }
 
     // MARK: Show New Cards Notice

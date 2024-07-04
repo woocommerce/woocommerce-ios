@@ -54,6 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
+    /// Handles events to background refresh the app.
+    ///
+    private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -116,6 +120,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Start app navigation.
         appCoordinator?.start()
+
+        // Register for background app refresh events.
+        appRefreshHandler.registerSystemTaskIdentifier()
 
         return true
     }
@@ -213,6 +220,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Don't track startup waiting time if app is backgrounded before everything is loaded
         cancelStartupWaitingTimeTracker()
 
+        // Schedule the background app refresh when sending the app to the background.
+        // The OS is in charge of determining when these tasks will run based on app usage patterns.
+        appRefreshHandler.scheduleAppRefresh()
+      
         // When the app is put into the background, it's important to ensure that any pending changes to
         // Core Data context are saved to avoid data loss.
         ServiceLocator.storageManager.viewStorage.saveIfNeeded()

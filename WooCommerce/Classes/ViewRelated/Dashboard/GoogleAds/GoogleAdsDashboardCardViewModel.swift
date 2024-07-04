@@ -43,6 +43,8 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func fetchLastCampaign() async {
+        syncingError = nil
+        syncingData = true
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
         do {
             let campaigns = try await fetchAdsCampaigns()
@@ -53,9 +55,11 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
             }()
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
         } catch {
+            syncingError = error
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))
             DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
         }
+        syncingData = false
     }
 }
 

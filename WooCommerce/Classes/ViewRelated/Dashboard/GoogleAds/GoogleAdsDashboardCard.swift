@@ -24,21 +24,34 @@ struct GoogleAdsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if let campaign = viewModel.lastCampaign {
+            if viewModel.syncingError != nil {
+                DashboardCardErrorView {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .googleAds))
+                    Task {
+                        await viewModel.fetchLastCampaign()
+                    }
+                }
+            } else if let campaign = viewModel.lastCampaign {
                 GoogleAdsCampaignDetailView(campaign: campaign)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         onShowAllCampaigns()
                     }
+                    .redacted(reason: viewModel.syncingData ? .placeholder : [])
+                    .shimmering(active: viewModel.syncingData)
             } else {
                 // Introduction about Google Ads
                 noCampaignView
                     .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? .placeholder : [])
+                    .shimmering(active: viewModel.syncingData)
             }
 
             // Create campaign button
             createCampaignButton
                 .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.syncingData ? .placeholder : [])
+                .shimmering(active: viewModel.syncingData)
 
             // Show All Campaigns button
             VStack(spacing: Layout.padding) {
@@ -47,6 +60,8 @@ struct GoogleAdsDashboardCard: View {
                 showAllCampaignsButton
                     .padding(.horizontal, Layout.padding)
             }
+            .redacted(reason: viewModel.syncingData ? .placeholder : [])
+            .shimmering(active: viewModel.syncingData)
             .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
         }
         .padding(.vertical, Layout.padding)

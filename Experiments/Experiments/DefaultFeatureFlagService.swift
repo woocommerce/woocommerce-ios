@@ -91,7 +91,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .dynamicDashboardM2:
             return true
         case .productCreationAIv2M1:
-            return false//buildConfig == .localDeveloper || buildConfig == .alpha
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

@@ -4,16 +4,17 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 
-/// View model for `ProductDetailPreviewView`
+/// View model for `LegacyProductDetailPreviewView`
 ///
-final class ProductDetailPreviewViewModel: ObservableObject {
+final class LegacyProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var isSavingProduct: Bool = false
     @Published private(set) var generatedProduct: Product?
 
-    @Published var productName = ""
-    @Published var productDescription = ""
+    @Published private(set) var productName: String
+    @Published private(set) var productDescription: String?
+    @Published private(set) var productShortDescription: String?
     @Published private(set) var productType: String?
     @Published private(set) var productPrice: String?
     @Published private(set) var productCategories: String?
@@ -24,7 +25,15 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
-    private let productFeatures: String
+    /// Whether short description view should be displayed
+    var shouldShowShortDescriptionView: Bool {
+        if isGeneratingDetails {
+            return true
+        }
+        return productShortDescription?.isNotEmpty ?? false
+    }
+
+    private let productFeatures: String?
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -56,7 +65,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         productFeatures: String,
+         productName: String,
+         productDescription: String?,
+         productFeatures: String?,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
@@ -81,6 +92,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
 
+        self.productName = productName
+        self.productDescription = productDescription
         self.productFeatures = productFeatures
 
         try? categoryResultController.performFetch()
@@ -141,7 +154,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
 // MARK: - Product details for preview
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     func observeGeneratedProduct() {
         generatedProductSubscription = $generatedProduct
             .compactMap { $0 }
@@ -153,7 +166,8 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
-        productDescription = product.fullDescription ?? ""
+        productShortDescription = product.shortDescription
+        productDescription = product.fullDescription
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
@@ -213,7 +227,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Site settings
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     func fetchSettingsIfNeeded() async {
         guard weightUnit == nil || dimensionUnit == nil else {
             return
@@ -263,7 +277,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: Generating product
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     @MainActor
     func fetchPrerequisites() async throws {
         await withThrowingTaskGroup(of: Void.self) { group in
@@ -287,7 +301,13 @@ private extension ProductDetailPreviewViewModel {
         }
 
         do {
-            let productInfo = productFeatures
+            let productInfo = {
+                guard let features = productFeatures,
+                      features.isNotEmpty else {
+                    return productName
+                }
+                return productName + " " + features
+            }()
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productInfo,
@@ -358,8 +378,8 @@ private extension ProductDetailPreviewViewModel {
                            existingTags: [ProductTag]) async throws -> AIProduct {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateAIProduct(siteID: siteID,
-                                                            productName: "", // TODO: 13103 - Update action to work without name
-                                                            keywords: productFeatures,
+                                                            productName: productName,
+                                                            keywords: productFeatures ?? productDescription ?? "",
                                                             language: language,
                                                             tone: tone.rawValue,
                                                             currencySymbol: currency,
@@ -384,7 +404,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Categories
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     @MainActor
     func synchronizeAllCategories() async throws {
         try await withCheckedThrowingContinuation { continuation in
@@ -414,7 +434,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Tags
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     @MainActor
     func synchronizeAllTags() async throws {
         try await withCheckedThrowingContinuation { continuation in
@@ -442,7 +462,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Saving product
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     /// Saves the local categories and tags to remote
     ///
     @MainActor
@@ -491,7 +511,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Subtypes
 //
-extension ProductDetailPreviewViewModel {
+extension LegacyProductDetailPreviewViewModel {
     enum ErrorState: Equatable {
         case none
         case generatingProduct
@@ -510,7 +530,7 @@ extension ProductDetailPreviewViewModel {
     }
 }
 
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical", comment: "Display label for simple physical product type.")
@@ -539,7 +559,7 @@ private extension ProductDetailPreviewViewModel {
 
 // MARK: - Constants
 //
-private extension ProductDetailPreviewViewModel {
+private extension LegacyProductDetailPreviewViewModel {
     enum Default {
         public static let firstPageNumber = 1
     }

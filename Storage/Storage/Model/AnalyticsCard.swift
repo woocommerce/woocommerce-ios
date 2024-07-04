@@ -23,5 +23,6 @@ public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable {
         case sessions
         case bundles
         case giftCards
+        case googleCampaigns
     }
 }

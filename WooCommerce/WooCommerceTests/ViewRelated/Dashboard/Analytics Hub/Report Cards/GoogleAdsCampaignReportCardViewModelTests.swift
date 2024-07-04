@@ -67,7 +67,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(productsCardReportURL.relativeString.contains(sampleAdminURL))
-        XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/google/reports&reportKey=programs")))
+        XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/google/reports")))
         XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "period", value: "month")))
     }
 

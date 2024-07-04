@@ -425,7 +425,8 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
-                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         // When
         await viewModel.reloadAllData()
@@ -456,7 +457,8 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
-                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         // When
         await viewModel.reloadAllData()
@@ -480,7 +482,8 @@ final class DashboardViewModelTests: XCTestCase {
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .blaze, availability: .hide, enabled: false)]
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         // When
         await viewModel.reloadAllData()
@@ -579,7 +582,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
                            DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                           DashboardCard(type: .performance, availability: .show, enabled: true)]
+                           DashboardCard(type: .performance, availability: .show, enabled: true),
+                           DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         mockReloadingData(storedDashboardCards: storedCards)
 

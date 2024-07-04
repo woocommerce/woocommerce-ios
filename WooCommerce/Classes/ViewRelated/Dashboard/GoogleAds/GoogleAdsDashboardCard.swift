@@ -2,7 +2,11 @@ import SwiftUI
 import struct Yosemite.DashboardCard
 
 struct GoogleAdsDashboardCard: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     @ObservedObject private var viewModel: GoogleAdsDashboardCardViewModel
+
     private let onCreateNewCampaign: () -> Void
     private let onShowAllCampaigns: () -> Void
 
@@ -15,8 +19,16 @@ struct GoogleAdsDashboardCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: Layout.padding) {
             header
+                .padding(.horizontal, Layout.padding)
+
+            // Introduction about Google Ads
+            noCampaignView
+                .padding(.horizontal, Layout.padding)
+
+            // Create campaign button
+            createCampaignButton
                 .padding(.horizontal, Layout.padding)
         }
         .padding(.vertical, Layout.padding)
@@ -49,27 +61,80 @@ private extension GoogleAdsDashboardCard {
             .disabled(viewModel.syncingData)
         }
     }
+
+    var noCampaignView: some View {
+        HStack(alignment: .top) {
+            Image(uiImage: .googleLogo)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
+
+            VStack(alignment: .leading) {
+                Text(Localization.NoCampaign.title)
+                    .headlineStyle()
+                Text(Localization.NoCampaign.subtitle)
+                    .subheadlineStyle()
+            }
+        }
+        .padding(Layout.contentPadding)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: .init(light: UIColor.clear,
+                                           dark: UIColor.systemGray5)))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .stroke(Color(uiColor: .secondaryButtonDownBorder), lineWidth: Layout.strokeWidth)
+        }
+    }
+
+    var createCampaignButton: some View {
+        Button(Localization.createCampaign) {
+            onCreateNewCampaign()
+        }
+        .buttonStyle(SecondaryButtonStyle())
+    }
 }
 
 private extension GoogleAdsDashboardCard {
     enum Layout {
         static let padding: CGFloat = 16
-        static let cornerSize = CGSize(width: 8.0, height: 8.0)
+        static let cornerSize = CGSize(width: cornerRadius, height: cornerRadius)
         static let hideIconVerticalPadding: CGFloat = 8
-        static let dividerPadding = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
+        static let contentPadding: CGFloat = 16
+        static let strokeWidth: CGFloat = 1
+        static let cornerRadius: CGFloat = 8
+        static let imageSize: CGFloat = 44
     }
 
     enum Localization {
         static let hideCard = NSLocalizedString(
             "googleAdsDashboardCard.hideCard",
-            value: "Hide Google for WooCommerce",
-            comment: "Menu item to dismiss the Google for WooCommerce section on the Dashboard screen"
+            value: "Hide Google ads",
+            comment: "Menu item to dismiss the Google Ads campaigns section on the Dashboard screen"
         )
         static let viewAll = NSLocalizedString(
             "googleAdsDashboardCard.viewAll",
             value: "View all campaigns",
             comment: "Button to navigate to the Google Ads campaign dashboard."
         )
+        static let createCampaign = NSLocalizedString(
+            "googleAdsDashboardCard.createCampaign",
+            value: "Create Campaign",
+            comment: "Button that when tapped will launch create Google Ads campaign flow."
+        )
+        enum NoCampaign {
+            static let title = NSLocalizedString(
+                "googleAdsDashboardCard.noCampaign.title",
+                value: "Boost store traffic and sales with Google Ads",
+                comment: "Title label on the Google Ads campaigns section on the Dashboard screen"
+            )
+            static let subtitle = NSLocalizedString(
+                "googleAdsDashboardCard.noCampaign.subtitle",
+                value: "Create an ad campaign to promote your products across Google Search, Shopping, YouTube, Gmail, and the Display Network.",
+                comment: "Subtitle label on the Google Ads campaigns section on the Dashboard screen"
+            )
+        }
     }
 }
 

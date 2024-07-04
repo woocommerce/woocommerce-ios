@@ -77,8 +77,8 @@ private extension DashboardCard.CardType {
         )
         static let googleAds = NSLocalizedString(
             "dashboardCard.name.googleAds",
-            value: "Google for WooCommerce",
-            comment: "Name for the Google for WooCommerce dashboard card in the Customize Dashboard screen"
+            value: "Google ads campaigns",
+            comment: "Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen"
         )
     }
 }

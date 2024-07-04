@@ -91,7 +91,13 @@ final class OrderListViewController: UIViewController {
 
     /// Minimum time interval allowed between full sync.
     ///
-    private let minimalIntervalBetweenSync: TimeInterval = 30
+    private let minimalIntervalBetweenSync: TimeInterval = {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            return 30 * 60 // 30m
+        } else {
+            return 30 // 30s
+        }
+    }()
 
     /// UI Active State
     ///
@@ -283,7 +289,7 @@ private extension OrderListViewController {
                 return
             }
 
-            self.syncingCoordinator.resynchronize()
+            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -424,13 +430,19 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
-        if pageNumber == syncingCoordinator.pageFirstIndex,
-           reason == SyncReason.viewWillAppear.rawValue,
-           let lastFullSyncTimestamp = lastFullSyncTimestamp,
-           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            onCompletion?(true)
-            return
+        // Decide if we need to continue with the sync depending on custom conditions between sync reason and latest sync
+        if let syncReason = SyncReason(rawValue: reason ?? ""), pageNumber == syncingCoordinator.pageFirstIndex {
+
+            // If there is no local sync timestamp use the background task sync timestamp.
+            let lastSyncTime = lastFullSyncTimestamp ?? OrderSyncBackgroundTask.latestSyncDate
+
+            switch syncReason {
+            case .viewWillAppear where Date().timeIntervalSince(lastSyncTime) < minimalIntervalBetweenSync:
+                onCompletion?(true) // less than 30m from last full sync
+                return
+            default:
+                break
+            }
         }
 
         transitionToSyncingState()

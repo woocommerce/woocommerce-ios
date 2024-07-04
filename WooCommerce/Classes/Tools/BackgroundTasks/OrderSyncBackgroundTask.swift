@@ -6,6 +6,17 @@ import Yosemite
 ///
 struct OrderSyncBackgroundTask {
 
+    /// The last time we successfully run a sync update.
+    ///
+    static private(set) var latestSyncDate: Date {
+        get {
+            return UserDefaults.standard[.latestBackgroundOrderSyncDate] as? Date ?? Date.distantPast
+        }
+        set {
+            return UserDefaults.standard[.latestBackgroundOrderSyncDate] = newValue
+        }
+    }
+
     let siteID: Int64
 
     let stores: StoresManager
@@ -27,6 +38,8 @@ struct OrderSyncBackgroundTask {
             do {
                 let filters = await fetchFilters()
                 try await syncOrders(filters: filters)
+                Self.latestSyncDate = Date.now
+
                 DDLogError("🟢 Successfully synced orders in the background")
                 backgroundTask.setTaskCompleted(success: true)
             } catch {

@@ -27,7 +27,8 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
             siteAdminURL: siteAdminURL,
             hasGoogleAdsCampaigns: true,
             shouldAuthenticateAdminPage: false,
-            navigationController: navigationController
+            navigationController: navigationController,
+            onCompletion: {}
         )
 
         // When
@@ -45,7 +46,8 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
             siteAdminURL: siteAdminURL,
             hasGoogleAdsCampaigns: true,
             shouldAuthenticateAdminPage: true,
-            navigationController: navigationController
+            navigationController: navigationController,
+            onCompletion: {}
         )
 
         // When

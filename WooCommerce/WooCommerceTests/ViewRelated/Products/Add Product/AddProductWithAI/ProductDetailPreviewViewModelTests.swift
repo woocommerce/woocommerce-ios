@@ -266,7 +266,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let  .generateAIProduct(siteID,
-                                         productName,
+                                         _,
                                          keywords,
                                          language,
                                          tone,

@@ -55,6 +55,9 @@ extension UserDefaults {
 
         // Watch
         case watchDependencies
+
+        // Background Task Refresh
+        case latestBackgroundOrderSyncDate
     }
 }
 

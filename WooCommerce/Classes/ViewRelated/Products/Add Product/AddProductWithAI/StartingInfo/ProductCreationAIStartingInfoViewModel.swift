@@ -1,6 +1,7 @@
 import Foundation
 import protocol WooFoundation.Analytics
 import UIKit
+import Combine
 
 /// View model for `ProductCreationAIStartingInfoView`.
 ///
@@ -17,8 +18,13 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     @Published var notice: Notice?
 
+    /// Text detection
+    @Published private(set) var textDetectionErrorMessage: String? = nil
+
     let siteID: Int64
     private let analytics: Analytics
+    private let imageTextScanner: ImageTextScannerProtocol
+    private var subscriptions: Set<AnyCancellable> = []
 
     var productFeatures: String? {
         guard features.isNotEmpty else {
@@ -27,11 +33,15 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         return features
     }
 
-    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
+    init(siteID: Int64,
+         imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.features = ""
+        self.imageTextScanner = imageTextScanner
         self.analytics = analytics
         imageState = .empty
+        listenToImageStateAndClearTextDetectionError()
     }
 
     func didTapReadTextFromPhoto() {
@@ -76,12 +86,62 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
             return imageState = previousState
         }
 
+        await detectTexts(from: image.image)
+
         imageState = .success(image)
     }
 }
 
 private extension ProductCreationAIStartingInfoViewModel {
+    @MainActor
+    func detectTexts(from image: UIImage) async {
+        do {
+            let texts = try await imageTextScanner.scanText(from: image)
+            if texts.isEmpty {
+                throw ScanError.noTextDetected
+            }
+            self.features = texts.joined(separator: " ")
+        } catch {
+            switch error {
+            case ScanError.noTextDetected:
+                textDetectionErrorMessage = Localization.noTextDetected
+                DDLogError("⛔️ No text detected from image.")
+            default:
+                // TODO: 13103 - Add tracking
+                textDetectionErrorMessage = Localization.textDetectionFailed
+                DDLogError("⛔️ Error scanning text from image: \(error)")
+            }
+        }
+    }
+
+    func listenToImageStateAndClearTextDetectionError() {
+        $imageState
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] imageState in
+                guard let self else { return }
+                switch imageState {
+                case .success:
+                    return
+                case .empty, .loading:
+                    textDetectionErrorMessage = nil
+                }
+            })
+            .store(in: &subscriptions)
+    }
+}
+
+extension ProductCreationAIStartingInfoViewModel {
     enum Localization {
+        static let noTextDetected = NSLocalizedString(
+            "productCreationAIStartingInfoViewModel.noTextDetected",
+            value: "No text detected. Please select another packaging photo or enter product details manually.",
+            comment: "No text detected message while adding package photo in the starting information screen."
+        )
+        static let textDetectionFailed = NSLocalizedString(
+            "productCreationAIStartingInfoViewModel.textDetectionFailed",
+            value: "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.",
+            comment: "Text detection failed error message on the starting information screen."
+        )
         enum PhotoRemovedNotice {
             static let title = NSLocalizedString(
                 "productCreationAIStartingInfoViewModel.photoRemovedNotice.title",
@@ -95,4 +155,8 @@ private extension ProductCreationAIStartingInfoViewModel {
             )
         }
     }
+}
+
+private enum ScanError: Error {
+    case noTextDetected
 }

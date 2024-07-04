@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Displays WooCommerce settings in a webview within a navigation view.
+/// Displays WooCommerce settings in a web view within a navigation view.
 struct WCSettingsWebView: View {
     let adminUrl: URL
     let completion: () -> Void
@@ -8,9 +8,7 @@ struct WCSettingsWebView: View {
     var body: some View {
         NavigationView {
             AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl,
-                                 urlToTriggerExit: nil,
-                                 exitTrigger: nil)
+                                 url: adminUrl)
                                  .navigationTitle(Localization.adminWebviewTitle)
                                  .navigationBarTitleDisplayMode(.inline)
                                  .toolbar {

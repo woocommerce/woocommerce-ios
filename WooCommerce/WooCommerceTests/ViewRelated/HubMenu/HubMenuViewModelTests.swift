@@ -488,6 +488,69 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationPath.count, 1)
         XCTAssertEqual(viewModel.navigationPath, NavigationPath([HubMenuNavigationDestination.payments]))
     }
+
+    @MainActor
+    func test_hasGoogleAdsCampaigns_is_false_when_site_has_no_campaigns() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        var fetchAdsCampaignsTriggered = false
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .fetchAdsCampaigns(siteID, onCompletion):
+                onCompletion(.success([]))
+                fetchAdsCampaignsTriggered = true
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores)
+        waitUntil {
+            fetchAdsCampaignsTriggered
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.hasGoogleAdsCampaigns)
+    }
+
+    @MainActor
+    func test_hasGoogleAdsCampaigns_is_true_when_site_has_campaigns() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        var fetchAdsCampaignsTriggered = false
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .fetchAdsCampaigns(siteID, onCompletion):
+                let campaign = GoogleAdsCampaign.fake().copy(id: 134254)
+                onCompletion(.success([campaign]))
+                fetchAdsCampaignsTriggered = true
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores)
+        waitUntil {
+            fetchAdsCampaignsTriggered
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
+    }
 }
 
 private extension HubMenuViewModelTests {

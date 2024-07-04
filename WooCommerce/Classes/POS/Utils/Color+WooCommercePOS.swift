@@ -42,6 +42,10 @@ extension Color {
         Color(red: 39.0 / 255.0, green: 27.0 / 255.0, blue: 61.0 / 255.0)
     }
 
+    static var posSecondaryTexti3: Color {
+        Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.6)
+    }
+
     static var posIconGrayi3: Color {
         return Color.gray
     }

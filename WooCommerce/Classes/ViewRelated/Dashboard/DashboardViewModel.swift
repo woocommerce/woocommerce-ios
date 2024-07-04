@@ -113,7 +113,8 @@ final class DashboardViewModel: ObservableObject {
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -136,7 +137,10 @@ final class DashboardViewModel: ObservableObject {
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
-        self.googleAdsDashboardCardViewModel = GoogleAdsDashboardCardViewModel(siteID: siteID)
+        self.googleAdsDashboardCardViewModel = GoogleAdsDashboardCardViewModel(
+            siteID: siteID,
+            eligibilityChecker: googleAdsEligibilityChecker
+        )
 
         self.themeInstaller = themeInstaller
         self.inboxEligibilityChecker = inboxEligibilityChecker
@@ -168,6 +172,7 @@ final class DashboardViewModel: ObservableObject {
         await loadDashboardCardsFromStorage()
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
+                             canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
                              hasOrders: hasOrders)
     }
@@ -300,6 +305,9 @@ private extension DashboardViewModel {
             group.addTask { [weak self] in
                 await self?.updateHasOrdersStatus()
             }
+            group.addTask { [weak self] in
+                await self?.googleAdsDashboardCardViewModel.checkAvailability()
+            }
         }
     }
 
@@ -424,12 +432,17 @@ private extension DashboardViewModel {
 private extension DashboardViewModel {
     func observeValuesForDashboardCards() {
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
+            .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
+                           $hasOrders,
+                           $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
+            .sink { [weak self] combinedResult in
                 guard let self else { return }
+                let ((canShowOnboarding, canShowBlaze), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
+                                     canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
                                      hasOrders: hasOrders)
             }
@@ -520,6 +533,7 @@ private extension DashboardViewModel {
 
     func generateDefaultCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
+                              canShowGoogle: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
                               canShowInbox: Bool) -> [DashboardCard] {
@@ -562,11 +576,16 @@ private extension DashboardViewModel {
                                        enabled: false))
         }
 
+        cards.append(DashboardCard(type: .googleAds,
+                                   availability: canShowGoogle ? .show : .hide,
+                                   enabled: canShowGoogle))
+
         return cards
     }
 
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
+                              canShowGoogle: Bool,
                               canShowInbox: Bool,
                               hasOrders: Bool) {
 
@@ -576,6 +595,7 @@ private extension DashboardViewModel {
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
                                                 canShowBlaze: canShowBlaze,
+                                                canShowGoogle: canShowGoogle,
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowInbox: canShowInbox)

@@ -16,12 +16,22 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    productListView
-                    Spacer()
                     if viewModel.isCartCollapsed {
+                        // 1. Initial state: Product list is visible and cart is collapsed
+                        productListView
+                            .frame(maxWidth: .infinity)
+                        Spacer()
                         collapsedCartView
                     } else {
-                        cartView
+                        // 2. Products in cart: Both product list and cart are visible
+                        GeometryReader { geometry in
+                            HStack {
+                                productListView
+                                    .frame(width: geometry.size.width * Constants.productListWidth)
+                                cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                            }
+                        }
                     }
                 case .finalizing:
                     cartView
@@ -57,6 +67,18 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+private extension PointOfSaleDashboardView {
+    enum Constants {
+        // TODO:
+        // https://github.com/woocommerce/woocommerce-ios/issues/13240
+        // The current design only accounts for landscape, switching to portrait
+        // will need to be handled by resizing components and line-breaking for strings
+        // and other elements
+        static let productListWidth: CGFloat = 0.7
+        static let cartWidth: CGFloat = 0.3
+    }
+}
+
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
     var collapsedCartView: some View {
@@ -66,7 +88,6 @@ private extension PointOfSaleDashboardView {
     var cartView: some View {
         CartView(viewModel: viewModel,
                  cartViewModel: viewModel.cartViewModel)
-        .frame(maxWidth: .infinity)
     }
 
     var totalsView: some View {
@@ -79,7 +100,6 @@ private extension PointOfSaleDashboardView {
 
     var productListView: some View {
         ItemListView(viewModel: viewModel.itemSelectorViewModel)
-            .frame(maxWidth: .infinity)
     }
 }
 

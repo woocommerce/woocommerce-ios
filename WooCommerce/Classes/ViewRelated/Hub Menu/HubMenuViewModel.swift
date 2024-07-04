@@ -173,6 +173,11 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
+    @MainActor
+    func refreshGoogleAdsCampaignCheck() async {
+        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
     }

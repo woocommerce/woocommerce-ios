@@ -3,7 +3,7 @@ import Yosemite
 
 /// Reusable coordinator to handle Google Ads campaigns.
 ///
-final class GoogleAdsCampaignCoordinator: Coordinator {
+final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
     let navigationController: UINavigationController
 
     private let siteID: Int64
@@ -11,17 +11,22 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
 
     private let hasGoogleAdsCampaigns: Bool
     private let shouldAuthenticateAdminPage: Bool
+    private var bottomSheetPresenter: BottomSheetPresenter?
+
+    private let onCompletion: () -> Void
 
     init(siteID: Int64,
          siteAdminURL: String,
          hasGoogleAdsCampaigns: Bool,
          shouldAuthenticateAdminPage: Bool,
-         navigationController: UINavigationController) {
+         navigationController: UINavigationController,
+         onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
         self.shouldAuthenticateAdminPage = shouldAuthenticateAdminPage
         self.hasGoogleAdsCampaigns = hasGoogleAdsCampaigns
         self.navigationController = navigationController
+        self.onCompletion = onCompletion
     }
 
     func start() {
@@ -30,7 +35,17 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
         }
         let controller = createCampaignViewController(with: url)
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissCampaignView))
-        navigationController.present(UINavigationController(rootViewController: controller), animated: true)
+
+        let parentController = UINavigationController(rootViewController: controller)
+        navigationController.present(parentController, animated: true)
+        parentController.presentationController?.delegate = self
+    }
+}
+
+extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate {
+    // Triggered when swiping to dismiss the view.
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        onCompletion()
     }
 }
 
@@ -38,6 +53,7 @@ final class GoogleAdsCampaignCoordinator: Coordinator {
 //
 private extension GoogleAdsCampaignCoordinator {
     @objc func dismissCampaignView() {
+        onCompletion()
         navigationController.dismiss(animated: true)
     }
 
@@ -70,9 +86,10 @@ private extension GoogleAdsCampaignCoordinator {
         }) != nil
         if creationSucceeded {
             // dismisses the web view
-            navigationController.dismiss(animated: true)
-
-            // TODO: show success bottom sheet
+            navigationController.dismiss(animated: true) { [self] in
+                showSuccessView()
+            }
+            onCompletion()
             DDLogDebug("🎉 Google Ads campaign creation success")
         }
     }
@@ -86,6 +103,29 @@ private extension GoogleAdsCampaignCoordinator {
             }
         }()
         return URL(string: siteAdminURL.appending(path))
+    }
+
+    func showSuccessView() {
+        bottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = CelebrationHostingController(
+            title: Localization.successTitle,
+            subtitle: Localization.successSubtitle,
+            closeButtonTitle: Localization.successCTA,
+            image: .blazeSuccessImage,
+            onTappingDone: { [weak self] in
+            self?.bottomSheetPresenter?.dismiss()
+            self?.bottomSheetPresenter = nil
+        })
+        bottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium()]
+        })
     }
 }
 
@@ -103,6 +143,21 @@ private extension GoogleAdsCampaignCoordinator {
             "googleAdsCampaignCoordinator.googleForWooCommerce",
             value: "Google for WooCommerce",
             comment: "Title of the Google Ads campaign view"
+        )
+        static let successTitle = NSLocalizedString(
+            "googleAdsCampaignCoordinator.successTitle",
+            value: "Ready to Go!",
+            comment: "Title of the celebration view when a Google ads campaign is successfully created."
+        )
+        static let successSubtitle = NSLocalizedString(
+            "googleAdsCampaignCoordinator.successSubtitle",
+            value: "Your new campaign has been created. Exciting times ahead for your sales!",
+            comment: "Subtitle of the celebration view when a Google Ads campaign is successfully created."
+        )
+        static let successCTA = NSLocalizedString(
+            "googleAdsCampaignCoordinator.successCTA",
+            value: "Done",
+            comment: "Button to dismiss the celebration view when a Google Ads campaign is successfully created."
         )
     }
 }

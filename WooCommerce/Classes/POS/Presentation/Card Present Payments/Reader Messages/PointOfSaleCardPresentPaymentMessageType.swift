@@ -8,5 +8,6 @@ enum PointOfSaleCardPresentPaymentMessageType {
     case paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel)
     case paymentError(viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel)
     case paymentErrorNonRetryable(viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel)
+    case paymentCaptureError(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel)
     case cancelledOnReader(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
 }

@@ -10,13 +10,13 @@ import XCTest
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     private var sut: PointOfSaleDashboardViewModel!
-    private var cardPresentPaymentService: CardPresentPaymentPreviewService!
+    private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var orderService: POSOrderServiceProtocol!
 
     override func setUp() {
         super.setUp()
-        cardPresentPaymentService = CardPresentPaymentPreviewService()
+        cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         orderService = POSOrderPreviewService()
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,

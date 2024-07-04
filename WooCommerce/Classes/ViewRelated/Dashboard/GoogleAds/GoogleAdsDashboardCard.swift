@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.DashboardCard
+import struct Yosemite.GoogleAdsCampaign
 
 struct GoogleAdsDashboardCard: View {
     /// Scale of the view based on accessibility changes
@@ -23,13 +24,30 @@ struct GoogleAdsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            // Introduction about Google Ads
-            noCampaignView
-                .padding(.horizontal, Layout.padding)
+            if let campaign = viewModel.lastCampaign {
+                GoogleAdsCampaignDetailView(campaign: campaign)
+                    .padding(.horizontal, Layout.padding)
+                    .onTapGesture {
+                        onShowAllCampaigns()
+                    }
+            } else {
+                // Introduction about Google Ads
+                noCampaignView
+                    .padding(.horizontal, Layout.padding)
+            }
 
             // Create campaign button
             createCampaignButton
                 .padding(.horizontal, Layout.padding)
+
+            // Show All Campaigns button
+            VStack(spacing: Layout.padding) {
+                Divider()
+                    .padding(.leading, Layout.padding)
+                showAllCampaignsButton
+                    .padding(.horizontal, Layout.padding)
+            }
+            .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -94,6 +112,26 @@ private extension GoogleAdsDashboardCard {
         }
         .buttonStyle(SecondaryButtonStyle())
     }
+
+    var showAllCampaignsButton: some View {
+        Button {
+            onShowAllCampaigns()
+        } label: {
+            HStack(spacing: 0) {
+                Text(Localization.viewAll)
+                    .fontWeight(.regular)
+                    .foregroundStyle(Color.accentColor)
+                    .bodyStyle()
+
+                Spacer()
+
+                // Chevron icon
+                Image(uiImage: .chevronImage)
+                    .flipsForRightToLeftLayoutDirection(true)
+                    .foregroundStyle(Color(.textTertiary))
+            }
+        }
+    }
 }
 
 private extension GoogleAdsDashboardCard {
@@ -110,7 +148,7 @@ private extension GoogleAdsDashboardCard {
     enum Localization {
         static let hideCard = NSLocalizedString(
             "googleAdsDashboardCard.hideCard",
-            value: "Hide Google ads",
+            value: "Hide Google Ads",
             comment: "Menu item to dismiss the Google Ads campaigns section on the Dashboard screen"
         )
         static let viewAll = NSLocalizedString(

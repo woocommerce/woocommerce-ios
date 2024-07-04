@@ -12,6 +12,10 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     private let analytics: Analytics
     private let eligibilityChecker: GoogleAdsEligibilityChecker
 
+    var shouldShowShowAllCampaignsButton: Bool {
+        lastCampaign != nil
+    }
+
     @Published private(set) var canShowOnDashboard = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var syncingData = false

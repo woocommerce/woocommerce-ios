@@ -223,7 +223,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Schedule the background app refresh when sending the app to the background.
         // The OS is in charge of determining when these tasks will run based on app usage patterns.
         appRefreshHandler.scheduleAppRefresh()
-      
+
         // When the app is put into the background, it's important to ensure that any pending changes to
         // Core Data context are saved to avoid data loss.
         ServiceLocator.storageManager.viewStorage.saveIfNeeded()

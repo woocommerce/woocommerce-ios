@@ -8,24 +8,27 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     }
 
     var body: some View {
+
         // TODO: replace temporary inline message UI based on design
         switch messageType {
         case .preparingForPayment(let viewModel):
             PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
         case .tapSwipeOrInsertCard(let viewModel):
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
-        case .processing(let viewModel):
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: viewModel.imageName, title: viewModel.title))
+        case .processing:
+            Text("processing...")
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
-        case .paymentSuccess(let viewModel):
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(imageName: viewModel.imageName, title: viewModel.title))
+        case .paymentSuccess:
+            Text("Payment successful!")
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):
             PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
-        case .cancelledOnReader(let viewModel):
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: viewModel.title))
+        case .paymentCaptureError(let viewModel):
+            PointOfSaleCardPresentPaymentCaptureErrorMessageView(viewModel: viewModel)
+        case .cancelledOnReader:
+            Text("Payment cancelled on reader")
         }
     }
 }

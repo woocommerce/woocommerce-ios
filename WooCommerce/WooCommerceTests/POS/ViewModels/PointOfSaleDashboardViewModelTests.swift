@@ -55,6 +55,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         sut.itemSelectorViewModel.select(item)
 
         XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, false)
+        XCTAssertEqual(sut.orderStage, .building)
         XCTAssertEqual(sut.isCartCollapsed, false)
     }
 

@@ -12,9 +12,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var isSavingProduct: Bool = false
     @Published private(set) var generatedProduct: Product?
 
-    @Published private(set) var productName: String
-    @Published private(set) var productDescription: String?
-    @Published private(set) var productShortDescription: String?
+    @Published var productName = ""
+    @Published var productDescription = ""
     @Published private(set) var productType: String?
     @Published private(set) var productPrice: String?
     @Published private(set) var productCategories: String?
@@ -25,15 +24,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
-    /// Whether short description view should be displayed
-    var shouldShowShortDescriptionView: Bool {
-        if isGeneratingDetails {
-            return true
-        }
-        return productShortDescription?.isNotEmpty ?? false
-    }
-
-    private let productFeatures: String?
+    private let productFeatures: String
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -65,9 +56,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         productName: String,
-         productDescription: String?,
-         productFeatures: String?,
+         productFeatures: String,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
@@ -92,8 +81,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
 
-        self.productName = productName
-        self.productDescription = productDescription
         self.productFeatures = productFeatures
 
         try? categoryResultController.performFetch()
@@ -166,8 +153,7 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
-        productShortDescription = product.shortDescription
-        productDescription = product.fullDescription
+        productDescription = product.fullDescription ?? ""
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
@@ -301,13 +287,7 @@ private extension ProductDetailPreviewViewModel {
         }
 
         do {
-            let productInfo = {
-                guard let features = productFeatures,
-                      features.isNotEmpty else {
-                    return productName
-                }
-                return productName + " " + features
-            }()
+            let productInfo = productFeatures
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productInfo,
@@ -378,8 +358,8 @@ private extension ProductDetailPreviewViewModel {
                            existingTags: [ProductTag]) async throws -> AIProduct {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateAIProduct(siteID: siteID,
-                                                            productName: productName,
-                                                            keywords: productFeatures ?? productDescription ?? "",
+                                                            productName: "", // TODO: 13103 - Update action to work without name
+                                                            keywords: productFeatures,
                                                             language: language,
                                                             tone: tone.rawValue,
                                                             currencySymbol: currency,

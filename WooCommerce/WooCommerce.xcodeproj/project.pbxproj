@@ -2590,6 +2590,8 @@
 		DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */; };
 		DEB3879E2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3879D2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift */; };
 		DEB387A02C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */; };
+		DEB387A32C36474F0025256E /* GoogleAdsDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */; };
+		DEB387A52C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */; };
 		DEBAB70B2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */; };
 		DEBAB70D2A7A6F1100743185 /* MockStorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */; };
 		DEBAB70F2A7A6F3800743185 /* MockConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */; };
@@ -5571,6 +5573,8 @@
 		DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEB3879D2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignCoordinator.swift; sourceTree = "<group>"; };
 		DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignCoordinatorTests.swift; sourceTree = "<group>"; };
+		DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsDashboardCard.swift; sourceTree = "<group>"; };
+		DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsDashboardCardViewModel.swift; sourceTree = "<group>"; };
 		DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanBannerPresenterTests.swift; sourceTree = "<group>"; };
 		DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStorePlanSynchronizer.swift; sourceTree = "<group>"; };
 		DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConnectivityObserver.swift; sourceTree = "<group>"; };
@@ -11613,6 +11617,7 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				DEB387A12C3647300025256E /* GoogleAds */,
 				EE8B420A2BF9A1E40077C4E7 /* Orders */,
 				DE20045E2BF7090700660A72 /* ProductStock */,
 				EEC099342BF3C67200FBCF6C /* Coupons */,
@@ -12589,6 +12594,15 @@
 			children = (
 				DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */,
 				DEB3879F2C35109E0025256E /* GoogleAdsCampaignCoordinatorTests.swift */,
+			);
+			path = GoogleAds;
+			sourceTree = "<group>";
+		};
+		DEB387A12C3647300025256E /* GoogleAds */ = {
+			isa = PBXGroup;
+			children = (
+				DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */,
+				DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */,
 			);
 			path = GoogleAds;
 			sourceTree = "<group>";
@@ -14839,6 +14853,7 @@
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				B90DDF7C2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift in Sources */,
 				DE61979328A20C17005E4362 /* StorePickerViewModel.swift in Sources */,
+				DEB387A32C36474F0025256E /* GoogleAdsDashboardCard.swift in Sources */,
 				E1BE703A265E6F47006CA4D9 /* CardPresentModalScanningFailed.swift in Sources */,
 				D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */,
 				03E471C6293A2E95001A58AD /* CardPresentModalBuiltInReaderCheckingDeviceSupport.swift in Sources */,
@@ -15266,6 +15281,7 @@
 				02DAE7FC291B7B8B009342B7 /* DomainSelectorViewModel.swift in Sources */,
 				26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */,
 				4521396E27FEE55200964ED3 /* FullScreenTextView.swift in Sources */,
+				DEB387A52C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift in Sources */,
 				DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */,
 				E1E649E92846188C0070B194 /* BetaFeature.swift in Sources */,
 				0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */,

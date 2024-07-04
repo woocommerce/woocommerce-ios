@@ -22,6 +22,8 @@ extension DashboardCard.CardType {
             Localization.lastOrders
         case .coupons:
             Localization.coupons
+        case .googleAds:
+            Localization.googleAds
         }
     }
 }
@@ -72,6 +74,11 @@ private extension DashboardCard.CardType {
             "dashboardCard.name.coupons",
             value: "Most active coupons",
             comment: "Name for the Most active coupons dashboard card in the Customize Dashboard screen"
+        )
+        static let googleAds = NSLocalizedString(
+            "dashboardCard.name.googleAds",
+            value: "Google for WooCommerce",
+            comment: "Name for the Google for WooCommerce dashboard card in the Customize Dashboard screen"
         )
     }
 }

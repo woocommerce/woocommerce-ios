@@ -27,6 +27,7 @@ final class DashboardViewModel: ObservableObject {
     let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
     let productStockCardViewModel: ProductStockDashboardCardViewModel
     let lastOrdersCardViewModel: LastOrdersDashboardCardViewModel
+    let googleAdsDashboardCardViewModel: GoogleAdsDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -135,6 +136,7 @@ final class DashboardViewModel: ObservableObject {
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
+        self.googleAdsDashboardCardViewModel = GoogleAdsDashboardCardViewModel(siteID: siteID)
 
         self.themeInstaller = themeInstaller
         self.inboxEligibilityChecker = inboxEligibilityChecker
@@ -409,6 +411,9 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.lastOrdersCardViewModel.reloadData()
                     }
+                case .googleAds:
+                    // TODO: fetch data
+                    break
                 }
             }
         }

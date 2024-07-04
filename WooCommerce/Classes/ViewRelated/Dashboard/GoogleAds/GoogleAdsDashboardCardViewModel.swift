@@ -4,6 +4,9 @@ import protocol WooFoundation.Analytics
 
 /// View model for `GoogleAdsDashboardCard`.
 final class GoogleAdsDashboardCardViewModel: ObservableObject {
+    // Set externally to trigger callback upon hiding the Inbox card.
+    var onDismiss: (() -> Void)?
+
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
@@ -29,6 +32,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     }
 
     func dismissCard() {
-        // TODO
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .googleAds))
+        onDismiss?()
     }
 }

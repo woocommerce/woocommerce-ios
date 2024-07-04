@@ -9,6 +9,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     private let analytics: Analytics
 
     @Published private(set) var syncingError: Error?
+    @Published private(set) var syncingData = false
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -16,5 +17,9 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
+    }
+
+    func dismissCard() {
+        // TODO
     }
 }

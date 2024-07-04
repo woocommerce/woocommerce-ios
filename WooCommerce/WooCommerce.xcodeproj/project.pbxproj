@@ -2593,6 +2593,7 @@
 		DEB387A32C36474F0025256E /* GoogleAdsDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */; };
 		DEB387A52C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */; };
 		DEB387A72C3682C40025256E /* GoogleAdsCampaign+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A62C3682C40025256E /* GoogleAdsCampaign+UI.swift */; };
+		DEB387A92C3683FF0025256E /* GoogleAdsCampaignDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387A82C3683FF0025256E /* GoogleAdsCampaignDetailView.swift */; };
 		DEBAB70B2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */; };
 		DEBAB70D2A7A6F1100743185 /* MockStorePlanSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */; };
 		DEBAB70F2A7A6F3800743185 /* MockConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */; };
@@ -5577,6 +5578,7 @@
 		DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsDashboardCard.swift; sourceTree = "<group>"; };
 		DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsDashboardCardViewModel.swift; sourceTree = "<group>"; };
 		DEB387A62C3682C40025256E /* GoogleAdsCampaign+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleAdsCampaign+UI.swift"; sourceTree = "<group>"; };
+		DEB387A82C3683FF0025256E /* GoogleAdsCampaignDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignDetailView.swift; sourceTree = "<group>"; };
 		DEBAB70A2A7A3FE000743185 /* StorePlanBannerPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePlanBannerPresenterTests.swift; sourceTree = "<group>"; };
 		DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStorePlanSynchronizer.swift; sourceTree = "<group>"; };
 		DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockConnectivityObserver.swift; sourceTree = "<group>"; };
@@ -12605,6 +12607,7 @@
 			isa = PBXGroup;
 			children = (
 				DEB387A22C36474F0025256E /* GoogleAdsDashboardCard.swift */,
+				DEB387A82C3683FF0025256E /* GoogleAdsCampaignDetailView.swift */,
 				DEB387A42C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift */,
 			);
 			path = GoogleAds;
@@ -15465,6 +15468,7 @@
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
 				02B21C5329C830EB00C5623B /* WPAdminWebViewModel.swift in Sources */,
 				EEA1E20E2AC55F2200A37ADD /* WooAnalyticsEvent+ProductCreationAI.swift in Sources */,
+				DEB387A92C3683FF0025256E /* GoogleAdsCampaignDetailView.swift in Sources */,
 				DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */,
 				02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */,
 				DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */,

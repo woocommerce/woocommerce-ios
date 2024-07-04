@@ -9,6 +9,12 @@ final class BackgroundTaskRefreshDispatcher {
     /// Schedule the app refresh background task.
     ///
     func scheduleAppRefresh() {
+
+        // Do not run this code while running test because this framework is not enabled in the simulator
+        guard Self.isNotRunningTests() else {
+            return
+        }
+
         let request = BGAppRefreshTaskRequest(identifier: Self.taskIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60) // Fetch no earlier than 30 minutes from now.
         do {
@@ -21,6 +27,12 @@ final class BackgroundTaskRefreshDispatcher {
     /// Registers a closure to be invoked when the system wants to perform a background task.
     ///
     func registerSystemTaskIdentifier() {
+
+        // Do not run this code while running test because this framework is not enabled in the simulator
+        guard Self.isNotRunningTests() else {
+            return
+        }
+
         BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.taskIdentifier, using: nil) { task in
             guard let refreshTask = task as? BGAppRefreshTask else {
                 return
@@ -47,4 +59,10 @@ final class BackgroundTaskRefreshDispatcher {
             ordersSyncTask.cancel()
         }
      }
+}
+
+private extension BackgroundTaskRefreshDispatcher {
+    static func isNotRunningTests() -> Bool {
+        return NSClassFromString("XCTestCase") == nil
+    }
 }

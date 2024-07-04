@@ -1,5 +1,4 @@
 import UIKit
-import CoreData
 import Storage
 import class Networking.UserAgent
 import Experiments
@@ -178,6 +177,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // add our notification request
             UNUserNotificationCenter.current().add(request)
+
+            // When the app is put into an incative state, it's important to ensure that any pending changes to
+            // Core Data context are saved to avoid data loss.
+            ServiceLocator.storageManager.viewStorage.saveIfNeeded()
         }
     }
 
@@ -209,6 +212,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Don't track startup waiting time if app is backgrounded before everything is loaded
         cancelStartupWaitingTimeTracker()
+
+        // When the app is put into the background, it's important to ensure that any pending changes to
+        // Core Data context are saved to avoid data loss.
+        ServiceLocator.storageManager.viewStorage.saveIfNeeded()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -228,6 +235,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         DDLogVerbose("👀 Application terminating...")
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
+
+        // Save changes in the application's managed object context before the application terminates.
+        ServiceLocator.storageManager.viewStorage.saveIfNeeded()
     }
 
     func application(_ application: UIApplication,

@@ -15,6 +15,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     @Published private(set) var canShowOnDashboard = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var syncingData = false
+    @Published private(set) var lastCampaign: GoogleAdsCampaign?
 
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
@@ -34,5 +35,29 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     func dismissCard() {
         analytics.track(event: .DynamicDashboard.hideCardTapped(type: .googleAds))
         onDismiss?()
+    }
+
+    @MainActor
+    func fetchLastCampaign() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
+        do {
+            let campaigns = try await fetchAdsCampaigns()
+            lastCampaign = campaigns.last
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
+        } catch {
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))
+            DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
+        }
+    }
+}
+
+private extension GoogleAdsDashboardCardViewModel {
+    @MainActor
+    func fetchAdsCampaigns() async throws -> [GoogleAdsCampaign] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }

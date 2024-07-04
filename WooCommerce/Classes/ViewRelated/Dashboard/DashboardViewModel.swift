@@ -420,8 +420,9 @@ private extension DashboardViewModel {
                         await self?.lastOrdersCardViewModel.reloadData()
                     }
                 case .googleAds:
-                    // TODO: fetch data
-                    break
+                    group.addTask { [weak self] in
+                        await self?.googleAdsDashboardCardViewModel.fetchLastCampaign()
+                    }
                 }
             }
         }

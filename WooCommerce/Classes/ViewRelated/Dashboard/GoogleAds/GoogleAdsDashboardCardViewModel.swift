@@ -42,7 +42,11 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
         do {
             let campaigns = try await fetchAdsCampaigns()
-            lastCampaign = campaigns.last
+            lastCampaign = {
+                // prioritize showing last enabled campaign.
+                let enabledCampaigns = campaigns.filter { $0.status == .enabled }
+                return enabledCampaigns.last ?? campaigns.last
+            }()
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
         } catch {
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))

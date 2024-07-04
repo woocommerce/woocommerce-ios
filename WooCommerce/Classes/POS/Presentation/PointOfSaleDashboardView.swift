@@ -64,6 +64,9 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         })
+        .task {
+            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
+        }
     }
 }
 

@@ -6,6 +6,7 @@ import UIKit
 final class FilteredOrdersHeaderBar: UIView {
 
     @IBOutlet private weak var mainLabel: UILabel!
+    @IBOutlet private weak var lastUpdatedLabel: UILabel!
     @IBOutlet private weak var filterButton: UIButton!
 
     private let bottomBorder = CALayer()
@@ -13,6 +14,10 @@ final class FilteredOrdersHeaderBar: UIView {
     /// The number of filters applied
     ///
     private var numberOfFilters = 0
+
+    /// The time when the orders where updated
+    ///
+    private var lastUpdatedText = ""
 
     var onAction: (() -> Void)?
 
@@ -32,6 +37,11 @@ final class FilteredOrdersHeaderBar: UIView {
         numberOfFilters = filters
         configureLabels()
         configureButtons()
+    }
+
+    func setLastUpdatedTime(_ time: String) {
+        lastUpdatedText = time
+        configureLabels()
     }
 
     @IBAction private func filterButtonTapped(_ sender: Any) {
@@ -63,6 +73,10 @@ private extension FilteredOrdersHeaderBar {
     func configureLabels() {
         mainLabel.applyHeadlineStyle()
         mainLabel.text = numberOfFilters == 0 ? Localization.noFiltersApplied : Localization.filtersApplied
+
+        lastUpdatedLabel.applySecondaryFootnoteStyle()
+        lastUpdatedLabel.text = Localization.lastUpdatedText(time: lastUpdatedText)
+        lastUpdatedLabel.isHidden = lastUpdatedText.isEmpty
     }
 
     /// Setup: Buttons
@@ -92,5 +106,9 @@ private extension FilteredOrdersHeaderBar {
         static let buttonWithActiveFilters =
             NSLocalizedString("Filter (%ld)",
                               comment: "Title of the toolbar button to filter orders with filters applied.")
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString("Last Updated: %@",comment: "Time for when the orders were last updated")
+            return String.localizedStringWithFormat(format, time)
+        }
     }
 }

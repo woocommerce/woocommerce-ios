@@ -11,17 +11,23 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" id="eDg-Zp-eCF" customClass="FilteredOrdersHeaderBar" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="36"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="67"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="hrV-V9-BdB">
-                    <rect key="frame" x="16" y="8" width="343" height="20"/>
+                    <rect key="frame" x="16" y="8" width="343" height="51"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Uce-kq-wOt">
-                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="20"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Uce-kq-wOt">
+                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="51"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r3U-zo-uYF">
-                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="20"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r3U-zo-uYF">
+                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rLu-fm-bTC" userLabel="Last Updated Label">
+                                    <rect key="frame" x="0.0" y="24.5" width="41.5" height="26.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -29,11 +35,11 @@
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dRc-UB-LAM">
-                            <rect key="frame" x="61.5" y="0.0" width="175.5" height="20"/>
+                            <rect key="frame" x="61.5" y="0.0" width="175.5" height="51"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3R4-Zy-CEM">
-                            <rect key="frame" x="257" y="0.0" width="86" height="20"/>
+                            <rect key="frame" x="257" y="0.0" width="86" height="51"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" id="HKe-ba-c7Z"/>
                             </constraints>
@@ -57,9 +63,10 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="filterButton" destination="3R4-Zy-CEM" id="Cah-6b-bfB"/>
+                <outlet property="lastUpdatedLabel" destination="rLu-fm-bTC" id="XQY-3n-lw2"/>
                 <outlet property="mainLabel" destination="r3U-zo-uYF" id="2bV-ER-1xX"/>
             </connections>
-            <point key="canvasLocation" x="81.884057971014499" y="-96.428571428571431"/>
+            <point key="canvasLocation" x="81.884057971014499" y="-86.049107142857139"/>
         </view>
     </objects>
 </document>

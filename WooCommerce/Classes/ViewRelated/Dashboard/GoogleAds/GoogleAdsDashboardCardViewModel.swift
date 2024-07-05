@@ -20,6 +20,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingError: Error?
     @Published private(set) var syncingData = false
     @Published private(set) var lastCampaign: GoogleAdsCampaign?
+    @Published private(set) var lastCampaignStats: GoogleAdsCampaignStats?
 
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
@@ -53,6 +54,11 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
                 let enabledCampaigns = campaigns.filter { $0.status == .enabled }
                 return enabledCampaigns.last ?? campaigns.last
             }()
+            if let id = lastCampaign?.id {
+                Task {
+                    await updateCampaignStats(campaignID: id)
+                }
+            }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
         } catch {
             syncingError = error
@@ -70,6 +76,30 @@ private extension GoogleAdsDashboardCardViewModel {
             stores.dispatch(GoogleAdsAction.fetchAdsCampaigns(siteID: siteID) { result in
                 continuation.resume(with: result)
             })
+        }
+    }
+
+    @MainActor
+    func updateCampaignStats(campaignID: Int64) async {
+        do {
+            let stats = try await retrieveCampaignStats(campaignID: campaignID)
+            lastCampaignStats = stats
+        } catch {
+            DDLogError("⛔️ Error retrieving Google ads campaign stats: \(error)")
+        }
+    }
+
+    @MainActor
+    func retrieveCampaignStats(campaignID: Int64) async throws -> GoogleAdsCampaignStats {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
+                siteID: siteID,
+                timeZone: TimeZone.siteTimezone,
+                earliestDateToInclude: Date.distantPast,
+                latestDateToInclude: Date()) { result in
+                    continuation.resume(with: result)
+                }
+            )
         }
     }
 }

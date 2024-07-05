@@ -345,12 +345,18 @@ private extension PaymentMethodsViewModel {
                 return
             }
 
+            let cashOnDeliveryID = PaymentGateway.Constants.cashOnDeliveryGatewayID
+            let cashOnDeliveryPaymentGateway = storage.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: cashOnDeliveryID)
+            let cashOnDeliveryTitle = cashOnDeliveryPaymentGateway?.title ?? Localization.cashOnDeliveryPaymentMethodTitle
+
             let modifiedOrder = order.copy(status: .completed,
-                                           paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID)
+                                           paymentMethodID: cashOnDeliveryID,
+                                           paymentMethodTitle: cashOnDeliveryTitle)
+            let fieldsToUpdate: [OrderUpdateField] = [.status, .paymentMethodID, .paymentMethodTitle]
             stores.dispatch(OrderAction.updateOrder(siteID: siteID,
                                                     order: modifiedOrder,
                                                     giftCard: nil,
-                                                    fields: [.status, .paymentMethodID],
+                                                    fields: fieldsToUpdate,
                                                     onCompletion: { result in
                 switch result {
                 case .success:
@@ -507,6 +513,9 @@ private extension PaymentMethodsViewModel {
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
                                                                value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
                                                                comment: "Note from the cash tender view.")
+        static let cashOnDeliveryPaymentMethodTitle = NSLocalizedString("paymentMethods.cashOnDelivery.title",
+                                                                        value: "Pay in Person",
+                                                                        comment: "A title for a payment method where customer pays by cash in person")
     }
 }
 

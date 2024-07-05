@@ -107,7 +107,7 @@ private extension FilteredOrdersHeaderBar {
             NSLocalizedString("Filter (%ld)",
                               comment: "Title of the toolbar button to filter orders with filters applied.")
         static func lastUpdatedText(time: String) -> String {
-            let format = NSLocalizedString("Last Updated: %@",comment: "Time for when the orders were last updated")
+            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the orders were last updated")
             return String.localizedStringWithFormat(format, time)
         }
     }

@@ -338,13 +338,27 @@ private extension PaymentMethodsViewModel {
     ///
     @MainActor
     func markOrderAsPaid() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { error in
-                guard let error else {
-                    return continuation.resume(returning: ())
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            guard let order = ordersResultController.fetchedObjects.first else {
+                DDLogError("⛔️ Order not found, can't mark order as paid.")
+                continuation.resume(throwing: PaymentMethodsError.orderNotFound)
+                return
+            }
+
+            let modifiedOrder = order.copy(status: .completed,
+                                           paymentMethodID: PaymentGateway.Constants.cashOnDeliveryGatewayID)
+            stores.dispatch(OrderAction.updateOrder(siteID: siteID,
+                                                    order: modifiedOrder,
+                                                    giftCard: nil,
+                                                    fields: [.status, .paymentMethodID],
+                                                    onCompletion: { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
-                continuation.resume(throwing: error)
-            })
+            }))
         }
     }
 
@@ -502,6 +516,10 @@ enum PaymentMethodsNotice: Equatable {
     case created
     case completed
     case error(String)
+}
+
+enum PaymentMethodsError: Error {
+    case orderNotFound
 }
 
 private extension CardReaderDiscoveryMethod {

@@ -464,6 +464,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             case .viewWillAppear where Date().timeIntervalSince(lastSyncTime) < minimalIntervalBetweenSync:
                 onCompletion?(true) // less than 30m from last full sync
                 return
+            case .viewWillAppear where ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks):
+                refreshControl.showRefreshAnimation(on: self.tableView)
             default:
                 break
             }
@@ -509,6 +511,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 self.transitionToResultsUpdatedState()
+                self.refreshControl.endRefreshing()
                 onCompletion?(error == nil)
         }
 

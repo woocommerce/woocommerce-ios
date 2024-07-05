@@ -300,6 +300,8 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.customerID.rawValue] = order.customerID
                     case .paymentMethodID:
                         params[Order.CodingKeys.paymentMethodID.rawValue] = order.paymentMethodID
+                    case .paymentMethodTitle:
+                        params[Order.CodingKeys.paymentMethodTitle.rawValue] = order.paymentMethodTitle
                     }
                 }
 
@@ -471,6 +473,7 @@ public extension OrdersRemote {
         case status
         case customerID
         case paymentMethodID
+        case paymentMethodTitle
     }
 
     /// Order fields supported for create

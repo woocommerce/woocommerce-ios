@@ -93,7 +93,7 @@ struct ProductCreationAIStartingInfoView: View {
         }
         .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
             if case let .success(image) = viewModel.imageState {
-                ViewPhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
+                ViewPackagePhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
             }
         })
         .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
@@ -233,44 +233,6 @@ private extension ProductCreationAIStartingInfoView {
                 "productCreationAIStartingInfoView.packagePhotoView.removePhoto",
                 value: "Remove Photo",
                 comment: "Title of button which removes selected package photo in starting info screen."
-            )
-        }
-    }
-}
-
-private extension ProductCreationAIStartingInfoView {
-    struct ViewPhoto: View {
-        let image: UIImage
-        @Binding var isShowing: Bool
-
-        var body: some View {
-            NavigationStack {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(Localization.done) {
-                                isShowing = false
-                            }
-                        }
-                    }
-                    .navigationTitle(Localization.packagePhoto)
-                    .wooNavigationBarStyle()
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-
-        enum Localization {
-            static let packagePhoto = NSLocalizedString(
-                "productCreationAIStartingInfoView.viewPhoto.packagePhoto",
-                value: "Package photo",
-                comment: "Title of the view package photo screen."
-            )
-            static let done = NSLocalizedString(
-                "productCreationAIStartingInfoView.viewPhoto.done",
-                value: "Done",
-                comment: "Title of the button to dismiss the view package photo screen."
             )
         }
     }

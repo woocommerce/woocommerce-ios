@@ -142,6 +142,11 @@ struct ProductDetailPreviewView: View {
                 }
                 Button(Localization.cancel, action: onDismiss)
             }
+            .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
+                if case let .success(image) = viewModel.imageState {
+                    ViewPackagePhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
+                }
+            })
         }
     }
 }

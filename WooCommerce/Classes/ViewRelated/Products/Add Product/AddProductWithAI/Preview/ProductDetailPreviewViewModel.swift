@@ -7,7 +7,9 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
+    typealias ImageState = EditableImageViewState
 
+    @Published private(set) var imageState: ImageState
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var isSavingProduct: Bool = false
     @Published private(set) var generatedProduct: Product?
@@ -57,6 +59,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     init(siteID: Int64,
          productFeatures: String,
+         imageState: ImageState,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
@@ -68,6 +71,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
+        self.productFeatures = productFeatures
+        self.imageState = imageState
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -81,7 +86,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
 
-        self.productFeatures = productFeatures
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()

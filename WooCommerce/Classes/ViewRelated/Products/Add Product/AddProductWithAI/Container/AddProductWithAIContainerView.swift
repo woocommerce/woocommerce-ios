@@ -130,7 +130,8 @@ struct AddProductWithAIContainerView: View {
             case .preview:
                 if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
                     ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
-                                                                                      productFeatures: viewModel.productFeatures) { product in
+                                                                                      productFeatures: viewModel.productFeatures,
+                                                                                      imageState: viewModel.startingInfoViewModel.imageState) { product in
                         viewModel.didCreateProduct(product)
                     }, onDismiss: {
                         viewModel.backtrackOrDismiss()

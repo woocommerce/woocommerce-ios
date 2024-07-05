@@ -59,6 +59,11 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onViewAllReviews: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onCreateNewGoogleAdsCampaign: (() -> Void)?
+    /// Set externally in the hosting controller.
+    var onShowAllGoogleAdsCampaigns: (() -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -236,9 +241,9 @@ private extension DashboardView {
                         }
                     case .googleAds:
                         GoogleAdsDashboardCard(viewModel: viewModel.googleAdsDashboardCardViewModel, onCreateNewCampaign: {
-                            // TODO
+                            onCreateNewGoogleAdsCampaign?()
                         }, onShowAllCampaigns: {
-                            // TODO
+                            onShowAllGoogleAdsCampaigns?()
                         })
                     }
 

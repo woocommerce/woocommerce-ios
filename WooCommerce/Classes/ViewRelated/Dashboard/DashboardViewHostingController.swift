@@ -11,6 +11,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
+    private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
 
@@ -51,6 +52,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureMostActiveCouponsView()
         configureLastOrdersView()
         configureReviewsCard()
+        configureGoogleAdsCard()
     }
 
     @available(*, unavailable)
@@ -299,6 +301,47 @@ private extension DashboardViewHostingController {
             let viewController = ReviewsViewController(siteID: viewModel.siteID)
             show(viewController, sender: self)
         }
+    }
+}
+
+// MARK: Google Ads campaigns
+private extension DashboardViewHostingController {
+    func configureGoogleAdsCard() {
+        rootView.onCreateNewGoogleAdsCampaign = { [weak self] in
+            self?.startGoogleAdsCampaignCoordinator(forCampaignCreation: true)
+        }
+
+        rootView.onShowAllGoogleAdsCampaigns = { [weak self] in
+            self?.startGoogleAdsCampaignCoordinator(forCampaignCreation: false)
+        }
+    }
+
+    func startGoogleAdsCampaignCoordinator(forCampaignCreation: Bool) {
+        guard let site = viewModel.stores.sessionManager.defaultSite,
+              let navigationController else {
+            return
+        }
+
+        let shouldAuthenticateAdminPage = {
+            /// If the site is self-hosted and user is authenticated with WPCom,
+            /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
+            /// This should be prevented 💀⛔️
+            guard site.isWordPressComStore || viewModel.stores.isAuthenticatedWithoutWPCom else {
+                return false
+            }
+            return true
+        }()
+
+        let coordinator = GoogleAdsCampaignCoordinator(
+            siteID: viewModel.siteID,
+            siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
+            shouldStartCampaignCreation: forCampaignCreation,
+            shouldAuthenticateAdminPage: shouldAuthenticateAdminPage,
+            navigationController: navigationController,
+            onCompletion: {}
+        )
+        coordinator.start()
+        googleAdsCampaignCoordinator = coordinator
     }
 }
 

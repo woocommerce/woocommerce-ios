@@ -35,7 +35,7 @@ struct GoogleAdsCampaignDetailView: View {
                                               backgroundColor: campaign.status.backgroundColor)
                     )
                     Text(campaign.name)
-                        .font(.headline)
+                        .font(.subheadline)
                         .fontWeight(.semibold)
                 }
                 .fixedSize(horizontal: false, vertical: false)

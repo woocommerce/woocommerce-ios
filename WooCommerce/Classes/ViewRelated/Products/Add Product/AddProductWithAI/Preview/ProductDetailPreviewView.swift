@@ -31,7 +31,7 @@ struct ProductDetailPreviewView: View {
 
                 // Product name and description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
-                    Text(Localization.productNameAndDescription)
+                    Text(Localization.nameSummaryAndDescription)
                         .foregroundStyle(Color.primary)
                         .headlineStyle()
 
@@ -355,8 +355,8 @@ fileprivate extension ProductDetailPreviewView {
             value: "Is this result good?",
             comment: "Question to ask for feedback for the AI-generated content on the add product with AI Preview screen."
         )
-        static let productNameAndDescription = NSLocalizedString(
-            "productDetailPreviewView.productNameSummaryAndDescription",
+        static let nameSummaryAndDescription = NSLocalizedString(
+            "productDetailPreviewView.nameSummaryAndDescription",
             value: "Name, Summary & Description",
             comment: "Title of the name, short description and description fields on the add product with AI Preview screen."
         )

@@ -1,1 +1,3 @@
-Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
+- [**] Stats: The Analytics Hub (accessed by tapping "View all store analytics" on the My Store dashboard) now includes analytics for Google Ads campaigns, when the Google Listings & Ads extension is active and connected to Google. [https://github.com/woocommerce/woocommerce-ios/pull/13245]
+- [***] Inbox Notes have been enabled in both the Dynamic Dashboard and the Hub Menu, offering users a centralized and non-intrusive method for receiving important updates, feature announcements, and pertinent information. [https://github.com/woocommerce/woocommerce-ios/pull/13214]
+

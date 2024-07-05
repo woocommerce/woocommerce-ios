@@ -41,6 +41,9 @@ struct ProductDetailPreviewView: View {
                     // Product name
                     nameTextField
 
+                    // Product short description
+                    shortDescriptionTextField
+
                     // Product description
                     descriptionTextField
                 }
@@ -158,6 +161,17 @@ private extension ProductDetailPreviewView {
     var nameTextField: some View {
         TextField(Localization.productNamePlaceholder,
                   text: $viewModel.productName,
+                  axis: .vertical)
+        .textFieldStyle(.plain)
+        .padding(Layout.fieldInsets)
+        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+        .shimmering(active: viewModel.isGeneratingDetails)
+        .roundedRectBorderStyle()
+    }
+
+    var shortDescriptionTextField: some View {
+        TextField(Localization.productShortDescriptionPlaceholder,
+                  text: $viewModel.productShortDescription,
                   axis: .vertical)
         .textFieldStyle(.plain)
         .padding(Layout.fieldInsets)
@@ -424,13 +438,18 @@ fileprivate extension ProductDetailPreviewView {
         )
         static let productNameAndDescription = NSLocalizedString(
             "productDetailPreviewView.productNameAndDescription",
-            value: "Name & Description",
-            comment: "Title of the name and description fields on the add product with AI Preview screen."
+            value: "Name, Summary & Description",
+            comment: "Title of the name, short description and description fields on the add product with AI Preview screen."
         )
         static let productNamePlaceholder = NSLocalizedString(
             "productDetailPreviewView.productNamePlaceholder",
             value: "Name your product",
             comment: "Placeholder text for the product name field on on the add product with AI Preview screen."
+        )
+        static let productShortDescriptionPlaceholder = NSLocalizedString(
+            "productDetailPreviewView.productShortDescriptionPlaceholder",
+            value: "A brief excerpt about your product",
+            comment: "Placeholder text for the product short description field on the add product with AI Preview screen."
         )
         static let productDescriptionPlaceholder = NSLocalizedString(
             "productDetailPreviewView.productDescriptionPlaceholder",

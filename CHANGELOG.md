@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.4
+Discover the latest updates to our app! The Analytics Hub now includes analytics for Google Ads campaigns, provided the Google Listings & Ads extension is active and connected. We've also enabled Inbox Notes in both the Dynamic Dashboard and the Hub Menu, offering users a centralized, non-intrusive method for receiving important updates, feature announcements, and pertinent information. Update now to enjoy these new features and enhance your experience! 
+
 ## 19.3
 Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
 

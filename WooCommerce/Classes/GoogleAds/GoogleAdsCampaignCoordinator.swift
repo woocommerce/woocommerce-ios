@@ -9,7 +9,7 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
     private let siteID: Int64
     private let siteAdminURL: String
 
-    private let shouldStartCampaignCreation: Bool
+    private let hasGoogleAdsCampaigns: Bool
     private let shouldAuthenticateAdminPage: Bool
     private var bottomSheetPresenter: BottomSheetPresenter?
 
@@ -17,14 +17,14 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 
     init(siteID: Int64,
          siteAdminURL: String,
-         shouldStartCampaignCreation: Bool,
+         hasGoogleAdsCampaigns: Bool,
          shouldAuthenticateAdminPage: Bool,
          navigationController: UINavigationController,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
         self.shouldAuthenticateAdminPage = shouldAuthenticateAdminPage
-        self.shouldStartCampaignCreation = shouldStartCampaignCreation
+        self.hasGoogleAdsCampaigns = hasGoogleAdsCampaigns
         self.navigationController = navigationController
         self.onCompletion = onCompletion
     }
@@ -96,10 +96,10 @@ private extension GoogleAdsCampaignCoordinator {
 
     func createGoogleAdsCampaignURL() -> URL? {
         let path: String = {
-            if shouldStartCampaignCreation {
-                Constants.campaignCreationPath
-            } else {
+            if hasGoogleAdsCampaigns {
                 Constants.campaignDashboardPath
+            } else {
+                Constants.campaignCreationPath
             }
         }()
         return URL(string: siteAdminURL.appending(path))

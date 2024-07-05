@@ -25,7 +25,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: 123,
             siteAdminURL: siteAdminURL,
-            shouldStartCampaignCreation: true,
+            hasGoogleAdsCampaigns: true,
             shouldAuthenticateAdminPage: false,
             navigationController: navigationController,
             onCompletion: {}
@@ -44,7 +44,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: 123,
             siteAdminURL: siteAdminURL,
-            shouldStartCampaignCreation: true,
+            hasGoogleAdsCampaigns: true,
             shouldAuthenticateAdminPage: true,
             navigationController: navigationController,
             onCompletion: {}

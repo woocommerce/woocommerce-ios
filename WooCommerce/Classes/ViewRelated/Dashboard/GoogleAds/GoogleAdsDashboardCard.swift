@@ -32,7 +32,8 @@ struct GoogleAdsDashboardCard: View {
                     }
                 }
             } else if let campaign = viewModel.lastCampaign {
-                GoogleAdsCampaignDetailView(campaign: campaign)
+                GoogleAdsCampaignDetailView(campaign: campaign,
+                                            stats: viewModel.lastCampaignStats)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         onShowAllCampaigns()

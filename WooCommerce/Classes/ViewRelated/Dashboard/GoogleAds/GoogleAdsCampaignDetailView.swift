@@ -1,14 +1,18 @@
 import SwiftUI
 import struct Yosemite.GoogleAdsCampaign
+import struct Yosemite.GoogleAdsCampaignStats
 
 struct GoogleAdsCampaignDetailView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let campaign: GoogleAdsCampaign
+    private let stats: GoogleAdsCampaignStats?
 
-    init(campaign: GoogleAdsCampaign) {
+    init(campaign: GoogleAdsCampaign,
+         stats: GoogleAdsCampaignStats?) {
         self.campaign = campaign
+        self.stats = stats
     }
 
     var body: some View {
@@ -43,6 +47,40 @@ struct GoogleAdsCampaignDetailView: View {
                     .foregroundColor(.secondary)
                     .font(.headline)
             }
+
+            if let stats {
+                // campaign stats
+                AdaptiveStack {
+                    Spacer()
+                        .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
+
+                    // campaign total impressions
+                    VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
+                        Text(Localization.impressions)
+                            .subheadlineStyle()
+                        Text("\(stats.totals.impressions ?? 0)")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.init(UIColor.text))
+                    }
+                    .fixedSize()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    // campaign total clicks
+                    VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
+                        Text(Localization.clicks)
+                            .subheadlineStyle()
+                        Text("\(stats.totals.clicks ?? 0)")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.init(UIColor.text))
+                    }
+                    .fixedSize()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Spacer()
+                }
+            }
         }
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
@@ -69,6 +107,19 @@ private extension GoogleAdsCampaignDetailView {
         static let statsVerticalSpacing: CGFloat = 6
         static let strokeWidth: CGFloat = 0.5
     }
+
+    enum Localization {
+        static let impressions = NSLocalizedString(
+            "googleAdsCampaignStatsView.impressions",
+            value: "Impressions",
+            comment: "Title label for the total impressions of a Google ads campaign"
+        )
+        static let clicks = NSLocalizedString(
+            "googleAdsCampaignStatsView.impressions",
+            value: "Clicks",
+            comment: "Title label for the total clicks of a Google ads campaign"
+        )
+    }
 }
 
 #Preview {
@@ -78,5 +129,6 @@ private extension GoogleAdsCampaignDetailView {
                                                             rawType: "test",
                                                             amount: 10,
                                                             country: "US",
-                                                            targetedLocations: ["US"]))
+                                                            targetedLocations: ["US"]),
+                                stats: nil)
 }

@@ -60,7 +60,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .checkConnection(_, completion):
                 completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, completion):
+            case let .retrieveCampaignStats(_, _, _, _, _, completion):
                 let campaignStats = GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 285))
                 completion(.success(campaignStats))
             default:
@@ -145,7 +145,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .checkConnection(_, completion):
                 completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, completion):
+            case let .retrieveCampaignStats(_, _, _, _, _, completion):
                 loadingGoogleCampaignsCardRedacted = vm.googleCampaignsCard.isRedacted
                 completion(.success(GoogleAdsCampaignStats.fake()))
             default:
@@ -611,7 +611,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .checkConnection(_, completion):
                 completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, completion):
+            case let .retrieveCampaignStats(_, _, _, _, _, completion):
                 completion(.success(.fake()))
             default:
                 break

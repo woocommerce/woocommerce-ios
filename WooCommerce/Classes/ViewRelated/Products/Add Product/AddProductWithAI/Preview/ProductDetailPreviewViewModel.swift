@@ -7,13 +7,16 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
+    typealias ImageState = EditableImageViewState
 
+    @Published private(set) var imageState: ImageState
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var isSavingProduct: Bool = false
     @Published private(set) var generatedProduct: Product?
 
     @Published var productName = ""
     @Published var productDescription = ""
+    @Published var productShortDescription = ""
     @Published private(set) var productType: String?
     @Published private(set) var productPrice: String?
     @Published private(set) var productCategories: String?
@@ -23,6 +26,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
+
+    @Published var isShowingViewPhotoSheet = false
+    @Published var notice: Notice?
 
     private let productFeatures: String
 
@@ -57,6 +63,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     init(siteID: Int64,
          productFeatures: String,
+         imageState: ImageState,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
@@ -68,6 +75,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
+        self.productFeatures = productFeatures
+        self.imageState = imageState
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -81,7 +90,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
 
-        self.productFeatures = productFeatures
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
@@ -137,6 +145,22 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
         shouldShowFeedbackView = false
     }
+
+    // MARK: Package photo view
+    func didTapViewPhoto() {
+        isShowingViewPhotoSheet = true
+    }
+
+    func didTapRemovePhoto() {
+        let previousState = imageState
+        imageState = .empty
+        notice = Notice(title: Localization.PhotoRemovedNotice.title,
+                        feedbackType: .success,
+                        actionTitle: Localization.PhotoRemovedNotice.undo,
+                        actionHandler: { [weak self, previousState] in
+            self?.imageState = previousState
+        })
+    }
 }
 
 // MARK: - Product details for preview
@@ -153,6 +177,7 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
+        productShortDescription = product.shortDescription ?? ""
         productDescription = product.fullDescription ?? ""
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
@@ -534,6 +559,18 @@ private extension ProductDetailPreviewViewModel {
             "There was an error saving product details. Please try again.",
             comment: "Error message when saving product as draft on the add product with AI Preview screen."
         )
+        enum PhotoRemovedNotice {
+            static let title = NSLocalizedString(
+                "productDetailPreviewViewModel.photoRemovedNotice.title",
+                value: "Photo removed",
+                comment: "Title of the notice that confirms that the package photo is removed."
+            )
+            static let undo = NSLocalizedString(
+                "productDetailPreviewViewModel.photoRemovedNotice.undo",
+                value: "Undo",
+                comment: "Button to undo the package photo removal action."
+            )
+        }
     }
 }
 

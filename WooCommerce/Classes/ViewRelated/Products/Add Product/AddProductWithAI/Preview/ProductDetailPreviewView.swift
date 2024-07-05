@@ -31,16 +31,22 @@ struct ProductDetailPreviewView: View {
 
                 // Product name and description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
-                    Text(Localization.productNameAndDescription)
+                    Text(Localization.nameSummaryAndDescription)
                         .foregroundStyle(Color.primary)
                         .headlineStyle()
 
                     // Product name
                     nameTextField
 
+                    // Product short description
+                    shortDescriptionTextField
+
                     // Product description
                     descriptionTextField
                 }
+
+                // Package photo
+                packagePhotoView
 
                 // Other details
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
@@ -139,7 +145,13 @@ struct ProductDetailPreviewView: View {
                 }
                 Button(Localization.cancel, action: onDismiss)
             }
+            .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
+                if case let .success(image) = viewModel.imageState {
+                    ViewPackagePhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
+                }
+            })
         }
+        .notice($viewModel.notice)
     }
 }
 
@@ -149,6 +161,17 @@ private extension ProductDetailPreviewView {
     var nameTextField: some View {
         TextField(Localization.productNamePlaceholder,
                   text: $viewModel.productName,
+                  axis: .vertical)
+        .textFieldStyle(.plain)
+        .padding(Layout.fieldInsets)
+        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
+        .shimmering(active: viewModel.isGeneratingDetails)
+        .roundedRectBorderStyle()
+    }
+
+    var shortDescriptionTextField: some View {
+        TextField(Localization.productShortDescriptionPlaceholder,
+                  text: $viewModel.productShortDescription,
                   axis: .vertical)
         .textFieldStyle(.plain)
         .padding(Layout.fieldInsets)
@@ -189,6 +212,24 @@ private extension ProductDetailPreviewView {
         }
         .buttonStyle(SecondaryButtonStyle())
         .disabled(viewModel.isGeneratingDetails)
+    }
+
+    @ViewBuilder
+    var packagePhotoView: some View {
+        switch viewModel.imageState {
+        case .empty:
+            EmptyView()
+        case .loading, .success:
+            PackagePhotoView(title: Localization.photoSelected,
+                             subTitle: Localization.addedToProduct,
+                             imageState: viewModel.imageState,
+                             onTapViewPhoto: {
+                viewModel.didTapViewPhoto()
+            },
+                             onTapRemovePhoto: {
+                viewModel.didTapRemovePhoto()
+            })
+        }
     }
 }
 
@@ -314,15 +355,20 @@ fileprivate extension ProductDetailPreviewView {
             value: "Is this result good?",
             comment: "Question to ask for feedback for the AI-generated content on the add product with AI Preview screen."
         )
-        static let productNameAndDescription = NSLocalizedString(
-            "productDetailPreviewView.productNameAndDescription",
-            value: "Name & Description",
-            comment: "Title of the name and description fields on the add product with AI Preview screen."
+        static let nameSummaryAndDescription = NSLocalizedString(
+            "productDetailPreviewView.nameSummaryAndDescription",
+            value: "Name, Summary & Description",
+            comment: "Title of the name, short description and description fields on the add product with AI Preview screen."
         )
         static let productNamePlaceholder = NSLocalizedString(
             "productDetailPreviewView.productNamePlaceholder",
             value: "Name your product",
             comment: "Placeholder text for the product name field on on the add product with AI Preview screen."
+        )
+        static let productShortDescriptionPlaceholder = NSLocalizedString(
+            "productDetailPreviewView.productShortDescriptionPlaceholder",
+            value: "A brief excerpt about your product",
+            comment: "Placeholder text for the product short description field on the add product with AI Preview screen."
         )
         static let productDescriptionPlaceholder = NSLocalizedString(
             "productDetailPreviewView.productDescriptionPlaceholder",
@@ -389,6 +435,16 @@ fileprivate extension ProductDetailPreviewView {
             value: "Generate Again",
             comment: "Button to regenerate AI product details again with AI Preview screen."
         )
+        static let photoSelected = NSLocalizedString(
+            "productDetailPreviewView.photoSelected",
+            value: "Photo selected",
+            comment: "Text to explain that a package photo has been selected in product preview screen."
+        )
+        static let addedToProduct = NSLocalizedString(
+            "productDetailPreviewView.addedToProduct",
+            value: "Photo will be added to product",
+            comment: "Text to explain that a package photo has been selected in product preview screen."
+        )
     }
 }
 
@@ -416,7 +472,8 @@ private extension VerticalAlignment {
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
-                                                  productFeatures: "Sample features") { _ in },
+                                                  productFeatures: "Sample features",
+                                                  imageState: .empty) { _ in },
                                  onDismiss: {})
     }
 }

@@ -26,6 +26,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
 
+    @Published var isShowingViewPhotoSheet = false
+    @Published var notice: Notice?
+
     private let productFeatures: String
 
     private let siteID: Int64
@@ -140,6 +143,22 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                         isUseful: vote == .up))
 
         shouldShowFeedbackView = false
+    }
+
+    // MARK: Package photo view
+    func didTapViewPhoto() {
+        isShowingViewPhotoSheet = true
+    }
+
+    func didTapRemovePhoto() {
+        let previousState = imageState
+        imageState = .empty
+        notice = Notice(title: Localization.PhotoRemovedNotice.title,
+                        feedbackType: .success,
+                        actionTitle: Localization.PhotoRemovedNotice.undo,
+                        actionHandler: { [weak self, previousState] in
+            self?.imageState = previousState
+        })
     }
 }
 

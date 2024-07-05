@@ -187,8 +187,8 @@ private extension GoogleAdsDashboardCard {
                 comment: "Title label on the Google Ads campaigns section on the Dashboard screen"
             )
             static let subtitle = NSLocalizedString(
-                "googleAdsDashboardCard.noCampaign.subtitle",
-                value: "Create an ad campaign to promote your products across Google Search, Shopping, YouTube, Gmail, and the Display Network.",
+                "googleAdsDashboardCard.noCampaign.details",
+                value: "Promote your products across Google Search, Shopping, Youtube, Gmail, and more.",
                 comment: "Subtitle label on the Google Ads campaigns section on the Dashboard screen"
             )
         }

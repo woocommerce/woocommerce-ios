@@ -34,6 +34,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -68,6 +69,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       dimensionUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -102,6 +104,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -132,6 +135,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -162,6 +166,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -197,6 +202,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -254,6 +260,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: sampleProductFeatures,
+                                                      imageState: .empty,
                                                       currency: sampleCurrency,
                                                       weightUnit: sampleWeightUnit,
                                                       dimensionUnit: sampleDimensionUnit,
@@ -305,6 +312,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -340,6 +348,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "test", code: 503)
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -393,6 +402,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -438,6 +448,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -461,6 +472,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let product = AIProduct.fake().copy(categories: ["Biscuits", "Cookies"])
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -497,6 +509,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -520,6 +533,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let product = AIProduct.fake().copy(tags: ["Food", "Grocery"])
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -550,6 +564,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                       tags: [])
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -591,6 +606,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                       tags: [])
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -614,6 +630,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -644,6 +661,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -683,6 +701,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -718,6 +737,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -738,6 +758,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -762,6 +783,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -789,6 +811,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -809,6 +832,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -834,6 +858,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -863,6 +888,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,

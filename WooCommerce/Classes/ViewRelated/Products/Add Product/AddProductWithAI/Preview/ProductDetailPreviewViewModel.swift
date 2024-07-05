@@ -538,6 +538,18 @@ private extension ProductDetailPreviewViewModel {
             "There was an error saving product details. Please try again.",
             comment: "Error message when saving product as draft on the add product with AI Preview screen."
         )
+        enum PhotoRemovedNotice {
+            static let title = NSLocalizedString(
+                "productDetailPreviewViewModel.photoRemovedNotice.title",
+                value: "Photo removed",
+                comment: "Title of the notice that confirms that the package photo is removed."
+            )
+            static let undo = NSLocalizedString(
+                "productDetailPreviewViewModel.photoRemovedNotice.undo",
+                value: "Undo",
+                comment: "Button to undo the package photo removal action."
+            )
+        }
     }
 }
 

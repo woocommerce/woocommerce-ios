@@ -356,7 +356,7 @@ fileprivate extension ProductDetailPreviewView {
             comment: "Question to ask for feedback for the AI-generated content on the add product with AI Preview screen."
         )
         static let productNameAndDescription = NSLocalizedString(
-            "productDetailPreviewView.productNameAndDescription",
+            "productDetailPreviewView.productNameSummaryAndDescription",
             value: "Name, Summary & Description",
             comment: "Title of the name, short description and description fields on the add product with AI Preview screen."
         )

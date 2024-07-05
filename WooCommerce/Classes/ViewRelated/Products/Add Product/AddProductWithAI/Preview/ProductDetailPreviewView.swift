@@ -259,6 +259,89 @@ private extension ProductDetailPreviewView {
     }
 }
 
+// MARK: - Package photo view
+
+private extension ProductDetailPreviewView {
+    struct PackagePhotoView: View {
+        @ScaledMetric private var scale: CGFloat = 1.0
+
+        let imageState: EditableImageViewState
+
+        let onTapViewPhoto: () -> Void
+        let onTapRemovePhoto: () -> Void
+
+        var body: some View {
+            HStack(alignment: .center, spacing: Layout.spacing) {
+                EditableImageView(imageState: imageState,
+                                  emptyContent: {})
+                .frame(width: Layout.photoSize * scale, height: Layout.photoSize * scale)
+                .cornerRadius(Layout.photoCornerRadius)
+
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(Localization.photoSelected)
+                        .bodyStyle()
+
+                    Text(Localization.addedToProduct)
+                        .footnoteStyle()
+                }
+
+
+                Spacer()
+
+                Menu {
+                    Button(Localization.viewPhoto) {
+                        onTapViewPhoto()
+                    }
+                    Button(role: .destructive) {
+                        onTapRemovePhoto()
+                    } label: {
+                        Text(Localization.removePhoto)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .frame(width: Layout.ellipisButtonSize * scale, height: Layout.ellipisButtonSize * scale)
+                        .bodyStyle()
+                        .foregroundStyle(Color.secondary)
+                }
+            }
+            .padding(ProductDetailPreviewView.Layout.fieldInsets)
+            .background(Color(.systemColor(.systemGray6)))
+            .clipShape(RoundedRectangle(cornerSize: CGSize(width: ProductDetailPreviewView.Layout.cornerRadius,
+                                                           height: ProductDetailPreviewView.Layout.cornerRadius)))
+        }
+
+        enum Layout {
+            static let spacing: CGFloat = 16
+            static let photoSize: CGFloat = 48
+            static let photoCornerRadius: CGFloat = 4
+            static let ellipisButtonSize: CGFloat = 24
+        }
+
+        enum Localization {
+            static let photoSelected = NSLocalizedString(
+                "productDetailPreviewView.packagePhotoView.photoSelected",
+                value: "Photo selected",
+                comment: "Text to explain that a package photo has been selected in product preview screen."
+            )
+            static let addedToProduct = NSLocalizedString(
+                "productDetailPreviewView.packagePhotoView.photoSelected",
+                value: "Photo will be added to product",
+                comment: "Text to explain that a package photo has been selected in product preview screen."
+            )
+            static let viewPhoto = NSLocalizedString(
+                "productDetailPreviewView.packagePhotoView.viewPhoto",
+                value: "View Photo",
+                comment: "Title of button which opens the selected package photo in product preview screen."
+            )
+            static let removePhoto = NSLocalizedString(
+                "productDetailPreviewView.packagePhotoView.removePhoto",
+                value: "Remove Photo",
+                comment: "Title of button which removes selected package photo in product preview screen."
+            )
+        }
+    }
+}
+
 // MARK: - Rounded rect overlay
 //
 private struct RoundedBorder: ViewModifier {

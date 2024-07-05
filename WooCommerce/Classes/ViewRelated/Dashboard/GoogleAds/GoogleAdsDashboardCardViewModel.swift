@@ -62,12 +62,16 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
                 let enabledCampaigns = campaigns.filter { $0.status == .enabled }
                 return enabledCampaigns.last ?? campaigns.last
             }()
-            if let id = lastCampaign?.id {
-                Task {
-                    await updateCampaignStats(campaignID: id)
-                }
-            }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
+
+            guard let id = lastCampaign?.id else {
+                return
+            }
+            /// Fetch stats in background
+            Task { @MainActor in
+                lastCampaignStats = await updateCampaignStats(campaignID: id)
+            }
+
         } catch {
             syncingError = error
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))
@@ -88,17 +92,16 @@ private extension GoogleAdsDashboardCardViewModel {
     }
 
     @MainActor
-    func updateCampaignStats(campaignID: Int64) async {
+    func updateCampaignStats(campaignID: Int64) async -> GoogleAdsCampaignStatsTotals? {
         do {
             let stats = try await retrieveCampaignStats()
-            lastCampaignStats = {
-                guard stats.campaigns.isNotEmpty else {
-                    return stats.totals
-                }
-                return stats.campaigns.first(where: { $0.id == campaignID })?.subtotals
-            }()
+            guard stats.campaigns.isNotEmpty else {
+                return stats.totals
+            }
+            return stats.campaigns.first(where: { $0.id == campaignID })?.subtotals
         } catch {
             DDLogError("⛔️ Error retrieving Google ads campaign stats: \(error)")
+            return nil
         }
     }
 

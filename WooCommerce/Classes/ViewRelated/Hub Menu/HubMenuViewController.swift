@@ -95,7 +95,7 @@ private extension HubMenuViewController {
         googleAdsCampaignCoordinator = GoogleAdsCampaignCoordinator(
             siteID: viewModel.siteID,
             siteAdminURL: viewModel.woocommerceAdminURL.absoluteString,
-            hasGoogleAdsCampaigns: viewModel.hasGoogleAdsCampaigns,
+            shouldStartCampaignCreation: viewModel.hasGoogleAdsCampaigns,
             shouldAuthenticateAdminPage: viewModel.shouldAuthenticateAdminPage,
             navigationController: navigationController,
             onCompletion: { [weak self] in

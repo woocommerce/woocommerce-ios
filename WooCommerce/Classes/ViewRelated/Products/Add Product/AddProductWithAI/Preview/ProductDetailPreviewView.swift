@@ -148,6 +148,7 @@ struct ProductDetailPreviewView: View {
                 }
             })
         }
+        .notice($viewModel.notice)
     }
 }
 

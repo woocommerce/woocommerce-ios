@@ -24,6 +24,7 @@ final class MockGoogleListingsAndAdsRemote {
 
 extension MockGoogleListingsAndAdsRemote: GoogleListingsAndAdsRemoteProtocol {
     func loadCampaignStats(for siteID: Int64,
+                           campaignIDs: [Int64],
                            timeZone: TimeZone,
                            earliestDateToInclude: Date,
                            latestDateToInclude: Date,

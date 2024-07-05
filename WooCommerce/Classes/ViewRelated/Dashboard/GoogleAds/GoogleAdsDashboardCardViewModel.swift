@@ -90,7 +90,7 @@ private extension GoogleAdsDashboardCardViewModel {
     @MainActor
     func updateCampaignStats(campaignID: Int64) async {
         do {
-            let stats = try await retrieveCampaignStats()
+            let stats = try await retrieveCampaignStats(campaignID: campaignID)
             lastCampaignStats = {
                 guard stats.campaigns.isNotEmpty else {
                     return stats.totals
@@ -103,10 +103,11 @@ private extension GoogleAdsDashboardCardViewModel {
     }
 
     @MainActor
-    func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
+    func retrieveCampaignStats(campaignID: Int64) async throws -> GoogleAdsCampaignStats {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,
+                campaignIDs: [campaignID],
                 timeZone: TimeZone.siteTimezone,
                 earliestDateToInclude: Date(),
                 latestDateToInclude: Date.distantPast) { result in

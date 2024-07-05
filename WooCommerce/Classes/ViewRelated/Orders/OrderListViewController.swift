@@ -91,8 +91,8 @@ final class OrderListViewController: UIViewController {
 
     /// Timestamp for last successful sync.
     ///
-    @Published private(set) var lastFullSyncTimestamp: Date? = {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+    private(set) var lastFullSyncTimestamp: Date? = {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks), OrderSyncBackgroundTask.latestSyncDate != Date.distantPast {
             return OrderSyncBackgroundTask.latestSyncDate
         } else {
             return nil
@@ -354,6 +354,10 @@ private extension OrderListViewController {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+
+        if let lastFullSyncTimestamp {
+            delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
+        }
     }
 
     /// Setup: TableView

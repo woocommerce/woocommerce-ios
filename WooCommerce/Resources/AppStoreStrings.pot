@@ -61,9 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v19.3-whats-new"
+msgctxt "v19.4-whats-new"
 msgid ""
-"Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!\n"
+"Our latest update improves the Analytics Hub by including Google Ads campaigns, and introduces Inbox Notes in the Dynamic Dashboard and Hub Menu. Enjoy a better app experience with our latest update!\n"
+"\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

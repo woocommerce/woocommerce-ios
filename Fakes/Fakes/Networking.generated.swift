@@ -11,8 +11,8 @@ extension Networking.AIProduct {
     ///
     public static func fake() -> Networking.AIProduct {
         .init(
-            name: .fake(),
-            description: .fake(),
+            names: .fake(),
+            descriptions: .fake(),
             shortDescription: .fake(),
             virtual: .fake(),
             shipping: .fake(),

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-25 13:54:05+0000 */
+/* Translation-Revision-Date: 2024-07-03 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "פעיל";
 
@@ -1389,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "ביטול שדרוג";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "בוטל";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -3234,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "יש לסיים את ההגדרה של %1$@ במנהל החנות שלך";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "הסתיים";
 
 /* Country option for a site address. */
 "Finland" = "פינלנד";
@@ -5373,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "ממתין לאישור";
 
 /* Display label for the subscription status type */
@@ -6146,9 +6138,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "מחיר רגיל: ‎%@";
 
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "נדחה";
-
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "הזכירו לי מאוחר יותר";
@@ -6509,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "לקבוע תאריך למבצע";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "מתוזמן לפרסום";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "חיפוש";
@@ -8463,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "אין אפשרות לעבד את התשלום. מצטערים, לא הצלחנו להתחבר אל מערכת התשלומים. יש לפנות לתמיכה אם השגיאה ממשיכה להופיע.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "אין אפשרות לעבד את התשלום. לא ניתן היה להציג את פרטי ההזמנה העדכניים. עליך לבדוק את החיבור לרשת ולנסות שוב.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "אין אפשרות לעבד את התשלום. לא ניתן היה להציג את פרטי ההזמנה העדכניים. עליך לבדוק את החיבור לרשת ולנסות שוב. שגיאה בסיסית: %1$@";
 
@@ -8553,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "איי הבתולה של ארצות הברית";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "לא ידוע";
@@ -9526,16 +9508,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "לגבות מיסים";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "יצרנו את הפרטים במהירות עבורך";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "אנחנו יכולים ליצור את פרטי המוצר עבורך";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "ליצור מוצר באמצעות הבינה המלאכותית";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "ליצור מוצר באמצעות הבינה המלאכותית";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[למידע נוסף‏.](https:\/\/automattic.com\/ai-guidelines\/‎)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[למידע נוסף‏.](https:\/\/automattic.com\/ai-guidelines\/‎)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "מופעל באמצעות בינה מלאכותית.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "מופעל באמצעות בינה מלאכותית.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "להוסיף מוצר ואת הפרטים באופן ידני";
@@ -9874,6 +9856,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "יש לנסות שוב";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "קהל";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "תקציב";
 
@@ -9916,6 +9901,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "לרכישה כעת";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "הומלץ על ידי בינה מלאכותית";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "תצוגה מקדימה";
 
@@ -9954,6 +9942,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "מגדילים את הנראות ומאיצים את מכירת המוצרים.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "פעיל";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "בוטל";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "הושלם";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "בתהליך אישור";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "נדחה";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "מתוזמן לפרסום";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "לא ידוע";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "מדיניות פרסום";
@@ -10022,7 +10031,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "ללמוד איך Blaze פועל";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "אפשר להפיץ פרסומות בתוך דקות – אין צורך בניסיון או בתקציב גדול, אפשר להתחיל בעלות התחלתית של 5 $ בלבד.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "אפשר להפיץ פרסומות בתוך דקות – אין צורך בניסיון או בתקציב גדול, אפשר להתחיל בעלות של 5 $ בלבד ליום.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "התחלה מהירה, השפעה גדולה";
@@ -10357,6 +10366,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "סך כל ההזמנה שונה מתחילת תהליך התשלום. יש לחזור אחורה ולוודא שפרטי ההזמנה נכונים ולנסות לשלם שוב.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "בוחר מוצר לקמפיין של Blaze.";
@@ -11403,6 +11415,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "מתחבר אל קורא הכרטיסים";
 
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "ביטול";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "להתחבר";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "נמצאו כמה קוראים";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "סורק לאיתור קוראים";
+
 /* Label for a button that when tapped, cancels the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "ביטול";
 
@@ -11489,6 +11513,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "פרטי";
+
+/* Continue button on the starting info screen. */
+"productCreationAIStartingInfoView.continueText" = "המשך";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "למשל, חולצת טי שחורה מכותנה, בד רך, תפירה חזקה, עיצוב ייחודי";
+
+/* Upload package photo button on the text field */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "לקרוא טקסט מתמונת המוצר";
+
+/* Subtitle on the starting info screen. */
+"productCreationAIStartingInfoView.subtitle" = "יש לספק מידע לגבי המוצר שלך – מהו, מה מייחד אותו – והבינה המלאכותית תעשה קסמים.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "מידע התחלתי";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "אפשר רגע מזמנך? אנחנו רוצים לבקש את עזרתך בשיפור האפשרויות שמבוססות על בינה מלאכותית על ידי מענה על משוב קצר.";

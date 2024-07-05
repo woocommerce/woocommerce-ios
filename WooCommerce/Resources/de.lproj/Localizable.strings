@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-25 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-02 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Aktiv";
 
@@ -1389,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Upgrade abbrechen";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "Abgebrochen";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -3234,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Einrichtung von %1$@ in der Store-Administration abschließen";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "Beendet";
 
 /* Country option for a site address. */
 "Finland" = "Finnland";
@@ -5373,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "Ausstehend";
 
 /* Display label for the subscription status type */
@@ -6146,9 +6138,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regulärer Preis: %@";
 
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Abgelehnt";
-
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Später daran erinnern";
@@ -6509,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Verkauf planen";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Geplant";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Suche";
@@ -8463,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Zahlung konnte nicht verarbeitet werden. Es konnte keine Verbindung zum Zahlungssystem hergestellt werden. Bitte wende dich an den Support, falls dieser Fehler weiterhin auftritt.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Zahlung konnte nicht verarbeitet werden. Die aktuellen Bestelldetails konnten nicht abgerufen werden. Bitte überprüfe deine Netzwerkverbindung und versuche es erneut.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Zahlung konnte nicht verarbeitet werden. Die aktuellen Bestelldetails konnten nicht abgerufen werden. Bitte überprüfe deine Netzwerkverbindung und versuche es erneut. Zugrunde liegender Fehler: %1$@";
 
@@ -8553,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "Amerikanische Jungferninseln";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Unbekannt";
@@ -9526,16 +9508,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Steuern erheben";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "Generiere im Handumdrehen Details für dich";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Wir generieren die Produktdetails für dich";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "Ein Produkt mit KI erstellen";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Ein Produkt mit KI erstellen";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[Weitere Informationen.](https:\/\/automattic.com\/ai-guidelines\/)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Weitere Informationen.](https:\/\/automattic.com\/ai-guidelines\/)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "Mit Unterstützung von KI.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Mit Unterstützung von KI.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "Füge ein Produkt und die entsprechenden Details manuell hinzu";
@@ -9874,6 +9856,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Erneut versuchen";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Zielgruppe";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
 
@@ -9916,6 +9901,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Jetzt einkaufen";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Von KI vorgeschlagen";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Vorschau";
 
@@ -9954,6 +9942,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Erhöhe die Sichtbarkeit und verkaufe deine Produkte schnell.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Aktiv";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "Abgebrochen";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Abgeschlossen";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "Freischaltung läuft";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Abgelehnt";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Geplant";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Unbekannt";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Werberichtlinien";
@@ -10022,7 +10031,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "So funktioniert Blaze";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Veröffentliche Werbung in Minutenschnelle – ohne Erfahrung oder großes Budget – schon ab 5 USD.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Veröffentliche Werbung in Minutenschnelle – ohne Erfahrung oder großes Budget – schon ab 5 USD täglich.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Schneller Start, große Wirkung";
@@ -10357,6 +10366,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Die Gesamtbestellsumme hat sich seit Beginn deiner Zahlung geändert. Gehe zurück und überprüfe, ob deine Bestellung korrekt ist. Versuche dann erneut, die Zahlung vorzunehmen.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Wählt ein Produkt für die Blaze-Kampagne aus.";
@@ -11403,6 +11415,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Verbindung zum Kartenlesegerät wird hergestellt";
 
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Abbrechen";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Verbinden";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Mehrere Reader gefunden";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Suche nach Readern";
+
 /* Label for a button that when tapped, cancels the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Abbrechen";
 
@@ -11489,6 +11513,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privat";
+
+/* Continue button on the starting info screen. */
+"productCreationAIStartingInfoView.continueText" = "Weiter";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "Zum Beispiel: T-Shirt aus schwarzer Baumwolle, weicher Stoff, langlebige Absteppung, einzigartiges Design";
+
+/* Upload package photo button on the text field */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Text von Produktfoto vorlesen";
+
+/* Subtitle on the starting info screen. */
+"productCreationAIStartingInfoView.subtitle" = "Sage uns mehr zu deinem Produkt. Was ist es und was macht es so besonders? Die KI kümmert sich dann um den Rest.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Informationen zum Anfang";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Hast du eine Minute? Hilf uns mit einem kurzen Feedback, unsere KI-gestützten Funktionen zu verbessern.";

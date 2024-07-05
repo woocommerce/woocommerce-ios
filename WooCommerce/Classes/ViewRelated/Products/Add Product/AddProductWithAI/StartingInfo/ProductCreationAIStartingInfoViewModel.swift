@@ -54,7 +54,6 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     }
 
     func didTapViewPhoto() {
-        // TODO: 13104 - Open image in a new screen
         isShowingViewPhotoSheet = true
     }
 

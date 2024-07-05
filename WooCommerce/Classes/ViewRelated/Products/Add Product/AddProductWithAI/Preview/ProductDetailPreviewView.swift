@@ -363,7 +363,7 @@ private extension ProductDetailPreviewView {
                 comment: "Text to explain that a package photo has been selected in product preview screen."
             )
             static let addedToProduct = NSLocalizedString(
-                "productDetailPreviewView.packagePhotoView.photoSelected",
+                "productDetailPreviewView.packagePhotoView.addedToProduct",
                 value: "Photo will be added to product",
                 comment: "Text to explain that a package photo has been selected in product preview screen."
             )

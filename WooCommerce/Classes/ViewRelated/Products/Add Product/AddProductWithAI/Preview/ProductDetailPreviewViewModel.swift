@@ -16,6 +16,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published var productName = ""
     @Published var productDescription = ""
+    @Published var productShortDescription = ""
     @Published private(set) var productType: String?
     @Published private(set) var productPrice: String?
     @Published private(set) var productCategories: String?
@@ -176,6 +177,7 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
+        productShortDescription = product.shortDescription ?? ""
         productDescription = product.fullDescription ?? ""
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 

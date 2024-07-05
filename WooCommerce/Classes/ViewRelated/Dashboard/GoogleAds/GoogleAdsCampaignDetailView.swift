@@ -1,16 +1,16 @@
 import SwiftUI
 import struct Yosemite.GoogleAdsCampaign
-import struct Yosemite.GoogleAdsCampaignStats
+import struct Yosemite.GoogleAdsCampaignStatsTotals
 
 struct GoogleAdsCampaignDetailView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let campaign: GoogleAdsCampaign
-    private let stats: GoogleAdsCampaignStats?
+    private let stats: GoogleAdsCampaignStatsTotals?
 
     init(campaign: GoogleAdsCampaign,
-         stats: GoogleAdsCampaignStats?) {
+         stats: GoogleAdsCampaignStatsTotals?) {
         self.campaign = campaign
         self.stats = stats
     }
@@ -58,7 +58,7 @@ struct GoogleAdsCampaignDetailView: View {
                     VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                         Text(Localization.impressions)
                             .subheadlineStyle()
-                        Text("\(stats.totals.impressions ?? 0)")
+                        Text("\(stats.impressions ?? 0)")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.init(UIColor.text))
@@ -70,7 +70,7 @@ struct GoogleAdsCampaignDetailView: View {
                     VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                         Text(Localization.clicks)
                             .subheadlineStyle()
-                        Text("\(stats.totals.clicks ?? 0)")
+                        Text("\(stats.clicks ?? 0)")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.init(UIColor.text))
@@ -99,6 +99,7 @@ struct GoogleAdsCampaignDetailView: View {
 }
 
 private extension GoogleAdsCampaignDetailView {
+
     enum Layout {
         static let imageSize: CGFloat = 44
         static let contentSpacing: CGFloat = 16

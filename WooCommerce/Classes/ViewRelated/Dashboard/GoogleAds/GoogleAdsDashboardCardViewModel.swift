@@ -20,7 +20,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingError: Error?
     @Published private(set) var syncingData = false
     @Published private(set) var lastCampaign: GoogleAdsCampaign?
-    @Published private(set) var lastCampaignStats: GoogleAdsCampaignStats?
+    @Published private(set) var lastCampaignStats: GoogleAdsCampaignStatsTotals?
 
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
@@ -82,15 +82,20 @@ private extension GoogleAdsDashboardCardViewModel {
     @MainActor
     func updateCampaignStats(campaignID: Int64) async {
         do {
-            let stats = try await retrieveCampaignStats(campaignID: campaignID)
-            lastCampaignStats = stats
+            let stats = try await retrieveCampaignStats()
+            lastCampaignStats = {
+                guard stats.campaigns.isNotEmpty else {
+                    return stats.totals
+                }
+                return stats.campaigns.first(where: { $0.id == campaignID })?.subtotals
+            }()
         } catch {
             DDLogError("⛔️ Error retrieving Google ads campaign stats: \(error)")
         }
     }
 
     @MainActor
-    func retrieveCampaignStats(campaignID: Int64) async throws -> GoogleAdsCampaignStats {
+    func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,

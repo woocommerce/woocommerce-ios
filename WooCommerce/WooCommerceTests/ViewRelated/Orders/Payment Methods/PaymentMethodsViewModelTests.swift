@@ -19,8 +19,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -28,7 +28,9 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
-        let dependencies = Dependencies(stores: stores)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let dependencies = Dependencies(stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
@@ -53,7 +55,9 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_view_is_disabled_while_loading_is_enabled() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let dependencies = Dependencies(stores: stores)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let dependencies = Dependencies(stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
@@ -62,7 +66,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let loading: Bool = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .updateOrderStatus:
+                case .updateOrder:
                     promise(viewModel.showLoadingIndicator)
                 case .retrieveOrder:
                     break
@@ -97,8 +101,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let (siteID, orderID): (Int64, Int64) = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrderStatus(_, _, _, onCompletion):
-                    onCompletion(nil)
+                case let .updateOrder(_, _, _, _, onCompletion):
+                    onCompletion(.success(.fake()))
                 case let .retrieveOrder(siteID, orderID, _):
                     promise((siteID, orderID))
                 default:
@@ -116,14 +120,16 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_onSuccess_is_invoked_after_order_is_marked_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let dependencies = Dependencies(stores: stores)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let dependencies = Dependencies(stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -135,18 +141,59 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         await viewModel.markOrderAsPaidByCash(with: nil)
     }
 
+    func test_mark_order_as_paid_by_cash_then_order_status_and_payment_method_fields_updated() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let siteID: Int64 = 10
+        let orderID: Int64 = 123
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID)
+        storage.insertSampleOrder(readOnlyOrder: order)
+        storage.insertSamplePaymentGateway(readOnlyGateway: .fake().copy(siteID: siteID, gatewayID: "cod", title: "Pay in Person"))
+        let dependencies = Dependencies(stores: stores, storage: storage)
+        let viewModel = PaymentMethodsViewModel(siteID: siteID,
+                                                orderID: orderID,
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                dependencies: dependencies)
+        var modifiedOrder: Order?
+        var orderUpdateFields: [OrderUpdateField]?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrder(_, order, _, fields, onCompletion):
+                modifiedOrder = order
+                orderUpdateFields = fields
+                onCompletion(.success(.fake()))
+            case .retrieveOrder:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When/Then
+        await viewModel.markOrderAsPaidByCash(with: nil)
+
+        XCTAssertEqual(modifiedOrder?.paymentMethodID, "cod")
+        XCTAssertEqual(modifiedOrder?.paymentMethodTitle, "Pay in Person")
+        XCTAssertEqual(modifiedOrder?.status, .completed)
+        XCTAssertEqual(orderUpdateFields, [.status, .paymentMethodID, .paymentMethodTitle])
+    }
+
     func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
         let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
-        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -175,15 +222,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
         let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
-        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(NSError(domain: "Error", code: 0))
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -212,8 +261,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -223,7 +272,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake().copy(orderID: orderID))
         let dependencies = Dependencies(stores: stores,
+                                        storage: storage,
                                         analytics: WooAnalytics(analyticsProvider: analytics),
                                         cardPresentPaymentsConfiguration: .init(country: .GB))
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
@@ -250,8 +302,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -263,7 +315,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
         currencySettings.currencyCode = .JPY
         let orderID: Int64 = 232
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake().copy(orderID: orderID))
         let dependencies = Dependencies(stores: stores,
+                                        storage: storage,
                                         analytics: WooAnalytics(analyticsProvider: analytics),
                                         cardPresentPaymentsConfiguration: .init(country: .GB),
                                         currencySettings: currencySettings)
@@ -369,8 +424,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(NSError(domain: "", code: 0, userInfo: nil))
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             case .retrieveOrder:
                 break
             default:
@@ -381,7 +436,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
         let currencySettings = CurrencySettings()
         currencySettings.currencyCode = .JPY
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
         let dependencies = Dependencies(stores: stores,
+                                        storage: storage,
                                         analytics: WooAnalytics(analyticsProvider: analytics),
                                         cardPresentPaymentsConfiguration: .init(country: .GB),
                                         currencySettings: currencySettings)
@@ -406,8 +464,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrderStatus(_, _, _, onCompletion):
-                onCompletion(nil)
+            case let .updateOrder(_, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
             default:
@@ -426,7 +484,9 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
-        let dependencies = Dependencies(stores: stores)
+        let storage = MockStorageManager()
+        storage.insertSampleOrder(readOnlyOrder: .fake())
+        let dependencies = Dependencies(stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
                                                 dependencies: dependencies)

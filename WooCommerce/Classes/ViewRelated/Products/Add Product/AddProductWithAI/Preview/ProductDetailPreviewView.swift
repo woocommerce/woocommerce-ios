@@ -29,9 +29,6 @@ struct ProductDetailPreviewView: View {
                         .bodyStyle()
                 }
 
-                // Package photo
-                packagePhotoView
-
                 // Product name and description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
                     Text(Localization.productNameAndDescription)
@@ -47,6 +44,9 @@ struct ProductDetailPreviewView: View {
                     // Product description
                     descriptionTextField
                 }
+
+                // Package photo
+                packagePhotoView
 
                 // Other details
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {

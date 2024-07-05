@@ -524,7 +524,8 @@ private extension VerticalAlignment {
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
-                                                  productFeatures: "Sample features") { _ in },
+                                                  productFeatures: "Sample features",
+                                                  imageState: .empty) { _ in },
                                  onDismiss: {})
     }
 }

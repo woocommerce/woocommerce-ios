@@ -24,7 +24,8 @@ struct GoogleAdsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.syncingError != nil {
+            if viewModel.shouldShowErrorState {
+                // Error state
                 DashboardCardErrorView {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .googleAds))
                     Task {
@@ -32,6 +33,7 @@ struct GoogleAdsDashboardCard: View {
                     }
                 }
             } else if let campaign = viewModel.lastCampaign {
+                // Campaign details & stats
                 GoogleAdsCampaignDetailView(campaign: campaign,
                                             stats: viewModel.lastCampaignStats)
                     .padding(.horizontal, Layout.padding)
@@ -41,7 +43,7 @@ struct GoogleAdsDashboardCard: View {
                     .redacted(reason: viewModel.syncingData ? .placeholder : [])
                     .shimmering(active: viewModel.syncingData)
             } else {
-                // Introduction about Google Ads
+                // Empty state
                 noCampaignView
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? .placeholder : [])
@@ -53,6 +55,7 @@ struct GoogleAdsDashboardCard: View {
                 .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.syncingData ? .placeholder : [])
                 .shimmering(active: viewModel.syncingData)
+                .renderedIf(viewModel.shouldShowCreateCampaignButton)
 
             // Show All Campaigns button
             VStack(spacing: Layout.padding) {
@@ -78,7 +81,7 @@ private extension GoogleAdsDashboardCard {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.syncingError != nil)
+                .renderedIf(viewModel.shouldShowErrorState)
             Text(DashboardCard.CardType.googleAds.name)
                 .headlineStyle()
             Spacer()

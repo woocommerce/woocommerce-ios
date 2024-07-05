@@ -268,7 +268,7 @@ private extension GenerativeContentRemote {
             }()
 
             return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
-                    "descriptions": "An array of strings, containing three different product description of around 100 words long each in a ```\(tone)``` tone, "
+                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
                     + "written in the language with ISO code ```\(language)```",
                     "short_description": "Product's short description, written in the language with ISO code ```\(language)```",
                     "virtual": "A boolean value that shows whether the product is virtual or physical",

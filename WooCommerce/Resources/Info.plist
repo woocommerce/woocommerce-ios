@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.automattic.woocommerce.refresh</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -83,6 +87,41 @@
 	<array>
 		<string>Noticons.ttf</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>plus</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>AddOrderAction.Title</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>AddOrderAction</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>pages</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>OpenOrdersAction.Title</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>OpenOrdersAction</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>plus</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>AddProductAction.Title</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>AddProductAction</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>icon-money</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>CollectPaymentAction.Title</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>CollectPaymentAction</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -110,40 +149,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>AddOrderAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>AddOrderAction.Title</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>plus</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>OpenOrdersAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>OpenOrdersAction.Title</string>
-			<key>UIApplicationShortcutItemIconFile</key>
-			<string>pages</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>AddProductAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>AddProductAction.Title</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>plus</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>CollectPaymentAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>CollectPaymentAction.Title</string>
-			<key>UIApplicationShortcutItemIconFile</key>
-			<string>icon-money</string>
-		</dict>
-	</array>
 </dict>
 </plist>

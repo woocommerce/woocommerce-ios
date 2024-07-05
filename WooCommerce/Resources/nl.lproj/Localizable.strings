@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-25 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-03 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Actief";
 
@@ -1389,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Upgrade annuleren";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "Geannuleerd";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -3231,9 +3227,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Rond het instellen van %1$@ af bij je winkelbeheer";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "Klaar";
 
 /* Country option for a site address. */
 "Finland" = "Finland";
@@ -5370,8 +5363,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "In afwachting";
 
 /* Display label for the subscription status type */
@@ -6143,9 +6135,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
 
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Afgewezen";
-
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Herinner mij hier later aan";
@@ -6506,9 +6495,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Verkoop inplannen";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Gepland";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Zoeken";
@@ -8460,9 +8446,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Kan betaling niet verwerken. We konden geen verbinding maken met het betalingssysteem. Probeer het opnieuw of neem contact op met ondersteuning als het probleem aanhoudt.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Kan betaling niet verwerken. We konden de nieuwste bestellingsgegevens niet ophalen. Controleer je verbinding en probeer het nogmaals.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Kan betaling niet verwerken. We konden de nieuwste bestellingsgegevens niet ophalen. Controleer je verbinding en probeer het nogmaals. Onderliggende fout: %1$@";
 
@@ -8550,8 +8533,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "Amerikaanse Maagdeneilanden";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Onbekend";
@@ -9523,16 +9505,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "Snel details voor je genereren";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Laat ons productgegevens voor je genereren";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "Een product creëren met AI";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Een product creëren met AI";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[Meer informatie.](https:\/\/automattic.com\/ai-guidelines\/)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Meer informatie.](https:\/\/automattic.com\/ai-guidelines\/)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "Mogelijk gemaakt door AI.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Mogelijk gemaakt door AI.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "Handmatig een product en de details toevoegen";
@@ -9871,6 +9853,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Opnieuw proberen";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Publiek";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
 
@@ -9913,6 +9898,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Nu winkelen";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Suggestie door AI";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Voorbeeldweergave";
 
@@ -9951,6 +9939,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Verhoog je zichtbaarheid en verkoop snel je producten.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Actief";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "Geannuleerd";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Voltooid";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "Wordt gemodereerd";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Afgewezen";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Gepland";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Onbekend";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Reclamebeleid";
@@ -10019,7 +10028,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Ontdek hoe Blaze werkt";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Lanceer je advertenties binnen een paar minuten, zonder benodigde ervaring of een groot budget. Vanaf slecht $ 5 USD.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Lanceer je advertenties binnen een paar minuten, zonder ervaring of een groot budget. Vanaf slecht $ 5 USD per dag.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Snel aan de slag, grote impact";
@@ -10354,6 +10363,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Het totale aantal bestellingen is veranderd sinds de start van het betaalproces. Ga terug en controleer of de bestelling juist is. Probeer daarna opnieuw te betalen.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Selecteert producten voor Blaze-campagne.";
@@ -11397,6 +11409,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Er wordt verbinding gemaakt met lezer";
 
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Annuleren";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Verbinden";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Meerdere lezers gevonden";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Er wordt gescand op lezers";
+
 /* Label for a button that when tapped, cancels the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Annuleren";
 
@@ -11483,6 +11507,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privé";
+
+/* Continue button on the starting info screen. */
+"productCreationAIStartingInfoView.continueText" = "Doorgaan";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "Bijvoorbeeld: zwart katoenen T-shirt, zachte stof, duurzaam stikwerk, uniek ontwerp";
+
+/* Upload package photo button on the text field */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Tekst lezen van productfoto";
+
+/* Subtitle on the starting info screen. */
+"productCreationAIStartingInfoView.subtitle" = "Vertel ons over je product. Wat is het en wat maakt het uniek? Laat daarna de AI zijn werk doen.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Gegevens om te beginnen";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Heb je een momentje? Help ons onze functies met AI te verbeteren met wat korte feedback.";

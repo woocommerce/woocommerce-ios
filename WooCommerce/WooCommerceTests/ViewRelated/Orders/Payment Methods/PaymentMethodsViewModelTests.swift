@@ -149,7 +149,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let orderID: Int64 = 123
         let order = Order.fake().copy(siteID: siteID, orderID: orderID)
         storage.insertSampleOrder(readOnlyOrder: order)
-        storage.insertSamplePaymentGateway(readOnlyGateway: .fake().copy(siteID: siteID, gatewayID: "cod", title: "Pay in Person"))
+        let paymentGateway = PaymentGateway.defaultPayInPersonGateway(siteID: siteID).copy(title: "Pay in Person")
+        storage.insertSamplePaymentGateway(readOnlyGateway: paymentGateway)
         let dependencies = Dependencies(stores: stores, storage: storage)
         let viewModel = PaymentMethodsViewModel(siteID: siteID,
                                                 orderID: orderID,
@@ -174,7 +175,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // When/Then
         await viewModel.markOrderAsPaidByCash(with: nil)
 
-        XCTAssertEqual(modifiedOrder?.paymentMethodID, "cod")
+        XCTAssertEqual(modifiedOrder?.paymentMethodID, PaymentGateway.Constants.cashOnDeliveryGatewayID)
         XCTAssertEqual(modifiedOrder?.paymentMethodTitle, "Pay in Person")
         XCTAssertEqual(modifiedOrder?.status, .completed)
         XCTAssertEqual(orderUpdateFields, [.status, .paymentMethodID, .paymentMethodTitle])

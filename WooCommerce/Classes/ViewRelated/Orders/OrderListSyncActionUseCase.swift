@@ -45,6 +45,7 @@ struct OrderListSyncActionUseCase {
         case newFiltersApplied = "new_filters_applied"
         case pullToRefresh = "pull_to_refresh"
         case viewWillAppear = "view_will_appear"
+        case backgroundFetch = "background_fetch"
     }
 
     let siteID: Int64

@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView
+
+    /// Code hidden while the background tasks feature is developed
+    ///
+    case backgroundTasks
 }

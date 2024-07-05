@@ -128,14 +128,23 @@ struct AddProductWithAIContainerView: View {
                     }
                 })
             case .preview:
-                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
-                                                          productName: viewModel.productName,
-                                                          productDescription: viewModel.productDescription,
-                                                          productFeatures: viewModel.productFeatures) { product in
-                    viewModel.didCreateProduct(product)
-                }, onDismiss: {
-                    viewModel.backtrackOrDismiss()
-                })
+                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+                    ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                      productFeatures: viewModel.productFeatures) { product in
+                        viewModel.didCreateProduct(product)
+                    }, onDismiss: {
+                        viewModel.backtrackOrDismiss()
+                    })
+                } else {
+                    LegacyProductDetailPreviewView(viewModel: LegacyProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                                  productName: viewModel.productName,
+                                                                                                  productDescription: viewModel.productDescription,
+                                                                                                  productFeatures: viewModel.productFeatures) { product in
+                        viewModel.didCreateProduct(product)
+                    }, onDismiss: {
+                        viewModel.backtrackOrDismiss()
+                    })
+                }
             }
         }
         .onAppear() {

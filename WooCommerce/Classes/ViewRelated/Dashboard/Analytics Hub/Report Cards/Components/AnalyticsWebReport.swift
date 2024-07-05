@@ -64,7 +64,7 @@ struct AnalyticsWebReport {
         case .giftCards:
             return "/analytics/gift-cards"
         case .googlePrograms:
-            return "/google/reports&reportKey=programs"
+            return "/google/reports"
         }
     }
 

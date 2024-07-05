@@ -338,6 +338,8 @@ extension WooConstants {
 
         case giftCardsExtension = "https://woocommerce.com/products/gift-cards/"
 
+        case googleAdsExtension = "https://woocommerce.com/products/google-listings-and-ads/"
+
         case wooPaymentsStartupGuide = "https://woocommerce.com/document/woopayments/startup-guide/"
 
         // swiftlint:disable:next line_length

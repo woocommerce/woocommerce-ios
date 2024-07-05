@@ -293,7 +293,8 @@ private extension GenerativeContentRemote {
                                          ParameterKey.gptModel: ParameterValue.gptModel,
                                          ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
                                          ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
-                                         ParameterKey.fields: ParameterValue.choices]
+                                         ParameterKey.fields: ParameterValue.choices,
+                                         ParameterKey.maxTokens: ParameterValue.maxTokens]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Path.jetpackAIQuery,
@@ -318,6 +319,7 @@ private extension GenerativeContentRemote {
         static let feature = "feature"
         static let fields = "_fields"
         static let stream = "stream"
+        static let maxTokens = "max_tokens"
         static let responseFormat = "response_format"
         static let gptModel = "model"
     }
@@ -326,6 +328,7 @@ private extension GenerativeContentRemote {
         static let choices = "choices"
         static let stream = false
         static let gptModel = "gpt-4o"
+        static let maxTokens = 4000
     }
 
     enum TokenExpiredError {

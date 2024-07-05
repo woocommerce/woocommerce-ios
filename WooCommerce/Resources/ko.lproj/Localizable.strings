@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-25 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-02 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "활성";
 
@@ -1389,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "업그레이드 취소";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "취소됨";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -3234,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "스토어 관리자에서 %1$@ 설정 마무리";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "완료됨";
 
 /* Country option for a site address. */
 "Finland" = "핀란드";
@@ -5373,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "대기중";
 
 /* Display label for the subscription status type */
@@ -6146,9 +6138,6 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "정상 가격: %@";
 
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "거부됨";
-
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "나중에 다시 알림";
@@ -6509,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "판매 일정";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "예약됨";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "검색";
@@ -8463,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "결제를 처리할 수 없습니다. 결제 시스템에 연결할 수 없었습니다. 이 오류가 계속 발생하면 지원팀에 문의하세요.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "결제를 처리할 수 없습니다. 마지막 주문 상세 정보를 가져올 수 없었습니다. 네트워크 연결을 확인하고 다시 시도하세요.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "결제를 처리할 수 없습니다. 마지막 주문 상세 정보를 가져올 수 없었습니다. 네트워크 연결을 확인하고 다시 시도하세요. 근원적인 오류: %1$@";
 
@@ -8553,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "미국령 버진아일랜드";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "알 수 없음";
@@ -9526,16 +9508,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "세금 청구";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "자동으로 빠르게 상세 정보 생성";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "AI가 제품의 상세 정보를 만듭니다.";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "AI로 상품 생성";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "AI로 제품 생성";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "AI 기반.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "AI 기반.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "수동으로 상품 및 상세 정보 추가";
@@ -9874,6 +9856,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "다시 시도";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "잠재 고객";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "예산";
 
@@ -9916,6 +9901,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "지금 쇼핑하기";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "AI 추천";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "미리보기";
 
@@ -9954,6 +9942,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "가시성을 높이고 상품 판매 속도를 단축하세요.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "활성";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "취소됨";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "완료됨";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "검토 중";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "거부됨";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "예약됨";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "알 수 없음";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "광고 정책";
@@ -10022,7 +10031,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Blaze 작동 방식 알아보기";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "몇 분 만에 광고 시작 - 경험이나 많은 예산이 필요하지 않습니다. 단 $5 USD로 시작할 수 있습니다.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "경험이나 많은 예산이 필요하지 않으며, 하루 최소 $5 USD로 몇 분 만에 광고를 시작할 수 있습니다.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "빠른 시작, 큰 효과";
@@ -10357,6 +10366,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "결제를 시작한 이후로 주문 총액이 변경되었습니다. 돌아가서 주문이 정확한지 확인하고 다시 결제를 시도해 주세요.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze 캠페인용 상품을 선택합니다.";
@@ -11403,6 +11415,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "리더에 연결 중";
 
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "취소";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "연결";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "리더를 몇 개 찾음";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "리더 스캔 중";
+
 /* Label for a button that when tapped, cancels the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "취소";
 
@@ -11489,6 +11513,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "비공개";
+
+/* Continue button on the starting info screen. */
+"productCreationAIStartingInfoView.continueText" = "계속";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "예: 검은색 면 티셔츠, 부드러운 원단, 튼튼한 바느질, 독특한 디자인";
+
+/* Upload package photo button on the text field */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "제품 사진에서 텍스트 읽기";
+
+/* Subtitle on the starting info screen. */
+"productCreationAIStartingInfoView.subtitle" = "제품에 대해 이야기해 주세요. 어떤 제품이고 왜 독특한지 설명해 주시면 AI가 마법을 부리기 시작합니다.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "시작하기 위한 정보";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "잠깐 시간 좀 내주시겠어요? 빠른 피드백으로 AI 도우미 기능 개선을 도와주세요.";

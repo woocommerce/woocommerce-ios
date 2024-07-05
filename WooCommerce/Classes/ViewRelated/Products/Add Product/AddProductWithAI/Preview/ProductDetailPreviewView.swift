@@ -29,6 +29,9 @@ struct ProductDetailPreviewView: View {
                         .bodyStyle()
                 }
 
+                // Package photo
+                packagePhotoView
+
                 // Product name and description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
                     Text(Localization.productNameAndDescription)
@@ -189,6 +192,22 @@ private extension ProductDetailPreviewView {
         }
         .buttonStyle(SecondaryButtonStyle())
         .disabled(viewModel.isGeneratingDetails)
+    }
+
+    @ViewBuilder
+    var packagePhotoView: some View {
+        switch viewModel.imageState {
+        case .empty:
+            EmptyView()
+        case .loading, .success:
+            PackagePhotoView(imageState: viewModel.imageState,
+                             onTapViewPhoto: {
+                viewModel.didTapViewPhoto()
+            },
+                             onTapRemovePhoto: {
+                viewModel.didTapRemovePhoto()
+            })
+        }
     }
 }
 

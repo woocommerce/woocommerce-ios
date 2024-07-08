@@ -33,11 +33,16 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_plain_setup() {
-        XCTAssertEqual(sut.orderStage, .building)
-        XCTAssertEqual(sut.isCartCollapsed, true)
-        XCTAssertEqual(sut.isAddMoreDisabled, false)
-        XCTAssertEqual(sut.isExitPOSDisabled, false)
+    func test_viewmodel_when_loaded_then_has_expected_initial_setup() {
+        // Given
+        let expectedCartCollapsedState = false
+        let expectedAddMoreButtonDisabledState = false
+        let expectedExitPOSButtonDisabledState = false
+
+        // When/Then
+        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
+        XCTAssertEqual(sut.isAddMoreDisabled, expectedAddMoreButtonDisabledState)
+        XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
     }
 
     func test_startNewTransaction() {

@@ -44,6 +44,9 @@ struct ProductDetailPreviewView: View {
 
                     // Product description
                     descriptionTextField
+
+                    // Switch between options for product name and summary
+                    summaryOptionsSwitch
                 }
 
                 // Package photo
@@ -198,6 +201,27 @@ private extension ProductDetailPreviewView {
         .focused($focusedField, equals: FocusedField.description)
     }
 
+    var summaryOptionsSwitch: some View {
+        HStack {
+            Text("Option 1 of 3")
+                .secondaryBodyStyle()
+
+            Spacer()
+
+            OptionSwitchButton(isForward: false) {
+                // TODO: move to previous option
+            }
+            .disabled(true) // TODO: set this to false for non-first options
+
+            OptionSwitchButton(isForward: true) {
+                // TODO: move to next option
+            }
+            .disabled(false) // TODO: set this to true for last option
+        }
+        .padding(.top, Layout.contentVerticalSpacing)
+        .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?
+    }
+
     var feedbackBanner: some View {
         FeedbackView(title: Localization.feedbackQuestion,
                      backgroundColor: Constants.feedbackViewColor,
@@ -350,6 +374,22 @@ private extension ProductDetailPreviewView {
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
             .roundedRectBorderStyle(strokeColor: isFocused ? .accentColor : ProductDetailPreviewView.Constants.separatorColor)
+        }
+    }
+
+    struct OptionSwitchButton: View {
+        let isForward: Bool
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                Image(systemName: isForward ? "chevron.forward" : "chevron.backward")
+                    .fontWeight(.semibold)
+                    .padding(Layout.fieldInsets)
+                    .foregroundStyle(Color.accentColor)
+                    .roundedRectBorderStyle()
+            }
+            .buttonStyle(.plain)
         }
     }
 }

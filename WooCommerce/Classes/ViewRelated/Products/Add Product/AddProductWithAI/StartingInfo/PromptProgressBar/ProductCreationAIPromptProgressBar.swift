@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProductCreationAIPromptProgressBar: View {
     @State private var currentStatus: ProgressStatus = .inProgress
+    @State var text: String
 
     var body: some View {
         VStack(content: {

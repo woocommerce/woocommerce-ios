@@ -8553,6 +8553,15 @@
 			path = "Linked Products";
 			sourceTree = "<group>";
 		};
+		453326FB2C3C52E6000E4862 /* PromptProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				453F52A22C3C3474006CBA2F /* ProductCreationAIPromptProgressBar.swift */,
+				453326F92C3C38ED000E4862 /* ProductCreationAIBarProgressStyle.swift */,
+			);
+			path = PromptProgressBar;
+			sourceTree = "<group>";
+		};
 		4535EE78281ADD1F004212B4 /* Coupon Text Validators */ = {
 			isa = PBXGroup;
 			children = (
@@ -12923,8 +12932,7 @@
 			children = (
 				EE09DE052C2C0C9600A32680 /* ProductCreationAIStartingInfoView.swift */,
 				EE09DE072C2C0CA100A32680 /* ProductCreationAIStartingInfoViewModel.swift */,
-				453F52A22C3C3474006CBA2F /* ProductCreationAIPromptProgressBar.swift */,
-				453326F92C3C38ED000E4862 /* ProductCreationAIBarProgressStyle.swift */,
+				453326FB2C3C52E6000E4862 /* PromptProgressBar */,
 			);
 			path = StartingInfo;
 			sourceTree = "<group>";

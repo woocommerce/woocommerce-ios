@@ -2517,6 +2517,7 @@
 		DE69C54D27BB719A000BB888 /* CouponRestrictions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54C27BB719A000BB888 /* CouponRestrictions.swift */; };
 		DE69C54F27BCB4B7000BB888 /* CouponRestrictionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54E27BCB4B6000BB888 /* CouponRestrictionsViewModelTests.swift */; };
 		DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */; };
+		DE6D84A52C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6D84A42C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift */; };
 		DE6F997B2BE9E5CA0007B2DD /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6F997A2BE9E5CA0007B2DD /* Settings.storyboard */; };
 		DE6F997E2BEE00C50007B2DD /* InboxDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F997D2BEE00C50007B2DD /* InboxDashboardCard.swift */; };
 		DE6F99802BEE04310007B2DD /* InboxDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F997F2BEE04310007B2DD /* InboxDashboardCardViewModel.swift */; };
@@ -5510,6 +5511,7 @@
 		DE69C54C27BB719A000BB888 /* CouponRestrictions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponRestrictions.swift; sourceTree = "<group>"; };
 		DE69C54E27BCB4B6000BB888 /* CouponRestrictionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponRestrictionsViewModelTests.swift; sourceTree = "<group>"; };
 		DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSampleData.swift; sourceTree = "<group>"; };
+		DE6D84A42C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE6F997A2BE9E5CA0007B2DD /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		DE6F997D2BEE00C50007B2DD /* InboxDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCard.swift; sourceTree = "<group>"; };
 		DE6F997F2BEE04310007B2DD /* InboxDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModel.swift; sourceTree = "<group>"; };
@@ -7334,6 +7336,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				DE6D84A32C3B8C800014FBFF /* GoogleAds */,
 				EE8B42192C04D1710077C4E7 /* Orders */,
 				866A07032BFCF2B100256D5B /* Reviews */,
 				EE570A8B2BF5EE68006BA026 /* Coupons */,
@@ -12469,6 +12472,14 @@
 			path = UsageDetails;
 			sourceTree = "<group>";
 		};
+		DE6D84A32C3B8C800014FBFF /* GoogleAds */ = {
+			isa = PBXGroup;
+			children = (
+				DE6D84A42C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift */,
+			);
+			path = GoogleAds;
+			sourceTree = "<group>";
+		};
 		DE6F997C2BEE00A70007B2DD /* Inbox */ = {
 			isa = PBXGroup;
 			children = (
@@ -16435,6 +16446,7 @@
 				683763182C2E497000AD51D0 /* ItemSelectorViewModelTests.swift in Sources */,
 				20CCBF212B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift in Sources */,
 				2602A64227BD89CE00B347F1 /* NewOrderInitialStatusResolverTests.swift in Sources */,
+				DE6D84A52C3B8C9C0014FBFF /* GoogleAdsDashboardCardViewModelTests.swift in Sources */,
 				0235354E2999D17A00BF77D3 /* DomainSettingsViewModelTests.swift in Sources */,
 				4535EE80281BE4E0004212B4 /* CouponAmountInputFormatterTests.swift in Sources */,
 				570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */,

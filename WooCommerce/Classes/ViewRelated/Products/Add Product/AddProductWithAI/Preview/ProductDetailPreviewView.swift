@@ -5,6 +5,7 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
     @State private var isShowingErrorAlert: Bool = false
+    @FocusState private var focusedField: FocusedField?
 
     private let onDismiss: () -> Void
 
@@ -159,36 +160,42 @@ struct ProductDetailPreviewView: View {
 //
 private extension ProductDetailPreviewView {
     var nameTextField: some View {
-        TextField(Localization.productNamePlaceholder,
-                  text: $viewModel.productName,
-                  axis: .vertical)
-        .textFieldStyle(.plain)
-        .padding(Layout.fieldInsets)
-        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-        .shimmering(active: viewModel.isGeneratingDetails)
-        .roundedRectBorderStyle()
+        UndoableTextField(placeholder: Localization.productNamePlaceholder,
+                          content: $viewModel.productName,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .name,
+                          shouldEnableUndo: viewModel.hasChangesToProductName,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productName = viewModel.generatedProduct?.name ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.name)
     }
 
     var shortDescriptionTextField: some View {
-        TextField(Localization.productShortDescriptionPlaceholder,
-                  text: $viewModel.productShortDescription,
-                  axis: .vertical)
-        .textFieldStyle(.plain)
-        .padding(Layout.fieldInsets)
-        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-        .shimmering(active: viewModel.isGeneratingDetails)
-        .roundedRectBorderStyle()
+        UndoableTextField(placeholder: Localization.productShortDescriptionPlaceholder,
+                          content: $viewModel.productShortDescription,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .shortDescription,
+                          shouldEnableUndo: viewModel.hasChangesToProductShortDescription,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productShortDescription = viewModel.generatedProduct?.shortDescription ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.shortDescription)
     }
 
     var descriptionTextField: some View {
-        TextField(Localization.productDescriptionPlaceholder,
-                  text: $viewModel.productDescription,
-                  axis: .vertical)
-        .textFieldStyle(.plain)
-        .padding(Layout.fieldInsets)
-        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-        .shimmering(active: viewModel.isGeneratingDetails)
-        .roundedRectBorderStyle()
+        UndoableTextField(placeholder: Localization.productDescriptionPlaceholder,
+                          content: $viewModel.productDescription,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .description,
+                          shouldEnableUndo: viewModel.hasChangesToProductDescription,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productDescription = viewModel.generatedProduct?.fullDescription ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.description)
     }
 
     var feedbackBanner: some View {
@@ -298,23 +305,72 @@ private extension ProductDetailPreviewView {
                 .clipShape(.rect(cornerRadius: 10))
         }
     }
+
+    enum FocusedField: Equatable {
+        case name
+        case shortDescription
+        case description
+    }
+
+    struct UndoableTextField: View {
+        let placeholder: String
+        @Binding var content: String
+
+        let isLoading: Bool
+        let isFocused: Bool
+        let shouldEnableUndo: Bool
+        let onUndoEdits: () -> Void
+
+        var body: some View {
+            VStack {
+                TextField(placeholder,
+                          text: $content,
+                          axis: .vertical)
+                .textFieldStyle(.plain)
+                .padding(Layout.fieldInsets)
+
+                if shouldEnableUndo {
+                    Divider()
+                        .frame(height: ProductDetailPreviewView.Layout.borderWidth)
+                        .foregroundStyle(Color.accentColor)
+
+                    Button(action: onUndoEdits) {
+                        HStack {
+                            Image(systemName: "arrow.counterclockwise")
+                            Text(Localization.undoEdits)
+                            Spacer()
+                        }
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                        .padding(Layout.fieldInsets)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
+            .roundedRectBorderStyle(strokeColor: isFocused ? .accentColor : ProductDetailPreviewView.Constants.separatorColor)
+        }
+    }
 }
 
 // MARK: - Rounded rect overlay
 //
 private struct RoundedBorder: ViewModifier {
+    let strokeColor: Color
+
     func body(content: Content) -> some View {
         content
             .overlay(
                 RoundedRectangle(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius)
-                    .stroke(ProductDetailPreviewView.Constants.separatorColor, lineWidth: ProductDetailPreviewView.Layout.borderWidth)
+                    .stroke(strokeColor, lineWidth: ProductDetailPreviewView.Layout.borderWidth)
             )
     }
 }
 
 private extension View {
-    func roundedRectBorderStyle() -> some View {
-        modifier(RoundedBorder())
+    func roundedRectBorderStyle(strokeColor: Color = ProductDetailPreviewView.Constants.separatorColor) -> some View {
+        modifier(RoundedBorder(strokeColor: strokeColor))
     }
 }
 
@@ -444,6 +500,11 @@ fileprivate extension ProductDetailPreviewView {
             "productDetailPreviewView.addedToProduct",
             value: "Photo will be added to product",
             comment: "Text to explain that a package photo has been selected in product preview screen."
+        )
+        static let undoEdits = NSLocalizedString(
+            "productDetailPreviewView.undoEdits",
+            value: "Undo edits",
+            comment: "Button to undo edits for generated product name or summary in product preview screen."
         )
     }
 }

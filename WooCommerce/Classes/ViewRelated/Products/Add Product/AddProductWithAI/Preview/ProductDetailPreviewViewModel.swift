@@ -30,6 +30,30 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published var isShowingViewPhotoSheet = false
     @Published var notice: Notice?
 
+    /// Temporary logic check to enable the undo option for product name
+    var hasChangesToProductName: Bool {
+        guard let generatedProduct else {
+            return false
+        }
+        return productName != generatedProduct.name
+    }
+
+    /// Temporary logic check to enable the undo option for product short description
+    var hasChangesToProductShortDescription: Bool {
+        guard let generatedProduct else {
+            return false
+        }
+        return productShortDescription != generatedProduct.shortDescription
+    }
+
+    /// Temporary logic check to enable the undo option for product description
+    var hasChangesToProductDescription: Bool {
+        guard let generatedProduct else {
+            return false
+        }
+        return productDescription != generatedProduct.fullDescription
+    }
+
     private let productFeatures: String
 
     private let siteID: Int64

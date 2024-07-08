@@ -363,7 +363,7 @@ private extension ProductDetailPreviewViewModel {
                                                                tone: tone,
                                                                existingCategories: existingCategories,
                                                                existingTags: existingTags)
-            return useGivenValueIfNameEmpty(generatedProduct)
+            return generatedProduct
         }()
 
         var categories = [ProductCategory]()
@@ -420,14 +420,6 @@ private extension ProductDetailPreviewViewModel {
                 continuation.resume(with: result)
             }))
         }
-    }
-
-    func useGivenValueIfNameEmpty(_ aiProduct: AIProduct) -> AIProduct {
-        guard aiProduct.name.isEmpty else {
-            return aiProduct
-        }
-
-        return aiProduct.copy(name: productName)
     }
 }
 

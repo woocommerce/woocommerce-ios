@@ -1,4 +1,5 @@
 {
+    "priority": 2,
     "request": {
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",

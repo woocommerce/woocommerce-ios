@@ -420,8 +420,9 @@ private extension DashboardViewModel {
                         await self?.lastOrdersCardViewModel.reloadData()
                     }
                 case .googleAds:
-                    // TODO: fetch data
-                    break
+                    group.addTask { [weak self] in
+                        await self?.googleAdsDashboardCardViewModel.fetchLastCampaign()
+                    }
                 }
             }
         }
@@ -529,6 +530,7 @@ private extension DashboardViewModel {
         mostActiveCouponsViewModel.onDismiss = showCustomizationScreen
         productStockCardViewModel.onDismiss = showCustomizationScreen
         lastOrdersCardViewModel.onDismiss = showCustomizationScreen
+        googleAdsDashboardCardViewModel.onDismiss = showCustomizationScreen
     }
 
     func generateDefaultCards(canShowOnboarding: Bool,

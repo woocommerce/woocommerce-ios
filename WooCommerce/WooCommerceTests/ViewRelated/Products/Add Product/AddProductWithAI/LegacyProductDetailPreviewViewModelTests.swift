@@ -435,7 +435,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
         let aiProduct = AIProduct(names: [name],
                                   descriptions: [description],
-                                  shortDescription: shortDescription,
+                                  shortDescriptions: [shortDescription],
                                   virtual: virtual,
                                   shipping: .init(length: length, weight: weight, width: width, height: height),
                                   tags: [],
@@ -629,7 +629,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async {
         // Given
-        let product = AIProduct.fake().copy(shortDescription: "A short description")
+        let product = AIProduct.fake().copy(shortDescriptions: ["A short description"])
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: "Blue plastic ballpoint pen",
@@ -653,7 +653,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_short_description_view_is_hidden_if_shortDescription_empty() async {
         // Given
-        let product = AIProduct.fake().copy(shortDescription: "")
+        let product = AIProduct.fake().copy(shortDescriptions: [""])
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: "Blue plastic ballpoint pen",
@@ -677,7 +677,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_short_description_view_is_hidden_if_shortDescription_nil() async {
         // Given
-        let product = AIProduct.fake().copy(shortDescription: nil)
+        let product = AIProduct.fake().copy(shortDescriptions: nil)
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: "Blue plastic ballpoint pen",
@@ -701,7 +701,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_short_description_view_is_shown_while_generating_AI_details() async {
         // Given
-        let product = AIProduct.fake().copy(names: ["Test name"], descriptions: [""], shortDescription: nil)
+        let product = AIProduct.fake().copy(names: ["Test name"], descriptions: [""], shortDescriptions: [""])
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: "Blue plastic ballpoint pen",

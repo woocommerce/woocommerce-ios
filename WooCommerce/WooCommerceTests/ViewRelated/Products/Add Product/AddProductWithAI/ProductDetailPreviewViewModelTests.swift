@@ -383,7 +383,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let siteID: Int64 = 123
         let names = ["Pen", "Elegant Fountain Pen", "Precision Rollerball Pen"]
         let descriptions = ["Sample description", "Sample description 2", "Sample description 3"]
-        let shortDescription = "Sample short description"
+        let shortDescriptions = ["Sample short description", "Sample short description 2", "Sample short description 3"]
         let virtual = true
         let weight = "0.2"
         let length = "0.2"
@@ -393,7 +393,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let aiProduct = AIProduct(names: names,
                                   descriptions: descriptions,
-                                  shortDescription: shortDescription,
+                                  shortDescriptions: shortDescriptions,
                                   virtual: virtual,
                                   shipping: .init(length: length, weight: weight, width: width, height: height),
                                   tags: [],
@@ -421,7 +421,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.siteID, siteID)
         XCTAssertEqual(generatedProduct.name, names.first)
         XCTAssertEqual(generatedProduct.fullDescription, descriptions.first)
-        XCTAssertEqual(generatedProduct.shortDescription, shortDescription)
+        XCTAssertEqual(generatedProduct.shortDescription, shortDescriptions.first)
         XCTAssertTrue(generatedProduct.virtual)
         XCTAssertEqual(generatedProduct.dimensions.width, width)
         XCTAssertEqual(generatedProduct.dimensions.height, height)

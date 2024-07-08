@@ -16,12 +16,21 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    productListView
-                    Spacer()
                     if viewModel.isCartCollapsed {
+                        // 1. Initial state: Product list is visible and cart is collapsed
+                        productListView
+                            .frame(maxWidth: .infinity)
+                        Spacer()
                         collapsedCartView
                     } else {
-                        cartView
+                        // 2. Products in cart: Both product list and cart are visible
+                        GeometryReader { geometry in
+                            HStack {
+                                productListView
+                                    .frame(width: geometry.size.width * Constants.productListWidth)
+                                cartView
+                            }
+                        }
                     }
                 case .finalizing:
                     if !viewModel.isTotalsViewFullScreen {
@@ -56,6 +65,17 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         })
+        .task {
+            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
+        }
+    }
+}
+
+private extension PointOfSaleDashboardView {
+    enum Constants {
+        // For the moment we're just considering landscape for the POS mode
+        // https://github.com/woocommerce/woocommerce-ios/issues/13251
+        static let productListWidth: CGFloat = 0.6
     }
 }
 
@@ -68,7 +88,6 @@ private extension PointOfSaleDashboardView {
     var cartView: some View {
         CartView(viewModel: viewModel,
                  cartViewModel: viewModel.cartViewModel)
-        .frame(maxWidth: .infinity)
     }
 
     var totalsView: some View {
@@ -81,7 +100,6 @@ private extension PointOfSaleDashboardView {
 
     var productListView: some View {
         ItemListView(viewModel: viewModel.itemSelectorViewModel)
-            .frame(maxWidth: .infinity)
     }
 }
 

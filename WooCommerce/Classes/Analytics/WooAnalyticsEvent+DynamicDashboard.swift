@@ -94,6 +94,8 @@ extension DashboardCard.CardType {
             "orders"
         case .coupons:
             "coupons"
+        case .googleAds:
+            "google-ads"
         }
     }
 }

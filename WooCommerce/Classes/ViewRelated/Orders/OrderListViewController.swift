@@ -14,6 +14,10 @@ protocol OrderListViewControllerDelegate: AnyObject {
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
 
+    /// Called when new the order list has been synced and the sync timestamp changes.
+    ///
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date)
+
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
@@ -87,11 +91,29 @@ final class OrderListViewController: UIViewController {
 
     /// Timestamp for last successful sync.
     ///
-    private var lastFullSyncTimestamp: Date?
+    private(set) var lastFullSyncTimestamp: Date? = {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks), OrderSyncBackgroundTask.latestSyncDate != Date.distantPast {
+            return OrderSyncBackgroundTask.latestSyncDate
+        } else {
+            return nil
+        }
+    }() {
+        didSet {
+            if let lastFullSyncTimestamp {
+                delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
+            }
+        }
+    }
 
     /// Minimum time interval allowed between full sync.
     ///
-    private let minimalIntervalBetweenSync: TimeInterval = 30
+    private let minimalIntervalBetweenSync: TimeInterval = {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            return 30 * 60 // 30m
+        } else {
+            return 30 // 30s
+        }
+    }()
 
     /// UI Active State
     ///
@@ -276,14 +298,21 @@ private extension OrderListViewController {
     ///
     func configureViewModel() {
         viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
-            guard let self = self,
-                  // Avoid synchronizing if the view is not visible. The refresh will be handled in
-                  // `viewWillAppear` instead.
-                  self.viewIfLoaded?.window != nil else {
-                return
+            guard let self else { return }
+
+            /// Update the `lastFullSyncTimestamp` in case orders have been updated on a background task.
+            ///
+            if let lastFullSyncTimestamp = self.lastFullSyncTimestamp,
+               ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+               OrderSyncBackgroundTask.latestSyncDate > lastFullSyncTimestamp {
+                self.lastFullSyncTimestamp = OrderSyncBackgroundTask.latestSyncDate
             }
 
-            self.syncingCoordinator.resynchronize()
+            // Avoid synchronizing if the view is not visible. The refresh will be handled in
+            // `viewWillAppear` instead.
+            guard self.viewIfLoaded?.window != nil else { return }
+
+            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -325,6 +354,10 @@ private extension OrderListViewController {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+
+        if let lastFullSyncTimestamp {
+            delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
+        }
     }
 
     /// Setup: TableView
@@ -424,13 +457,18 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
-        if pageNumber == syncingCoordinator.pageFirstIndex,
-           reason == SyncReason.viewWillAppear.rawValue,
-           let lastFullSyncTimestamp = lastFullSyncTimestamp,
-           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            onCompletion?(true)
-            return
+        // Decide if we need to continue with the sync depending on custom conditions between sync reason and latest sync
+        if let syncReason = SyncReason(rawValue: reason ?? ""), let lastSyncTime = lastFullSyncTimestamp, pageNumber == syncingCoordinator.pageFirstIndex {
+
+            switch syncReason {
+            case .viewWillAppear where Date().timeIntervalSince(lastSyncTime) < minimalIntervalBetweenSync:
+                onCompletion?(true) // less than 30m from last full sync
+                return
+            case .viewWillAppear where ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks):
+                refreshControl.showRefreshAnimation(on: self.tableView)
+            default:
+                break
+            }
         }
 
         transitionToSyncingState()
@@ -473,6 +511,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 self.transitionToResultsUpdatedState()
+                self.refreshControl.endRefreshing()
                 onCompletion?(error == nil)
         }
 

@@ -234,7 +234,12 @@ private extension DashboardView {
                         } onViewOrderDetail: { order in
                             onViewOrderDetail?(order)
                         }
-
+                    case .googleAds:
+                        GoogleAdsDashboardCard(viewModel: viewModel.googleAdsDashboardCardViewModel, onCreateNewCampaign: {
+                            // TODO
+                        }, onShowAllCampaigns: {
+                            // TODO
+                        })
                     }
 
                     // Append feedback card after the first card

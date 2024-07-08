@@ -2,7 +2,6 @@ import XCTest
 @testable import Yosemite
 @testable import WooCommerce
 
-@MainActor
 final class ProductDetailPreviewViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private var stores: MockStoresManager!
@@ -31,13 +30,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_fetches_site_settings_if_weight_unit_is_nil() async {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -68,13 +65,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_fetches_site_settings_if_dimension_unit_is_nil() async {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       dimensionUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -105,13 +100,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_synchronizes_categories() async {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -138,13 +131,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_synchronizes_tags() async {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: nil,
                                                       stores: stores,
                                                       storageManager: storage,
@@ -169,15 +160,13 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_sends_name_and_features_to_identify_language() async throws {
+    func test_generateProductDetails_sends_features_to_identify_language() async throws {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -191,7 +180,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .identifyLanguage(_, string, _, completion):
                 // Then
-                XCTAssertEqual(string, productName + " " + productFeatures)
+                XCTAssertEqual(string, productFeatures)
                 completion(.success("en"))
             default:
                 break
@@ -207,15 +196,13 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_identified_language_is_reused_when_generating_product_details_again() async {
         // Given
-        let productName = "Pen"
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
         let expectedLanguage = "en"
         var identifyingLanguageRequestCount = 0
 
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: productName,
-                                                      productDescription: nil,
                                                       productFeatures: productFeatures,
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -250,7 +237,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_generateProductDetails_sends_correct_values_to_generate_product_details() async throws {
         // Given
         let sampleSiteID: Int64 = 123
-        let sampleProductName = "Pen"
         let sampleProductFeatures = "Ballpoint, Blue ink, ABS plastic"
         let sampleLanguage = "en"
         let sampleTone = AIToneVoice.convincing
@@ -273,9 +259,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         storage.insertSampleProductTag(readOnlyProductTag: .fake().copy(siteID: 321))
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: sampleProductName,
-                                                      productDescription: nil,
                                                       productFeatures: sampleProductFeatures,
+                                                      imageState: .empty,
                                                       currency: sampleCurrency,
                                                       weightUnit: sampleWeightUnit,
                                                       dimensionUnit: sampleDimensionUnit,
@@ -288,19 +273,18 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let  .generateAIProduct(siteID,
-                                       productName,
-                                       keywords,
-                                       language,
-                                       tone,
-                                       currencySymbol,
-                                       dimensionUnit,
-                                       weightUnit,
-                                       categories,
-                                       tags,
-                                       completion):
+                                         _,
+                                         keywords,
+                                         language,
+                                         tone,
+                                         currencySymbol,
+                                         dimensionUnit,
+                                         weightUnit,
+                                         categories,
+                                         tags,
+                                         completion):
                 // Then
                 XCTAssertEqual(siteID, sampleSiteID)
-                XCTAssertEqual(productName, sampleProductName)
                 XCTAssertEqual(keywords, sampleProductFeatures)
                 XCTAssertEqual(language, sampleLanguage)
                 XCTAssertEqual(tone, sampleTone.rawValue)
@@ -324,36 +308,11 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
-    func test_generateProductDetails_sends_productDescription_if_available_to_generate_product_details() async {
-        // Given
-        let sampleProductName = "Pen"
-        let sampleProductDescription = "Ballpoint, Blue ink, ABS plastic"
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: sampleProductName,
-                                                      productDescription: sampleProductDescription,
-                                                      productFeatures: nil,
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-        XCTAssertFalse(viewModel.isGeneratingDetails)
-
-        mockProductActions()
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-    }
-
     func test_generateProductDetails_updates_generationInProgress_correctly() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -388,9 +347,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let expectedError = NSError(domain: "test", code: 503)
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -423,8 +381,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_generateProductDetails_updates_generatedProduct_correctly() async throws {
         // Given
         let siteID: Int64 = 123
-        let name = "Pen"
-        let description = "Sample description"
+        let names = ["Pen", "Elegant Fountain Pen", "Precision Rollerball Pen"]
+        let descriptions = ["Sample description", "Sample description 2", "Sample description 3"]
         let shortDescription = "Sample short description"
         let virtual = true
         let weight = "0.2"
@@ -433,19 +391,18 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let height = "0.2"
         let price = "0.2"
 
-        let aiProduct = AIProduct(name: name,
-                                   description: description,
-                                   shortDescription: shortDescription,
-                                   virtual: virtual,
-                                   shipping: .init(length: length, weight: weight, width: width, height: height),
-                                   tags: [],
-                                   price: price,
-                                   categories: [])
+        let aiProduct = AIProduct(names: names,
+                                  descriptions: descriptions,
+                                  shortDescription: shortDescription,
+                                  virtual: virtual,
+                                  shipping: .init(length: length, weight: weight, width: width, height: height),
+                                  tags: [],
+                                  price: price,
+                                  categories: [])
 
         let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -462,8 +419,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Then
         let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
         XCTAssertEqual(generatedProduct.siteID, siteID)
-        XCTAssertEqual(generatedProduct.name, name)
-        XCTAssertEqual(generatedProduct.fullDescription, description)
+        XCTAssertEqual(generatedProduct.name, names.first)
+        XCTAssertEqual(generatedProduct.fullDescription, descriptions.first)
         XCTAssertEqual(generatedProduct.shortDescription, shortDescription)
         XCTAssertTrue(generatedProduct.virtual)
         XCTAssertEqual(generatedProduct.dimensions.width, width)
@@ -490,9 +447,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         storage.insertSampleProductTag(readOnlyProductTag: .fake().copy(siteID: 321))
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -515,9 +471,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let product = AIProduct.fake().copy(categories: ["Biscuits", "Cookies"])
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -553,9 +508,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         storage.insertSampleProductTag(readOnlyProductTag: .fake().copy(siteID: 321))
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -578,9 +532,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let product = AIProduct.fake().copy(tags: ["Food", "Grocery"])
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -600,156 +553,18 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.tags.map { $0.tagID }, [0, 0])
     }
 
-    func test_generateProductDetails_switches_to_given_productName_if_AIProduct_has_empty_name() async throws {
-        // Given
-        let product = AIProduct.fake().copy(name: "", description: "Test description")
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
-                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-
-        mockProductActions(aiGeneratedProductResult: .success(product))
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-
-        // Then
-        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
-        XCTAssertEqual(generatedProduct.name, "Pen")
-    }
-
-    // MARK: Short description view
-
-    func test_short_description_view_is_shown_if_shortDescription_is_not_empty() async {
-        // Given
-        let product = AIProduct.fake().copy(shortDescription: "A short description")
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: "Blue plastic ballpoint pen",
-                                                      productFeatures: nil,
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-
-        mockProductActions(aiGeneratedProductResult: .success(product))
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-
-        // Then
-        XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
-    }
-
-    func test_short_description_view_is_hidden_if_shortDescription_empty() async {
-        // Given
-        let product = AIProduct.fake().copy(shortDescription: "")
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: "Blue plastic ballpoint pen",
-                                                      productFeatures: nil,
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-
-        mockProductActions(aiGeneratedProductResult: .success(product))
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
-    }
-
-    func test_short_description_view_is_hidden_if_shortDescription_nil() async {
-        // Given
-        let product = AIProduct.fake().copy(shortDescription: nil)
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: "Blue plastic ballpoint pen",
-                                                      productFeatures: nil,
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-
-        mockProductActions(aiGeneratedProductResult: .success(product))
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
-    }
-
-    func test_short_description_view_is_shown_while_generating_AI_details() async {
-        // Given
-        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
-        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: "Blue plastic ballpoint pen",
-                                                      productFeatures: nil,
-                                                      weightUnit: "kg",
-                                                      dimensionUnit: "m",
-                                                      stores: stores,
-                                                      storageManager: storage,
-                                                      onProductCreated: { _ in })
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                // Then
-                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
-                completion(.success(product))
-            case let .identifyLanguage(_, _, _, completion):
-                // Then
-                XCTAssertTrue(viewModel.shouldShowShortDescriptionView)
-                completion(.success("en"))
-            default:
-                break
-            }
-        }
-
-        mockProductTagActions()
-        mockProductCategoryActions()
-
-        // When
-        await viewModel.generateProductDetails()
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowShortDescriptionView)
-    }
-
     // MARK: - Save product
 
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {
         // Given
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: "iPhone 15",
-                                                      productDescription: nil,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -784,15 +599,14 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_success_triggers_onProductCreated() async {
         // Given
         var createdProduct: Product?
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: "iPhone 15",
-                                                      productDescription: nil,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -813,11 +627,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_updates_errorState_upon_failure() async {
         // Given
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
-                                                      productName: "iPhone 15",
-                                                      productDescription: nil,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -840,16 +653,15 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_saves_local_categories() async {
         // Given
         let grocery = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Groceries")
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"],
                                               categories: ["Biscuits", "Cookies"])
 
         let sampleCategories = [grocery]
         sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "iPhone 15",
-                                                      productDescription: nil,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -881,16 +693,15 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_saves_local_tags() async {
         // Given
         let existingTag = ProductTag.fake().copy(siteID: sampleSiteID, name: "Existing tag")
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"],
                                               tags: ["Tag 1", "Tag 2"])
 
         let sampleTags = [existingTag, ProductTag.fake().copy(siteID: sampleSiteID)]
         sampleTags.forEach { storage.insertSampleProductTag(readOnlyProductTag: $0) }
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "iPhone 15",
-                                                      productDescription: nil,
                                                       productFeatures: "",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -925,9 +736,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -947,9 +757,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_generateProductDetails_tracks_event_on_success() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -973,9 +782,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "test", code: 503)
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -1002,9 +810,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_tracks_tapped_event() async {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -1024,9 +831,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_tracks_event_on_success() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -1051,9 +857,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let expectedError = ProductUpdateError(error: NSError(domain: "test", code: 503))
 
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,
@@ -1082,9 +887,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_handleFeedback_tracks_feedback_received()  throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
-                                                      productName: "Pen",
-                                                      productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: .empty,
                                                       weightUnit: "kg",
                                                       dimensionUnit: "m",
                                                       stores: stores,

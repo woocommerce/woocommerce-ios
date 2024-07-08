@@ -29,7 +29,6 @@ struct PointOfSaleDashboardView: View {
                                 productListView
                                     .frame(width: geometry.size.width * Constants.productListWidth)
                                 cartView
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
                             }
                         }
                     }
@@ -72,13 +71,9 @@ struct PointOfSaleDashboardView: View {
 
 private extension PointOfSaleDashboardView {
     enum Constants {
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/13240
-        // The current design only accounts for landscape, switching to portrait
-        // will need to be handled by resizing components and line-breaking for strings
-        // and other elements
-        static let productListWidth: CGFloat = 0.7
-        static let cartWidth: CGFloat = 0.3
+        // For the moment we're just considering landscape for the POS mode
+        // https://github.com/woocommerce/woocommerce-ios/issues/13251
+        static let productListWidth: CGFloat = 0.6
     }
 }
 

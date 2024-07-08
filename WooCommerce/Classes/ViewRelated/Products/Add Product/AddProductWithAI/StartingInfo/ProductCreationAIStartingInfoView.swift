@@ -72,6 +72,8 @@ struct ProductCreationAIStartingInfoView: View {
                         )
                     }
 
+                    ProductCreationAIPromptProgressBar(text: $viewModel.features)
+
                     ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
 
                     if let message = viewModel.textDetectionErrorMessage {

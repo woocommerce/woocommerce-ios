@@ -203,7 +203,7 @@ public enum FeatureFlag: Int {
     /// Enables M1 updates of product creation AI version 2
     ///
     case productCreationAIv2M1
-    
+
     /// Enables M3 updates of product creation AI version 2
     ///
     case productCreationAIv2M3

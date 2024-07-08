@@ -266,7 +266,7 @@ private extension GenerativeContentRemote {
                 }
                 return dict
             }()
-            
+
             // swiftlint:disable line_length
             return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
                     "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "

@@ -17,6 +17,8 @@ struct ProductCreationAIPromptProgressBar: View {
                 Text(viewModel.status.secondaryDescription)
                     .font(.footnote)
                     .fontWeight(.regular)
+
+                Spacer()
             })
             .padding(.top, Layout.padding/2)
         })

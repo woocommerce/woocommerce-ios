@@ -227,7 +227,7 @@ private extension GenerativeContentRemote {
         ]
 
         // Name will be added only if `productName` is available.
-        // TODO: this code related to `productName` can be removed after releasing the new product creation with AI flow.
+        // TODO: this code related to `productName` can be removed after releasing the new product creation with AI flow. Github issue: 13108
         if let productName = productName, !productName.isEmpty {
             inputComponents.insert("name: ```\(productName)```", at: 1)
         }

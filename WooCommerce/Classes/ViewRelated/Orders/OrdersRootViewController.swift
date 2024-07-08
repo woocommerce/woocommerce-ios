@@ -418,6 +418,13 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
         // Do nothing here
     }
 
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+            filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+        }
+    }
+
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }

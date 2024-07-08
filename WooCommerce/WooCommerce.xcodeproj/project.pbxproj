@@ -2762,6 +2762,8 @@
 		EE4C457D2C368BE3001A3D94 /* ProductDetailPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45792C368BE2001A3D94 /* ProductDetailPreviewViewModel.swift */; };
 		EE4C457E2C368BE3001A3D94 /* LegacyProductDetailPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C457A2C368BE2001A3D94 /* LegacyProductDetailPreviewViewModel.swift */; };
 		EE4C457F2C368BE3001A3D94 /* ProductDetailPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C457B2C368BE3001A3D94 /* ProductDetailPreviewView.swift */; };
+		EE4C45812C36E769001A3D94 /* ViewPackagePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45802C36E769001A3D94 /* ViewPackagePhoto.swift */; };
+		EE4C45842C381BAA001A3D94 /* PackagePhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45832C381BAA001A3D94 /* PackagePhotoView.swift */; };
 		EE505DDD2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */; };
 		EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */; };
 		EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */; };
@@ -5753,6 +5755,8 @@
 		EE4C45792C368BE2001A3D94 /* ProductDetailPreviewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDetailPreviewViewModel.swift; sourceTree = "<group>"; };
 		EE4C457A2C368BE2001A3D94 /* LegacyProductDetailPreviewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyProductDetailPreviewViewModel.swift; sourceTree = "<group>"; };
 		EE4C457B2C368BE3001A3D94 /* ProductDetailPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDetailPreviewView.swift; sourceTree = "<group>"; };
+		EE4C45802C36E769001A3D94 /* ViewPackagePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPackagePhoto.swift; sourceTree = "<group>"; };
+		EE4C45832C381BAA001A3D94 /* PackagePhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackagePhotoView.swift; sourceTree = "<group>"; };
 		EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroView.swift; sourceTree = "<group>"; };
 		EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLearnHowView.swift; sourceTree = "<group>"; };
 		EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModel.swift; sourceTree = "<group>"; };
@@ -12934,6 +12938,8 @@
 			isa = PBXGroup;
 			children = (
 				EE09DE0A2C2D6E5100A32680 /* SelectPackageImageCoordinator.swift */,
+				EE4C45802C36E769001A3D94 /* ViewPackagePhoto.swift */,
+				EE4C45832C381BAA001A3D94 /* PackagePhotoView.swift */,
 			);
 			path = ImageSelection;
 			sourceTree = "<group>";
@@ -14677,6 +14683,7 @@
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				205E79422C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift in Sources */,
+				EE4C45842C381BAA001A3D94 /* PackagePhotoView.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				02562AD2296D293D00980404 /* DomainSettingsCoordinator.swift in Sources */,
 				026826C42BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift in Sources */,
@@ -15758,6 +15765,7 @@
 				02E4A0832BFB1C4F006D4F87 /* POSEligibilityChecker.swift in Sources */,
 				260C31602524ECA900157BC2 /* IssueRefundViewController.swift in Sources */,
 				4521397027FF53E400964ED3 /* CouponExpiryDateView.swift in Sources */,
+				EE4C45812C36E769001A3D94 /* ViewPackagePhoto.swift in Sources */,
 				DE0A2EAA281BA083007A8015 /* ProductCategoryList.swift in Sources */,
 				02AC30CF2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift in Sources */,
 				02B9243F2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift in Sources */,

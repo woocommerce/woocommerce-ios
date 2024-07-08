@@ -53,8 +53,8 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
             case height
         }
     }
-    public let name: String
-    public let description: String
+    public let names: [String]
+    public let descriptions: [String]
     public let shortDescription: String
     public let virtual: Bool
     public let shipping: Shipping
@@ -62,16 +62,16 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
     public let price: String
     public let categories: [String]
 
-    public init(name: String,
-                description: String,
+    public init(names: [String],
+                descriptions: [String],
                 shortDescription: String,
                 virtual: Bool,
                 shipping: Shipping,
                 tags: [String],
                 price: String,
                 categories: [String]) {
-        self.name = name
-        self.description = description
+        self.names = names
+        self.descriptions = descriptions
         self.shortDescription = shortDescription
         self.virtual = virtual
         self.shipping = shipping
@@ -83,8 +83,8 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let name = container.failsafeDecodeIfPresent(String.self, forKey: .name) ?? ""
-        let description = try container.decode(String.self, forKey: .description)
+        let names = container.failsafeDecodeIfPresent([String].self, forKey: .names) ?? []
+        let descriptions = try container.decode([String].self, forKey: .descriptions)
         let shortDescription = container.failsafeDecodeIfPresent(String.self, forKey: .shortDescription) ?? ""
         let virtual = container.failsafeDecodeIfPresent(Bool.self, forKey: .virtual) ?? false
         let shipping = container.failsafeDecodeIfPresent(Shipping.self, forKey: .shipping) ?? Shipping(length: "", weight: "", width: "", height: "")
@@ -94,8 +94,8 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
         let categories = container.failsafeDecodeIfPresent([String].self, forKey: .categories) ?? []
 
-        self.init(name: name,
-                  description: description,
+        self.init(names: names,
+                  descriptions: descriptions,
                   shortDescription: shortDescription,
                   virtual: virtual,
                   shipping: shipping,
@@ -105,8 +105,8 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
     }
 
     enum CodingKeys: String, CodingKey {
-        case name = "name"
-        case description = "description"
+        case names = "names"
+        case descriptions = "descriptions"
         case shortDescription = "short_description"
         case virtual = "virtual"
         case shipping = "shipping"
@@ -125,7 +125,7 @@ public extension Product {
          tags: [ProductTag]) {
         self.init(siteID: siteID,
                   productID: 0,
-                  name: aiProduct.name,
+                  name: aiProduct.names.first ?? "",
                   slug: "",
                   permalink: "",
                   date: Date(),
@@ -137,7 +137,7 @@ public extension Product {
                   statusKey: ProductStatus.draft.rawValue,
                   featured: false,
                   catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
-                  fullDescription: aiProduct.description,
+                  fullDescription: aiProduct.descriptions.first,
                   shortDescription: aiProduct.shortDescription,
                   sku: "",
                   price: "",

@@ -433,8 +433,8 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
         let height = "0.2"
         let price = "0.2"
 
-        let aiProduct = AIProduct(name: name,
-                                  description: description,
+        let aiProduct = AIProduct(names: [name],
+                                  descriptions: [description],
                                   shortDescription: shortDescription,
                                   virtual: virtual,
                                   shipping: .init(length: length, weight: weight, width: width, height: height),
@@ -602,7 +602,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_generateProductDetails_switches_to_given_productName_if_AIProduct_has_empty_name() async throws {
         // Given
-        let product = AIProduct.fake().copy(name: "", description: "Test description")
+        let product = AIProduct.fake().copy(names: [""], descriptions: ["Test description"])
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: nil,
@@ -701,7 +701,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_short_description_view_is_shown_while_generating_AI_details() async {
         // Given
-        let product = AIProduct.fake().copy(name: "Test name", description: "", shortDescription: nil)
+        let product = AIProduct.fake().copy(names: ["Test name"], descriptions: [""], shortDescription: nil)
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: sampleSiteID,
                                                             productName: "Pen",
                                                             productDescription: "Blue plastic ballpoint pen",
@@ -741,7 +741,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {
         // Given
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
                                       aiProduct: aiProduct,
                                       categories: [],
@@ -784,7 +784,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_success_triggers_onProductCreated() async {
         // Given
         var createdProduct: Product?
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
                                       aiProduct: aiProduct,
                                       categories: [],
@@ -813,7 +813,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
 
     func test_saveProductAsDraft_updates_errorState_upon_failure() async {
         // Given
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15")
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let viewModel = LegacyProductDetailPreviewViewModel(siteID: 123,
                                                             productName: "iPhone 15",
                                                             productDescription: nil,
@@ -840,7 +840,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_saves_local_categories() async {
         // Given
         let grocery = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Groceries")
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"],
                                               categories: ["Biscuits", "Cookies"])
 
         let sampleCategories = [grocery]
@@ -881,7 +881,7 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
     func test_saveProductAsDraft_saves_local_tags() async {
         // Given
         let existingTag = ProductTag.fake().copy(siteID: sampleSiteID, name: "Existing tag")
-        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+        let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"],
                                               tags: ["Tag 1", "Tag 2"])
 
         let sampleTags = [existingTag, ProductTag.fake().copy(siteID: sampleSiteID)]

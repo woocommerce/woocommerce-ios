@@ -13,7 +13,7 @@
             "data": {
                 "id": 630,
                 "parent_id": 0,
-                "status": "auto-draft",
+                "status": "pending",
                 "currency": "USD",
                 "version": "7.6.1",
                 "prices_include_tax": false,

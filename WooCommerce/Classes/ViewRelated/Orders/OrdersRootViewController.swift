@@ -421,7 +421,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
             let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
-            filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+            filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp)) // TODO: Also do it in view will appear or something
         }
     }
 

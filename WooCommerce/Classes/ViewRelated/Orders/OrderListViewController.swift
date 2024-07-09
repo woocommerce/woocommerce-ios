@@ -92,8 +92,8 @@ final class OrderListViewController: UIViewController {
     /// Timestamp for last successful sync.
     ///
     private(set) var lastFullSyncTimestamp: Date? = {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks), OrderSyncBackgroundTask.latestSyncDate != Date.distantPast {
-            return OrderSyncBackgroundTask.latestSyncDate
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks), OrderListSyncBackgroundTask.latestSyncDate != Date.distantPast {
+            return OrderListSyncBackgroundTask.latestSyncDate
         } else {
             return nil
         }
@@ -304,8 +304,8 @@ private extension OrderListViewController {
             ///
             if let lastFullSyncTimestamp = self.lastFullSyncTimestamp,
                ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
-               OrderSyncBackgroundTask.latestSyncDate > lastFullSyncTimestamp {
-                self.lastFullSyncTimestamp = OrderSyncBackgroundTask.latestSyncDate
+               OrderListSyncBackgroundTask.latestSyncDate > lastFullSyncTimestamp {
+                self.lastFullSyncTimestamp = OrderListSyncBackgroundTask.latestSyncDate
             }
 
             // Avoid synchronizing if the view is not visible. The refresh will be handled in

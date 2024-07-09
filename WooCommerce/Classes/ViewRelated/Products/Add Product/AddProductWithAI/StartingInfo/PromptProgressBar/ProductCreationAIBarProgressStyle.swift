@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ProductCreationAIBarProgressStyle: ProgressViewStyle {
 
-    var color: Color = .purple
+    var color: Color = .gray
 
     func makeBody(configuration: Configuration) -> some View {
 

@@ -95,6 +95,8 @@ private extension GoogleAdsCampaignCoordinator {
             $0.value == Constants.savedValue
         }) != nil
         if creationSucceeded {
+            analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
+
             // dismisses the web view
             navigationController.dismiss(animated: true) { [self] in
                 showSuccessView()

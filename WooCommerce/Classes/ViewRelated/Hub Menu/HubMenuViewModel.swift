@@ -146,6 +146,7 @@ final class HubMenuViewModel: ObservableObject {
                                                            featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
+        observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
         createCardPresentPaymentService()
     }
@@ -378,6 +379,18 @@ private extension HubMenuViewModel {
             }
         }
         .assign(to: &$planName)
+    }
+
+    func observeGoogleAdsEntryPointAvailability() {
+        $isSiteEligibleForGoogleAds.removeDuplicates()
+            .withLatestFrom($currentSite.removeDuplicates())
+            .filter { isEligible, currentSite in
+                return isEligible && currentSite != nil
+            }
+            .sink { _ in
+                ServiceLocator.analytics.track(event: .GoogleAds.entryPointDisplayed(source: .moreMenu))
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor

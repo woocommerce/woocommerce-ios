@@ -110,7 +110,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
 
-    private var generatedProductSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     private lazy var categoryResultController: ResultsController<StorageProductCategory> = {
         let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
@@ -156,7 +156,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
-        observeGeneratedProduct()
+        observeSelectedOption()
     }
 
     @MainActor
@@ -291,13 +291,20 @@ extension ProductDetailPreviewViewModel {
 // MARK: - Product details for preview
 //
 private extension ProductDetailPreviewViewModel {
-    func observeGeneratedProduct() {
-        generatedProductSubscription = $generatedProduct
-            .compactMap { $0 }
-            .sink { [weak self] product in
-                guard let self else { return }
-                self.updateProductDetails(with: product)
+    func observeSelectedOption() {
+        $selectedOptionIndex
+            .combineLatest($options)
+            .sink { [weak self] index, options in
+                guard let self,
+                      let option = options[safe: index] else {
+                    return
+                }
+
+                self.productName = option.name
+                self.productDescription = option.description
+                self.productShortDescription = option.shortDescription
             }
+            .store(in: &subscriptions)
     }
 
     func displayAIProductDetails(aiProduct: AIProduct) throws {

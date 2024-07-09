@@ -203,7 +203,7 @@ private extension ProductDetailPreviewView {
 
     var summaryOptionsSwitch: some View {
         HStack {
-            Text("Option 1 of 3")
+            Text(viewModel.optionsTitle)
                 .secondaryBodyStyle()
 
             Spacer()

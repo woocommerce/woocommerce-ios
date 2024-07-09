@@ -104,7 +104,6 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     func test_syncingData_is_false_immediately_after_fetching_last_campaign_completes( ) async {
         // Given
         let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
-        XCTAssertFalse(viewModel.syncingData)
 
         // When
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in

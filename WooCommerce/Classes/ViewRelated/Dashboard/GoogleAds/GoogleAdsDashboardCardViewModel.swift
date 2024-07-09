@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
@@ -26,9 +27,11 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
 
     @Published private(set) var canShowOnDashboard = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var syncingData = false
+    @Published private(set) var syncingData = true
     @Published private(set) var lastCampaign: GoogleAdsCampaign?
     @Published private(set) var lastCampaignStats: GoogleAdsCampaignStatsTotals?
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
@@ -38,6 +41,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.eligibilityChecker = eligibilityChecker
+        trackEntryPointDisplayedIfNeeded()
     }
 
     @MainActor
@@ -82,6 +86,19 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
 }
 
 private extension GoogleAdsDashboardCardViewModel {
+
+    func trackEntryPointDisplayedIfNeeded() {
+        $canShowOnDashboard.removeDuplicates()
+            .combineLatest($syncingData.removeDuplicates())
+            .filter { canShow, syncingData in
+                return canShow && !syncingData
+            }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                analytics.track(event: .GoogleAds.entryPointDisplayed(source: .myStore))
+            }
+            .store(in: &subscriptions)
+    }
 
     @MainActor
     func fetchAdsCampaigns() async throws -> [GoogleAdsCampaign] {

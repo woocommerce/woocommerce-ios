@@ -252,6 +252,42 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 }
 
+// MARK: - Undo edits
+//
+extension ProductDetailPreviewViewModel {
+    func undoEdits(in field: ProductDetailField) {
+        guard let generatedAIProduct else {
+            return
+        }
+
+        guard let option = options[safe: selectedOptionIndex] else {
+            return
+        }
+
+        switch field {
+        case .name:
+            options[selectedOptionIndex] = NameSummaryDescOption(name: generatedAIProduct.names[selectedOptionIndex],
+                                                                 shortDescription: option.shortDescription,
+                                                                 description: option.description)
+        case .shortDescription:
+
+            options[selectedOptionIndex] = NameSummaryDescOption(name: option.name,
+                                                                 shortDescription: generatedAIProduct.shortDescriptions[selectedOptionIndex],
+                                                                 description: option.description)
+        case .description:
+            options[selectedOptionIndex] = NameSummaryDescOption(name: option.name,
+                                                                 shortDescription: option.shortDescription,
+                                                                 description: generatedAIProduct.descriptions[selectedOptionIndex])
+        }
+    }
+
+    private func saveCurrentOption() {
+        options[selectedOptionIndex] = NameSummaryDescOption(name: productName,
+                                                             shortDescription: productShortDescription,
+                                                             description: productDescription)
+    }
+}
+
 // MARK: - Product details for preview
 //
 private extension ProductDetailPreviewViewModel {

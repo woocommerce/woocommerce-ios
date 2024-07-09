@@ -54,6 +54,7 @@ extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate
     // Triggered when swiping to dismiss the view.
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         onCompletion()
+        analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
 }
 
@@ -63,6 +64,7 @@ private extension GoogleAdsCampaignCoordinator {
     @objc func dismissCampaignView() {
         onCompletion()
         navigationController.dismiss(animated: true)
+        analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
 
     func createCampaignViewController(with url: URL) -> UIViewController {

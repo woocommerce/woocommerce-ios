@@ -62,26 +62,27 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
                 let enabledCampaigns = campaigns.filter { $0.status == .enabled }
                 return enabledCampaigns.last ?? campaigns.last
             }()
+
+            /// Updates the UI immediately after getting last campaign details
+            syncingData = false
+
+            /// Fetches stats for the last campaign
+            if let id = lastCampaign?.id {
+                lastCampaignStats = await retrieveLastCampaignStats(campaignID: id)
+            }
+
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
-
-            guard let id = lastCampaign?.id else {
-                return
-            }
-            /// Fetch stats in background
-            Task { @MainActor in
-                lastCampaignStats = await updateCampaignStats(campaignID: id)
-            }
-
         } catch {
             syncingError = error
+            syncingData = false
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))
             DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
         }
-        syncingData = false
     }
 }
 
 private extension GoogleAdsDashboardCardViewModel {
+
     @MainActor
     func fetchAdsCampaigns() async throws -> [GoogleAdsCampaign] {
         try await withCheckedThrowingContinuation { continuation in
@@ -92,9 +93,9 @@ private extension GoogleAdsDashboardCardViewModel {
     }
 
     @MainActor
-    func updateCampaignStats(campaignID: Int64) async -> GoogleAdsCampaignStatsTotals? {
+    func retrieveLastCampaignStats(campaignID: Int64) async -> GoogleAdsCampaignStatsTotals? {
         do {
-            let stats = try await retrieveCampaignStats()
+            let stats = try await retrieveCampaignStats(campaignID: campaignID)
             guard stats.campaigns.isNotEmpty else {
                 return stats.totals
             }
@@ -106,10 +107,11 @@ private extension GoogleAdsDashboardCardViewModel {
     }
 
     @MainActor
-    func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
+    func retrieveCampaignStats(campaignID: Int64) async throws -> GoogleAdsCampaignStats {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,
+                campaignIDs: [campaignID],
                 timeZone: TimeZone.siteTimezone,
                 earliestDateToInclude: Date(),
                 latestDateToInclude: Date.distantPast) { result in

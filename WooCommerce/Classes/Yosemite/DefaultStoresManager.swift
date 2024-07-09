@@ -292,6 +292,16 @@ class DefaultStoresManager: StoresManager {
     func updateDefaultRoles(_ roles: [User.Role]) {
         sessionManager.defaultRoles = roles
     }
+
+    func shouldAuthenticateAdminPage(for site: Site) -> Bool {
+        /// If the site is self-hosted and user is authenticated with WPCom,
+        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
+        /// This should be prevented 💀⛔️
+        guard site.isWordPressComStore || isAuthenticatedWithoutWPCom else {
+            return false
+        }
+        return true
+    }
 }
 
 

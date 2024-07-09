@@ -209,14 +209,10 @@ private extension ProductDetailPreviewView {
             Spacer()
 
             OptionSwitchButton(isForward: false) {
-                // TODO: move to previous option
             }
-            .disabled(true) // TODO: set this to false for non-first options
 
             OptionSwitchButton(isForward: true) {
-                // TODO: move to next option
             }
-            .disabled(false) // TODO: set this to true for last option
         }
         .padding(.top, Layout.contentVerticalSpacing)
         .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?

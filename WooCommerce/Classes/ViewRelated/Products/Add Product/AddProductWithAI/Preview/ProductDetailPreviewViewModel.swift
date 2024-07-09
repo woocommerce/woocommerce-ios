@@ -57,6 +57,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                 generatedAIProduct.names.count)
     }
 
+    var canSwitchBetweenOptions: Bool {
+        options.count > 1
+    }
+
     var canSelectPreviousOption: Bool {
         selectedOptionIndex > 0
     }

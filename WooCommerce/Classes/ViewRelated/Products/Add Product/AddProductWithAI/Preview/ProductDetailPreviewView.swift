@@ -216,7 +216,7 @@ private extension ProductDetailPreviewView {
             .disabled(!viewModel.canSelectNextOption)
         }
         .padding(.top, Layout.contentVerticalSpacing)
-        .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?
+        .renderedIf(viewModel.isGeneratingDetails == false && viewModel.canSwitchBetweenOptions)
     }
 
     var feedbackBanner: some View {

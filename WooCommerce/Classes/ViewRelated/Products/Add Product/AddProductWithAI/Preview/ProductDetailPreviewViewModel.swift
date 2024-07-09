@@ -648,3 +648,9 @@ private extension ProductDetailPreviewViewModel {
         public static let firstPageNumber = 1
     }
 }
+
+// MARK: - Constants
+//
+private enum ProductGenerationError: Error {
+    case noNameSummaryDescOptionFound
+}

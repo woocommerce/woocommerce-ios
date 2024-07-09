@@ -8,7 +8,7 @@ struct OrderListSyncBackgroundTask {
 
     /// The last time we successfully run a sync update.
     ///
-    static private(set) var latestSyncDate: Date {
+    static var latestSyncDate: Date {
         get {
             return UserDefaults.standard[.latestBackgroundOrderSyncDate] as? Date ?? Date.distantPast
         }
@@ -41,6 +41,7 @@ struct OrderListSyncBackgroundTask {
 
                 let useCase = CurrentOrderListSyncUseCase(siteID: siteID, stores: stores)
                 try await useCase.sync()
+                Self.latestSyncDate = Date.now
 
                 DDLogInfo("📱 Successfully synchronized orders in the background")
                 backgroundTask?.setTaskCompleted(success: true)

@@ -389,17 +389,37 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func generateProduct(language: String,
-                         tone: AIToneVoice) async throws -> Product {
+                         tone: AIToneVoice) async throws -> AIProduct {
         let existingCategories = categoryResultController.fetchedObjects
         let existingTags = tagResultController.fetchedObjects
 
-        let aiProduct: AIProduct = try await {
-            let generatedProduct = try await generateAIProduct(language: language,
-                                                               tone: tone,
-                                                               existingCategories: existingCategories,
-                                                               existingTags: existingTags)
-            return generatedProduct
-        }()
+        return try await generateAIProduct(language: language,
+                                           tone: tone,
+                                           existingCategories: existingCategories,
+                                           existingTags: existingTags)
+    }
+
+    @MainActor
+    func generateAIProduct(language: String,
+                           tone: AIToneVoice,
+                           existingCategories: [ProductCategory],
+                           existingTags: [ProductTag]) async throws -> AIProduct {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.generateAIProduct(siteID: siteID,
+                                                            productName: "", // TODO: 13103 - Update action to work without name
+                                                            keywords: productFeatures,
+                                                            language: language,
+                                                            tone: tone.rawValue,
+                                                            currencySymbol: currency,
+                                                            dimensionUnit: dimensionUnit,
+                                                            weightUnit: weightUnit,
+                                                            categories: existingCategories,
+                                                            tags: existingTags,
+                                                            completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
 
         var categories = [ProductCategory]()
         aiProduct.categories.forEach { aiCategory in
@@ -433,28 +453,6 @@ private extension ProductDetailPreviewViewModel {
                        aiProduct: aiProduct,
                        categories: categories,
                        tags: tags)
-    }
-
-    @MainActor
-    func generateAIProduct(language: String,
-                           tone: AIToneVoice,
-                           existingCategories: [ProductCategory],
-                           existingTags: [ProductTag]) async throws -> AIProduct {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.generateAIProduct(siteID: siteID,
-                                                            productName: "", // TODO: 13103 - Update action to work without name
-                                                            keywords: productFeatures,
-                                                            language: language,
-                                                            tone: tone.rawValue,
-                                                            currencySymbol: currency,
-                                                            dimensionUnit: dimensionUnit,
-                                                            weightUnit: weightUnit,
-                                                            categories: existingCategories,
-                                                            tags: existingTags,
-                                                            completion: { result in
-                continuation.resume(with: result)
-            }))
-        }
     }
 }
 

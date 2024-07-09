@@ -111,14 +111,12 @@ extension CardPresentPaymentEventDetails {
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):
             return .message(.preparingForPayment(
-                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel(
-                    cancelAction: cancelPayment)))
+                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
             return .message(.tapSwipeOrInsertCard(
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
-                    inputMethods: inputMethods,
-                    cancelAction: cancelPayment)))
+                    inputMethods: inputMethods)))
 
         case .paymentSuccess(done: let done):
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
@@ -127,14 +125,12 @@ extension CardPresentPaymentEventDetails {
             return .message(.paymentError(
                 viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                     error: error,
-                    tryAgainButtonAction: tryAgain,
-                    cancelButtonAction: cancelPayment)))
+                    tryAgainButtonAction: tryAgain)))
 
         case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
             return .message(.paymentErrorNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
-                    error: error,
-                    cancelButtonAction: cancelPayment)))
+                    error: error)))
 
         case .paymentCaptureError(let cancelPayment):
             return .message(.paymentCaptureError(

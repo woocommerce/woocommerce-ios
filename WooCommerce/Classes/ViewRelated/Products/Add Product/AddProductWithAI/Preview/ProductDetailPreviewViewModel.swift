@@ -57,11 +57,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                 generatedAIProduct.names.count)
     }
 
-    var canSelectPreviousSuggestion: Bool {
+    var canSelectPreviousOption: Bool {
         selectedOptionIndex > 0
     }
 
-    var canSelectNextSuggestion: Bool {
+    var canSelectNextOption: Bool {
         guard let generatedAIProduct else {
             return false
         }

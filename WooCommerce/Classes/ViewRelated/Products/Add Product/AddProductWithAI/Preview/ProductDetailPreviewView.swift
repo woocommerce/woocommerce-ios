@@ -206,10 +206,14 @@ private extension ProductDetailPreviewView {
             Spacer()
 
             OptionSwitchButton(isForward: false) {
+                viewModel.previous()
             }
+            .disabled(!viewModel.canSelectPreviousOption)
 
             OptionSwitchButton(isForward: true) {
+                viewModel.next()
             }
+            .disabled(!viewModel.canSelectNextOption)
         }
         .padding(.top, Layout.contentVerticalSpacing)
         .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?

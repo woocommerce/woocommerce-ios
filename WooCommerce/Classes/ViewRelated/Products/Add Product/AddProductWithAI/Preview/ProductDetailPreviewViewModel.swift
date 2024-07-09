@@ -586,7 +586,7 @@ extension ProductDetailPreviewViewModel {
     }
 }
 
-private extension ProductDetailPreviewViewModel {
+extension ProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical", comment: "Display label for simple physical product type.")
@@ -621,6 +621,13 @@ private extension ProductDetailPreviewViewModel {
                 value: "Undo",
                 comment: "Button to undo the package photo removal action."
             )
+        }
+        enum OptionSwitch {
+            static let title = NSLocalizedString("productDetailPreviewViewModel.optionSwitch.title",
+                                                 value: "Option %1$d of %2$d",
+                                                 comment: "Title for the option switch view in AI preview screen. Reads like: Option 1 of 3"  +
+                                                 " The %1$d is a placeholder for the currently displayed option index." +
+                                                 " The %2$d is a placeholder for the total number of options available.")
         }
     }
 }

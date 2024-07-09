@@ -5,6 +5,7 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
     @State private var isShowingErrorAlert: Bool = false
+    @FocusState private var focusedField: FocusedField?
 
     private let onDismiss: () -> Void
 
@@ -31,16 +32,25 @@ struct ProductDetailPreviewView: View {
 
                 // Product name and description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
-                    Text(Localization.productNameAndDescription)
+                    Text(Localization.nameSummaryAndDescription)
                         .foregroundStyle(Color.primary)
                         .headlineStyle()
 
                     // Product name
                     nameTextField
 
+                    // Product short description
+                    shortDescriptionTextField
+
                     // Product description
                     descriptionTextField
+
+                    // Switch between options for product name and summary
+                    summaryOptionsSwitch
                 }
+
+                // Package photo
+                packagePhotoView
 
                 // Other details
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
@@ -139,7 +149,13 @@ struct ProductDetailPreviewView: View {
                 }
                 Button(Localization.cancel, action: onDismiss)
             }
+            .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
+                if case let .success(image) = viewModel.imageState {
+                    ViewPackagePhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
+                }
+            })
         }
+        .notice($viewModel.notice)
     }
 }
 
@@ -147,25 +163,63 @@ struct ProductDetailPreviewView: View {
 //
 private extension ProductDetailPreviewView {
     var nameTextField: some View {
-        TextField(Localization.productNamePlaceholder,
-                  text: $viewModel.productName,
-                  axis: .vertical)
-        .textFieldStyle(.plain)
-        .padding(Layout.fieldInsets)
-        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-        .shimmering(active: viewModel.isGeneratingDetails)
-        .roundedRectBorderStyle()
+        UndoableTextField(placeholder: Localization.productNamePlaceholder,
+                          content: $viewModel.productName,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .name,
+                          shouldEnableUndo: viewModel.hasChangesToProductName,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productName = viewModel.generatedProduct?.name ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.name)
+    }
+
+    var shortDescriptionTextField: some View {
+        UndoableTextField(placeholder: Localization.productShortDescriptionPlaceholder,
+                          content: $viewModel.productShortDescription,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .shortDescription,
+                          shouldEnableUndo: viewModel.hasChangesToProductShortDescription,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productShortDescription = viewModel.generatedProduct?.shortDescription ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.shortDescription)
     }
 
     var descriptionTextField: some View {
-        TextField(Localization.productDescriptionPlaceholder,
-                  text: $viewModel.productDescription,
-                  axis: .vertical)
-        .textFieldStyle(.plain)
-        .padding(Layout.fieldInsets)
-        .redacted(reason: viewModel.isGeneratingDetails ? .placeholder : [])
-        .shimmering(active: viewModel.isGeneratingDetails)
-        .roundedRectBorderStyle()
+        UndoableTextField(placeholder: Localization.productDescriptionPlaceholder,
+                          content: $viewModel.productDescription,
+                          isLoading: viewModel.isGeneratingDetails,
+                          isFocused: focusedField == .description,
+                          shouldEnableUndo: viewModel.hasChangesToProductDescription,
+                          onUndoEdits: {
+            // TODO: update this
+            viewModel.productDescription = viewModel.generatedProduct?.fullDescription ?? ""
+        })
+        .focused($focusedField, equals: FocusedField.description)
+    }
+
+    var summaryOptionsSwitch: some View {
+        HStack {
+            Text("Option 1 of 3")
+                .secondaryBodyStyle()
+
+            Spacer()
+
+            OptionSwitchButton(isForward: false) {
+                // TODO: move to previous option
+            }
+            .disabled(true) // TODO: set this to false for non-first options
+
+            OptionSwitchButton(isForward: true) {
+                // TODO: move to next option
+            }
+            .disabled(false) // TODO: set this to true for last option
+        }
+        .padding(.top, Layout.contentVerticalSpacing)
+        .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?
     }
 
     var feedbackBanner: some View {
@@ -189,6 +243,24 @@ private extension ProductDetailPreviewView {
         }
         .buttonStyle(SecondaryButtonStyle())
         .disabled(viewModel.isGeneratingDetails)
+    }
+
+    @ViewBuilder
+    var packagePhotoView: some View {
+        switch viewModel.imageState {
+        case .empty:
+            EmptyView()
+        case .loading, .success:
+            PackagePhotoView(title: Localization.photoSelected,
+                             subTitle: Localization.addedToProduct,
+                             imageState: viewModel.imageState,
+                             onTapViewPhoto: {
+                viewModel.didTapViewPhoto()
+            },
+                             onTapRemovePhoto: {
+                viewModel.didTapRemovePhoto()
+            })
+        }
     }
 }
 
@@ -257,23 +329,88 @@ private extension ProductDetailPreviewView {
                 .clipShape(.rect(cornerRadius: 10))
         }
     }
+
+    enum FocusedField: Equatable {
+        case name
+        case shortDescription
+        case description
+    }
+
+    struct UndoableTextField: View {
+        let placeholder: String
+        @Binding var content: String
+
+        let isLoading: Bool
+        let isFocused: Bool
+        let shouldEnableUndo: Bool
+        let onUndoEdits: () -> Void
+
+        var body: some View {
+            VStack {
+                TextField(placeholder,
+                          text: $content,
+                          axis: .vertical)
+                .textFieldStyle(.plain)
+                .padding(Layout.fieldInsets)
+
+                if shouldEnableUndo {
+                    Divider()
+                        .frame(height: ProductDetailPreviewView.Layout.borderWidth)
+                        .foregroundStyle(Color.accentColor)
+
+                    Button(action: onUndoEdits) {
+                        HStack {
+                            Image(systemName: "arrow.counterclockwise")
+                            Text(Localization.undoEdits)
+                            Spacer()
+                        }
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                        .padding(Layout.fieldInsets)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
+            .roundedRectBorderStyle(strokeColor: isFocused ? .accentColor : ProductDetailPreviewView.Constants.separatorColor)
+        }
+    }
+
+    struct OptionSwitchButton: View {
+        let isForward: Bool
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                Image(systemName: isForward ? "chevron.forward" : "chevron.backward")
+                    .fontWeight(.semibold)
+                    .padding(Layout.fieldInsets)
+                    .foregroundStyle(Color.accentColor)
+                    .roundedRectBorderStyle()
+            }
+            .buttonStyle(.plain)
+        }
+    }
 }
 
 // MARK: - Rounded rect overlay
 //
 private struct RoundedBorder: ViewModifier {
+    let strokeColor: Color
+
     func body(content: Content) -> some View {
         content
             .overlay(
                 RoundedRectangle(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius)
-                    .stroke(ProductDetailPreviewView.Constants.separatorColor, lineWidth: ProductDetailPreviewView.Layout.borderWidth)
+                    .stroke(strokeColor, lineWidth: ProductDetailPreviewView.Layout.borderWidth)
             )
     }
 }
 
 private extension View {
-    func roundedRectBorderStyle() -> some View {
-        modifier(RoundedBorder())
+    func roundedRectBorderStyle(strokeColor: Color = ProductDetailPreviewView.Constants.separatorColor) -> some View {
+        modifier(RoundedBorder(strokeColor: strokeColor))
     }
 }
 
@@ -314,15 +451,20 @@ fileprivate extension ProductDetailPreviewView {
             value: "Is this result good?",
             comment: "Question to ask for feedback for the AI-generated content on the add product with AI Preview screen."
         )
-        static let productNameAndDescription = NSLocalizedString(
-            "productDetailPreviewView.productNameAndDescription",
-            value: "Name & Description",
-            comment: "Title of the name and description fields on the add product with AI Preview screen."
+        static let nameSummaryAndDescription = NSLocalizedString(
+            "productDetailPreviewView.nameSummaryAndDescription",
+            value: "Name, Summary & Description",
+            comment: "Title of the name, short description and description fields on the add product with AI Preview screen."
         )
         static let productNamePlaceholder = NSLocalizedString(
             "productDetailPreviewView.productNamePlaceholder",
             value: "Name your product",
             comment: "Placeholder text for the product name field on on the add product with AI Preview screen."
+        )
+        static let productShortDescriptionPlaceholder = NSLocalizedString(
+            "productDetailPreviewView.productShortDescriptionPlaceholder",
+            value: "A brief excerpt about your product",
+            comment: "Placeholder text for the product short description field on the add product with AI Preview screen."
         )
         static let productDescriptionPlaceholder = NSLocalizedString(
             "productDetailPreviewView.productDescriptionPlaceholder",
@@ -389,6 +531,21 @@ fileprivate extension ProductDetailPreviewView {
             value: "Generate Again",
             comment: "Button to regenerate AI product details again with AI Preview screen."
         )
+        static let photoSelected = NSLocalizedString(
+            "productDetailPreviewView.photoSelected",
+            value: "Photo selected",
+            comment: "Text to explain that a package photo has been selected in product preview screen."
+        )
+        static let addedToProduct = NSLocalizedString(
+            "productDetailPreviewView.addedToProduct",
+            value: "Photo will be added to product",
+            comment: "Text to explain that a package photo has been selected in product preview screen."
+        )
+        static let undoEdits = NSLocalizedString(
+            "productDetailPreviewView.undoEdits",
+            value: "Undo edits",
+            comment: "Button to undo edits for generated product name or summary in product preview screen."
+        )
     }
 }
 
@@ -416,7 +573,8 @@ private extension VerticalAlignment {
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
-                                                  productFeatures: "Sample features") { _ in },
+                                                  productFeatures: "Sample features",
+                                                  imageState: .empty) { _ in },
                                  onDismiss: {})
     }
 }

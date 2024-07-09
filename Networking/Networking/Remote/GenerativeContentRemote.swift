@@ -42,7 +42,7 @@ public protocol GenerativeContentRemoteProtocol {
     /// Generates a product using provided info
     /// - Parameters:
     ///   - siteID: WPCOM ID of the site.
-    ///   - productName: Product name to input to AI prompt
+    ///   - productName: Product name to input to AI prompt (optional)
     ///   - keywords: Keywords describing the product to input for AI prompt
     ///   - language: Language to generate the product details
     ///   - tone: Tone of AI - Represented by `AIToneVoice`
@@ -53,7 +53,7 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - tags: Existing tags
     /// - Returns: Generated `AIProduct`
     func generateAIProduct(siteID: Int64,
-                           productName: String,
+                           productName: String?,
                            keywords: String,
                            language: String,
                            tone: String,
@@ -107,7 +107,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
     }
 
     public func generateAIProduct(siteID: Int64,
-                                  productName: String,
+                                  productName: String?,
                                   keywords: String,
                                   language: String,
                                   tone: String,
@@ -209,7 +209,7 @@ private extension GenerativeContentRemote {
     }
 
     func generateAIProduct(siteID: Int64,
-                           productName: String,
+                           productName: String?,
                            keywords: String,
                            language: String,
                            tone: String,
@@ -219,13 +219,20 @@ private extension GenerativeContentRemote {
                            categories: [ProductCategory],
                            tags: [ProductTag],
                            token: JWToken) async throws -> AIProduct {
-        let input = [
+        var inputComponents = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
             "using the provided name, keywords and tone, and give your response in the below JSON format.",
-            "name: ```\(productName)```",
             "keywords: ```\(keywords)```",
             "tone: ```\(tone)```",
-        ].joined(separator: "\n")
+        ]
+
+        // Name will be added only if `productName` is available.
+        // TODO: this code related to `productName` can be removed after releasing the new product creation with AI flow. Github issue: 13108
+        if let productName = productName, !productName.isEmpty {
+            inputComponents.insert("name: ```\(productName)```", at: 1)
+        }
+
+        let input = inputComponents.joined(separator: "\n")
 
         let jsonResponseFormatDict: [String: Any] = {
             let tagsPrompt: String = {
@@ -260,10 +267,12 @@ private extension GenerativeContentRemote {
                 return dict
             }()
 
-            return ["name": "The name of the product, written in the language with ISO code ```\(language)```",
-                    "description": "Product description of around 100 words long in a ```\(tone)``` tone, "
+            // swiftlint:disable line_length
+            return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
+                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
                     + "written in the language with ISO code ```\(language)```",
-                    "short_description": "Product's short description, written in the language with ISO code ```\(language)```",
+                    "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, "
+                    + "written in the language with ISO code ```\(language)```",
                     "virtual": "A boolean value that shows whether the product is virtual or physical",
                     "shipping": shippingPrompt,
                     "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
@@ -286,7 +295,8 @@ private extension GenerativeContentRemote {
                                          ParameterKey.gptModel: ParameterValue.gptModel,
                                          ParameterKey.responseFormat: GenerativeContentRemoteResponseFormat.json.rawValue,
                                          ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
-                                         ParameterKey.fields: ParameterValue.choices]
+                                         ParameterKey.fields: ParameterValue.choices,
+                                         ParameterKey.maxTokens: ParameterValue.maxTokens]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
                                     path: Path.jetpackAIQuery,
@@ -311,6 +321,7 @@ private extension GenerativeContentRemote {
         static let feature = "feature"
         static let fields = "_fields"
         static let stream = "stream"
+        static let maxTokens = "max_tokens"
         static let responseFormat = "response_format"
         static let gptModel = "model"
     }
@@ -319,6 +330,7 @@ private extension GenerativeContentRemote {
         static let choices = "choices"
         static let stream = false
         static let gptModel = "gpt-4o"
+        static let maxTokens = 4000
     }
 
     enum TokenExpiredError {

@@ -5,18 +5,18 @@ import Foundation
 
 extension Networking.AIProduct {
     public func copy(
-        name: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy,
-        shortDescription: CopiableProp<String> = .copy,
+        names: CopiableProp<[String]> = .copy,
+        descriptions: CopiableProp<[String]> = .copy,
+        shortDescriptions: CopiableProp<[String]> = .copy,
         virtual: CopiableProp<Bool> = .copy,
         shipping: CopiableProp<AIProduct.Shipping> = .copy,
         tags: CopiableProp<[String]> = .copy,
         price: CopiableProp<String> = .copy,
         categories: CopiableProp<[String]> = .copy
     ) -> Networking.AIProduct {
-        let name = name ?? self.name
-        let description = description ?? self.description
-        let shortDescription = shortDescription ?? self.shortDescription
+        let names = names ?? self.names
+        let descriptions = descriptions ?? self.descriptions
+        let shortDescriptions = shortDescriptions ?? self.shortDescriptions
         let virtual = virtual ?? self.virtual
         let shipping = shipping ?? self.shipping
         let tags = tags ?? self.tags
@@ -24,9 +24,9 @@ extension Networking.AIProduct {
         let categories = categories ?? self.categories
 
         return Networking.AIProduct(
-            name: name,
-            description: description,
-            shortDescription: shortDescription,
+            names: names,
+            descriptions: descriptions,
+            shortDescriptions: shortDescriptions,
             virtual: virtual,
             shipping: shipping,
             tags: tags,

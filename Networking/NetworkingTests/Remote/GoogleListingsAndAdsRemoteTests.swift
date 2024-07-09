@@ -120,6 +120,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
 
         // When
         let results = try await remote.loadCampaignStats(for: sampleSiteID,
+                                                         campaignIDs: [],
                                                          timeZone: .current,
                                                          earliestDateToInclude: Date(),
                                                          latestDateToInclude: Date(),
@@ -140,6 +141,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
 
         // When
         _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               campaignIDs: [],
                                                timeZone: .current,
                                                earliestDateToInclude: Date(),
                                                latestDateToInclude: Date(),
@@ -149,6 +151,47 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
         let excludedParam = "next_page"
         let queryParameters = try XCTUnwrap(network.queryParameters)
         XCTAssertFalse(queryParameters.contains(where: { $0.contains(excludedParam) }), "Query parameters contain unexpected param: \(excludedParam)")
+    }
+
+    func test_loadCampaignStats_excludes_ids_parameter_when_not_provided() async throws {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "google-ads-reports-programs-without-data")
+
+        // When
+        _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               campaignIDs: [],
+                                               timeZone: .current,
+                                               earliestDateToInclude: Date(),
+                                               latestDateToInclude: Date(),
+                                               orderby: .sales)
+
+        // Then
+        let excludedParam = "ids"
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        XCTAssertFalse(queryParameters.contains(where: { $0.contains(excludedParam) }), "Query parameters contain unexpected param: \(excludedParam)")
+    }
+
+    func test_loadCampaignStats_includes_ids_parameter_when_provided() async throws {
+        // Given
+        let remote = GoogleListingsAndAdsRemote(network: network)
+
+        let suffix = "wc/gla/ads/reports/programs"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "google-ads-reports-programs-without-data")
+
+        // When
+        _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               campaignIDs: [135],
+                                               timeZone: .current,
+                                               earliestDateToInclude: Date(),
+                                               latestDateToInclude: Date(),
+                                               orderby: .sales)
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParameters["ids"] as? [Int64], [135])
     }
 
     func test_loadCampaignStats_includes_next_page_parameter_when_provided() async throws {
@@ -161,6 +204,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
 
         // When
         _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                               campaignIDs: [],
                                                timeZone: .current,
                                                earliestDateToInclude: Date(),
                                                latestDateToInclude: Date(),
@@ -184,6 +228,7 @@ final class GoogleListingsAndAdsRemoteTests: XCTestCase {
         do {
             // When
             _ = try await remote.loadCampaignStats(for: sampleSiteID,
+                                                   campaignIDs: [],
                                                    timeZone: .current,
                                                    earliestDateToInclude: Date(),
                                                    latestDateToInclude: Date(),

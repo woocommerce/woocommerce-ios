@@ -64,7 +64,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
     }
 
     func generateAIProduct(siteID: Int64,
-                           productName: String,
+                           productName: String?,
                            keywords: String,
                            language: String,
                            tone: String,

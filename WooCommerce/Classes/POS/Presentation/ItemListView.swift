@@ -31,9 +31,6 @@ struct ItemListView: View {
                 }
             }
         }
-        .task {
-            await viewModel.populatePointOfSaleItems()
-        }
         .refreshable {
             await viewModel.reload()
         }

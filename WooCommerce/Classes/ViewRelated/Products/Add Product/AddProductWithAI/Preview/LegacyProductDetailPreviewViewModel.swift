@@ -394,11 +394,11 @@ private extension LegacyProductDetailPreviewViewModel {
     }
 
     func useGivenValueIfNameEmpty(_ aiProduct: AIProduct) -> AIProduct {
-        guard aiProduct.name.isEmpty else {
+        guard let name = aiProduct.names.first, name.isEmpty else {
             return aiProduct
         }
 
-        return aiProduct.copy(name: productName)
+        return aiProduct.copy(names: [productName])
     }
 }
 

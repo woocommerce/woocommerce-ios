@@ -12,6 +12,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         case shortDescription
         case description
     }
+
+    struct NameSummaryDescOption {
+        let name: String
+        let shortDescription: String
+        let description: String
+    }
+
     typealias ImageState = EditableImageViewState
 
     @Published private(set) var imageState: ImageState

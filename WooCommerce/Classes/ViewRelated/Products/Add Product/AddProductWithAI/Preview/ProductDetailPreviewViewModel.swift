@@ -48,6 +48,16 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published var notice: Notice?
 
     /// Temporary logic check to enable the undo option for product name
+    var optionsTitle: String {
+        guard let generatedAIProduct else {
+            return ""
+        }
+
+        return String.localizedStringWithFormat(Localization.OptionSwitch.title,
+                                                selectedOptionIndex + 1,
+                                                generatedAIProduct.names.count)
+    }
+
     var hasChangesToProductName: Bool {
         guard let generatedProduct else {
             return false

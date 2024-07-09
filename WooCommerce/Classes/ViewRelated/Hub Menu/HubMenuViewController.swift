@@ -106,6 +106,8 @@ private extension HubMenuViewController {
             }
         )
         googleAdsCampaignCoordinator?.start()
+
+        ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(source: .moreMenu, hasCampaigns: viewModel.hasGoogleAdsCampaigns))
     }
 }
 

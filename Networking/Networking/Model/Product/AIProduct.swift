@@ -55,7 +55,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
     }
     public let names: [String]
     public let descriptions: [String]
-    public let shortDescription: String
+    public let shortDescriptions: [String]
     public let virtual: Bool
     public let shipping: Shipping
     public let tags: [String]
@@ -64,7 +64,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
 
     public init(names: [String],
                 descriptions: [String],
-                shortDescription: String,
+                shortDescriptions: [String],
                 virtual: Bool,
                 shipping: Shipping,
                 tags: [String],
@@ -72,7 +72,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
                 categories: [String]) {
         self.names = names
         self.descriptions = descriptions
-        self.shortDescription = shortDescription
+        self.shortDescriptions = shortDescriptions
         self.virtual = virtual
         self.shipping = shipping
         self.tags = tags
@@ -85,7 +85,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
 
         let names = container.failsafeDecodeIfPresent([String].self, forKey: .names) ?? []
         let descriptions = try container.decode([String].self, forKey: .descriptions)
-        let shortDescription = container.failsafeDecodeIfPresent(String.self, forKey: .shortDescription) ?? ""
+        let shortDescriptions = try container.decode([String].self, forKey: .shortDescriptions)
         let virtual = container.failsafeDecodeIfPresent(Bool.self, forKey: .virtual) ?? false
         let shipping = container.failsafeDecodeIfPresent(Shipping.self, forKey: .shipping) ?? Shipping(length: "", weight: "", width: "", height: "")
         let tags = container.failsafeDecodeIfPresent([String].self, forKey: .tags) ?? []
@@ -96,7 +96,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
 
         self.init(names: names,
                   descriptions: descriptions,
-                  shortDescription: shortDescription,
+                  shortDescriptions: shortDescriptions,
                   virtual: virtual,
                   shipping: shipping,
                   tags: tags,
@@ -107,7 +107,7 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
     enum CodingKeys: String, CodingKey {
         case names = "names"
         case descriptions = "descriptions"
-        case shortDescription = "short_description"
+        case shortDescriptions = "short_descriptions"
         case virtual = "virtual"
         case shipping = "shipping"
         case tags = "tags"
@@ -138,7 +138,7 @@ public extension Product {
                   featured: false,
                   catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                   fullDescription: aiProduct.descriptions.first,
-                  shortDescription: aiProduct.shortDescription,
+                  shortDescription: aiProduct.shortDescriptions.first,
                   sku: "",
                   price: "",
                   regularPrice: aiProduct.price,

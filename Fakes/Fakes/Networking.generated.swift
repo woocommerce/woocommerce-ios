@@ -13,7 +13,7 @@ extension Networking.AIProduct {
         .init(
             names: .fake(),
             descriptions: .fake(),
-            shortDescription: .fake(),
+            shortDescriptions: .fake(),
             virtual: .fake(),
             shipping: .fake(),
             tags: .fake(),

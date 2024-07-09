@@ -7,7 +7,7 @@ extension Networking.AIProduct {
     public func copy(
         names: CopiableProp<[String]> = .copy,
         descriptions: CopiableProp<[String]> = .copy,
-        shortDescription: CopiableProp<String> = .copy,
+        shortDescriptions: CopiableProp<[String]> = .copy,
         virtual: CopiableProp<Bool> = .copy,
         shipping: CopiableProp<AIProduct.Shipping> = .copy,
         tags: CopiableProp<[String]> = .copy,
@@ -16,7 +16,7 @@ extension Networking.AIProduct {
     ) -> Networking.AIProduct {
         let names = names ?? self.names
         let descriptions = descriptions ?? self.descriptions
-        let shortDescription = shortDescription ?? self.shortDescription
+        let shortDescriptions = shortDescriptions ?? self.shortDescriptions
         let virtual = virtual ?? self.virtual
         let shipping = shipping ?? self.shipping
         let tags = tags ?? self.tags
@@ -26,7 +26,7 @@ extension Networking.AIProduct {
         return Networking.AIProduct(
             names: names,
             descriptions: descriptions,
-            shortDescription: shortDescription,
+            shortDescriptions: shortDescriptions,
             virtual: virtual,
             shipping: shipping,
             tags: tags,

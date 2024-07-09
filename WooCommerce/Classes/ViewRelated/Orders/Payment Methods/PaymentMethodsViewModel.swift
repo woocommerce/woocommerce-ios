@@ -173,7 +173,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
         showLoadingIndicator = true
         do {
-            try await markOrderAsPaid()
+            try await markOrderCompletedWithCashOnDelivery()
             updateOrderAsynchronously()
             if let info, info.addNoteWithChangeData {
                 await addPaidByCashNoteToOrder(with: info)
@@ -332,12 +332,13 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 }
 
-// MARK: Helpers
+// MARK: - Cash Payment
+
 private extension PaymentMethodsViewModel {
-    /// Mark an order as paid and notify if successful.
+    /// Mark an order as Completed with Cash on Delivery payment method
     ///
     @MainActor
-    func markOrderAsPaid() async throws {
+    func markOrderCompletedWithCashOnDelivery() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             guard let order = ordersResultController.fetchedObjects.first else {
                 DDLogError("⛔️ Order not found, can't mark order as paid.")
@@ -386,7 +387,10 @@ private extension PaymentMethodsViewModel {
         presentNoticeSubject.send(.completed)
         trackFlowCompleted(method: .cash, cardReaderType: .none)
     }
+}
 
+// MARK: - Helpers
+private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {

@@ -24,7 +24,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var imageState: ImageState
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var isSavingProduct: Bool = false
-    @Published private(set) var generatedProduct: Product?
+    @Published private(set) var generatedAIProduct: AIProduct?
+
     @Published private(set) var selectedOptionIndex: Int = 0
     @Published private var options: [NameSummaryDescOption] = [NameSummaryDescOption(name: "",
                                                                                      shortDescription: "",
@@ -145,9 +146,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             try await fetchPrerequisites()
             async let language = try identifyLanguage()
             let aiTone = userDefaults.aiTone(for: siteID)
-            let product = try await generateProduct(language: language,
-                                                    tone: aiTone)
-            generatedProduct = product
+            let aiProduct = try await generateProduct(language: language,
+                                                           tone: aiTone)
+            try displayAIProductDetails(aiProduct: aiProduct)
+            generatedAIProduct = aiProduct
             isGeneratingDetails = false
             shouldShowFeedbackView = true
             analytics.track(event: .ProductCreationAI.generateProductDetailsSuccess())
@@ -161,9 +163,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @MainActor
     func saveProductAsDraft() async {
         analytics.track(event: .ProductCreationAI.saveAsDraftButtonTapped())
-        guard let generatedProduct else {
+        guard let generatedAIProduct else {
             return
         }
+
+        let generatedProduct = product(from: generatedAIProduct)
         errorState = .none
         isSavingProduct = true
         do {

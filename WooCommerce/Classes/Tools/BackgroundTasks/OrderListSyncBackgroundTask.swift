@@ -105,7 +105,7 @@ private struct CurrentOrderListSyncUseCase {
             let action = useCase.actionFor(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex,
                                            pageSize: SyncingCoordinator.Defaults.pageSize,
                                            reason: .backgroundFetch,
-                                           lastFullSyncTimestamp: nil, // TODO: Send timestamp later, when we are saving and fetching timestamps
+                                           lastFullSyncTimestamp: OrderListSyncBackgroundTask.latestSyncDate,
                                            completionHandler: { timeInterval, error in
                 if let error {
                     continuation.resume(throwing: error)

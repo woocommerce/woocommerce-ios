@@ -421,6 +421,10 @@ private extension ProductDetailPreviewViewModel {
         }
     }
 
+    func product(from aiProduct: AIProduct) -> Product {
+        let existingCategories = categoryResultController.fetchedObjects
+        let existingTags = tagResultController.fetchedObjects
+
         var categories = [ProductCategory]()
         aiProduct.categories.forEach { aiCategory in
             // If there exists a `ProductCategory` matching the AI suggestion
@@ -450,6 +454,9 @@ private extension ProductDetailPreviewViewModel {
         }
 
         return Product(siteID: siteID,
+                       name: productName,
+                       fullDescription: productDescription,
+                       shortDescription: productShortDescription,
                        aiProduct: aiProduct,
                        categories: categories,
                        tags: tags)

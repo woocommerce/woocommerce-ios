@@ -325,6 +325,7 @@ private extension DashboardViewHostingController {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: viewModel.siteID,
             siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
+            source: .myStore,
             shouldStartCampaignCreation: forCampaignCreation,
             shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
             navigationController: navigationController,

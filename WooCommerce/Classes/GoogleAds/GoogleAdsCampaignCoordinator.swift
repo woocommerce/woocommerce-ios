@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Reusable coordinator to handle Google Ads campaigns.
 ///
@@ -8,24 +9,31 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 
     private let siteID: Int64
     private let siteAdminURL: String
+    private let source: WooAnalyticsEvent.GoogleAds.Source
 
     private let shouldStartCampaignCreation: Bool
     private let shouldAuthenticateAdminPage: Bool
     private var bottomSheetPresenter: BottomSheetPresenter?
 
+    private let analytics: Analytics
+
     private let onCompletion: () -> Void
 
     init(siteID: Int64,
          siteAdminURL: String,
+         source: WooAnalyticsEvent.GoogleAds.Source,
          shouldStartCampaignCreation: Bool,
          shouldAuthenticateAdminPage: Bool,
          navigationController: UINavigationController,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
+        self.source = source
         self.shouldAuthenticateAdminPage = shouldAuthenticateAdminPage
         self.shouldStartCampaignCreation = shouldStartCampaignCreation
         self.navigationController = navigationController
+        self.analytics = analytics
         self.onCompletion = onCompletion
     }
 

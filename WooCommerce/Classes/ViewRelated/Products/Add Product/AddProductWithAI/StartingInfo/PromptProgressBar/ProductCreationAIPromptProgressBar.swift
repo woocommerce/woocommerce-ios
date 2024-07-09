@@ -20,6 +20,7 @@ struct ProductCreationAIPromptProgressBar: View {
 
                 Spacer()
             })
+            .animation(.easeIn, value: viewModel.status)
             .padding(.top, Layout.padding/2)
         })
         .padding([.top, .bottom, .leading, .trailing], Layout.padding)

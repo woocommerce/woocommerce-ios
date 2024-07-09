@@ -3,6 +3,7 @@
 19.5
 -----
 
+- [**] Cash Payment: Set the payment method and payment method title to orders completed with cash payment. [https://github.com/woocommerce/woocommerce-ios/pull/13257]
 
 19.4
 -----

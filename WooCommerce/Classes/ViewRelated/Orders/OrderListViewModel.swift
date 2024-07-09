@@ -68,13 +68,6 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
-    private var isCODEnabled: Bool {
-        guard let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly() else {
-            return false
-        }
-        return codGateway.enabled
-    }
-
     /// Checks whether the site has set up any payment method.
     ///
     private var hasAnyPaymentGateways: Bool {

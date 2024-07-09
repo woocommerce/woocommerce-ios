@@ -2130,6 +2130,7 @@
 		CE13681529FBD42100EBF43C /* QuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13681429FBD42100EBF43C /* QuantityRules.swift */; };
 		CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
+		CE14DEE62C3D5D68002A90B5 /* StatSelectionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14DEE52C3D5D68002A90B5 /* StatSelectionBar.swift */; };
 		CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */; };
 		CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
@@ -5120,6 +5121,7 @@
 		CE13681429FBD42100EBF43C /* QuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRules.swift; sourceTree = "<group>"; };
 		CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModel.swift; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
+		CE14DEE52C3D5D68002A90B5 /* StatSelectionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatSelectionBar.swift; sourceTree = "<group>"; };
 		CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewController.swift; sourceTree = "<group>"; };
 		CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
@@ -11728,6 +11730,7 @@
 				CEDBDA462B6BEF2E002047D4 /* AnalyticsWebReport.swift */,
 				CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */,
 				CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */,
+				CE14DEE52C3D5D68002A90B5 /* StatSelectionBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -15241,6 +15244,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				CE14DEE62C3D5D68002A90B5 /* StatSelectionBar.swift in Sources */,
 				867EA0AC2B8F09280064BCA7 /* CustomerSelector+Filter.swift in Sources */,
 				B9CA4F352AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift in Sources */,
 				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,

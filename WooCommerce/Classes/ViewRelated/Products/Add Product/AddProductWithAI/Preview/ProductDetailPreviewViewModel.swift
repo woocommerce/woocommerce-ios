@@ -47,7 +47,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published var isShowingViewPhotoSheet = false
     @Published var notice: Notice?
 
-    /// Temporary logic check to enable the undo option for product name
     var optionsTitle: String {
         guard let generatedAIProduct else {
             return ""
@@ -71,26 +70,24 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 
     var hasChangesToProductName: Bool {
-        guard let generatedProduct else {
+        guard let generatedAIProduct else {
             return false
         }
-        return productName != generatedProduct.name
+        return productName != generatedAIProduct.names[selectedOptionIndex]
     }
 
-    /// Temporary logic check to enable the undo option for product short description
     var hasChangesToProductShortDescription: Bool {
-        guard let generatedProduct else {
+        guard let generatedAIProduct else {
             return false
         }
-        return productShortDescription != generatedProduct.shortDescription
+        return productShortDescription != generatedAIProduct.shortDescriptions[selectedOptionIndex]
     }
 
-    /// Temporary logic check to enable the undo option for product description
     var hasChangesToProductDescription: Bool {
-        guard let generatedProduct else {
+        guard let generatedAIProduct else {
             return false
         }
-        return productDescription != generatedProduct.fullDescription
+        return productDescription != generatedAIProduct.descriptions[selectedOptionIndex]
     }
 
     private let productFeatures: String

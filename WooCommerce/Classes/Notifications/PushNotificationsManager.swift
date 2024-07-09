@@ -305,7 +305,7 @@ extension PushNotificationsManager {
             backgroundNotificationsSubject.send(notification)
         }
 
-        return await synchronizeNotifications()
+        return await PushNotificationBackgroundSynchronizer(userInfo: userInfo, stores: configuration.storesManager).sync()
     }
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {

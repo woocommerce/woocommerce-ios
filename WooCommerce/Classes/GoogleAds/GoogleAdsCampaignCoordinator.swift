@@ -19,6 +19,8 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 
     private let onCompletion: () -> Void
 
+    private var hasTrackedStartEvent = false
+
     init(siteID: Int64,
          siteAdminURL: String,
          source: WooAnalyticsEvent.GoogleAds.Source,
@@ -69,19 +71,33 @@ private extension GoogleAdsCampaignCoordinator {
 
     func createCampaignViewController(with url: URL) -> UIViewController {
         let redirectHandler: (URL) -> Void = { [weak self] newURL in
+            guard let self else { return }
+            if !hasTrackedStartEvent {
+                ServiceLocator.analytics.track(event: .GoogleAds.flowStarted(source: source))
+                hasTrackedStartEvent = true
+            }
             if newURL != url {
-                self?.checkIfCampaignCreationSucceeded(url: newURL)
+                checkIfCampaignCreationSucceeded(url: newURL)
             }
         }
+
+        let errorHandler: (Error) -> Void = { [weak self] error in
+            guard let self else { return }
+            analytics.track(event: .GoogleAds.flowError(source: source, error: error))
+        }
+
         if shouldAuthenticateAdminPage {
             let viewModel = DefaultAuthenticatedWebViewModel(
                 title: Localization.googleForWooCommerce,
                 initialURL: url,
-                redirectHandler: redirectHandler
+                redirectHandler: redirectHandler,
+                errorHandler: errorHandler
             )
             return AuthenticatedWebViewController(viewModel: viewModel)
         } else {
-            let controller = WebViewHostingController(url: url, redirectHandler: redirectHandler)
+            let controller = WebViewHostingController(url: url,
+                                                      redirectHandler: redirectHandler,
+                                                      errorHandler: errorHandler)
             controller.title = Localization.googleForWooCommerce
             return controller
         }

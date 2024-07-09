@@ -38,9 +38,10 @@ extension WooAnalyticsEvent {
         }
 
         /// When the Google for Woo web view returns an error.
-        static func flowError(source: Source) -> WooAnalyticsEvent {
+        static func flowError(source: Source, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .googleAdsFlowError,
-                              properties: [Keys.source.rawValue: source.rawValue])
+                              properties: [Keys.source.rawValue: source.rawValue],
+                              error: error)
         }
 
         /// When the Google for Woo web view is automatically dismissed after completing the creation

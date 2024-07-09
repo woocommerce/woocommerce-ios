@@ -16,14 +16,19 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
     let redirectHandler: ((URL) -> Void)?
 
+    /// Optional closure for when a web page fails to load.
+    let errorHandler: ((Error) -> Void)?
+
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
-         redirectHandler: ((URL) -> Void)? = nil) {
+         redirectHandler: ((URL) -> Void)? = nil,
+         errorHandler: ((Error) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
         self.redirectHandler = redirectHandler
+        self.errorHandler = errorHandler
     }
 
     func handleDismissal() {
@@ -46,6 +51,10 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
+    }
+
+    func didFailProvisionalNavigation(with error: Error) {
+        errorHandler?(error)
     }
 }
 

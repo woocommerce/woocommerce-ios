@@ -11,13 +11,15 @@ final class WebViewHostingController: UIHostingController<WebView> {
          disableLinkClicking: Bool = false,
          onCommit: ((WKWebView)->Void)? = nil,
          urlToTriggerExit: String? = nil,
-         redirectHandler: ((URL) -> Void)? = nil) {
+         redirectHandler: ((URL) -> Void)? = nil,
+         errorHandler: ((Error) -> Void)? = nil) {
         super.init(rootView: WebView(isPresented: .constant(true),
                                      url: url,
                                      disableLinkClicking: disableLinkClicking,
                                      onCommit: onCommit,
                                      urlToTriggerExit: urlToTriggerExit,
-                                     redirectHandler: redirectHandler))
+                                     redirectHandler: redirectHandler,
+                                     errorHandler: errorHandler))
     }
 
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
@@ -60,6 +62,9 @@ struct WebView: UIViewRepresentable {
     /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
     let redirectHandler: ((URL) -> Void)?
 
+    /// Optional closure for when a web page fails to load.
+    let errorHandler: ((Error) -> Void)?
+
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
     init(
@@ -68,7 +73,8 @@ struct WebView: UIViewRepresentable {
         disableLinkClicking: Bool = false,
         onCommit: ((WKWebView)->Void)? = nil,
         urlToTriggerExit: String? = nil,
-        redirectHandler: ((URL) -> Void)? = nil
+        redirectHandler: ((URL) -> Void)? = nil,
+        errorHandler: ((Error) -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.url = url
@@ -76,6 +82,7 @@ struct WebView: UIViewRepresentable {
         self.onCommit = onCommit
         self.urlToTriggerExit = urlToTriggerExit
         self.redirectHandler = redirectHandler
+        self.errorHandler = errorHandler
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -145,6 +152,10 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             parent.onCommit?(webView)
+        }
+
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            parent.errorHandler?(error)
         }
     }
 }

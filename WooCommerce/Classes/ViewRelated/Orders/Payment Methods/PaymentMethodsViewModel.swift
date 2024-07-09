@@ -341,7 +341,7 @@ private extension PaymentMethodsViewModel {
     func markOrderCompletedWithCashOnDelivery() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             guard let order = ordersResultController.fetchedObjects.first else {
-                DDLogError("⛔️ Order not found, can't mark order as paid.")
+                DDLogError("⛔️ Order \(orderID) not found, can't mark order as paid.")
                 continuation.resume(throwing: PaymentMethodsError.orderNotFound)
                 return
             }

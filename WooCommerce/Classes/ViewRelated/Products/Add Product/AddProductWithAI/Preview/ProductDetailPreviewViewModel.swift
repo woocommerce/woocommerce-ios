@@ -7,6 +7,11 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
+    enum ProductDetailField: Equatable {
+        case name
+        case shortDescription
+        case description
+    }
     typealias ImageState = EditableImageViewState
 
     @Published private(set) var imageState: ImageState

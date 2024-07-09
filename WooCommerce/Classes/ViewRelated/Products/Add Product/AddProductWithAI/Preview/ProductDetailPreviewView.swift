@@ -5,7 +5,7 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
     @State private var isShowingErrorAlert: Bool = false
-    @FocusState private var focusedField: FocusedField?
+    @FocusState private var focusedField: ProductDetailPreviewViewModel.ProductDetailField?
 
     private let onDismiss: () -> Void
 
@@ -172,7 +172,7 @@ private extension ProductDetailPreviewView {
             // TODO: update this
             viewModel.productName = viewModel.generatedProduct?.name ?? ""
         })
-        .focused($focusedField, equals: FocusedField.name)
+        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.name)
     }
 
     var shortDescriptionTextField: some View {
@@ -185,7 +185,7 @@ private extension ProductDetailPreviewView {
             // TODO: update this
             viewModel.productShortDescription = viewModel.generatedProduct?.shortDescription ?? ""
         })
-        .focused($focusedField, equals: FocusedField.shortDescription)
+        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.shortDescription)
     }
 
     var descriptionTextField: some View {
@@ -198,7 +198,7 @@ private extension ProductDetailPreviewView {
             // TODO: update this
             viewModel.productDescription = viewModel.generatedProduct?.fullDescription ?? ""
         })
-        .focused($focusedField, equals: FocusedField.description)
+        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.description)
     }
 
     var summaryOptionsSwitch: some View {
@@ -328,12 +328,6 @@ private extension ProductDetailPreviewView {
                 .background(.blue)
                 .clipShape(.rect(cornerRadius: 10))
         }
-    }
-
-    enum FocusedField: Equatable {
-        case name
-        case shortDescription
-        case description
     }
 
     struct UndoableTextField: View {

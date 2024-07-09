@@ -33,6 +33,54 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_viewmodel_when_loaded_then_has_expected_initial_setup() {
+        // Given
+        let expectedCartCollapsedState = true
+        let expectedAddMoreButtonDisabledState = false
+        let expectedExitPOSButtonDisabledState = false
+        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+
+        // When/Then
+        XCTAssertEqual(sut.orderStage, expectedOrderStage)
+        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
+        XCTAssertEqual(sut.isAddMoreDisabled, expectedAddMoreButtonDisabledState)
+        XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
+    }
+
+    func test_start_new_transaction() {
+        // Given
+        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+        let expectedCartEmpty = true
+        let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
+        let expectedCartCollapsedState = true
+
+        // When
+        sut.startNewTransaction()
+
+        // Then
+        XCTAssertEqual(sut.orderStage, expectedOrderStage)
+        XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)
+        XCTAssertEqual(sut.totalsViewModel.paymentState, expectedPaymentState)
+        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
+        XCTAssertNil(sut.totalsViewModel.order)
+    }
+
+    func test_items_added_to_cart() {
+        // Given
+        let item = Self.makeItem()
+        let expectedCartEmpty = false
+        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+        let expectedCartCollapsedState = false
+
+        // When
+        sut.itemSelectorViewModel.select(item)
+
+        // Then
+        XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)
+        XCTAssertEqual(sut.orderStage, expectedOrderStage)
+        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
+    }
+
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210
 }
@@ -44,5 +92,16 @@ private extension PointOfSaleDashboardViewModelTests {
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
             []
         }
+    }
+
+    static func makeItem() -> POSItem {
+        return POSProduct(itemID: UUID(),
+                          productID: 0,
+                          name: "",
+                          price: "",
+                          formattedPrice: "",
+                          itemCategories: [],
+                          productImageSource: nil,
+                          productType: .simple)
     }
 }

@@ -29,6 +29,7 @@ public enum GoogleAdsAction: Action {
     ///
     /// - Parameters:
     ///   - siteID: The site ID.
+    ///   - campaignIDs: IDs of the ads campaigns to limit the stats results to.
     ///   - timeZone: The time zone to set the earliest/latest date strings in the API request.
     ///   - earliestDateToInclude: The earliest date to include in the results.
     ///   - latestDateToInclude: The latest date to include in the results.
@@ -36,6 +37,7 @@ public enum GoogleAdsAction: Action {
     ///     - `result.success(GoogleAdsCampaignStats)`: Successfully retrieved campaign stats.
     ///     - `result.failure(Error)`: Error indicates issues retrieving campaign stats.
     case retrieveCampaignStats(siteID: Int64,
+                               campaignIDs: [Int64] = [],
                                timeZone: TimeZone,
                                earliestDateToInclude: Date,
                                latestDateToInclude: Date,

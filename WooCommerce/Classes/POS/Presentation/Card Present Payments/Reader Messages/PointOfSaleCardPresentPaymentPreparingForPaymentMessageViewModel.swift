@@ -15,7 +15,7 @@ private extension PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewMod
         static let message = NSLocalizedString(
             "pointOfSale.cardPresent.preparingCardReader.message",
             value: "Checking order",
-            comment: "Message shown on the Point of Sale checkout while the reader is being prepared."
+            comment: "Message shown on the Point of Sale checkout while the reader is being prepared and order being checked."
         )
     }
 }

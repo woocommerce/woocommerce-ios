@@ -212,6 +212,29 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         shouldShowFeedbackView = false
     }
 
+    // MARK: Switch options
+    func next() {
+        guard let generatedAIProduct else {
+            return
+        }
+
+        guard selectedOptionIndex < generatedAIProduct.names.count - 1 else {
+            return
+        }
+
+        saveCurrentOption()
+        selectedOptionIndex = selectedOptionIndex + 1
+    }
+
+    func previous() {
+        guard selectedOptionIndex > 0 else {
+            return
+        }
+
+        saveCurrentOption()
+        selectedOptionIndex = selectedOptionIndex - 1
+    }
+
     // MARK: Package photo view
     func didTapViewPhoto() {
         isShowingViewPhotoSheet = true

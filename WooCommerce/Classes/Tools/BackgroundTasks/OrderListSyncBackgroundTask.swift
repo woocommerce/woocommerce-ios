@@ -109,7 +109,7 @@ private struct CurrentOrderListSyncUseCase {
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: ())
+                    continuation.resume()
                 }
             })
             stores.dispatch(action)

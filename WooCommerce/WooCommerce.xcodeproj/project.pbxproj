@@ -878,6 +878,7 @@
 		26100B202722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */; };
 		2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */; };
 		26132B3C2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26132B3B2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift */; };
+		26132B3E2C3DA989004C157F /* PushNotificationBackgroundSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26132B3D2C3DA989004C157F /* PushNotificationBackgroundSynchronizerTests.swift */; };
 		2614EB1C24EB611200968D4B /* TopBannerViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */; };
 		2619FA2C25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619FA2B25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift */; };
 		261AA309275178FA009530FE /* PaymentMethodsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA308275178FA009530FE /* PaymentMethodsView.swift */; };
@@ -3892,6 +3893,7 @@
 		26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingUseCase.swift; sourceTree = "<group>"; };
 		2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		26132B3B2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizer.swift; sourceTree = "<group>"; };
+		26132B3D2C3DA989004C157F /* PushNotificationBackgroundSynchronizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizerTests.swift; sourceTree = "<group>"; };
 		2614EB1B24EB611200968D4B /* TopBannerViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerViewTests.swift; sourceTree = "<group>"; };
 		2619FA2B25C897930006DAFF /* AddAttributeOptionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewModelTests.swift; sourceTree = "<group>"; };
 		261AA308275178FA009530FE /* PaymentMethodsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsView.swift; sourceTree = "<group>"; };
@@ -10171,6 +10173,7 @@
 			isa = PBXGroup;
 			children = (
 				B5718D6421B56B3F0026C9F0 /* PushNotificationsManagerTests.swift */,
+				26132B3D2C3DA989004C157F /* PushNotificationBackgroundSynchronizerTests.swift */,
 				026D684A2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift */,
 				26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */,
 			);
@@ -16244,6 +16247,7 @@
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
 				CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */,
 				0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */,
+				26132B3E2C3DA989004C157F /* PushNotificationBackgroundSynchronizerTests.swift in Sources */,
 				CEEF74322B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */,

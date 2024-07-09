@@ -43,7 +43,7 @@ struct PushNotificationBackgroundSynchronizer {
             }
 
             // Sync the order list data
-            _ = await OrderListSyncBackgroundTask(siteID: pushNotification.siteID, backgroundTask: nil).dispatch().result
+            _ = await OrderListSyncBackgroundTask(siteID: pushNotification.siteID, backgroundTask: nil, stores: stores).dispatch().result
 
             // There is a change that the specific order was not fetched in the previous operation, specially if the user has some filters set.
             // In that case, specifically sync the notification order so it's available for the user when they tap the notification.

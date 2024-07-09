@@ -31,6 +31,8 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     @Published private(set) var lastCampaign: GoogleAdsCampaign?
     @Published private(set) var lastCampaignStats: GoogleAdsCampaignStatsTotals?
 
+    @Published private var viewAppeared = false
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -83,15 +85,19 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
             DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
         }
     }
+
+    func onViewAppear() {
+        viewAppeared = true
+    }
 }
 
 private extension GoogleAdsDashboardCardViewModel {
 
     func trackEntryPointDisplayedIfNeeded() {
         $canShowOnDashboard.removeDuplicates()
-            .combineLatest($syncingData.removeDuplicates())
-            .filter { canShow, syncingData in
-                return canShow && !syncingData
+            .combineLatest($syncingData.removeDuplicates(), $viewAppeared)
+            .filter { canShow, syncingData, viewAppeared in
+                return canShow && !syncingData && viewAppeared
             }
             .sink { [weak self] _ in
                 guard let self else { return }

@@ -64,6 +64,8 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
 
+    @Published private(set) var viewAppeared = false
+
     @Published private(set) var shouldAuthenticateAdminPage = false
 
     @Published private(set) var hasGoogleAdsCampaigns = false
@@ -153,6 +155,7 @@ final class HubMenuViewModel: ObservableObject {
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+        viewAppeared = true
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -383,9 +386,9 @@ private extension HubMenuViewModel {
 
     func observeGoogleAdsEntryPointAvailability() {
         $isSiteEligibleForGoogleAds.removeDuplicates()
-            .withLatestFrom($currentSite.removeDuplicates())
-            .filter { isEligible, currentSite in
-                return isEligible && currentSite != nil
+            .combineLatest($viewAppeared)
+            .filter { isEligible, viewAppeared in
+                return isEligible && viewAppeared
             }
             .sink { _ in
                 ServiceLocator.analytics.track(event: .GoogleAds.entryPointDisplayed(source: .moreMenu))

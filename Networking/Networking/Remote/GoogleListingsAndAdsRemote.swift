@@ -15,6 +15,7 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: The site ID.
+    ///   - campaignIDs: IDs of the campaigns to filter the results by.
     ///   - timeZone: The time zone to set the earliest/latest date strings in the API request.
     ///   - earliestDateToInclude: The earliest date to include in the results.
     ///   - latestDateToInclude: The latest date to include in the results.
@@ -22,6 +23,7 @@ public protocol GoogleListingsAndAdsRemoteProtocol {
     ///   - orderby: Define the stats total to use for ordering the list of campaigns in the response.
     ///   - nextPageToken: Token to retrieve the next page of stats data.
     func loadCampaignStats(for siteID: Int64,
+                           campaignIDs: [Int64],
                            timeZone: TimeZone,
                            earliestDateToInclude: Date,
                            latestDateToInclude: Date,
@@ -57,6 +59,7 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
     }
 
     public func loadCampaignStats(for siteID: Int64,
+                                  campaignIDs: [Int64],
                                   timeZone: TimeZone,
                                   earliestDateToInclude: Date,
                                   latestDateToInclude: Date,
@@ -74,6 +77,11 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
         ]
         // Only include this parameter if the value is non-nil.
         parameters[ParameterKeys.nextPageToken] = nextPageToken
+
+        // Only include `ids` parameter if the list is not empty.
+        if campaignIDs.isEmpty == false {
+            parameters[ParameterKeys.ids] = campaignIDs
+        }
 
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
@@ -111,5 +119,6 @@ private extension GoogleListingsAndAdsRemote {
         static let totals           = "fields"
         static let orderby          = "orderby"
         static let nextPageToken    = "next_page"
+        static let ids              = "ids"
     }
 }

@@ -88,4 +88,9 @@ public protocol StoresManager {
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification()
+
+    /// Whether the stores should attempt to authenticate the current site 's admin page
+    /// on web view using the current credentials.
+    ///
+    func shouldAuthenticateAdminPage(for site: Site) -> Bool
 }

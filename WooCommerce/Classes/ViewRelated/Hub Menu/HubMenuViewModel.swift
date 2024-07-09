@@ -308,13 +308,7 @@ private extension HubMenuViewModel {
                 guard let self, let site else {
                     return false
                 }
-                /// If the site is self-hosted and user is authenticated with WPCom,
-                /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-                /// This should be prevented 💀⛔️
-                guard site.isWordPressComStore || self.stores.isAuthenticatedWithoutWPCom else {
-                    return false
-                }
-                return true
+                return stores.shouldAuthenticateAdminPage(for: site)
             }
             .assign(to: &$shouldAuthenticateAdminPage)
 

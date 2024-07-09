@@ -72,7 +72,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var isReloadingAllData = false
 
     let siteID: Int64
-    private let stores: StoresManager
+    let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider

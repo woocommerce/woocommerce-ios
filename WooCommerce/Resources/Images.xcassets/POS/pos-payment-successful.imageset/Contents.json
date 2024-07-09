@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pos_payment_successful.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

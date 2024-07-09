@@ -57,8 +57,9 @@ public final class GoogleAdsStore: Store {
             checkConnection(siteID: siteID, onCompletion: onCompletion)
         case let .fetchAdsCampaigns(siteID, onCompletion):
             fetchAdsCampaign(siteID: siteID, onCompletion: onCompletion)
-        case let .retrieveCampaignStats(siteID, timeZone, earliestDateToInclude, latestDateToInclude, onCompletion):
+        case let .retrieveCampaignStats(siteID, campaignIDs, timeZone, earliestDateToInclude, latestDateToInclude, onCompletion):
             retrieveCampaignStats(siteID: siteID,
+                                  campaignIDs: campaignIDs,
                                   timeZone: timeZone,
                                   earliestDateToInclude: earliestDateToInclude,
                                   latestDateToInclude: latestDateToInclude,
@@ -93,6 +94,7 @@ private extension GoogleAdsStore {
     }
 
     func retrieveCampaignStats(siteID: Int64,
+                               campaignIDs: [Int64],
                                timeZone: TimeZone,
                                earliestDateToInclude: Date,
                                latestDateToInclude: Date,
@@ -107,6 +109,7 @@ private extension GoogleAdsStore {
                 // We request new pages until there are no more pages to request, so they can be compiled into a single set of stats.
                 while hasNextPage {
                     let campaignStats = try await remote.loadCampaignStats(for: siteID,
+                                                                           campaignIDs: campaignIDs,
                                                                            timeZone: timeZone,
                                                                            earliestDateToInclude: earliestDateToInclude,
                                                                            latestDateToInclude: latestDateToInclude,

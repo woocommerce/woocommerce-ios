@@ -7520,7 +7520,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "Cancel";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "Preparing card reader";
+"pointOfSale.cardPresent.preparingCardReader.message" = "Checking order";
 
 /* Button to cancel a payment */
 "pointOfSale.cardPresent.presentCard.cancel.button.title" = "Cancel";

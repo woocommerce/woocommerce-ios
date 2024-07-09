@@ -219,6 +219,10 @@ public class MockStoresManager: StoresManager {
     public func listenToWPCOMInvalidWPCOMTokenNotification() {
         // no-op
     }
+
+    public func shouldAuthenticateAdminPage(for site: Site) -> Bool {
+        return false
+    }
 }
 
 private extension MockStoresManager {

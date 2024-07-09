@@ -322,21 +322,11 @@ private extension DashboardViewHostingController {
             return
         }
 
-        let shouldAuthenticateAdminPage = {
-            /// If the site is self-hosted and user is authenticated with WPCom,
-            /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
-            /// This should be prevented 💀⛔️
-            guard site.isWordPressComStore || viewModel.stores.isAuthenticatedWithoutWPCom else {
-                return false
-            }
-            return true
-        }()
-
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: viewModel.siteID,
             siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
             shouldStartCampaignCreation: forCampaignCreation,
-            shouldAuthenticateAdminPage: shouldAuthenticateAdminPage,
+            shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
             navigationController: navigationController,
             onCompletion: {}
         )

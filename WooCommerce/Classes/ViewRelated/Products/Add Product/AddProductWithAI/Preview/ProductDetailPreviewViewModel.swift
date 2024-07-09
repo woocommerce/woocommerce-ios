@@ -215,10 +215,26 @@ private extension ProductDetailPreviewViewModel {
             }
     }
 
-    func updateProductDetails(with product: Product) {
-        productName = product.name
-        productShortDescription = product.shortDescription ?? ""
-        productDescription = product.fullDescription ?? ""
+    func displayAIProductDetails(aiProduct: AIProduct) throws {
+        guard
+            aiProduct.names.count > 0,
+            aiProduct.shortDescriptions.count > 0,
+            aiProduct.descriptions.count > 0 else {
+            throw ProductGenerationError.noNameSummaryDescOptionFound
+        }
+
+        var options = [NameSummaryDescOption]()
+        aiProduct.names.enumerated().forEach { index, name in
+            guard let shortDescription = aiProduct.shortDescriptions[safe: index],
+                  let description = aiProduct.descriptions[safe: index] else {
+                return
+            }
+            options.append(NameSummaryDescOption(name: name,
+                                                 shortDescription: shortDescription,
+                                                 description: description))
+        }
+
+        let product = product(from: aiProduct)
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
@@ -228,10 +244,13 @@ private extension ProductDetailPreviewViewModel {
 
         productCategories = product.categoriesDescription()
         productTags = product.tagsDescription()
-        updateShippingDetails(for: product)
+        displayShippingDetails(for: product)
+
+        self.options = options
+        selectedOptionIndex = 0
     }
 
-    func updateShippingDetails(for product: Product) {
+    func displayShippingDetails(for product: Product) {
         var shippingDetails = [String]()
 
         // Weight[unit]

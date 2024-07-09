@@ -27,15 +27,22 @@ struct PointOfSaleDashboardView: View {
                         GeometryReader { geometry in
                             HStack {
                                 productListView
-                                    .frame(width: geometry.size.width * Constants.productListWidth)
                                 cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
                             }
                         }
                     }
                 case .finalizing:
-                    cartView
-                    Spacer()
-                    totalsView
+                    GeometryReader { geometry in
+                        HStack {
+                            if !viewModel.isTotalsViewFullScreen {
+                                cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                                Spacer()
+                            }
+                            totalsView
+                        }
+                    }
                 }
             }
             .padding()
@@ -73,7 +80,7 @@ private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
-        static let productListWidth: CGFloat = 0.6
+        static let cartWidth: CGFloat = 0.4
     }
 }
 

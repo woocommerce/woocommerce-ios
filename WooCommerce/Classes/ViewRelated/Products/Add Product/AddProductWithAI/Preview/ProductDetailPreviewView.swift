@@ -169,8 +169,7 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .name,
                           shouldEnableUndo: viewModel.hasChangesToProductName,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productName = viewModel.generatedProduct?.name ?? ""
+            viewModel.undoEdits(in: ProductDetailPreviewViewModel.ProductDetailField.name)
         })
         .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.name)
     }
@@ -182,8 +181,7 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .shortDescription,
                           shouldEnableUndo: viewModel.hasChangesToProductShortDescription,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productShortDescription = viewModel.generatedProduct?.shortDescription ?? ""
+            viewModel.undoEdits(in: ProductDetailPreviewViewModel.ProductDetailField.shortDescription)
         })
         .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.shortDescription)
     }
@@ -195,8 +193,7 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .description,
                           shouldEnableUndo: viewModel.hasChangesToProductDescription,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productDescription = viewModel.generatedProduct?.fullDescription ?? ""
+            viewModel.undoEdits(in: .description)
         })
         .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.description)
     }

@@ -1,11 +1,11 @@
 {
-    "priority": 2,
     "request": {
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [
             { "matches": ".*path=/wc/v3/orders.*" },
-            { "contains": "%22Custom%20amount%22" }
+            { "contains": "Custom%20amount%22" },
+            { "contains": "status%22%3A%22auto-draft" }
         ]
     },
     "response": {
@@ -14,7 +14,7 @@
             "data": {
                 "id": 630,
                 "parent_id": 0,
-                "status": "pending",
+                "status": "auto-draft",
                 "currency": "USD",
                 "version": "7.6.1",
                 "prices_include_tax": false,

@@ -392,10 +392,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let descriptions = ["Sample description", "Sample description 2", "Sample description 3"]
         let shortDescriptions = ["Sample short description", "Sample short description 2", "Sample short description 3"]
         let virtual = true
-        let weight = "0.2"
+        let weight = "21"
         let length = "0.2"
-        let width = "0.2"
-        let height = "0.2"
+        let width = "0.23"
+        let height = "0.24"
         let price = "20"
 
         let currencySettings = CurrencySettings()
@@ -434,8 +434,12 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productShortDescription, shortDescriptions.first)
         let productPrice = try XCTUnwrap(viewModel.productPrice)
         XCTAssertTrue(productPrice.contains(price))
-        XCTAssertEqual(viewModel.productType, "Virtual")
-        XCTAssertEqual(viewModel.productShippingDetails, "Weight: 0.2kg\nDimensions: 0.2 x 0.2 x 0.2 m")
+        XCTAssertEqual(viewModel.productType, ProductDetailPreviewViewModel.Localization.virtualProductType)
+        let weightString = String.localizedStringWithFormat(ProductDetailPreviewViewModel.Localization.weightFormat,
+                                                      weight, "kg")
+        let dimensionsString = String.localizedStringWithFormat(ProductDetailPreviewViewModel.Localization.fullDimensionsFormat,
+                                                          length, width, height, "m")
+        XCTAssertEqual(viewModel.productShippingDetails, "\(weightString)\n\(dimensionsString)")
     }
 
     func test_it_saves_generated_product_correctly() async throws {

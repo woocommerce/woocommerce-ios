@@ -11,13 +11,17 @@ final class WebViewHostingController: UIHostingController<WebView> {
          disableLinkClicking: Bool = false,
          onCommit: ((WKWebView)->Void)? = nil,
          urlToTriggerExit: String? = nil,
-         redirectHandler: ((URL) -> Void)? = nil) {
+         pageLoadHandler: ((URL) -> Void)? = nil,
+         redirectHandler: ((URL) -> Void)? = nil,
+         errorHandler: ((Error) -> Void)? = nil) {
         super.init(rootView: WebView(isPresented: .constant(true),
                                      url: url,
                                      disableLinkClicking: disableLinkClicking,
                                      onCommit: onCommit,
                                      urlToTriggerExit: urlToTriggerExit,
-                                     redirectHandler: redirectHandler))
+                                     pageLoadHandler: pageLoadHandler,
+                                     redirectHandler: redirectHandler,
+                                     errorHandler: errorHandler))
     }
 
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
@@ -54,11 +58,17 @@ struct WebView: UIViewRepresentable {
     /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
 
+    /// Optional closure for when the web page loads the initial URL successfully.
+    let pageLoadHandler: ((URL) -> Void)?
+
     /// Closure to determine the action given the redirect URL.
     /// If `urlToTriggerExit` is provided, this closure is triggered only when
     /// a redirect URL matches `urlToTriggerExit`.
     /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
     let redirectHandler: ((URL) -> Void)?
+
+    /// Optional closure for when a web page fails to load.
+    let errorHandler: ((Error) -> Void)?
 
     private let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
 
@@ -68,14 +78,18 @@ struct WebView: UIViewRepresentable {
         disableLinkClicking: Bool = false,
         onCommit: ((WKWebView)->Void)? = nil,
         urlToTriggerExit: String? = nil,
-        redirectHandler: ((URL) -> Void)? = nil
+        pageLoadHandler: ((URL) -> Void)? = nil,
+        redirectHandler: ((URL) -> Void)? = nil,
+        errorHandler: ((Error) -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.url = url
         self.disableLinkClicking = disableLinkClicking
         self.onCommit = onCommit
         self.urlToTriggerExit = urlToTriggerExit
+        self.pageLoadHandler = pageLoadHandler
         self.redirectHandler = redirectHandler
+        self.errorHandler = errorHandler
     }
 
     func makeCoordinator() -> WebViewCoordinator {
@@ -145,6 +159,17 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             parent.onCommit?(webView)
+        }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            guard let url = webView.url else {
+                return
+            }
+            parent.pageLoadHandler?(url)
+        }
+
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            parent.errorHandler?(error)
         }
     }
 }

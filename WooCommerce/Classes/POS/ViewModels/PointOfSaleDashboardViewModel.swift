@@ -11,7 +11,7 @@ import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    let itemSelectorViewModel: ItemSelectorViewModel
+    let itemListViewModel: ItemListViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
     let totalsViewModel: TotalsViewModel
 
@@ -39,7 +39,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
          currencyFormatter: CurrencyFormatter) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
 
-        self.itemSelectorViewModel = .init(itemProvider: itemProvider)
+        self.itemListViewModel = .init(itemProvider: itemProvider)
         self.totalsViewModel = TotalsViewModel(orderService: orderService,
                                                cardPresentPaymentService: cardPresentPaymentService,
                                                currencyFormatter: currencyFormatter)
@@ -62,7 +62,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
 private extension PointOfSaleDashboardViewModel {
     func observeSelectedItemToAddToCart() {
-        itemSelectorViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
+        itemListViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
             self?.cartViewModel.addItemToCart(selectedItem)
         }
         .store(in: &cancellables)
@@ -104,14 +104,14 @@ private extension PointOfSaleDashboardViewModel {
 private extension PointOfSaleDashboardViewModel {
     func startSyncingOrder(cartItems: [CartItem]) {
         totalsViewModel.startSyncingOrder(with: cartItems,
-                                          allItems: itemSelectorViewModel.items)
+                                          allItems: itemListViewModel.items)
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
     func observePaymentStateForButtonDisabledProperties() {
-        totalsViewModel.$paymentState
-            .map { paymentState in
+        Publishers.CombineLatest(totalsViewModel.$paymentState, totalsViewModel.$isSyncingOrder)
+            .map { paymentState, isSyncingOrder in
                 switch paymentState {
                 case .processingPayment,
                         .cardPaymentSuccessful:
@@ -119,7 +119,7 @@ private extension PointOfSaleDashboardViewModel {
                 case .idle,
                         .acceptingCard,
                         .preparingReader:
-                    return false
+                    return isSyncingOrder
                 }
             }
             .assign(to: &$isAddMoreDisabled)

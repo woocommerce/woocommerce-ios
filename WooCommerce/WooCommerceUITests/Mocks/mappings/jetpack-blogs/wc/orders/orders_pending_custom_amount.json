@@ -3,12 +3,9 @@
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [
-            {
-                "matches": ".*path=/wc/v3/orders/630%26_method%3Dpost"
-            },
-            {
-                "contains": "status%22%3A%22completed"
-            }
+            { "matches": ".*path=/wc/v3/orders.*" },
+            { "contains": "Custom%20amount%22" },
+            { "contains": "status%22%3A%22pending" }
         ]
     },
     "response": {
@@ -17,7 +14,7 @@
             "data": {
                 "id": 630,
                 "parent_id": 0,
-                "status": "completed",
+                "status": "pending",
                 "currency": "USD",
                 "version": "7.6.1",
                 "prices_include_tax": false,
@@ -64,8 +61,8 @@
                 "customer_user_agent": "",
                 "created_via": "rest-api",
                 "customer_note": "",
-                "date_completed": "{{now format=customformat}}",
-                "date_paid": "{{now format=customformat}}",
+                "date_completed": null,
+                "date_paid": null,
                 "cart_hash": "",
                 "number": "630",
                 "meta_data": [],
@@ -75,7 +72,7 @@
                 "fee_lines": [
                     {
                         "id": 475,
-                        "name": "Simple Payments",
+                        "name": "Custom amount",
                         "tax_class": "",
                         "tax_status": "taxable",
                         "amount": "",
@@ -88,13 +85,13 @@
                 "coupon_lines": [],
                 "refunds": [],
                 "payment_url": "https://automatticwidgets.wpcomstaging.com/checkout/order-pay/630/?pay_for_order=true&key=wc_order_xxx",
-                "is_editable": false,
+                "is_editable": true,
                 "needs_payment": false,
                 "needs_processing": false,
                 "date_created_gmt": "{{now format=customformat}}",
                 "date_modified_gmt": "{{now format=customformat}}",
-                "date_completed_gmt": "{{now format=customformat}}",
-                "date_paid_gmt": "{{now format=customformat}}",
+                "date_completed_gmt": null,
+                "date_paid_gmt": null,
                 "gift_cards": [],
                 "currency_symbol": "$",
                 "_links": {

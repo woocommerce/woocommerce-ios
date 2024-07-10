@@ -29,7 +29,7 @@ struct GoogleAdsDashboardCard: View {
                 DashboardCardErrorView {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .googleAds))
                     Task {
-                        await viewModel.fetchLastCampaign()
+                        await viewModel.reloadCard()
                     }
                 }
             } else if let campaign = viewModel.lastCampaign {
@@ -72,6 +72,9 @@ struct GoogleAdsDashboardCard: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 

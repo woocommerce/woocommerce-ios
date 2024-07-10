@@ -195,6 +195,13 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
         progressBar.setProgress(0, animated: false)
     }
 
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        guard let url = webView.url else {
+            return
+        }
+        viewModel.didFinishNavigation(for: url)
+    }
+
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         viewModel.didFailProvisionalNavigation(with: error)
     }

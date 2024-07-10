@@ -529,8 +529,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isCashOnDeliverySetUp() -> Bool {
+        let gatewayID = PaymentGateway.Constants.cashOnDeliveryGatewayID
         guard let siteID = siteID,
-              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
+              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID,
+                                                                             gatewayID: gatewayID)?.toReadOnly()
         else {
             return false
         }

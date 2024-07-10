@@ -95,16 +95,24 @@ private extension HubMenuViewController {
         googleAdsCampaignCoordinator = GoogleAdsCampaignCoordinator(
             siteID: viewModel.siteID,
             siteAdminURL: viewModel.woocommerceAdminURL.absoluteString,
+            source: .moreMenu,
             shouldStartCampaignCreation: viewModel.hasGoogleAdsCampaigns,
             shouldAuthenticateAdminPage: viewModel.shouldAuthenticateAdminPage,
             navigationController: navigationController,
-            onCompletion: { [weak self] in
-                Task { @MainActor in
-                    await self?.viewModel.refreshGoogleAdsCampaignCheck()
+            onCompletion: { [weak self] createdNewCampaign in
+                guard createdNewCampaign else {
+                    return
                 }
+                self?.viewModel.refreshGoogleAdsCampaignCheck()
             }
         )
         googleAdsCampaignCoordinator?.start()
+
+        ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
+            source: .moreMenu,
+            type: viewModel.hasGoogleAdsCampaigns ? .dashboard : .campaignCreation,
+            hasCampaigns: viewModel.hasGoogleAdsCampaigns
+        ))
     }
 }
 

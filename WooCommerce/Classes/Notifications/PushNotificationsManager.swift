@@ -305,7 +305,11 @@ extension PushNotificationsManager {
             backgroundNotificationsSubject.send(notification)
         }
 
-        return await synchronizeNotifications()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            return await PushNotificationBackgroundSynchronizer(userInfo: userInfo, stores: configuration.storesManager).sync()
+        } else {
+            return await synchronizeNotifications()
+        }
     }
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {

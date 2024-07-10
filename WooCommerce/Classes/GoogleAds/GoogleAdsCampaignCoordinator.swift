@@ -17,7 +17,7 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 
     private let analytics: Analytics
 
-    private let onCompletion: () -> Void
+    private let onCompletion: (_ createdNewCampaign: Bool) -> Void
 
     private var hasTrackedStartEvent = false
 
@@ -28,7 +28,7 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
          shouldAuthenticateAdminPage: Bool,
          navigationController: UINavigationController,
          analytics: Analytics = ServiceLocator.analytics,
-         onCompletion: @escaping () -> Void) {
+         onCompletion: @escaping (Bool) -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
         self.source = source
@@ -55,7 +55,7 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate {
     // Triggered when swiping to dismiss the view.
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        onCompletion()
+        onCompletion(false)
         analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
 }
@@ -64,7 +64,7 @@ extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate
 //
 private extension GoogleAdsCampaignCoordinator {
     @objc func dismissCampaignView() {
-        onCompletion()
+        onCompletion(false)
         navigationController.dismiss(animated: true)
         analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
@@ -123,7 +123,7 @@ private extension GoogleAdsCampaignCoordinator {
             navigationController.dismiss(animated: true) { [self] in
                 showSuccessView()
             }
-            onCompletion()
+            onCompletion(true)
             DDLogDebug("🎉 Google Ads campaign creation success")
         }
     }

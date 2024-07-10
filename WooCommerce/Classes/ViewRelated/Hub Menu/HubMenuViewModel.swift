@@ -156,6 +156,9 @@ final class HubMenuViewModel: ObservableObject {
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
         viewAppeared = true
+        if !hasGoogleAdsCampaigns {
+            refreshGoogleAdsCampaignCheck()
+        }
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -177,9 +180,10 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
-    @MainActor
-    func refreshGoogleAdsCampaignCheck() async {
-        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+        }
     }
 
     deinit {

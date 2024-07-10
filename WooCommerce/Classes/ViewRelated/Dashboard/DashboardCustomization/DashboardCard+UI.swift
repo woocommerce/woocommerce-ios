@@ -76,8 +76,8 @@ private extension DashboardCard.CardType {
             comment: "Name for the Most active coupons dashboard card in the Customize Dashboard screen"
         )
         static let googleAds = NSLocalizedString(
-            "dashboardCard.name.googleAds",
-            value: "Google ads campaigns",
+            "dashboardCard.name.googleAdsCampaigns",
+            value: "Google Ads campaigns",
             comment: "Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen"
         )
     }

@@ -57,7 +57,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchLastCampaign() async {
+    func reloadCard() async {
         syncingError = nil
         syncingData = true
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
@@ -88,6 +88,12 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
 
     func onViewAppear() {
         viewAppeared = true
+    }
+
+    func reloadCard() {
+        Task {
+            await reloadCard()
+        }
     }
 }
 

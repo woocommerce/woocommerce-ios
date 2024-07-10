@@ -53,7 +53,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let error = NSError(domain: "Test", code: 500)
         mockRequest(lastCampaignResult: .failure(error))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
@@ -70,7 +70,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let lastCampaign = GoogleAdsCampaign.fake().copy(id: 14325)
         mockRequest(lastCampaignResult: .success([lastCampaign]))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertEqual(viewModel.lastCampaign, lastCampaign)
@@ -86,7 +86,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let error = NSError(domain: "Test", code: 500)
         mockRequest(lastCampaignResult: .failure(error))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertFalse(viewModel.shouldShowCreateCampaignButton)
@@ -94,7 +94,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let lastCampaign = GoogleAdsCampaign.fake().copy(id: 14325)
         mockRequest(lastCampaignResult: .success([lastCampaign]))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertTrue(viewModel.shouldShowCreateCampaignButton)
@@ -118,7 +118,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
                 break
             }
         }
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertFalse(viewModel.syncingData)
@@ -140,7 +140,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         )
         mockRequest(lastCampaignResult: .success([.fake().copy(id: 12423)]),
                     lastCampaignStatsResult: .success(statsResult))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertEqual(viewModel.lastCampaignStats, totals)
@@ -162,7 +162,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         )
         mockRequest(lastCampaignResult: .success([campaign]),
                     lastCampaignStatsResult: .success(statsResult))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertEqual(viewModel.lastCampaignStats, subtotals)

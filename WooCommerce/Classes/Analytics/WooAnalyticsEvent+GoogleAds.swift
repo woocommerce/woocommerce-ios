@@ -8,7 +8,7 @@ extension WooAnalyticsEvent {
         }
 
         enum FlowType: String {
-            case campaignCreation = "campaign_creation"
+            case campaignCreation = "creation"
             case dashboard = "dashboard"
         }
 

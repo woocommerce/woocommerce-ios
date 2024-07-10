@@ -89,3 +89,66 @@ extension GiftCardStatsTotals: ParsableStatsTotals {
         }
     }
 }
+
+// MARK: - Parsable Google Ads Campaigns Stats
+
+extension GoogleAdsCampaignStatsTotals: ParsableStatsTotals {
+    /// Represents a type of Google Ads campaigns total data
+    enum TotalData: Double, CaseIterable {
+        case sales
+        case spend
+        case clicks
+        case impressions
+        case conversions
+
+        var displayName: String {
+            switch self {
+            case .sales:
+                Localization.sales
+            case .spend:
+                Localization.spend
+            case .clicks:
+                Localization.clicks
+            case .impressions:
+                Localization.impressions
+            case .conversions:
+                Localization.conversions
+            }
+        }
+    }
+
+    func getDoubleValue(for data: TotalData) -> Double {
+        switch data {
+        case .sales:
+            ((sales ?? 0) as NSNumber).doubleValue
+        case .spend:
+            ((spend ?? 0) as NSNumber).doubleValue
+        case .clicks:
+            Double(clicks ?? 0)
+        case .impressions:
+            Double(impressions ?? 0)
+        case .conversions:
+            ((conversions ?? 0) as NSNumber).doubleValue
+        }
+    }
+}
+
+private extension GoogleAdsCampaignStatsTotals {
+    enum Localization {
+        static let sales = NSLocalizedString("googleAdsCampaignStatsTotals.totalData.sales",
+                                             value: "Total Sales",
+                                             comment: "Display name for the total sales stat in Google Ads campaign stats")
+        static let spend = NSLocalizedString("googleAdsCampaignStatsTotals.totalData.spend",
+                                             value: "Total Spend",
+                                             comment: "Display name for the total spend stat in Google Ads campaign stats")
+        static let clicks = NSLocalizedString("googleAdsCampaignStatsTotals.totalData.clicks",
+                                              value: "Clicks",
+                                              comment: "Display name for the clicks stat in Google Ads campaign stats")
+        static let impressions = NSLocalizedString("googleAdsCampaignStatsTotals.totalData.impressions",
+                                                   value: "Impressions",
+                                                   comment: "Display name for the impressions stat in Google Ads campaign stats")
+        static let conversions = NSLocalizedString("googleAdsCampaignStatsTotals.totalData.conversions",
+                                                   value: "Conversions",
+                                                   comment: "Display name for the conversions stat in Google Ads campaign stats")
+    }
+}

@@ -7,7 +7,7 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
-    enum ProductDetailField: Equatable {
+    enum EditableField: Equatable {
         case name
         case shortDescription
         case description
@@ -256,7 +256,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 // MARK: - Undo edits
 //
 extension ProductDetailPreviewViewModel {
-    func undoEdits(in field: ProductDetailField) {
+    func undoEdits(in field: EditableField) {
         guard let generatedAIProduct else {
             return
         }

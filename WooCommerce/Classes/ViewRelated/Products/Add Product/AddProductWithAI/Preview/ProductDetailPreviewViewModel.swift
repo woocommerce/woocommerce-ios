@@ -319,9 +319,9 @@ private extension ProductDetailPreviewViewModel {
 
     func displayAIProductDetails(aiProduct: AIProduct) throws {
         guard
-            aiProduct.names.count > 0,
-            aiProduct.shortDescriptions.count > 0,
-            aiProduct.descriptions.count > 0 else {
+            aiProduct.names.isNotEmpty,
+            aiProduct.shortDescriptions.isNotEmpty,
+            aiProduct.descriptions.isNotEmpty else {
             throw ProductGenerationError.noNameSummaryDescOptionFound
         }
 

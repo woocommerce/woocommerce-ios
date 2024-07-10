@@ -64,6 +64,8 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
 
+    @Published private(set) var viewAppeared = false
+
     @Published private(set) var shouldAuthenticateAdminPage = false
 
     @Published private(set) var hasGoogleAdsCampaigns = false
@@ -146,12 +148,14 @@ final class HubMenuViewModel: ObservableObject {
                                                            featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
+        observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
         createCardPresentPaymentService()
     }
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+        viewAppeared = true
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -378,6 +382,19 @@ private extension HubMenuViewModel {
             }
         }
         .assign(to: &$planName)
+    }
+
+    func observeGoogleAdsEntryPointAvailability() {
+        $isSiteEligibleForGoogleAds.removeDuplicates()
+            .combineLatest($viewAppeared)
+            .filter { isEligible, viewAppeared in
+                // only tracks the display if the view appeared
+                return isEligible && viewAppeared
+            }
+            .sink { _ in
+                ServiceLocator.analytics.track(event: .GoogleAds.entryPointDisplayed(source: .moreMenu))
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor

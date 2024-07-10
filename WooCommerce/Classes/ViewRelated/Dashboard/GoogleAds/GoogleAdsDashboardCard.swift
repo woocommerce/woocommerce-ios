@@ -72,6 +72,9 @@ struct GoogleAdsDashboardCard: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 

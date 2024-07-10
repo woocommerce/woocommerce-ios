@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Reusable coordinator to handle Google Ads campaigns.
 ///
@@ -8,24 +9,33 @@ final class GoogleAdsCampaignCoordinator: NSObject, Coordinator {
 
     private let siteID: Int64
     private let siteAdminURL: String
+    private let source: WooAnalyticsEvent.GoogleAds.Source
 
     private let shouldStartCampaignCreation: Bool
     private let shouldAuthenticateAdminPage: Bool
     private var bottomSheetPresenter: BottomSheetPresenter?
 
+    private let analytics: Analytics
+
     private let onCompletion: () -> Void
+
+    private var hasTrackedStartEvent = false
 
     init(siteID: Int64,
          siteAdminURL: String,
+         source: WooAnalyticsEvent.GoogleAds.Source,
          shouldStartCampaignCreation: Bool,
          shouldAuthenticateAdminPage: Bool,
          navigationController: UINavigationController,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.siteAdminURL = siteAdminURL
+        self.source = source
         self.shouldAuthenticateAdminPage = shouldAuthenticateAdminPage
         self.shouldStartCampaignCreation = shouldStartCampaignCreation
         self.navigationController = navigationController
+        self.analytics = analytics
         self.onCompletion = onCompletion
     }
 
@@ -46,6 +56,7 @@ extension GoogleAdsCampaignCoordinator: UIAdaptivePresentationControllerDelegate
     // Triggered when swiping to dismiss the view.
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         onCompletion()
+        analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
 }
 
@@ -55,23 +66,44 @@ private extension GoogleAdsCampaignCoordinator {
     @objc func dismissCampaignView() {
         onCompletion()
         navigationController.dismiss(animated: true)
+        analytics.track(event: .GoogleAds.flowCanceled(source: source))
     }
 
     func createCampaignViewController(with url: URL) -> UIViewController {
-        let redirectHandler: (URL) -> Void = { [weak self] newURL in
-            if newURL != url {
-                self?.checkIfCampaignCreationSucceeded(url: newURL)
+        let pageLoadHandler: (URL) -> Void = { [weak self] newURL in
+            guard let self else { return }
+            if newURL == url, !hasTrackedStartEvent {
+                ServiceLocator.analytics.track(event: .GoogleAds.flowStarted(source: source))
+                hasTrackedStartEvent = true
             }
         }
+
+        let redirectHandler: (URL) -> Void = { [weak self] newURL in
+            guard let self else { return }
+            if newURL != url {
+                checkIfCampaignCreationSucceeded(url: newURL)
+            }
+        }
+
+        let errorHandler: (Error) -> Void = { [weak self] error in
+            guard let self else { return }
+            analytics.track(event: .GoogleAds.flowError(source: source, error: error))
+        }
+
         if shouldAuthenticateAdminPage {
             let viewModel = DefaultAuthenticatedWebViewModel(
                 title: Localization.googleForWooCommerce,
                 initialURL: url,
-                redirectHandler: redirectHandler
+                pageLoadHandler: pageLoadHandler,
+                redirectHandler: redirectHandler,
+                errorHandler: errorHandler
             )
             return AuthenticatedWebViewController(viewModel: viewModel)
         } else {
-            let controller = WebViewHostingController(url: url, redirectHandler: redirectHandler)
+            let controller = WebViewHostingController(url: url,
+                                                      pageLoadHandler: pageLoadHandler,
+                                                      redirectHandler: redirectHandler,
+                                                      errorHandler: errorHandler)
             controller.title = Localization.googleForWooCommerce
             return controller
         }
@@ -85,6 +117,8 @@ private extension GoogleAdsCampaignCoordinator {
             $0.value == Constants.savedValue
         }) != nil
         if creationSucceeded {
+            analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
+
             // dismisses the web view
             navigationController.dismiss(animated: true) { [self] in
                 showSuccessView()

@@ -71,27 +71,27 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
             case .inProgress:
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.main.inProgress",
-                    value: "Add more details. ",
+                    value: "Add more details.",
                     comment: "State when more details need to be added for the main prompt description suggestion in product creation with AI."
-                )
+                ) + " "
             case .halfway:
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.main.halfway",
-                    value: "Getting better. ",
+                    value: "Getting better.",
                     comment: "State when the prompt description is improving for the main prompt description suggestion in product creation with AI."
-                )
+                ) + " "
             case .almostDone:
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.main.almostDone",
-                    value: "Great prompt! ",
+                    value: "Almost there.",
                     comment: "State when the prompt description is great for the main prompt description suggestion in product creation with AI."
-                )
+                ) + " "
             case .completed:
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.main.completed",
-                    value: "Great prompt! ",
+                    value: "Great prompt!",
                     comment: "State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI."
-                )
+                ) + " "
             }
         }
 

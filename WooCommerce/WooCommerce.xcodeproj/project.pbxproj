@@ -2131,6 +2131,7 @@
 		CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */; };
 		CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14452D2188C11700A991D8 /* ZendeskManager.swift */; };
 		CE14DEE62C3D5D68002A90B5 /* StatSelectionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14DEE52C3D5D68002A90B5 /* StatSelectionBar.swift */; };
+		CE14DEE82C3D8D1D002A90B5 /* GoogleAdsCampaignReportCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE14DEE72C3D8D1D002A90B5 /* GoogleAdsCampaignReportCard.swift */; };
 		CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */; };
 		CE16177A21B7192A00B82A47 /* AuthenticationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */; };
 		CE1CCB402056F21C000EE3AC /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1CCB3F2056F21C000EE3AC /* Style.swift */; };
@@ -5122,6 +5123,7 @@
 		CE13681629FBD94300EBF43C /* QuantityRulesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModel.swift; sourceTree = "<group>"; };
 		CE14452D2188C11700A991D8 /* ZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskManager.swift; sourceTree = "<group>"; };
 		CE14DEE52C3D5D68002A90B5 /* StatSelectionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatSelectionBar.swift; sourceTree = "<group>"; };
+		CE14DEE72C3D8D1D002A90B5 /* GoogleAdsCampaignReportCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCard.swift; sourceTree = "<group>"; };
 		CE15524921FFB10100EAA690 /* ApplicationLogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationLogViewController.swift; sourceTree = "<group>"; };
 		CE16177921B7192A00B82A47 /* AuthenticationConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationConstants.swift; sourceTree = "<group>"; };
 		CE1CCB3F2056F21C000EE3AC /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
@@ -11914,6 +11916,7 @@
 				CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */,
 				CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */,
 				CEA455C82BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift */,
+				CE14DEE72C3D8D1D002A90B5 /* GoogleAdsCampaignReportCard.swift */,
 				CEEF74212B99EC5800B03948 /* AnalyticsReportCardProtocol.swift */,
 				CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */,
 				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
@@ -15451,6 +15454,7 @@
 				4A68E3E32941D4CE004AC3DC /* WordPressLibraryLogger.swift in Sources */,
 				174CA86E27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift in Sources */,
 				262C921F26EEF8B100011F92 /* Binding.swift in Sources */,
+				CE14DEE82C3D8D1D002A90B5 /* GoogleAdsCampaignReportCard.swift in Sources */,
 				DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */,

@@ -29,7 +29,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
             shouldStartCampaignCreation: true,
             shouldAuthenticateAdminPage: false,
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { _ in }
         )
 
         // When
@@ -49,7 +49,7 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
             shouldStartCampaignCreation: true,
             shouldAuthenticateAdminPage: true,
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { _ in }
         )
 
         // When

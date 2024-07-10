@@ -5,16 +5,23 @@ import protocol Yosemite.POSItemProvider
 
 final class ItemSelectorViewModel: ObservableObject {
     enum ItemSelectorState {
+        // TODO:
+        // Differentiate between loading on entering POS mode and reloading, as the
+        // screens will be different:
+        // https://github.com/woocommerce/woocommerce-ios/issues/13286
         case loading
+        // TODO:
+        // Differentiate between loaded with products vs with no products vs with no eligible products
+        // https://github.com/woocommerce/woocommerce-ios/issues/12815
+        // https://github.com/woocommerce/woocommerce-ios/issues/12816
         case loaded
+        // TODO:
+        // https://github.com/woocommerce/woocommerce-ios/issues/12846
         case error
     }
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemSelectorState = .loading
-    var isSyncingItems: Bool {
-        state == .loading
-    }
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()

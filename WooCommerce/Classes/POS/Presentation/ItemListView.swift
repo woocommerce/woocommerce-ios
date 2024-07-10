@@ -10,12 +10,12 @@ struct ItemListView: View {
 
     var body: some View {
         VStack {
-            Text("Products")
+            Text(Localization.productSelectorTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
-            if viewModel.isSyncingItems {
+            if viewModel.state == .loading {
                 Spacer()
                 Text("Loading...")
                 Spacer()
@@ -43,9 +43,25 @@ struct ItemListView: View {
     }
 }
 
+/// View helpers
+///
+private extension ItemListView {
+    
+}
+
+/// Constants
+///
 private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
+    }
+
+    enum Localization {
+        static let productSelectorTitle = NSLocalizedString(
+            "pos.itemlistview.productSelectorTitle",
+            value: "Products",
+            comment: "Title of the Point of Sale product selector"
+        )
     }
 }
 

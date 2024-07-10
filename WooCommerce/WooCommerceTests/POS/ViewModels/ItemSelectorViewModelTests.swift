@@ -23,26 +23,6 @@ final class ItemSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_isSyncingItems_is_true_when_populatePointOfSaleItems_is_invoked_then_switches_to_false_when_completed() async {
-        XCTAssertEqual(itemSelector.isSyncingItems, true, "Precondition")
-
-        // Given/When
-        await itemSelector.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(itemSelector.isSyncingItems, false)
-    }
-
-    func test_isSyncingItems_is_true_when_reload_is_invoked_then_switches_to_false_when_completed() async {
-        XCTAssertEqual(itemSelector.isSyncingItems, true, "Precondition")
-
-        // Given/When
-        await itemSelector.reload()
-
-        // Then
-        XCTAssertEqual(itemSelector.isSyncingItems, false)
-    }
-
     func test_itemSelector_when_select_item_then_sends_item_to_publisher() {
         // Given
         let item = Self.makeItem()

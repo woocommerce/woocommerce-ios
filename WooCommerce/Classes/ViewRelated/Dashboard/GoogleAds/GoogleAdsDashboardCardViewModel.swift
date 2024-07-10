@@ -89,6 +89,12 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     func onViewAppear() {
         viewAppeared = true
     }
+
+    func reloadCard() {
+        Task {
+            await fetchLastCampaign()
+        }
+    }
 }
 
 private extension GoogleAdsDashboardCardViewModel {

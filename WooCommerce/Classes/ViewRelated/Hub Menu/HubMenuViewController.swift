@@ -99,7 +99,10 @@ private extension HubMenuViewController {
             shouldStartCampaignCreation: viewModel.hasGoogleAdsCampaigns,
             shouldAuthenticateAdminPage: viewModel.shouldAuthenticateAdminPage,
             navigationController: navigationController,
-            onCompletion: { [weak self] in
+            onCompletion: { [weak self] createdNewCampaign in
+                guard createdNewCampaign else {
+                    return
+                }
                 Task { @MainActor in
                     await self?.viewModel.refreshGoogleAdsCampaignCheck()
                 }

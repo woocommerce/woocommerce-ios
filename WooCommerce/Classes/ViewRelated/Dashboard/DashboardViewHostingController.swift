@@ -329,7 +329,11 @@ private extension DashboardViewHostingController {
             shouldStartCampaignCreation: forCampaignCreation,
             shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { [weak self] createdNewCampaign in
+                if createdNewCampaign {
+                    self?.viewModel.googleAdsDashboardCardViewModel.reloadCard()
+                }
+            }
         )
         coordinator.start()
         googleAdsCampaignCoordinator = coordinator

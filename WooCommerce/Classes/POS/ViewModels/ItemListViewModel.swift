@@ -40,6 +40,7 @@ final class ItemListViewModel: ObservableObject {
     @MainActor
     func populatePointOfSaleItems() async {
         do {
+            state = .loading
             items = try await itemProvider.providePointOfSaleItems()
             state = .loaded
         } catch {
@@ -51,8 +52,8 @@ final class ItemListViewModel: ObservableObject {
     @MainActor
     func reload() async {
         do {
+            state = .loading
             let newItems = try await itemProvider.providePointOfSaleItems()
-            throw NSError(domain: "", code: 0)
             // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
             items.removeAll()
             items = newItems

@@ -15,15 +15,8 @@ struct ItemListView: View {
                 .padding(.vertical, 8)
                 .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
-            if viewModel.state == .loading {
-                Spacer()
-                Text("Loading...")
-                Spacer()
-            } else if viewModel.state == .error {
-                Spacer()
-                Text("Error!!")
-                Spacer()
-            } else {
+            switch viewModel.state {
+            case .loaded:
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
@@ -33,6 +26,10 @@ struct ItemListView: View {
                         })
                     }
                 }
+            case .loading:
+                loadingView
+            case .error:
+                errorView
             }
         }
         .refreshable {
@@ -43,10 +40,29 @@ struct ItemListView: View {
     }
 }
 
-/// View helpers
+/// View Helpers
 ///
 private extension ItemListView {
-    
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            Text("Loading...")
+            Spacer()
+        }
+    }
+
+    var errorView: some View {
+        VStack {
+            Spacer()
+            Text("Error!!")
+            Button(action: {
+                Task {
+                    await viewModel.populatePointOfSaleItems()
+                }
+            }, label: { Text("Retry") })
+            Spacer()
+        }
+    }
 }
 
 /// Constants

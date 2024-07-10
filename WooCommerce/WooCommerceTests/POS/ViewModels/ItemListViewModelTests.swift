@@ -5,103 +5,103 @@ import Combine
 @testable import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
 
-final class ItemSelectorViewModelTests: XCTestCase {
+final class ItemListViewModelTests: XCTestCase {
     private var itemProvider: POSItemProvider!
-    private var itemSelector: ItemSelectorViewModel!
+    private var sut: ItemListViewModel!
 
     private var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
         itemProvider = MockPOSItemProvider()
-        itemSelector = ItemSelectorViewModel(itemProvider: itemProvider)
+        sut = ItemListViewModel(itemProvider: itemProvider)
     }
 
     override func tearDown() {
         itemProvider = nil
-        itemSelector = nil
+        sut = nil
         super.tearDown()
     }
 
-    func test_itemSelector_when_select_item_then_sends_item_to_publisher() {
+    func test_itemListViewModel_when_select_item_then_sends_item_to_publisher() {
         // Given
         let item = Self.makeItem()
         let expectation = XCTestExpectation(description: "Publisher should emit the selected item")
 
         var receivedItem: POSItem?
-        itemSelector.selectedItemPublisher.sink { item in
+        sut.selectedItemPublisher.sink { item in
             receivedItem = item
             expectation.fulfill()
         }
         .store(in: &cancellables)
 
         // When
-        itemSelector.select(item)
+        sut.select(item)
 
         // Then
         XCTAssertEqual(receivedItem?.productID, item.productID)
     }
 
-    func test_itemSelector_when_initilized_then_state_is_loading() {
+    func test_itemListViewModel_when_initilized_then_state_is_loading() {
         // Given/When/Then
-        XCTAssertEqual(itemSelector.state, .loading)
+        XCTAssertEqual(sut.state, .loading)
     }
 
-    func test_itemSelector_when_populatePointOfSaleItems_then_state_is_loaded() async {
+    func test_itemListViewModel_when_populatePointOfSaleItems_then_state_is_loaded() async {
         // Given
-        XCTAssertEqual(itemSelector.state, .loading)
+        XCTAssertEqual(sut.state, .loading)
 
         // When
-        await itemSelector.populatePointOfSaleItems()
+        await sut.populatePointOfSaleItems()
 
         // Then
-        XCTAssertEqual(itemSelector.state, .loaded)
+        XCTAssertEqual(sut.state, .loaded)
     }
 
-    func test_itemSelector_when_populatePointOfSaleItems_throws_error_then_state_is_error() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-        let itemSelector = ItemSelectorViewModel(itemProvider: itemProvider)
-
-        XCTAssertEqual(itemSelector.state, .loading)
-
-        // When
-        await itemSelector.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(itemSelector.state, .error)
-    }
-
-    func test_itemSelector_when_reload_then_state_is_loaded() async {
-        // Given
-        XCTAssertEqual(itemSelector.state, .loading)
-
-        // When
-        await itemSelector.reload()
-
-        // Then
-        XCTAssertEqual(itemSelector.state, .loaded)
-    }
-
-    func test_itemSelector_when_reload_throws_error_then_state_is_error() async {
+    func test_itemListViewModel_when_populatePointOfSaleItems_throws_error_then_state_is_error() async {
         // Given
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
-        let itemSelector = ItemSelectorViewModel(itemProvider: itemProvider)
+        let sut = ItemListViewModel(itemProvider: itemProvider)
 
-        XCTAssertEqual(itemSelector.state, .loading)
+        XCTAssertEqual(sut.state, .loading)
 
         // When
-        await itemSelector.reload()
+        await sut.populatePointOfSaleItems()
 
         // Then
-        XCTAssertEqual(itemSelector.state, .error)
+        XCTAssertEqual(sut.state, .error)
+    }
+
+    func test_itemListViewModel_when_reload_then_state_is_loaded() async {
+        // Given
+        XCTAssertEqual(sut.state, .loading)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.state, .loaded)
+    }
+
+    func test_itemListViewModel_when_reload_throws_error_then_state_is_error() async {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldThrowError = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+
+        XCTAssertEqual(sut.state, .loading)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.state, .error)
     }
 
 }
 
-private extension ItemSelectorViewModelTests {
+private extension ItemListViewModelTests {
     final class MockPOSItemProvider: POSItemProvider {
         var items: [POSItem] = []
         var shouldThrowError = false

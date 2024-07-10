@@ -2,9 +2,9 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: ItemSelectorViewModel
+    @ObservedObject var viewModel: ItemListViewModel
 
-    init(viewModel: ItemSelectorViewModel) {
+    init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
 
@@ -83,6 +83,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemSelectorViewModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
 }
 #endif

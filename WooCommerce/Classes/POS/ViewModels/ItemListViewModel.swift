@@ -3,8 +3,8 @@ import SwiftUI
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 
-final class ItemSelectorViewModel: ObservableObject {
-    enum ItemSelectorState {
+final class ItemListViewModel: ObservableObject {
+    enum ItemListState {
         // TODO:
         // Differentiate between loading on entering POS mode and reloading, as the
         // screens will be different:
@@ -21,7 +21,7 @@ final class ItemSelectorViewModel: ObservableObject {
     }
 
     @Published private(set) var items: [POSItem] = []
-    @Published private(set) var state: ItemSelectorState = .loading
+    @Published private(set) var state: ItemListState = .loading
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
@@ -52,6 +52,7 @@ final class ItemSelectorViewModel: ObservableObject {
     func reload() async {
         do {
             let newItems = try await itemProvider.providePointOfSaleItems()
+            throw NSError(domain: "", code: 0)
             // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
             items.removeAll()
             items = newItems

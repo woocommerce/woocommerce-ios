@@ -123,8 +123,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private var weightUnit: String?
     private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
-    private var hasSyncedCategories: Bool = false
-    private var hasSyncedTags: Bool = false
+    private var hasSyncedCategories = false
+    private var hasSyncedTags = false
 
     private var subscriptions: Set<AnyCancellable> = []
 

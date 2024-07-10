@@ -4,13 +4,20 @@ import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 
 final class ItemSelectorViewModel: ObservableObject {
-    let selectedItemPublisher: AnyPublisher<POSItem, Never>
+    enum ItemSelectorState {
+        case loading
+        case loaded
+        case error
+    }
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var isSyncingItems: Bool = true
+    @Published private(set) var state: ItemSelectorState = .loading
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
+
+    let selectedItemPublisher: AnyPublisher<POSItem, Never>
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -30,6 +37,7 @@ final class ItemSelectorViewModel: ObservableObject {
             DDLogError("Error on load while fetching product data: \(error)")
         }
         isSyncingItems = false
+        state = .loaded
     }
 
     @MainActor
@@ -44,5 +52,6 @@ final class ItemSelectorViewModel: ObservableObject {
             DDLogError("Error on reload while updating product data: \(error)")
         }
         isSyncingItems = false
+        state = .loaded
     }
 }

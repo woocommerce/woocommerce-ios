@@ -62,6 +62,33 @@ final class ItemSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(receivedItem?.productID, item.productID)
     }
 
+    func test_itemSelector_when_initilized_then_state_is_loading() {
+        // Given/When/Then
+        XCTAssertEqual(itemSelector.state, .loading)
+    }
+
+    func test_itemSelector_when_populatePointOfSaleItems_then_state_is_loaded() async {
+        // Given
+        XCTAssertEqual(itemSelector.state, .loading)
+
+        // When
+        await itemSelector.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(itemSelector.state, .loaded)
+    }
+
+    func test_itemSelector_when_reload_then_state_is_loaded() async {
+        // Given
+        XCTAssertEqual(itemSelector.state, .loading)
+        
+        // When
+        await itemSelector.reload()
+
+        // Then
+        XCTAssertEqual(itemSelector.state, .loaded)
+    }
+
 }
 
 private extension ItemSelectorViewModelTests {

@@ -118,8 +118,8 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
             case .almostDone:
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.secondary.almostDone",
-                    value: "Where was it made?",
-                    comment: "State prompting for the manufacturing location of the product for the prompt description in product creation with AI."
+                    value: "Mention additional relevant information or characteristics.",
+                    comment: "State prompting for more additional relevant info of the product for the prompt description in product creation with AI."
                 )
             case .completed:
                 return NSLocalizedString(

@@ -84,7 +84,7 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.main.almostDone",
                     value: "Almost there.",
-                    comment: "State when the prompt description is great for the main prompt description suggestion in product creation with AI."
+                    comment: "State when the prompt description is almost there for the main prompt description suggestion in product creation with AI."
                 ) + " "
             case .completed:
                 return NSLocalizedString(

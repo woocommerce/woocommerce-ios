@@ -7,7 +7,7 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     let title: String
     let initialURL: URL?
 
-    /// Optional closure for when a web page loads successfully.
+    /// Optional closure for when the web page loads the initial URL successfully.
     let pageLoadHandler: ((URL) -> Void)?
 
     /// A url to trigger dismissing of the web view.

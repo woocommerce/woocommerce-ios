@@ -58,7 +58,7 @@ struct WebView: UIViewRepresentable {
     /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
 
-    /// Optional closure for when a web page loads successfully.
+    /// Optional closure for when the web page loads the initial URL successfully.
     let pageLoadHandler: ((URL) -> Void)?
 
     /// Closure to determine the action given the redirect URL.

@@ -23,7 +23,7 @@ struct ProductCreationAIPromptProgressBar: View {
             .animation(.easeIn, value: viewModel.status)
             .padding(.top, Layout.padding/2)
         })
-        .padding([.top, .bottom, .leading, .trailing], Layout.padding)
+        .padding(Layout.padding)
         .background(Color(UIColor.listBackground))
         .cornerRadius(Layout.radius)
         .onChange(of: text, perform: { newText in

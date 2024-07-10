@@ -7,9 +7,15 @@ extension WooAnalyticsEvent {
             case myStore = "my_store"
         }
 
+        enum FlowType: String {
+            case campaignCreation = "campaign_creation"
+            case dashboard = "dashboard"
+        }
+
         private enum Keys: String {
             case hasCampaigns = "has_campaigns"
             case source
+            case type
         }
 
         /// When the Google for Woo entry point is shown to the user.
@@ -19,9 +25,10 @@ extension WooAnalyticsEvent {
         }
 
         /// When the Google for Woo entry point is tapped by the user and opens to campaign creation.
-        static func entryPointTapped(source: Source, hasCampaigns: Bool) -> WooAnalyticsEvent {
+        static func entryPointTapped(source: Source, type: FlowType, hasCampaigns: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .googleAdsEntryPointTapped,
                               properties: [Keys.source.rawValue: source.rawValue,
+                                           Keys.type.rawValue: type.rawValue,
                                            Keys.hasCampaigns.rawValue: hasCampaigns])
         }
 

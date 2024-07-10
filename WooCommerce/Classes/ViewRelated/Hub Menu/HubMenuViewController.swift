@@ -103,9 +103,7 @@ private extension HubMenuViewController {
                 guard createdNewCampaign else {
                     return
                 }
-                Task { @MainActor in
-                    await self?.viewModel.refreshGoogleAdsCampaignCheck()
-                }
+                self?.viewModel.refreshGoogleAdsCampaignCheck()
             }
         )
         googleAdsCampaignCoordinator?.start()

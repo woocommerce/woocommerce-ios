@@ -269,26 +269,17 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 // MARK: - Undo edits
 //
 extension ProductDetailPreviewViewModel {
-    func undoEdits(in field: EditableField) {
+    func undoEdits(in updatedField: EditableField) {
         guard let generatedAIProduct else {
             return
         }
 
-        switch field {
-        case .name:
-            options[selectedOptionIndex] = NameSummaryDescOption(name: generatedAIProduct.names[selectedOptionIndex],
-                                                                 shortDescription: productShortDescription,
-                                                                 description: productDescription)
-        case .shortDescription:
-
-            options[selectedOptionIndex] = NameSummaryDescOption(name: productName,
-                                                                 shortDescription: generatedAIProduct.shortDescriptions[selectedOptionIndex],
-                                                                 description: productDescription)
-        case .description:
-            options[selectedOptionIndex] = NameSummaryDescOption(name: productName,
-                                                                 shortDescription: productShortDescription,
-                                                                 description: generatedAIProduct.descriptions[selectedOptionIndex])
-        }
+        let name = updatedField != .name ? productName : generatedAIProduct.names[selectedOptionIndex]
+        let shortDescription = updatedField != .shortDescription ? productShortDescription : generatedAIProduct.shortDescriptions[selectedOptionIndex]
+        let description = updatedField != .description ? productDescription : generatedAIProduct.descriptions[selectedOptionIndex]
+        options[selectedOptionIndex] = NameSummaryDescOption(name: name,
+                                                             shortDescription: shortDescription,
+                                                             description: description)
     }
 
     private func saveCurrentOption() {

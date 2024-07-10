@@ -102,6 +102,7 @@ final class TotalsViewModel: ObservableObject {
     func startNewTransaction() {
         paymentState = .acceptingCard
         clearOrder()
+        cardPresentPaymentInlineMessage = nil
     }
 
     @MainActor

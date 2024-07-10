@@ -27,9 +27,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var generatedAIProduct: AIProduct?
 
     @Published private(set) var selectedOptionIndex: Int = 0
-    @Published private var options: [NameSummaryDescOption] = [NameSummaryDescOption(name: "",
-                                                                                     shortDescription: "",
-                                                                                     description: "")]
+    @Published private var options: [NameSummaryDescOption] = []
 
     @Published var productName = ""
     @Published var productDescription = ""

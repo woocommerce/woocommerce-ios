@@ -9,18 +9,16 @@ struct ProductCreationAIBarProgressStyle: ProgressViewStyle {
         let progress = configuration.fractionCompleted ?? 0.0
 
         GeometryReader { geometry in
-            VStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: Layout.radius)
-                    .fill(color.opacity(0.5))
-                    .frame(height: Layout.height)
-                    .frame(width: geometry.size.width)
-                    .overlay(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: Layout.radius)
-                            .fill(color)
-                            .frame(width: geometry.size.width * progress)
-                            .animation(.linear, value: progress)
-                    }
-            }
+            RoundedRectangle(cornerRadius: Layout.radius)
+                .fill(color.opacity(0.5))
+                .frame(height: Layout.height)
+                .frame(width: geometry.size.width)
+                .overlay(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: Layout.radius)
+                        .fill(color)
+                        .frame(width: geometry.size.width * progress)
+                        .animation(.linear, value: progress)
+                }
         }
     }
 }

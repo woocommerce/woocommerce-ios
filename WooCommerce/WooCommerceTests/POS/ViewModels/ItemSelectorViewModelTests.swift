@@ -78,10 +78,25 @@ final class ItemSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(itemSelector.state, .loaded)
     }
 
+    func test_itemSelector_when_populatePointOfSaleItems_throws_error_then_state_is_error() async {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldThrowError = true
+        let itemSelector = ItemSelectorViewModel(itemProvider: itemProvider)
+
+        XCTAssertEqual(itemSelector.state, .loading)
+
+        // When
+        await itemSelector.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(itemSelector.state, .error)
+    }
+
     func test_itemSelector_when_reload_then_state_is_loaded() async {
         // Given
         XCTAssertEqual(itemSelector.state, .loading)
-        
+
         // When
         await itemSelector.reload()
 
@@ -89,13 +104,32 @@ final class ItemSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(itemSelector.state, .loaded)
     }
 
+    func test_itemSelector_when_reload_throws_error_then_state_is_error() async {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldThrowError = true
+        let itemSelector = ItemSelectorViewModel(itemProvider: itemProvider)
+
+        XCTAssertEqual(itemSelector.state, .loading)
+
+        // When
+        await itemSelector.reload()
+
+        // Then
+        XCTAssertEqual(itemSelector.state, .error)
+    }
+
 }
 
 private extension ItemSelectorViewModelTests {
     final class MockPOSItemProvider: POSItemProvider {
         var items: [POSItem] = []
+        var shouldThrowError = false
 
         func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+            if shouldThrowError {
+                throw NSError(domain: "Some error", code: 0)
+            }
             let item = makeItem()
             return [item]
         }

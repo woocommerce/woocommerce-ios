@@ -34,10 +34,11 @@ final class ItemSelectorViewModel: ObservableObject {
     func populatePointOfSaleItems() async {
         do {
             items = try await itemProvider.providePointOfSaleItems()
+            state = .loaded
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
+            state = .error
         }
-        state = .loaded
     }
 
     @MainActor
@@ -47,9 +48,10 @@ final class ItemSelectorViewModel: ObservableObject {
             // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
             items.removeAll()
             items = newItems
+            state = .loaded
         } catch {
             DDLogError("Error on reload while updating product data: \(error)")
+            state = .error
         }
-        state = .loaded
     }
 }

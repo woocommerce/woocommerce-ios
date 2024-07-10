@@ -19,6 +19,10 @@ struct ItemListView: View {
                 Spacer()
                 Text("Loading...")
                 Spacer()
+            } else if viewModel.state == .error {
+                Spacer()
+                Text("Error!!")
+                Spacer()
             } else {
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in

@@ -7,6 +7,9 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     let title: String
     let initialURL: URL?
 
+    /// Optional closure for when a web page loads successfully.
+    let pageLoadHandler: ((URL) -> Void)?
+
     /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
 
@@ -22,11 +25,13 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
+         pageLoadHandler: ((URL) -> Void)? = nil,
          redirectHandler: ((URL) -> Void)? = nil,
          errorHandler: ((Error) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
+        self.pageLoadHandler = pageLoadHandler
         self.redirectHandler = redirectHandler
         self.errorHandler = errorHandler
     }
@@ -51,6 +56,10 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
+    }
+
+    func didFinishNavigation(for url: URL) {
+        pageLoadHandler?(url)
     }
 
     func didFailProvisionalNavigation(with error: Error) {

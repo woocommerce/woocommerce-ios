@@ -11,6 +11,7 @@ final class WebViewHostingController: UIHostingController<WebView> {
          disableLinkClicking: Bool = false,
          onCommit: ((WKWebView)->Void)? = nil,
          urlToTriggerExit: String? = nil,
+         pageLoadHandler: ((URL) -> Void)? = nil,
          redirectHandler: ((URL) -> Void)? = nil,
          errorHandler: ((Error) -> Void)? = nil) {
         super.init(rootView: WebView(isPresented: .constant(true),
@@ -18,6 +19,7 @@ final class WebViewHostingController: UIHostingController<WebView> {
                                      disableLinkClicking: disableLinkClicking,
                                      onCommit: onCommit,
                                      urlToTriggerExit: urlToTriggerExit,
+                                     pageLoadHandler: pageLoadHandler,
                                      redirectHandler: redirectHandler,
                                      errorHandler: errorHandler))
     }
@@ -56,6 +58,9 @@ struct WebView: UIViewRepresentable {
     /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
 
+    /// Optional closure for when a web page loads successfully.
+    let pageLoadHandler: ((URL) -> Void)?
+
     /// Closure to determine the action given the redirect URL.
     /// If `urlToTriggerExit` is provided, this closure is triggered only when
     /// a redirect URL matches `urlToTriggerExit`.
@@ -73,6 +78,7 @@ struct WebView: UIViewRepresentable {
         disableLinkClicking: Bool = false,
         onCommit: ((WKWebView)->Void)? = nil,
         urlToTriggerExit: String? = nil,
+        pageLoadHandler: ((URL) -> Void)? = nil,
         redirectHandler: ((URL) -> Void)? = nil,
         errorHandler: ((Error) -> Void)? = nil
     ) {
@@ -81,6 +87,7 @@ struct WebView: UIViewRepresentable {
         self.disableLinkClicking = disableLinkClicking
         self.onCommit = onCommit
         self.urlToTriggerExit = urlToTriggerExit
+        self.pageLoadHandler = pageLoadHandler
         self.redirectHandler = redirectHandler
         self.errorHandler = errorHandler
     }
@@ -152,6 +159,13 @@ struct WebView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
             parent.onCommit?(webView)
+        }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            guard let url = webView.url else {
+                return
+            }
+            parent.pageLoadHandler?(url)
         }
 
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {

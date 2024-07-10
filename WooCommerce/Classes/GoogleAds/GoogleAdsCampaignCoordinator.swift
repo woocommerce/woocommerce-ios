@@ -70,12 +70,16 @@ private extension GoogleAdsCampaignCoordinator {
     }
 
     func createCampaignViewController(with url: URL) -> UIViewController {
-        let redirectHandler: (URL) -> Void = { [weak self] newURL in
+        let pageLoadHandler: (URL) -> Void = { [weak self] newURL in
             guard let self else { return }
-            if !hasTrackedStartEvent {
+            if newURL == url, !hasTrackedStartEvent {
                 ServiceLocator.analytics.track(event: .GoogleAds.flowStarted(source: source))
                 hasTrackedStartEvent = true
             }
+        }
+
+        let redirectHandler: (URL) -> Void = { [weak self] newURL in
+            guard let self else { return }
             if newURL != url {
                 checkIfCampaignCreationSucceeded(url: newURL)
             }
@@ -90,12 +94,14 @@ private extension GoogleAdsCampaignCoordinator {
             let viewModel = DefaultAuthenticatedWebViewModel(
                 title: Localization.googleForWooCommerce,
                 initialURL: url,
+                pageLoadHandler: pageLoadHandler,
                 redirectHandler: redirectHandler,
                 errorHandler: errorHandler
             )
             return AuthenticatedWebViewController(viewModel: viewModel)
         } else {
             let controller = WebViewHostingController(url: url,
+                                                      pageLoadHandler: pageLoadHandler,
                                                       redirectHandler: redirectHandler,
                                                       errorHandler: errorHandler)
             controller.title = Localization.googleForWooCommerce

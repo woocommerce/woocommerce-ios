@@ -118,7 +118,7 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         XCTAssertEqual(status.color, Color(uiColor: .withColorStudio(.yellow, shade: .shade50)))
         XCTAssertEqual(status.mainDescription, NSLocalizedString(
             "productCreationAIPromptProgressBar.main.almostDone",
-            value: "Great prompt! ",
+            value: "Almost there.",
             comment: "State when the prompt description is great for the main prompt description suggestion in product creation with AI."
         ))
         // You should add the actual expected value for the secondary description

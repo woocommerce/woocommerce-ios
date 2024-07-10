@@ -5,7 +5,7 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
     @State private var isShowingErrorAlert: Bool = false
-    @FocusState private var focusedField: ProductDetailPreviewViewModel.ProductDetailField?
+    @FocusState private var focusedField: ProductDetailPreviewViewModel.EditableField?
 
     private let onDismiss: () -> Void
 
@@ -169,9 +169,9 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .name,
                           shouldEnableUndo: viewModel.hasChangesToProductName,
                           onUndoEdits: {
-            viewModel.undoEdits(in: ProductDetailPreviewViewModel.ProductDetailField.name)
+            viewModel.undoEdits(in: .name)
         })
-        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.name)
+        .focused($focusedField, equals: .name)
     }
 
     var shortDescriptionTextField: some View {
@@ -181,9 +181,9 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .shortDescription,
                           shouldEnableUndo: viewModel.hasChangesToProductShortDescription,
                           onUndoEdits: {
-            viewModel.undoEdits(in: ProductDetailPreviewViewModel.ProductDetailField.shortDescription)
+            viewModel.undoEdits(in: .shortDescription)
         })
-        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.shortDescription)
+        .focused($focusedField, equals: .shortDescription)
     }
 
     var descriptionTextField: some View {
@@ -195,7 +195,7 @@ private extension ProductDetailPreviewView {
                           onUndoEdits: {
             viewModel.undoEdits(in: .description)
         })
-        .focused($focusedField, equals: ProductDetailPreviewViewModel.ProductDetailField.description)
+        .focused($focusedField, equals: .description)
     }
 
     var summaryOptionsSwitch: some View {

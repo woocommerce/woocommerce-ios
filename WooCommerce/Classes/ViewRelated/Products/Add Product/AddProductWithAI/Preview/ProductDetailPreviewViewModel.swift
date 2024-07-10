@@ -268,16 +268,16 @@ extension ProductDetailPreviewViewModel {
         switch field {
         case .name:
             options[selectedOptionIndex] = NameSummaryDescOption(name: generatedAIProduct.names[selectedOptionIndex],
-                                                                 shortDescription: option.shortDescription,
-                                                                 description: option.description)
+                                                                 shortDescription: productShortDescription,
+                                                                 description: productDescription)
         case .shortDescription:
 
-            options[selectedOptionIndex] = NameSummaryDescOption(name: option.name,
+            options[selectedOptionIndex] = NameSummaryDescOption(name: productName,
                                                                  shortDescription: generatedAIProduct.shortDescriptions[selectedOptionIndex],
-                                                                 description: option.description)
+                                                                 description: productDescription)
         case .description:
-            options[selectedOptionIndex] = NameSummaryDescOption(name: option.name,
-                                                                 shortDescription: option.shortDescription,
+            options[selectedOptionIndex] = NameSummaryDescOption(name: productName,
+                                                                 shortDescription: productShortDescription,
                                                                  description: generatedAIProduct.descriptions[selectedOptionIndex])
         }
     }

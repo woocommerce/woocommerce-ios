@@ -97,11 +97,6 @@ struct ProductCreationAIStartingInfoView: View {
                 ViewPackagePhoto(image: image.image, isShowing: $viewModel.isShowingViewPhotoSheet)
             }
         })
-        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-            Task { @MainActor in
-                await viewModel.selectImage(from: source)
-            }
-        })
         .notice($viewModel.notice)
     }
 }
@@ -128,6 +123,11 @@ private extension ProductCreationAIStartingInfoView {
             }
             Spacer()
         }
+        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+            Task { @MainActor in
+                await viewModel.selectImage(from: source)
+            }
+        })
     }
 
     var placeholderText: some View {

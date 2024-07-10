@@ -73,7 +73,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedCartCollapsedState = false
 
         // When
-        sut.itemSelectorViewModel.select(item)
+        sut.itemListViewModel.select(item)
 
         // Then
         XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)

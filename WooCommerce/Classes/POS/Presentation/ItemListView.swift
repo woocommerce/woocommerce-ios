@@ -2,24 +2,21 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ObservedObject var viewModel: ItemSelectorViewModel
+    @ObservedObject var viewModel: ItemListViewModel
 
-    init(viewModel: ItemSelectorViewModel) {
+    init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
         VStack {
-            Text("Products")
+            Text(Localization.productSelectorTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
-            if viewModel.isSyncingItems {
-                Spacer()
-                Text("Loading...")
-                Spacer()
-            } else {
+            switch viewModel.state {
+            case .loaded:
                 ScrollView {
                     ForEach(viewModel.items, id: \.productID) { item in
                         Button(action: {
@@ -29,6 +26,10 @@ struct ItemListView: View {
                         })
                     }
                 }
+            case .loading:
+                loadingView
+            case .error:
+                errorView
             }
         }
         .refreshable {
@@ -39,14 +40,49 @@ struct ItemListView: View {
     }
 }
 
+/// View Helpers
+///
+private extension ItemListView {
+    var loadingView: some View {
+        VStack {
+            Spacer()
+            Text("Loading...")
+            Spacer()
+        }
+    }
+
+    var errorView: some View {
+        VStack {
+            Spacer()
+            Text("Error!!")
+            Button(action: {
+                Task {
+                    await viewModel.populatePointOfSaleItems()
+                }
+            }, label: { Text("Retry") })
+            Spacer()
+        }
+    }
+}
+
+/// Constants
+///
 private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
+    }
+
+    enum Localization {
+        static let productSelectorTitle = NSLocalizedString(
+            "pos.itemlistview.productSelectorTitle",
+            value: "Products",
+            comment: "Title of the Point of Sale product selector"
+        )
     }
 }
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemSelectorViewModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
 }
 #endif

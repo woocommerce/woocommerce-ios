@@ -10,7 +10,7 @@ struct ProductCreationAIBarProgressStyle: ProgressViewStyle {
 
         GeometryReader { geometry in
             RoundedRectangle(cornerRadius: Layout.radius)
-                .fill(color.opacity(0.5))
+                .fill(color.opacity(Constants.opacity))
                 .frame(height: Layout.height)
                 .frame(width: geometry.size.width)
                 .overlay(alignment: .leading) {
@@ -27,6 +27,10 @@ private extension ProductCreationAIBarProgressStyle {
     enum Layout {
         static let height: CGFloat = 4
         static let radius: CGFloat = 8
+    }
+    
+    enum Constants {
+        static let opacity: CGFloat = 0.5
     }
 }
 

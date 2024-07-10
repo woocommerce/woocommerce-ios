@@ -388,6 +388,7 @@ private extension HubMenuViewModel {
         $isSiteEligibleForGoogleAds.removeDuplicates()
             .combineLatest($viewAppeared)
             .filter { isEligible, viewAppeared in
+                // only tracks the display if the view appeared
                 return isEligible && viewAppeared
             }
             .sink { _ in

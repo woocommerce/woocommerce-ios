@@ -97,6 +97,7 @@ private extension GoogleAdsDashboardCardViewModel {
         $canShowOnDashboard.removeDuplicates()
             .combineLatest($syncingData.removeDuplicates(), $viewAppeared)
             .filter { canShow, syncingData, viewAppeared in
+                // only tracks the display if the view is done loaded and visible.
                 return canShow && !syncingData && viewAppeared
             }
             .sink { [weak self] _ in

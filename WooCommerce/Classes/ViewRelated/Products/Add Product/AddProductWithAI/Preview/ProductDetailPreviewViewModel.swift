@@ -75,21 +75,36 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         guard let generatedAIProduct else {
             return false
         }
-        return productName != generatedAIProduct.names[selectedOptionIndex]
+
+        guard let original = generatedAIProduct.names[safe: selectedOptionIndex] else {
+            return false
+        }
+
+        return productName != original
     }
 
     var hasChangesToProductShortDescription: Bool {
         guard let generatedAIProduct else {
             return false
         }
-        return productShortDescription != generatedAIProduct.shortDescriptions[selectedOptionIndex]
+
+        guard let original = generatedAIProduct.shortDescriptions[safe: selectedOptionIndex] else {
+            return false
+        }
+
+        return productShortDescription != original
     }
 
     var hasChangesToProductDescription: Bool {
         guard let generatedAIProduct else {
             return false
         }
-        return productDescription != generatedAIProduct.descriptions[selectedOptionIndex]
+
+        guard let original = generatedAIProduct.descriptions[safe: selectedOptionIndex] else {
+            return false
+        }
+
+        return productDescription != original
     }
 
     private let productFeatures: String

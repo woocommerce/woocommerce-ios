@@ -4,7 +4,7 @@ import Yosemite
 /// Analytics Hub Google Ads Campaign Card ViewModel.
 /// Used to transmit Google Ads campaigns analytics data.
 ///
-final class GoogleAdsCampaignReportCardViewModel {
+final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     /// Campaign stats for the current period
     ///
     private var currentPeriodStats: GoogleAdsCampaignStats?
@@ -29,6 +29,14 @@ final class GoogleAdsCampaignReportCardViewModel {
     ///
     var isRedacted: Bool
 
+    /// All available stats for Google Ads campaigns.
+    ///
+    let allStats = GoogleAdsCampaignStatsTotals.TotalData.allCases
+
+    /// The currently selected stat to display.
+    ///
+    @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData
+
     init(currentPeriodStats: GoogleAdsCampaignStats?,
          previousPeriodStats: GoogleAdsCampaignStats?,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
@@ -41,6 +49,7 @@ final class GoogleAdsCampaignReportCardViewModel {
         self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
+        self.selectedStat = .sales
     }
 }
 
@@ -187,5 +196,46 @@ private extension GoogleAdsCampaignReportCardViewModel {
                                                                + "The placeholder is a formatted monetary amount, e.g. Spend: $123."),
                                              value)
         }
+    }
+}
+
+// MARK: - Methods for rendering a SwiftUI Preview
+extension GoogleAdsCampaignReportCardViewModel {
+    static func sampleStats() -> GoogleAdsCampaignStats {
+        GoogleAdsCampaignStats(siteID: 1234,
+                               totals: GoogleAdsCampaignStatsTotals(sales: 2234, spend: nil, clicks: nil, impressions: nil, conversions: nil),
+                               campaigns: [GoogleAdsCampaignStatsItem(campaignID: 1,
+                                                                      campaignName: "Spring Sale Campaign",
+                                                                      rawStatus: "enabled",
+                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 1232,
+                                                                                                              spend: 100,
+                                                                                                              clicks: nil,
+                                                                                                              impressions: nil,
+                                                                                                              conversions: nil)),
+                                           GoogleAdsCampaignStatsItem(campaignID: 2,
+                                                                      campaignName: "Summer Campaign",
+                                                                      rawStatus: "enabled",
+                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 800,
+                                                                                                              spend: 50,
+                                                                                                              clicks: nil,
+                                                                                                              impressions: nil,
+                                                                                                              conversions: nil)),
+                                           GoogleAdsCampaignStatsItem(campaignID: 3,
+                                                                      campaignName: "Winter Campaign",
+                                                                      rawStatus: "enabled",
+                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 750,
+                                                                                                              spend: 50,
+                                                                                                              clicks: nil,
+                                                                                                              impressions: nil,
+                                                                                                              conversions: nil)),
+                                           GoogleAdsCampaignStatsItem(campaignID: 4,
+                                                                      campaignName: "New Year Campaign",
+                                                                      rawStatus: "enabled",
+                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 200,
+                                                                                                              spend: 25,
+                                                                                                              clicks: nil,
+                                                                                                              impressions: nil,
+                                                                                                              conversions: nil))],
+                               nextPageToken: nil)
     }
 }

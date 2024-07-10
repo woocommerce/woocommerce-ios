@@ -44,6 +44,14 @@ class OrderLoaderViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// ResultsController: Queries for the current order.
+    ///
+    private lazy var orderResultsController: ResultsController<StorageOrder> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld AND orderID == %lld", siteID, orderID)
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// The current list of order statuses for the default site
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -87,6 +95,12 @@ private extension OrderLoaderViewController {
     /// Loads (and displays) the specified Order.
     ///
     func reloadOrder() {
+        // If we have an stored order there is no point on re-loading it now and delaying the user interface.
+        // In any the OrderDetailViewController will reload the order data.
+        if let storedOrder = orderResultsController.fetchedObjects.first {
+            return self.state = .success(order: storedOrder)
+        }
+
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let self = self else {
                 return
@@ -117,6 +131,7 @@ private extension OrderLoaderViewController {
         // Order status FRC
         do {
             try statusResultsController.performFetch()
+            try? orderResultsController.performFetch()
         } catch {
             DDLogError("⛔️ Unable to fetch Order Status for Site \(siteID) and Order \(orderID): \(error)")
         }

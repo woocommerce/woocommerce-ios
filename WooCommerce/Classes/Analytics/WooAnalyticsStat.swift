@@ -1226,6 +1226,14 @@ enum WooAnalyticsStat: String {
     case watchOrdersListOpened = "watch_orders_list_opened"
     case watchPushNotificationTapped = "watch_push_notification_tapped"
     case watchOrderDetailOpened = "watch_order_detail_opened"
+
+    // MARK: Google ads campaign management
+    case googleAdsEntryPointDisplayed = "googleads_entry_point_displayed"
+    case googleAdsEntryPointTapped = "googleads_entry_point_tapped"
+    case googleAdsFlowStarted = "googleads_flow_started"
+    case googleAdsFlowCanceled = "googleads_flow_canceled"
+    case googleAdsFlowError = "googleads_flow_error"
+    case googleAdsCampaignCreationSuccess = "googleads_campaign_creation_success"
 }
 
 extension WooAnalyticsStat {

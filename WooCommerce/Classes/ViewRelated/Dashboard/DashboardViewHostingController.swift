@@ -325,13 +325,25 @@ private extension DashboardViewHostingController {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: viewModel.siteID,
             siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
+            source: .myStore,
             shouldStartCampaignCreation: forCampaignCreation,
             shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { [weak self] createdNewCampaign in
+                if createdNewCampaign {
+                    self?.viewModel.googleAdsDashboardCardViewModel.reloadCard()
+                }
+            }
         )
         coordinator.start()
         googleAdsCampaignCoordinator = coordinator
+
+        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.lastCampaign != nil
+        ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
+            source: .myStore,
+            type: forCampaignCreation ? .campaignCreation : .dashboard,
+            hasCampaigns: hasCampaigns
+        ))
     }
 }
 

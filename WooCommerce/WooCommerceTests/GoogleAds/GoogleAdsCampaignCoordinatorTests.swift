@@ -25,10 +25,11 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: 123,
             siteAdminURL: siteAdminURL,
+            source: .myStore,
             shouldStartCampaignCreation: true,
             shouldAuthenticateAdminPage: false,
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { _ in }
         )
 
         // When
@@ -44,10 +45,11 @@ final class GoogleAdsCampaignCoordinatorTests: XCTestCase {
         let coordinator = GoogleAdsCampaignCoordinator(
             siteID: 123,
             siteAdminURL: siteAdminURL,
+            source: .myStore,
             shouldStartCampaignCreation: true,
             shouldAuthenticateAdminPage: true,
             navigationController: navigationController,
-            onCompletion: {}
+            onCompletion: { _ in }
         )
 
         // When

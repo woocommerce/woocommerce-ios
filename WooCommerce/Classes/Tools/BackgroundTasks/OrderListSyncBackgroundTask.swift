@@ -4,7 +4,7 @@ import Yosemite
 
 /// Task to sync orders in the background
 ///
-struct OrderSyncBackgroundTask {
+struct OrderListSyncBackgroundTask {
 
     /// The last time we successfully run a sync update.
     ///
@@ -21,9 +21,9 @@ struct OrderSyncBackgroundTask {
 
     let stores: StoresManager
 
-    let backgroundTask: BGAppRefreshTask
+    let backgroundTask: BGAppRefreshTask?
 
-    init(siteID: Int64, backgroundTask: BGAppRefreshTask, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, backgroundTask: BGAppRefreshTask?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.backgroundTask = backgroundTask
         self.stores = stores
@@ -36,17 +36,40 @@ struct OrderSyncBackgroundTask {
     func dispatch() -> Task<Void, Never> {
         Task { @MainActor in
             do {
-                let filters = await fetchFilters()
-                try await syncOrders(filters: filters)
-                Self.latestSyncDate = Date.now
 
-                DDLogError("🟢 Successfully synced orders in the background")
-                backgroundTask.setTaskCompleted(success: true)
+                DDLogInfo("📱 Synchronizing orders in the background...")
+
+                let useCase = CurrentOrderListSyncUseCase(siteID: siteID, stores: stores)
+                try await useCase.sync()
+
+                DDLogInfo("📱 Successfully synchronized orders in the background")
+                backgroundTask?.setTaskCompleted(success: true)
             } catch {
-                DDLogError("⛔️ Error synching orders in the background: \(error)")
-                backgroundTask.setTaskCompleted(success: false)
+                DDLogError("⛔️ Error synchronizing orders in the background: \(error)")
+                backgroundTask?.setTaskCompleted(success: false)
             }
         }
+    }
+}
+
+/// UseCase to sync the order list with the current store filters.
+///
+private struct CurrentOrderListSyncUseCase {
+
+    let siteID: Int64
+
+    let stores: StoresManager
+
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+        self.siteID = siteID
+        self.stores = stores
+    }
+
+    /// Syncs the order list with the current store filters.
+    ///
+    func sync() async throws {
+        let filters = await fetchFilters()
+        try await syncOrders(filters: filters)
     }
 
     /// Fetch the stored filters settings.
@@ -86,7 +109,7 @@ struct OrderSyncBackgroundTask {
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: ())
+                    continuation.resume()
                 }
             })
             stores.dispatch(action)

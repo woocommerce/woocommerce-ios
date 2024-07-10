@@ -421,7 +421,7 @@ private extension DashboardViewModel {
                     }
                 case .googleAds:
                     group.addTask { [weak self] in
-                        await self?.googleAdsDashboardCardViewModel.fetchLastCampaign()
+                        await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
                 }
             }

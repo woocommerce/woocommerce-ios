@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
@@ -26,9 +27,13 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
 
     @Published private(set) var canShowOnDashboard = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var syncingData = false
+    @Published private(set) var syncingData = true
     @Published private(set) var lastCampaign: GoogleAdsCampaign?
     @Published private(set) var lastCampaignStats: GoogleAdsCampaignStatsTotals?
+
+    @Published private var viewAppeared = false
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
@@ -38,6 +43,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.eligibilityChecker = eligibilityChecker
+        trackEntryPointDisplayedIfNeeded()
     }
 
     @MainActor
@@ -51,7 +57,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     }
 
     @MainActor
-    func fetchLastCampaign() async {
+    func reloadCard() async {
         syncingError = nil
         syncingData = true
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
@@ -79,9 +85,33 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
             DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
         }
     }
+
+    func onViewAppear() {
+        viewAppeared = true
+    }
+
+    func reloadCard() {
+        Task {
+            await reloadCard()
+        }
+    }
 }
 
 private extension GoogleAdsDashboardCardViewModel {
+
+    func trackEntryPointDisplayedIfNeeded() {
+        $canShowOnDashboard.removeDuplicates()
+            .combineLatest($syncingData.removeDuplicates(), $viewAppeared)
+            .filter { canShow, syncingData, viewAppeared in
+                // only tracks the display if the view is done loaded and visible.
+                return canShow && !syncingData && viewAppeared
+            }
+            .sink { [weak self] _ in
+                guard let self else { return }
+                analytics.track(event: .GoogleAds.entryPointDisplayed(source: .myStore))
+            }
+            .store(in: &subscriptions)
+    }
 
     @MainActor
     func fetchAdsCampaigns() async throws -> [GoogleAdsCampaign] {

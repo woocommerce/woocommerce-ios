@@ -206,12 +206,12 @@ private extension ProductDetailPreviewView {
             Spacer()
 
             OptionSwitchButton(isForward: false) {
-                viewModel.previous()
+                viewModel.switchToPreviousOption()
             }
             .disabled(!viewModel.canSelectPreviousOption)
 
             OptionSwitchButton(isForward: true) {
-                viewModel.next()
+                viewModel.switchToNextOption()
             }
             .disabled(!viewModel.canSelectNextOption)
         }

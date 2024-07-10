@@ -547,7 +547,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productShortDescription, Self.sampleShortDescriptions.first)
 
         // When
-        viewModel.next()
+        viewModel.switchToNextOption()
 
         // Then
         XCTAssertEqual(viewModel.productName, Self.sampleNames[1])
@@ -555,7 +555,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productShortDescription, Self.sampleShortDescriptions[1])
 
         // When
-        viewModel.previous()
+        viewModel.switchToPreviousOption()
 
         // Then
         XCTAssertEqual(viewModel.productName, Self.sampleNames.first)
@@ -635,14 +635,14 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canSelectPreviousOption)
 
         // When
-        viewModel.next()
+        viewModel.switchToNextOption()
 
         // Then
         XCTAssertTrue(viewModel.canSelectNextOption)
         XCTAssertTrue(viewModel.canSelectPreviousOption)
 
         // When
-        viewModel.next()
+        viewModel.switchToNextOption()
 
         // Then
         XCTAssertFalse(viewModel.canSelectNextOption)

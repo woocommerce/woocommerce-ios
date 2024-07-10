@@ -227,7 +227,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 
     // MARK: Switch options
-    func next() {
+    func switchToNextOption() {
         guard let generatedAIProduct else {
             return
         }
@@ -240,7 +240,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         selectedOptionIndex = selectedOptionIndex + 1
     }
 
-    func previous() {
+    func switchToPreviousOption() {
         guard selectedOptionIndex > 0 else {
             return
         }

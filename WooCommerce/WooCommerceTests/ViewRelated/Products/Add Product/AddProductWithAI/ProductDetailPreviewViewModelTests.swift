@@ -241,6 +241,80 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(identifyingLanguageRequestCount, 1)
     }
 
+    func test_categories_are_synced_only_once_when_generating_product_details_again() async {
+        // Given
+        let productFeatures = "Ballpoint, Blue ink, ABS plastic"
+        var syncCategoriesRequestCount = 0
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productFeatures: productFeatures,
+                                                      imageState: .empty,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions()
+        mockProductTagActions()
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                syncCategoriesRequestCount += 1
+                completion(nil)
+            case let .addProductCategories(siteID, names, _, completion):
+                completion(.success(names.map({ ProductCategory.fake().copy(siteID: siteID, name: $0) })))
+            default:
+                break
+            }
+        }
+
+        // When
+        await viewModel.generateProductDetails()
+        // Retry once
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertEqual(syncCategoriesRequestCount, 1)
+    }
+
+    func test_tags_are_synced_only_once_when_generating_product_details_again() async {
+        // Given
+        let productFeatures = "Ballpoint, Blue ink, ABS plastic"
+        var syncTagsRequestCount = 0
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productFeatures: productFeatures,
+                                                      imageState: .empty,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        mockProductActions()
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                syncTagsRequestCount += 1
+                completion(nil)
+            case let .addProductTags(siteID, tags, completion):
+                completion(.success(tags.map({ ProductTag.fake().copy(siteID: siteID, name: $0) })))
+            default:
+                break
+            }
+        }
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+        // Retry once
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertEqual(syncTagsRequestCount, 1)
+    }
+
     func test_generateProductDetails_sends_correct_values_to_generate_product_details() async throws {
         // Given
         let sampleSiteID: Int64 = 123

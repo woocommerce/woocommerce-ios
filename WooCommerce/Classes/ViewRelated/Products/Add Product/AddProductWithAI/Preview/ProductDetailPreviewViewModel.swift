@@ -445,15 +445,24 @@ private extension ProductDetailPreviewViewModel {
 private extension ProductDetailPreviewViewModel {
     @MainActor
     func fetchPrerequisites() async throws {
-        await withThrowingTaskGroup(of: Void.self) { group in
+        await withThrowingTaskGroup(of: Void.self) { [weak self] group in
+            guard let self else { return }
             group.addTask {
                 await self.fetchSettingsIfNeeded()
             }
             group.addTask {
+                guard self.hasSyncedCategories == false else {
+                    return
+                }
                 try await self.synchronizeAllCategories()
+                self.hasSyncedCategories = true
             }
             group.addTask {
+                guard self.hasSyncedTags == false else {
+                    return
+                }
                 try await self.synchronizeAllTags()
+                self.hasSyncedTags = true
             }
         }
     }

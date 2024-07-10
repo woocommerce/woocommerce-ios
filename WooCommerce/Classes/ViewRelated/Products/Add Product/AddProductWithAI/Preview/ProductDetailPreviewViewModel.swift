@@ -261,10 +261,6 @@ extension ProductDetailPreviewViewModel {
             return
         }
 
-        guard let option = options[safe: selectedOptionIndex] else {
-            return
-        }
-
         switch field {
         case .name:
             options[selectedOptionIndex] = NameSummaryDescOption(name: generatedAIProduct.names[selectedOptionIndex],

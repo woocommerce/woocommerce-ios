@@ -720,6 +720,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         // When
         viewModel.productName = "Edited name"
+        viewModel.productShortDescription = "Edited short description"
+        viewModel.productDescription = "Edited description"
 
         // Then
         XCTAssertEqual(viewModel.productName, "Edited name")
@@ -729,6 +731,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productName, Self.sampleNames.first)
+        XCTAssertEqual(viewModel.productShortDescription, "Edited short description")
+        XCTAssertEqual(viewModel.productDescription, "Edited description")
     }
 
     func test_it_undoes_changes_in_short_description_field() async throws {
@@ -750,7 +754,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
 
         // When
+        viewModel.productName = "Edited name"
         viewModel.productShortDescription = "Edited short description"
+        viewModel.productDescription = "Edited description"
 
         // Then
         XCTAssertEqual(viewModel.productShortDescription, "Edited short description")
@@ -759,7 +765,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         viewModel.undoEdits(in: .shortDescription)
 
         // Then
+        XCTAssertEqual(viewModel.productName, "Edited name")
         XCTAssertEqual(viewModel.productShortDescription, Self.sampleShortDescriptions.first)
+        XCTAssertEqual(viewModel.productDescription, "Edited description")
     }
 
     func test_it_undoes_changes_in_description_field() async throws {
@@ -781,8 +789,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
 
         // When
+        viewModel.productName = "Edited name"
+        viewModel.productShortDescription = "Edited short description"
         viewModel.productDescription = "Edited description"
-
         // Then
         XCTAssertEqual(viewModel.productDescription, "Edited description")
 
@@ -790,6 +799,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         viewModel.undoEdits(in: .description)
 
         // Then
+        XCTAssertEqual(viewModel.productName, "Edited name")
+        XCTAssertEqual(viewModel.productShortDescription, "Edited short description")
         XCTAssertEqual(viewModel.productDescription, Self.sampleDescriptions.first)
     }
 

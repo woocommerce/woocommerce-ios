@@ -55,7 +55,8 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         let viewModel = ProductCreationAIPromptProgressBarViewModel()
 
         // When
-        viewModel.updateText(to: "This is a test input with thirty five words to check the completed status of the progress bar view model in Swift. Adding more words to ensure it exceeds thirty words.")
+        viewModel.updateText(to: "This is a test input with thirty five words to check the completed status of the progress bar view model in Swift" +
+                             " Adding more words to ensure it exceeds thirty words.")
 
         // Then
         XCTAssertEqual(viewModel.status, .completed)

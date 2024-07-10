@@ -28,7 +28,7 @@ private extension ProductCreationAIBarProgressStyle {
         static let height: CGFloat = 4
         static let radius: CGFloat = 8
     }
-    
+
     enum Constants {
         static let opacity: CGFloat = 0.5
     }

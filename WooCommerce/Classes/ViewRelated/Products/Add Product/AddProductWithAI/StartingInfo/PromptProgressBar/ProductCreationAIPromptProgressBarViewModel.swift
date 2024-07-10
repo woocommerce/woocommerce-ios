@@ -125,7 +125,7 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
                 return NSLocalizedString(
                     "productCreationAIPromptProgressBar.secondary.completed",
                     value: "You've given us enough to work with, but you may add more detail to make it even better.",
-                    comment: "State indicating sufficient details have been provided, but more can be added for the prompt description in product creation with AI."
+                    comment: "State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI."
                 )
             }
         }

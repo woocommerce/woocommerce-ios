@@ -18,7 +18,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     }
 
     var shouldShowShowAllCampaignsButton: Bool {
-        lastCampaign != nil && syncingError == nil
+        hasPaidCampaigns && syncingError == nil
     }
 
     var shouldShowCreateCampaignButton: Bool {
@@ -28,8 +28,9 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     @Published private(set) var canShowOnDashboard = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var syncingData = true
-    @Published private(set) var lastCampaign: GoogleAdsCampaign?
-    @Published private(set) var lastCampaignStats: GoogleAdsCampaignStatsTotals?
+
+    @Published private(set) var hasPaidCampaigns = false
+    @Published private(set) var performanceStats: GoogleAdsCampaignStatsTotals?
 
     @Published private var viewAppeared = false
 
@@ -63,27 +64,21 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .googleAds))
         do {
             let campaigns = try await fetchAdsCampaigns()
-            lastCampaign = {
-                // prioritize showing last enabled campaign.
-                let enabledCampaigns = campaigns.filter { $0.status == .enabled }
-                return enabledCampaigns.last ?? campaigns.last
-            }()
+            hasPaidCampaigns = campaigns.isNotEmpty
 
-            /// Updates the UI immediately after getting last campaign details
-            syncingData = false
-
-            /// Fetches stats for the last campaign
-            if let id = lastCampaign?.id {
-                lastCampaignStats = await retrieveLastCampaignStats(campaignID: id)
+            /// Fetches total performance stats
+            if hasPaidCampaigns {
+                let stats = try await retrieveCampaignStats()
+                performanceStats = stats.totals
             }
 
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))
         } catch {
             syncingError = error
-            syncingData = false
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .googleAds, error: error))
             DDLogError("⛔️ Error loading Google ads campaigns: \(error)")
         }
+        syncingData = false
     }
 
     func onViewAppear() {
@@ -123,25 +118,10 @@ private extension GoogleAdsDashboardCardViewModel {
     }
 
     @MainActor
-    func retrieveLastCampaignStats(campaignID: Int64) async -> GoogleAdsCampaignStatsTotals? {
-        do {
-            let stats = try await retrieveCampaignStats(campaignID: campaignID)
-            guard stats.campaigns.isNotEmpty else {
-                return stats.totals
-            }
-            return stats.campaigns.first(where: { $0.id == campaignID })?.subtotals
-        } catch {
-            DDLogError("⛔️ Error retrieving Google ads campaign stats: \(error)")
-            return nil
-        }
-    }
-
-    @MainActor
-    func retrieveCampaignStats(campaignID: Int64) async throws -> GoogleAdsCampaignStats {
+    func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,
-                campaignIDs: [campaignID],
                 timeZone: TimeZone.siteTimezone,
                 earliestDateToInclude: Date(),
                 latestDateToInclude: Date.distantPast) { result in

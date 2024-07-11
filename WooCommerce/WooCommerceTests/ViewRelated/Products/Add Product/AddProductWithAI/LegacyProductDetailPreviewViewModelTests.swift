@@ -743,6 +743,9 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
         // Given
         let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
+                                      name: "iPhone 15",
+                                      fullDescription: "Description",
+                                      shortDescription: "Short description",
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])
@@ -786,6 +789,9 @@ final class LegacyProductDetailPreviewViewModelTests: XCTestCase {
         var createdProduct: Product?
         let aiProduct = AIProduct.fake().copy(names: ["iPhone 15"])
         let expectedProduct = Product(siteID: 123,
+                                      name: "iPhone 15",
+                                      fullDescription: "Description",
+                                      shortDescription: "Short description",
                                       aiProduct: aiProduct,
                                       categories: [],
                                       tags: [])

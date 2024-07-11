@@ -71,7 +71,7 @@ struct PointOfSaleDashboardView: View {
             }
         })
         .task {
-            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
+            await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
     }
 }
@@ -104,7 +104,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: viewModel.itemSelectorViewModel)
+        ItemListView(viewModel: viewModel.itemListViewModel)
     }
 }
 

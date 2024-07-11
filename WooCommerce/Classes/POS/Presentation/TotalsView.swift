@@ -49,7 +49,7 @@ struct TotalsView: View {
                             Button("Calculate amounts") {
                                 totalsViewModel.calculateAmountsTapped(
                                     with: viewModel.cartViewModel.itemsInCart,
-                                    allItems: viewModel.itemSelectorViewModel.items)
+                                    allItems: viewModel.itemListViewModel.items)
                             }
                         }
                     }

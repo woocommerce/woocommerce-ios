@@ -65,10 +65,10 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedResult = ItemListEmpty(title: "No products",
-                                           subtitle: "Your store doesn't have any products",
-                                           hint: "POS currently only supports simple products",
-                                           buttonText: "Create a simple product")
+        let expectedResult = ItemListViewModel.EmptyModel(title: "No products",
+                                                          subtitle: "Your store doesn't have any products",
+                                                          hint: "POS currently only supports simple products",
+                                                          buttonText: "Create a simple product")
 
         XCTAssertEqual(sut.state, .loading)
 
@@ -84,9 +84,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListError(title: "Error loading products",
-                                          subtitle: "Give it another go?",
-                                          buttonText: "Retry")
+        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
+                                                         subtitle: "Give it another go?",
+                                                         buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .loading)
 
@@ -114,9 +114,9 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedError = ItemListError(title: "Error loading products",
-                                          subtitle: "Give it another go?",
-                                          buttonText: "Retry")
+        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
+                                                         subtitle: "Give it another go?",
+                                                         buttonText: "Retry")
 
         XCTAssertEqual(sut.state, .loading)
 

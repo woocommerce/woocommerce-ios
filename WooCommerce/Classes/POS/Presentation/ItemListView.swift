@@ -46,19 +46,19 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func emptyView(_ emptyVM: ItemListEmpty) -> some View {
+    func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
         VStack {
             Spacer()
-            Text(emptyVM.title)
-            Text(emptyVM.subtitle)
+            Text(content.title)
+            Text(content.subtitle)
             Button(action: {
                 // TODO:
                 // Redirect the merchant to the app in order to create a new product
                 // https://github.com/woocommerce/woocommerce-ios/issues/13297
             }, label: {
-                Text(emptyVM.buttonText)} 
+                Text(content.buttonText)}
             )
-            Text(emptyVM.hint)
+            Text(content.hint)
             Spacer()
         }
     }
@@ -77,15 +77,17 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func errorView(_ errorVM: ItemListError) -> some View {
+    func errorView(_ content: ItemListViewModel.ErrorModel) -> some View {
         VStack {
             Spacer()
-            Text(errorVM.title)
+            Text(content.title)
             Button(action: {
                 Task {
                     await viewModel.populatePointOfSaleItems()
                 }
-            }, label: { Text("Retry") })
+            }, label: {
+                Text(content.buttonText)
+            })
             Spacer()
         }
     }

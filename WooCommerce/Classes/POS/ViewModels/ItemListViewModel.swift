@@ -28,7 +28,7 @@ final class ItemListViewModel: ObservableObject {
             state = .loading
             items = try await itemProvider.providePointOfSaleItems()
             if items.count == 0 {
-                let itemListEmpty = ItemListEmpty(title: Constants.emptyProductsTitle,
+                let itemListEmpty = EmptyModel(title: Constants.emptyProductsTitle,
                                                   subtitle: Constants.emptyProductsSubtitle,
                                                   hint: Constants.emptyProductsHint,
                                                   buttonText: Constants.emptyProductsButtonTitle)
@@ -38,7 +38,7 @@ final class ItemListViewModel: ObservableObject {
             }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
-            let itemListError = ItemListError(title: Constants.failedToLoadTitle,
+            let itemListError = ErrorModel(title: Constants.failedToLoadTitle,
                                       subtitle: Constants.failedToLoadSubtitle,
                                       buttonText: Constants.failedToLoadButtonTitle)
             state = .error(itemListError)
@@ -53,7 +53,7 @@ final class ItemListViewModel: ObservableObject {
             state = .loading
             let newItems = try await itemProvider.providePointOfSaleItems()
             if newItems.count == 0 {
-                let itemListEmpty = ItemListEmpty(title: Constants.emptyProductsTitle,
+                let itemListEmpty = EmptyModel(title: Constants.emptyProductsTitle,
                                                   subtitle: Constants.emptyProductsSubtitle,
                                                   hint: Constants.emptyProductsHint,
                                                   buttonText: Constants.emptyProductsButtonTitle)
@@ -66,7 +66,7 @@ final class ItemListViewModel: ObservableObject {
             }
         } catch {
             DDLogError("Error on reload while updating product data: \(error)")
-            let itemListError = ItemListError(title: Constants.failedToLoadTitle,
+            let itemListError = ErrorModel(title: Constants.failedToLoadTitle,
                                       subtitle: Constants.failedToLoadSubtitle,
                                       buttonText: Constants.failedToLoadButtonTitle)
             state = .error(itemListError)
@@ -76,14 +76,14 @@ final class ItemListViewModel: ObservableObject {
 
 extension ItemListViewModel {
     enum ItemListState: Equatable {
-        case empty(ItemListEmpty)
+        case empty(EmptyModel)
         // TODO:
         // Differentiate between loading on entering POS mode and reloading, as the
         // screens will be different:
         // https://github.com/woocommerce/woocommerce-ios/issues/13286
         case loading
         case loaded([POSItem])
-        case error(ItemListError)
+        case error(ErrorModel)
 
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
@@ -102,13 +102,13 @@ extension ItemListViewModel {
         }
     }
     
-    struct ItemListError: Equatable {
+    struct ErrorModel: Equatable {
         let title: String
         let subtitle: String
         let buttonText: String
     }
 
-    struct ItemListEmpty: Equatable {
+    struct EmptyModel: Equatable {
         // TODO:
         // Differentiate between empty with no products vs empty with no eligible products
         // https://github.com/woocommerce/woocommerce-ios/issues/12815

@@ -71,12 +71,7 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         XCTAssertEqual(status.progress, 0.03)
         XCTAssertEqual(status.color, Color(uiColor: .gray(.shade50)))
         XCTAssertEqual(status.mainDescription, "")
-        XCTAssertNotNil(status.secondaryDescription)
-        XCTAssertEqual(status.secondaryDescription, NSLocalizedString(
-            "productCreationAIPromptProgressBar.secondary.start",
-            value: "Add your product’s name and key features, benefits, or details to help it get found online.",
-            comment: "State when the prompt description is at start for the secondary description."
-        ))
+        XCTAssertEqual(status.secondaryDescription, ProductCreationAIPromptProgressBarViewModel.Localization.SecondaryDescription.startStatus)
     }
 
     func test_progress_status_in_progress() {
@@ -86,12 +81,8 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(status.progress, 0.2)
         XCTAssertEqual(status.color, Color(uiColor: .withColorStudio(.red, shade: .shade50)))
-        XCTAssertEqual(status.mainDescription, NSLocalizedString(
-            "productCreationAIPromptProgressBar.main.inProgress",
-            value: "Add more details. ",
-            comment: "State when more details need to be added for the main prompt description suggestion in product creation with AI."
-        ))
-        // You should add the actual expected value for the secondary description
+        XCTAssertEqual(status.mainDescription, ProductCreationAIPromptProgressBarViewModel.Localization.MainDescription.inProgressStatus)
+        XCTAssertEqual(status.secondaryDescription, ProductCreationAIPromptProgressBarViewModel.Localization.SecondaryDescription.inProgressStatus)
     }
 
     func test_progress_status_halfway() {
@@ -101,12 +92,8 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(status.progress, 0.4)
         XCTAssertEqual(status.color, Color(uiColor: .withColorStudio(.orange, shade: .shade50)))
-        XCTAssertEqual(status.mainDescription, NSLocalizedString(
-            "productCreationAIPromptProgressBar.main.halfway",
-            value: "Getting better. ",
-            comment: "State when the prompt description is improving for the main prompt description suggestion in product creation with AI."
-        ))
-        // You should add the actual expected value for the secondary description
+        XCTAssertEqual(status.mainDescription, ProductCreationAIPromptProgressBarViewModel.Localization.MainDescription.halfwayStatus)
+        XCTAssertEqual(status.secondaryDescription, ProductCreationAIPromptProgressBarViewModel.Localization.SecondaryDescription.halfwayStatus)
     }
 
     func test_progress_status_almost_done() {
@@ -116,12 +103,8 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(status.progress, 0.7)
         XCTAssertEqual(status.color, Color(uiColor: .withColorStudio(.yellow, shade: .shade50)))
-        XCTAssertEqual(status.mainDescription, NSLocalizedString(
-            "productCreationAIPromptProgressBar.main.almostDone",
-            value: "Almost there.",
-            comment: "State when the prompt description is great for the main prompt description suggestion in product creation with AI."
-        ))
-        // You should add the actual expected value for the secondary description
+        XCTAssertEqual(status.mainDescription, ProductCreationAIPromptProgressBarViewModel.Localization.MainDescription.almostDoneStatus)
+        XCTAssertEqual(status.secondaryDescription, ProductCreationAIPromptProgressBarViewModel.Localization.SecondaryDescription.almostDoneStatus)
     }
 
     func test_progress_status_completed() {
@@ -131,11 +114,7 @@ class ProductCreationAIPromptProgressBarViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(status.progress, 0.9)
         XCTAssertEqual(status.color, Color(uiColor: .withColorStudio(.green, shade: .shade50)))
-        XCTAssertEqual(status.mainDescription, NSLocalizedString(
-            "productCreationAIPromptProgressBar.main.completed",
-            value: "Great prompt! ",
-            comment: "State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI."
-        ))
-        // You should add the actual expected value for the secondary description
+        XCTAssertEqual(status.mainDescription, ProductCreationAIPromptProgressBarViewModel.Localization.MainDescription.completedStatus)
+        XCTAssertEqual(status.secondaryDescription, ProductCreationAIPromptProgressBarViewModel.Localization.SecondaryDescription.completedStatus)
     }
 }

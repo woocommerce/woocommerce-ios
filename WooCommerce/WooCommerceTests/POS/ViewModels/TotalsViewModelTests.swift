@@ -40,7 +40,7 @@ final class TotalsViewModelTests: XCTestCase {
         // When
 
         sut.startNewTransaction()
-    
+
         // Then
         XCTAssertEqual(sut.paymentState, paymentState)
         XCTAssertNil(sut.order)

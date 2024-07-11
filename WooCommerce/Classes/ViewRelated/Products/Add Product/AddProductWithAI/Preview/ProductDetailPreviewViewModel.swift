@@ -130,6 +130,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     /// Local ID used for background image upload
     private let localProductID: Int64 = 0
+    private var createdProductID: Int64?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -218,6 +219,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         do {
             let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
             let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
+            createdProductID = remoteProduct.productID
 
             guard case .success = imageState else {
                 analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
@@ -283,6 +285,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                         actionHandler: { [weak self, previousState] in
             self?.imageState = previousState
         })
+    }
+
+    func onDisappear() {
+        cancelBackgroundImageUpload()
     }
 }
 
@@ -663,7 +669,7 @@ private extension ProductDetailPreviewViewModel {
             productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         case let .media(media):
             productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
-        case let .productImage(image):
+        case .productImage:
             // This asset type is not supported for product creation!
             break
         }
@@ -697,6 +703,13 @@ private extension ProductDetailPreviewViewModel {
                     }
                 }
         }
+    }
+
+    func cancelBackgroundImageUpload() {
+        let id: ProductOrVariationID = .product(id: createdProductID ?? localProductID)
+        productImageUploader.startEmittingErrors(key: .init(siteID: siteID,
+                                                            productOrVariationID: id,
+                                                            isLocalID: createdProductID == nil))
     }
 
     /// Saves the local categories and tags to remote

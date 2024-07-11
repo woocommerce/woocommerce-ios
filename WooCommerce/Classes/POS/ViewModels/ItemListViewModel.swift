@@ -3,21 +3,34 @@ import SwiftUI
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 
+struct ItemListError {
+    let title: String
+    let subtitle: String
+    let error: Error
+    let buttonText: String
+}
+
+struct ItemListEmpty {
+    // TODO:
+    // Differentiate between empty with no products vs empty with no eligible products
+    // https://github.com/woocommerce/woocommerce-ios/issues/12815
+    // https://github.com/woocommerce/woocommerce-ios/issues/12816
+    let title: String
+    let subtitle: String
+    let hint: String
+    let buttonText: String
+}
+
 final class ItemListViewModel: ObservableObject {
     enum ItemListState {
+        case empty(ItemListEmpty)
         // TODO:
         // Differentiate between loading on entering POS mode and reloading, as the
         // screens will be different:
         // https://github.com/woocommerce/woocommerce-ios/issues/13286
         case loading
-        // TODO:
-        // Differentiate between loaded with products vs with no products vs with no eligible products
-        // https://github.com/woocommerce/woocommerce-ios/issues/12815
-        // https://github.com/woocommerce/woocommerce-ios/issues/12816
-        case loaded
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/12846
-        case error
+        case loaded([POSItem])
+        case error(ItemListError)
     }
 
     @Published private(set) var items: [POSItem] = []
@@ -42,25 +55,71 @@ final class ItemListViewModel: ObservableObject {
         do {
             state = .loading
             items = try await itemProvider.providePointOfSaleItems()
-            state = .loaded
+            if items.count == 0 {
+                let itemListEmpty = ItemListEmpty(title: "No products",
+                                                  subtitle: "Your store doesn't have any products",
+                                                  hint: "POS currently only supports simple products", 
+                                                  buttonText: "Create a simple product")
+                state = .empty(itemListEmpty)
+            } else {
+                state = .loaded(items)
+            }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
-            state = .error
+            let error = ItemListError(title: Constants.failedToLoadTitle,
+                                      subtitle: Constants.failedToLoadSubtitle,
+                                      error: error,
+                                      buttonText: "Retry")
+            state = .error(error)
         }
     }
 
     @MainActor
     func reload() async {
         do {
+            // TODO:
+            // Resolve duplication with populatePointOfSaleItems()
             state = .loading
             let newItems = try await itemProvider.providePointOfSaleItems()
-            // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
-            items.removeAll()
-            items = newItems
-            state = .loaded
+            if newItems.count == 0 {
+                let itemListEmpty = ItemListEmpty(title: "No products",
+                                                  subtitle: "Your store doesn't have any products",
+                                                  hint: "POS currently only supports simple products",
+                                                  buttonText: "Create a simple product")
+                state = .empty(itemListEmpty)
+            } else {
+                // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
+                items.removeAll()
+                items = newItems
+                state = .loaded(items)
+            }
         } catch {
             DDLogError("Error on reload while updating product data: \(error)")
-            state = .error
+            let error = ItemListError(title: Constants.failedToLoadTitle,
+                                      subtitle: Constants.failedToLoadSubtitle,
+                                      error: error,
+                                      buttonText: "Retry")
+            state = .error(error)
         }
+    }
+}
+
+private extension ItemListViewModel {
+    enum Constants {
+        static let failedToLoadTitle = NSLocalizedString(
+            "",
+            value: "Error loading products",
+            comment: ""
+        )
+        static let failedToLoadSubtitle = NSLocalizedString(
+            "",
+            value: "Give it another go?",
+            comment: ""
+        )
+        static let failedToLoadButtonTitle = NSLocalizedString(
+            "",
+            value: "Retry",
+            comment: ""
+        )
     }
 }

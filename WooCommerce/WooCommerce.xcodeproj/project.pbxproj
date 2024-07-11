@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		011CE4ED2C40364300C975DB /* OrderItemWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011CE4EC2C40364300C975DB /* OrderItemWooTests.swift */; };
 		0201E4272945B01800C793C7 /* StoreCreationProfilerQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E4262945B01800C793C7 /* StoreCreationProfilerQuestionView.swift */; };
 		0201E4292945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E4282945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift */; };
 		0201E42B2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0201E42A2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift */; };
@@ -3041,6 +3042,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		011CE4EC2C40364300C975DB /* OrderItemWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemWooTests.swift; sourceTree = "<group>"; };
 		0201E4262945B01800C793C7 /* StoreCreationProfilerQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProfilerQuestionView.swift; sourceTree = "<group>"; };
 		0201E4282945B8B600C793C7 /* StoreCreationCategoryQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCategoryQuestionView.swift; sourceTree = "<group>"; };
 		0201E42A2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationCategoryQuestionViewModel.swift; sourceTree = "<group>"; };
@@ -10467,6 +10469,7 @@
 				2631D4F929ED108400F13F20 /* WPComPlanNameSanitizer.swift */,
 				B98FF43F2AAA096200326D16 /* AddressWooTests.swift */,
 				023BD5852BFDCECF00A10D7B /* BetaFeaturesConfigurationViewModelTests.swift */,
+				011CE4EC2C40364300C975DB /* OrderItemWooTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -16436,6 +16439,7 @@
 				0331A7002A334982001D2C2C /* MockInAppPurchasesForWPComPlansManager.swift in Sources */,
 				EEA1E20C2AC4639400A37ADD /* AddProductWithAIContainerViewModelTests.swift in Sources */,
 				02DF174B2A4A134B008FD33B /* ProductFormActionsFactory+ProductCreationTests.swift in Sources */,
+				011CE4ED2C40364300C975DB /* OrderItemWooTests.swift in Sources */,
 				02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */,
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
 				7E6A01A12725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift in Sources */,

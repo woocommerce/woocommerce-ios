@@ -166,11 +166,20 @@ private extension GoogleAdsDashboardCard {
                     .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 Spacer()
             }
-            VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
-                // Title
-                Text(Localization.Stats.title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+            VStack(alignment: .leading, spacing: Layout.padding) {
+                HStack {
+                    // Title
+                    Text(Localization.Stats.title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+
+                    Spacer()
+
+                    // disclosure indicator
+                    Image(systemName: "chevron.forward")
+                        .foregroundColor(.secondary)
+                        .font(.headline)
+                }
 
                 AdaptiveStack {
                     // campaign total impressions
@@ -198,12 +207,7 @@ private extension GoogleAdsDashboardCard {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            Spacer()
-
-            // disclosure indicator
-            Image(systemName: "chevron.forward")
-                .foregroundColor(.secondary)
-                .font(.headline)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(Layout.padding)
         .background(
@@ -248,7 +252,7 @@ private extension GoogleAdsDashboardCard {
         enum NoCampaign {
             static let title = NSLocalizedString(
                 "googleAdsDashboardCard.noCampaign.title",
-                value: "Boost store traffic and sales with Google Ads",
+                value: "Drive sales and generate more traffic with Google Ads",
                 comment: "Title label on the Google Ads campaigns section on the Dashboard screen"
             )
             static let subtitle = NSLocalizedString(

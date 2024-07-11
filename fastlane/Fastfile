@@ -273,16 +273,10 @@ platform :ios do
 
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{release_version_current}-code-freeze-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{release_version_current} code freeze to #{DEFAULT_BRANCH}"
+    create_release_backmerge_pull_request(
+      repository: GITHUB_REPO,
+      release_branch: Fastlane::Helper::GitHelper.current_git_branch,
+      labels: ['Releases']
     )
   end
 
@@ -364,16 +358,10 @@ platform :ios do
 
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{build_code_current}-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{build_code_current} into #{DEFAULT_BRANCH}"
+    create_release_backmerge_pull_request(
+      repository: GITHUB_REPO,
+      release_branch: Fastlane::Helper::GitHelper.current_git_branch,
+      labels: ['Releases']
     )
   end
 
@@ -462,21 +450,10 @@ platform :ios do
 
     trigger_release_build(branch_to_build: "release/#{hotfix_version}")
 
-    # Retrieve the current non-hotfix release version
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-    non_hotfix_release_version = release_version_current
-
-    # Create an intermediate branch
-    Fastlane::Helper::GitHelper.checkout_and_pull("release/#{hotfix_version}")
-    new_intermediate_branch_name = "merge/#{hotfix_version}-hotfix-into-release-#{non_hotfix_release_version}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: "release/#{non_hotfix_release_version}",
-      title: "Merge #{hotfix_version} hotfix into release/#{non_hotfix_release_version}"
+    create_release_backmerge_pull_request(
+      repository: GITHUB_REPO,
+      release_branch: "release/#{hotfix_version}",
+      labels: ['Releases']
     )
   end
 
@@ -555,16 +532,10 @@ platform :ios do
 
     trigger_release_build(branch_to_build: "release/#{version}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{release_version_current}-final-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{release_version_current} final into #{DEFAULT_BRANCH}"
+    create_release_backmerge_pull_request(
+      repository: GITHUB_REPO,
+      release_branch: Fastlane::Helper::GitHelper.current_git_branch,
+      labels: ['Releases']
     )
   end
 
@@ -1476,17 +1447,6 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
-def create_release_management_pull_request(base_branch:, title:)
-  create_pull_request(
-    api_token: get_required_env('GITHUB_TOKEN'),
-    repo: GITHUB_REPO,
-    title: title,
-    head: Fastlane::Helper::GitHelper.current_git_branch,
-    base: base_branch,
-    labels: 'Releases'
-  )
-end
-
 def ensure_git_branch_is_release_branch
   # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
   ensure_git_branch(branch: '^release/')

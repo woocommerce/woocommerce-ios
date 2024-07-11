@@ -113,7 +113,7 @@ final class TotalsViewModel: ObservableObject {
 
 // MARK: - Order syncing
 
-private extension TotalsViewModel {
+extension TotalsViewModel {
     @MainActor
     func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
         guard isSyncingOrder == false else {

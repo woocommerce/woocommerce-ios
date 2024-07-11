@@ -573,15 +573,17 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_saveProductAsDraft_triggers_replaceLocalID_in_productImagesUploader_after_creating_product() async {
+    func test_saveProductAsDraft_triggers_image_upload_if_there_is_packaging_image() async {
         // Given
         let aiProduct = sampleAIProduct
         let imageState: EditableImageViewState = .success(.init(image: .init(), source: .asset(asset: PHAsset())))
 
         let productImagesUploader = MockProductImageUploader()
+        let expectedImage = ProductImage.fake().copy(imageID: 14324)
         productImagesUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
-        productImagesUploader.whenProductIsSaved(thenReturn: .success([.fake()]))
+        productImagesUploader.whenProductIsSaved(thenReturn: .success([expectedImage]))
 
+        var savedProduct: Product?
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
                                                       imageState: imageState,
@@ -590,7 +592,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       productImageUploader: productImagesUploader,
                                                       stores: stores,
                                                       storageManager: storage,
-                                                      onProductCreated: { _ in })
+                                                      onProductCreated: { savedProduct = $0 })
 
         mockProductActions(aiGeneratedProductResult: .success(aiProduct))
         mockProductTagActions()
@@ -603,6 +605,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled)
         XCTAssertTrue(productImagesUploader.replaceLocalIDWasCalled)
+        XCTAssertEqual(savedProduct?.images, [expectedImage])
     }
 
     // MARK: Options

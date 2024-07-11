@@ -16,14 +16,14 @@ struct ItemListView: View {
                 .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
             switch viewModel.state {
-            case .empty(let emptyVM):
-                emptyView(emptyVM)
+            case .empty(let emptyModel):
+                emptyView(emptyModel)
             case .loading:
                 loadingView
             case .loaded(let items):
                 listView(items)
-            case .error(let errorVM):
-                errorView(errorVM)
+            case .error(let errorModel):
+                errorView(errorModel)
             }
         }
         .refreshable {

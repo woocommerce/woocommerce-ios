@@ -5,7 +5,7 @@ struct ProductCreationAIPromptProgressBar: View {
     @StateObject private var viewModel = ProductCreationAIPromptProgressBarViewModel()
 
     var body: some View {
-        VStack(content: {
+        VStack(spacing: Layout.spacing, content: {
             ProgressView(value: viewModel.status.progress)
                 .progressViewStyle(ProductCreationAIBarProgressStyle(color: viewModel.status.color))
 
@@ -21,7 +21,6 @@ struct ProductCreationAIPromptProgressBar: View {
                 Spacer()
             })
             .animation(.easeIn, value: viewModel.status)
-            .padding(.top, Layout.padding/2)
         })
         .padding(Layout.padding)
         .background(Color(UIColor.listBackground))
@@ -37,6 +36,7 @@ private extension ProductCreationAIPromptProgressBar {
     enum Layout {
         static let radius: CGFloat = 8
         static let padding: CGFloat = 16
+        static let spacing: CGFloat = 8
     }
 }
 

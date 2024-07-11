@@ -69,65 +69,82 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
             case .start:
                 return ""
             case .inProgress:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.main.inProgress",
-                    value: "Add more details.",
-                    comment: "State when more details need to be added for the main prompt description suggestion in product creation with AI."
-                ) + " "
+                return Localization.MainDescription.inProgressStatus
             case .halfway:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.main.halfway",
-                    value: "Getting better.",
-                    comment: "State when the prompt description is improving for the main prompt description suggestion in product creation with AI."
-                ) + " "
+                return Localization.MainDescription.halfwayStatus
             case .almostDone:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.main.almostDone",
-                    value: "Almost there.",
-                    comment: "State when the prompt description is almost there for the main prompt description suggestion in product creation with AI."
-                ) + " "
+                return Localization.MainDescription.almostDoneStatus
             case .completed:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.main.completed",
-                    value: "Great prompt!",
-                    comment: "State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI."
-                ) + " "
+                return Localization.MainDescription.completedStatus
             }
         }
 
         var secondaryDescription: String {
             switch self {
             case .start:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.secondary.start",
-                    value: "Add your product’s name and key features, benefits, or details to help it get found online.",
-                    comment: "Initial state with instructions to add product name and key details for the prompt description in product creation with AI."
-                )
+                return Localization.SecondaryDescription.startStatus
             case .inProgress:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.secondary.inProgress",
-                    value: "The more details you provide, the better your generated details will be.",
-                    comment: "State when more details will improve the generated content for the prompt description in product creation with AI."
-                )
+                return Localization.SecondaryDescription.inProgressStatus
             case .halfway:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.secondary.halfway",
-                    value: "Can you describe the fit and any distinctive features of the item?",
-                    comment: "State when the description should include fit and distinctive features for the prompt description in product creation with AI."
-                )
+                return Localization.SecondaryDescription.halfwayStatus
             case .almostDone:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.secondary.almostDone",
-                    value: "Mention additional relevant information or characteristics.",
-                    comment: "State prompting for more additional relevant info of the product for the prompt description in product creation with AI."
-                )
+                return Localization.SecondaryDescription.almostDoneStatus
             case .completed:
-                return NSLocalizedString(
-                    "productCreationAIPromptProgressBar.secondary.completed",
-                    value: "You've given us enough to work with, but you may add more detail to make it even better.",
-                    comment: "State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI."
-                )
+                return Localization.SecondaryDescription.completedStatus
             }
+        }
+    }
+
+    enum Localization {
+        enum MainDescription {
+            static let inProgressStatus = NSLocalizedString(
+                    "productCreationAIPromptProgressBar.main.inProgress",
+                    value: "Add more details.",
+                    comment: "State when more details need to be added for the main prompt description suggestion in product creation with AI."
+                ) + " "
+            static let halfwayStatus = NSLocalizedString(
+                    "productCreationAIPromptProgressBar.main.halfway",
+                    value: "Getting better.",
+                    comment: "State when the prompt description is improving for the main prompt description suggestion in product creation with AI."
+                ) + " "
+            static let almostDoneStatus = NSLocalizedString(
+                    "productCreationAIPromptProgressBar.main.almostDone",
+                    value: "Almost there.",
+                    comment: "State when the prompt description is almost there for the main prompt description suggestion in product creation with AI."
+                )
+            static let completedStatus = NSLocalizedString(
+                    "productCreationAIPromptProgressBar.main.completed",
+                    value: "Great prompt!",
+                    comment: "State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI."
+                )
+        }
+
+        enum SecondaryDescription {
+            static let startStatus = NSLocalizedString(
+                "productCreationAIPromptProgressBar.secondary.start",
+                value: "Add your product’s name and key features, benefits, or details to help it get found online.",
+                comment: "Initial state with instructions to add product name and key details for the prompt description in product creation with AI."
+            )
+            static let inProgressStatus = NSLocalizedString(
+                "productCreationAIPromptProgressBar.secondary.inProgress",
+                value: "The more details you provide, the better your generated details will be.",
+                comment: "State when more details will improve the generated content for the prompt description in product creation with AI."
+            )
+            static let halfwayStatus = NSLocalizedString(
+                "productCreationAIPromptProgressBar.secondary.halfway",
+                value: "Can you describe the fit and any distinctive features of the item?",
+                comment: "State when the description should include fit and distinctive features for the prompt description in product creation with AI."
+            )
+            static let almostDoneStatus = NSLocalizedString(
+                "productCreationAIPromptProgressBar.secondary.almostDone",
+                value: "Mention additional relevant information or characteristics.",
+                comment: "State prompting for more additional relevant info of the product for the prompt description in product creation with AI."
+            )
+            static let completedStatus =  NSLocalizedString(
+                "productCreationAIPromptProgressBar.secondary.completed",
+                value: "You've given us enough to work with, but you may add more detail to make it even better.",
+                comment: "State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI."
+            )
         }
     }
 }

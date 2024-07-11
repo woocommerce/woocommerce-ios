@@ -101,7 +101,7 @@ extension ItemListViewModel {
             }
         }
     }
-    
+
     struct ErrorModel: Equatable {
         let title: String
         let subtitle: String
@@ -123,39 +123,39 @@ extension ItemListViewModel {
 private extension ItemListViewModel {
     enum Constants {
         static let emptyProductsTitle = NSLocalizedString(
-            "",
+            "pos.itemList.emptyProductsTitle",
             value: "No products",
-            comment: ""
+            comment: "Text appearing on the item list screen when there are no products to load."
         )
         static let emptyProductsSubtitle = NSLocalizedString(
-            "",
+            "pos.itemList.emptyProductsSubtitle",
             value: "Your store doesn't have any products",
-            comment: ""
+            comment: "Text appearing as subtitle on the item list screen when there are no products to load."
         )
         static let emptyProductsHint = NSLocalizedString(
-            "",
+            "pos.itemList.emptyProductsHint",
             value: "POS currently only supports simple products",
-            comment: ""
+            comment: "Text appearing on the item list screen as hint when there are no products to load."
         )
         static let emptyProductsButtonTitle = NSLocalizedString(
-            "",
+            "pos.itemList.emptyProductsButtonTitle",
             value: "Create a simple product",
-            comment: ""
+            comment: "Text for the button appearing on the item list screen when there are no products to load."
         )
         static let failedToLoadTitle = NSLocalizedString(
-            "",
+            "pos.itemList.failedToLoadTitle",
             value: "Error loading products",
-            comment: ""
+            comment: "Text appearing on the item list screen when there's an error loading products."
         )
         static let failedToLoadSubtitle = NSLocalizedString(
-            "",
+            "pos.itemList.failedToLoadSubtitle",
             value: "Give it another go?",
-            comment: ""
+            comment: "Text appearing on the item list screen as subtitle when there's an error loading products."
         )
         static let failedToLoadButtonTitle = NSLocalizedString(
-            "",
+            "pos.itemList.failedToLoadButtonTitle",
             value: "Retry",
-            comment: ""
+            comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
     }
 }

@@ -580,7 +580,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         let productImagesUploader = MockProductImageUploader()
         let expectedImage = ProductImage.fake().copy(imageID: 14324)
-        productImagesUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: true)
         productImagesUploader.whenProductIsSaved(thenReturn: .success([expectedImage]))
 
         var savedProduct: Product?

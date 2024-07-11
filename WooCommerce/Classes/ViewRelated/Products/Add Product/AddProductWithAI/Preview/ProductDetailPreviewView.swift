@@ -132,7 +132,7 @@ struct ProductDetailPreviewView: View {
                 }
             }
             .onDisappear {
-                viewModel.onDisappear()
+                viewModel.onViewDisappear()
             }
             .onChange(of: viewModel.errorState) { newValue in
                 isShowingErrorAlert = newValue != .none

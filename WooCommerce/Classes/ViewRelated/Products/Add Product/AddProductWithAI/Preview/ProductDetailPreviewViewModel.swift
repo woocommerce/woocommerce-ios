@@ -291,8 +291,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         })
     }
 
-    func onDisappear() {
-        cancelBackgroundImageUpload()
+    func onViewDisappear() {
+        cancelBackgroundImageUploadIfNeeded()
     }
 }
 
@@ -710,7 +710,10 @@ private extension ProductDetailPreviewViewModel {
         }
     }
 
-    func cancelBackgroundImageUpload() {
+    func cancelBackgroundImageUploadIfNeeded() {
+        guard isSavingProduct, case .success = imageState else {
+            return
+        }
         let id: ProductOrVariationID = .product(id: createdProductID ?? localProductID)
         productImageUploader.startEmittingErrors(key: .init(siteID: siteID,
                                                             productOrVariationID: id,

@@ -11,7 +11,7 @@ struct ProductCreationAIPromptProgressBar: View {
 
 
             HStack(spacing: 0, content: {
-                Text(viewModel.status.mainDescription)
+                Text(viewModel.status.mainDescription + " ")
                     .font(.footnote)
                     .fontWeight(.semibold) +
                 Text(viewModel.status.secondaryDescription)

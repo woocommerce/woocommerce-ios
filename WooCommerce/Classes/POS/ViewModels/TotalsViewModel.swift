@@ -162,7 +162,9 @@ private extension TotalsViewModel {
         }
         return currencyFormatter.formatAmount(price, with: currency)
     }
+}
 
+extension TotalsViewModel {
     func clearOrder() {
         order = nil
     }

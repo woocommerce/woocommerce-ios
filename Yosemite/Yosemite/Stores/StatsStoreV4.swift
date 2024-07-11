@@ -298,17 +298,28 @@ private extension StatsStoreV4 {
                                 onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
-                                                                   timeRange: timeRange,
-                                                                   timeZone: timeZone,
-                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   quantity: quantity,
-                                                                   forceRefresh: forceRefresh)
-                if saveInStorage {
-                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                guard let cachedTopEarnersStats: TopEarnerStats = CodableStatsCache.loadValue(from: earliestDateToInclude...latestDateToInclude,
+                                                                                siteID: siteID) else {
+                    let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
+                                                                       timeRange: timeRange,
+                                                                       timeZone: timeZone,
+                                                                       earliestDateToInclude: earliestDateToInclude,
+                                                                       latestDateToInclude: latestDateToInclude,
+                                                                       quantity: quantity,
+                                                                       forceRefresh: forceRefresh)
+                    if saveInStorage {
+                        upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                    }
+
+                    CodableStatsCache.save(value: topEarnersStats, range: earliestDateToInclude...latestDateToInclude, siteID: siteID, timeToLive: 60*60*30)
+
+                    return onCompletion(.success(topEarnersStats))
                 }
-                onCompletion(.success(topEarnersStats))
+
+                debugPrint("Cache: returning cached top earners stats")
+                return onCompletion(.success(cachedTopEarnersStats))
+
+
             } catch {
                 onCompletion(.failure(error))
             }

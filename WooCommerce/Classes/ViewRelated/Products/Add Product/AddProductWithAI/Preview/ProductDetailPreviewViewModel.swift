@@ -116,6 +116,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let onProductCreated: (Product) -> Void
 
+    private let productImageUploader: ProductImageUploaderProtocol
+
     private var currency: String
     private var currencyFormatter: CurrencyFormatter
 
@@ -125,6 +127,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let shippingValueLocalizer: ShippingValueLocalizer
     private var hasSyncedCategories = false
     private var hasSyncedTags = false
+
+    /// Local ID used for background image upload
+    private let localProductID: Int64 = 0
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -148,6 +153,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -168,7 +174,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
-
+        self.productImageUploader = productImageUploader
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
@@ -208,11 +214,23 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         let generatedProduct = product(from: generatedAIProduct)
         errorState = .none
         isSavingProduct = true
+        uploadPackagingImageIfNeeded()
         do {
             let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
             let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
+
+            guard case .success = imageState else {
+                analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
+                return onProductCreated(remoteProduct)
+            }
+
+            /// Updates local product with images
+            replaceProductID(newID: remoteProduct.productID)
+            let images = await updateProductWithUploadedImages(productID: remoteProduct.productID)
+            let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
-            onProductCreated(remoteProduct)
+            onProductCreated(updatedProduct)
+
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
@@ -628,6 +646,59 @@ private extension ProductDetailPreviewViewModel {
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {
+
+    /// Sets up image uploader to upload packaging image if it's available.
+    ///
+    func uploadPackagingImageIfNeeded() {
+        guard case let .success(packagingImage) = imageState else {
+            return
+        }
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: siteID,
+                                      productOrVariationID: .product(id: localProductID),
+                                      isLocalID: true),
+                           originalStatuses: [])
+        switch packagingImage.source {
+        case let .asset(asset):
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+        case let .media(media):
+            productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
+        case let .productImage(image):
+            // This asset type is not supported for product creation!
+            break
+        }
+        productImageUploader.stopEmittingErrors(key: .init(siteID: siteID, productOrVariationID: .product(id: localProductID), isLocalID: true))
+    }
+
+    /// Replaces the actual product ID for pending images for background upload.
+    ///
+    func replaceProductID(newID: Int64) {
+        productImageUploader.replaceLocalID(siteID: siteID,
+                                            localID: .product(id: localProductID),
+                                            remoteID: newID)
+    }
+
+    /// Updates the product with provided ID with uploaded images.
+    /// Returns all the uploaded images.
+    ///
+    @MainActor
+    func updateProductWithUploadedImages(productID: Int64) async -> [ProductImage] {
+        await withCheckedContinuation { continuation in
+            let key: ProductImageUploaderKey = .init(siteID: siteID,
+                                                     productOrVariationID: .product(id: productID),
+                                                     isLocalID: false)
+            productImageUploader
+                .saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
+                    switch result {
+                    case .success(let images):
+                        continuation.resume(returning: images)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error saving images for new product: \(error)")
+                    }
+                }
+        }
+    }
+
     /// Saves the local categories and tags to remote
     ///
     @MainActor

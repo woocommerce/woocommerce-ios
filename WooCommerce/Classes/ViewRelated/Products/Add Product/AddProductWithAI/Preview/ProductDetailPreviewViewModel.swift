@@ -216,6 +216,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         errorState = .none
         isSavingProduct = true
         uploadPackagingImageIfNeeded()
+
+        defer {
+            isSavingProduct = false
+        }
+
         do {
             let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
             let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
@@ -238,7 +243,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
             errorState = .savingProduct
         }
-        isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
@@ -690,9 +694,9 @@ private extension ProductDetailPreviewViewModel {
     @MainActor
     func updateProductWithUploadedImages(productID: Int64) async -> [ProductImage] {
         await withCheckedContinuation { continuation in
-            let key: ProductImageUploaderKey = .init(siteID: siteID,
-                                                     productOrVariationID: .product(id: productID),
-                                                     isLocalID: false)
+            let key = ProductImageUploaderKey(siteID: siteID,
+                                              productOrVariationID: .product(id: productID),
+                                              isLocalID: false)
             productImageUploader
                 .saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
                     switch result {
@@ -700,6 +704,7 @@ private extension ProductDetailPreviewViewModel {
                         continuation.resume(returning: images)
                     case .failure(let error):
                         DDLogError("⛔️ Error saving images for new product: \(error)")
+                        continuation.resume(returning: [])
                     }
                 }
         }

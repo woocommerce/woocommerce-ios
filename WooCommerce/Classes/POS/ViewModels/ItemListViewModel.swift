@@ -47,30 +47,7 @@ final class ItemListViewModel: ObservableObject {
 
     @MainActor
     func reload() async {
-        do {
-            // TODO:
-            // Resolve duplication with populatePointOfSaleItems()
-            state = .loading
-            let newItems = try await itemProvider.providePointOfSaleItems()
-            if newItems.count == 0 {
-                let itemListEmpty = EmptyModel(title: Constants.emptyProductsTitle,
-                                                  subtitle: Constants.emptyProductsSubtitle,
-                                                  hint: Constants.emptyProductsHint,
-                                                  buttonText: Constants.emptyProductsButtonTitle)
-                state = .empty(itemListEmpty)
-            } else {
-                // Only clears in-memory items if the `do` block continues, otherwise we keep them in memory.
-                items.removeAll()
-                items = newItems
-                state = .loaded(items)
-            }
-        } catch {
-            DDLogError("Error on reload while updating product data: \(error)")
-            let itemListError = ErrorModel(title: Constants.failedToLoadTitle,
-                                      subtitle: Constants.failedToLoadSubtitle,
-                                      buttonText: Constants.failedToLoadButtonTitle)
-            state = .error(itemListError)
-        }
+        await populatePointOfSaleItems()
     }
 }
 

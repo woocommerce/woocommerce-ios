@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-02 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-10 16:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -9534,6 +9534,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Mevcut bir mağazayı bağla";
 
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "Gelişigüzel";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "İkna edici";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "Çiçekli";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "Resmi";
+
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "Ürün Paketleri Raporu";
 
@@ -9542,6 +9554,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "Hediye Kartları";
+
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Google Kampanyaları";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Siparişler";
@@ -9581,6 +9596,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Net Tutar";
+
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "Kampanyalar";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "Google kampanya analizleri yüklenemedi";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "Programlar Raporu";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "Harcama: %@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Google Kampanyaları";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "Toplam Satış";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack Stats'i Etkinleştir";
@@ -10812,6 +10845,18 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Ürün";
 
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "WooCommerce İçin Google";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "Tamam";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "Yeni kampanyanız oluşturuldu. Önümüzdeki günlerde satışlarınızla ilgili harika gelişmeler olacak!";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "Her Şey Hazır!";
+
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Müşteriler";
 
@@ -10820,6 +10865,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Ürün İncelemesi";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "WooCommerce için Google";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "Google Ads ile satışları teşvik edin ve trafiği artırın";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Daha iyi olabilirdi";
@@ -11307,6 +11358,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Okuyucu taranıyor";
 
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Ödemeyi yeniden dene";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "Ödeme durumunu kontrol etmek için tam sipariş bilgisi yüklenemedi. Lütfen en son siparişi ayrı olarak kontrol edin veya yeniden deneyin.";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Daha fazla bilgi edinin";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "Ödeme durumu bilinmiyor";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.cancel.button.title" = "Ödemeyi İptal Et";
 
@@ -11324,9 +11387,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to cancel preparation of the reader on the Point of Sale checkout. */
 "pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "İptal Et";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "Kart okuyucu hazırlanıyor";
 
 /* Button to cancel a payment */
 "pointOfSale.cardPresent.presentCard.cancel.button.title" = "İptal Et";
@@ -11451,6 +11511,15 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Yazılım güncelleniyor";
 
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "Alınan ödemedeki ve yenilenen siparişteki bir hatadan dolayı tam sipariş bilgisi yüklenemedi. Düşük veya fazla ücretlendirmeden kaçınmak için lütfen ilerlemeden önce en son siparişi ayrı olarak kontrol edin.";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Lütfen sipariş ödeme durumunu kontrol edin";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Anladım";
+
 /* Label for a dismiss button when a software update has finished */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Kapat";
 
@@ -11514,20 +11583,50 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "gizli";
 
-/* Continue button on the starting info screen. */
-"productCreationAIStartingInfoView.continueText" = "Devam";
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "Ürün Ayrıntıları Oluştur";
+
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "Fotoğraf seçildi";
+
+/* Title of button which removes selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "Fotoğrafı Kaldır";
+
+/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "Fotoğrafı Değiştir";
+
+/* Title of button which opens the selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "Fotoğrafı Görüntüle";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Örnek: Siyah pamuklu tişört, yumuşak kumaş, dayanıklı dikiş, benzersiz tasarım";
 
-/* Upload package photo button on the text field */
+/* Button to upload package photo to read text from the photo */
 "productCreationAIStartingInfoView.readTextFromPhoto" = "Ürün fotoğrafından metinleri okuyun";
 
-/* Subtitle on the starting info screen. */
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Ürününüzün ne olduğu, neyin ürününüzü benzersiz kıldığını bize bildirin, ardından Yapay Zeka yeteneğini konuştursun.";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Başlangıç bilgisi";
+
+/* Title of the button to dismiss the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.done" = "Tamam";
+
+/* Title of the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "Paket fotoğrafı";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "Metin algılanmadı. Lütfen başka bir ambalaj fotoğrafı seçin veya ürün ayrıntılarını manuel olarak girin.";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "Fotoğraf kaldırıldı";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "Geri al";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "Fotoğraf taranırken hata oluştu. Lütfen başka bir ambalaj fotoğrafı seçin veya ürün ayrıntılarını manuel olarak girin.";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Bir dakikanız var mı? Hızlı bir geri bildirim göndererek yapay zeka destekli özelliklerimizi geliştirmemize yardımcı olun.";
@@ -11555,6 +11654,60 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "Özel olarak yayınlandı";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "İptal Et";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "Kategoriler";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "Ayrıntılar";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "Bu sonuç iyi mi?";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "Yeniden Oluştur";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "Stokta";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "Stok";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "Fiyat";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "Ürününüzü açıklayın";
+
+/* Title of the name and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.productNameAndDescription" = "Ad ve Açıklama";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "Ürününüzü adlandırın";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "Ürün türü";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "Tekrar dene";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "Taslak olarak kaydet";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "Gönderim";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "Kaydetmeden önce ürün ayrıntılarınızı düzenleyebilir veya yeniden oluşturabilirsiniz.";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "Etiketler";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "Önizleme";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Dosya yüklenirken hata oldu. Lütfen tekrar deneyin.";
@@ -11765,6 +11918,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "İptal et";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "Tamam";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "Görsel seçilemedi";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Ödeme Tamamlandı";
@@ -12067,6 +12226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "%1$@ temasını kullan";
+
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "Ses tonu";
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Ekle";

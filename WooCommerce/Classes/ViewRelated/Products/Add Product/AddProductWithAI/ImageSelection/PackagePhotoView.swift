@@ -26,7 +26,9 @@ struct PackagePhotoView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Layout.spacing) {
+        AdaptiveStack(horizontalAlignment: .leading,
+                      verticalAlignment: .center,
+                      spacing: Layout.spacing) {
             EditableImageView(imageState: imageState,
                               emptyContent: {})
             .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
@@ -41,6 +43,7 @@ struct PackagePhotoView: View {
                         .footnoteStyle()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 

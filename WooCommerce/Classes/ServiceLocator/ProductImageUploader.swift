@@ -180,13 +180,6 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
             return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
         }
 
-        guard handler.productImageStatuses.hasPendingUpload else {
-            updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
-                                                               productOrVariationID: key.productOrVariationID,
-                                                               images: handler.productImageStatuses.images)
-            return
-        }
-
         let imagesSaver: ProductImagesSaver
         if let productImagesSaver = imagesSaverByProduct[key] {
             imagesSaver = productImagesSaver

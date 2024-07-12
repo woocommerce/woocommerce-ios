@@ -40,7 +40,7 @@ final class ProductImagesSaver {
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         let imageStatuses = imageActionHandler.productImageStatuses
         guard imageStatuses.hasPendingUpload else {
-            return
+            return saveProductImages(imageStatuses.images, onProductSave: onProductSave)
         }
 
         imageStatusesToSave = imageStatuses

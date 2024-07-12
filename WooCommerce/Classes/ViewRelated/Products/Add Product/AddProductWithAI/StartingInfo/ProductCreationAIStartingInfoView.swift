@@ -72,6 +72,10 @@ struct ProductCreationAIStartingInfoView: View {
                         )
                     }
 
+                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) {
+                        ProductCreationAIPromptProgressBar(text: $viewModel.features)
+                    }
+
                     ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
 
                     if let message = viewModel.textDetectionErrorMessage {

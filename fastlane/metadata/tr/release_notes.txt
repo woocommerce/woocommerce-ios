@@ -1,1 +1,2 @@
-WooCommerce mobil uygulamasında en yeni güncellemelerimizi keşfedin! Doğrulama hatalarını önlemek için Blaze Kampanyalarını geliştirdik, daha kolay anlaşılır bir arayüz için kullanıcı deneyimini iyileştirdik ve kart okuyucu bağlantılarındaki birden fazla sorunu düzelttik. Ayrıca daha pürüzsüz bir deneyim için ödeme alma esnasındaki hata işlemeyi geliştirdik. Daha iyi bir WooCommerce deneyimi için şimdi güncelleyin!
+En son güncellememiz, Google Ads kampanyalarını dahil ederek Analytics Hub'ı iyileştirir ve Dinamik Pano ile Hub Menüsünde Gelen Kutusu Notlarını kullanıma sunar. En yeni güncellememizle daha iyi bir uygulama deneyiminin keyfini çıkarın!
+

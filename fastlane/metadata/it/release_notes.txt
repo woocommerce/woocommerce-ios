@@ -1,1 +1,2 @@
-Scopri gli ultimi aggiornamenti dell'app WooCommerce per dispositivi mobili. Abbiamo migliorato le campagne Blaze con controlli dell'intervallo di date per prevenire errori di convalida, ottimizzato l'esperienza utente per un'interfaccia più intuitiva e risolto diversi problemi con le connessioni del lettore di schede. Inoltre, abbiamo perfezionato la gestione degli errori durante la riscossione dei pagamenti per un'esperienza più fluida. Aggiorna ora per una migliore esperienza WooCommerce.
+Il nostro ultimo aggiornamento migliora l'Analytics Hub includendo le campagne di Google Ads e introduce le Note di posta in arrivo nella Bacheca dinamica e nel Menu Hub. Goditi un'esperienza dell'app migliore con il nostro ultimo aggiornamento.
+

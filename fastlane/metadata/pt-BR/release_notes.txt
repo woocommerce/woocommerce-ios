@@ -1,1 +1,2 @@
-Conheça a mais nova atualização do aplicativo móvel do WooCommerce! Nós aprimoramos as campanhas do Blaze com verificações de intervalo de datas para evitar erros de validação, melhoramos a UX com uma interface mais intuitiva e corrigimos vários erros de conexão de leitores de cartão. E para oferecer uma experiência mais agradável, nós melhoramos o tratamento de erros ao receber pagamentos. Atualize agora mesmo para ter uma experiência ainda melhor no WooCommerce!
+Nossa última atualização aprimora a Central de análises ao incluir as campanhas do Google Ads e apresenta as notas da caixa de entrada no painel dinâmico e no menu. Tenha uma experiência melhor no app com a nossa mais nova atualização!
+

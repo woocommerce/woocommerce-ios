@@ -1,1 +1,2 @@
-Upptäck de senaste uppdateringarna i WooCommerce-mobilappen. Vi har förbättrat Blaze-kampanjerna med datumintervallskontroller för att förhindra valideringsfel, förbättrat användargränssnitt för ett mer intuitivt gränssnitt och åtgärdat flertalet problem med kortläsaranslutningar. Dessutom har vi förfinat felhanteringen under betalningsinsamlingen för en smidigare upplevelse. Uppdatera nu för en bättre WooCommerce-upplevelse.
+Vår senaste uppdatering förbättrar analyshubben genom att inkludera Google Ads-kampanjer och introducerar Inkorgsanteckningar i den dynamiska adminpanelen och hubbmenyn. Ta del av en bättre appupplevelse med vår senaste uppdatering.
+

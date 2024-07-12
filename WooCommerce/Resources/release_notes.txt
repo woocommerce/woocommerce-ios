@@ -1,3 +1,3 @@
 
-- [**] Cash Payment: Set the payment method and payment method title to orders completed with cash payment. [https://github.com/woocommerce/woocommerce-ios/pull/13257]
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
 

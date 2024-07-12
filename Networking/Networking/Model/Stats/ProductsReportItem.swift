@@ -4,7 +4,7 @@ import class Aztec.HTMLParser
 
 /// Represents a single product in a products analytics report over a specific period.
 ///
-public struct ProductsReportItem: Decodable, Equatable, GeneratedFakeable {
+public struct ProductsReportItem: Codable, Equatable, GeneratedFakeable {
 
     /// Product ID
     ///
@@ -44,19 +44,25 @@ public struct ProductsReportItem: Decodable, Equatable, GeneratedFakeable {
         let quantity = try container.decode(Int.self, forKey: .quantity)
         let total = try container.decode(Double.self, forKey: .total)
 
-        let extendedInfo = try container.nestedContainer(keyedBy: ExtendedInfoCodingKeys.self, forKey: .extendedInfo)
+        let productName: String
+        let imageUrl: String?
+        if let simplyDecodedProductName = try? container.decode(String.self, forKey: .productName) {
+            productName = simplyDecodedProductName
+            imageUrl = try? container.decode(String.self, forKey: .imageURL)
+        } else {
+            let extendedInfo = try container.nestedContainer(keyedBy: ExtendedInfoCodingKeys.self, forKey: .extendedInfo)
+            productName = try extendedInfo.decode(String.self, forKey: .productName)
 
-        let productName = try extendedInfo.decode(String.self, forKey: .productName)
-
-        // Parse and extract the `src` string out of the image html using `Aztec parser`
-        let imageUrl: String? = {
-            guard let imageHTML = try? extendedInfo.decodeIfPresent(String.self, forKey: .imageHTML),
-            let img = HTMLParser().parse(imageHTML).firstChild(ofType: .img),
-            let src = img.attribute(ofType: .src)?.value.toString() else {
-                return nil
-            }
-            return src
-        }()
+            // Parse and extract the `src` string out of the image html using `Aztec parser`
+            imageUrl = {
+                guard let imageHTML = try? extendedInfo.decodeIfPresent(String.self, forKey: .imageHTML),
+                let img = HTMLParser().parse(imageHTML).firstChild(ofType: .img),
+                let src = img.attribute(ofType: .src)?.value.toString() else {
+                    return nil
+                }
+                return src
+            }()
+        }
 
         self.init(productID: productID, productName: productName, quantity: quantity, total: total, imageUrl: imageUrl)
     }
@@ -71,6 +77,8 @@ private extension ProductsReportItem {
         case total          = "net_revenue"
         case quantity       = "items_sold"
         case extendedInfo   = "extended_info"
+        case productName    = "name"
+        case imageURL       = "image_url"
     }
 
     enum ExtendedInfoCodingKeys: String, CodingKey {
@@ -86,5 +94,16 @@ extension ProductsReportItem: Comparable {
     public static func < (lhs: ProductsReportItem, rhs: ProductsReportItem) -> Bool {
         return lhs.quantity < rhs.quantity ||
             (lhs.quantity == rhs.quantity && lhs.total < rhs.total)
+    }
+}
+
+extension ProductsReportItem {
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(productID, forKey: .productID)
+        try container.encode(productName, forKey: .productName)
+        try container.encode(quantity, forKey: .quantity)
+        try container.encode(total, forKey: .total)
+        try container.encode(imageUrl, forKey: .imageURL)
     }
 }

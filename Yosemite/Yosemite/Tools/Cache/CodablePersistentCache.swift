@@ -1,20 +1,33 @@
 import Foundation
 
+struct CodableCacheEntry<T: Codable>: Codable {
+    let timestamp: Date
+    let value: T
+    let timeToLive: TimeInterval
+
+    init(value: T, timeToLive: TimeInterval) {
+        self.timestamp = .now
+        self.value = value
+        self.timeToLive = timeToLive
+    }
+
+    var isValid: Bool {
+        return Date().timeIntervalSince(timestamp) < timeToLive
+    }
+}
+
 // A class to handle persistent caching of Codable objects tied to a Site
-class SiteCodablePersistentCache<T: Codable> {
+class CodablePersistentCache<T: Codable> {
     private let cacheDirectory: URL
     private let fileManager: FileManager
-    private let siteID: Int64
 
-    init(siteID: Int64, directoryName: String) {
+    init() {
         self.fileManager = FileManager.default
-        self.siteID = siteID
 
         // Create a URL for the cache directory
         let urls = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
         self.cacheDirectory = urls[0]
-            .appendingPathComponent(String(siteID))
-            .appendingPathComponent(directoryName)
+            .appendingPathComponent(String(describing: T.self))
 
         // Create the cache directory if it doesn't exist
         if !fileManager.fileExists(atPath: cacheDirectory.path) {
@@ -22,7 +35,7 @@ class SiteCodablePersistentCache<T: Codable> {
         }
     }
 
-    func save(_ object: T, forKey key: String) {
+    func save(_ object: CodableCacheEntry<T>, forKey key: String) {
         debugPrint("Cache: saving data for \(key) in \(cacheDirectory)")
         let fileURL = cacheDirectory.appendingPathComponent(key)
         do {
@@ -35,18 +48,19 @@ class SiteCodablePersistentCache<T: Codable> {
     }
 
     func load(forKey key: String) throws -> T? {
-        debugPrint("Cache: loading data for \(key) in \(cacheDirectory)")
         let fileURL = cacheDirectory.appendingPathComponent(key)
         guard let data = try? Data(contentsOf: fileURL) else { return nil }
-        debugPrint("cache: loading data", data)
 
         do {
             let decoder = JSONDecoder()
-            decoder.userInfo = [.siteID: siteID]
-            let object = try decoder.decode(T.self, from: data)
-            debugPrint("object", object)
+            let entry = try JSONDecoder().decode(CodableCacheEntry<T>.self, from: data)
+            if entry.isValid {
+                return entry.value
+            } else {
+                remove(forKey: key)
 
-            return object
+                return nil
+            }
         } catch {
             print("Cache: failed to load data: \(error)")
 

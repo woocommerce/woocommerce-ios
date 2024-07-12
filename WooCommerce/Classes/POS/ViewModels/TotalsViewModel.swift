@@ -102,6 +102,7 @@ final class TotalsViewModel: ObservableObject {
     func startNewTransaction() {
         paymentState = .acceptingCard
         clearOrder()
+        cardPresentPaymentInlineMessage = nil
     }
 
     @MainActor
@@ -112,7 +113,7 @@ final class TotalsViewModel: ObservableObject {
 
 // MARK: - Order syncing
 
-private extension TotalsViewModel {
+extension TotalsViewModel {
     @MainActor
     func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
         guard isSyncingOrder == false else {
@@ -161,7 +162,9 @@ private extension TotalsViewModel {
         }
         return currencyFormatter.formatAmount(price, with: currency)
     }
+}
 
+extension TotalsViewModel {
     func clearOrder() {
         order = nil
     }

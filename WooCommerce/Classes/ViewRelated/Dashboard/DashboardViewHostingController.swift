@@ -338,7 +338,7 @@ private extension DashboardViewHostingController {
         coordinator.start()
         googleAdsCampaignCoordinator = coordinator
 
-        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.lastCampaign != nil
+        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.hasPaidCampaigns
         ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
             source: .myStore,
             type: forCampaignCreation ? .campaignCreation : .dashboard,

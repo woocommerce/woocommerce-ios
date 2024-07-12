@@ -1,16 +1,8 @@
 import Foundation
 
-public protocol ProductsReportsRemoteProtocol {
-    func loadTopProductsReport(for siteID: Int64,
-                                      timeZone: TimeZone,
-                                      earliestDateToInclude: Date,
-                                      latestDateToInclude: Date,
-                                      quantity: Int) async throws -> [ProductsReportItem]
-}
-
 /// Products Reports: Remote Endpoints for WC Analytics
 ///
-public class ProductsReportsRemote: Remote, ProductsReportsRemoteProtocol {
+public class ProductsReportsRemote: Remote {
 
     /// Fetch the products reports for a given site within the dates provided.
     ///

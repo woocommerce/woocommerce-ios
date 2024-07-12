@@ -615,7 +615,7 @@ final class EditableOrderViewModel: ObservableObject {
         discountViewModel = .init(id: itemID,
                                   imageURL: rowViewModel.productRow.imageURL,
                                   name: rowViewModel.productRow.name,
-                                  price: rowViewModel.productRow.price,
+                                  totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
                                   discountConfiguration: addProductDiscountConfiguration(on: orderItem))
     }

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents Top Earner (aka top performer) stats over a specific period.
 ///
-public struct TopEarnerStats: Codable, GeneratedFakeable, GeneratedCopiable {
+public struct TopEarnerStats: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
     public let date: String
     public let granularity: StatGranularity
@@ -20,8 +20,8 @@ public struct TopEarnerStats: Codable, GeneratedFakeable, GeneratedCopiable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let granularity = try container.decode(StatGranularity.self, forKey: .unit)
         let date = try container.decode(String.self, forKey: .date)
+        let granularity = try container.decode(StatGranularity.self, forKey: .unit)
         let limit = try container.decode(String.self, forKey: .limit)
         let items = try container.decode([TopEarnerStatsItem].self, forKey: .items)
 
@@ -71,14 +71,4 @@ extension TopEarnerStats: Equatable {
 //
 enum TopEarnerStatsError: Error {
     case missingSiteID
-}
-
-extension TopEarnerStats {
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(granularity, forKey: .unit)
-        try container.encode(items, forKey: .items)
-        try container.encode(limit, forKey: .limit)
-        try container.encode(date, forKey: .date)
-    }
 }

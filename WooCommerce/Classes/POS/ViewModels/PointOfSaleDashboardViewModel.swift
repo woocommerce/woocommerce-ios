@@ -36,13 +36,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter) {
+         currencyFormatter: CurrencyFormatter,
+         totalsViewModel: TotalsViewModel) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
 
         self.itemListViewModel = .init(itemProvider: itemProvider)
-        self.totalsViewModel = TotalsViewModel(orderService: orderService,
-                                               cardPresentPaymentService: cardPresentPaymentService,
-                                               currencyFormatter: currencyFormatter)
+        self.totalsViewModel = totalsViewModel
 
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()

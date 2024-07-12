@@ -15,11 +15,16 @@ struct PointOfSaleEntryPointView: View {
          currencyFormatter: CurrencyFormatter) {
         self.hideAppTabBar = hideAppTabBar
 
+        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                              cardPresentPaymentService: cardPresentPaymentService,
+                                              currencyFormatter: currencyFormatter)
+
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: orderService,
-            currencyFormatter: currencyFormatter)
+            currencyFormatter: currencyFormatter,
+            totalsViewModel: totalsViewModel)
         )
     }
 

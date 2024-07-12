@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import struct Yosemite.POSProduct
 @testable import WooCommerce
 @testable import class Yosemite.POSOrderService
@@ -13,16 +14,23 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var orderService: POSOrderServiceProtocol!
+    private var totalsViewModel: TotalsViewModel!
+    private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         orderService = POSOrderPreviewService()
+        totalsViewModel = TotalsViewModel(orderService: orderService,
+                                                  cardPresentPaymentService: cardPresentPaymentService,
+                                                  currencyFormatter: .init(currencySettings: .init()))
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()))
+                                            currencyFormatter: .init(currencySettings: .init())
+                                            , totalsViewModel: totalsViewModel)
+        cancellables = []
     }
 
     override func tearDown() {
@@ -30,7 +38,70 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         itemProvider = nil
         orderService = nil
         sut = nil
+        cancellables = []
         super.tearDown()
+    }
+
+    private func setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: TotalsViewModel.PaymentState,
+                                                                                   isSyncingOrder: Bool,
+                                                                                   expectedValue: Bool) {
+        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be set correctly")
+
+        // Initialize TotalsViewModel and PointOfSaleDashboardViewModel
+        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                              cardPresentPaymentService: cardPresentPaymentService,
+                                              currencyFormatter: .init(currencySettings: .init()))
+        totalsViewModel.paymentState = paymentState
+
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: cardPresentPaymentService,
+                                            orderService: orderService,
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: totalsViewModel)
+
+        // Observe changes
+        sut.$isAddMoreDisabled
+            .dropFirst()
+            .sink { value in
+                XCTAssertEqual(value, expectedValue)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // Trigger state change
+        totalsViewModel.isSyncingOrder = isSyncingOrder
+
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    private func setupViewModelWithExpectationsExpectingAddMoreIsDisabled(paymentState: TotalsViewModel.PaymentState, isSyncingOrder: Bool) {
+        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be set correctly")
+
+        // Initialize TotalsViewModel and PointOfSaleDashboardViewModel
+        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                              cardPresentPaymentService: cardPresentPaymentService,
+                                              currencyFormatter: .init(currencySettings: .init()))
+        totalsViewModel.paymentState = paymentState
+
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: cardPresentPaymentService,
+                                            orderService: orderService,
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: totalsViewModel)
+
+        // Observe changes
+        sut.$isAddMoreDisabled
+            .dropFirst()
+            .sink { value in
+                XCTAssertTrue(value)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // Trigger state change
+        totalsViewModel.isSyncingOrder = isSyncingOrder
+
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func test_viewmodel_when_loaded_then_has_expected_initial_setup() {
@@ -79,6 +150,31 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
         XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
+    }
+
+    func test_add_more_is_disabled_for_processing_payment_state() {
+        setupViewModelWithExpectationsExpectingAddMoreIsDisabled(paymentState: .processingPayment, isSyncingOrder: true)
+        setupViewModelWithExpectationsExpectingAddMoreIsDisabled(paymentState: .processingPayment, isSyncingOrder: false)
+    }
+
+    func test_add_more_is_disabled_for_card_payment_successful_state() {
+        setupViewModelWithExpectationsExpectingAddMoreIsDisabled(paymentState: .cardPaymentSuccessful, isSyncingOrder: true)
+        setupViewModelWithExpectationsExpectingAddMoreIsDisabled(paymentState: .cardPaymentSuccessful, isSyncingOrder: false)
+    }
+
+    func test_add_more_disabled_follows_syncing_state_for_idle_state() {
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .idle, isSyncingOrder: true, expectedValue: true)
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .idle, isSyncingOrder: false, expectedValue: false)
+    }
+
+    func test_add_more_disabled_follows_syncing_state_for_accepting_card_state() {
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .acceptingCard, isSyncingOrder: true, expectedValue: true)
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .acceptingCard, isSyncingOrder: false, expectedValue: false)
+    }
+
+    func test_add_more_disabled_follows_syncing_state_for_preparing_reader_state() {
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .preparingReader, isSyncingOrder: true, expectedValue: true)
+        setupViewModelWithExpectationsExpectingAddMoreMatchesSyncingState(paymentState: .preparingReader, isSyncingOrder: false, expectedValue: false)
     }
 
     // TODO:

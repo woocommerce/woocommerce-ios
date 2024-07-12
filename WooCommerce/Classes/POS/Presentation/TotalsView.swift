@@ -185,9 +185,12 @@ private extension TotalsView {
     TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                 orderService: POSOrderPreviewService(),
-                                currencyFormatter: .init(currencySettings: .init())),
-               totalsViewModel: .init(orderService: POSOrderPreviewService(),
-                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                      currencyFormatter: .init(currencySettings: .init())))
+                                currencyFormatter: .init(currencySettings: .init()),
+                                totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                 currencyFormatter: .init(currencySettings: .init()))),
+               totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                currencyFormatter: .init(currencySettings: .init())))
 }
 #endif

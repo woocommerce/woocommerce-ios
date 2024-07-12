@@ -126,10 +126,14 @@ import Combine
     // https://github.com/woocommerce/woocommerce-ios/issues/13207
     let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
     let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
+    let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()))
     let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            orderService: POSOrderPreviewService(),
-                                                           currencyFormatter: .init(currencySettings: .init()))
+                                                           currencyFormatter: .init(currencySettings: .init()),
+                                                           totalsViewModel: totalsViewModel)
     let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
 
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)

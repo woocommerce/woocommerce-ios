@@ -70,6 +70,8 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
             if hasPaidCampaigns {
                 let stats = try await retrieveCampaignStats()
                 performanceStats = stats.totals
+            } else {
+                performanceStats = nil
             }
 
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .googleAds))

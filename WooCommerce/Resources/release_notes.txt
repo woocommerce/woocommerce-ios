@@ -1,2 +1,3 @@
-Our latest update improves the Analytics Hub by including Google Ads campaigns, and introduces Inbox Notes in the Dynamic Dashboard and Hub Menu. Enjoy a better app experience with our latest update!
+
+- [**] Cash Payment: Set the payment method and payment method title to orders completed with cash payment. [https://github.com/woocommerce/woocommerce-ios/pull/13257]
 

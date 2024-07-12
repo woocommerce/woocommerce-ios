@@ -70,6 +70,12 @@ struct ProductCreationAIStartingInfoView: View {
                                                  onTapRemovePhoto: {
                                     viewModel.didTapRemovePhoto()
                                 })
+                                .clipShape(
+                                    .rect(
+                                        bottomLeadingRadius: Layout.cornerRadius,
+                                        bottomTrailingRadius: Layout.cornerRadius
+                                    )
+                                )
                                 .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
                                     Task { @MainActor in
                                         await viewModel.selectImage(from: source)

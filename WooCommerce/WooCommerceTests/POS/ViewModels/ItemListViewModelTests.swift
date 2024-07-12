@@ -23,6 +23,58 @@ final class ItemListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_itemListViewModel_when_populatePointOfSaleItems_is_called_then_items_are_populated() async {
+        // Given
+        XCTAssertEqual(sut.items.count, 0)
+        let expectedItems = Self.makeItems()
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.items.count, expectedItems.count)
+    }
+
+    func test_itemListViewModel_when_populatePointOfSaleItems_is_called_multiple_times_then_items_are_not_aggregated() async {
+        // Given
+        XCTAssertEqual(sut.items.count, 0)
+        let expectedItems = Self.makeItems()
+
+        // When
+        await sut.populatePointOfSaleItems()
+        await sut.populatePointOfSaleItems()
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.items.count, expectedItems.count)
+    }
+
+    func test_itemListViewModel_when_reload_is_called_then_items_are_populated() async {
+        // Given
+        XCTAssertEqual(sut.items.count, 0)
+        let expectedItems = Self.makeItems()
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.items.count, expectedItems.count)
+    }
+
+    func test_itemListViewModel_when_reload_is_called_multiple_times_then_items_are_not_aggregated() async {
+        // Given
+        XCTAssertEqual(sut.items.count, 0)
+        let expectedItems = Self.makeItems()
+
+        // When
+        await sut.reload()
+        await sut.reload()
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(sut.items.count, expectedItems.count)
+    }
+
     func test_itemListViewModel_when_select_item_then_sends_item_to_publisher() {
         // Given
         let items = Self.makeItems()

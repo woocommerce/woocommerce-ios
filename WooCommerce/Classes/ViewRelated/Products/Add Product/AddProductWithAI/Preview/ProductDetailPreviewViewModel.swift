@@ -146,6 +146,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    private lazy var productImageActionHandler: ProductImageActionHandler = {
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: localProductID),
+                                          isLocalID: true)
+        return productImageUploader.actionHandler(key: key, originalStatuses: [])
+    }()
+
     init(siteID: Int64,
          productFeatures: String,
          imageState: ImageState,
@@ -663,11 +670,6 @@ private extension ProductDetailPreviewViewModel {
         guard case let .success(packagingImage) = imageState else {
             return
         }
-        let productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: siteID,
-                                      productOrVariationID: .product(id: localProductID),
-                                      isLocalID: true),
-                           originalStatuses: [])
         switch packagingImage.source {
         case let .asset(asset):
             productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))

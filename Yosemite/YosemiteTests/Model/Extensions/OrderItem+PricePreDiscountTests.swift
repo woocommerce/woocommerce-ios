@@ -1,9 +1,9 @@
 import Foundation
 import XCTest
 import Networking
-@testable import WooCommerce
+@testable import Yosemite
 
-final class OrderItemWooTests: XCTestCase {
+final class OrderItemPricePreDiscountTests: XCTestCase {
     func test_price_pre_discount_when_zero_quantity_then_zero() {
         let item = OrderItem.fake().copy(quantity: 0, subtotal: "100.00")
 

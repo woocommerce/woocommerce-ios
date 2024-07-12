@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.DashboardCard
 import struct Yosemite.GoogleAdsCampaign
+import struct Yosemite.GoogleAdsCampaignStatsTotals
 
 struct GoogleAdsDashboardCard: View {
     /// Scale of the view based on accessibility changes
@@ -32,10 +33,9 @@ struct GoogleAdsDashboardCard: View {
                         await viewModel.reloadCard()
                     }
                 }
-            } else if let campaign = viewModel.lastCampaign {
-                // Campaign details & stats
-                GoogleAdsCampaignDetailView(campaign: campaign,
-                                            stats: viewModel.lastCampaignStats)
+            } else if let stats = viewModel.performanceStats {
+                // Total performance stats
+                statsView(with: stats)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         onShowAllCampaigns()
@@ -96,7 +96,7 @@ private extension GoogleAdsDashboardCard {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.secondary)
                     .padding(.leading, Layout.padding)
-                    .padding(.vertical, Layout.hideIconVerticalPadding)
+                    .padding(.vertical, Layout.contentVerticalPadding)
             }
             .disabled(viewModel.syncingData)
         }
@@ -116,7 +116,7 @@ private extension GoogleAdsDashboardCard {
                     .subheadlineStyle()
             }
         }
-        .padding(Layout.contentPadding)
+        .padding(Layout.padding)
         .background(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(uiColor: .init(light: UIColor.clear,
@@ -154,14 +154,80 @@ private extension GoogleAdsDashboardCard {
             }
         }
     }
+
+    func statsView(with stats: GoogleAdsCampaignStatsTotals) -> some View {
+        // campaign stats
+        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.padding) {
+            VStack {
+                // Logo image
+                Image(uiImage: .googleLogo)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
+                Spacer()
+            }
+            VStack(alignment: .leading, spacing: Layout.padding) {
+                HStack {
+                    // Title
+                    Text(Localization.Stats.title)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+
+                    Spacer()
+
+                    // disclosure indicator
+                    Image(systemName: "chevron.forward")
+                        .foregroundColor(.secondary)
+                        .font(.headline)
+                }
+
+                AdaptiveStack {
+                    // campaign total impressions
+                    VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
+                        Text(Localization.Stats.impressions)
+                            .subheadlineStyle()
+                        Text("\(stats.impressions ?? 0)")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.init(UIColor.text))
+                    }
+                    .fixedSize()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    // campaign total clicks
+                    VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
+                        Text(Localization.Stats.clicks)
+                            .subheadlineStyle()
+                        Text("\(stats.clicks ?? 0)")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.init(UIColor.text))
+                    }
+                    .fixedSize()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(Layout.padding)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: .init(light: UIColor.clear,
+                                           dark: UIColor.systemGray5)))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
+        }
+        .padding(Layout.strokeWidth)
+    }
 }
 
 private extension GoogleAdsDashboardCard {
     enum Layout {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: cornerRadius, height: cornerRadius)
-        static let hideIconVerticalPadding: CGFloat = 8
-        static let contentPadding: CGFloat = 16
+        static let contentVerticalPadding: CGFloat = 8
         static let strokeWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8
         static let imageSize: CGFloat = 44
@@ -186,13 +252,30 @@ private extension GoogleAdsDashboardCard {
         enum NoCampaign {
             static let title = NSLocalizedString(
                 "googleAdsDashboardCard.noCampaign.title",
-                value: "Boost store traffic and sales with Google Ads",
+                value: "Drive sales and generate more traffic with Google Ads",
                 comment: "Title label on the Google Ads campaigns section on the Dashboard screen"
             )
             static let subtitle = NSLocalizedString(
                 "googleAdsDashboardCard.noCampaign.details",
                 value: "Promote your products across Google Search, Shopping, Youtube, Gmail, and more.",
                 comment: "Subtitle label on the Google Ads campaigns section on the Dashboard screen"
+            )
+        }
+        enum Stats {
+            static let title = NSLocalizedString(
+                "googleAdsDashboardCard.stats.title",
+                value: "Paid campaign performance",
+                comment: "Title label for the Google Ads paid campaign performance section"
+            )
+            static let impressions = NSLocalizedString(
+                "googleAdsDashboardCard.stats.totalImpressions",
+                value: "Impressions",
+                comment: "Title label for the total impressions of Google Ads paid campaigns"
+            )
+            static let clicks = NSLocalizedString(
+                "googleAdsDashboardCard.stats.totalClicks",
+                value: "Clicks",
+                comment: "Title label for the total clicks of Google Ads paid campaigns"
             )
         }
     }

@@ -16,20 +16,14 @@ struct ItemListView: View {
                 .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
             switch viewModel.state {
-            case .loaded:
-                ScrollView {
-                    ForEach(viewModel.items, id: \.productID) { item in
-                        Button(action: {
-                            viewModel.select(item)
-                        }, label: {
-                            ItemCardView(item: item)
-                        })
-                    }
-                }
+            case .empty(let emptyModel):
+                emptyView(emptyModel)
             case .loading:
                 loadingView
-            case .error:
-                errorView
+            case .loaded(let items):
+                listView(items)
+            case .error(let errorModel):
+                errorView(errorModel)
             }
         }
         .refreshable {
@@ -51,15 +45,49 @@ private extension ItemListView {
         }
     }
 
-    var errorView: some View {
+    @ViewBuilder
+    func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
         VStack {
             Spacer()
-            Text("Error!!")
+            Text(content.title)
+            Text(content.subtitle)
+            Button(action: {
+                // TODO:
+                // Redirect the merchant to the app in order to create a new product
+                // https://github.com/woocommerce/woocommerce-ios/issues/13297
+            }, label: {
+                Text(content.buttonText)}
+            )
+            Text(content.hint)
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    func listView(_ items: [POSItem]) -> some View {
+        ScrollView {
+            ForEach(items, id: \.productID) { item in
+                Button(action: {
+                    viewModel.select(item)
+                }, label: {
+                    ItemCardView(item: item)
+                })
+            }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ content: ItemListViewModel.ErrorModel) -> some View {
+        VStack {
+            Spacer()
+            Text(content.title)
             Button(action: {
                 Task {
                     await viewModel.populatePointOfSaleItems()
                 }
-            }, label: { Text("Retry") })
+            }, label: {
+                Text(content.buttonText)
+            })
             Spacer()
         }
     }

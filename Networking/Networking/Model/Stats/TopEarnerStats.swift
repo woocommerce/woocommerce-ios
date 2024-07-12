@@ -20,8 +20,8 @@ public struct TopEarnerStats: Codable, GeneratedFakeable, GeneratedCopiable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let date = try container.decode(String.self, forKey: .date)
         let granularity = try container.decode(StatGranularity.self, forKey: .unit)
+        let date = try container.decode(String.self, forKey: .date)
         let limit = try container.decode(String.self, forKey: .limit)
         let items = try container.decode([TopEarnerStatsItem].self, forKey: .items)
 
@@ -76,9 +76,9 @@ enum TopEarnerStatsError: Error {
 extension TopEarnerStats {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(date, forKey: .date)
         try container.encode(granularity, forKey: .unit)
         try container.encode(items, forKey: .items)
         try container.encode(limit, forKey: .limit)
+        try container.encode(date, forKey: .date)
     }
 }

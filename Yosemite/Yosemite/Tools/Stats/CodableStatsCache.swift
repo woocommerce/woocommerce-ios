@@ -20,10 +20,10 @@ private struct CodableCacheEntry<T: Codable>: Codable {
 /// Encapsulates the logic to cache Analytics Stats `Codable` objects tied to a site and a Date range
 struct CodableStatsCache {
     static func loadValue<T: Codable>(from range: ClosedRange<Date>, siteID: Int64) -> T? {
-        let userCache = SiteCodablePersistentCache<T>(siteID: siteID, directoryName: String(describing: T.self))
+        let userCache = SiteCodablePersistentCache<CodableCacheEntry<T>>(siteID: siteID, directoryName: String(describing: T.self))
         let key = range.cacheKey
 
-        guard let entry = try? userCache.load(forKey: key) as? CodableCacheEntry<T> else {
+        guard let entry = try? userCache.load(forKey: key) else {
             return nil
         }
 
@@ -40,15 +40,9 @@ struct CodableStatsCache {
                                  range: ClosedRange<Date>,
                                  siteID: Int64,
                                  timeToLive: TimeInterval) {
+        debugPrint("saving value", value)
         let userCache = SiteCodablePersistentCache<CodableCacheEntry<T>>(siteID: siteID, directoryName: String(describing: TopEarnerStats.self))
         userCache.save(CodableCacheEntry(value: value, timeToLive: timeToLive), forKey: range.cacheKey)
-    }
-
-    static private func key(from earliestDateToInclude: Date, latestDateToInclude: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd:MM:yy"
-
-        return dateFormatter.string(from: earliestDateToInclude) + "-" + dateFormatter.string(from: latestDateToInclude)
     }
 }
 

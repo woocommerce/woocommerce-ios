@@ -345,6 +345,7 @@
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
 		B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */; };
+		B95DD0972C4139C800C35AEE /* TopEarnerStatsCachingFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95DD0962C4139C800C35AEE /* TopEarnerStatsCachingFetcher.swift */; };
 		B972F3772C3D706B008DD15C /* CodableStatsCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B972F3762C3D706B008DD15C /* CodableStatsCache.swift */; };
 		B974B84B2C401C6C00BF3FA2 /* SiteCodablePersistentCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B974B84A2C401C6C00BF3FA2 /* SiteCodablePersistentCache.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
@@ -851,6 +852,7 @@
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
 		B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxBasedOnSetting.swift; sourceTree = "<group>"; };
+		B95DD0962C4139C800C35AEE /* TopEarnerStatsCachingFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopEarnerStatsCachingFetcher.swift; sourceTree = "<group>"; };
 		B972F3762C3D706B008DD15C /* CodableStatsCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableStatsCache.swift; sourceTree = "<group>"; };
 		B974B84A2C401C6C00BF3FA2 /* SiteCodablePersistentCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCodablePersistentCache.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
@@ -1576,6 +1578,7 @@
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				B95DD0942C41399400C35AEE /* New Group */,
 				B974B8492C401C4C00BF3FA2 /* Cache */,
 				B972F3752C3D7042008DD15C /* Stats */,
 				DA3F0E1A2C218EE200B8C2F8 /* POS */,
@@ -1949,10 +1952,18 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		B95DD0942C41399400C35AEE /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		B972F3752C3D7042008DD15C /* Stats */ = {
 			isa = PBXGroup;
 			children = (
 				B972F3762C3D706B008DD15C /* CodableStatsCache.swift */,
+				B95DD0962C4139C800C35AEE /* TopEarnerStatsCachingFetcher.swift */,
 			);
 			path = Stats;
 			sourceTree = "<group>";
@@ -2501,6 +2512,7 @@
 				247CE850258325AC00F9D9D1 /* MockOrderNoteActionHandler.swift in Sources */,
 				4591A6B4274BB29000F51DCD /* StoredOrderSettings.swift in Sources */,
 				D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */,
+				B95DD0972C4139C800C35AEE /* TopEarnerStatsCachingFetcher.swift in Sources */,
 				03FBDA3E2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift in Sources */,
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,

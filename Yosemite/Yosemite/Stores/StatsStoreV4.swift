@@ -9,15 +9,15 @@ public final class StatsStoreV4: Store {
     private let siteStatsRemote: SiteStatsRemote
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
-    private let productsReportsRemote: ProductsReportsRemote
     private let productBundleStatsRemote: ProductBundleStatsRemote
     private let giftCardStatsRemote: GiftCardStatsRemote
+    private let topEarnerStatsCachingFetcher: TopEarnerStatsCachingFetcher
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
-        self.productsReportsRemote = ProductsReportsRemote(network: network)
+        self.topEarnerStatsCachingFetcher = TopEarnerStatsCachingFetcher(network: network)
         self.productBundleStatsRemote = ProductBundleStatsRemote(network: network)
         self.giftCardStatsRemote = GiftCardStatsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -298,52 +298,20 @@ private extension StatsStoreV4 {
                                 onCompletion: @escaping (Result<TopEarnerStats, Error>) -> Void) {
         Task { @MainActor in
             do {
-                guard let cachedTopEarnersStats: TopEarnerStats = CodableStatsCache.loadValue(from: earliestDateToInclude...latestDateToInclude,
-                                                                                siteID: siteID) else {
-                    let topEarnersStats = try await loadTopEarnerStats(siteID: siteID,
-                                                                       timeRange: timeRange,
-                                                                       timeZone: timeZone,
-                                                                       earliestDateToInclude: earliestDateToInclude,
-                                                                       latestDateToInclude: latestDateToInclude,
-                                                                       quantity: quantity,
-                                                                       forceRefresh: forceRefresh)
-                    if saveInStorage {
-                        upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
-                    }
-
-                    CodableStatsCache.save(value: topEarnersStats, range: earliestDateToInclude...latestDateToInclude, siteID: siteID, timeToLive: 60*60*30)
-
-                    return onCompletion(.success(topEarnersStats))
+                let topEarnersStats = try await topEarnerStatsCachingFetcher.loadTopEarnerStats(siteID: siteID,
+                                                                   timeRange: timeRange,
+                                                                   timeZone: timeZone,
+                                                                   earliestDateToInclude: earliestDateToInclude,
+                                                                   latestDateToInclude: latestDateToInclude,
+                                                                   quantity: quantity)
+                if saveInStorage {
+                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
                 }
-
-                debugPrint("Cache: returning cached top earners stats")
-                return onCompletion(.success(cachedTopEarnersStats))
-
-
+                onCompletion(.success(topEarnersStats))
             } catch {
                 onCompletion(.failure(error))
             }
         }
-    }
-
-    @MainActor
-    func loadTopEarnerStats(siteID: Int64,
-                            timeRange: StatsTimeRangeV4,
-                            timeZone: TimeZone,
-                            earliestDateToInclude: Date,
-                            latestDateToInclude: Date,
-                            quantity: Int,
-                            forceRefresh: Bool) async throws -> TopEarnerStats {
-        let productsReport = try await productsReportsRemote.loadTopProductsReport(for: siteID,
-                                                                                   timeZone: timeZone,
-                                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                                   latestDateToInclude: latestDateToInclude,
-                                                                                   quantity: quantity)
-        return convertProductsReportIntoTopEarners(siteID: siteID,
-                                                   granularity: timeRange.topEarnerStatsGranularity,
-                                                   date: latestDateToInclude,
-                                                   productsReport: productsReport,
-                                                   quantity: quantity)
     }
 
     /// Retrieves the product bundle stats for the provided siteID, and time range, without saving them to the Storage layer.
@@ -566,30 +534,6 @@ extension StatsStoreV4 {
             ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
         storageSiteSummaryStats.update(with: readOnlyStats)
         storage.saveIfNeeded()
-    }
-}
-
-// MARK: Convert Products Report into TopEarnerStats
-//
-private extension StatsStoreV4 {
-
-    /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
-    ///
-    func convertProductsReportIntoTopEarners(siteID: Int64,
-                                                  granularity: StatGranularity,
-                                                  date: Date,
-                                                  productsReport: [ProductsReportItem],
-                                                  quantity: Int) -> TopEarnerStats {
-        let statsDate = Self.buildDateString(from: date, with: granularity)
-        let statsItems = productsReport.map { product in
-            TopEarnerStatsItem(productID: product.productID,
-                               productName: product.productName,
-                               quantity: product.quantity,
-                               total: product.total,
-                               currency: "", // TODO: Remove currency https://github.com/woocommerce/woocommerce-ios/issues/2549
-                               imageUrl: product.imageUrl)
-        }
-        return TopEarnerStats(siteID: siteID, date: statsDate, granularity: granularity, limit: quantity.description, items: statsItems)
     }
 }
 

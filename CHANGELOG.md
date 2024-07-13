@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.5
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
+
 ## 19.4
 Discover the latest updates to our app! The Analytics Hub now includes analytics for Google Ads campaigns, provided the Google Listings & Ads extension is active and connected. We've also enabled Inbox Notes in both the Dynamic Dashboard and the Hub Menu, offering users a centralized, non-intrusive method for receiving important updates, feature announcements, and pertinent information. Update now to enjoy these new features and enhance your experience! 
 

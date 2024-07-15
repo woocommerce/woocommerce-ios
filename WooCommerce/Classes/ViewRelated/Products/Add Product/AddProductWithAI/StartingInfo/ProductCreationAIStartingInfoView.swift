@@ -101,6 +101,14 @@ struct ProductCreationAIStartingInfoView: View {
                     }
                 }
             }
+            .gesture(DragGesture().onChanged { value in
+                // Dismiss the keyboard when a downward swipe gesture is detected.
+                editorIsFocused = false
+            })
+            .onTapGesture {
+                // Dismiss the keyboard when the view is tapped.
+                editorIsFocused = false
+            }
             .padding(insets: Layout.insets)
         }
         .safeAreaInset(edge: .bottom) {

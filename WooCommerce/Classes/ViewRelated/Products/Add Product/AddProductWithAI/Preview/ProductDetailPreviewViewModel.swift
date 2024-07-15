@@ -7,9 +7,9 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
-    enum EditableField: Equatable {
+    enum EditableField: String {
         case name
-        case shortDescription
+        case shortDescription = "short_description"
         case description
     }
 

@@ -7,7 +7,7 @@ final class ItemListViewModel: ObservableObject {
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
-    @Published private(set) var isBannerVisible: Bool = true
+    @Published private(set) var shouldShowHeaderBanner: Bool = true
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
@@ -52,7 +52,7 @@ final class ItemListViewModel: ObservableObject {
     }
 
     func toggleBanner() {
-        isBannerVisible.toggle()
+        shouldShowHeaderBanner.toggle()
     }
 }
 

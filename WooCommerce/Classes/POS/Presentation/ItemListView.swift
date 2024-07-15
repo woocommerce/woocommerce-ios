@@ -35,37 +35,15 @@ struct ItemListView: View {
 private extension ItemListView {
     @ViewBuilder
     func headerView() -> some View {
-        switch viewModel.isBannerVisible {
+        switch viewModel.shouldShowHeaderBanner {
         case true:
             VStack {
-                Text(Localization.productSelectorTitle)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 8)
-                    .font(Constants.titleFont)
-                    .foregroundColor(Color.posPrimaryTexti3)
-                // TODO:
-                // Separate the banner card to its own view
-                HStack {
-                    Image(uiImage: .infoImage)
-                    VStack {
-                        Text("Showing simple products only")
-                        Text("Only simple physical products are available with POS right now.")
-                        Text("Other product types, such as variable and virtual, will become available in future updates.")
-                    }
-                    Button(action: {
-                        viewModel.toggleBanner()
-                    }, label: {
-                        Image(uiImage: .closeButton)
-                    })
-                }
+                headertextView
+                bannerCardView
             }
         case false:
             HStack {
-                Text(Localization.productSelectorTitle)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 8)
-                    .font(Constants.titleFont)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                headertextView
                 Spacer()
                 Button(action: {
                     viewModel.toggleBanner()
@@ -75,6 +53,31 @@ private extension ItemListView {
             }
         }
     }
+
+    var bannerCardView: some View {
+        HStack {
+            Image(uiImage: .infoImage)
+            VStack {
+                Text(Localization.headerBannerTitle)
+                Text(Localization.headerBannerSubtitle)
+                Text(Localization.headerBannerHint)
+            }
+            Button(action: {
+                viewModel.toggleBanner()
+            }, label: {
+                Image(uiImage: .closeButton)
+            })
+        }
+    }
+
+    var headertextView: some View {
+        Text(Localization.productSelectorTitle)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 8)
+            .font(Constants.titleFont)
+            .foregroundColor(Color.posPrimaryTexti3)
+    }
+
     var loadingView: some View {
         VStack {
             Spacer()
@@ -143,6 +146,21 @@ private extension ItemListView {
             "pos.itemlistview.productSelectorTitle",
             value: "Products",
             comment: "Title of the Point of Sale product selector"
+        )
+        static let headerBannerTitle = NSLocalizedString(
+            "pos.itemlistview.headerBannerTitle",
+            value: "Showing simple products only",
+            comment: "Title of the product selector header banner, which explains current POS limitations"
+        )
+        static let headerBannerSubtitle = NSLocalizedString(
+            "pos.itemlistview.headerBannerSubtitle",
+            value: "Only simple physical products are available with POS right now.",
+            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
+        )
+        static let headerBannerHint = NSLocalizedString(
+            "pos.itemlistview.headerBannerHint",
+            value: "Other product types, such as variable and virtual, will become available in future updates.",
+            comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
     }
 }

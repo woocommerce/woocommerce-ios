@@ -96,16 +96,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAITextDetectionFailed, properties: [:], error: error)
         }
 
-        /// When the user taps on the “Generate Product Details” button on the starting info screen
-        static func generateProductDetailsButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productCreationAIGenerateProductDetailsButtonTapped, properties: [:])
-        }
-
-        /// When the user taps on the “Generate Again” button
-        static func generateAgainButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productCreationAIGenerateAgainButtonTapped, properties: [:])
-        }
-
         /// Upon successfully generating options of Name, Summary and Description fields.
         static func nameDescriptionOptionsGenerated(nameCount: Int,
                                                     shortDescriptionCount: Int,

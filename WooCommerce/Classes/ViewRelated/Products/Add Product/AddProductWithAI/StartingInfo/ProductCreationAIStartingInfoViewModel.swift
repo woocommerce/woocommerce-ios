@@ -53,10 +53,6 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
         isShowingMediaPickerSourceSheet = true
     }
 
-    func didTapContinue() {
-        analytics.track(event: .ProductCreationAI.generateProductDetailsButtonTapped())
-    }
-
     func didTapViewPhoto() {
         isShowingViewPhotoSheet = true
     }
@@ -159,8 +155,8 @@ extension ProductCreationAIStartingInfoViewModel {
             )
         }
     }
-}
 
-private enum ScanError: Error {
-    case noTextDetected
+    enum ScanError: Error {
+        case noTextDetected
+    }
 }

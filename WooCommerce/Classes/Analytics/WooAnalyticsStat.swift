@@ -962,8 +962,6 @@ enum WooAnalyticsStat: String {
     case productCreationAIStartedPackagePhotoSelectionFlow = "product_creation_ai_started_package_photo_selection_flow"
     case productCreationAITextDetected = "product_creation_ai_text_detected"
     case productCreationAITextDetectionFailed = "product_creation_ai_text_detection_failed"
-    case productCreationAIGenerateProductDetailsButtonTapped = "product_creation_ai_generate_product_details_button_tapped"
-    case productCreationAIGenerateAgainButtonTapped = "product_creation_ai_generate_again_button_tapped"
     case productCreationAIGeneratedNameDescriptionOptions = "product_creation_ai_generated_name_description_options"
     case productCreationAIUndoEditTapped = "product_creation_ai_undo_edit_tapped"
     

@@ -148,7 +148,6 @@ private extension ProductCreationAIStartingInfoView {
         Button {
             // continue
             editorIsFocused = false
-            viewModel.didTapContinue()
             onContinueWithFeatures(viewModel.features)
         } label: {
             Text(Localization.generateProductDetails)

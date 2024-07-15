@@ -14,12 +14,12 @@ final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
         self.isProductEligible = isProductEligible
     }
 
-    func isSiteEligible(_ site: Site) async -> Bool {
+    func isSiteEligible(_ site: Site) -> Bool {
         isSiteEligibleInvoked = true
         return isSiteEligible
     }
 
-    func isProductEligible(site: Site, product: WooCommerce.ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
+    func isProductEligible(site: Site, product: WooCommerce.ProductFormDataModel, isPasswordProtected: Bool) -> Bool {
         isProductEligible
     }
 }

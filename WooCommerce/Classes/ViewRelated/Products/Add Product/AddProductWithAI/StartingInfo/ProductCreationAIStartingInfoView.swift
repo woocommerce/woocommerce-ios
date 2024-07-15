@@ -53,6 +53,11 @@ struct ProductCreationAIStartingInfoView: View {
                             case .empty:
                                 readTextFromPhotoButton
                                     .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                                    .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+                                        Task { @MainActor in
+                                            await viewModel.selectImage(from: source)
+                                        }
+                                    })
                             case .loading, .success:
                                 PackagePhotoView(title: Localization.photoSelected,
                                                  imageState: viewModel.imageState,
@@ -64,6 +69,17 @@ struct ProductCreationAIStartingInfoView: View {
                                 },
                                                  onTapRemovePhoto: {
                                     viewModel.didTapRemovePhoto()
+                                })
+                                .clipShape(
+                                    .rect(
+                                        bottomLeadingRadius: Layout.cornerRadius,
+                                        bottomTrailingRadius: Layout.cornerRadius
+                                    )
+                                )
+                                .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+                                    Task { @MainActor in
+                                        await viewModel.selectImage(from: source)
+                                    }
                                 })
                             }
                         }
@@ -127,11 +143,6 @@ private extension ProductCreationAIStartingInfoView {
             }
             Spacer()
         }
-        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-            Task { @MainActor in
-                await viewModel.selectImage(from: source)
-            }
-        })
     }
 
     var placeholderText: some View {

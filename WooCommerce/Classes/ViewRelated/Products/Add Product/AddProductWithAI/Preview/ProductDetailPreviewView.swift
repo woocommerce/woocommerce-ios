@@ -260,6 +260,7 @@ private extension ProductDetailPreviewView {
                              onTapRemovePhoto: {
                 viewModel.didTapRemovePhoto()
             })
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         }
     }
 }

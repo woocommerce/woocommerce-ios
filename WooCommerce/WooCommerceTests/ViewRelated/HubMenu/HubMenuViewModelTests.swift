@@ -140,9 +140,7 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
-        waitUntil {
-            blazeEligibilityChecker.isSiteEligibleInvoked
-        }
+
         viewModel.setupMenuElements()
 
         // Then

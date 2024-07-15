@@ -87,8 +87,7 @@ struct ProductCreationAIStartingInfoView: View {
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
                         )
                     }
-
-                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) && viewModel.features.isNotEmpty {
+                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) {
                         ProductCreationAIPromptProgressBar(text: $viewModel.features)
                     }
 

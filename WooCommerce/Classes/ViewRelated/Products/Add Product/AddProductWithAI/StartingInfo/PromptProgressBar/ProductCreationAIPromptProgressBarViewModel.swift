@@ -20,11 +20,11 @@ class ProductCreationAIPromptProgressBarViewModel: ObservableObject {
         switch wordCount {
         case 0:
             status = .start
-        case 1...7:
+        case 1...10:
             status = .inProgress
-        case 8...17:
+        case 11...19:
             status = .halfway
-        case 18...27:
+        case 20...30:
             status = .almostDone
         default:
             status = .completed

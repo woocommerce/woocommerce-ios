@@ -58,7 +58,7 @@ private extension ItemListView {
     var bannerCardView: some View {
         HStack {
             Image(uiImage: .infoImage)
-                .frame(width: 48, height: 48)
+                .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
                 .foregroundColor(Color.primaryTint)
             VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
@@ -71,13 +71,13 @@ private extension ItemListView {
                     viewModel.toggleBanner()
                 }, label: {
                     Image(uiImage: .closeButton)
-                        .frame(width: 26, height: 26)
+                        .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
                         .foregroundColor(.gray)
                 })
                 Spacer()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: 120 * scale)
+        .frame(maxWidth: .infinity, maxHeight: Constants.bannerHeight * scale)
         .background(Color.posBackgroundWhitei3)
     }
 
@@ -151,6 +151,9 @@ private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let bannerTitleFont: Font = .system(size: 26, weight: .bold, design: .default)
+        static let bannerHeight: CGFloat = 120
+        static let infoIconSize: CGFloat = 48
+        static let closeIconSize: CGFloat = 26
     }
 
     enum Localization {

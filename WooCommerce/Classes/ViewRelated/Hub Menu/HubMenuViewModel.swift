@@ -341,20 +341,12 @@ private extension HubMenuViewModel {
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
 
-        /// We're dispatching 3 separate tasks because using task group to
-        /// asynchronously update variables in the main thread is considered unsafe
-        /// when enabling concurrency checks.
-        /// Using task group would require more effort like this:
-        /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
-
         isSiteEligibleForBlaze = blazeEligibilityChecker.isSiteEligible(site)
+
+        isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
-        }
-
-        Task { @MainActor in
-            isSiteEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
         }
     }
 

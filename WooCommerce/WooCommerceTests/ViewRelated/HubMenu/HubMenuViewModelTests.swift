@@ -52,9 +52,7 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          inboxEligibilityChecker: inboxEligibilityChecker)
-        waitUntil {
-            inboxEligibilityChecker.isSiteEligibleInvoked
-        }
+
         viewModel.setupMenuElements()
 
         // Then inbox is in the menu

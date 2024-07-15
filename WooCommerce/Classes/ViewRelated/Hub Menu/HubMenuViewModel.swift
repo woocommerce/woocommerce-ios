@@ -347,9 +347,7 @@ private extension HubMenuViewModel {
         /// Using task group would require more effort like this:
         /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
 
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+        isSiteEligibleForBlaze = blazeEligibilityChecker.isSiteEligible(site)
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)

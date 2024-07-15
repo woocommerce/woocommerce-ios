@@ -3,6 +3,7 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrder
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -86,7 +87,40 @@ final class TotalsViewModel: ObservableObject {
         startSyncingOrder(with: cartItems, allItems: allItems)
     }
 
+    private func areOrderAndCartDifferent(cartItems: [CartItem]) -> Bool {
+        if let order {
+            // check if order has same items as cart does
+            var cleanOrderItems: [POSOrderItem] = order.items.flatMap {
+                Array(repeating: $0, count: $0.quantity.intValue)
+            }
+            var cleanCartItems: [POSItem] = cartItems.flatMap {
+                Array(repeating: $0.item, count: $0.quantity)
+            }
+            if cleanOrderItems.count == cleanCartItems.count {
+                cleanOrderItems.sort { a, b in
+                    return a.productID < b.productID
+                }
+                cleanCartItems.sort { a, b in
+                    return a.productID < b.productID
+                }
+                var hasChanges = false
+                for (index, item) in cleanCartItems.enumerated() {
+                    if item.productID != cleanOrderItems[index].productID || item.price != cleanOrderItems[index].price.stringValue {
+                        hasChanges = true
+                        break
+                    }
+                }
+                return hasChanges
+            }
+        }
+        return true
+    }
+
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+        guard areOrderAndCartDifferent(cartItems: cartItems) else {
+            return
+        }
+        // calculate totals and sync order if there was a change in the cart
         Task { @MainActor in
             calculateCartTotal(cartItems: cartItems)
             await syncOrder(for: cartItems, allItems: allItems)

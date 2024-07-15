@@ -22,7 +22,7 @@ public struct POSOrder {
     public let total: String
     public let totalTax: String
     public let currency: String
-    let items: [POSOrderItem]
+    public let items: [POSOrderItem]
 }
 
 public extension POSOrder {
@@ -36,12 +36,13 @@ public extension POSOrder {
     }
 }
 
-struct POSOrderItem {
+public struct POSOrderItem {
     let itemID: Int64
 
     /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
-    let productID: Int64
-    let quantity: Decimal
+    public let productID: Int64
+    public let quantity: Decimal
+    public let price: NSDecimalNumber
 
     func toOrderItem() -> OrderItem {
         .init(itemID: itemID,
@@ -49,7 +50,7 @@ struct POSOrderItem {
               productID: productID,
               variationID: .zero,
               quantity: quantity,
-              price: .zero,
+              price: price,
               sku: nil,
               subtotal: "",
               subtotalTax: "",
@@ -67,6 +68,7 @@ struct POSOrderItem {
         self.itemID = orderItem.itemID
         self.productID = orderItem.productID
         self.quantity = orderItem.quantity
+        self.price = orderItem.price
     }
 }
 

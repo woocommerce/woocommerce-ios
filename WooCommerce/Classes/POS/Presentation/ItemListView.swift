@@ -58,6 +58,7 @@ private extension ItemListView {
     var bannerCardView: some View {
         HStack {
             Image(uiImage: .infoImage)
+                .padding(Constants.iconPadding)
                 .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
                 .foregroundColor(Color.primaryTint)
             VStack(alignment: .leading) {
@@ -74,6 +75,7 @@ private extension ItemListView {
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
                         .foregroundColor(.gray)
                 })
+                .padding(Constants.iconPadding)
                 Spacer()
             }
         }
@@ -154,6 +156,7 @@ private extension ItemListView {
         static let bannerHeight: CGFloat = 120
         static let infoIconSize: CGFloat = 48
         static let closeIconSize: CGFloat = 26
+        static let iconPadding: CGFloat = 24
     }
 
     enum Localization {

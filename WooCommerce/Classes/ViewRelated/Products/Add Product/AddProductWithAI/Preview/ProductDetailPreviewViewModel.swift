@@ -186,6 +186,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let aiTone = userDefaults.aiTone(for: siteID)
             let aiProduct = try await generateProduct(language: language,
                                                            tone: aiTone)
+            analytics.track(event: .ProductCreationAI.nameDescriptionOptionsGenerated(
+                nameCount: aiProduct.names.count,
+                shortDescriptionCount: aiProduct.shortDescriptions.count,
+                descriptionCount: aiProduct.descriptions.count
+            ))
             try displayAIProductDetails(aiProduct: aiProduct)
             generatedAIProduct = aiProduct
             isGeneratingDetails = false
@@ -226,6 +231,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                         isUseful: vote == .up))
 
         shouldShowFeedbackView = false
+    }
+
+    func didTapGenerateAgain() {
+        analytics.track(event: .ProductCreationAI.generateAgainButtonTapped())
+        Task { @MainActor in
+            await generateProductDetails()
+        }
     }
 
     // MARK: Switch options
@@ -272,6 +284,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 //
 extension ProductDetailPreviewViewModel {
     func undoEdits(in updatedField: EditableField) {
+        analytics.track(event: .ProductCreationAI.undoEditTapped(for: updatedField))
+
         guard let generatedAIProduct else {
             return
         }

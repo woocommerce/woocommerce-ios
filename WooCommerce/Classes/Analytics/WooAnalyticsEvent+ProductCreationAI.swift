@@ -119,7 +119,7 @@ extension WooAnalyticsEvent {
         }
 
         /// When the user taps on the “Undo edits” button
-        static func undoEditTapped(field: ProductDetailPreviewViewModel.EditableField) -> WooAnalyticsEvent {
+        static func undoEditTapped(for field: ProductDetailPreviewViewModel.EditableField) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIUndoEditTapped, properties: [Key.field.rawValue: field.rawValue])
         }
     }

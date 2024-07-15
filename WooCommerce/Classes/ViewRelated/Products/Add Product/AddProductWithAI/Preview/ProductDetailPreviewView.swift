@@ -131,6 +131,9 @@ struct ProductDetailPreviewView: View {
                     await viewModel.generateProductDetails()
                 }
             }
+            .onDisappear {
+                viewModel.onViewDisappear()
+            }
             .onChange(of: viewModel.errorState) { newValue in
                 isShowingErrorAlert = newValue != .none
             }
@@ -255,6 +258,7 @@ private extension ProductDetailPreviewView {
                              onTapRemovePhoto: {
                 viewModel.didTapRemovePhoto()
             })
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         }
     }
 }

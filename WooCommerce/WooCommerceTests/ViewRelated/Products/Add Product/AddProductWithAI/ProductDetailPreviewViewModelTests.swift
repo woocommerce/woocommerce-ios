@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 @testable import WooCommerce
 import WooFoundation
+import class Photos.PHAsset
 
 final class ProductDetailPreviewViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
@@ -569,6 +570,41 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.dimensions.length, length)
         XCTAssertEqual(generatedProduct.weight, weight)
         XCTAssertEqual(generatedProduct.regularPrice, price)
+    }
+
+    @MainActor
+    func test_saveProductAsDraft_triggers_image_upload_if_there_is_packaging_image() async {
+        // Given
+        let aiProduct = sampleAIProduct
+        let imageState: EditableImageViewState = .success(.init(image: .init(), source: .asset(asset: PHAsset())))
+
+        let productImagesUploader = MockProductImageUploader()
+        let expectedImage = ProductImage.fake().copy(imageID: 14324)
+        productImagesUploader.whenProductIsSaved(thenReturn: .success([expectedImage]))
+
+        var savedProduct: Product?
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      imageState: imageState,
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      productImageUploader: productImagesUploader,
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { savedProduct = $0 })
+
+        mockProductActions(aiGeneratedProductResult: .success(aiProduct))
+        mockProductTagActions()
+        mockProductCategoryActions()
+
+        // When
+        await viewModel.generateProductDetails()
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertTrue(productImagesUploader.saveProductImagesWhenNoneIsPendingUploadAnymoreWasCalled)
+        XCTAssertTrue(productImagesUploader.replaceLocalIDWasCalled)
+        XCTAssertEqual(savedProduct?.images, [expectedImage])
     }
 
     // MARK: Options

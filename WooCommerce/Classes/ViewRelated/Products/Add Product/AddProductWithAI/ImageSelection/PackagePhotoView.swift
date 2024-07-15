@@ -26,7 +26,9 @@ struct PackagePhotoView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Layout.spacing) {
+        AdaptiveStack(horizontalAlignment: .leading,
+                      verticalAlignment: .center,
+                      spacing: Layout.spacing) {
             EditableImageView(imageState: imageState,
                               emptyContent: {})
             .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
@@ -41,6 +43,7 @@ struct PackagePhotoView: View {
                         .footnoteStyle()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 
@@ -67,19 +70,12 @@ struct PackagePhotoView: View {
         }
         .padding(Layout.padding)
         .background(Color(.systemColor(.systemGray6)))
-        .clipShape(
-            .rect(
-                bottomLeadingRadius: Layout.textFieldOverlayCornerRadius,
-                bottomTrailingRadius: Layout.textFieldOverlayCornerRadius
-            )
-        )
     }
 
     enum Layout {
         static let spacing: CGFloat = 16
         static let cornerRadius: CGFloat = 4
         static let padding = EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        static let textFieldOverlayCornerRadius: CGFloat = 8
         static let packagePhotoSize: CGFloat = 48
         static let ellipisButtonSize: CGFloat = 24
     }

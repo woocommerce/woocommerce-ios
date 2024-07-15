@@ -10,11 +10,7 @@ struct ItemListView: View {
 
     var body: some View {
         VStack {
-            Text(Localization.productSelectorTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-                .font(Constants.titleFont)
-                .foregroundColor(Color.posPrimaryTexti3)
+            headerView()
             switch viewModel.state {
             case .empty(let emptyModel):
                 emptyView(emptyModel)
@@ -37,6 +33,48 @@ struct ItemListView: View {
 /// View Helpers
 ///
 private extension ItemListView {
+    @ViewBuilder
+    func headerView() -> some View {
+        switch viewModel.isBannerVisible {
+        case true:
+            VStack {
+                Text(Localization.productSelectorTitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 8)
+                    .font(Constants.titleFont)
+                    .foregroundColor(Color.posPrimaryTexti3)
+                // TODO:
+                // Separate the banner card to its own view
+                HStack {
+                    Image(uiImage: .infoImage)
+                    VStack {
+                        Text("Showing simple products only")
+                        Text("Only simple physical products are available with POS right now.")
+                        Text("Other product types, such as variable and virtual, will become available in future updates.")
+                    }
+                    Button(action: {
+                        viewModel.toggleBanner()
+                    }, label: {
+                        Image(uiImage: .closeButton)
+                    })
+                }
+            }
+        case false:
+            HStack {
+                Text(Localization.productSelectorTitle)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 8)
+                    .font(Constants.titleFont)
+                    .foregroundColor(Color.posPrimaryTexti3)
+                Spacer()
+                Button(action: {
+                    viewModel.toggleBanner()
+                }, label: {
+                    Image(uiImage: .infoImage)
+                })
+            }
+        }
+    }
     var loadingView: some View {
         VStack {
             Spacer()

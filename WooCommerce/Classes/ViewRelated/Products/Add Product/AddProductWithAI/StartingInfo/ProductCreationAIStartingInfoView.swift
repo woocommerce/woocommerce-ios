@@ -88,7 +88,7 @@ struct ProductCreationAIStartingInfoView: View {
                         )
                     }
 
-                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) {
+                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) && viewModel.features.isNotEmpty {
                         ProductCreationAIPromptProgressBar(text: $viewModel.features)
                     }
 

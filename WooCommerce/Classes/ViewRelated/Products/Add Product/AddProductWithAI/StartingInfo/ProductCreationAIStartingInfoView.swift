@@ -16,96 +16,113 @@ struct ProductCreationAIStartingInfoView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Layout.parentSpacing) {
-                VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
-                    // Title label.
-                    Text(Localization.title)
-                        .fontWeight(.bold)
-                        .titleStyle()
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: Layout.parentSpacing) {
+                    VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
+                        // Title label.
+                        Text(Localization.title)
+                            .fontWeight(.bold)
+                            .titleStyle()
 
-                    // Subtitle label.
-                    Text(Localization.subtitle)
-                        .foregroundStyle(Color(.secondaryLabel))
-                        .bodyStyle()
-                }
+                        // Subtitle label.
+                        Text(Localization.subtitle)
+                            .foregroundStyle(Color(.secondaryLabel))
+                            .bodyStyle()
+                    }
 
-                VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
-                    VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
-                        VStack(spacing: 0) {
-                            ZStack(alignment: .topLeading) {
-                                TextEditor(text: $viewModel.features)
-                                    .bodyStyle()
-                                    .foregroundStyle(.secondary)
-                                    .padding(insets: Layout.messageContentInsets)
-                                    .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
-                                    .focused($editorIsFocused)
 
-                                // Placeholder text
-                                placeholderText
-                            }
+                    VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
+                        VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
+                            VStack(spacing: 0) {
+                                ZStack(alignment: .topLeading) {
+                                    TextEditor(text: $viewModel.features)
+                                        .id("TextEditor")
+                                        .bodyStyle()
+                                        .foregroundStyle(.secondary)
+                                        .padding(insets: Layout.messageContentInsets)
+                                        .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
+                                        .focused($editorIsFocused)
+                                    // Scrolls to the "TextEditor" view with a smooth animation while typing.
+                                        .onChange(of: viewModel.features) { _ in
+                                            withAnimation {
+                                                proxy.scrollTo("TextEditor", anchor: .top)
+                                            }
+                                        }
+                                    // Placeholder text
+                                    placeholderText
+                                }
 
-                            Divider()
-                                .frame(height: Layout.dividerHeight)
-                                .foregroundColor(Color(.separator))
+                                Divider()
+                                    .frame(height: Layout.dividerHeight)
+                                    .foregroundColor(Color(.separator))
 
-                            switch viewModel.imageState {
-                            case .empty:
-                                readTextFromPhotoButton
-                                    .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                                switch viewModel.imageState {
+                                case .empty:
+                                    readTextFromPhotoButton
+                                        .padding(insets: Layout.readTextFromPhotoButtonInsets)
+                                        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+                                            Task { @MainActor in
+                                                await viewModel.selectImage(from: source)
+                                            }
+                                        })
+                                case .loading, .success:
+                                    PackagePhotoView(title: Localization.photoSelected,
+                                                     imageState: viewModel.imageState,
+                                                     onTapViewPhoto: {
+                                        viewModel.didTapViewPhoto()
+                                    },
+                                                     onTapReplacePhoto: {
+                                        viewModel.didTapReplacePhoto()
+                                    },
+                                                     onTapRemovePhoto: {
+                                        viewModel.didTapRemovePhoto()
+                                    })
+                                    .clipShape(
+                                        .rect(
+                                            bottomLeadingRadius: Layout.cornerRadius,
+                                            bottomTrailingRadius: Layout.cornerRadius
+                                        )
+                                    )
                                     .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
                                         Task { @MainActor in
                                             await viewModel.selectImage(from: source)
                                         }
                                     })
-                            case .loading, .success:
-                                PackagePhotoView(title: Localization.photoSelected,
-                                                 imageState: viewModel.imageState,
-                                                 onTapViewPhoto: {
-                                    viewModel.didTapViewPhoto()
-                                },
-                                                 onTapReplacePhoto: {
-                                    viewModel.didTapReplacePhoto()
-                                },
-                                                 onTapRemovePhoto: {
-                                    viewModel.didTapRemovePhoto()
-                                })
-                                .clipShape(
-                                    .rect(
-                                        bottomLeadingRadius: Layout.cornerRadius,
-                                        bottomTrailingRadius: Layout.cornerRadius
-                                    )
-                                )
-                                .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-                                    Task { @MainActor in
-                                        await viewModel.selectImage(from: source)
-                                    }
-                                })
+                                }
                             }
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
+                            )
                         }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
-                        )
-                    }
-                    if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) && (editorIsFocused || viewModel.features.isNotEmpty) {
-                        ProductCreationAIPromptProgressBar(text: $viewModel.features)
-                    }
+                        if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) && (editorIsFocused || viewModel.features.isNotEmpty) {
+                            ProductCreationAIPromptProgressBar(text: $viewModel.features)
+                        }
 
-                    ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
+                        ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
 
-                    if let message = viewModel.textDetectionErrorMessage {
-                        Text(message)
-                            .font(.footnote)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                        if let message = viewModel.textDetectionErrorMessage {
+                            Text(message)
+                                .font(.footnote)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                        }
+                    }
+                }
+                .onTapGesture {
+                    // Dismiss the keyboard when the view is tapped.
+                    editorIsFocused = false
+                }
+                .padding(insets: Layout.insets)
+            }
+            // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
+            .onChange(of: editorIsFocused) { isFocused in
+                if isFocused {
+                    withAnimation {
+                        proxy.scrollTo("TextEditor", anchor: .top)
                     }
                 }
             }
-            .onTapGesture {
-                // Dismiss the keyboard when the view is tapped.
-                editorIsFocused = false
-            }
-            .padding(insets: Layout.insets)
         }
         .safeAreaInset(edge: .bottom) {
             VStack {

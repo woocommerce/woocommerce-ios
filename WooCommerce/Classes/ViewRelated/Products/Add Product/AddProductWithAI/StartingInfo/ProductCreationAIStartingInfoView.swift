@@ -49,6 +49,14 @@ struct ProductCreationAIStartingInfoView: View {
                                                 proxy.scrollTo("TextEditor", anchor: .top)
                                             }
                                         }
+                                    // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
+                                    .onChange(of: editorIsFocused) { isFocused in
+                                        if isFocused {
+                                            withAnimation {
+                                                proxy.scrollTo("TextEditor", anchor: .top)
+                                            }
+                                        }
+                                    }
                                     // Placeholder text
                                     placeholderText
                                 }
@@ -114,14 +122,6 @@ struct ProductCreationAIStartingInfoView: View {
                     editorIsFocused = false
                 }
                 .padding(insets: Layout.insets)
-            }
-            // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
-            .onChange(of: editorIsFocused) { isFocused in
-                if isFocused {
-                    withAnimation {
-                        proxy.scrollTo("TextEditor", anchor: .top)
-                    }
-                }
             }
         }
         .safeAreaInset(edge: .bottom) {

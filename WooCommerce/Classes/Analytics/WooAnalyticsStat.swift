@@ -964,7 +964,7 @@ enum WooAnalyticsStat: String {
     case productCreationAITextDetectionFailed = "product_creation_ai_text_detection_failed"
     case productCreationAIGeneratedNameDescriptionOptions = "product_creation_ai_generated_name_description_options"
     case productCreationAIUndoEditTapped = "product_creation_ai_undo_edit_tapped"
-    
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

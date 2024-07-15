@@ -2,6 +2,7 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
 
     init(viewModel: ItemListViewModel) {
@@ -57,17 +58,27 @@ private extension ItemListView {
     var bannerCardView: some View {
         HStack {
             Image(uiImage: .infoImage)
-            VStack {
+                .frame(width: 48, height: 48)
+                .foregroundColor(Color.primaryTint)
+            VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
+                    .font(Constants.bannerTitleFont)
                 Text(Localization.headerBannerSubtitle)
                 Text(Localization.headerBannerHint)
             }
-            Button(action: {
-                viewModel.toggleBanner()
-            }, label: {
-                Image(uiImage: .closeButton)
-            })
+            VStack {
+                Button(action: {
+                    viewModel.toggleBanner()
+                }, label: {
+                    Image(uiImage: .closeButton)
+                        .frame(width: 26, height: 26)
+                        .foregroundColor(.gray)
+                })
+                Spacer()
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: 120 * scale)
+        .background(Color.posBackgroundWhitei3)
     }
 
     var headertextView: some View {
@@ -139,6 +150,7 @@ private extension ItemListView {
 private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
+        static let bannerTitleFont: Font = .system(size: 26, weight: .bold, design: .default)
     }
 
     enum Localization {

@@ -126,6 +126,7 @@ struct ProductCreationAIStartingInfoView: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
+                Divider()
                 // CTA to generate product details.
                 generateButton
                     .padding()

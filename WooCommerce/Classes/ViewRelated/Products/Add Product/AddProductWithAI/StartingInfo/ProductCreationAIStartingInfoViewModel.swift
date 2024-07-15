@@ -106,12 +106,12 @@ private extension ProductCreationAIStartingInfoViewModel {
             self.features = texts.joined(separator: " ")
             analytics.track(event: .ProductCreationAI.packagePhotoTextDetected(wordCount: texts.count))
         } catch {
+            analytics.track(event: .ProductCreationAI.packagePhotoTextDetectionFailed(error: error))
             switch error {
             case ScanError.noTextDetected:
                 textDetectionErrorMessage = Localization.noTextDetected
                 DDLogError("⛔️ No text detected from image.")
             default:
-                analytics.track(event: .ProductCreationAI.packagePhotoTextDetectionFailed(error: error))
                 textDetectionErrorMessage = Localization.textDetectionFailed
                 DDLogError("⛔️ Error scanning text from image: \(error)")
             }

@@ -758,4 +758,83 @@ final class StatsDataTextFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(formattedAmount, "$62.86")
     }
+
+    // MARK: Google Campaign Stats
+
+    func test_createGoogleCampaignsStatText_returns_placeholder_on_nil_stats() {
+        // Given
+        for stat in GoogleAdsCampaignStatsTotals.TotalData.allCases {
+            // When
+            let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: stat, from: nil)
+
+            // Then
+            XCTAssertEqual(text, "-", "Expected \"-\" placeholder for \(stat) text but actual text was \"\(text)\" instead")
+        }
+    }
+
+    func test_createGoogleCampaignsStatText_returns_expected_sales_text() {
+        // Given
+        let amount: Decimal = 1232
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .sales,
+                                                                        from: .fake().copy(totals: .fake().copy(sales: amount)),
+                                                                        currencyFormatter: currencyFormatter,
+                                                                        currencyCode: currencyCode.rawValue,
+                                                                        numberOfFractionDigits: fractionDigits)
+
+        // Then
+        assertEqual("$1,232", text)
+    }
+
+    func test_createGoogleCampaignsStatText_returns_expected_spend_text() {
+        // Given
+        let amount: Decimal = 1232
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .spend,
+                                                                        from: .fake().copy(totals: .fake().copy(spend: amount)),
+                                                                        currencyFormatter: currencyFormatter,
+                                                                        currencyCode: currencyCode.rawValue,
+                                                                        numberOfFractionDigits: fractionDigits)
+
+        // Then
+        assertEqual("$1,232", text)
+    }
+
+    func test_createGoogleCampaignsStatText_returns_expected_clicks_text() {
+        // Given
+        let amount = 1232
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .clicks,
+                                                                        from: .fake().copy(totals: .fake().copy(clicks: amount)))
+
+        // Then
+        assertEqual("1,232", text)
+    }
+
+    func test_createGoogleCampaignsStatText_returns_expected_impressions_text() {
+        // Given
+        let amount = 1232
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .impressions,
+                                                                        from: .fake().copy(totals: .fake().copy(impressions: amount)))
+
+        // Then
+        assertEqual("1,232", text)
+    }
+
+    func test_createGoogleCampaignsStatText_returns_expected_conversions_text() {
+        // Given
+        let amount: Decimal = 1232
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .conversions,
+                                                                        from: .fake().copy(totals: .fake().copy(conversions: amount)))
+
+        // Then
+        assertEqual("1,232", text)
+    }
 }

@@ -157,6 +157,38 @@ struct StatsDataTextFormatter {
                             numberOfFractionDigits: numberOfFractionDigits)
     }
 
+    // MARK: Google Ads Campaign Stats
+
+    /// Creates the text to display for a campaign stats metric, from the provided stats.
+    ///
+    static func createGoogleCampaignsStatText(for stat: GoogleAdsCampaignStatsTotals.TotalData,
+                                              from campaignStats: GoogleAdsCampaignStats?,
+                                              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                              currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                              numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        guard let campaignStats else {
+            return Constants.placeholderText
+        }
+        switch stat {
+        case .sales:
+            return formatAmount(campaignStats.totals.sales,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .spend:
+            return formatAmount(campaignStats.totals.spend,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .clicks:
+            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .clicks) as NSNumber) ?? Constants.placeholderText
+        case .impressions:
+            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .impressions) as NSNumber) ?? Constants.placeholderText
+        case .conversions:
+            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .conversions) as NSNumber) ?? Constants.placeholderText
+        }
+    }
+
     // MARK: Generic helpers
 
     /// Creates the text to display for an amount with currency settings.
@@ -167,13 +199,13 @@ struct StatsDataTextFormatter {
                              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                              currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                              numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-      guard let amount else {
-          return Constants.placeholderText
-      }
-      // If amount is an integer, no decimal points are shown.
-      let numberOfDecimals: Int? = amount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-      return currencyFormatter.formatAmount(amount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
-  }
+        guard let amount else {
+            return Constants.placeholderText
+        }
+        // If amount is an integer, no decimal points are shown.
+        let numberOfDecimals: Int? = amount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
+        return currencyFormatter.formatAmount(amount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+    }
 }
 
 extension StatsDataTextFormatter {

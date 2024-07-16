@@ -21,15 +21,15 @@ struct GoogleAdsCampaignReportCard: View {
                 .padding(.bottom, Layout.columnSpacing)
 
             HStack {
-                Text(viewModel.totalSales)
+                Text(viewModel.statValue)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .redacted(reason: viewModel.isRedacted ? .placeholder : [])
                     .shimmering(active: viewModel.isRedacted)
 
-                DeltaTag(value: viewModel.delta.string,
-                         backgroundColor: viewModel.delta.direction.deltaBackgroundColor,
-                         textColor: viewModel.delta.direction.deltaTextColor)
+                DeltaTag(value: viewModel.deltaValue,
+                         backgroundColor: viewModel.deltaBackgroundColor,
+                         textColor: viewModel.deltaTextColor)
                     .redacted(reason: viewModel.isRedacted ? .placeholder : [])
                     .shimmering(active: viewModel.isRedacted)
             }

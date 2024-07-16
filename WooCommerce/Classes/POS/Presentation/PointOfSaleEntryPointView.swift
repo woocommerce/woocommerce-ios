@@ -23,8 +23,7 @@ struct PointOfSaleEntryPointView: View {
             itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: orderService,
-            currencyFormatter: currencyFormatter,
-            totalsViewModel: totalsViewModel)
+            currencyFormatter: currencyFormatter)
         )
     }
 

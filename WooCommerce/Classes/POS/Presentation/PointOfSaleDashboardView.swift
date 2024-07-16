@@ -124,15 +124,11 @@ fileprivate extension CardPresentPaymentEvent {
 #if DEBUG
 #Preview {
     NavigationStack {
-        let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                      currencyFormatter: .init(currencySettings: .init()))
         PointOfSaleDashboardView(
             viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                      orderService: POSOrderPreviewService(),
-                                                     currencyFormatter: .init(currencySettings: .init()),
-                                                     totalsViewModel: totalsViewModel))
+                                                     currencyFormatter: .init(currencySettings: .init())))
     }
 }
 #endif

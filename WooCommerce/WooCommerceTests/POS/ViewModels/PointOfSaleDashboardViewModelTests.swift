@@ -1,12 +1,7 @@
 import XCTest
 import Combine
-@testable import struct Yosemite.POSProduct
 @testable import WooCommerce
-@testable import class Yosemite.POSOrderService
-@testable import enum Yosemite.Credentials
-@testable import protocol Yosemite.POSItemProvider
-@testable import protocol Yosemite.POSItem
-@testable import protocol Yosemite.POSOrderServiceProtocol
+@testable import Yosemite
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
@@ -104,6 +99,24 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         sut.simulateOrderSyncing(cartItems: [])
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_isAddMoreDisabled_is_true_for_collectPayment_success() {
+        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true after successfully collecting payment")
+
+        sut.$isAddMoreDisabled
+            .dropFirst()
+            .sink { value in
+                XCTAssertTrue(value)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        Task {
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        }
+
         wait(for: [expectation], timeout: 1.0)
     }
 

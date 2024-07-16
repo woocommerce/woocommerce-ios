@@ -2,11 +2,11 @@
 
 19.6
 -----
+- [**] Google Ads campaign management is now available for stores with plugin version 2.7.5 or later. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 
 
 19.5
 -----
-
 - [**] Cash Payment: Set the payment method and payment method title to orders completed with cash payment. [https://github.com/woocommerce/woocommerce-ios/pull/13257]
 
 19.4

@@ -9,11 +9,9 @@ enum ProductFormAIFeature: Equatable {
 /// Checks the eligible AI features for product editing/creation.
 final class ProductFormAIEligibilityChecker {
     private let site: Site?
-    private let featureFlagService: FeatureFlagService
 
-    init(site: Site?, featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(site: Site?) {
         self.site = site
-        self.featureFlagService = featureFlagService
     }
 
     /// Checks if an AI feature is enabled.

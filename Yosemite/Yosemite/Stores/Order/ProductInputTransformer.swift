@@ -137,7 +137,7 @@ public struct ProductInputTransformer {
                                          product: product,
                                          quantity: quantity,
                                          discount: discount ?? defaultDiscount,
-                                         baseSubtotal: item.pricePreDiscount.decimalValue,
+                                         baseSubtotal: item.basePrice.decimalValue,
                                          bundleConfiguration: bundleConfiguration)
         }
 
@@ -146,7 +146,7 @@ public struct ProductInputTransformer {
                                      product: product,
                                      quantity: quantity,
                                      discount: discount ?? defaultDiscount,
-                                     baseSubtotal: item.pricePreDiscount.decimalValue,
+                                     baseSubtotal: item.basePrice.decimalValue,
                                      bundleConfiguration: bundleConfiguration)
     }
 }

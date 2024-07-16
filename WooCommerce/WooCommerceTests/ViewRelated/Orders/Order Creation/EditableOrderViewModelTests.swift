@@ -528,7 +528,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let expectedProductRow = ProductRowViewModel(product: product)
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
-        XCTAssertEqual(productRow?.productRow.price, orderItem.pricePreDiscount.stringValue)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -559,7 +559,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
-        XCTAssertEqual(productRow?.productRow.price, orderItem.pricePreDiscount.stringValue)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {

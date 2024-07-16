@@ -13,7 +13,7 @@ public extension OrderItem {
     ///
     /// - Parameter orderItem
     ///
-    var pricePreDiscount: NSDecimalNumber {
+    var basePrice: NSDecimalNumber {
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         guard quantity != .zero,

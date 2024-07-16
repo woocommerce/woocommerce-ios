@@ -147,7 +147,7 @@ final class CartViewModelTests: XCTestCase {
         // Given
         let item = Self.makeItem()
         let initialCartLabelColor = Color.posSecondaryTexti3
-        let expectedCartLabelColor = Color.posSecondaryTexti3
+        let expectedCartLabelColor = Color.posPrimaryTexti3
 
         XCTAssertEqual(sut.cartLabelColor, initialCartLabelColor)
 

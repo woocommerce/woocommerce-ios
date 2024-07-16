@@ -28,13 +28,13 @@ struct CartView: View {
                             .font(Constants.secondaryFont)
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, Constants.itemHorizontalPadding)
                     .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 32)
-            .padding(.vertical, 8)
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
             if cartViewModel.itemsInCart.isEmpty {
@@ -72,10 +72,10 @@ struct CartView: View {
             switch viewModel.orderStage {
             case .building:
                 checkoutButton
-                    .padding(32)
+                    .padding(Constants.checkoutButtonPadding)
             case .finalizing:
                 addMoreButton
-                    .padding(32)
+                    .padding(Constants.checkoutButtonPadding)
                     .disabled(viewModel.isAddMoreDisabled)
             }
         }
@@ -88,6 +88,10 @@ private extension CartView {
     enum Constants {
         static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
+        static let checkoutButtonPadding: CGFloat = 32
+        static let itemHorizontalPadding: CGFloat = 8
+        static let horizontalPadding: CGFloat = 32
+        static let verticalPadding: CGFloat = 8
     }
 
     enum Localization {

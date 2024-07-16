@@ -78,7 +78,8 @@ private extension OrderPaymentSection {
                     TitleAndValueRow(title: Localization.coupon,
                                      titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
                                      value: .content(viewModel.discount),
-                                     selectionStyle: editableRowsSelectionStyle) {
+                                     selectionStyle: editableRowsSelectionStyle,
+                                     isLoading: self.viewModel.isLoading) {
                         selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
                     }
                     Text(viewModel.detailsViewModel.code)
@@ -94,17 +95,23 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var existingShippingRow: some View {
         TitleAndValueRow(title: Localization.shippingTotal,
-                         value: .content(shippingLineViewModel.paymentData.shippingTotal))
+                         value: .content(shippingLineViewModel.paymentData.shippingTotal),
+                         isLoading: viewModel.isLoading)
         .renderedIf(shippingLineViewModel.paymentData.shouldShowShippingTotal)
     }
 
     @ViewBuilder var productsRow: some View {
-        TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
+        TitleAndValueRow(title: Localization.productsTotal,
+                         value: .content(viewModel.itemsTotal),
+                         selectionStyle: .none,
+                         isLoading: viewModel.isLoading) {}
             .renderedIf(viewModel.shouldShowProductsTotal)
     }
 
     @ViewBuilder var customAmountsRow: some View {
-        TitleAndValueRow(title: Localization.customAmountsTotal, value: .content(viewModel.customAmountsTotal))
+        TitleAndValueRow(title: Localization.customAmountsTotal,
+                         value: .content(viewModel.customAmountsTotal),
+                         isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowTotalCustomAmounts)
     }
 
@@ -146,7 +153,10 @@ private extension OrderPaymentSection {
     @ViewBuilder var appliedGiftCardsSection: some View {
         VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
             ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
-                TitleAndValueRow(title: giftCard.code, value: .content(giftCard.amount), selectionStyle: .none)
+                TitleAndValueRow(title: giftCard.code,
+                                 value: .content(giftCard.amount),
+                                 selectionStyle: .none,
+                                 isLoading: viewModel.isLoading)
             }
         }
         .renderedIf(viewModel.appliedGiftCards.isNotEmpty)
@@ -184,6 +194,8 @@ private extension OrderPaymentSection {
             Text(viewModel.taxesTotal)
                 .bodyStyle()
                 .frame(width: nil, alignment: .trailing)
+                .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                .shimmering(active: viewModel.isLoading)
         }
     }
 
@@ -201,6 +213,8 @@ private extension OrderPaymentSection {
                         .footnoteStyle()
                         .multilineTextAlignment(.trailing)
                         .frame(width: nil, alignment: .trailing)
+                        .redacted(reason: self.viewModel.isLoading ? .placeholder : [])
+                        .shimmering(active: self.viewModel.isLoading)
                 }
             }
         }
@@ -219,6 +233,8 @@ private extension OrderPaymentSection {
                     .footnoteStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(width: nil, alignment: .trailing)
+                    .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoading)
             }
         }
     }
@@ -254,7 +270,9 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var discountsTotalRow: some View {
-        TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+        TitleAndValueRow(title: Localization.discountTotal,
+                         value: .content(viewModel.discountTotal),
+                         isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
 

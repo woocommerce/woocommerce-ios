@@ -12,7 +12,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isBlazeEnabled: Bool
-    private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
@@ -36,7 +35,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
-         isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
@@ -59,7 +57,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isBlazeEnabled = isBlazeEnabled
-        self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
@@ -94,8 +91,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isProductDescriptionAIFromStoreOnboardingEnabled
         case .readOnlyGiftCards:
             return isReadOnlyGiftCardsEnabled
-        case .shareProductAI:
-            return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundles:

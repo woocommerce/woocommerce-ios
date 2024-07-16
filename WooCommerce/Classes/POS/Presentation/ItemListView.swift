@@ -26,7 +26,7 @@ struct ItemListView: View {
         .refreshable {
             await viewModel.reload()
         }
-        .padding(.horizontal, 32)
+        .padding(.horizontal, Constants.itemListPadding)
         .background(Color.posBackgroundGreyi3)
     }
 }
@@ -87,7 +87,7 @@ private extension ItemListView {
     var headerTextView: some View {
         Text(Localization.productSelectorTitle)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 8)
+            .padding(.vertical, Constants.headerPadding)
             .font(Constants.titleFont)
             .foregroundColor(Color.posPrimaryTexti3)
     }
@@ -158,6 +158,8 @@ private extension ItemListView {
         static let infoIconSize: CGFloat = 48
         static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 24
+        static let headerPadding: CGFloat = 8
+        static let itemListPadding: CGFloat = 32
     }
 
     enum Localization {

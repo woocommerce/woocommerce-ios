@@ -1,16 +1,12 @@
 import Foundation
-import Experiments
 
 struct ProductDescriptionAITooltipUseCase {
     private let userDefaults: UserDefaults
-    private let featureFlagService: FeatureFlagService
     private let isDescriptionAIEnabled: Bool
 
     init(userDefaults: UserDefaults = UserDefaults.standard,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          isDescriptionAIEnabled: Bool) {
         self.userDefaults = userDefaults
-        self.featureFlagService = featureFlagService
         self.isDescriptionAIEnabled = isDescriptionAIEnabled
     }
 

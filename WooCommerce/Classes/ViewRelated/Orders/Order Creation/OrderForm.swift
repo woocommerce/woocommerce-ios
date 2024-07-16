@@ -386,6 +386,9 @@ struct OrderForm: View {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
+                                .redacted(reason: viewModel.paymentDataViewModel.isLoading ? .placeholder : [])
+                                .shimmering(active: viewModel.paymentDataViewModel.isLoading)
+
                         }
                         .font(.headline)
                         .padding([.bottom, .horizontal])
@@ -663,6 +666,7 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
+                                           isLoading: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.setDiscountViewModel)

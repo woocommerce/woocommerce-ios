@@ -10,10 +10,6 @@ import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
-protocol PointOfSaleDashboardViewModelProtocol: ObservableObject {
-    func simulateOrderSyncing(cartItems: [CartItem])
-}
-
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())

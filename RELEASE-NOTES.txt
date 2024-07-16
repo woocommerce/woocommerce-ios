@@ -4,6 +4,7 @@
 -----
 
 - [*] Order Creation: Improved tax-inclusive product price presentation [https://github.com/woocommerce/woocommerce-ios/pull/13305]
+- [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 
 19.5
 -----

@@ -16,20 +16,11 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    if viewModel.isCartCollapsed {
-                        // 1. Initial state: Product list is visible and cart is collapsed
-                        productListView
-                            .frame(maxWidth: .infinity)
-                        Spacer()
-                        collapsedCartView
-                    } else {
-                        // 2. Products in cart: Both product list and cart are visible
-                        GeometryReader { geometry in
-                            HStack {
-                                productListView
-                                cartView
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                            }
+                    GeometryReader { geometry in
+                        HStack {
+                            productListView
+                            cartView
+                                .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }
                 case .finalizing:
@@ -80,7 +71,7 @@ private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
-        static let cartWidth: CGFloat = 0.4
+        static let cartWidth: CGFloat = 0.35
     }
 }
 

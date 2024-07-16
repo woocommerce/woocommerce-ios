@@ -133,4 +133,29 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.campaignsData.contains(where: { $0.value == "$123" }))
     }
 
+    func test_changing_selectedStat_updates_displayed_values() throws {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(
+            currentPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 12345, spend: 300),
+                                                                   campaigns: [.fake().copy(subtotals: .fake().copy(sales: 1234.56,
+                                                                                                             spend: 200)),
+                                                                               .fake()]),
+            previousPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 6172.5, spend: 100)),
+            timeRange: .today,
+            usageTracksEventEmitter: eventEmitter
+        )
+
+        // When
+        vm.selectedStat = .spend
+
+        // Then
+        assertEqual("$300", vm.statValue)
+        assertEqual("+200%", vm.deltaValue)
+
+        // Check campaigns data
+        let firstCampaign = try XCTUnwrap(vm.campaignsData.first)
+        assertEqual(true, firstCampaign.details.contains("$1,234.56"))
+        assertEqual("$200", firstCampaign.value)
+    }
+
 }

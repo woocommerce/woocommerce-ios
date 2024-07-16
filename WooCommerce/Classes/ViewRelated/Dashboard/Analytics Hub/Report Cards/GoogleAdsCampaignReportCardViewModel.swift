@@ -139,8 +139,10 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Helper functions to create `TopPerformersRow.Data` items from the provided `GoogleAdsCampaignStats`.
     ///
     private func campaignRows(from stats: GoogleAdsCampaignStats?) -> [TopPerformersRow.Data] {
-        // Sort campaigns by their total sales.
-        guard let sortedCampaigns = stats?.campaigns.sorted(by: { $0.subtotals.sales ?? 0 > $1.subtotals.sales ?? 0 }) else {
+        // Sort campaigns by the selected stat.
+        guard let sortedCampaigns = stats?.campaigns.sorted(by: {
+            $0.subtotals.getDoubleValue(for: selectedStat) > $1.subtotals.getDoubleValue(for: selectedStat)
+        }) else {
             return []
         }
 
@@ -148,10 +150,18 @@ extension GoogleAdsCampaignReportCardViewModel {
         let topCampaigns = Array(sortedCampaigns.prefix(5))
 
         return topCampaigns.map { campaign in
+            // Show campaign spend in row details, unless spend is the selected stat.
+            let detailsText = {
+                guard selectedStat != .spend else {
+                    return Localization.sales(value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .sales, from: campaign))
+                }
+                return Localization.spend(value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .spend, from: campaign))
+            }()
+
             return TopPerformersRow.Data(showImage: false,
                                          name: campaign.campaignName ?? "",
-                                         details: Localization.spend(value: StatsDataTextFormatter.formatAmount(campaign.subtotals.spend)),
-                                         value: StatsDataTextFormatter.formatAmount(campaign.subtotals.sales))
+                                         details: detailsText,
+                                         value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: selectedStat, from: campaign))
         }
     }
 }
@@ -205,6 +215,13 @@ private extension GoogleAdsCampaignReportCardViewModel {
                                                                + "The placeholder is a formatted monetary amount, e.g. Spend: $123."),
                                              value)
         }
+        static func sales(value: String) -> String {
+            String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.salesSubtitle",
+                                                               value: "Sales: %@",
+                                                               comment: "Label for the total sales amount on a Google Ads campaign in the Analytics Hub."
+                                                               + "The placeholder is a formatted monetary amount, e.g. Sales: $123."),
+                                             value)
+        }
     }
 }
 
@@ -220,7 +237,7 @@ extension GoogleAdsCampaignReportCardViewModel {
                                                                                                               spend: 100,
                                                                                                               clicks: 1000,
                                                                                                               impressions: 10000,
-                                                                                                              conversions: 400)),
+                                                                                                              conversions: 300)),
                                            GoogleAdsCampaignStatsItem(campaignID: 2,
                                                                       campaignName: "Summer Campaign",
                                                                       rawStatus: "enabled",
@@ -228,7 +245,7 @@ extension GoogleAdsCampaignReportCardViewModel {
                                                                                                               spend: 50,
                                                                                                               clicks: 900,
                                                                                                               impressions: 5000,
-                                                                                                              conversions: 300)),
+                                                                                                              conversions: 400)),
                                            GoogleAdsCampaignStatsItem(campaignID: 3,
                                                                       campaignName: "Winter Campaign",
                                                                       rawStatus: "enabled",

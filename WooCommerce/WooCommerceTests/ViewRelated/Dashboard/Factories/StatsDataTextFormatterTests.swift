@@ -837,4 +837,70 @@ final class StatsDataTextFormatterTests: XCTestCase {
         // Then
         assertEqual("1,232", text)
     }
+
+    func test_createGoogleCampaignsSubtotalText_returns_expected_sales_text() {
+        // Given
+        let campaign = GoogleAdsCampaignStatsItem.fake().copy(subtotals: .fake().copy(sales: 1232))
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .sales,
+                                                                            from: campaign,
+                                                                            currencyFormatter: currencyFormatter,
+                                                                            currencyCode: currencyCode.rawValue,
+                                                                            numberOfFractionDigits: fractionDigits)
+
+        // Then
+        assertEqual("$1,232", text)
+    }
+
+    func test_createGoogleCampaignsSubtotalText_returns_expected_spend_text() {
+        // Given
+        let campaign = GoogleAdsCampaignStatsItem.fake().copy(subtotals: .fake().copy(spend: 1232))
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .spend,
+                                                                            from: campaign,
+                                                                            currencyFormatter: currencyFormatter,
+                                                                            currencyCode: currencyCode.rawValue,
+                                                                            numberOfFractionDigits: fractionDigits)
+
+        // Then
+        assertEqual("$1,232", text)
+    }
+
+    func test_createGoogleCampaignsSubtotalText_returns_expected_clicks_text() {
+        // Given
+        let campaign = GoogleAdsCampaignStatsItem.fake().copy(subtotals: .fake().copy(clicks: 1232))
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .clicks,
+                                                                            from: campaign)
+
+        // Then
+        assertEqual("1,232", text)
+    }
+
+    func test_createGoogleCampaignsSubtotalText_returns_expected_impressions_text() {
+        // Given
+        let campaign = GoogleAdsCampaignStatsItem.fake().copy(subtotals: .fake().copy(impressions: 1232))
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .impressions,
+                                                                            from: campaign)
+
+        // Then
+        assertEqual("1,232", text)
+    }
+
+    func test_createGoogleCampaignsSubtotalText_returns_expected_conversions_text() {
+        // Given
+        let campaign = GoogleAdsCampaignStatsItem.fake().copy(subtotals: .fake().copy(conversions: 1232))
+
+        // When
+        let text = StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .conversions,
+                                                                            from: campaign)
+
+        // Then
+        assertEqual("1,232", text)
+    }
 }

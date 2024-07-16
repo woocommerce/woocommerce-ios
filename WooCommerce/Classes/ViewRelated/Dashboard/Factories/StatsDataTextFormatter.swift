@@ -180,12 +180,31 @@ struct StatsDataTextFormatter {
                          currencyFormatter: currencyFormatter,
                          currencyCode: currencyCode,
                          numberOfFractionDigits: numberOfFractionDigits)
-        case .clicks:
-            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .clicks) as NSNumber) ?? Constants.placeholderText
-        case .impressions:
-            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .impressions) as NSNumber) ?? Constants.placeholderText
-        case .conversions:
-            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: .conversions) as NSNumber) ?? Constants.placeholderText
+        case .clicks, .impressions, .conversions:
+            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: stat) as NSNumber) ?? Constants.placeholderText
+        }
+    }
+
+    /// Creates the text to display for a campaign stat subtotal, from the provided campaign.
+    ///
+    static func createGoogleCampaignsSubtotalText(for stat: GoogleAdsCampaignStatsTotals.TotalData,
+                                                  from campaign: GoogleAdsCampaignStatsItem,
+                                                  currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                                  currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                                  numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        switch stat {
+        case .sales:
+            formatAmount(campaign.subtotals.sales,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .spend:
+            formatAmount(campaign.subtotals.spend,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .clicks, .impressions, .conversions:
+            NumberFormatter.localizedString(from: campaign.subtotals.getDoubleValue(for: stat) as NSNumber) ?? Constants.placeholderText
         }
     }
 

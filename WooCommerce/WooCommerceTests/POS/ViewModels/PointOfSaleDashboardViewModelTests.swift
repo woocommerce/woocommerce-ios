@@ -93,8 +93,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                             orderService: orderService,
                                             currencyFormatter: .init(currencySettings: .init()))
 
-
-        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true for processing payment state")
+        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
         (sut as! PointOfSaleDashboardViewModel).$isAddMoreDisabled
             .dropFirst()

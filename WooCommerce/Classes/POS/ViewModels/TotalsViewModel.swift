@@ -88,8 +88,9 @@ final class TotalsViewModel: ObservableObject {
     }
 
     private func areOrderAndCartDifferent(cartItems: [CartItem]) -> Bool {
+        // check if order has same items as cart does
         if let order {
-            // check if order has same items as cart does
+            // first we get list of all products 1 by 1
             var cleanOrderItems: [POSOrderItem] = order.items.flatMap {
                 Array(repeating: $0, count: $0.quantity.intValue)
             }
@@ -101,8 +102,9 @@ final class TotalsViewModel: ObservableObject {
                 cleanOrderItems.sort { $0.productID < $1.productID }
                 cleanCartItems.sort { $0.productID < $1.productID }
                 // check if all the items are same, prices included
-                for (index, item) in cleanCartItems.enumerated() {
-                    if item.productID != cleanOrderItems[index].productID || item.price != cleanOrderItems[index].price.stringValue {
+                for (index, cartItem) in cleanCartItems.enumerated() {
+                    let orderItem = cleanOrderItems[index]
+                    if cartItem.productID != orderItem.productID || cartItem.price != orderItem.price.stringValue {
                         return true
                     }
                 }

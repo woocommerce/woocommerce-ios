@@ -3,6 +3,7 @@
 19.6
 -----
 
+- [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 
 19.5
 -----

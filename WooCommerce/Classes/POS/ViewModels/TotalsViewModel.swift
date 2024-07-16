@@ -97,20 +97,16 @@ final class TotalsViewModel: ObservableObject {
                 Array(repeating: $0.item, count: $0.quantity)
             }
             if cleanOrderItems.count == cleanCartItems.count {
-                cleanOrderItems.sort { a, b in
-                    return a.productID < b.productID
-                }
-                cleanCartItems.sort { a, b in
-                    return a.productID < b.productID
-                }
-                var hasChanges = false
+                // sort items by productIDs to have them in same order for comparison
+                cleanOrderItems.sort { $0.productID < $1.productID }
+                cleanCartItems.sort { $0.productID < $1.productID }
+                // check if all the items are same, prices included
                 for (index, item) in cleanCartItems.enumerated() {
                     if item.productID != cleanOrderItems[index].productID || item.price != cleanOrderItems[index].price.stringValue {
-                        hasChanges = true
-                        break
+                        return true
                     }
                 }
-                return hasChanges
+                return false
             }
         }
         return true

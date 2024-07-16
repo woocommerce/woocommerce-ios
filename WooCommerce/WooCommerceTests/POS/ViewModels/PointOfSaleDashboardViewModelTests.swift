@@ -80,7 +80,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
     }
 
-    func test_add_more_is_disabled_when_order_is_syncing_and_payment_state_is_idle() {
+    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_payment_state_is_idle() {
         var sut: any PointOfSaleDashboardViewModelProtocol
 
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,

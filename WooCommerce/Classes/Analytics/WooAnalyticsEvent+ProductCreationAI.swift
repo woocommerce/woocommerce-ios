@@ -6,7 +6,7 @@ extension WooAnalyticsEvent {
             case value
             case isFirstAttempt = "is_first_attempt"
             case numberOfTexts = "number_of_texts"
-            case names
+            case name
             case shortDescription = "short_description"
             case description
             case field
@@ -102,7 +102,7 @@ extension WooAnalyticsEvent {
                                                     descriptionCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIGeneratedNameDescriptionOptions,
                               properties: [
-                                Key.names.rawValue: nameCount,
+                                Key.name.rawValue: nameCount,
                                 Key.shortDescription.rawValue: shortDescriptionCount,
                                 Key.description.rawValue: descriptionCount
                               ])

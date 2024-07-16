@@ -10,6 +10,10 @@ import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
+protocol PointOfSaleDashboardViewModelProtocol: ObservableObject {
+    func simulateOrderSyncing(cartItems: [CartItem])
+}
+
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
@@ -157,5 +161,12 @@ private extension PointOfSaleDashboardViewModel {
 private extension PointOfSaleDashboardViewModel {
     enum OrderSyncError: Error {
         case selfDeallocated
+    }
+}
+
+// Conform to the protocol needed for unit testing
+extension PointOfSaleDashboardViewModel: PointOfSaleDashboardViewModelProtocol {
+    func simulateOrderSyncing(cartItems: [CartItem]) {
+        startSyncingOrder(cartItems: cartItems)
     }
 }

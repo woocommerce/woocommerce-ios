@@ -71,7 +71,7 @@ private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
-        static let cartWidth: CGFloat = 0.3
+        static let cartWidth: CGFloat = 0.35
     }
 }
 

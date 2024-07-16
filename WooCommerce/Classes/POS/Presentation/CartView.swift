@@ -17,8 +17,8 @@ struct CartView: View {
                     .font(Constants.primaryFont)
                     .foregroundColor(cartViewModel.cartLabelColor)
                 Spacer()
-                if let temsInCartLabel = cartViewModel.itemsInCartLabel {
-                    Text(temsInCartLabel)
+                if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                    Text(itemsInCartLabel)
                         .font(Constants.secondaryFont)
                         .foregroundColor(Color.posSecondaryTexti3)
                     Button {
@@ -37,21 +37,33 @@ struct CartView: View {
             .padding(.vertical, 8)
             .font(.title)
             .foregroundColor(Color.white)
-            ScrollViewReader { proxy in
-                ScrollView {
-                    ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
-                        ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
-                            cartViewModel.removeItemFromCart(cartItem)
-                        } : nil)
-                        .id(cartItem.id)
-                    }
+            if cartViewModel.itemsInCart.isEmpty {
+                VStack {
+                    Spacer()
+                    Image(uiImage: .shoppingBagsImage)
+                    Text(Localization.addItemsToCartHint)
+                        .font(Constants.secondaryFont)
+                        .foregroundColor(Color.posSecondaryTexti3)
+                        .multilineTextAlignment(.center)
+                    Spacer()
                 }
-                .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
-                    if viewModel.orderStage == .building,
-                       let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
-                        withAnimation {
-                            proxy.scrollTo(last)
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
+                            ItemRowView(cartItem: cartItem,
+                                        onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
+                                cartViewModel.removeItemFromCart(cartItem)
+                            } : nil)
+                            .id(cartItem.id)
+                        }
+                    }
+                    .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                        if viewModel.orderStage == .building,
+                           let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
+                            withAnimation {
+                                proxy.scrollTo(last)
+                            }
                         }
                     }
                 }
@@ -87,6 +99,10 @@ private extension CartView {
             "pos.cartView.clearButtonTitle",
             value: "Clear",
             comment: "Title for the 'Clear' button to remove all products from the Cart.")
+        static let addItemsToCartHint = NSLocalizedString(
+            "pos.cartView.addItemsToCartHint",
+            value: "Tap on a product to \n add it to the cart",
+            comment: "Hint to add products to the Cart when this is empty.")
     }
 }
 

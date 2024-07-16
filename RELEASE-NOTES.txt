@@ -2,7 +2,7 @@
 
 19.6
 -----
-
+- [Internal] Removed feature flag for product description AI [https://github.com/woocommerce/woocommerce-ios/pull/13334]
 
 19.5
 -----

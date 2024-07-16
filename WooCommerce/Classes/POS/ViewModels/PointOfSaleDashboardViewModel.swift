@@ -15,8 +15,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
     let totalsViewModel: TotalsViewModel
 
-    @Published private(set) var isCartCollapsed: Bool = true
-
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     enum OrderStage {
@@ -45,7 +43,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
                                                currencyFormatter: currencyFormatter)
 
         observeSelectedItemToAddToCart()
-        observeCartItemsForCollapsedState()
         observeCartSubmission()
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
@@ -66,12 +63,6 @@ private extension PointOfSaleDashboardViewModel {
             self?.cartViewModel.addItemToCart(selectedItem)
         }
         .store(in: &cancellables)
-    }
-
-    func observeCartItemsForCollapsedState() {
-        cartViewModel.$itemsInCart
-            .map { $0.isEmpty }
-            .assign(to: &$isCartCollapsed)
     }
 
     func observeCartSubmission() {

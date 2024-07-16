@@ -35,14 +35,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     func test_viewmodel_when_loaded_then_has_expected_initial_setup() {
         // Given
-        let expectedCartCollapsedState = true
         let expectedAddMoreButtonDisabledState = false
         let expectedExitPOSButtonDisabledState = false
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When/Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
-        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
         XCTAssertEqual(sut.isAddMoreDisabled, expectedAddMoreButtonDisabledState)
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
     }
@@ -52,7 +50,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
         let expectedCartEmpty = true
         let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
-        let expectedCartCollapsedState = true
 
         // When
         sut.startNewTransaction()
@@ -61,7 +58,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
         XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)
         XCTAssertEqual(sut.totalsViewModel.paymentState, expectedPaymentState)
-        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
         XCTAssertNil(sut.totalsViewModel.order)
     }
 
@@ -70,7 +66,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let item = Self.makeItem()
         let expectedCartEmpty = false
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
-        let expectedCartCollapsedState = false
 
         // When
         sut.itemListViewModel.select(item)
@@ -78,7 +73,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.cartViewModel.itemsInCart.isEmpty, expectedCartEmpty)
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
-        XCTAssertEqual(sut.isCartCollapsed, expectedCartCollapsedState)
     }
 
     // TODO:

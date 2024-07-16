@@ -44,6 +44,13 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         featureFlagService.isFeatureFlagEnabled(.showInboxCTA)
     }
 
+    var shouldAuthenticateAdminPage: Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return stores.shouldAuthenticateAdminPage(for: site)
+    }
+
     init(note: InboxNote,
          today: Date = .init(),
          locale: Locale = .current,

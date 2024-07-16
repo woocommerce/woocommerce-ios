@@ -184,6 +184,7 @@ final class DashboardViewModel: ObservableObject {
     @MainActor
     func reloadAllData() async {
         isReloadingAllData = true
+        checkInboxEligibility()
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
@@ -193,9 +194,6 @@ final class DashboardViewModel: ObservableObject {
                     guard let self else { return }
                     await reloadCards(showOnDashboardCards)
                 }
-            }
-            group.addTask { [weak self] in
-                await self?.checkInboxEligibility()
             }
             group.addTask { [weak self] in
                 await self?.loadDashboardCardsFromStorage()
@@ -482,12 +480,11 @@ private extension DashboardViewModel {
         localAnnouncementViewModel = viewModel
     }
 
-    @MainActor
-    func checkInboxEligibility() async {
+    func checkInboxEligibility() {
         guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
             return
         }
-        isEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
+        isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
     }
 
     func configureOrdersResultController() {

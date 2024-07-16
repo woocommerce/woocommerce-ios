@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import SwiftUI
 @testable import WooCommerce
 @testable import protocol Yosemite.POSItem
 @testable import struct Yosemite.POSProduct
@@ -127,7 +128,7 @@ final class CartViewModelTests: XCTestCase {
         XCTAssertEqual(expectedItem.item.itemID, lastItem.itemID)
     }
 
-    func test_itemsInCartLabel() {
+    func test_itemsInCartLabel_when_addItemToCart_then_label_updates_accordingly() {
         XCTAssertNil(sut.itemsInCartLabel, "Initial state")
 
         // Given
@@ -140,6 +141,21 @@ final class CartViewModelTests: XCTestCase {
 
         sut.addItemToCart(anotherItem)
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
+    }
+
+    func test_cartLabelColor_when_addItemToCart_then_color_updates_accordingly() {
+        // Given
+        let item = Self.makeItem()
+        let initialCartLabelColor = Color.posSecondaryTexti3
+        let expectedCartLabelColor = Color.posSecondaryTexti3
+
+        XCTAssertEqual(sut.cartLabelColor, initialCartLabelColor)
+
+        // When
+        sut.addItemToCart(item)
+
+        // Then
+        XCTAssertEqual(sut.cartLabelColor, expectedCartLabelColor)
     }
 }
 

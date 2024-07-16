@@ -13,9 +13,9 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Cart")
+                Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(cartViewModel.cartLabelColor)
                 Spacer()
                 if let temsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
@@ -24,7 +24,7 @@ struct CartView: View {
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {
-                        Text("Clear all")
+                        Text(Localization.clearButtonTitle)
                             .font(Constants.secondaryFont)
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
@@ -76,6 +76,17 @@ private extension CartView {
     enum Constants {
         static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
+    }
+
+    enum Localization {
+        static let cartTitle = NSLocalizedString(
+            "pos.cartView.cartTitle",
+            value: "Cart",
+            comment: "Title at the header for the Cart view.")
+        static let clearButtonTitle = NSLocalizedString(
+            "pos.cartView.clearButtonTitle",
+            value: "Clear",
+            comment: "Title for the 'Clear' button to remove all products from the Cart.")
     }
 }
 

@@ -235,9 +235,7 @@ private extension ProductDetailPreviewView {
 
     var generateAgainButton: some View {
         Button {
-            Task { @MainActor in
-                await viewModel.generateProductDetails()
-            }
+            viewModel.didTapGenerateAgain()
         } label: {
             Text(Localization.generateAgain)
         }

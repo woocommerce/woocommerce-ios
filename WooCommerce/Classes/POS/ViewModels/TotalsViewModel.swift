@@ -24,12 +24,8 @@ final class TotalsViewModel: ObservableObject {
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
     @Published private(set) var order: POSOrder?
-
-    /// This is not private so that PointOfSaleDashboardViewModelTests will compile
-    @Published var isSyncingOrder: Bool = false
-
-    /// This is not private so that PointOfSaleDashboardViewModelTests will compile
-    @Published var paymentState: PaymentState = .acceptingCard
+    @Published private(set) var isSyncingOrder: Bool = false
+    @Published private(set) var paymentState: PaymentState = .acceptingCard
 
     @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 

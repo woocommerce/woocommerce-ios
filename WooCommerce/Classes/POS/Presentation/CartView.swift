@@ -13,10 +13,6 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
-                Image(uiImage: .shoppingCartIcon)
-                    .resizable()
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
-                    .foregroundColor(.black)
                 Text("Cart")
                     .font(Constants.primaryFont)
                     .foregroundColor(Color.posPrimaryTexti3)
@@ -78,7 +74,6 @@ struct CartView: View {
 
 private extension CartView {
     enum Constants {
-        static let iconSize: CGFloat = 40
         static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
     }

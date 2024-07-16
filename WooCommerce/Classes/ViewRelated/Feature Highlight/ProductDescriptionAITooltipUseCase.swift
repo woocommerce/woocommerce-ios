@@ -34,10 +34,6 @@ struct ProductDescriptionAITooltipUseCase {
 
     /// Tooltip will only be shown 3 times if the user never interacts with it.
     func shouldShowTooltip(for product: ProductFormDataModel) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-            return false
-        }
-
         guard isDescriptionAIEnabled else {
             return false
         }

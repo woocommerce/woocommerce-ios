@@ -3,6 +3,7 @@
 19.6
 -----
 
+- [*] Order Creation: Improved tax-inclusive product price presentation [https://github.com/woocommerce/woocommerce-ios/pull/13305]
 
 19.5
 -----

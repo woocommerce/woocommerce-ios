@@ -67,6 +67,7 @@ private extension ItemListView {
                 Text(Localization.headerBannerSubtitle)
                 Text(Localization.headerBannerHint)
             }
+            Spacer()
             VStack {
                 Button(action: {
                     viewModel.toggleBanner()

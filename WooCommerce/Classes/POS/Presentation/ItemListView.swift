@@ -39,12 +39,12 @@ private extension ItemListView {
         switch viewModel.shouldShowHeaderBanner {
         case true:
             VStack {
-                headertextView
+                headerTextView
                 bannerCardView
             }
         case false:
             HStack {
-                headertextView
+                headerTextView
                 Spacer()
                 Button(action: {
                     viewModel.toggleBanner()
@@ -84,7 +84,7 @@ private extension ItemListView {
         .background(Color.posBackgroundWhitei3)
     }
 
-    var headertextView: some View {
+    var headerTextView: some View {
         Text(Localization.productSelectorTitle)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 8)

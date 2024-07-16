@@ -90,39 +90,18 @@ private extension LocalAnnouncementViewModel {
 
 private extension LocalAnnouncement {
     var title: String {
-        switch self {
-            case .productDescriptionAI:
-                return NSLocalizedString(
-                    "Add product description with AI",
-                    comment: "Title of the product description AI local announcement."
-                )
-        }
+        "" // TODO: edit when needed
     }
 
     var message: String {
-        switch self {
-            case .productDescriptionAI:
-                return NSLocalizedString(
-                    "Add descriptions in a snap with AI. Try our feature today!",
-                    comment: "Message of the product description AI local announcement."
-                )
-        }
+        "" // TODO: edit when needed
     }
 
     var buttonTitle: String? {
-        switch self {
-            case .productDescriptionAI:
-                return NSLocalizedString(
-                    "Try it Now",
-                    comment: "Button title of the product description AI local announcement."
-                )
-        }
+        nil // TODO: edit when needed
     }
 
     var image: UIImage {
-        switch self {
-            case .productDescriptionAI:
-                return .productDescriptionAIAnnouncementImage
-        }
+        .emptyBoxImage // TODO: edit when needed
     }
 }

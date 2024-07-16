@@ -10,7 +10,7 @@ final class LocalAnnouncementsProvider {
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
     // The order of the announcements is based on the priority.
-    private let announcements: [LocalAnnouncement] = [.productDescriptionAI]
+    private let announcements: [LocalAnnouncement] = []
 
     init(stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -46,12 +46,7 @@ private extension LocalAnnouncementsProvider {
     }
 
     func isEligible(announcement: LocalAnnouncement) -> Bool {
-        switch announcement {
-            case .productDescriptionAI:
-                guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAIFromStoreOnboarding) else {
-                    return false
-                }
-                return stores.sessionManager.defaultSite?.isWordPressComStore == true
-        }
+        // no-op - edit when needed
+        return false
     }
 }

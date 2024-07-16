@@ -1,5 +1,5 @@
 import Foundation
 
 public enum LocalAnnouncement: Codable, Equatable {
-    case productDescriptionAI
+    case unknown // TODO: add new type when needed
 }

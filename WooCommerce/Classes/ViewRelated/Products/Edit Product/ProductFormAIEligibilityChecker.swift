@@ -20,10 +20,6 @@ final class ProductFormAIEligibilityChecker {
     /// - Parameter feature: AI-assisted feature.
     /// - Returns: Whether the feature is supported.
     func isFeatureEnabled(_ feature: ProductFormAIFeature) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.productDescriptionAI) else {
-            return false
-        }
-
         guard let site else {
             return false
         }

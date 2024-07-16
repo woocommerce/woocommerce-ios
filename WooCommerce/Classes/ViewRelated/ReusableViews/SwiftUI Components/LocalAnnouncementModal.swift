@@ -51,19 +51,6 @@ private extension LocalAnnouncementModal {
     }
 }
 
-struct LocalAnnouncementModal_Previews: PreviewProvider {
-    static var previews: some View {
-        ZStack {
-            Text("Modal test")
-        }
-        .modalOverlay(isPresented: .constant(true)) {
-            LocalAnnouncementModal(
-                viewModel: .init(announcement: .productDescriptionAI),
-                isPresented: .constant(true))
-        }
-    }
-}
-
 /// This wrapper exists to avoid the need to init a Binding in UIKit (which we can't) but
 /// retain the presentation/dismiss behaviour
 struct LocalAnnouncementModal_UIKit: View {

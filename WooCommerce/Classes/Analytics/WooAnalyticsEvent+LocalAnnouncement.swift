@@ -30,9 +30,6 @@ extension WooAnalyticsEvent {
 
 private extension LocalAnnouncement {
     var analyticsValue: String {
-        switch self {
-            case .productDescriptionAI:
-                return "product_description_ai"
-        }
+        "" // TODO: edit when needed
     }
 }

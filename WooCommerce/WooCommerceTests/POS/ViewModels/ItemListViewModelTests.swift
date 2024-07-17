@@ -182,17 +182,51 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .error(expectedError))
     }
 
-    func test_shouldShowInitialHeaderBanner_is_updated_when_dismissBanner_is_called() {
+    func test_isHeaderBannerDismissed_when_dismissBanner_is_called_then_returns_true() {
         // Given
-        XCTAssertEqual(sut.shouldShowHeaderBanner, true)
+        XCTAssertEqual(sut.isHeaderBannerDismissed, false)
 
         // When
         sut.dismissBanner()
 
         // Then
+        XCTAssertEqual(sut.isHeaderBannerDismissed, true)
+    }
+
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loading_then_returns_false() {
+        // Given/When/Then
+        XCTAssertEqual(sut.state, .loading)
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
+    func test_shouldShowHeaderBanner_when_itemListViewModel_throws_error_then_returns_false() async {
+        // Given
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldThrowError = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+        let expectedError = ItemListViewModel.ErrorModel(title: "Error loading products",
+                                                         subtitle: "Give it another go?",
+                                                         buttonText: "Retry")
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.state, .error(expectedError))
+        XCTAssertEqual(sut.shouldShowHeaderBanner, false)
+    }
+
+    func test_shouldShowHeaderBanner_when_itemListViewModel_loaded_then_returns_true() async {
+        // Given
+        let expectedItems = Self.makeItems()
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(sut.state, .loaded(expectedItems))
+        XCTAssertEqual(sut.shouldShowHeaderBanner, true)
+    }
 }
 
 private extension ItemListViewModelTests {

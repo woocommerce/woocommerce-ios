@@ -226,6 +226,10 @@ struct OrderForm: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    private var isLoading: Bool {
+        viewModel.paymentDataViewModel.isLoading
+    }
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
@@ -275,7 +279,8 @@ struct OrderForm: View {
                                             flow: flow,
                                             presentProductSelector: presentProductSelector,
                                             viewModel: viewModel,
-                                            navigationButtonID: $navigationButtonID)
+                                            navigationButtonID: $navigationButtonID,
+                                            isLoading: isLoading)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -386,8 +391,8 @@ struct OrderForm: View {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
-                                .redacted(reason: viewModel.paymentDataViewModel.isLoading ? .placeholder : [])
-                                .shimmering(active: viewModel.paymentDataViewModel.isLoading)
+                                .redacted(reason: isLoading ? .placeholder : [])
+                                .shimmering(active: isLoading)
 
                         }
                         .font(.headline)
@@ -575,6 +580,9 @@ private struct ProductsSection: View {
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
 
+    /// Tracks if the order is loading (syncing remotely)
+    let isLoading: Bool
+
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -666,8 +674,8 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
-                                           isLoading: viewModel.paymentDataViewModel.isLoading,
-                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           isLoading: isLoading,
+                                           shouldDisableDiscountEditing: isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.setDiscountViewModel)
                     .sheet(item: $viewModel.discountViewModel, content: { discountViewModel in

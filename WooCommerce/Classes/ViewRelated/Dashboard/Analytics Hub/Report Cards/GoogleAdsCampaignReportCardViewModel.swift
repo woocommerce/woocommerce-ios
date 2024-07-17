@@ -54,12 +54,6 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
 
 extension GoogleAdsCampaignReportCardViewModel {
 
-    /// Card Title
-    ///
-    var title: String {
-        Localization.title
-    }
-
     // MARK: Selected Stat (Total)
 
     /// Value for the selected stat
@@ -99,12 +93,6 @@ extension GoogleAdsCampaignReportCardViewModel {
 
     // MARK: Campaigns report
 
-    /// Title for campaigns list.
-    ///
-    var campaignsTitle: String {
-        Localization.campaignsTitle
-    }
-
     /// Campaigns data to render.
     ///
     var campaignsData: [TopPerformersRow.Data] {
@@ -115,12 +103,6 @@ extension GoogleAdsCampaignReportCardViewModel {
     ///
     var showCampaignsError: Bool {
         isRedacted ? false : currentPeriodStats == nil
-    }
-
-    /// Error message if there was an error loading campaigns part of the card.
-    ///
-    var campaignsErrorMessage: String {
-        Localization.noCampaignStats
     }
 
     /// View model for the web analytics report link
@@ -166,48 +148,12 @@ extension GoogleAdsCampaignReportCardViewModel {
     }
 }
 
-/// Convenience extension to create an `AnalyticsItemsSoldCard` from a view model.
-///
-extension AnalyticsTopPerformersCard {
-    init(campaignsViewModel: GoogleAdsCampaignReportCardViewModel) {
-        // Header with selected metric stats
-        self.title = campaignsViewModel.title
-        self.statTitle = campaignsViewModel.selectedStat.displayName
-        self.statValue = campaignsViewModel.statValue
-        self.delta = campaignsViewModel.deltaValue
-        self.deltaBackgroundColor = campaignsViewModel.deltaBackgroundColor
-        self.deltaTextColor = campaignsViewModel.deltaTextColor
-        self.isStatsRedacted = campaignsViewModel.isRedacted
-        // This card gets its metrics and campaigns list from the same source.
-        // If there is a problem loading stats data, the error message only appears once at the bottom of the card.
-        self.showStatsError = false
-        self.statsErrorMessage = ""
-        self.reportViewModel = campaignsViewModel.reportViewModel
-
-        // Top performers (campaigns) list
-        self.topPerformersTitle = campaignsViewModel.campaignsTitle
-        self.topPerformersData = campaignsViewModel.campaignsData
-        self.isTopPerformersRedacted = campaignsViewModel.isRedacted
-        self.showTopPerformersError = campaignsViewModel.showCampaignsError
-        self.topPerformersErrorMessage = campaignsViewModel.campaignsErrorMessage
-    }
-}
-
 // MARK: Constants
 private extension GoogleAdsCampaignReportCardViewModel {
     enum Localization {
         static let reportTitle = NSLocalizedString("analyticsHub.googleCampaigns.reportTitle",
                                                    value: "Programs Report",
                                                    comment: "Title for the Google Programs report linked in the Analytics Hub")
-        static let title = NSLocalizedString("analyticsHub.googleCampaigns.title",
-                                             value: "Google Campaigns",
-                                             comment: "Title for the Google campaigns card on the analytics hub screen.").localizedUppercase
-        static let campaignsTitle = NSLocalizedString("analyticsHub.googleCampaigns.campaignsList.title",
-                                                      value: "Campaigns",
-                                                      comment: "Title for the list of campaigns on the Google campaigns card on the analytics hub screen.")
-        static let noCampaignStats = NSLocalizedString("analyticsHub.googleCampaigns.noCampaignStats",
-                                                       value: "Unable to load Google campaigns analytics",
-                                                       comment: "Text displayed when there is an error loading Google Ads campaigns stats data.")
         static func spend(value: String) -> String {
             String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.spendSubtitle",
                                                                value: "Spend: %@",

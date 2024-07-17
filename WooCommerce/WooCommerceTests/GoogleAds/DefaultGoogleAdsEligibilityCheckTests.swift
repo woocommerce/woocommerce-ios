@@ -32,6 +32,21 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     }
 
     @MainActor
+    func test_isSiteEligible_returns_false_checking_connection_fails() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
+        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let connection = GoogleAdsConnection.fake().copy(rawStatus: "incomplete")
+        mockRequests(adsConnection: nil)
+
+        // When
+        let result = await checker.isSiteEligible(siteID: sampleSite)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
     func test_isSiteEligible_returns_false_if_google_ads_account_is_not_connected() async {
         // Given
         let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)

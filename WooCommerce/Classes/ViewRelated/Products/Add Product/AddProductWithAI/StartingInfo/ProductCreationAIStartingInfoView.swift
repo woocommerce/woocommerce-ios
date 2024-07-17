@@ -119,6 +119,7 @@ struct ProductCreationAIStartingInfoView: View {
                 }
                 .padding(insets: Layout.insets)
             }
+            .scrollDismissesKeyboard(.immediately)
         }
         .safeAreaInset(edge: .bottom) {
             VStack {

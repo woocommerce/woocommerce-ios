@@ -528,7 +528,7 @@ private extension DashboardViewModel {
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
-        
+
         // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
         cards.append(DashboardCard(type: .lastOrders,
                                    availability: canShowLastOrders ? .show : .unavailable,
@@ -599,6 +599,10 @@ private extension DashboardViewModel {
     /// - Parameter hasOrders: A Boolean indicating whether the site has orders. If the site has no orders,
     ///   the app will display the "Share Your Store" card, and the notice should remain hidden.
     func configureNewCardsNotice(hasOrders: Bool) {
+        guard hasOrders else {
+            return
+        }
+
         let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 

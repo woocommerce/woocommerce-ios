@@ -2232,6 +2232,7 @@
 		CEA455C52BB44F9E00D932CF /* ProductsReportItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */; };
 		CEA455C72BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */; };
 		CEA455C92BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C82BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift */; };
+		CEA7C32D2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA7C32C2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift */; };
 		CEA9C8E02B6D323A000FE114 /* AnalyticsWebReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */; };
 		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
 		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
@@ -5224,6 +5225,7 @@
 		CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsReportItem+Woo.swift"; sourceTree = "<group>"; };
 		CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSessionsUnavailableCard.swift; sourceTree = "<group>"; };
 		CEA455C82BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSessionsReportCard.swift; sourceTree = "<group>"; };
+		CEA7C32C2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoogleAdsCampaignStatsTotals+UI.swift"; sourceTree = "<group>"; };
 		CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsWebReportTests.swift; sourceTree = "<group>"; };
 		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
 		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
@@ -11916,6 +11918,7 @@
 				CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */,
 				CE070A3D2BBC608A00017578 /* GiftCardsReportCardViewModel.swift */,
 				CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */,
+				CEA7C32C2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -15349,6 +15352,7 @@
 				26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */,
 				4521396E27FEE55200964ED3 /* FullScreenTextView.swift in Sources */,
 				453F52A32C3C3474006CBA2F /* ProductCreationAIPromptProgressBar.swift in Sources */,
+				CEA7C32D2C47C9BD00528450 /* GoogleAdsCampaignStatsTotals+UI.swift in Sources */,
 				DEB387A52C36479B0025256E /* GoogleAdsDashboardCardViewModel.swift in Sources */,
 				DE126D0B26CA2331007F901D /* ValidationErrorRow.swift in Sources */,
 				E1E649E92846188C0070B194 /* BetaFeature.swift in Sources */,

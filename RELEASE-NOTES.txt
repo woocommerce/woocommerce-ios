@@ -10,6 +10,7 @@
 - [Internal] Removed feature flag for product description AI [https://github.com/woocommerce/woocommerce-ios/pull/13334]
 - [Internal] Removed feature flag for product sharing AI [https://github.com/woocommerce/woocommerce-ios/pull/13337]
 - [Internal] Removed feature flag for product description AI tooltip [https://github.com/woocommerce/woocommerce-ios/pull/13341]
+- [**] Stats: The Google Campaigns analytics card now supports selecting any available campaign metric. [https://github.com/woocommerce/woocommerce-ios/pull/13366]
 
 19.5
 -----

@@ -7,7 +7,7 @@ struct GoogleAdsCampaignReportCard: View {
     @State private var showingWebReport: Bool = false
 
     /// View model to drive the view content.
-    @StateObject var viewModel: GoogleAdsCampaignReportCardViewModel
+    @ObservedObject var viewModel: GoogleAdsCampaignReportCardViewModel
 
     var body: some View {
         VStack(alignment: .leading) {

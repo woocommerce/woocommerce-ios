@@ -128,10 +128,6 @@ public enum FeatureFlag: Int {
     ///
     case euShippingNotification
 
-    /// Enables generating share product content using AI
-    ///
-    case shareProductAI
-
     /// Enables the improvements in the customer selection logic when creating an order
     ///
     case betterCustomerSelectionInOrder

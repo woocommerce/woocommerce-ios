@@ -1,10 +1,13 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Analytics Hub Google Ads Campaign Card ViewModel.
 /// Used to transmit Google Ads campaigns analytics data.
 ///
 final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
+    private let analytics: Analytics
+
     /// Campaign stats for the current period
     ///
     private var currentPeriodStats: GoogleAdsCampaignStats?
@@ -42,13 +45,22 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
          isRedacted: Bool = false,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) {
+         storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.currentPeriodStats = currentPeriodStats
         self.previousPeriodStats = previousPeriodStats
         self.timeRange = timeRange
         self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
+        self.analytics = analytics
+    }
+
+    /// Closure to perform when a new stat is selected on the Google Campaigns card.
+    ///
+    func onSelection(_ stat: GoogleAdsCampaignStatsTotals.TotalData) {
+        usageTracksEventEmitter.interacted()
+        analytics.track(event: .AnalyticsHub.selectedMetric(stat.tracksIdentifier, for: .googleCampaigns))
     }
 }
 

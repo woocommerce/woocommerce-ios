@@ -18,7 +18,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let sideBySideViewForOrderForm: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
     private let isDisplayPointOfSaleToggleEnabled: Bool
-    private let isDynamicDashboardM2Enabled: Bool
     private let isProductCreationAIv2M1Enabled: Bool
     private let googleAdsCampaignCreationOnWebView: Bool
 
@@ -38,7 +37,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isDisplayPointOfSaleToggleEnabled: Bool = false,
-         isDynamicDashboardM2Enabled: Bool = false,
          isProductCreationAIv2M1Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -57,7 +55,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
-        self.isDynamicDashboardM2Enabled = isDynamicDashboardM2Enabled
         self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
     }
@@ -96,8 +93,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSubscriptionsInOrderCreationCustomersEnabled
         case .displayPointOfSaleToggle:
             return isDisplayPointOfSaleToggleEnabled
-        case .dynamicDashboardM2:
-            return isDynamicDashboardM2Enabled
         case .productCreationAIv2M1:
             return isProductCreationAIv2M1Enabled
         case .googleAdsCampaignCreationOnWebView:

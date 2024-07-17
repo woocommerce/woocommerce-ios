@@ -182,12 +182,12 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .error(expectedError))
     }
 
-    func test_shouldShowHeaderBanner_state_toggles_when_toggleBanner_is_called() {
+    func test_shouldShowInitialHeaderBanner_is_updated_when_dismissBanner_is_called() {
         // Given
         XCTAssertEqual(sut.shouldShowHeaderBanner, true)
 
         // When
-        sut.toggleBanner()
+        sut.dismissBanner()
 
         // Then
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)

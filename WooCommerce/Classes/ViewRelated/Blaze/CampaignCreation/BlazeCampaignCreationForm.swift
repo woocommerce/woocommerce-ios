@@ -483,6 +483,24 @@ private extension BlazeCampaignCreationForm {
             )
         }
 
+        enum NoDestinationURLAlert {
+            static let noURLFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound",
+                value: "Please select a destination URL for the Blaze campaign",
+                comment: "Message asking to select a destination URL for the Blaze campaign"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the alert asking to select a destination URL for the Blaze campaign"
+            )
+            static let selectURL = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.selectURL",
+                value: "Select URL",
+                comment: "Button on the alert to select a destination URL for the Blaze campaign"
+            )
+        }
+
         static let help = NSLocalizedString(
             "blazeCampaignCreationForm.help",
             value: "Help",

@@ -7,7 +7,7 @@ struct GoogleAdsCampaignReportCard: View {
     @State private var showingWebReport: Bool = false
 
     /// View model to drive the view content.
-    @StateObject var viewModel: GoogleAdsCampaignReportCardViewModel
+    @ObservedObject var viewModel: GoogleAdsCampaignReportCardViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -16,20 +16,20 @@ struct GoogleAdsCampaignReportCard: View {
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            StatSelectionBar(allStats: viewModel.allStats, titleKeyPath: \.displayName, onSelection: nil, selectedStat: $viewModel.selectedStat)
+            StatSelectionBar(allStats: viewModel.allStats, titleKeyPath: \.displayName, onSelection: viewModel.onSelection, selectedStat: $viewModel.selectedStat)
                 .padding(.top, Layout.titleSpacing)
                 .padding(.bottom, Layout.columnSpacing)
 
             HStack {
-                Text(viewModel.totalSales)
+                Text(viewModel.statValue)
                     .titleStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .redacted(reason: viewModel.isRedacted ? .placeholder : [])
                     .shimmering(active: viewModel.isRedacted)
 
-                DeltaTag(value: viewModel.delta.string,
-                         backgroundColor: viewModel.delta.direction.deltaBackgroundColor,
-                         textColor: viewModel.delta.direction.deltaTextColor)
+                DeltaTag(value: viewModel.deltaValue,
+                         backgroundColor: viewModel.deltaBackgroundColor,
+                         textColor: viewModel.deltaTextColor)
                     .redacted(reason: viewModel.isRedacted ? .placeholder : [])
                     .shimmering(active: viewModel.isRedacted)
             }

@@ -42,8 +42,8 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertNotNil(vm.reportViewModel)
 
         // Check metric stats data
-        assertEqual("$12,345", vm.totalSales)
-        assertEqual(DeltaPercentage(string: "+100%", direction: .positive), vm.delta)
+        assertEqual("$12,345", vm.statValue)
+        assertEqual("+100%", vm.deltaValue)
 
         // Check campaigns data
         assertEqual(2, vm.campaignsData.count)
@@ -95,8 +95,8 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertNotNil(vm.reportViewModel)
 
-        assertEqual("1000", vm.totalSales)
-        assertEqual(DeltaPercentage(string: "0%", direction: .zero), vm.delta)
+        assertEqual("1000", vm.statValue)
+        assertEqual("0%", vm.deltaValue)
 
         // Then
         let expectedPlaceholder = TopPerformersRow.Data(showImage: false, name: "Campaign", details: "Spend: $100", value: "$500")
@@ -131,6 +131,31 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
 
         // Campaign with lowest sales amount was dropped
         XCTAssertFalse(vm.campaignsData.contains(where: { $0.value == "$123" }))
+    }
+
+    func test_changing_selectedStat_updates_displayed_values() throws {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(
+            currentPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 12345, spend: 300),
+                                                                   campaigns: [.fake().copy(subtotals: .fake().copy(sales: 1234.56,
+                                                                                                             spend: 200)),
+                                                                               .fake()]),
+            previousPeriodStats: GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 6172.5, spend: 100)),
+            timeRange: .today,
+            usageTracksEventEmitter: eventEmitter
+        )
+
+        // When
+        vm.selectedStat = .spend
+
+        // Then
+        assertEqual("$300", vm.statValue)
+        assertEqual("+200%", vm.deltaValue)
+
+        // Check campaigns data
+        let firstCampaign = try XCTUnwrap(vm.campaignsData.first)
+        assertEqual(true, firstCampaign.details.contains("$1,234.56"))
+        assertEqual("$200", firstCampaign.value)
     }
 
 }

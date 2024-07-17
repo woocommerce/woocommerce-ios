@@ -156,7 +156,10 @@ private extension BlazeAdDestinationSettingViewModel {
     }
 
     func buildFinalDestinationURL() -> String {
-        baseURL + "?" + parameters.convertToQueryString()
+        guard parameters.isNotEmpty else {
+            return baseURL
+        }
+        return baseURL + "?" + parameters.convertToQueryString()
     }
 }
 

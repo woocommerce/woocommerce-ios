@@ -41,11 +41,6 @@ final class ItemListViewModel: ObservableObject {
     @MainActor
     func populatePointOfSaleItems() async {
         do {
-            // 1. Error out:
-            //throw NSError(domain: "", code: 0)
-            // 2. Empty case:
-            // TODO
-            // Default:
             state = .loading
             items = try await itemProvider.providePointOfSaleItems()
             if items.count == 0 {

@@ -33,9 +33,9 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     let allStats = GoogleAdsCampaignStatsTotals.TotalData.allCases
 
-    /// The currently selected stat to display.
+    /// The currently selected stat to display. Defaults to total sales.
     ///
-    @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData
+    @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData = .sales
 
     init(currentPeriodStats: GoogleAdsCampaignStats?,
          previousPeriodStats: GoogleAdsCampaignStats?,
@@ -49,7 +49,6 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
         self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
-        self.selectedStat = .sales
     }
 }
 
@@ -61,28 +60,41 @@ extension GoogleAdsCampaignReportCardViewModel {
         Localization.title
     }
 
-    // MARK: Total Sales
+    // MARK: Selected Stat (Total)
 
-    /// Total Sales title
+    /// Value for the selected stat
     ///
-    var totalSalesTitle: String {
-        return Localization.totalSales
-    }
-
-    /// Total Sales value
-    ///
-    var totalSales: String {
+    var statValue: String {
         guard !isRedacted else {
             return "1000"
         }
-        return StatsDataTextFormatter.formatAmount(currentPeriodStats?.totals.sales)
+        return StatsDataTextFormatter.createGoogleCampaignsStatText(for: selectedStat, from: currentPeriodStats)
     }
 
-    /// Total Sales delta percentage
+    /// Delta percentage for the selected stat
     ///
-    var delta: DeltaPercentage {
+    private var delta: DeltaPercentage {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createDeltaPercentage(from: previousPeriodStats?.totals.sales, to: currentPeriodStats?.totals.sales)
+        : StatsDataTextFormatter.createDeltaPercentage(from: previousPeriodStats?.totals.getDoubleValue(for: selectedStat),
+                                                       to: currentPeriodStats?.totals.getDoubleValue(for: selectedStat))
+    }
+
+    /// Delta text for the selected stat
+    ///
+    var deltaValue: String {
+        delta.string
+    }
+
+    /// Delta text color for the selected stat
+    ///
+    var deltaTextColor: UIColor {
+        delta.direction.deltaTextColor
+    }
+
+    /// Delta background color for the selected stat
+    ///
+    var deltaBackgroundColor: UIColor {
+        delta.direction.deltaBackgroundColor
     }
 
     // MARK: Campaigns report
@@ -127,8 +139,10 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Helper functions to create `TopPerformersRow.Data` items from the provided `GoogleAdsCampaignStats`.
     ///
     private func campaignRows(from stats: GoogleAdsCampaignStats?) -> [TopPerformersRow.Data] {
-        // Sort campaigns by their total sales.
-        guard let sortedCampaigns = stats?.campaigns.sorted(by: { $0.subtotals.sales ?? 0 > $1.subtotals.sales ?? 0 }) else {
+        // Sort campaigns by the selected stat.
+        guard let sortedCampaigns = stats?.campaigns.sorted(by: {
+            $0.subtotals.getDoubleValue(for: selectedStat) > $1.subtotals.getDoubleValue(for: selectedStat)
+        }) else {
             return []
         }
 
@@ -136,10 +150,18 @@ extension GoogleAdsCampaignReportCardViewModel {
         let topCampaigns = Array(sortedCampaigns.prefix(5))
 
         return topCampaigns.map { campaign in
+            // Show campaign spend in row details, unless spend is the selected stat.
+            let detailsText = {
+                guard selectedStat != .spend else {
+                    return Localization.sales(value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .sales, from: campaign))
+                }
+                return Localization.spend(value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: .spend, from: campaign))
+            }()
+
             return TopPerformersRow.Data(showImage: false,
                                          name: campaign.campaignName ?? "",
-                                         details: Localization.spend(value: StatsDataTextFormatter.formatAmount(campaign.subtotals.spend)),
-                                         value: StatsDataTextFormatter.formatAmount(campaign.subtotals.sales))
+                                         details: detailsText,
+                                         value: StatsDataTextFormatter.createGoogleCampaignsSubtotalText(for: selectedStat, from: campaign))
         }
     }
 }
@@ -150,11 +172,11 @@ extension AnalyticsTopPerformersCard {
     init(campaignsViewModel: GoogleAdsCampaignReportCardViewModel) {
         // Header with selected metric stats
         self.title = campaignsViewModel.title
-        self.statTitle = campaignsViewModel.totalSalesTitle
-        self.statValue = campaignsViewModel.totalSales
-        self.delta = campaignsViewModel.delta.string
-        self.deltaBackgroundColor = campaignsViewModel.delta.direction.deltaBackgroundColor
-        self.deltaTextColor = campaignsViewModel.delta.direction.deltaTextColor
+        self.statTitle = campaignsViewModel.selectedStat.displayName
+        self.statValue = campaignsViewModel.statValue
+        self.delta = campaignsViewModel.deltaValue
+        self.deltaBackgroundColor = campaignsViewModel.deltaBackgroundColor
+        self.deltaTextColor = campaignsViewModel.deltaTextColor
         self.isStatsRedacted = campaignsViewModel.isRedacted
         // This card gets its metrics and campaigns list from the same source.
         // If there is a problem loading stats data, the error message only appears once at the bottom of the card.
@@ -183,9 +205,6 @@ private extension GoogleAdsCampaignReportCardViewModel {
         static let campaignsTitle = NSLocalizedString("analyticsHub.googleCampaigns.campaignsList.title",
                                                       value: "Campaigns",
                                                       comment: "Title for the list of campaigns on the Google campaigns card on the analytics hub screen.")
-        static let totalSales = NSLocalizedString("analyticsHub.googleCampaigns.totalSalesTitle",
-                                                  value: "Total Sales",
-                                                  comment: "Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen.")
         static let noCampaignStats = NSLocalizedString("analyticsHub.googleCampaigns.noCampaignStats",
                                                        value: "Unable to load Google campaigns analytics",
                                                        comment: "Text displayed when there is an error loading Google Ads campaigns stats data.")
@@ -196,6 +215,13 @@ private extension GoogleAdsCampaignReportCardViewModel {
                                                                + "The placeholder is a formatted monetary amount, e.g. Spend: $123."),
                                              value)
         }
+        static func sales(value: String) -> String {
+            String.localizedStringWithFormat(NSLocalizedString("analyticsHub.googleCampaigns.salesSubtitle",
+                                                               value: "Sales: %@",
+                                                               comment: "Label for the total sales amount on a Google Ads campaign in the Analytics Hub."
+                                                               + "The placeholder is a formatted monetary amount, e.g. Sales: $123."),
+                                             value)
+        }
     }
 }
 
@@ -203,39 +229,39 @@ private extension GoogleAdsCampaignReportCardViewModel {
 extension GoogleAdsCampaignReportCardViewModel {
     static func sampleStats() -> GoogleAdsCampaignStats {
         GoogleAdsCampaignStats(siteID: 1234,
-                               totals: GoogleAdsCampaignStatsTotals(sales: 2234, spend: nil, clicks: nil, impressions: nil, conversions: nil),
+                               totals: GoogleAdsCampaignStatsTotals(sales: 2234, spend: 225, clicks: 2345, impressions: 23456, conversions: 1032),
                                campaigns: [GoogleAdsCampaignStatsItem(campaignID: 1,
                                                                       campaignName: "Spring Sale Campaign",
                                                                       rawStatus: "enabled",
                                                                       subtotals: GoogleAdsCampaignStatsTotals(sales: 1232,
                                                                                                               spend: 100,
-                                                                                                              clicks: nil,
-                                                                                                              impressions: nil,
-                                                                                                              conversions: nil)),
+                                                                                                              clicks: 1000,
+                                                                                                              impressions: 10000,
+                                                                                                              conversions: 300)),
                                            GoogleAdsCampaignStatsItem(campaignID: 2,
                                                                       campaignName: "Summer Campaign",
                                                                       rawStatus: "enabled",
                                                                       subtotals: GoogleAdsCampaignStatsTotals(sales: 800,
                                                                                                               spend: 50,
-                                                                                                              clicks: nil,
-                                                                                                              impressions: nil,
-                                                                                                              conversions: nil)),
+                                                                                                              clicks: 900,
+                                                                                                              impressions: 5000,
+                                                                                                              conversions: 400)),
                                            GoogleAdsCampaignStatsItem(campaignID: 3,
                                                                       campaignName: "Winter Campaign",
                                                                       rawStatus: "enabled",
                                                                       subtotals: GoogleAdsCampaignStatsTotals(sales: 750,
                                                                                                               spend: 50,
-                                                                                                              clicks: nil,
-                                                                                                              impressions: nil,
-                                                                                                              conversions: nil)),
+                                                                                                              clicks: 800,
+                                                                                                              impressions: 4000,
+                                                                                                              conversions: 200)),
                                            GoogleAdsCampaignStatsItem(campaignID: 4,
                                                                       campaignName: "New Year Campaign",
                                                                       rawStatus: "enabled",
                                                                       subtotals: GoogleAdsCampaignStatsTotals(sales: 200,
                                                                                                               spend: 25,
-                                                                                                              clicks: nil,
-                                                                                                              impressions: nil,
-                                                                                                              conversions: nil))],
+                                                                                                              clicks: 300,
+                                                                                                              impressions: 1000,
+                                                                                                              conversions: 50))],
                                nextPageToken: nil)
     }
 }

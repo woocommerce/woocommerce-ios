@@ -89,7 +89,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
         XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
         XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
-        XCTAssertEqual(vm.googleCampaignsCard.totalSales, "$285")
+        XCTAssertEqual(vm.googleCampaignsCard.statValue, "$285")
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {

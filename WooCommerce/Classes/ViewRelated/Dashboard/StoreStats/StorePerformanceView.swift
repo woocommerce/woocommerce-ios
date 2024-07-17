@@ -40,20 +40,20 @@ struct StorePerformanceView: View {
             } else if viewModel.statsVersion == .v4 {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
 
                 statsView
                     .padding(.vertical, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 chartView
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
                     .padding(.leading, Layout.padding)

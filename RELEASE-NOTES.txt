@@ -2,6 +2,7 @@
 
 19.6
 -----
+- [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 - [Internal] Removed feature flag for product description AI [https://github.com/woocommerce/woocommerce-ios/pull/13334]
 
 19.5

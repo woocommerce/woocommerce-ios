@@ -7,6 +7,7 @@ final class ItemListViewModel: ObservableObject {
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
+    @Published private(set) var shouldShowHeaderBanner: Bool = true
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
@@ -48,6 +49,10 @@ final class ItemListViewModel: ObservableObject {
     @MainActor
     func reload() async {
         await populatePointOfSaleItems()
+    }
+
+    func toggleBanner() {
+        shouldShowHeaderBanner.toggle()
     }
 }
 

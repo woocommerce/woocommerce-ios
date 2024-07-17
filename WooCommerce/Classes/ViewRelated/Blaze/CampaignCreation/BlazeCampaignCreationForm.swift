@@ -438,6 +438,11 @@ private extension BlazeCampaignCreationForm {
             value: "Ad destination",
             comment: "Title of the Ad destination field on the Blaze campaign creation screen"
         )
+        static let adDestinationEmpty = NSLocalizedString(
+            "blazeCampaignCreationForm.adDestination.empty",
+            value: "Select destination URL",
+            comment: "Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen"
+        )
         static let confirmDetails = NSLocalizedString(
             "blazeCampaignCreationForm.confirmDetails",
             value: "Confirm Details",

@@ -60,8 +60,8 @@ struct StorePerformanceView: View {
 
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showRedactedState)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
             } else {
                 contentUnavailableView
                     .padding(.horizontal, Layout.padding)

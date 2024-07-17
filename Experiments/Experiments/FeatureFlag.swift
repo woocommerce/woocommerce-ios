@@ -152,17 +152,9 @@ public enum FeatureFlag: Int {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables creating Subscription products
-    ///
-    case subscriptionProducts
-
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
-
-    /// Enables Blaze native campaign creation.
-    ///
-    case blazei3NativeCampaignCreation
 
     /// Enables backend receipt generation for all payment methods
     ///

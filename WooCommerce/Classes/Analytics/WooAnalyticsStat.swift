@@ -205,6 +205,7 @@ enum WooAnalyticsStat: String {
     case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
     case analyticsHubSettingsOpened = "analytics_hub_settings_opened"
     case analyticsHubSettingsSaved = "analytics_hub_settings_saved"
+    case analyticsHubCardMetricSelected = "analytics_hub_card_metric_selected"
 
     // MARK: Blaze Events
     //

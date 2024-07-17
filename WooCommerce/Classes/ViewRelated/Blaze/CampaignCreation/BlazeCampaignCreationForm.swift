@@ -123,7 +123,7 @@ struct BlazeCampaignCreationForm: View {
                 // Ad destination
                 if viewModel.adDestinationViewModel != nil {
                     detailView(title: Localization.adDestination,
-                               content: viewModel.finalDestinationURL,
+                               content: viewModel.finalDestinationURL.isNotEmpty ? viewModel.finalDestinationURL : Localization.adDestinationEmpty,
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }

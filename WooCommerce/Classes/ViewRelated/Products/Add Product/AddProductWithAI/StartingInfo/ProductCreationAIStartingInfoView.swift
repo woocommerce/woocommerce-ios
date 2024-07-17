@@ -37,7 +37,7 @@ struct ProductCreationAIStartingInfoView: View {
                             VStack(spacing: 0) {
                                 ZStack(alignment: .topLeading) {
                                     TextEditor(text: $viewModel.features)
-                                        .id("TextEditor")
+                                        .id(Constant.textEditorID)
                                         .bodyStyle()
                                         .foregroundStyle(.secondary)
                                         .padding(insets: Layout.messageContentInsets)
@@ -46,14 +46,14 @@ struct ProductCreationAIStartingInfoView: View {
                                     // Scrolls to the "TextEditor" view with a smooth animation while typing.
                                         .onChange(of: viewModel.features) { _ in
                                             withAnimation {
-                                                proxy.scrollTo("TextEditor", anchor: .top)
+                                                proxy.scrollTo(Constant.textEditorID, anchor: .top)
                                             }
                                         }
                                     // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
                                     .onChange(of: editorIsFocused) { isFocused in
                                         if isFocused {
                                             withAnimation {
-                                                proxy.scrollTo("TextEditor", anchor: .top)
+                                                proxy.scrollTo(Constant.textEditorID, anchor: .top)
                                             }
                                         }
                                     }
@@ -212,6 +212,10 @@ private extension ProductCreationAIStartingInfoView {
             static let spacing: CGFloat = 4
             static let cameraSFSymbol = "camera"
         }
+    }
+    
+    enum Constant {
+        static let textEditorID = "TextEditor"
     }
 
     enum Localization {

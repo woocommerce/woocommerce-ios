@@ -179,7 +179,7 @@ private extension GoogleAdsCampaignCoordinator {
             static let campaign = "campaign"
             static let guide = "guide"
         }
-        
+
         enum ParameterValues {
             static let saved = "saved"
             static let creationSuccess = "campaign-creation-success"

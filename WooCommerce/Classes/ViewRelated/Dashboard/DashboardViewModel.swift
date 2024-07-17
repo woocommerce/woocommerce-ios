@@ -378,37 +378,22 @@ private extension DashboardViewModel {
                         await self?.reloadBlazeCampaignView()
                     }
                 case .inbox:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2), isEligibleForInbox else {
-                        return
-                    }
                     group.addTask { [weak self] in
                         await self?.inboxViewModel.reloadData()
                     }
                 case .coupons:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
-                        return
-                    }
                     group.addTask { [weak self] in
                         await self?.mostActiveCouponsViewModel.reloadData()
                     }
                 case .stock:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
-                        return
-                    }
                     group.addTask { [weak self] in
                         await self?.productStockCardViewModel.reloadData()
                     }
                 case .reviews:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
-                        return
-                    }
                     group.addTask { [weak self] in
                         await self?.reviewsViewModel.reloadData()
                     }
                 case .lastOrders:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
-                        return
-                    }
                     group.addTask { [weak self] in
                         await self?.lastOrdersCardViewModel.reloadData()
                     }
@@ -461,9 +446,6 @@ private extension DashboardViewModel {
     }
 
     func checkInboxEligibility() {
-        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
-            return
-        }
         isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
     }
 
@@ -540,20 +522,17 @@ private extension DashboardViewModel {
                                    availability: canShowBlaze ? .show : .hide,
                                    enabled: canShowBlaze))
 
-        let dynamicDashboardM2 = featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2)
-        if dynamicDashboardM2 {
-            cards.append(DashboardCard(type: .inbox,
-                                       availability: canShowInbox ? .show : .hide,
-                                       enabled: false))
-            cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
-            cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
-            cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
-
-            // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
-            cards.append(DashboardCard(type: .lastOrders,
-                                       availability: canShowLastOrders ? .show : .unavailable,
-                                       enabled: false))
-        }
+        cards.append(DashboardCard(type: .inbox,
+                                   availability: canShowInbox ? .show : .hide,
+                                   enabled: false))
+        cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
+        cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
+        cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
+        
+        // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
+        cards.append(DashboardCard(type: .lastOrders,
+                                   availability: canShowLastOrders ? .show : .unavailable,
+                                   enabled: false))
 
         cards.append(DashboardCard(type: .googleAds,
                                    availability: canShowGoogle ? .show : .hide,
@@ -620,10 +599,6 @@ private extension DashboardViewModel {
     /// - Parameter hasOrders: A Boolean indicating whether the site has orders. If the site has no orders,
     ///   the app will display the "Share Your Store" card, and the notice should remain hidden.
     func configureNewCardsNotice(hasOrders: Bool) {
-        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) && hasOrders else {
-            return
-        }
-
         let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 

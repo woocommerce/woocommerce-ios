@@ -45,16 +45,12 @@ struct ProductCreationAIStartingInfoView: View {
                                         .focused($editorIsFocused)
                                     // Scrolls to the "TextEditor" view with a smooth animation while typing.
                                         .onChange(of: viewModel.features) { _ in
-                                            withAnimation {
-                                                proxy.scrollTo(Constant.textEditorID, anchor: .top)
-                                            }
+                                            scrollToTextEditor(using: proxy)
                                         }
                                     // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
                                     .onChange(of: editorIsFocused) { isFocused in
                                         if isFocused {
-                                            withAnimation {
-                                                proxy.scrollTo(Constant.textEditorID, anchor: .top)
-                                            }
+                                            scrollToTextEditor(using: proxy)
                                         }
                                     }
                                     // Placeholder text
@@ -188,6 +184,12 @@ private extension ProductCreationAIStartingInfoView {
         .buttonStyle(PrimaryButtonStyle())
         .disabled(viewModel.features.isEmpty)
     }
+
+    private func scrollToTextEditor(using proxy: ScrollViewProxy) {
+        withAnimation {
+            proxy.scrollTo(Constant.textEditorID, anchor: .top)
+        }
+    }
 }
 
 private extension ProductCreationAIStartingInfoView {
@@ -213,7 +215,7 @@ private extension ProductCreationAIStartingInfoView {
             static let cameraSFSymbol = "camera"
         }
     }
-    
+
     enum Constant {
         static let textEditorID = "TextEditor"
     }

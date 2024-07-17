@@ -190,7 +190,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var canConfirmDetails: Bool {
-        tagline.isNotEmpty && description.isNotEmpty
+        guard finalDestinationURL.isNotEmpty else {
+            return false
+        }
+        return tagline.isNotEmpty && description.isNotEmpty
     }
 
     @Published var isShowingMissingImageErrorAlert: Bool = false

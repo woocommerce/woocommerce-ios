@@ -131,7 +131,8 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
 private extension BlazeAdDestinationSettingViewModel {
     func initializeDestinationType() {
-        if initialFinalDestinationURL.hasPrefix(productURL) {
+        if productURL.isNotEmpty,
+           initialFinalDestinationURL.hasPrefix(productURL) {
             selectedDestinationType = .product
         } else {
             selectedDestinationType = .home

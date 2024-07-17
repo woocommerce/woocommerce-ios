@@ -16,6 +16,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private var sampleProduct: Product {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
+                     permalink: "Sample product url",
                      statusKey: (ProductStatus.published.rawValue),
                      images: [.fake().copy(imageID: 1)])
     }
@@ -419,8 +420,36 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
+
+    // MARK: `didTapConfirmDetails`
     @MainActor
-    func test_ad_cannot_be_confirmed_if_product_permalink_is_empty() async throws {
+    func test_it_shows_error_if_confirmed_without_image() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        // No image set
+        mockDownloadImage(nil)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
+    }
+
+    @MainActor
+    func test_it_shows_error_if_confirmed_with_empty_product_url() async throws {
         // Given
         // Product with empty product URL
         insertProduct(sampleProduct.copy(permalink: ""))
@@ -432,15 +461,17 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
+                                                           analytics: analytics,
                                                            onCompletion: {})
-        // Sets non-nil product image
         await viewModel.downloadProductImage()
 
-        // Sets non-nil AI suggestions
         await viewModel.loadAISuggestions()
 
+        // When
+        viewModel.didTapConfirmDetails()
+
         // Then
-        XCTAssertFalse(viewModel.canConfirmDetails)
+        XCTAssertTrue(viewModel.isShowingMissingDestinationURLAlert)
     }
 
     // MARK: Analytics

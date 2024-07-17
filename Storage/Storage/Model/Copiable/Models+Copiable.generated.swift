@@ -64,8 +64,7 @@ extension Storage.GeneralAppSettings {
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
         featureAnnouncementCampaignSettings: CopiableProp<[FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings]> = .copy,
         sitesWithAtLeastOneIPPTransactionFinished: CopiableProp<Set<Int64>> = .copy,
-        isEUShippingNoticeDismissed: CopiableProp<Bool> = .copy,
-        localAnnouncementDismissed: CopiableProp<[LocalAnnouncement: Bool]> = .copy
+        isEUShippingNoticeDismissed: CopiableProp<Bool> = .copy
     ) -> Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
@@ -78,7 +77,6 @@ extension Storage.GeneralAppSettings {
         let featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings ?? self.featureAnnouncementCampaignSettings
         let sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished ?? self.sitesWithAtLeastOneIPPTransactionFinished
         let isEUShippingNoticeDismissed = isEUShippingNoticeDismissed ?? self.isEUShippingNoticeDismissed
-        let localAnnouncementDismissed = localAnnouncementDismissed ?? self.localAnnouncementDismissed
 
         return Storage.GeneralAppSettings(
             installationDate: installationDate,
@@ -91,8 +89,7 @@ extension Storage.GeneralAppSettings {
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            localAnnouncementDismissed: localAnnouncementDismissed
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 }

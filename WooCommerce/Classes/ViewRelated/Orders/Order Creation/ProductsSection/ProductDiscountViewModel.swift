@@ -15,8 +15,8 @@ final class ProductDiscountViewModel: Identifiable {
     /// Product name
     let name: String
 
-    /// Product price
-    let price: String?
+    /// Total product price with quantity excluding discount
+    let totalPricePreDiscount: String?
 
     /// View model for `CollapsibleProductCardPriceSummary`
     let priceSummary: CollapsibleProductCardPriceSummaryViewModel
@@ -55,14 +55,14 @@ final class ProductDiscountViewModel: Identifiable {
     init(id: Int64,
          imageURL: URL?,
          name: String,
-         price: String?,
+         totalPricePreDiscount: String?,
          priceSummary: CollapsibleProductCardPriceSummaryViewModel,
          discountConfiguration: DiscountConfiguration?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
         self.imageURL = imageURL
         self.name = name
-        self.price = price
+        self.totalPricePreDiscount = totalPricePreDiscount
         self.priceSummary = priceSummary
         addedDiscount = discountConfiguration?.addedDiscount ?? .zero
         hasDiscount = addedDiscount != 0

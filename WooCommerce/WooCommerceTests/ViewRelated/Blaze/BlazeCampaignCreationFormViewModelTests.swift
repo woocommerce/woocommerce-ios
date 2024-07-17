@@ -419,6 +419,30 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
+    @MainActor
+    func test_ad_cannot_be_confirmed_if_product_permalink_is_empty() async throws {
+        // Given
+        // Product with empty product URL
+        insertProduct(sampleProduct.copy(permalink: ""))
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // Sets non-nil AI suggestions
+        await viewModel.loadAISuggestions()
+
+        // Then
+        XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
     // MARK: Analytics
     @MainActor
     func test_event_is_tracked_on_appear() async throws {

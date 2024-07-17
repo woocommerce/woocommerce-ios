@@ -4,6 +4,7 @@
 -----
 
 - [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
+- [internal] Blaze: Check that product URL is not empty before campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13351]
 
 19.5
 -----

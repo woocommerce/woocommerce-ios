@@ -3,6 +3,18 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+/// Blaze entry points.
+enum BlazeSource {
+    /// From the Blaze campaign list
+    case campaignList
+    /// From the Blaze intro view
+    case introView
+    /// From the Create campaign button on the Blaze section of the My Store screen
+    case myStoreSection
+    /// From the "Promote with Blaze" button on product form
+    case productDetailPromoteButton
+}
+
 /// Coordinates navigation into the entry of the Blaze creation flow.
 final class BlazeCampaignCreationCoordinator: Coordinator {
     enum CreateCampaignDestination: Equatable {

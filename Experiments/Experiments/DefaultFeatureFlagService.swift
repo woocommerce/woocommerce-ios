@@ -48,8 +48,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .compositeProducts:
             return true
-        case .productDescriptionAI:
-            return true
         case .productDescriptionAIFromStoreOnboarding:
             return !isUITesting
         case .readOnlyGiftCards:

@@ -112,10 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables generating product description using AI from product description editor.
-    ///
-    case productDescriptionAI
-
     /// Enables generating product description using AI from store onboarding.
     ///
     case productDescriptionAIFromStoreOnboarding

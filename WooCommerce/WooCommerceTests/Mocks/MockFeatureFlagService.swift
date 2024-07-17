@@ -9,7 +9,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isProductDescriptionAIEnabled: Bool
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isBlazeEnabled: Bool
@@ -34,7 +33,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isProductDescriptionAIEnabled: Bool = false,
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
@@ -58,7 +56,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isBlazeEnabled = isBlazeEnabled
@@ -93,8 +90,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .productDescriptionAI:
-            return isProductDescriptionAIEnabled
         case .productDescriptionAIFromStoreOnboarding:
             return isProductDescriptionAIFromStoreOnboardingEnabled
         case .readOnlyGiftCards:

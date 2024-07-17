@@ -160,10 +160,6 @@ public enum FeatureFlag: Int {
     ///
     case scanToUpdateInventory
 
-    /// Enables Blaze native campaign creation.
-    ///
-    case blazei3NativeCampaignCreation
-
     /// Enables backend receipt generation for all payment methods
     ///
     case backendReceipts

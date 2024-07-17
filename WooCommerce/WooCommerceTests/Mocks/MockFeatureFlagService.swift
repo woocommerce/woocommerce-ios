@@ -10,12 +10,10 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSupportRequestEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
-    private let isBlazeEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
     private let isScanToUpdateInventoryEnabled: Bool
-    private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
     private let sideBySideViewForOrderForm: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
@@ -32,12 +30,10 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
-         isBlazeEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         blazei3NativeCampaignCreation: Bool = false,
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
@@ -53,12 +49,10 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
-        self.isBlazeEnabled = isBlazeEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
@@ -94,8 +88,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .blazei3NativeCampaignCreation:
-            return blazei3NativeCampaignCreation
         case .backendReceipts:
             return isBackendReceiptsEnabled
         case .sideBySideViewForOrderForm:

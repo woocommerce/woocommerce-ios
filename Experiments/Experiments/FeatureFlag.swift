@@ -112,14 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables generating product description using AI from product description editor.
-    ///
-    case productDescriptionAI
-
-    /// Enables generating product description using AI from store onboarding.
-    ///
-    case productDescriptionAIFromStoreOnboarding
-
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
@@ -131,10 +123,6 @@ public enum FeatureFlag: Int {
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
-
-    /// Enables generating share product content using AI
-    ///
-    case shareProductAI
 
     /// Enables the improvements in the customer selection logic when creating an order
     ///

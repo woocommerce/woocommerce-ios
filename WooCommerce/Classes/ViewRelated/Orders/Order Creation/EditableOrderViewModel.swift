@@ -732,10 +732,6 @@ final class EditableOrderViewModel: ObservableObject {
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
 
-            /// Bookable items' prices vary depending on the selected booking resources.
-            /// Display the order item price instead of the product price for the correct value.
-            let price = product.productType == .booking ? item.price.stringValue : product.price
-
             let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
                                                                   productOrVariationID: product.productID,
                                                                   hasParentProduct: item.parent != nil,

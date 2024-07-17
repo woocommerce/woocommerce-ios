@@ -9,11 +9,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isProductDescriptionAIEnabled: Bool
-    private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isBlazeEnabled: Bool
-    private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
@@ -34,11 +31,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isProductDescriptionAIEnabled: Bool = false,
-         isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
-         isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
@@ -58,11 +52,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
-        self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isBlazeEnabled = isBlazeEnabled
-        self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
@@ -93,14 +84,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .productDescriptionAI:
-            return isProductDescriptionAIEnabled
-        case .productDescriptionAIFromStoreOnboarding:
-            return isProductDescriptionAIFromStoreOnboardingEnabled
         case .readOnlyGiftCards:
             return isReadOnlyGiftCardsEnabled
-        case .shareProductAI:
-            return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundles:

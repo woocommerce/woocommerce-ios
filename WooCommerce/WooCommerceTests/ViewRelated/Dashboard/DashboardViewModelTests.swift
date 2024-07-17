@@ -173,57 +173,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
-    // MARK: Local announcements
-
-    @MainActor
-    func test_it_does_not_trigger_AppSettingsAction_for_local_announcement_when_jitm_is_available() async {
-        // Given
-        let message = Yosemite.JustInTimeMessage.fake().copy(template: .modal)
-        mockReloadingData(jitmResult: .success([message]))
-
-        // Sets the prerequisites for the product description AI local announcement.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
-
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertNotNil(viewModel.modalJustInTimeMessageViewModel)
-        XCTAssertNil(viewModel.localAnnouncementViewModel)
-    }
-
-    @MainActor
-    func test_it_sets_localAnnouncementViewModel_when_jitm_is_nil_and_local_announcement_is_available() async {
-        // Given
-        // No JITM.
-        mockReloadingData(jitmResult: .success([]))
-        // Sets the prerequisites for the product description AI local announcement.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
-
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertNil(viewModel.modalJustInTimeMessageViewModel)
-        XCTAssertNotNil(viewModel.localAnnouncementViewModel)
-    }
-
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -754,8 +703,6 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .getLocalAnnouncementVisibility(_, completion):
-                completion(true)
             case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
                 completion(false)
             case let .loadDashboardCards(_, onCompletion):

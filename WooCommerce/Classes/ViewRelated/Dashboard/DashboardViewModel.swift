@@ -15,8 +15,6 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var modalJustInTimeMessageViewModel: JustInTimeMessageViewModel? = nil
 
-    @Published var localAnnouncementViewModel: LocalAnnouncementViewModel? = nil
-
     let storeOnboardingViewModel: StoreOnboardingViewModel
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
@@ -76,7 +74,6 @@ final class DashboardViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
-    private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
@@ -122,7 +119,6 @@ final class DashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.userDefaults = userDefaults
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
-        self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
                                                      stores: stores,
@@ -328,7 +324,6 @@ private extension DashboardViewModel {
     @MainActor
     func syncAnnouncements(for siteID: Int64) async {
         await syncJustInTimeMessages(for: siteID)
-        await loadLocalAnnouncement()
     }
 
     func observeDashboardCardsAndReload() {
@@ -463,21 +458,6 @@ private extension DashboardViewModel {
             announcementViewModel = nil
             modalJustInTimeMessageViewModel = nil
         }
-    }
-
-    @MainActor
-    /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
-    /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
-    func loadLocalAnnouncement() async {
-        // Local announcement modal can only be shown when JITM modal is not shown.
-        guard modalJustInTimeMessageViewModel == nil else {
-            return
-        }
-        guard let viewModel = await localAnnouncementsProvider.loadAnnouncement() else {
-            localAnnouncementViewModel = nil
-            return
-        }
-        localAnnouncementViewModel = viewModel
     }
 
     func checkInboxEligibility() {

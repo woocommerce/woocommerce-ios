@@ -615,7 +615,7 @@ final class EditableOrderViewModel: ObservableObject {
         discountViewModel = .init(id: itemID,
                                   imageURL: rowViewModel.productRow.imageURL,
                                   name: rowViewModel.productRow.name,
-                                  price: rowViewModel.productRow.price,
+                                  totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
                                   discountConfiguration: addProductDiscountConfiguration(on: orderItem))
     }
@@ -698,7 +698,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: variation.imageURL,
                                                                   name: item.name,
                                                                   sku: variation.sku,
-                                                                  price: variation.price,
+                                                                  price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
@@ -745,7 +745,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
-                                                                  price: price,
+                                                                  price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,

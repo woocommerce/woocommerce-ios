@@ -48,17 +48,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .compositeProducts:
             return true
-        case .productDescriptionAI:
-            return true
-        case .productDescriptionAIFromStoreOnboarding:
-            return !isUITesting
         case .readOnlyGiftCards:
             return true
         case .readOnlyMinMaxQuantities:
             return true
         case .euShippingNotification:
-            return true
-        case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:
             return true
@@ -91,11 +85,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .dynamicDashboardM2:
             return true
         case .productCreationAIv2M1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productCreationAIv2M3:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backgroundTasks:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

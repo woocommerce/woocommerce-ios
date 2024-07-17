@@ -73,16 +73,16 @@ struct OrderPaymentSection: View {
 private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
-            ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+            ForEach(viewModel.couponLineViewModels, id: \.title) { couponViewModel in
                 VStack(alignment: .leading, spacing: .zero) {
                     TitleAndValueRow(title: Localization.coupon,
                                      titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                                     value: .content(viewModel.discount),
+                                     value: .content(couponViewModel.discount),
                                      selectionStyle: editableRowsSelectionStyle,
-                                     isLoading: self.viewModel.isLoading) {
-                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                                     isLoading: viewModel.isLoading) {
+                        selectedCouponLineDetailsViewModel = couponViewModel.detailsViewModel
                     }
-                    Text(viewModel.detailsViewModel.code)
+                    Text(couponViewModel.detailsViewModel.code)
                         .footnoteStyle()
                         .padding(.horizontal, Constants.horizontalPadding)
                 }
@@ -200,21 +200,21 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var taxLines: some View {
-        ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
+        ForEach(viewModel.taxLineViewModels, id: \.title) { taxLineViewModel in
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
-                    Text(viewModel.title)
+                    Text(taxLineViewModel.title)
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(viewModel.value)
+                    Text(taxLineViewModel.value)
                         .footnoteStyle()
                         .multilineTextAlignment(.trailing)
                         .frame(width: nil, alignment: .trailing)
-                        .redacted(reason: self.viewModel.isLoading ? .placeholder : [])
-                        .shimmering(active: self.viewModel.isLoading)
+                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                        .shimmering(active: viewModel.isLoading)
                 }
             }
         }

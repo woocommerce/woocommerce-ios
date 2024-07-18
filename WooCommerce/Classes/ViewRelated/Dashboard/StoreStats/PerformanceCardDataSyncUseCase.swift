@@ -22,7 +22,7 @@ struct PerformanceCardDataSyncUseCase {
     /// Sync all stats needed for the performance card.
     ///
     @MainActor
-    func fetch() async throws {
+    func sync() async throws {
         let timeRange = await {
             guard let initialTimeRange = self.timeRange else {
                 return await loadLastTimeRange()

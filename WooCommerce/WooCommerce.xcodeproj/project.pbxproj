@@ -2016,7 +2016,6 @@
 		C7F746C32C485B3B0023ADD0 /* MockCartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */; };
 		C7F746C72C4866810023ADD0 /* MockTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */; };
 		C7F746C92C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */; };
-		C7F746CA2C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */; };
 		C7F746CC2C4875300023ADD0 /* AnyTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */; };
 		CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */; };
 		CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */; };
@@ -16270,7 +16269,6 @@
 				DE96844D2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift in Sources */,
 				26100B202722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift in Sources */,
 				263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */,
-				C7F746CA2C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */,
 				0279F0DC252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift in Sources */,
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
 				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,

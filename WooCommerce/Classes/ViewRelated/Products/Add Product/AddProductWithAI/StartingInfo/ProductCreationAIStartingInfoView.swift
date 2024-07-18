@@ -6,7 +6,11 @@ struct ProductCreationAIStartingInfoView: View {
     @ObservedObject private var viewModel: ProductCreationAIStartingInfoViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
+    @Environment(\.verticalSizeClass) var verticalSizeClass
 
+    private var isCompact: Bool {
+        verticalSizeClass == .compact
+    }
     private let onContinueWithFeatures: (String) -> Void
 
     init(viewModel: ProductCreationAIStartingInfoViewModel,
@@ -117,14 +121,21 @@ struct ProductCreationAIStartingInfoView: View {
             }
             .scrollDismissesKeyboard(.immediately)
         }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                generateButtonToolbar
+                    .renderedIf(isCompact)
+            }
+        }
         .safeAreaInset(edge: .bottom) {
             VStack {
                 Divider()
                 // CTA to generate product details.
-                generateButton
+                generateButtonMain
                     .padding()
             }
             .background(Color(uiColor: .systemBackground))
+            .renderedIf(!isCompact)
         }
         .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
             if case let .success(image) = viewModel.imageState {
@@ -159,7 +170,7 @@ private extension ProductCreationAIStartingInfoView {
         }
     }
 
-    var generateButton: some View {
+    var generateButtonMain: some View {
         Button {
             // continue
             editorIsFocused = false
@@ -170,6 +181,18 @@ private extension ProductCreationAIStartingInfoView {
         .buttonStyle(PrimaryButtonStyle())
         .disabled(viewModel.features.isEmpty)
     }
+
+    var generateButtonToolbar: some View {
+        Button {
+            // continue
+            editorIsFocused = false
+            onContinueWithFeatures(viewModel.features)
+        } label: {
+            Text(Localization.generateProductDetails)
+        }
+        .disabled(viewModel.features.isEmpty)
+    }
+
 
     private func scrollToTextField(using proxy: ScrollViewProxy) {
         withAnimation {

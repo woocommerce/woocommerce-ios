@@ -23,13 +23,9 @@ final class ItemListViewModel: ObservableObject {
         // - Loading the item list
         // - Hasn't been already been previously dismissed
         if isHeaderBannerDismissed {
-            return false
-        }
-        switch state {
-        case .loaded:
-            return true
-        default:
-            return false
+            false
+        } else {
+            state.isLoaded
         }
     }
 
@@ -90,6 +86,15 @@ extension ItemListViewModel {
         case loading
         case loaded([POSItem])
         case error(ErrorModel)
+
+        var isLoaded: Bool {
+            switch self {
+            case .loaded:
+                return true
+            default:
+                return false
+            }
+        }
 
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {

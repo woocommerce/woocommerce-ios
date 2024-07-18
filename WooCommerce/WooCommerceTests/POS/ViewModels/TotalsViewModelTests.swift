@@ -43,10 +43,9 @@ final class TotalsViewModelTests: XCTestCase {
 
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
-        let order: Order = orderService.order(from: sut.order!)
 
         // When
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: sut.order!, using: .bluetooth)
         sut.startNewTransaction()
 
         // Then

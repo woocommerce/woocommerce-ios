@@ -3,7 +3,6 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
-import struct Yosemite.POSOrder
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -23,7 +22,9 @@ final class TotalsViewModel: ObservableObject {
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    @Published private(set) var order: POSOrder?
+    @Published private(set) var order: Order? = nil
+    private var totalsCalculator: OrderTotalsCalculator? = nil
+
     @Published private(set) var isSyncingOrder: Bool = false
 
     @Published private(set) var paymentState: PaymentState = .acceptingCard
@@ -32,7 +33,7 @@ final class TotalsViewModel: ObservableObject {
 
     // MARK: - Order total amounts
     var formattedCartTotalPrice: String? {
-        formattedPrice(order?.subtotal(currencyFormatter), currency: order?.currency)
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
     }
 
     var formattedOrderTotalPrice: String? {
@@ -135,10 +136,10 @@ extension TotalsViewModel {
         }
         do {
             isSyncingOrder = true
-            let order = try await orderService.syncOrder(cart: cart,
+            let syncedOrder = try await orderService.syncOrder(cart: cart,
                                                          order: order,
                                                          allProducts: allItems)
-            self.order = order
+            self.updateOrder(syncedOrder)
             isSyncingOrder = false
             // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()
@@ -146,6 +147,11 @@ extension TotalsViewModel {
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
         }
+    }
+
+    private func updateOrder(_ updatedOrder: Order) {
+        self.order = updatedOrder
+        totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -171,8 +177,7 @@ private extension TotalsViewModel {
             return
         }
         do {
-            let finalOrder = orderService.order(from: order)
-            try await collectPayment(for: finalOrder)
+            try await collectPayment(for: order)
         } catch {
             DDLogError("Error taking payment: \(error)")
         }

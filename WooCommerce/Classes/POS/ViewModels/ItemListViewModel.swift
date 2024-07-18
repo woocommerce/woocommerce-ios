@@ -22,11 +22,7 @@ final class ItemListViewModel: ObservableObject {
         // The banner it's only shown when:
         // - Loading the item list
         // - Hasn't been already been previously dismissed
-        if isHeaderBannerDismissed {
-            false
-        } else {
-            state.isLoaded
-        }
+        !isHeaderBannerDismissed && state.isLoaded
     }
 
     private let itemProvider: POSItemProvider

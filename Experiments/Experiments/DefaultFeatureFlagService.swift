@@ -89,7 +89,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productCreationAIv2M3:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
-            return true
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundTasks:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

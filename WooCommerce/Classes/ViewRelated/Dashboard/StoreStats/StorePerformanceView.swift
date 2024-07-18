@@ -50,6 +50,11 @@ struct StorePerformanceView: View {
                     .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
                     .shimmering(active: viewModel.showRedactedState)
 
+                timestampView
+                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
+
                 chartView
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
@@ -195,6 +200,12 @@ private extension StorePerformanceView {
                     .renderedIf(!viewModel.hasRevenue)
             }
         }
+    }
+
+    var timestampView: some View {
+        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+            .footnoteStyle()
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func statsItemView(title: String, value: String, redactMode: RedactMode) -> some View {
@@ -382,6 +393,10 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the performance card was last updated")
+            return String.localizedStringWithFormat(format, time)
+        }
         enum ContentUnavailable {
             static let title = NSLocalizedString(
                 "storePerformanceView.contentUnavailable.title",

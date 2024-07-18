@@ -12,6 +12,7 @@
 - [Internal] Removed feature flag for product sharing AI [https://github.com/woocommerce/woocommerce-ios/pull/13337]
 - [Internal] Removed feature flag for product description AI tooltip [https://github.com/woocommerce/woocommerce-ios/pull/13341]
 - [Internal] Removed feature flag for the native Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13356]
+- [Internal] Removed feature flag for dynamic dashboard M2. [https://github.com/woocommerce/woocommerce-ios/pull/13359]
 
 19.5
 -----

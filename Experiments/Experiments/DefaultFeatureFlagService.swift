@@ -80,8 +80,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .displayPointOfSaleToggle:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .dynamicDashboardM2:
-            return true
         case .productCreationAIv2M1:
             return true
         case .productCreationAIv2M3:

@@ -298,21 +298,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties?["sorted_cards"], "performance,blaze")
     }
 
-    // MARK: Install theme
-    func test_it_triggers_pending_theme_install_upon_initialization() async throws {
-        // Given
-        let themeInstaller = MockThemeInstaller()
-        _ = DashboardViewModel(siteID: sampleSiteID,
-                               themeInstaller: themeInstaller)
-
-        waitUntil {
-            themeInstaller.installPendingThemeCalled == true
-        }
-
-        //  Then
-        XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
-    }
-
     // MARK: hasOrders state
     func test_hasOrders_is_true_when_site_has_orders() {
         // Given

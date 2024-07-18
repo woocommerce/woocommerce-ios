@@ -513,47 +513,6 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
     }
 
-    func test_it_presents_store_creation_flow_when_there_are_no_valid_stores() throws {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
-            switch action {
-            case let .synchronizeSites(_, onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            if case let .loadPlan(_, completion) = action {
-                completion(.success(.init(productID: 1021, name: "", formattedPrice: "")))
-            }
-        }
-
-        let testSite = Site.fake().copy(isWooCommerceActive: false)
-        let storage = MockStorageManager()
-        storage.insertSampleSite(readOnlySite: testSite)
-
-        let manager = AuthenticationManager(stores: stores,
-                                            storageManager: storage)
-
-        let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
-        let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
-
-        // When
-        manager.presentLoginEpilogue(in: navigationController,
-                                     for: credentials,
-                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
-                                     onDismiss: {})
-
-        // Then
-        waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
-        }
-    }
-
     func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -583,7 +542,7 @@ final class AuthenticationManagerTests: XCTestCase {
         // When
         manager.presentLoginEpilogue(in: navigationController,
                                      for: credentials,
-                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
+                                     source: SignInSource.wpCom,
                                      onDismiss: {
             // Then
             XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [123])
@@ -620,7 +579,7 @@ final class AuthenticationManagerTests: XCTestCase {
         // When
         manager.presentLoginEpilogue(in: navigationController,
                                      for: credentials,
-                                     source: SignInSource.custom(source: LoggedOutStoreCreationCoordinator.Source.prologue.rawValue),
+                                     source: SignInSource.wpCom,
                                      onDismiss: {
             // Then
             XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [])

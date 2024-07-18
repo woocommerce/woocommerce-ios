@@ -2779,7 +2779,6 @@
 		EEADF626281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */; };
 		EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB221A429B97F8400662A12 /* CouponInputTransformerTests.swift */; };
 		EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */; };
-		EEB44A1A2A8A254700FE089E /* MockStoreCreationProfilerUploadAnswersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB44A192A8A254700FE089E /* MockStoreCreationProfilerUploadAnswersUseCase.swift */; };
 		EEB4E2D329B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D229B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift */; };
 		EEB4E2D629B2063800371C3C /* StoreOnboardingTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */; };
 		EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */; };
@@ -2810,7 +2809,6 @@
 		EEEA41F22869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */; };
 		EEEDA916290A799E004B001D /* WordPressAuthenticator+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */; };
 		EEF5C1502BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */; };
-		EEFF47322B309221009BF302 /* MockStoreCreationStoreSwitchScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFF47312B309221009BF302 /* MockStoreCreationStoreSwitchScheduler.swift */; };
 		F997170523DBB97500592D8E /* WooCommerceScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */; };
 		F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174A23DC10B300592D8E /* SnapshotHelper.swift */; };
 		FE28F6F4268477C1004465C7 /* RoleEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */; };
@@ -5729,7 +5727,6 @@
 		EEADF625281A65A9001B40F1 /* DefaultShippingValueLocalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShippingValueLocalizerTests.swift; sourceTree = "<group>"; };
 		EEB221A429B97F8400662A12 /* CouponInputTransformerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponInputTransformerTests.swift; sourceTree = "<group>"; };
 		EEB221A629B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetailsViewModelTests.swift; sourceTree = "<group>"; };
-		EEB44A192A8A254700FE089E /* MockStoreCreationProfilerUploadAnswersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStoreCreationProfilerUploadAnswersUseCase.swift; sourceTree = "<group>"; };
 		EEB4E2D229B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewHostingControllerTests.swift; sourceTree = "<group>"; };
 		EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModel.swift; sourceTree = "<group>"; };
 		EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -5760,7 +5757,6 @@
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEEDA915290A799E004B001D /* WordPressAuthenticator+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressAuthenticator+Internal.swift"; sourceTree = "<group>"; };
 		EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModelTests.swift; sourceTree = "<group>"; };
-		EEFF47312B309221009BF302 /* MockStoreCreationStoreSwitchScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStoreCreationStoreSwitchScheduler.swift; sourceTree = "<group>"; };
 		F317D86E54C611C83FD97DAB /* Pods-NotificationExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NotificationExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NotificationExtension/Pods-NotificationExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
 		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
@@ -9160,14 +9156,12 @@
 				02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */,
 				DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */,
 				DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */,
-				EEB44A192A8A254700FE089E /* MockStoreCreationProfilerUploadAnswersUseCase.swift */,
 				B935D3602A9F50F50067B927 /* MockWPAdminTaxSettingsURLProvider.swift */,
 				EE5B5BBC2AB41ED9009BCBD6 /* MockProductCreationAIEligibilityChecker.swift */,
 				202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */,
 				20BCF6F62B0E5AEF00954840 /* MockSystemStatusService.swift */,
 				68A38DF42B293B030090C263 /* MockProductListViewModel.swift */,
 				EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */,
-				EEFF47312B309221009BF302 /* MockStoreCreationStoreSwitchScheduler.swift */,
 				02D635782B58071C00B1CBF6 /* MockNote.swift */,
 				EE8A302A2B70B63E001D7C66 /* MockImageService.swift */,
 				023BD5872BFDCF3100A10D7B /* MockInMemoryStorage.swift */,
@@ -16149,7 +16143,6 @@
 				D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */,
-				EEB44A1A2A8A254700FE089E /* MockStoreCreationProfilerUploadAnswersUseCase.swift in Sources */,
 				DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */,
 				0271125D2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
@@ -16239,7 +16232,6 @@
 				CC5BA5F5287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift in Sources */,
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
-				EEFF47322B309221009BF302 /* MockStoreCreationStoreSwitchScheduler.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,
 				028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */,
 				B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */,

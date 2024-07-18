@@ -79,7 +79,6 @@ private extension GoogleAdsCampaignCoordinator {
         }
 
         let redirectHandler: (URL) -> Void = { [weak self] newURL in
-            DDLogDebug("🧭 Current url: \(newURL.absoluteString)")
             guard let self else { return }
             if newURL != url {
                 checkIfCampaignCreationSucceeded(url: newURL)

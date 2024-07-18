@@ -35,27 +35,23 @@ struct ProductCreationAIStartingInfoView: View {
                     VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
                         VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
                             VStack(spacing: 0) {
-                                ZStack(alignment: .topLeading) {
-                                    TextEditor(text: $viewModel.features)
-                                        .id(Constant.textEditorID)
-                                        .bodyStyle()
-                                        .foregroundStyle(.secondary)
-                                        .padding(insets: Layout.messageContentInsets)
-                                        .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
-                                        .focused($editorIsFocused)
-                                    // Scrolls to the "TextEditor" view with a smooth animation while typing.
-                                        .onChange(of: viewModel.features) { _ in
-                                            scrollToTextEditor(using: proxy)
-                                        }
-                                    // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
+                                TextField(Localization.placeholder, text: $viewModel.features, axis: .vertical)
+                                    .id(Constant.textFieldID)
+                                    .bodyStyle()
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(Constant.textFieldMinLineLenght...)
+                                    .padding(insets: Layout.messageContentInsets)
+                                    .focused($editorIsFocused)
+                                // Scrolls to the "TextField" view with a smooth animation while typing.
+                                    .onChange(of: viewModel.features) { _ in
+                                        scrollToTextField(using: proxy)
+                                    }
+                                // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
                                     .onChange(of: editorIsFocused) { isFocused in
                                         if isFocused {
-                                            scrollToTextEditor(using: proxy)
+                                            scrollToTextField(using: proxy)
                                         }
                                     }
-                                    // Placeholder text
-                                    placeholderText
-                                }
 
                                 Divider()
                                     .frame(height: Layout.dividerHeight)
@@ -185,9 +181,9 @@ private extension ProductCreationAIStartingInfoView {
         .disabled(viewModel.features.isEmpty)
     }
 
-    private func scrollToTextEditor(using proxy: ScrollViewProxy) {
+    private func scrollToTextField(using proxy: ScrollViewProxy) {
         withAnimation {
-            proxy.scrollTo(Constant.textEditorID, anchor: .top)
+            proxy.scrollTo(Constant.textFieldID, anchor: .top)
         }
     }
 }
@@ -217,7 +213,8 @@ private extension ProductCreationAIStartingInfoView {
     }
 
     enum Constant {
-        static let textEditorID = "TextEditor"
+        static let textFieldID = "TextField"
+        static let textFieldMinLineLenght = 3
     }
 
     enum Localization {

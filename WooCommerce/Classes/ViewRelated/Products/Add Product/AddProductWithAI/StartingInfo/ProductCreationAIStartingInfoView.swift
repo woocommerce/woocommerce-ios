@@ -188,7 +188,6 @@ private extension ProductCreationAIStartingInfoView {
         static let textFieldBlockSpacing: CGFloat = 24
 
         static let editorBlockSpacing: CGFloat = 8
-        static let minimumEditorHeight: CGFloat = 70
         static let cornerRadius: CGFloat = 8
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)

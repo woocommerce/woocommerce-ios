@@ -352,6 +352,9 @@ private extension HubMenuViewModel {
 
     @MainActor
     func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
+        guard isSiteEligibleForGoogleAds else {
+            return false
+        }
         do {
             let campaigns = try await fetchGoogleAdsCampaigns()
             return campaigns.isNotEmpty

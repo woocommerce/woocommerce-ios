@@ -127,6 +127,36 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
+    func test_isAddMoreDisabled_is_true_for_processingPayment() {
+        // Given
+        let mockTotalsViewModel = MockTotalsViewModel()
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: cardPresentPaymentService,
+                                            orderService: orderService,
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: AnyTotalsViewModel(mockTotalsViewModel))
+
+        let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true when paymentState is processingPayment or cardPaymentSuccessful")
+
+        sut.$isAddMoreDisabled
+            .dropFirst(2)
+            .sink { value in
+                XCTAssertTrue(value)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // Simulate payment state change to processingPayment
+        mockTotalsViewModel.paymentState = .idle
+
+        // Simulate payment state change to processingPayment
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            mockTotalsViewModel.paymentState = .processingPayment
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+    }
+
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210
 }

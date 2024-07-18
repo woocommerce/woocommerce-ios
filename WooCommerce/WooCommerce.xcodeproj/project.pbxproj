@@ -2013,6 +2013,11 @@
 		C0CE1F84282AB1590019138E /* countries.json in Resources */ = {isa = PBXBuildFile; fileRef = C0CE1F83282AB1590019138E /* countries.json */; };
 		C7533D1E2C1E38E0002EBAE7 /* OrderSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7533D1D2C1E38E0002EBAE7 /* OrderSearchUICommandTests.swift */; };
 		C7CAC5D92C47179E00D5BAAF /* PointOfSaleDashboardViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7CAC5D82C47179D00D5BAAF /* PointOfSaleDashboardViewModelProtocol.swift */; };
+		C7F746C32C485B3B0023ADD0 /* MockCartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */; };
+		C7F746C72C4866810023ADD0 /* MockTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */; };
+		C7F746C92C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */; };
+		C7F746CA2C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */; };
+		C7F746CC2C4875300023ADD0 /* AnyTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */; };
 		CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */; };
 		CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */; };
 		CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04918E292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift */; };
@@ -5005,6 +5010,10 @@
 		C5EFBA3D6E428FD34F5A4171 /* Pods_NotificationExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NotificationExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7533D1D2C1E38E0002EBAE7 /* OrderSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchUICommandTests.swift; sourceTree = "<group>"; };
 		C7CAC5D82C47179D00D5BAAF /* PointOfSaleDashboardViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModelProtocol.swift; sourceTree = "<group>"; };
+		C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCartViewModel.swift; sourceTree = "<group>"; };
+		C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTotalsViewModel.swift; sourceTree = "<group>"; };
+		C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsViewModelProtocol.swift; sourceTree = "<group>"; };
+		C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTotalsViewModel.swift; sourceTree = "<group>"; };
 		CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDataTextFormatter.swift; sourceTree = "<group>"; };
@@ -6697,6 +6706,8 @@
 			isa = PBXGroup;
 			children = (
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
+				C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */,
+				C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */,
 				683763152C2E44B800AD51D0 /* ItemListViewModel.swift */,
 				6837631B2C2E847D00AD51D0 /* CartViewModel.swift */,
 				6885E2CB2C32B14B004C8D70 /* TotalsViewModel.swift */,
@@ -7246,6 +7257,8 @@
 			isa = PBXGroup;
 			children = (
 				02CD3BFD2C35D04C00E575C4 /* MockCardPresentPaymentService.swift */,
+				C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */,
+				C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -15667,6 +15680,7 @@
 				028B68B82A573FF400FE03A8 /* AddProductFromImageCoordinator.swift in Sources */,
 				AE6C4FDF28A15BFE00EAC00D /* FeatureAnnouncementCardCell.swift in Sources */,
 				20762BA12C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift in Sources */,
+				C7F746CC2C4875300023ADD0 /* AnyTotalsViewModel.swift in Sources */,
 				02562AD0296D1FD100980404 /* View+DividerStyle.swift in Sources */,
 				CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */,
 				02E222C829FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift in Sources */,
@@ -16067,6 +16081,7 @@
 				57A25C7625ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift in Sources */,
 				DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */,
 				EEADF622281A40CB001B40F1 /* ShippingValueLocalizer.swift in Sources */,
+				C7F746C92C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */,
 				262C922126F1370000011F92 /* StorePickerError.swift in Sources */,
 				4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */,
 				20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */,
@@ -16255,6 +16270,7 @@
 				DE96844D2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift in Sources */,
 				26100B202722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift in Sources */,
 				263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */,
+				C7F746CA2C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */,
 				0279F0DC252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift in Sources */,
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
 				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,
@@ -16385,6 +16401,7 @@
 				DE7842EF26F079A60030C792 /* NumberFormatter+LocalizedTests.swift in Sources */,
 				263EAF9C2A15E1F3008C66CB /* PrivacyBannerViewModelTest.swift in Sources */,
 				5768315126694ADC00FDFB6C /* AuthenticationManagerTests.swift in Sources */,
+				C7F746C72C4866810023ADD0 /* MockTotalsViewModel.swift in Sources */,
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
 				0242CFB829F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift in Sources */,
 				E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */,
@@ -16586,6 +16603,7 @@
 				023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */,
 				AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */,
 				02DE5CAB279F8754007CBEF3 /* Double+RoundingTests.swift in Sources */,
+				C7F746C32C485B3B0023ADD0 /* MockCartViewModel.swift in Sources */,
 				AE90475C27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */,

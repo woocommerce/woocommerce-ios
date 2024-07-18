@@ -4,7 +4,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var totalsViewModel: AnyTotalsViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel

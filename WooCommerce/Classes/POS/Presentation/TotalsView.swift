@@ -2,9 +2,9 @@ import SwiftUI
 
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var totalsViewModel: AnyTotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: AnyTotalsViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
     }
@@ -28,8 +28,7 @@ struct TotalsView: View {
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
-                                               formattedPrice:
-                                                totalsViewModel.formattedOrderTotalTaxPrice,
+                                               formattedPrice: totalsViewModel.formattedOrderTotalTaxPrice,
                                                shimmeringActive: totalsViewModel.isShimmering,
                                                redacted: totalsViewModel.isPriceFieldRedacted)
                                 Divider()
@@ -186,8 +185,8 @@ private extension TotalsView {
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                 orderService: POSOrderPreviewService(),
                                 currencyFormatter: .init(currencySettings: .init())),
-               totalsViewModel: .init(orderService: POSOrderPreviewService(),
-                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                      currencyFormatter: .init(currencySettings: .init())))
+               totalsViewModel: .init(AnyTotalsViewModel(TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                        currencyFormatter: .init(currencySettings: .init())))))
 }
 #endif

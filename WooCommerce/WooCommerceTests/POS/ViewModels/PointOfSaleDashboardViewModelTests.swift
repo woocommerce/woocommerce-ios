@@ -9,6 +9,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var orderService: POSOrderServiceProtocol!
+    private var mockCartViewModel: MockCartViewModel!
     private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
@@ -81,16 +82,16 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     }
 
     func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_payment_state_is_idle() {
-        var sut: any PointOfSaleDashboardViewModelProtocol
-
+        let mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel.OrderStage.building).eraseToAnyPublisher())
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: orderService,
                                             currencyFormatter: .init(currencySettings: .init()))
+        sut.cartViewModel = mockCartViewModel.cartViewModel
 
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
-        (sut as! PointOfSaleDashboardViewModel).$isAddMoreDisabled
+        sut.$isAddMoreDisabled
             .dropFirst()
             .sink { value in
                 XCTAssertTrue(value)
@@ -98,7 +99,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
 
-        sut.simulateOrderSyncing(cartItems: [])
+        // Simulate cart submission with custom items
+        let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
+        mockCartViewModel.submitCart(with: customCartItems)
+
         wait(for: [expectation], timeout: 1.0)
     }
 

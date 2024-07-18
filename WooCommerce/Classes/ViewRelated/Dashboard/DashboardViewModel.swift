@@ -75,7 +75,6 @@ final class DashboardViewModel: ObservableObject {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let userDefaults: UserDefaults
-    private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -107,7 +106,6 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
@@ -138,7 +136,6 @@ final class DashboardViewModel: ObservableObject {
             eligibilityChecker: googleAdsEligibilityChecker
         )
 
-        self.themeInstaller = themeInstaller
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -149,7 +146,6 @@ final class DashboardViewModel: ObservableObject {
 
         configureOrdersResultController()
         setupDashboardCards()
-        installPendingThemeIfNeeded()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -699,22 +695,6 @@ private extension DashboardViewModel {
         isInAppFeedbackCardVisible = newValue
         if trackEvent {
             analytics.track(event: .appFeedbackPrompt(action: .shown))
-        }
-    }
-}
-
-// MARK: Theme install
-//
-private extension DashboardViewModel {
-    /// Installs themes for newly created store.
-    ///
-    func installPendingThemeIfNeeded() {
-        Task { @MainActor in
-            do {
-                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
-            } catch {
-                DDLogError("⛔️ Dashboard - Error installing pending theme: \(error)")
-            }
         }
     }
 }

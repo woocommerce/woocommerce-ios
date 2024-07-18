@@ -164,10 +164,3 @@ private extension PointOfSaleDashboardViewModel {
         case selfDeallocated
     }
 }
-
-// Conform to the protocol needed for unit testing
-extension PointOfSaleDashboardViewModel: PointOfSaleDashboardViewModelProtocol {
-    func simulateOrderSyncing(cartItems: [CartItem]) {
-        startSyncingOrder(cartItems: cartItems)
-    }
-}

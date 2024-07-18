@@ -432,6 +432,7 @@
 		DA3F0E172C218ADA00B8C2F8 /* OrderSyncProductInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */; };
 		DA3F0E192C218E7E00B8C2F8 /* ProductInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */; };
 		DA3F0E1C2C218EF100B8C2F8 /* POSOrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */; };
+		DAD988C22C491525009DE9E3 /* Order+LocalItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */; };
 		DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */; };
 		DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */; };
 		DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */; };
@@ -939,6 +940,7 @@
 		DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSyncProductInput.swift; sourceTree = "<group>"; };
 		DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformer.swift; sourceTree = "<group>"; };
 		DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderService.swift; sourceTree = "<group>"; };
+		DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+LocalItems.swift"; sourceTree = "<group>"; };
 		DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteAction.swift; sourceTree = "<group>"; };
 		DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
 		DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStoreTests.swift; sourceTree = "<group>"; };
@@ -1070,6 +1072,7 @@
 			children = (
 				0225512022FC2F3000D98613 /* WCAnalyticsStatsInterval+Date.swift */,
 				FEEB2F5C268A15730075A6E0 /* User+Roles.swift */,
+				DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2226,6 +2229,7 @@
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */,
+				DAD988C22C491525009DE9E3 /* Order+LocalItems.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */,
 				02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */,

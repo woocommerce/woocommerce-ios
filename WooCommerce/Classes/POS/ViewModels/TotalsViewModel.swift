@@ -31,8 +31,9 @@ final class TotalsViewModel: ObservableObject {
     @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
     // MARK: - Order total amounts
-
-    @Published private(set) var formattedCartTotalPrice: String?
+    var formattedCartTotalPrice: String? {
+        formattedPrice(order?.subtotal(currencyFormatter), currency: order?.currency)
+    }
 
     var formattedOrderTotalPrice: String? {
         formattedPrice(order?.total, currency: order?.currency)
@@ -59,7 +60,11 @@ final class TotalsViewModel: ObservableObject {
         isSyncingOrder
     }
 
-    var isPriceFieldRedacted: Bool {
+    var isSubtotalFieldRedacted: Bool {
+        formattedCartTotalPrice == nil || isSyncingOrder
+    }
+
+    var isTaxFieldRedacted: Bool {
         formattedOrderTotalTaxPrice == nil || isSyncingOrder
     }
 
@@ -88,7 +93,6 @@ final class TotalsViewModel: ObservableObject {
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
         Task { @MainActor in
-            calculateCartTotal(cartItems: cartItems)
             await syncOrder(for: cartItems, allItems: allItems)
         }
     }
@@ -142,18 +146,6 @@ extension TotalsViewModel {
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
         }
-    }
-
-    func calculateCartTotal(cartItems: [CartItem]) {
-        formattedCartTotalPrice = { cartItems in
-            let totalValue: Decimal = cartItems.reduce(0) { partialResult, cartItem in
-                let itemPrice = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).convertToDecimal(cartItem.item.price) ?? 0
-                let quantity = cartItem.quantity
-                let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                return partialResult + total
-            }
-            return currencyFormatter.formatAmount(totalValue)
-        }(cartItems)
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {

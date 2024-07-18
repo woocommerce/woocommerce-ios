@@ -23,15 +23,15 @@ struct TotalsView: View {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
                                 priceFieldView(title: "Subtotal",
                                                formattedPrice: totalsViewModel.formattedCartTotalPrice,
-                                               shimmeringActive: false,
-                                               redacted: false)
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isSubtotalFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes",
                                                formattedPrice:
                                                 totalsViewModel.formattedOrderTotalTaxPrice,
                                                shimmeringActive: totalsViewModel.isShimmering,
-                                               redacted: totalsViewModel.isPriceFieldRedacted)
+                                               redacted: totalsViewModel.isTaxFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,

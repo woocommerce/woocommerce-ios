@@ -1,7 +1,7 @@
 import Foundation
 
 /// Convenient extension methods for User model to support role eligibility feature.
-extension User {
+extension User {//
     /// Convenience method to produce display text representing the user, for the role error page.
     /// This follows the implementation in Android side: fullName > username > email. See: https://git.io/JcJx3
     public func displayName() -> String {

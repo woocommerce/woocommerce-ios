@@ -25,6 +25,9 @@ struct ProductCreationAIPromptProgressBar: View {
         .padding(Layout.padding)
         .background(Color(UIColor.listBackground))
         .cornerRadius(Layout.radius)
+        .onAppear(perform: {
+            viewModel.updateText(to: text)
+        })
         .onChange(of: text, perform: { newText in
             viewModel.updateText(to: newText)
         })

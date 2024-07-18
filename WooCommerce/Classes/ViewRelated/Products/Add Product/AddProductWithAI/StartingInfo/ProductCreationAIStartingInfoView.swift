@@ -159,16 +159,6 @@ private extension ProductCreationAIStartingInfoView {
         }
     }
 
-    var placeholderText: some View {
-        Text(Localization.placeholder)
-            .foregroundColor(Color(.placeholderText))
-            .bodyStyle()
-            .padding(insets: Layout.placeholderInsets)
-            // Allows gestures to pass through to the `TextEditor`.
-            .allowsHitTesting(false)
-            .renderedIf(viewModel.features.isEmpty)
-    }
-
     var generateButton: some View {
         Button {
             // continue

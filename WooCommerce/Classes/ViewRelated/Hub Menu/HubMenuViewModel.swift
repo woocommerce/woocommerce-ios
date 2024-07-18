@@ -326,17 +326,6 @@ private extension HubMenuViewModel {
                 self?.updateMenuItemEligibility(with: site)
             }
             .store(in: &cancellables)
-
-        $currentSite
-            .compactMap { $0 }
-            .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await checkIfSiteHasGoogleAdsCampaigns()
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$hasGoogleAdsCampaigns)
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
@@ -347,6 +336,7 @@ private extension HubMenuViewModel {
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
+            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
         }
     }
 

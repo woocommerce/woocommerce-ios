@@ -82,11 +82,13 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     }
 
     func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_payment_state_is_idle() {
+        // Given
         let mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel.OrderStage.building).eraseToAnyPublisher())
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()))
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: AnyTotalsViewModel(MockTotalsViewModel()))
         sut.cartViewModel = mockCartViewModel.cartViewModel
 
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
@@ -99,9 +101,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             }
             .store(in: &cancellables)
 
-        // Simulate cart submission with custom items
+        // Simulate order syncing
         let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
         mockCartViewModel.submitCart(with: customCartItems)
+        sut.totalsViewModel.startSyncingOrder(with: customCartItems, allItems: [])
 
         wait(for: [expectation], timeout: 1.0)
     }

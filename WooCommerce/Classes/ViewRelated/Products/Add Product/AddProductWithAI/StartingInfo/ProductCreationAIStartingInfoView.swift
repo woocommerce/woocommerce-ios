@@ -36,22 +36,22 @@ struct ProductCreationAIStartingInfoView: View {
                         VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
                             VStack(spacing: 0) {
                                 TextField(Localization.placeholder, text: $viewModel.features, axis: .vertical)
-                                    .id(Constant.textFieldID)
-                                    .bodyStyle()
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(Constant.textFieldMinLineLenght...)
-                                    .padding(insets: Layout.messageContentInsets)
-                                    .focused($editorIsFocused)
+                                .id(Constant.textFieldID)
+                                .bodyStyle()
+                                .foregroundStyle(.secondary)
+                                .lineLimit(Constant.textFieldMinLineLenght...)
+                                .padding(insets: Layout.messageContentInsets)
+                                .focused($editorIsFocused)
                                 // Scrolls to the "TextField" view with a smooth animation while typing.
-                                    .onChange(of: viewModel.features) { _ in
+                                .onChange(of: viewModel.features) { _ in
+                                    scrollToTextField(using: proxy)
+                                }
+                                // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
+                                .onChange(of: editorIsFocused) { isFocused in
+                                    if isFocused {
                                         scrollToTextField(using: proxy)
                                     }
-                                // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
-                                    .onChange(of: editorIsFocused) { isFocused in
-                                        if isFocused {
-                                            scrollToTextField(using: proxy)
-                                        }
-                                    }
+                                }
 
                                 Divider()
                                     .frame(height: Layout.dividerHeight)

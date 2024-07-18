@@ -13,6 +13,7 @@
 - [Internal] Removed feature flag for product description AI tooltip [https://github.com/woocommerce/woocommerce-ios/pull/13341]
 - [Internal] Removed feature flag for the native Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13356]
 - [Internal] Removed feature flag for dynamic dashboard M2. [https://github.com/woocommerce/woocommerce-ios/pull/13359]
+- [Internal] Removed store creation related code. [https://github.com/woocommerce/woocommerce-ios/pull/13379]
 
 19.5
 -----

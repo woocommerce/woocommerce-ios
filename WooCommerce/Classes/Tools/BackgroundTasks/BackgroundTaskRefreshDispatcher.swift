@@ -53,10 +53,12 @@ final class BackgroundTaskRefreshDispatcher {
         scheduleAppRefresh()
 
         let ordersSyncTask = OrderListSyncBackgroundTask(siteID: siteID, backgroundTask: backgroundTask).dispatch()
+        let dashboardSyncTask = DashboardSyncBackgroundTask(siteID: siteID, backgroundTask: backgroundTask).dispatch()
 
         // Provide the background task with an expiration handler that cancels the operation.
         backgroundTask.expirationHandler = {
             ordersSyncTask.cancel()
+            dashboardSyncTask.cancel()
         }
      }
 }

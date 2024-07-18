@@ -1091,6 +1091,7 @@
 		26EE795F2AA795A000857293 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
 		26EE79602AA795EC00857293 /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26F115AD2C4997EA0019CD73 /* PerformanceCardDataSyncUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F115AC2C4997EA0019CD73 /* PerformanceCardDataSyncUseCase.swift */; };
+		26F115AF2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F115AE2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift */; };
 		26F300902B33C71B00EDE717 /* TwoFAScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F3008F2B33C71B00EDE717 /* TwoFAScreen.swift */; };
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
@@ -4065,6 +4066,7 @@
 		26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModel.swift; sourceTree = "<group>"; };
 		26EE795E2AA7924700857293 /* NotificationExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtension.entitlements; sourceTree = "<group>"; };
 		26F115AC2C4997EA0019CD73 /* PerformanceCardDataSyncUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceCardDataSyncUseCase.swift; sourceTree = "<group>"; };
+		26F115AE2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSyncBackgroundTask.swift; sourceTree = "<group>"; };
 		26F3008F2B33C71B00EDE717 /* TwoFAScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoFAScreen.swift; sourceTree = "<group>"; };
 		26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCase.swift; sourceTree = "<group>"; };
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
@@ -8163,6 +8165,7 @@
 			children = (
 				26BCA03F2C35E9A9000BE96C /* BackgroundTaskRefreshDispatcher.swift */,
 				26BCA0412C35EDBF000BE96C /* OrderListSyncBackgroundTask.swift */,
+				26F115AE2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift */,
 				26DDA4A82C4839B8005FBEBF /* DashboardTimestampStore.swift */,
 			);
 			path = BackgroundTasks;
@@ -16116,6 +16119,7 @@
 				4590B6A8261F0F8300A6FCE0 /* SegmentedView.swift in Sources */,
 				DE77889826FCA39B008DFF44 /* TitleAndSubtitleRow.swift in Sources */,
 				B6930BDA293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift in Sources */,
+				26F115AF2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift in Sources */,
 				02DE5CA9279F857D007CBEF3 /* Double+Rounding.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */,

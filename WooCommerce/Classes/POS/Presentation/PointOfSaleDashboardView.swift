@@ -11,6 +11,10 @@ struct PointOfSaleDashboardView: View {
         self.totalsViewModel = viewModel.totalsViewModel
     }
 
+    private var isCartShown: Bool {
+        !viewModel.itemListViewModel.isEmptyOrError
+    }
+
     var body: some View {
         VStack {
             HStack {
@@ -20,6 +24,7 @@ struct PointOfSaleDashboardView: View {
                         HStack {
                             productListView
                             cartView
+                                .renderedIf(isCartShown)
                                 .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }

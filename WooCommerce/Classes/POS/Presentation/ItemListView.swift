@@ -47,7 +47,9 @@ private extension ItemListView {
                 headerTextView
                 Spacer()
                 Button(action: {
-                    viewModel.toggleBanner()
+                    // TODO:
+                    // https://github.com/woocommerce/woocommerce-ios/issues/13357
+                    debugPrint("Not implemented")
                 }, label: {
                     Image(uiImage: .infoImage)
                 })
@@ -70,7 +72,7 @@ private extension ItemListView {
             Spacer()
             VStack {
                 Button(action: {
-                    viewModel.toggleBanner()
+                    viewModel.dismissBanner()
                 }, label: {
                     Image(uiImage: .closeButton)
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)

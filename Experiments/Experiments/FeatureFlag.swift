@@ -152,17 +152,9 @@ public enum FeatureFlag: Int {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables creating Subscription products
-    ///
-    case subscriptionProducts
-
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
-
-    /// Enables Blaze native campaign creation.
-    ///
-    case blazei3NativeCampaignCreation
 
     /// Enables backend receipt generation for all payment methods
     ///
@@ -183,10 +175,6 @@ public enum FeatureFlag: Int {
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///
     case displayPointOfSaleToggle
-
-    /// Enables new dashboard cards on the My Store screen.
-    ///
-    case dynamicDashboardM2
 
     /// Enables M1 updates of product creation AI version 2
     ///

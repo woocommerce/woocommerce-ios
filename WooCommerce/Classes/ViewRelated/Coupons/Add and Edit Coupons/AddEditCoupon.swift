@@ -249,7 +249,7 @@ struct AddEditCoupon: View {
                         .padding(.bottom, Constants.verticalSpacing)
 
                         Button {
-                            // This should be replaced with `@FocusState` when we drop support for iOS 14
+                            // TODO: This should be replaced with `@FocusState` when we drop support for iOS 14
                             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                             viewModel.completeCouponAddEdit(coupon: viewModel.populatedCoupon, onUpdateFinished: {
                                 dismissHandler()

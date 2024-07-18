@@ -11,13 +11,8 @@ struct PointOfSaleDashboardView: View {
         self.totalsViewModel = viewModel.totalsViewModel
     }
 
-    var shouldBeHidden: Bool {
-        switch viewModel.itemListViewModel.state {
-        case .empty, .error:
-            return true
-        default:
-            return false
-        }
+    private var isCartShown: Bool {
+        !viewModel.itemListViewModel.isEmptyOrError
     }
 
     var body: some View {
@@ -29,7 +24,7 @@ struct PointOfSaleDashboardView: View {
                         HStack {
                             productListView
                             cartView
-                                .renderedIf(!shouldBeHidden)
+                                .renderedIf(isCartShown)
                                 .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }

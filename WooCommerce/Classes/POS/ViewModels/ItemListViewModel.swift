@@ -9,6 +9,15 @@ final class ItemListViewModel: ObservableObject {
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
 
+    var isEmptyOrError: Bool {
+        switch state {
+        case .empty, .error:
+            return true
+        default:
+            return false
+        }
+    }
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's only shown when:
         // - Loading the item list

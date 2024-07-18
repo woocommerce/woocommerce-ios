@@ -429,7 +429,7 @@ private extension StorePerformanceViewModel {
             }
 
             // rethrow any failure.
-            for try await result in group {
+            for try await _ in group {
                 // no-op if result doesn't throw any error
             }
         }

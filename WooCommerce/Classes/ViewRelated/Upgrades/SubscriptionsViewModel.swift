@@ -29,10 +29,6 @@ final class SubscriptionsViewModel: ObservableObject {
     ///
     var formattedPlanExpirationDate: String?
 
-    /// Defines if the view should show the Full Plan features.
-    ///
-    private(set) var shouldShowFreeTrialFeatures = false
-
     /// Defines if the view should show the "Manage Your Subscription"  button.
     ///
     @Published private(set) var shouldShowManageSubscriptionButton = false
@@ -40,10 +36,6 @@ final class SubscriptionsViewModel: ObservableObject {
     /// Indicates if the view should should a redacted state.
     ///
     private(set) var showLoadingIndicator = false
-
-    /// Holds a reference to the free trial features.
-    ///
-    let freeTrialFeatures = FreeTrialFeatures.features
 
     /// Observable subscription store.
     ///
@@ -139,7 +131,6 @@ private extension SubscriptionsViewModel {
         formattedPlanExpirationDate = formattedExpirationDate(for: plan)
         errorNotice = nil
         showLoadingIndicator = false
-        shouldShowFreeTrialFeatures = plan.isFreeTrial
 
         if !plan.isFreeTrial {
             shouldRenderManageSubscriptionsButton()
@@ -151,7 +142,6 @@ private extension SubscriptionsViewModel {
         planInfo = ""
         errorNotice = nil
         showLoadingIndicator = true
-        shouldShowFreeTrialFeatures = false
     }
 
     func updateExpiredViewProperties() {
@@ -159,7 +149,6 @@ private extension SubscriptionsViewModel {
         planInfo = Localization.planEndedInfo
         errorNotice = nil
         showLoadingIndicator = false
-        shouldShowFreeTrialFeatures = false
     }
 
     func updateFailedViewProperties() {
@@ -167,7 +156,6 @@ private extension SubscriptionsViewModel {
         planInfo = ""
         errorNotice = createErrorNotice()
         showLoadingIndicator = false
-        shouldShowFreeTrialFeatures = false
     }
 
     /// Removes any occurrences of `WordPress.com` from the site's name.

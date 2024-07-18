@@ -19,7 +19,8 @@ struct SupportButton: View {
 private extension SupportButton {
     enum Localization {
         static let accessibilityLabel = NSLocalizedString(
-            "Help & Support",
+            "supportButton.accessibilityLabel",
+            value: "Help & Support",
             comment: "Accessibility label for the Help & Support image navigation bar button in the store creation flow."
         )
     }

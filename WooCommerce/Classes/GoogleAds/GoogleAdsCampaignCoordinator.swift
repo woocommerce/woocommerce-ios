@@ -79,6 +79,7 @@ private extension GoogleAdsCampaignCoordinator {
         }
 
         let redirectHandler: (URL) -> Void = { [weak self] newURL in
+            DDLogDebug("🧭 Current url: \(newURL.absoluteString)")
             guard let self else { return }
             if newURL != url {
                 checkIfCampaignCreationSucceeded(url: newURL)
@@ -118,7 +119,8 @@ private extension GoogleAdsCampaignCoordinator {
         }) != nil
         let setupAndCreationSucceed = queryItems?.first(where: {
             $0.name == Constants.Parameters.guide &&
-            $0.value == Constants.ParameterValues.creationSuccess
+            ($0.value == Constants.ParameterValues.creationSuccess ||
+             $0.value == Constants.ParameterValues.submissionSuccess)
         }) != nil
         if creationSucceeded || setupAndCreationSucceed {
             analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
@@ -183,6 +185,7 @@ private extension GoogleAdsCampaignCoordinator {
         enum ParameterValues {
             static let saved = "saved"
             static let creationSuccess = "campaign-creation-success"
+            static let submissionSuccess = "submission-success"
         }
     }
 

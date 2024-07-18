@@ -12,45 +12,54 @@ struct DashboardSyncBackgroundTask {
 
     let stores: StoresManager
 
-    let backgroundTask: BGAppRefreshTask?
-
-    init(siteID: Int64, siteTimezone: TimeZone = .siteTimezone, backgroundTask: BGAppRefreshTask?, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, siteTimezone: TimeZone = .siteTimezone, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.siteTimezone = siteTimezone
-        self.backgroundTask = backgroundTask
         self.stores = stores
     }
 
     /// Runs the sync task.
-    /// Marks the `backgroundTask` as completed when finished.
-    /// Returns a `task` to be canceled when required.
     ///
-    func dispatch() -> Task<Void, Never> {
-        Task { @MainActor in
-            do {
-                DDLogInfo("📱 Synchronizing dashboard cards in the background...")
+    @MainActor
+    func dispatch() async throws {
+        DDLogInfo("📱 Synchronizing dashboard cards in the background...")
+        let dashboardCards = await loadDashboardCardsFromStorage()
 
-                let dashboardCards = await loadDashboardCardsFromStorage()
-                for card in dashboardCards {
+        try await withThrowingTaskGroup(of: Void.self) { group in
 
-                    switch card.type {
-                    case .performance:
+            for card in dashboardCards {
 
-                        DDLogInfo("📱 Synchronizing Performance card in the background...")
-                        let useCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone)
-                        try await useCase.sync()
-                        DDLogInfo("📱 Successfully synchronized \(card.type.name) in the background")
-                        backgroundTask?.setTaskCompleted(success: true)
+                switch card.type {
+                case .performance:
+                    group.addTask { try await performanceTask() }
 
-                    case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock, .topPerformers:
-                        DDLogInfo("⚠️ Synchronizing \(card.type.name) card in the background is not yet supported...")
-                        return
-                    }
+                case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock, .topPerformers:
+                    DDLogInfo("⚠️ Synchronizing \(card.type.name) card in the background is not yet supported...")
+                    return
                 }
-            } catch {
-                DDLogError("⛔️ Error synchronizing dashboard cards in the background: \(error)")
-                backgroundTask?.setTaskCompleted(success: false)
             }
+
+            // Rethrows any failure.
+            for try await _ in group {
+                // No-op
+            }
+        }
+
+        DDLogInfo("📱 Finished synchronizing dashboard cards in the background...")
+    }
+
+    /// Load the supposed visible cards from storage.
+    ///
+    @MainActor
+    private func performanceTask() async throws {
+        do {
+            DDLogInfo("📱 Synchronizing Performance card in the background...")
+            let useCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone)
+            try await useCase.sync()
+            DDLogInfo("📱 Successfully synchronized Performance card in the background")
+        } catch {
+            DDLogError("⛔️ Error synchronizing Performance card in the background: \(error)")
+            throw error
         }
     }
 

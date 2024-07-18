@@ -52,13 +52,31 @@ final class BackgroundTaskRefreshDispatcher {
         // Schedule a new refresh task.
         scheduleAppRefresh()
 
-        let ordersSyncTask = OrderListSyncBackgroundTask(siteID: siteID, backgroundTask: backgroundTask).dispatch()
-        let dashboardSyncTask = DashboardSyncBackgroundTask(siteID: siteID, backgroundTask: backgroundTask).dispatch()
+        // Launch all refresh tasks in parallel.
+        let refreshTasks = Task {
+            do {
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    group.addTask {
+                        try await OrderListSyncBackgroundTask(siteID: siteID).dispatch()
+                    }
+                    group.addTask {
+                        try await DashboardSyncBackgroundTask(siteID: siteID).dispatch()
+                    }
+
+                    // Rethrows error
+                    for try await _ in group {
+                        // No=op
+                    }
+                }
+                backgroundTask.setTaskCompleted(success: true)
+            } catch {
+                backgroundTask.setTaskCompleted(success: false)
+            }
+        }
 
         // Provide the background task with an expiration handler that cancels the operation.
         backgroundTask.expirationHandler = {
-            ordersSyncTask.cancel()
-            dashboardSyncTask.cancel()
+            refreshTasks.cancel()
         }
      }
 }

@@ -11,7 +11,7 @@ final class BackgroundTaskRefreshDispatcher {
     func scheduleAppRefresh() {
 
         // Do not run this code while running test because this framework is not enabled in the simulator
-        guard Self.isNotRunningTests() else {
+        guard Self.isNotRunningTests(), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
             return
         }
 
@@ -29,7 +29,7 @@ final class BackgroundTaskRefreshDispatcher {
     func registerSystemTaskIdentifier() {
 
         // Do not run this code while running test because this framework is not enabled in the simulator
-        guard Self.isNotRunningTests() else {
+        guard Self.isNotRunningTests(), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
             return
         }
 

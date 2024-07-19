@@ -45,7 +45,10 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNotNil(sut.order)
 
         // When
-        _ = try await cardPresentPaymentService.collectPayment(for: sut.order!, using: .bluetooth)
+        guard let order = sut.order else {
+            return XCTFail("Expected order. Got nothing")
+        }
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
         sut.startNewTransaction()
 
         // Then

@@ -49,12 +49,8 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     }
 
     func didTapReadTextFromPhoto() {
-        // TODO: 13103 - Add tracking
+        analytics.track(event: .ProductCreationAI.packagePhotoSelectionFlowStarted())
         isShowingMediaPickerSourceSheet = true
-    }
-
-    func didTapContinue() {
-        // TODO: 13103 - Add tracking
     }
 
     func didTapViewPhoto() {
@@ -62,7 +58,7 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     }
 
     func didTapReplacePhoto() {
-        // TODO: 13103 Add tracking
+        analytics.track(event: .ProductCreationAI.packagePhotoSelectionFlowStarted())
         isShowingMediaPickerSourceSheet = true
     }
 
@@ -104,13 +100,14 @@ private extension ProductCreationAIStartingInfoViewModel {
                 throw ScanError.noTextDetected
             }
             self.features = texts.joined(separator: " ")
+            analytics.track(event: .ProductCreationAI.packagePhotoTextDetected(wordCount: texts.count))
         } catch {
+            analytics.track(event: .ProductCreationAI.packagePhotoTextDetectionFailed(error: error))
             switch error {
             case ScanError.noTextDetected:
                 textDetectionErrorMessage = Localization.noTextDetected
                 DDLogError("⛔️ No text detected from image.")
             default:
-                // TODO: 13103 - Add tracking
                 textDetectionErrorMessage = Localization.textDetectionFailed
                 DDLogError("⛔️ Error scanning text from image: \(error)")
             }
@@ -158,8 +155,8 @@ extension ProductCreationAIStartingInfoViewModel {
             )
         }
     }
-}
 
-private enum ScanError: Error {
-    case noTextDetected
+    enum ScanError: Error {
+        case noTextDetected
+    }
 }

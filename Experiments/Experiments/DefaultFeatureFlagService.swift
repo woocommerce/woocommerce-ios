@@ -48,17 +48,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .compositeProducts:
             return true
-        case .productDescriptionAI:
-            return true
-        case .productDescriptionAIFromStoreOnboarding:
-            return !isUITesting
         case .readOnlyGiftCards:
             return true
         case .readOnlyMinMaxQuantities:
             return true
         case .euShippingNotification:
-            return true
-        case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:
             return true
@@ -76,8 +70,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .blazei3NativeCampaignCreation:
-            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
@@ -88,10 +80,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .displayPointOfSaleToggle:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .dynamicDashboardM2:
-            return true
         case .productCreationAIv2M1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productCreationAIv2M3:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:

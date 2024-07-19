@@ -438,96 +438,6 @@ final class AppCoordinatorTests: XCTestCase {
         }
         XCTAssertTrue(stores.needsDefaultStore)
     }
-
-    // MARK: Pending store switch
-    func test_starting_app_logged_in_with_selected_site_checks_for_pending_store_switch() throws {
-        // Given
-        let storeSwitcher = MockStoreCreationStoreSwitchScheduler()
-
-        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
-                return
-            }
-            // any failure except `.insufficientRole` will be treated as having an eligible status.
-            completion(.failure(SampleError.first))
-        }
-        sessionManager.defaultStoreID = 134
-        let appCoordinator = makeCoordinator(window: window,
-                                             stores: stores,
-                                             authenticationManager: authenticationManager,
-                                             storeSwitcher: storeSwitcher)
-
-        // When
-        appCoordinator.start()
-
-        // Then
-        waitUntil {
-            storeSwitcher.isPendingStoreSwitchChecked == true
-        }
-    }
-
-    func test_starting_app_logged_in_with_selected_site_listens_to_store_status_when_there_is_a_pending_store_switch() throws {
-        // Given
-        let storeSwitcher = MockStoreCreationStoreSwitchScheduler()
-        storeSwitcher.isPendingStoreSwitchMockValue = true
-
-        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
-                return
-            }
-            // any failure except `.insufficientRole` will be treated as having an eligible status.
-            completion(.failure(SampleError.first))
-        }
-        sessionManager.defaultStoreID = 134
-        let appCoordinator = makeCoordinator(window: window,
-                                             stores: stores,
-                                             authenticationManager: authenticationManager,
-                                             storeSwitcher: storeSwitcher)
-
-        // When
-        appCoordinator.start()
-
-        // Then
-        waitUntil {
-            storeSwitcher.listenToPendingStoreAndReturnSiteIDOnceReadyCalled == true
-        }
-    }
-
-    // MARK: Theme install
-    func test_starting_app_logged_in_with_selected_site_installs_pending_theme_when_there_is_a_pending_store_switch() throws {
-        // Given
-        let storeSwitcher = MockStoreCreationStoreSwitchScheduler()
-        storeSwitcher.isPendingStoreSwitchMockValue = true
-        storeSwitcher.siteIDMockValue = 123
-
-        let themeInstaller = MockThemeInstaller()
-
-        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
-                return
-            }
-            // any failure except `.insufficientRole` will be treated as having an eligible status.
-            completion(.failure(SampleError.first))
-        }
-        sessionManager.defaultStoreID = 134
-        let appCoordinator = makeCoordinator(window: window,
-                                             stores: stores,
-                                             authenticationManager: authenticationManager,
-                                             storeSwitcher: storeSwitcher,
-                                             themeInstaller: themeInstaller)
-
-        // When
-        appCoordinator.start()
-
-        // Then
-        waitUntil {
-            themeInstaller.installPendingThemeCalled == true
-        }
-        XCTAssertEqual(try XCTUnwrap(themeInstaller.installPendingThemeCalledForSiteID), 123)
-    }
 }
 
 private extension AppCoordinatorTests {
@@ -542,7 +452,6 @@ private extension AppCoordinatorTests {
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
                          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-                         storeSwitcher: StoreCreationStoreSwitchScheduler = DefaultStoreCreationStoreSwitchScheduler(),
                          themeInstaller: ThemeInstaller = DefaultThemeInstaller()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
@@ -556,7 +465,6 @@ private extension AppCoordinatorTests {
                               featureFlagService: featureFlagService,
                               upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator,
                               switchStoreUseCase: switchStoreUseCase,
-                              storeSwitcher: storeSwitcher,
                               themeInstaller: themeInstaller)
     }
 }

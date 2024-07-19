@@ -4,7 +4,6 @@ import protocol Yosemite.POSItemProvider
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import protocol Yosemite.POSOrderServiceProtocol
-import struct Yosemite.POSOrder
 import Combine
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
@@ -14,8 +13,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
     private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
     let totalsViewModel: TotalsViewModel
-
-    @Published private(set) var isCartCollapsed: Bool = true
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
@@ -45,7 +42,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
                                                currencyFormatter: currencyFormatter)
 
         observeSelectedItemToAddToCart()
-        observeCartItemsForCollapsedState()
         observeCartSubmission()
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
@@ -66,12 +62,6 @@ private extension PointOfSaleDashboardViewModel {
             self?.cartViewModel.addItemToCart(selectedItem)
         }
         .store(in: &cancellables)
-    }
-
-    func observeCartItemsForCollapsedState() {
-        cartViewModel.$itemsInCart
-            .map { $0.isEmpty }
-            .assign(to: &$isCartCollapsed)
     }
 
     func observeCartSubmission() {

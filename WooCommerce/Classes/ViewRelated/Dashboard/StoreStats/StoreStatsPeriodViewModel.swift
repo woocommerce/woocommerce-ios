@@ -114,6 +114,13 @@ final class StoreStatsPeriodViewModel {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// Returns `true` if there is no content for the selected time range.
+    /// Useful for knowing when we are fetching data for the first time.
+    ///
+    var noDataFound: Bool {
+        siteStatsResultsController.isEmpty || orderStatsResultsController.isEmpty || siteStatsResultsController.isEmpty
+    }
+
     // MARK: - Configurations
 
     /// Updated externally when reloading data.
@@ -145,6 +152,14 @@ final class StoreStatsPeriodViewModel {
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
+    }
+
+    /// Manually update datasources using the already fetched information
+    ///
+    func loadCachedContent() {
+        updateOrderDataIfNeeded()
+        updateSiteVisitDataIfNeeded()
+        updateSiteSummaryDataIfNeeded()
     }
 }
 

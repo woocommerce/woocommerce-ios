@@ -7,6 +7,23 @@ final class ItemListViewModel: ObservableObject {
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
+    @Published private(set) var isHeaderBannerDismissed: Bool = false
+
+    var isEmptyOrError: Bool {
+        switch state {
+        case .empty, .error:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var shouldShowHeaderBanner: Bool {
+        // The banner it's only shown when:
+        // - Loading the item list
+        // - Hasn't been already been previously dismissed
+        !isHeaderBannerDismissed && state.isLoaded
+    }
 
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
@@ -49,6 +66,10 @@ final class ItemListViewModel: ObservableObject {
     func reload() async {
         await populatePointOfSaleItems()
     }
+
+    func dismissBanner() {
+        isHeaderBannerDismissed = true
+    }
 }
 
 extension ItemListViewModel {
@@ -61,6 +82,15 @@ extension ItemListViewModel {
         case loading
         case loaded([POSItem])
         case error(ErrorModel)
+
+        var isLoaded: Bool {
+            switch self {
+            case .loaded:
+                return true
+            default:
+                return false
+            }
+        }
 
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {

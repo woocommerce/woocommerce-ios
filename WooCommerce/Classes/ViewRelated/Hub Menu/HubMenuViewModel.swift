@@ -326,40 +326,25 @@ private extension HubMenuViewModel {
                 self?.updateMenuItemEligibility(with: site)
             }
             .store(in: &cancellables)
-
-        $currentSite
-            .compactMap { $0 }
-            .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await checkIfSiteHasGoogleAdsCampaigns()
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$hasGoogleAdsCampaigns)
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
 
-        /// We're dispatching 3 separate tasks because using task group to
-        /// asynchronously update variables in the main thread is considered unsafe
-        /// when enabling concurrency checks.
-        /// Using task group would require more effort like this:
-        /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
-
         isSiteEligibleForBlaze = blazeEligibilityChecker.isSiteEligible(site)
+
+        isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
-        }
-
-        Task { @MainActor in
-            isSiteEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
         }
     }
 
     @MainActor
     func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
+        guard isSiteEligibleForGoogleAds else {
+            return false
+        }
         do {
             let campaigns = try await fetchGoogleAdsCampaigns()
             return campaigns.isNotEmpty

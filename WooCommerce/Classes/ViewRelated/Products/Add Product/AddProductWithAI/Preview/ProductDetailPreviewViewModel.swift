@@ -7,9 +7,9 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
-    enum EditableField: Equatable {
+    enum EditableField: String {
         case name
-        case shortDescription
+        case shortDescription = "short_description"
         case description
     }
 
@@ -200,6 +200,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let aiTone = userDefaults.aiTone(for: siteID)
             let aiProduct = try await generateProduct(language: language,
                                                            tone: aiTone)
+            analytics.track(event: .ProductCreationAI.nameDescriptionOptionsGenerated(
+                nameCount: aiProduct.names.count,
+                shortDescriptionCount: aiProduct.shortDescriptions.count,
+                descriptionCount: aiProduct.descriptions.count
+            ))
             try displayAIProductDetails(aiProduct: aiProduct)
             generatedAIProduct = aiProduct
             isGeneratingDetails = false
@@ -259,6 +264,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         shouldShowFeedbackView = false
     }
 
+    func didTapGenerateAgain() {
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: false))
+        Task { @MainActor in
+            await generateProductDetails()
+        }
+    }
+
     // MARK: Switch options
     func switchToNextOption() {
         guard let generatedAIProduct else {
@@ -307,6 +319,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 //
 extension ProductDetailPreviewViewModel {
     func undoEdits(in updatedField: EditableField) {
+        analytics.track(event: .ProductCreationAI.undoEditTapped(for: updatedField))
+
         guard let generatedAIProduct else {
             return
         }

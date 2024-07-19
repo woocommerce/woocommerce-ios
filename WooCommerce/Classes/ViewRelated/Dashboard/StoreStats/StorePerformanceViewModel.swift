@@ -71,6 +71,28 @@ final class StorePerformanceViewModel: ObservableObject {
         return true
     }
 
+    /// Determines if the redacted state should be shown.
+    /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
+    ///
+    var showRedactedState: Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return syncingData
+        }
+        return syncingData && periodViewModel?.noDataFound == true
+    }
+
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
+    }
+
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
@@ -130,6 +152,12 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+
+        // Preemptively show any cached content
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            periodViewModel?.loadCachedContent()
+        }
+
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
@@ -413,10 +441,12 @@ private extension StorePerformanceViewModel {
             }
 
             // rethrow any failure.
-            for try await result in group {
+            for try await _ in group {
                 // no-op if result doesn't throw any error
             }
         }
+
+        DashboardTimestampStore.saveTimestamp(.now, for: .performance, at: timeRange.timestampRange)
     }
 
     /// Syncs store stats for dashboard UI.

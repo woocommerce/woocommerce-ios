@@ -112,14 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables generating product description using AI from product description editor.
-    ///
-    case productDescriptionAI
-
-    /// Enables generating product description using AI from store onboarding.
-    ///
-    case productDescriptionAIFromStoreOnboarding
-
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
@@ -131,10 +123,6 @@ public enum FeatureFlag: Int {
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
-
-    /// Enables generating share product content using AI
-    ///
-    case shareProductAI
 
     /// Enables the improvements in the customer selection logic when creating an order
     ///
@@ -164,17 +152,9 @@ public enum FeatureFlag: Int {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables creating Subscription products
-    ///
-    case subscriptionProducts
-
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
-
-    /// Enables Blaze native campaign creation.
-    ///
-    case blazei3NativeCampaignCreation
 
     /// Enables backend receipt generation for all payment methods
     ///
@@ -195,10 +175,6 @@ public enum FeatureFlag: Int {
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///
     case displayPointOfSaleToggle
-
-    /// Enables new dashboard cards on the My Store screen.
-    ///
-    case dynamicDashboardM2
 
     /// Enables M1 updates of product creation AI version 2
     ///

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.6
+Discover our latest update! We’ve introduced product creation with AI and enhanced order creation with better tax-inclusive pricing displays. Plus, our Google Campaigns analytics card now lets you choose any available campaign metric for detailed insights. Enjoy a smoother, smarter WooCommerce experience!
+
 ## 19.5
 Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
 

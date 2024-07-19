@@ -17,7 +17,7 @@ struct GoogleAdsCampaignReportCard: View {
             AnalyticsCTACard(title: Localization.title,
                              message: Localization.CallToAction.message,
                              buttonLabel: Localization.CallToAction.button,
-                             isLoading: .constant(false),
+                             isLoading: .constant(false), // No loading indicator needed
                              buttonAction: onCreateNewCampaign)
             .onAppear(perform: {
                 viewModel.onDisplayCallToAction()

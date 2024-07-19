@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-08 14:54:05+0000 */
+/* Translation-Revision-Date: 2024-07-16 15:54:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -4117,6 +4117,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "آخر عملية بيع";
+
+/* Time for when the orders were last updated */
+"Last Updated: %@" = "آخر تحديث: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "الأسبوع الماضي";
@@ -9645,6 +9648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when session data is unavailable in the Analytics Hub */
 "analyticsHub.sessionsCard.dataUnavailable.Message" = "بيانات الجلسة غير متاحة";
 
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "متري";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "إلغاء";
 
@@ -10625,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "معظم القسائم النشطة";
 
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "حملات إعلانات غوغل";
+
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "علبة الوارد";
 
@@ -10845,6 +10854,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "المنتج";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "معطَّل";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "ممكَّن";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "تمت الإزالة";
+
 /* Title of the Google Ads campaign view */
 "googleAdsCampaignCoordinator.googleForWooCommerce" = "Google for WooCommerce";
 
@@ -10856,6 +10874,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the celebration view when a Google ads campaign is successfully created. */
 "googleAdsCampaignCoordinator.successTitle" = "كل شيء جاهز الآن!";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "النقرات";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "التحويلات";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "الانطباعات";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "إجمالي المبيعات";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "إجمالي الإنفاق";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "إنشاء حملة";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "إخفاء إعلانات غوغل";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "يمكنك الترويج لمنتجاتك عبر البحث في غوغل والتسوق ويوتيوب وGmail والمزيد.";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "زيادة المبيعات وإنشاء مزيد من حركة المرور باستخدام إعلانات غوغل";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "أداء الحملة المدفوعة";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "النقرات";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "الانطباعات";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "مشاهدة كل الحملات";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "العملاء";
@@ -11331,8 +11388,20 @@ which should be translated separately and considered part of this sentence. */
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "إزالة الصورة";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "استبدال الصورة";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "عرض الصورة";
+
 /* No comment provided by engineer. */
 "password" = "كلمة المرور";
+
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "الدفع بشكل شخصي";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "تم دفع قيمة الطلب نقدًا. دفع العميل %1$@. كان التغيير المستحق %2$@.";
@@ -11348,6 +11417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "إضافات";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "تم إلغاء عملية الدفع على القارئ";
 
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "إلغاء";
@@ -11370,26 +11442,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "حالة المدفوعات مجهولة";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.cancel.button.title" = "إلغاء عملية الدفع";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "فشلت عملية الدفع";
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "المحاولة مجددًا";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "إلغاء عملية الدفع";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "فشلت عملية الدفع";
 
-/* Button to cancel preparation of the reader on the Point of Sale checkout. */
-"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "إلغاء";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "معالجة الدفع";
 
-/* Button to cancel a payment */
-"pointOfSale.cardPresent.presentCard.cancel.button.title" = "إلغاء";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "تمت عملية الدفع بنجاح!";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
+"pointOfSale.cardPresent.preparingCardReader.message" = "التحقق من الطلب";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "تجهيز قارئ البطاقات";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "إدراج بطاقة للدفع";
@@ -11407,7 +11479,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "الضغط أو الإدراج أو التمرير للدفع";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "القارئ جاهز";
+"pointOfSale.cardPresent.presentCard.title" = "مستعد للدفع";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "تجاهل";
@@ -11574,6 +11646,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "فشل ربط القارئ";
 
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "إنشاء منتج بسيط";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "لا يدعم POS حاليًا سوى المنتجات البسيطة";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "لا يحتوي متجرك على أي منتجات";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "لا توجد منتجات";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "إعادة المحاولة";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "هل تريد محاولة أخرى؟";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "خطأ في أثناء تحميل المنتجات";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "المنتجات";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "إغلاق";
 
@@ -11583,20 +11679,38 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "خاص";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "تقريبًا هناك.";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "موجّه رائع!";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "التحسُّن.";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "أضف مزيدًا من التفاصيل.";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "اذكر المعلومات أو الخصائص الإضافية ذات الصلة.";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "لقد قدمت إلينا ما يكفي لكي نعمل من خلاله، لكن يمكنك إضافة مزيد من التفاصيل لجعله أفضل.";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "هل يمكنك وصف الملاءمة وأي سمات مميزة للعنصر؟";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "كلما كانت التفاصيل التي قدَّمتها أكبر، ستكون تفاصيلك التي تم إنشاؤها أفضل.";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "أضف اسم منتجك والميزات الأساسية أو المزايا أو التفاصيل لمساعدته على الظهور على الإنترنت.";
+
 /* Button to generate product details in the starting info screen. */
 "productCreationAIStartingInfoView.generateProductDetails" = "إنشاء تفاصيل المنتج";
 
 /* Text to explain that a package photo has been selected in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "تم تحديد الصورة";
-
-/* Title of button which removes selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "إزالة الصورة";
-
-/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "استبدال الصورة";
-
-/* Title of button which opens the selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "عرض الصورة";
+"productCreationAIStartingInfoView.photoSelected" = "تم تحديد الصورة";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "على سبيل المثال، تيشيرت أسود من القطن، وقماش ناعم، وخياطة متينة، وتصميم فريد";
@@ -11609,12 +11723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "معلومات البدء";
-
-/* Title of the button to dismiss the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.done" = "تم";
-
-/* Title of the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "صورة الحزمة";
 
 /* No text detected message while adding package photo in the starting information screen. */
 "productCreationAIStartingInfoViewModel.noTextDetected" = "لم يتم الكشف عن نص. يرجى تحديد صورة حزم أخرى أو إدخال تفاصيل المنتج يدويًا.";
@@ -11655,6 +11763,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "عناصر منشورة خاصة";
 
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "ستتم إضافة الصورة إلى المنتج";
+
 /* Button on the error alert displayed on the add product with AI Preview screen. */
 "productDetailPreviewView.cancel" = "إلغاء";
 
@@ -11676,17 +11787,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the inventory field on the add product with AI Preview screen. */
 "productDetailPreviewView.inventory" = "المخزون";
 
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "الاسم والملخص والوصف";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "تم تحديد الصورة";
+
 /* Title of the price field on the add product with AI Preview screen. */
 "productDetailPreviewView.price" = "السعر";
 
 /* Placeholder text for the product description field on the add product with AI Preview screen. */
 "productDetailPreviewView.productDescriptionPlaceholder" = "وصف منتجك";
 
-/* Title of the name and description fields on the add product with AI Preview screen. */
-"productDetailPreviewView.productNameAndDescription" = "الاسم والوصف";
-
 /* Placeholder text for the product name field on on the add product with AI Preview screen. */
 "productDetailPreviewView.productNamePlaceholder" = "اسم منتجك";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "مقتطف موجز حول منتجك";
 
 /* Title of the product type field on the add product with AI Preview screen. */
 "productDetailPreviewView.productType" = "نوع المنتج";
@@ -11708,6 +11825,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product with AI Preview screen. */
 "productDetailPreviewView.title" = "معاينة";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "التراجع عن عمليات التحرير";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "خيار ⁦%1$d⁩ من ⁦%2$d⁩";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "تمت إزالة الصورة";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "تراجع";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "خطأ في رفع الملف. ترجى المحاولة مجددًا.";
@@ -12277,6 +12406,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "عرض تفاصيل المنتج";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "تم";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "صورة الحزمة";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "فتح Woo على iPhone، وربط متجرك، والاحتفاظ بتطبيق Watch بالقرب منك";

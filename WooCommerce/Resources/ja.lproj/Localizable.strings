@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-09 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-16 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -4117,6 +4117,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "最近売れた商品";
+
+/* Time for when the orders were last updated */
+"Last Updated: %@" = "最終更新日時: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "先週";
@@ -9645,6 +9648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when session data is unavailable in the Analytics Hub */
 "analyticsHub.sessionsCard.dataUnavailable.Message" = "セッションデータを利用できません";
 
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "メトリック";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "キャンセル";
 
@@ -10625,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "最も使われるクーポン";
 
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "Google 広告キャンペーン";
+
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "受信箱";
 
@@ -10845,6 +10854,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "無効";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "有効";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "削除済み";
+
 /* Title of the Google Ads campaign view */
 "googleAdsCampaignCoordinator.googleForWooCommerce" = "Google for WooCommerce";
 
@@ -10856,6 +10874,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the celebration view when a Google ads campaign is successfully created. */
 "googleAdsCampaignCoordinator.successTitle" = "準備完了 !";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "クリック数";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "コンバージョン数";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "インプレッション";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "合計売上高";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "総支出";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "キャンペーンを作成";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "Google 広告を非表示";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "Google 検索、ショッピング、Youtube、Gmail などで商品を宣伝できます。";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "Google 広告で売上を伸ばし、トラフィックを増やしましょう";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "有料キャンペーンのパフォーマンス";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "クリック数";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "インプレッション";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "すべてのキャンペーンを表示";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "顧客";
@@ -11331,8 +11388,20 @@ which should be translated separately and considered part of this sentence. */
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "写真を削除";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "写真を置換";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "写真を表示";
+
 /* No comment provided by engineer. */
 "password" = "パスワード";
+
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "直接支払い";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "注文は現金で支払われました。 顧客は %1$@支払いました。 変更期限は%2$@でした。";
@@ -11348,6 +11417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "プラグイン";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "リーダーで支払いがキャンセルされました";
 
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "キャンセル";
@@ -11370,26 +11442,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "支払いステータス不明";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.cancel.button.title" = "支払いをキャンセル";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "支払いに失敗しました";
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "もう一度試す";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "支払いをキャンセル";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "支払いに失敗しました";
 
-/* Button to cancel preparation of the reader on the Point of Sale checkout. */
-"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "キャンセル";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "支払いを処理しています";
 
-/* Button to cancel a payment */
-"pointOfSale.cardPresent.presentCard.cancel.button.title" = "キャンセル";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "支払いに成功しました。";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
+"pointOfSale.cardPresent.preparingCardReader.message" = "注文を確認中";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "カードリーダーを準備しています";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "カードを挿入して支払う";
@@ -11407,7 +11479,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "タップ、挿入、またはスワイプして支払う";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "リーダーの準備ができました";
+"pointOfSale.cardPresent.presentCard.title" = "支払い準備完了";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "閉じる";
@@ -11574,6 +11646,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "リーダーに接続できませんでした";
 
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "シンプルな商品を作成";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "現在、POS はシンプルな製品のみに対応しています";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "このストアには商品がありません";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "商品なし";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "再試行";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "もう一度試しますか ?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "商品の読み込み中にエラーが発生しました";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "商品";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "閉じる";
 
@@ -11583,20 +11679,38 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "非公開";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "もう少しで完成です。";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "すばらしいプロンプトです。";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "良くなっています。";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "詳細を追加してください。";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "その他の関連情報や特徴についてお聞かせください。";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "十分な情報をご提供いただきましたが、細かい部分を追加して、さらに良くすることも可能です。";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "商品のフィット感や特徴について詳細をお知らせください。";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "提供する情報が多いほど、より適切な詳細が生成されます。";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "商品名や主要な機能、利点、詳細を追加して商品をオンラインで見つけてもらいやすくします。";
+
 /* Button to generate product details in the starting info screen. */
 "productCreationAIStartingInfoView.generateProductDetails" = "商品詳細を生成";
 
 /* Text to explain that a package photo has been selected in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "写真が選択されました";
-
-/* Title of button which removes selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "写真を削除";
-
-/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "写真を置換";
-
-/* Title of button which opens the selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "写真を表示";
+"productCreationAIStartingInfoView.photoSelected" = "写真が選択されました";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "例: 黒色の綿 T シャツ、やわらかな生地、丈夫な縫製、ユニークなデザイン";
@@ -11609,12 +11723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "開始情報";
-
-/* Title of the button to dismiss the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.done" = "完了";
-
-/* Title of the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "パッケージ写真";
 
 /* No text detected message while adding package photo in the starting information screen. */
 "productCreationAIStartingInfoViewModel.noTextDetected" = "テキストが検出されませんでした。 別のパッケージ写真を選択するか、商品詳細を手動で入力してください。";
@@ -11655,6 +11763,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "非公開";
 
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "写真が商品に追加されます";
+
 /* Button on the error alert displayed on the add product with AI Preview screen. */
 "productDetailPreviewView.cancel" = "キャンセル";
 
@@ -11676,17 +11787,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the inventory field on the add product with AI Preview screen. */
 "productDetailPreviewView.inventory" = "在庫";
 
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "名前、概要、説明";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "写真が選択されました";
+
 /* Title of the price field on the add product with AI Preview screen. */
 "productDetailPreviewView.price" = "価格";
 
 /* Placeholder text for the product description field on the add product with AI Preview screen. */
 "productDetailPreviewView.productDescriptionPlaceholder" = "商品を説明";
 
-/* Title of the name and description fields on the add product with AI Preview screen. */
-"productDetailPreviewView.productNameAndDescription" = "名前と説明";
-
 /* Placeholder text for the product name field on on the add product with AI Preview screen. */
 "productDetailPreviewView.productNamePlaceholder" = "商品に名前を付ける";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "商品に関する簡単な抜粋";
 
 /* Title of the product type field on the add product with AI Preview screen. */
 "productDetailPreviewView.productType" = "商品タイプ";
@@ -11708,6 +11825,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product with AI Preview screen. */
 "productDetailPreviewView.title" = "プレビュー";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "編集を元に戻す";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "オプション%1$d\/%2$d";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "写真が削除されました";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "取り消す";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "ファイルのアップロードの際にエラーが発生しました。 もう一度お試しください。";
@@ -12277,6 +12406,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "商品情報を表示";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "完了";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "パッケージ写真";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhoneで Woo を開き、ストアに接続すれば、Watch を手軽にお使いいただけます";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-10 16:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-16 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -4117,6 +4117,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "Senast sålda";
+
+/* Time for when the orders were last updated */
+"Last Updated: %@" = "Senaste uppdatering: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "Förra veckan";
@@ -9645,6 +9648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when session data is unavailable in the Analytics Hub */
 "analyticsHub.sessionsCard.dataUnavailable.Message" = "Sessionsdata ej tillgänglig";
 
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "Nyckeltal";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Avbryt";
 
@@ -10625,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "Mest aktiva rabattkoder";
 
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "Google Ads-kampanjer";
+
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "Inkorg";
 
@@ -10845,6 +10854,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Produkt";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "Inaktiverad";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "Aktiverad";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "Borttagen";
+
 /* Title of the Google Ads campaign view */
 "googleAdsCampaignCoordinator.googleForWooCommerce" = "Google for WooCommerce";
 
@@ -10856,6 +10874,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the celebration view when a Google ads campaign is successfully created. */
 "googleAdsCampaignCoordinator.successTitle" = "Redo att köra!";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "Klick";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "Konverteringar";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "Visningar";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "Total försäljning";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "Totalt spenderat";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "Skapa kampanj";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "Dölj Google Ads";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "Marknadsför dina produkter i Google Sök, Google Shopping, Youtube, Gmail med mera.";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "Öka försäljningen och generera mer trafik med Google Ads";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "Betalkampanjsresultat";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "Klick";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "Visningar";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "Visa alla kampanjer";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Kunder";
@@ -11331,8 +11388,20 @@ which should be translated separately and considered part of this sentence. */
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "Ta bort foto";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "Byt ut foto";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "Visa foto";
+
 /* No comment provided by engineer. */
 "password" = "lösenord";
+
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "Betala personligen";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Beställningen betalades kontant. Kunden betalade %1$@. Växeln var %2$@.";
@@ -11348,6 +11417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Tillägg";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Betalning avbruten på läsare";
 
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Avbryt";
@@ -11370,29 +11442,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "Betalningsstatus okänd";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.cancel.button.title" = "Avbryt betalning";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Betalning misslyckades";
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Försök igen";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "Avbryt betalning";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betalning misslyckades";
 
-/* Button to cancel preparation of the reader on the Point of Sale checkout. */
-"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "Avbryt";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "Betalning lyckades!";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
 "pointOfSale.cardPresent.preparingCardReader.message" = "Kontrollerar beställning";
 
-/* Button to cancel a payment */
-"pointOfSale.cardPresent.presentCard.cancel.button.title" = "Avbryt";
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "Förbereder kortläsare";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Sätt i kort för att betala";
@@ -11410,7 +11479,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tryck, infoga eller svep för att betala";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "Läsare är redo";
+"pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Avfärda";
@@ -11577,6 +11646,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Det gick inte att ansluta läsaren";
 
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "Skapa en enkel produkt";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "POS stöder för närvarande bara enkla produkter";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "Din butik har inga produkter";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "Inga produkter";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "Försök igen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "Vill du försöka igen?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "Det gick inte att läsa in produkterna";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "Produkter";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";
 
@@ -11586,20 +11679,38 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "privat";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "Nästan där.";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "Bra prompt!";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "Det blir bättre.";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "Lägg till fler detaljer.";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "Nämn ytterligare relevant information eller egenskaper.";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "Du har gett oss tillräckligt att arbeta med, men du kan lägga till mer information för att göra resultatet ännu bättre.";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "Kan du beskriva passformen och eventuella särdrag hos varan?";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "Ju mer information du tillhandahåller, desto bättre blir din genererade information.";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "Lägg till din produkts namn och viktiga funktioner, fördelar eller information som hjälper kunder att hitta den online.";
+
 /* Button to generate product details in the starting info screen. */
 "productCreationAIStartingInfoView.generateProductDetails" = "Generera produktdetaljer";
 
 /* Text to explain that a package photo has been selected in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "Foto valt";
-
-/* Title of button which removes selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "Ta bort foto";
-
-/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "Byt ut foto";
-
-/* Title of button which opens the selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "Visa foto";
+"productCreationAIStartingInfoView.photoSelected" = "Foto valt";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Till exempel: Svart t-shirt i bomull, mjukt tyg, slitstarka sömmar, unik design";
@@ -11612,12 +11723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Startinformation";
-
-/* Title of the button to dismiss the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.done" = "Klar";
-
-/* Title of the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "Förpackningsfoto";
 
 /* No text detected message while adding package photo in the starting information screen. */
 "productCreationAIStartingInfoViewModel.noTextDetected" = "Ingen text detekterad. Välj ett annat förpackningsfoto eller ange produktinformationen manuellt.";
@@ -11658,6 +11763,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "Publicerat privat";
 
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "Fotot kommer att läggas till för produkten";
+
 /* Button on the error alert displayed on the add product with AI Preview screen. */
 "productDetailPreviewView.cancel" = "Avbryt";
 
@@ -11679,17 +11787,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the inventory field on the add product with AI Preview screen. */
 "productDetailPreviewView.inventory" = "Lager";
 
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "Namn, sammanfattning och beskrivning";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "Foto valt";
+
 /* Title of the price field on the add product with AI Preview screen. */
 "productDetailPreviewView.price" = "Pris";
 
 /* Placeholder text for the product description field on the add product with AI Preview screen. */
 "productDetailPreviewView.productDescriptionPlaceholder" = "Beskriv din produkt";
 
-/* Title of the name and description fields on the add product with AI Preview screen. */
-"productDetailPreviewView.productNameAndDescription" = "Namn och beskrivning";
-
 /* Placeholder text for the product name field on on the add product with AI Preview screen. */
 "productDetailPreviewView.productNamePlaceholder" = "Namnge din produkt";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "Ett kort utdrag om din produkt";
 
 /* Title of the product type field on the add product with AI Preview screen. */
 "productDetailPreviewView.productType" = "Produkttyp";
@@ -11711,6 +11825,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product with AI Preview screen. */
 "productDetailPreviewView.title" = "Förhandsgranska";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "Ångra redigeringar";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "Alternativ %1$d av %2$d";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "Foto borttaget";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "Ångra";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Fel vid uppladdning av filen. Försök igen.";
@@ -12280,6 +12406,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Visa produktdetaljer";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "Klar";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "Förpackningsfoto";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Öppna Woo på din iPhone, anslut din butik och håll din klocka intill telefonen";

@@ -15,5 +15,6 @@ class MockCartViewModel: ObservableObject {
 
     func submitCart(with items: [CartItem]) {
         cartSubmissionSubject.send(items)
+        cartViewModel.submitCart()
     }
 }

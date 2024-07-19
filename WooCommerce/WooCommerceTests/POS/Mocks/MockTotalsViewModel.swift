@@ -53,11 +53,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     }
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
-        // Simulate order syncing logic
         isSyncingOrder = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.isSyncingOrder = false
-        }
     }
 
     func startNewTransaction() {

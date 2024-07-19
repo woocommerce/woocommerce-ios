@@ -9,11 +9,11 @@ import protocol WooFoundation.Analytics
 ///
 final class AnalyticsHubViewModel: ObservableObject {
 
-    private let siteID: Int64
-    private let stores: StoresManager
+    let siteID: Int64
+    let stores: StoresManager
     private let storage: StorageManagerType
     private let timeZone: TimeZone
-    private let analytics: Analytics
+    let analytics: Analytics
 
     private var subscriptions = Set<AnyCancellable>()
 

@@ -6,19 +6,33 @@ import protocol WooFoundation.Analytics
 /// Used to transmit Google Ads campaigns analytics data.
 ///
 final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
+    private let siteID: Int64
+    private let stores: StoresManager
     private let analytics: Analytics
+
+    /// Google Ads campaign creation eligibility checker
+    ///
+    private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+
+    /// Whether the store is eligible for Google Ads campaign creation.
+    ///
+    @Published private(set) var isEligibleForGoogleAds: Bool = false
 
     /// Campaign stats for the current period
     ///
-    private var currentPeriodStats: GoogleAdsCampaignStats?
+    @Published private var currentPeriodStats: GoogleAdsCampaignStats? = nil
 
     /// Campaign stats for the previous period
     ///
-    private var previousPeriodStats: GoogleAdsCampaignStats?
+    @Published private var previousPeriodStats: GoogleAdsCampaignStats? = nil
 
     /// Selected time range
     ///
-    private var timeRange: AnalyticsHubTimeRangeSelection.SelectionType
+    private var timeRangeSelection: AnalyticsHubTimeRangeSelection
+
+    /// Selected time range type
+    ///
+    private var timeRangeSelectionType: AnalyticsHubTimeRangeSelection.SelectionType
 
     /// Analytics Usage Tracks Event Emitter
     ///
@@ -30,7 +44,7 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
 
     /// Indicates if the values should be hidden (for loading state)
     ///
-    var isRedacted: Bool
+    @Published private(set) var isRedacted: Bool = false
 
     /// All available stats for Google Ads campaigns.
     ///
@@ -40,20 +54,34 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData = .sales
 
-    init(currentPeriodStats: GoogleAdsCampaignStats?,
-         previousPeriodStats: GoogleAdsCampaignStats?,
+    init(siteID: Int64,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
-         isRedacted: Bool = false,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL,
-         analytics: Analytics = ServiceLocator.analytics) {
-        self.currentPeriodStats = currentPeriodStats
-        self.previousPeriodStats = previousPeriodStats
-        self.timeRange = timeRange
-        self.isRedacted = isRedacted
+         analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores,
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
+        self.siteID = siteID
+        self.timeRangeSelectionType = timeRange
+        self.timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: timeRange, timezone: .siteTimezone)
         self.usageTracksEventEmitter = usageTracksEventEmitter
-        self.storeAdminURL = storeAdminURL
+        self.storeAdminURL = stores.sessionManager.defaultSite?.adminURL
         self.analytics = analytics
+        self.stores = stores
+        self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
+    }
+
+    /// Reloads the data for the card.
+    ///
+    func reload() async {
+        do {
+            let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
+            let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
+            await retrieveGoogleCampaignStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: .siteTimezone)
+        } catch {
+            currentPeriodStats = nil
+            previousPeriodStats = nil
+            DDLogWarn("⚠️ Error fetching Google Ads Campaigns analytics data: \(error)")
+        }
     }
 
     /// Closure to perform when a new stat is selected on the Google Campaigns card.
@@ -120,11 +148,11 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// View model for the web analytics report link
     ///
     var reportViewModel: AnalyticsReportLinkViewModel? {
-        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
+        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRangeSelectionType, storeAdminURL: storeAdminURL) else {
             return nil
         }
         return AnalyticsReportLinkViewModel(reportType: .googlePrograms,
-                                            period: timeRange,
+                                            period: timeRangeSelectionType,
                                             webViewTitle: Localization.reportTitle,
                                             reportURL: url,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
@@ -179,6 +207,59 @@ extension GoogleAdsCampaignReportCardViewModel {
     func onDisplayCallToAction() {
         analytics.track(event: .GoogleAds.entryPointDisplayed(source: .analyticsHub))
     }
+
+    /// Checks whether the store is eligible for campaign creation.
+    ///
+    @MainActor
+    private func checkGoogleAdsEligibility() async -> Bool {
+        isEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: siteID)
+        return isEligibleForGoogleAds
+    }
+}
+
+// MARK: Networking
+private extension GoogleAdsCampaignReportCardViewModel {
+    @MainActor
+    func retrieveGoogleCampaignStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isRedacted = true
+        defer {
+            isRedacted = false
+        }
+
+        // Only retrieve stats if Google Ads is connected on the store.
+        guard await checkGoogleAdsEligibility() else {
+            return
+        }
+
+        async let currentPeriodRequest = retrieveGoogleCampaignStats(timeZone: timeZone,
+                                                                     earliestDateToInclude: currentTimeRange.start,
+                                                                     latestDateToInclude: currentTimeRange.end)
+        async let previousPeriodRequest = retrieveGoogleCampaignStats(timeZone: timeZone,
+                                                                      earliestDateToInclude: previousTimeRange.start,
+                                                                      latestDateToInclude: previousTimeRange.end)
+
+        let allStats: (currentPeriodStats: GoogleAdsCampaignStats, previousPeriodStats: GoogleAdsCampaignStats)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        currentPeriodStats = allStats?.currentPeriodStats
+        previousPeriodStats = allStats?.previousPeriodStats
+    }
+
+    @MainActor
+    /// Retrieves Google campaign stats using the `retrieveGoogleCampaignStats` action.
+    ///
+    func retrieveGoogleCampaignStats(timeZone: TimeZone,
+                                     earliestDateToInclude: Date,
+                                     latestDateToInclude: Date) async throws -> GoogleAdsCampaignStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = GoogleAdsAction.retrieveCampaignStats(siteID: siteID,
+                                                               timeZone: timeZone,
+                                                               earliestDateToInclude: earliestDateToInclude,
+                                                               latestDateToInclude: latestDateToInclude) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: Constants
@@ -201,46 +282,5 @@ private extension GoogleAdsCampaignReportCardViewModel {
                                                                + "The placeholder is a formatted monetary amount, e.g. Sales: $123."),
                                              value)
         }
-    }
-}
-
-// MARK: - Methods for rendering a SwiftUI Preview
-extension GoogleAdsCampaignReportCardViewModel {
-    static func sampleStats() -> GoogleAdsCampaignStats {
-        GoogleAdsCampaignStats(siteID: 1234,
-                               totals: GoogleAdsCampaignStatsTotals(sales: 2234, spend: 225, clicks: 2345, impressions: 23456, conversions: 1032),
-                               campaigns: [GoogleAdsCampaignStatsItem(campaignID: 1,
-                                                                      campaignName: "Spring Sale Campaign",
-                                                                      rawStatus: "enabled",
-                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 1232,
-                                                                                                              spend: 100,
-                                                                                                              clicks: 1000,
-                                                                                                              impressions: 10000,
-                                                                                                              conversions: 300)),
-                                           GoogleAdsCampaignStatsItem(campaignID: 2,
-                                                                      campaignName: "Summer Campaign",
-                                                                      rawStatus: "enabled",
-                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 800,
-                                                                                                              spend: 50,
-                                                                                                              clicks: 900,
-                                                                                                              impressions: 5000,
-                                                                                                              conversions: 400)),
-                                           GoogleAdsCampaignStatsItem(campaignID: 3,
-                                                                      campaignName: "Winter Campaign",
-                                                                      rawStatus: "enabled",
-                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 750,
-                                                                                                              spend: 50,
-                                                                                                              clicks: 800,
-                                                                                                              impressions: 4000,
-                                                                                                              conversions: 200)),
-                                           GoogleAdsCampaignStatsItem(campaignID: 4,
-                                                                      campaignName: "New Year Campaign",
-                                                                      rawStatus: "enabled",
-                                                                      subtotals: GoogleAdsCampaignStatsTotals(sales: 200,
-                                                                                                              spend: 25,
-                                                                                                              clicks: 300,
-                                                                                                              impressions: 1000,
-                                                                                                              conversions: 50))],
-                               nextPageToken: nil)
     }
 }

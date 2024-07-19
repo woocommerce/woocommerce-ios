@@ -123,7 +123,7 @@ struct ProductCreationAIStartingInfoView: View {
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                generateButtonToolbar
+                generateButton(isPrimary: false)
                     .renderedIf(isCompact)
             }
         }
@@ -131,7 +131,7 @@ struct ProductCreationAIStartingInfoView: View {
             VStack {
                 Divider()
                 // CTA to generate product details.
-                generateButtonMain
+                generateButton(isPrimary: true)
                     .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -170,7 +170,7 @@ private extension ProductCreationAIStartingInfoView {
         }
     }
 
-    var generateButtonMain: some View {
+    func generateButton(isPrimary: Bool) -> some View {
         Button {
             // continue
             editorIsFocused = false
@@ -178,18 +178,9 @@ private extension ProductCreationAIStartingInfoView {
         } label: {
             Text(Localization.generateProductDetails)
         }
-        .buttonStyle(PrimaryButtonStyle())
-        .disabled(viewModel.features.isEmpty)
-    }
-
-    var generateButtonToolbar: some View {
-        Button {
-            // continue
-            editorIsFocused = false
-            onContinueWithFeatures(viewModel.features)
-        } label: {
-            Text(Localization.generateProductDetails)
-        }
+        .if(isPrimary, transform: { button in
+            button.buttonStyle(PrimaryButtonStyle())
+        })
         .disabled(viewModel.features.isEmpty)
     }
 

@@ -21,13 +21,13 @@ struct TotalsView: View {
                     VStack(alignment: .leading, spacing: 32) {
                         HStack {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
-                                priceFieldView(title: "Subtotal",
+                                priceFieldView(title: Localization.subtotal,
                                                formattedPrice: totalsViewModel.formattedCartTotalPrice,
                                                shimmeringActive: totalsViewModel.isShimmering,
                                                redacted: totalsViewModel.isSubtotalFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                priceFieldView(title: "Taxes",
+                                priceFieldView(title: Localization.taxes,
                                                formattedPrice:
                                                 totalsViewModel.formattedOrderTotalTaxPrice,
                                                shimmeringActive: totalsViewModel.isShimmering,
@@ -46,7 +46,7 @@ struct TotalsView: View {
                                 .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
                         if totalsViewModel.showRecalculateButton {
-                            Button("Calculate amounts") {
+                            Button(Localization.calculateAmounts) {
                                 totalsViewModel.calculateAmountsTapped(
                                     with: viewModel.cartViewModel.itemsInCart,
                                     allItems: viewModel.itemListViewModel.items)
@@ -93,7 +93,7 @@ private extension TotalsView {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
                 Image(uiImage: .posNewTransactionImage)
-                Text("New transaction")
+                Text(Localization.newTransaction)
                     .font(Constants.newTransactionButtonFont)
                 Spacer()
             }
@@ -148,7 +148,7 @@ private extension TotalsView {
 
     @ViewBuilder func totalPriceView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         HStack(alignment: .top, spacing: .zero) {
-            Text("Total")
+            Text(Localization.total)
                 .font(Constants.totalTitleFont)
                 .fontWeight(.semibold)
             Spacer()
@@ -177,6 +177,29 @@ private extension TotalsView {
         static let newTransactionButtonSpacing: CGFloat = 20
         static let newTransactionButtonPadding: CGFloat = 16
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
+    }
+
+    enum Localization {
+        static let total = NSLocalizedString(
+            "pos.totalsView.total",
+            value: "Total",
+            comment: "Title for total amount field")
+        static let subtotal = NSLocalizedString(
+            "pos.totalsView.subtotal",
+            value: "Subtotal",
+            comment: "Title for subtotal amount field")
+        static let taxes = NSLocalizedString(
+            "pos.totalsView.taxes",
+            value: "Taxes",
+            comment: "Title for taxes amount field")
+        static let newTransaction = NSLocalizedString(
+            "pos.totalsView.newTransaction",
+            value: "New transaction",
+            comment: "Button title for new transaction button")
+        static let calculateAmounts = NSLocalizedString(
+            "pos.totalsView.calculateAmounts",
+            value: "Calculate amounts",
+            comment: "Button title for calculate amounts button")
     }
 }
 

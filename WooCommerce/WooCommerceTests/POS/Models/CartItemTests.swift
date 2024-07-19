@@ -9,7 +9,7 @@ import XCTest
 final class CartItemTests: XCTestCase {
     func test_are_order_and_cart_different() {
         // Given/When
-        
+
         // cart
         let productId: Int64 = 1
         let price = "1"

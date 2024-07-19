@@ -1,2 +1,3 @@
-En son güncellememiz, Google Ads kampanyalarını dahil ederek Analytics Hub'ı iyileştirir ve Dinamik Pano ile Hub Menüsünde Gelen Kutusu Notlarını kullanıma sunar. En yeni güncellememizle daha iyi bir uygulama deneyiminin keyfini çıkarın!
+
+İyileştirilmiş bir nakit ödeme deneyimi için WooCommerce uygulamanızı hemen güncelleyin! Nakit ödenen siparişlerde ödeme yönteminin ve başlığının gözükmemesi sorununu düzelttik. Artık nakit ödeme toplarken uygulama, tıpkı web üzerinde olduğu gibi bu ayrıntıları doğru ayarlayarak sipariş ayrıntılarınızda ve makbuzlarınızda netlik olmasını sağlar.
 

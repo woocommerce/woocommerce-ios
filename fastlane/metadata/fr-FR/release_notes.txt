@@ -1,2 +1,3 @@
-Notre dernière mise à jour améliore l’espace Statistiques en y incluant les campagnes Google Ads et introduit les Notes de la boîte de réception dans le tableau de bord dynamique et le menu principal. Profitez d’une meilleure expérience avec l’application grâce à notre dernière mise à jour !
+
+Mettez à jour votre application WooCommerce dès à présent pour profiter d’une expérience de paiement en espèces améliorée ! Nous avons corrigé le problème qui faisait que les commandes réglées en espèces n’affichaient pas leur moyen de paiement et le titre. Désormais, lorsque vous collectez des paiements en espèces, l’application configure correctement ces détails, comme sur le Web, ce qui garantit la clarté des détails et reçus de vos commandes.
 

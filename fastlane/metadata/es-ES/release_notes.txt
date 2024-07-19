@@ -1,2 +1,3 @@
-Nuestra última actualización mejora el Analytics Hub al incluir las campañas de Google ADS e introduce las Notas de la bandeja de entrada en el Escritorio dinámico y el Menú del Hub. Disfruta de una mejor experiencia en la aplicación con nuestra última actualización.
+
+¡Actualiza tu aplicación de WooCommerce ahora para conseguir una experiencia de pago en efectivo mejorada! Hemos solucionado un error por el que los pedidos pagados en efectivo no se mostraban en el método de pago ni en el título. Ahora, al cobrar los pagos en efectivo, la aplicación muestra estos detalles correctamente, como en la web, lo que asegura la claridad en los detalles de tu pedido y en los recibos.
 

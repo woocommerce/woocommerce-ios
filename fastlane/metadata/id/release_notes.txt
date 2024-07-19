@@ -1,2 +1,3 @@
-Pembaruan terkini kami menyempurnakan Analytics Hub dengan menyertakan kampanye Google Ads dan menambahkan Catatan Kotak Masuk di Dasbor Dinamis dan Menu Hub. Nikmati pengalaman aplikasi yang lebih baik dengan pembaruan teranyar kami!
+
+Perbarui aplikasi WooCommerce Anda sekarang juga untuk pengalaman pembayaran tunai yang lebih baik! Kami telah mengatasi masalah tampilan metode dan nama pembayaran untuk pesanan tunai. Sekarang, saat menerima pembayaran tunai, aplikasi akan mengatur detailnya dengan benar, sehingga detail pesanan dan tanda terima menjadi lebih jelas seperti pada situs.
 

@@ -1,2 +1,3 @@
-Nossa última atualização aprimora a Central de análises ao incluir as campanhas do Google Ads e apresenta as notas da caixa de entrada no painel dinâmico e no menu. Tenha uma experiência melhor no app com a nossa mais nova atualização!
+
+Atualize o aplicativo do WooCommerce agora e aproveite uma experiência melhor de pagamento em dinheiro. Corrigimos um problema em que os pedidos pagos em dinheiro não exibiam a forma de pagamento nem o título. Agora, o aplicativo configura essas informações corretamente, assim como a versão Web, deixando isso claro nos seus recibos e detalhes do pedido.
 

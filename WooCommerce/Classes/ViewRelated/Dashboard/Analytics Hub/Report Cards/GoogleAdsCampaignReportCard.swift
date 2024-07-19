@@ -29,7 +29,10 @@ struct GoogleAdsCampaignReportCard: View {
                     .foregroundColor(Color(.text))
                     .footnoteStyle()
 
-                StatSelectionBar(allStats: viewModel.allStats, titleKeyPath: \.displayName, onSelection: viewModel.onSelection, selectedStat: $viewModel.selectedStat)
+                StatSelectionBar(allStats: viewModel.allStats,
+                                 titleKeyPath: \.displayName,
+                                 onSelection: viewModel.onSelection,
+                                 selectedStat: $viewModel.selectedStat)
                     .padding(.top, Layout.titleSpacing)
                     .padding(.bottom, Layout.columnSpacing)
 

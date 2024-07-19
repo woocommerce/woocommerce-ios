@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct TotalsView: View {
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: AnyTotalsViewModel
+    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: AnyTotalsViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>) {
         self.viewModel = viewModel
-        self.totalsViewModel = totalsViewModel
+        self.totalsViewModel = viewModel.totalsViewModel
     }
 
     var body: some View {
@@ -183,10 +183,8 @@ private extension TotalsView {
 #Preview {
     TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService(),
-                                currencyFormatter: .init(currencySettings: .init())),
-               totalsViewModel: .init(AnyTotalsViewModel(TotalsViewModel(orderService: POSOrderPreviewService(),
-                                                                        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                                        currencyFormatter: .init(currencySettings: .init())))))
+                                totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                 cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                 currencyFormatter: .init(currencySettings: .init()))))
 }
 #endif

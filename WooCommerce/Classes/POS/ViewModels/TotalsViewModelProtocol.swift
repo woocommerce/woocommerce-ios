@@ -1,7 +1,7 @@
 import Combine
 import Yosemite
 
-protocol TotalsViewModelProtocol {
+protocol TotalsViewModelProtocol: ObservableObject {
     var isSyncingOrder: Bool { get set }
     var paymentState: TotalsViewModel.PaymentState { get set }
     var showsCardReaderSheet: Bool { get set }

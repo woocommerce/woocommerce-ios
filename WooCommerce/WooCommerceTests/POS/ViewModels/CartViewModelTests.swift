@@ -6,12 +6,12 @@ import Combine
 
 final class CartViewModelTests: XCTestCase {
 
-    private var orderStageSubject: PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>!
-    private var sut: CartViewModel!
+    private var orderStageSubject: PassthroughSubject<PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage, Never>!
+    private var sut: CartViewModel<MockTotalsViewModel>!
 
     override func setUp() {
         super.setUp()
-        orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
+        orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage, Never>()
         sut = CartViewModel(orderStage: orderStageSubject.eraseToAnyPublisher())
     }
 

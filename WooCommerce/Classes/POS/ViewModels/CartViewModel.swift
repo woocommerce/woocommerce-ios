@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import protocol Yosemite.POSItem
 
-final class CartViewModel: ObservableObject {
+final class CartViewModel<TotalsViewModel: TotalsViewModelProtocol>: ObservableObject {
     /// Emits cart items when the CTA is tapped to submit the cart.
     let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
     private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
@@ -14,13 +14,13 @@ final class CartViewModel: ObservableObject {
     @Published private(set) var itemsInCart: [CartItem] = []
 
     // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
-    @Published private var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+    @Published private var orderStage: PointOfSaleDashboardViewModel<TotalsViewModel>.OrderStage = .building
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
     }
 
-    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
+    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel<TotalsViewModel>.OrderStage, Never>) {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
         orderStage.assign(to: &$orderStage)

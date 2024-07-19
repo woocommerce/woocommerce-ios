@@ -2,10 +2,10 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct CartView: View {
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
+    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>
+    @ObservedObject private var cartViewModel: CartViewModel<TotalsViewModel>
 
-    init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>, cartViewModel: CartViewModel<TotalsViewModel>) {
         self.viewModel = viewModel
         self.cartViewModel = cartViewModel
     }
@@ -124,12 +124,13 @@ import Combine
     // TODO:
     // Simplify this by mocking `CartViewModel`
     // https://github.com/woocommerce/woocommerce-ios/issues/13207
-    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
+    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel<TotalsViewModel>.OrderStage, Never>()
     let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
     let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                           orderService: POSOrderPreviewService(),
-                                                           currencyFormatter: .init(currencySettings: .init()))
+                                                           totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                                            currencyFormatter: .init(currencySettings: .init())))
     let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
 
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)

@@ -2015,7 +2015,6 @@
 		C7F746C32C485B3B0023ADD0 /* MockCartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */; };
 		C7F746C72C4866810023ADD0 /* MockTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */; };
 		C7F746C92C4868670023ADD0 /* TotalsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */; };
-		C7F746CC2C4875300023ADD0 /* AnyTotalsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */; };
 		CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */; };
 		CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */; };
 		CC04918F292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04918E292BD6AC00F719D8 /* StatsDataTextFormatterTests.swift */; };
@@ -5010,7 +5009,6 @@
 		C7F746C22C485B3B0023ADD0 /* MockCartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCartViewModel.swift; sourceTree = "<group>"; };
 		C7F746C62C4866810023ADD0 /* MockTotalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTotalsViewModel.swift; sourceTree = "<group>"; };
 		C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsViewModelProtocol.swift; sourceTree = "<group>"; };
-		C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyTotalsViewModel.swift; sourceTree = "<group>"; };
 		CB4839361AA061340BE98DA9 /* Pods-StoreWidgetsExtension.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		CC0324A2263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAccountSettings.swift; sourceTree = "<group>"; };
 		CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDataTextFormatter.swift; sourceTree = "<group>"; };
@@ -6703,7 +6701,6 @@
 			isa = PBXGroup;
 			children = (
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
-				C7F746CB2C4875300023ADD0 /* AnyTotalsViewModel.swift */,
 				C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */,
 				683763152C2E44B800AD51D0 /* ItemListViewModel.swift */,
 				6837631B2C2E847D00AD51D0 /* CartViewModel.swift */,
@@ -15675,7 +15672,6 @@
 				028B68B82A573FF400FE03A8 /* AddProductFromImageCoordinator.swift in Sources */,
 				AE6C4FDF28A15BFE00EAC00D /* FeatureAnnouncementCardCell.swift in Sources */,
 				20762BA12C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift in Sources */,
-				C7F746CC2C4875300023ADD0 /* AnyTotalsViewModel.swift in Sources */,
 				02562AD0296D1FD100980404 /* View+DividerStyle.swift in Sources */,
 				CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */,
 				02E222C829FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift in Sources */,

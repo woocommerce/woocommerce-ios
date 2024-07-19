@@ -4,7 +4,7 @@ import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
-    @StateObject private var viewModel: PointOfSaleDashboardViewModel
+    @StateObject private var viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>
 
     private let hideAppTabBar: ((Bool) -> Void)
 
@@ -22,8 +22,9 @@ struct PointOfSaleEntryPointView: View {
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
-            orderService: orderService,
-            currencyFormatter: currencyFormatter)
+            totalsViewModel: .init(orderService: orderService,
+                                   cardPresentPaymentService: cardPresentPaymentService,
+                                   currencyFormatter: currencyFormatter))
         )
     }
 

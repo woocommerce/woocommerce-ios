@@ -3,10 +3,10 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: AnyTotalsViewModel
+    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel<TotalsViewModel>) {
         self.viewModel = viewModel
         self.totalsViewModel = viewModel.totalsViewModel
     }
@@ -95,12 +95,12 @@ private extension PointOfSaleDashboardView {
                  cartViewModel: viewModel.cartViewModel)
     }
 
+    
     var totalsView: some View {
-        TotalsView(viewModel: viewModel,
-                   totalsViewModel: viewModel.totalsViewModel)
-        .background(Color(UIColor.systemBackground))
-        .frame(maxWidth: .infinity)
-        .cornerRadius(16)
+        TotalsView(viewModel: viewModel)
+            .background(Color(UIColor.systemBackground))
+            .frame(maxWidth: .infinity)
+            .cornerRadius(16)
     }
 
     var productListView: some View {
@@ -127,8 +127,10 @@ fileprivate extension CardPresentPaymentEvent {
         PointOfSaleDashboardView(
             viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                     orderService: POSOrderPreviewService(),
-                                                     currencyFormatter: .init(currencySettings: .init())))
+                                                     totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                                      currencyFormatter: .init(currencySettings: .init())))
+        )
     }
 }
 #endif

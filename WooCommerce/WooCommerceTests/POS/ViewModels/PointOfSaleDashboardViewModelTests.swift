@@ -5,7 +5,7 @@ import Combine
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
-    private var sut: PointOfSaleDashboardViewModel!
+    private var sut: PointOfSaleDashboardViewModel<MockTotalsViewModel>!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
     private var orderService: POSOrderServiceProtocol!
@@ -18,13 +18,11 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         orderService = POSOrderPreviewService()
-        mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel.OrderStage.building).eraseToAnyPublisher())
+        mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage.building).eraseToAnyPublisher())
         mockTotalsViewModel = MockTotalsViewModel()
-        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+        sut = PointOfSaleDashboardViewModel<MockTotalsViewModel>(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()),
-                                            totalsViewModel: AnyTotalsViewModel(mockTotalsViewModel),
+                                            totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel.cartViewModel)
         cancellables = []
     }
@@ -45,7 +43,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedCartCollapsedState = true
         let expectedAddMoreButtonDisabledState = false
         let expectedExitPOSButtonDisabledState = false
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+        let expectedOrderStage = PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage.building
 
         // When/Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
@@ -56,7 +54,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
     func test_start_new_transaction() {
         // Given
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+        let expectedOrderStage = PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage.building
         let expectedCartEmpty = true
         let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
         let expectedCartCollapsedState = true
@@ -76,7 +74,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Given
         let item = Self.makeItem()
         let expectedCartEmpty = false
-        let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
+        let expectedOrderStage = PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage.building
         let expectedCartCollapsedState = false
 
         // When
@@ -232,7 +230,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             .store(in: &cancellables)
 
         // Attach sink to observe changes to orderStage
-        var orderStageValue: PointOfSaleDashboardViewModel.OrderStage?
+        var orderStageValue: PointOfSaleDashboardViewModel<MockTotalsViewModel>.OrderStage?
         sut.$orderStage
             .sink { orderStage in
                 orderStageValue = orderStage

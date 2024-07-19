@@ -186,7 +186,10 @@ private extension AnalyticsHubView {
         case .giftCards:
             AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
         case .googleCampaigns:
-            GoogleAdsCampaignReportCard(viewModel: viewModel.googleCampaignsCard)
+            GoogleAdsCampaignReportCard(viewModel: viewModel.googleCampaignsCard,
+                                        onCreateNewCampaign: {
+                onCreateNewGoogleAdsCampaign?()
+            })
         }
     }
 }

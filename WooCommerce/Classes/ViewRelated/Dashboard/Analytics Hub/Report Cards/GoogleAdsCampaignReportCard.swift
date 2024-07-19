@@ -9,51 +9,62 @@ struct GoogleAdsCampaignReportCard: View {
     /// View model to drive the view content.
     @ObservedObject var viewModel: GoogleAdsCampaignReportCardViewModel
 
+    /// Closure to perform when new Google Ads campaign is created.
+    let onCreateNewCampaign: () -> Void
+
     var body: some View {
-        VStack(alignment: .leading) {
+        if viewModel.showCampaignCTA {
+            AnalyticsCTACard(title: Localization.title,
+                             message: Localization.CallToAction.message,
+                             buttonLabel: Localization.CallToAction.button,
+                             isLoading: .constant(false),
+                             buttonAction: onCreateNewCampaign)
+        } else {
+            VStack(alignment: .leading) {
 
-            Text(Localization.title)
-                .foregroundColor(Color(.text))
-                .footnoteStyle()
+                Text(Localization.title)
+                    .foregroundColor(Color(.text))
+                    .footnoteStyle()
 
-            StatSelectionBar(allStats: viewModel.allStats, titleKeyPath: \.displayName, onSelection: viewModel.onSelection, selectedStat: $viewModel.selectedStat)
-                .padding(.top, Layout.titleSpacing)
-                .padding(.bottom, Layout.columnSpacing)
+                StatSelectionBar(allStats: viewModel.allStats, titleKeyPath: \.displayName, onSelection: viewModel.onSelection, selectedStat: $viewModel.selectedStat)
+                    .padding(.top, Layout.titleSpacing)
+                    .padding(.bottom, Layout.columnSpacing)
 
-            HStack {
-                Text(viewModel.statValue)
-                    .titleStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack {
+                    Text(viewModel.statValue)
+                        .titleStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                        .shimmering(active: viewModel.isRedacted)
+
+                    DeltaTag(value: viewModel.deltaValue,
+                             backgroundColor: viewModel.deltaBackgroundColor,
+                             textColor: viewModel.deltaTextColor)
                     .redacted(reason: viewModel.isRedacted ? .placeholder : [])
                     .shimmering(active: viewModel.isRedacted)
+                }
 
-                DeltaTag(value: viewModel.deltaValue,
-                         backgroundColor: viewModel.deltaBackgroundColor,
-                         textColor: viewModel.deltaTextColor)
-                    .redacted(reason: viewModel.isRedacted ? .placeholder : [])
-                    .shimmering(active: viewModel.isRedacted)
-            }
-
-            TopPerformersView(itemTitle: Localization.campaignsTitle.localizedCapitalized,
-                              valueTitle: viewModel.selectedStat.displayName,
-                              rows: viewModel.campaignsData,
-                              isRedacted: viewModel.isRedacted)
+                TopPerformersView(itemTitle: Localization.campaignsTitle.localizedCapitalized,
+                                  valueTitle: viewModel.selectedStat.displayName,
+                                  rows: viewModel.campaignsData,
+                                  isRedacted: viewModel.isRedacted)
                 .padding(.vertical, Layout.columnSpacing)
                 .renderedIf(!viewModel.showCampaignsError)
 
-            if viewModel.showCampaignsError {
-                Text(Localization.errorMessage)
-                    .foregroundColor(Color(.text))
-                    .subheadlineStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, Layout.columnSpacing)
-            }
+                if viewModel.showCampaignsError {
+                    Text(Localization.errorMessage)
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, Layout.columnSpacing)
+                }
 
-            if let reportViewModel = viewModel.reportViewModel {
-                AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                if let reportViewModel = viewModel.reportViewModel {
+                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
+                }
             }
+            .padding(Layout.cardPadding)
         }
-        .padding(Layout.cardPadding)
     }
 }
 
@@ -75,6 +86,15 @@ private extension GoogleAdsCampaignReportCard {
         static let errorMessage = NSLocalizedString("analyticsHub.googleCampaigns.noCampaignStats",
                                                     value: "Unable to load Google campaigns analytics",
                                                     comment: "Text displayed when there is an error loading Google Ads campaigns stats data.")
+
+        enum CallToAction {
+            static let message = NSLocalizedString("analyticsHub.googleCampaignsCTA.message",
+                                                   value: "Drive sales and generate more traffic with Google Ads.",
+                                                   comment: "Text displayed in the Analytics Hub when there are no Google Ads campaign analytics.")
+            static let button = NSLocalizedString("analyticsHub.googleCampaignCTA.button",
+                                                  value: "Add paid campaign",
+                                                  comment: "Label for button to create a paid Google Ads campaign.")
+        }
     }
 }
 
@@ -87,7 +107,7 @@ struct GoogleAdsCampaignReportCardPreviews: PreviewProvider {
                                                              timeRange: .today,
                                                              usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter(),
                                                              storeAdminURL: "https://woocommerce.com")
-        GoogleAdsCampaignReportCard(viewModel: viewModel)
+        GoogleAdsCampaignReportCard(viewModel: viewModel, onCreateNewCampaign: {})
             .addingTopAndBottomDividers()
             .previewLayout(.sizeThatFits)
 
@@ -96,7 +116,7 @@ struct GoogleAdsCampaignReportCardPreviews: PreviewProvider {
                                                                   timeRange: .today,
                                                                   usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter(),
                                                                   storeAdminURL: "https://woocommerce.com")
-        GoogleAdsCampaignReportCard(viewModel: emptyViewModel)
+        GoogleAdsCampaignReportCard(viewModel: emptyViewModel, onCreateNewCampaign: {})
             .addingTopAndBottomDividers()
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")

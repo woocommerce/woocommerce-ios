@@ -4,7 +4,6 @@ import protocol Yosemite.POSItemProvider
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import protocol Yosemite.POSOrderServiceProtocol
-import struct Yosemite.POSOrder
 import Combine
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem

@@ -43,9 +43,11 @@ final class TotalsViewModelTests: XCTestCase {
 
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
-        let order: Order = orderService.order(from: sut.order!)
 
         // When
+        guard let order = sut.order else {
+            return XCTFail("Expected order. Got nothing")
+        }
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
         sut.startNewTransaction()
 

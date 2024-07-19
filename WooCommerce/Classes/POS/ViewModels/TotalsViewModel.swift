@@ -3,7 +3,6 @@ import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
 import struct Yosemite.POSCartItem
-import struct Yosemite.POSOrder
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -23,7 +22,9 @@ final class TotalsViewModel: ObservableObject {
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    @Published private(set) var order: POSOrder?
+    @Published private(set) var order: Order? = nil
+    private var totalsCalculator: OrderTotalsCalculator? = nil
+
     @Published private(set) var isSyncingOrder: Bool = false
 
     @Published private(set) var paymentState: PaymentState = .acceptingCard
@@ -31,8 +32,9 @@ final class TotalsViewModel: ObservableObject {
     @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
     // MARK: - Order total amounts
-
-    @Published private(set) var formattedCartTotalPrice: String?
+    var formattedCartTotalPrice: String? {
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
+    }
 
     var formattedOrderTotalPrice: String? {
         formattedPrice(order?.total, currency: order?.currency)
@@ -59,7 +61,11 @@ final class TotalsViewModel: ObservableObject {
         isSyncingOrder
     }
 
-    var isPriceFieldRedacted: Bool {
+    var isSubtotalFieldRedacted: Bool {
+        formattedCartTotalPrice == nil || isSyncingOrder
+    }
+
+    var isTaxFieldRedacted: Bool {
         formattedOrderTotalTaxPrice == nil || isSyncingOrder
     }
 
@@ -88,7 +94,6 @@ final class TotalsViewModel: ObservableObject {
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
         Task { @MainActor in
-            calculateCartTotal(cartItems: cartItems)
             await syncOrder(for: cartItems, allItems: allItems)
         }
     }
@@ -131,10 +136,10 @@ extension TotalsViewModel {
         }
         do {
             isSyncingOrder = true
-            let order = try await orderService.syncOrder(cart: cart,
+            let syncedOrder = try await orderService.syncOrder(cart: cart,
                                                          order: order,
                                                          allProducts: allItems)
-            self.order = order
+            self.updateOrder(syncedOrder)
             isSyncingOrder = false
             // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()
@@ -144,16 +149,9 @@ extension TotalsViewModel {
         }
     }
 
-    func calculateCartTotal(cartItems: [CartItem]) {
-        formattedCartTotalPrice = { cartItems in
-            let totalValue: Decimal = cartItems.reduce(0) { partialResult, cartItem in
-                let itemPrice = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).convertToDecimal(cartItem.item.price) ?? 0
-                let quantity = cartItem.quantity
-                let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                return partialResult + total
-            }
-            return currencyFormatter.formatAmount(totalValue)
-        }(cartItems)
+    private func updateOrder(_ updatedOrder: Order) {
+        self.order = updatedOrder
+        totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -179,8 +177,7 @@ private extension TotalsViewModel {
             return
         }
         do {
-            let finalOrder = orderService.order(from: order)
-            try await collectPayment(for: finalOrder)
+            try await collectPayment(for: order)
         } catch {
             DDLogError("Error taking payment: \(error)")
         }

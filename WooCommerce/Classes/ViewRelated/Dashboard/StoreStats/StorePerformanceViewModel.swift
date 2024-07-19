@@ -81,6 +81,18 @@ final class StorePerformanceViewModel: ObservableObject {
         return syncingData && periodViewModel?.noDataFound == true
     }
 
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
+    }
+
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
@@ -429,10 +441,12 @@ private extension StorePerformanceViewModel {
             }
 
             // rethrow any failure.
-            for try await result in group {
+            for try await _ in group {
                 // no-op if result doesn't throw any error
             }
         }
+
+        DashboardTimestampStore.saveTimestamp(.now, for: .performance, at: timeRange.timestampRange)
     }
 
     /// Syncs store stats for dashboard UI.

@@ -60,7 +60,7 @@ private extension ProductVariationFormActionsFactory {
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
-        let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
+        let canEditInventorySettingsRow = editable
         let subscriptionOrPriceRow: ProductFormEditAction? = {
             if shouldShowPriceSettingsRow {
                 return .priceSettings(editable: editable, hideSeparator: shouldShowNoPriceWarningRow)

@@ -126,13 +126,15 @@ private extension AnalyticsHubView {
         case .orders:
             AnalyticsReportCard(viewModel: viewModel.ordersCard)
         case .products:
-            AnalyticsItemsSoldCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
+            AnalyticsTopPerformersCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
             AnalyticsSessionsReportCard(viewModel: viewModel.sessionsCard)
         case .bundles:
-            AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
+            AnalyticsTopPerformersCard(bundlesViewModel: viewModel.bundlesCard)
         case .giftCards:
             AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
+        case .googleCampaigns:
+            GoogleAdsCampaignReportCard(viewModel: viewModel.googleCampaignsCard)
         }
     }
 }

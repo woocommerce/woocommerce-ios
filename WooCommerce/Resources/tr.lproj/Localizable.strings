@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-10 12:54:03+0000 */
+/* Translation-Revision-Date: 2024-07-10 16:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Etkin";
 
@@ -539,12 +538,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Mağazanızda görünmesi için varyasyonunuza bir fiyat ekleyin";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Ürün ekleyin";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Bir ürünü ve ayrıntılarını manuel olarak ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
@@ -588,8 +583,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Ürününüzün internette bulunmasına yardımcı olmak için temel özellikler, avantajlar veya ayrıntılar ekleyin.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "El ile ekle";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -1155,6 +1149,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
 
+/* Display label for bookable product type. */
+"Bookable" = "Rezerve edilebilir";
+
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Özel tekliflerle satışları artırın";
 
@@ -1391,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Yükseltmeyi İptal Et";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "İptal edildi";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -2126,9 +2120,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Seçilen ürünler için indirim yüzdesini oluşturun";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Yapay zeka ile ürün oluşturun";
 
 /* Title of the store creation web view. */
 "Create a store" = "Mağaza oluştur";
@@ -3239,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Mağaza yöneticinizde %1$@ kurulumunu tamamlayın";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "Tamamlandı";
 
 /* Country option for a site address. */
 "Finland" = "Finlandiya";
@@ -5378,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "Bekleyen";
 
 /* Display label for the subscription status type */
@@ -5683,9 +5670,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Destekleyen:";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Yapay zeka destekli.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Yapay zeka destekli. %1$@.";
 
@@ -5801,14 +5785,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Gizlilik Ayarları";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Özel";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Özel not";
-
-/* Display label for the product's private status */
-"Privately published" = "Özel olarak yayınlanan";
 
 /* Display label for processing order status. */
 "Processing" = "İşlemde";
@@ -6022,9 +6004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Çeyrekten tarihe";
 
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Ayrıntıları sizin için hızlıca oluşturur";
-
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Güzel bir çevrimiçi mağaza ile hızla işinizi kurup satış yapın.";
 
@@ -6158,9 +6137,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Normal fiyat: %@";
-
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Reddedildi";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -6522,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programlı satış";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Zamanlandı";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Arama";
@@ -8476,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Ödeme işlenemiyor. Ödeme sistemine bağlanamadık. Bu hata devam ederse lütfen destekle iletişime geçin.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Ödeme işlenemiyor. En yeni sipariş ayrıntılarını alamadık. Lütfen ağ bağlantınızı kontrol edip tekrar deneyin.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Ödeme işlenemiyor. En yeni sipariş ayrıntılarını alamadık. Lütfen ağ bağlantınızı kontrol edip tekrar deneyin. Temeldeki hata: %1$@";
 
@@ -8566,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "Amerika Birleşik Devletleri Virjin Adaları";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Bilinmiyor";
@@ -9517,9 +9486,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Daha fazla bilgi alın.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "İptal Et";
 
@@ -9541,11 +9507,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Vergileri Alın";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Bir ürün türü seç";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Sizin için ürün ayrıntıları oluşturalım";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Yapay zeka ile ürün oluşturun";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Daha fazla bilgi alın.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Yapay zeka destekli.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Bir ürünü ve ayrıntılarını manuel olarak ekleyin";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Manuel olarak ekle";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Bir ürün türü seç";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Ürün Oluştur";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Mevcut bir mağazayı bağla";
+
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "Gelişigüzel";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "İkna edici";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "Çiçekli";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "Resmi";
 
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "Ürün Paketleri Raporu";
@@ -9555,6 +9554,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "Hediye Kartları";
+
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Google Kampanyaları";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Siparişler";
@@ -9594,6 +9596,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Net Tutar";
+
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "Kampanyalar";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "Google kampanya analizleri yüklenemedi";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "Programlar Raporu";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "Harcama: %@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Google Kampanyaları";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "Toplam Satış";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack Stats'i Etkinleştir";
@@ -9869,6 +9889,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Tekrar dene";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Hedef Kitle";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Bütçe";
 
@@ -9911,6 +9934,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Hemen Satın Al";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Yapay Zeka Tarafından Önerildi";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Önizleme";
 
@@ -9949,6 +9975,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Görünürlüğü artırın ve ürünlerinizin hızla satılmasını sağlayın.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Etkin";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "İptal Edildi";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Tamamlandı";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "Denetlemede";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Reddedildi";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Zamanlandı";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Bilinmiyor";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Reklam Politikası";
@@ -10017,7 +10064,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Blaze'in nasıl çalıştığını öğrenin";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Dakikalar içinde reklam yayınlayın; deneyim veya büyük bir bütçeye gerek yok, yalnızca ayda 5 ABD dolarından başlayan fiyatlarla.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Dakikalar içinde reklam yayınlayın; deneyim veya büyük bir bütçeye gerek yok, yalnızca günlük 5 ABD dolarından başlayan fiyatlarla.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Hızlı başlangıç, büyük etki";
@@ -10260,19 +10307,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Müşteriye göndermeniz gerekebilecek benzersiz bir fiziksel ürün";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Basit fiziksel ürün";
+"bottomSheetProductType.simpleProduct.title" = "Fiziksel ürün";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Hizmetler, indirilebilir kitaplar, müzik veya videolar gibi benzersiz bir dijital ürün";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Basit sanal ürün";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Sanal ürün";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Tekrarlanan ödemeler sağlayan benzersiz bir ürün aboneliği";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Basit abonelik ürünü";
+"bottomSheetProductType.subscriptionProduct.title" = "Kolay abonelik";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Renk veya beden gibi çeşitleri olan bir ürün";
@@ -10284,7 +10331,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Varyasyonlar içeren bir ürün aboneliği";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Değişken abonelik ürünü";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Değişken abonelik";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "İptal et";
@@ -10352,6 +10399,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Ödemenin başlangıcından itibaren sipariş toplamı değişti. Lütfen geri gidin ve siparişin doğru olduğunu kontrol edin, ardından ödemeyi tekrar deneyin.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze kampanyası için ürün seçer.";
@@ -10452,11 +10502,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Ortalama sipariş değeri";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "FATURA ADRESİ";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Ara";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Şehir";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Kopyala";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "E-posta adresini kopyala";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Numarayı kopyala";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Ülke";
@@ -10482,11 +10544,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "KONUM";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Mesaj";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Siparişler";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "SİPARİŞLER";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Müşteriyle telefon üzerinden iletişime geçin";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Telefon numarası yok";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Posta kodu";
@@ -10500,11 +10571,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "E-posta";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "GÖNDERİM ADRESİ";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Telegram mesajı gönder";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Toplam harcama";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Kullanıcı adı";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "WhatsApp mesajı gönder";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Yeni sipariş oluştur";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Müşteri bulunamadı";
@@ -10762,6 +10845,18 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Ürün";
 
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "WooCommerce İçin Google";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "Tamam";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "Yeni kampanyanız oluşturuldu. Önümüzdeki günlerde satışlarınızla ilgili harika gelişmeler olacak!";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "Her Şey Hazır!";
+
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Müşteriler";
 
@@ -10770,6 +10865,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Ürün İncelemesi";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "WooCommerce için Google";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "Google Ads ile satışları teşvik edin ve trafiği artırın";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Daha iyi olabilirdi";
@@ -11248,6 +11349,231 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Eklentiler";
 
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "İptal Et";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Kart okuyucunuzu açmak için güç düğmesine kısa basın.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Okuyucu taranıyor";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Ödemeyi yeniden dene";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "Ödeme durumunu kontrol etmek için tam sipariş bilgisi yüklenemedi. Lütfen en son siparişi ayrı olarak kontrol edin veya yeniden deneyin.";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Daha fazla bilgi edinin";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "Ödeme durumu bilinmiyor";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.cancel.button.title" = "Ödemeyi İptal Et";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Ödeme başarısız";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Yeniden Dene";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "Ödemeyi İptal Et";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Ödeme başarısız";
+
+/* Button to cancel preparation of the reader on the Point of Sale checkout. */
+"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "İptal Et";
+
+/* Button to cancel a payment */
+"pointOfSale.cardPresent.presentCard.cancel.button.title" = "İptal Et";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Ödemek için kartı yerleştirin";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Ödemek için kartı gösterin";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Ödemek için karta dokunun";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Ödemek için karta dokunun veya kartı yerleştirin";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Ödeme yapmak için dokunun, ekleyin veya kaydırın";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Okuyucu hazır";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Kapat";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Cihaz Ayarlarını Aç";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Bluetooth izni gerekli";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "İptal Et";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "Okuyucunuza bağlanılamadı";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Tekrar dene";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "İptal Et";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "Okuyucunun pili kritik düzeyde düşük. Lütfen okuyucuyu şarj edin veya farklı bir okuyucu deneyin.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Yeniden Dene";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Okuyucunuza bağlanılamadı";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Kapat";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Bağlantı başarısız oldu";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "İptal Et";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Adres Girin";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Güncellemeden Sonra Tekrar Dene";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Devam etmek için lütfen mağaza adresinizi düzeltin";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "İptal Et";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Mağazanızın posta kodunu wp-admin > WooCommerce > Ayarlar (Genel) altından ayarlayabilirsiniz";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Güncellemeden Sonra Tekrar Dene";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Lütfen mağazanızın posta kodunu düzeltin";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Lütfen bekleyin...";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Okuyucuya bağlanılıyor";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "İptal Et";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Bağla";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Birkaç okuyucu bulundu";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Okuyucular taranıyor";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "İptal Et";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Okuyucuya Bağlan";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Aramaya Devam Et";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title" = "%1$@ okuyucusuna bağlanmak istiyor musunuz?";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "İptal Et";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Güncelleme tamamlandıktan sonra okuyucunuz otomatik olarak yeniden başlayacak ve yeniden bağlanacaktır.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% tamamlandı";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Yazılım güncelleniyor";
+
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "Alınan ödemedeki ve yenilenen siparişteki bir hatadan dolayı tam sipariş bilgisi yüklenemedi. Düşük veya fazla ücretlendirmeden kaçınmak için lütfen ilerlemeden önce en son siparişi ayrı olarak kontrol edin.";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Lütfen sipariş ödeme durumunu kontrol edin";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Anladım";
+
+/* Label for a dismiss button when a software update has finished */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Kapat";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% tamamlandı";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Yazılım güncellendi";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "İptal Et";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Yeniden Dene";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Okuyucunuzun yazılımı güncellenemedi";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Okuyucunun pil şarj düzeyi %.0f%% olduğundan okuyucu yazılımı güncellenemedi. Lütfen tekrar denemeden önce okuyucuyu %%50'den fazla şarj edin.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "İptal Et";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Okuyucunun pili zayıf olduğundan okuyucu yazılımı güncellenemedi. Lütfen tekrar denemeden önce okuyucuyu %50'den fazla şarj edin.";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Lütfen okuyucuyu şarj edin";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Kapat";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "Okuyucunuzun yazılımı güncellenemedi";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Yine de iptal et";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Ödeme almak için kart okuyucu yazılımınızın güncellenmesi gerekiyor. İptal ederseniz okuyucu bağlantınız engellenir.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% tamamlandı";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Yazılım güncelleniyor";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Kapat";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Okuyucuya bağlanılamadı";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Kapat";
 
@@ -11256,6 +11582,51 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "gizli";
+
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "Ürün Ayrıntıları Oluştur";
+
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "Fotoğraf seçildi";
+
+/* Title of button which removes selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "Fotoğrafı Kaldır";
+
+/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "Fotoğrafı Değiştir";
+
+/* Title of button which opens the selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "Fotoğrafı Görüntüle";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "Örnek: Siyah pamuklu tişört, yumuşak kumaş, dayanıklı dikiş, benzersiz tasarım";
+
+/* Button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Ürün fotoğrafından metinleri okuyun";
+
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
+"productCreationAIStartingInfoView.subtitle" = "Ürününüzün ne olduğu, neyin ürününüzü benzersiz kıldığını bize bildirin, ardından Yapay Zeka yeteneğini konuştursun.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Başlangıç bilgisi";
+
+/* Title of the button to dismiss the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.done" = "Tamam";
+
+/* Title of the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "Paket fotoğrafı";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "Metin algılanmadı. Lütfen başka bir ambalaj fotoğrafı seçin veya ürün ayrıntılarını manuel olarak girin.";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "Fotoğraf kaldırıldı";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "Geri al";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "Fotoğraf taranırken hata oluştu. Lütfen başka bir ambalaj fotoğrafı seçin veya ürün ayrıntılarını manuel olarak girin.";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Bir dakikanız var mı? Hızlı bir geri bildirim göndererek yapay zeka destekli özelliklerimizi geliştirmemize yardımcı olun.";
@@ -11271,6 +11642,72 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Daha Sonra Hatırlat";
+
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Diğer";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standart";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Abonelik";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Özel olarak yayınlandı";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "İptal Et";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "Kategoriler";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "Ayrıntılar";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "Bu sonuç iyi mi?";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "Yeniden Oluştur";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "Stokta";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "Stok";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "Fiyat";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "Ürününüzü açıklayın";
+
+/* Title of the name and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.productNameAndDescription" = "Ad ve Açıklama";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "Ürününüzü adlandırın";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "Ürün türü";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "Tekrar dene";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "Taslak olarak kaydet";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "Gönderim";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "Kaydetmeden önce ürün ayrıntılarınızı düzenleyebilir veya yeniden oluşturabilirsiniz.";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "Etiketler";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "Önizleme";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Dosya yüklenirken hata oldu. Lütfen tekrar deneyin.";
@@ -11337,6 +11774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Kayıt Ücreti";
+
+/* Message explaining unsupported bookable products for order creation */
+"productSelectorViewModel.bookableProductUnsupportedReason" = "Rezerve edilebilir ürünler, sipariş oluşturma için desteklenmiyor";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld ürün seçildi";
@@ -11478,6 +11918,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "İptal et";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "Tamam";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "Görsel seçilemedi";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Ödeme Tamamlandı";
@@ -11781,6 +12227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "%1$@ temasını kullan";
 
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "Ses tonu";
+
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Ekle";
 
@@ -11832,8 +12281,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhone'unuzda Woo'yu açın, mağazanızı bağlayın ve Watch'ınızı yakında tutun";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "Mağazanın verileri yüklenriken bir hata oluştu";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Çalışmıyor";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Saatinizin internete bağlı ve telefonunuzun yakında olduğundan emin olun.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Mağaza verileri yüklenemedi";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Tekrar dene";
@@ -11862,8 +12317,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "İlk siparişiniz bekleniyor!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "Sipariş listesi yüklenirken bir hata oluştu";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Saatinizin internete bağlı ve telefonunuzun yakında olduğundan emin olun.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Siparişler yüklenemedi";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Tekrar dene";

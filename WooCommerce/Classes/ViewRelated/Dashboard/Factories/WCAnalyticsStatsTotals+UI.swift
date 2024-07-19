@@ -89,3 +89,31 @@ extension GiftCardStatsTotals: ParsableStatsTotals {
         }
     }
 }
+
+// MARK: - Parsable Google Ads Campaigns Stats
+
+extension GoogleAdsCampaignStatsTotals: ParsableStatsTotals {
+    /// Represents a type of Google Ads campaigns total data
+    enum TotalData: String, CaseIterable {
+        case sales
+        case spend
+        case clicks
+        case impressions
+        case conversions
+    }
+
+    func getDoubleValue(for data: TotalData) -> Double {
+        switch data {
+        case .sales:
+            ((sales ?? 0) as NSNumber).doubleValue
+        case .spend:
+            ((spend ?? 0) as NSNumber).doubleValue
+        case .clicks:
+            Double(clicks ?? 0)
+        case .impressions:
+            Double(impressions ?? 0)
+        case .conversions:
+            ((conversions ?? 0) as NSNumber).doubleValue
+        }
+    }
+}

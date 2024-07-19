@@ -87,6 +87,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         syncingError = nil
         updateUIInLoadingState()
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .topPerformers))
         do {
             try await syncTopEarnersStats()
             syncingDidFinishPublisher.send(nil)
@@ -156,8 +157,11 @@ private extension TopPerformersDashboardViewModel {
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] error in
                 guard let self else { return }
-                if error == nil {
+                if let error {
+                    analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .topPerformers, error: error))
+                } else {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+                    analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .topPerformers))
                 }
                 waitingTracker?.end()
             }

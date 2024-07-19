@@ -4,22 +4,15 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
 
     var body: some View {
-        HStack {
-            VStack {
-                Text(viewModel.title)
-                Text(viewModel.message)
-            }
-
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-        }
+        POSCardPresentPaymentMessageView(viewModel: .init(imageName: viewModel.imageName,
+                                                          title: viewModel.title,
+                                                          message: viewModel.message))
     }
 }
 
 #Preview {
     PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
-            inputMethods: [.tap, .insert],
-            cancelAction: {}
+            inputMethods: [.tap, .insert]
         ))
 }

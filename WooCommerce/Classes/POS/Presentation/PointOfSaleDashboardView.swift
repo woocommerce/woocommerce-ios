@@ -4,9 +4,15 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = viewModel.totalsViewModel
+    }
+
+    private var isCartShown: Bool {
+        !viewModel.itemListViewModel.isEmptyOrError
     }
 
     var body: some View {
@@ -14,42 +20,25 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    productGridView
-                    Spacer()
-                    if viewModel.isCartCollapsed {
-                        collapsedCartView
-                    } else {
-                        cartView
-                    }
-                case .finalizing:
-                    cartView
-                    Spacer()
-                    VStack {
-                        totalsView
-                        // TODO: replace temporary inline message UI based on design
-                        if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
-                            switch inlinePaymentMessage {
-                            case .preparingForPayment(let viewModel):
-                                PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
-                            case .tapSwipeOrInsertCard(let viewModel):
-                                PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
-                            case .processing:
-                                Text("processing...")
-                            case .displayReaderMessage(let viewModel):
-                                PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
-                            case .paymentSuccess:
-                                Text("Payment successful!")
-                            case .paymentError(let viewModel):
-                                PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
-                            case .paymentErrorNonRetryable(let viewModel):
-                                PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
-                            case .cancelledOnReader:
-                                Text("Payment cancelled on reader")
-                            }
+                    GeometryReader { geometry in
+                        HStack {
+                            productListView
+                            cartView
+                                .renderedIf(isCartShown)
+                                .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }
-                    // TODO: remove this after replacing temporary inline message UI based on design
-                    .background(Color.orange)
+                case .finalizing:
+                    GeometryReader { geometry in
+                        HStack {
+                            if !viewModel.isTotalsViewFullScreen {
+                                cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                                Spacer()
+                            }
+                            totalsView
+                        }
+                    }
                 }
             }
             .padding()
@@ -58,31 +47,36 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
+                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
             }
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
         .toolbarBackground(.visible, for: .bottomBar)
-        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
             } else {
-                switch viewModel.cardPresentPaymentEvent {
-                case let .showReaderList(readerIDs, selectionHandler):
-                    // TODO: make this an instance of `showAlert` so we can handle it above too.
-                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
-                        selectionHandler(readerID)
-                    }, cancelSearch: {
-                        selectionHandler(nil)
-                    })
+                switch totalsViewModel.cardPresentPaymentEvent {
                 case .idle,
                         .show, // handled above
                         .showOnboarding:
-                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
         })
+        .task {
+            await viewModel.itemListViewModel.populatePointOfSaleItems()
+        }
+    }
+}
+
+private extension PointOfSaleDashboardView {
+    enum Constants {
+        // For the moment we're just considering landscape for the POS mode
+        // https://github.com/woocommerce/woocommerce-ios/issues/13251
+        static let cartWidth: CGFloat = 0.35
     }
 }
 
@@ -93,19 +87,20 @@ private extension PointOfSaleDashboardView {
     }
 
     var cartView: some View {
-        CartView(viewModel: viewModel)
-            .frame(maxWidth: .infinity)
+        CartView(viewModel: viewModel,
+                 cartViewModel: viewModel.cartViewModel)
     }
 
     var totalsView: some View {
-        TotalsView(viewModel: viewModel)
-            .background(Color(UIColor.systemBackground))
-            .frame(maxWidth: .infinity)
+        TotalsView(viewModel: viewModel,
+                   totalsViewModel: viewModel.totalsViewModel)
+        .background(Color(UIColor.systemBackground))
+        .frame(maxWidth: .infinity)
+        .cornerRadius(16)
     }
 
-    var productGridView: some View {
-        ItemListView(viewModel: viewModel)
-            .frame(maxWidth: .infinity)
+    var productListView: some View {
+        ItemListView(viewModel: viewModel.itemListViewModel)
     }
 }
 
@@ -116,8 +111,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Idle"
         case .show:
             return "Event"
-        case .showReaderList(let readerIDs, _):
-            return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
         }
@@ -128,8 +121,10 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                     orderService: POSOrderPreviewService(),
+                                                     currencyFormatter: .init(currencySettings: .init())))
     }
 }
 #endif

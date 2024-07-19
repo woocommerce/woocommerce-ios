@@ -14,9 +14,13 @@ public enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Displays the Inbox option under the Hub Menu.
+    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
     ///
     case inbox
+
+    /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
+    ///
+    case showInboxCTA
 
     /// Displays the OrderForm side by side with the Product Selector
     ///
@@ -108,14 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables generating product description using AI from product description editor.
-    ///
-    case productDescriptionAI
-
-    /// Enables generating product description using AI from store onboarding.
-    ///
-    case productDescriptionAIFromStoreOnboarding
-
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
@@ -128,10 +124,6 @@ public enum FeatureFlag: Int {
     ///
     case euShippingNotification
 
-    /// Enables generating share product content using AI
-    ///
-    case shareProductAI
-
     /// Enables the improvements in the customer selection logic when creating an order
     ///
     case betterCustomerSelectionInOrder
@@ -139,10 +131,6 @@ public enum FeatureFlag: Int {
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping
-
-    /// Enables product creation with AI.
-    ///
-    case productCreationAI
 
     /// Enables gift card support in order creation/editing
     ///
@@ -164,17 +152,9 @@ public enum FeatureFlag: Int {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables creating Subscription products
-    ///
-    case subscriptionProducts
-
     /// Enables the Scan to Update Inventory feature.
     ///
     case scanToUpdateInventory
-
-    /// Enables Blaze native campaign creation.
-    ///
-    case blazei3NativeCampaignCreation
 
     /// Enables backend receipt generation for all payment methods
     ///
@@ -196,7 +176,19 @@ public enum FeatureFlag: Int {
     ///
     case displayPointOfSaleToggle
 
-    /// Enables new dashboard cards on the My Store screen.
+    /// Enables M1 updates of product creation AI version 2
     ///
-    case dynamicDashboardM2
+    case productCreationAIv2M1
+
+    /// Enables M3 updates of product creation AI version 2
+    ///
+    case productCreationAIv2M3
+
+    /// Enables Google ads campaign creation on web view
+    ///
+    case googleAdsCampaignCreationOnWebView
+
+    /// Code hidden while the background tasks feature is developed
+    ///
+    case backgroundTasks
 }

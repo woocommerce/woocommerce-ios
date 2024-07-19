@@ -31,6 +31,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
         case reviews
         case lastOrders
         case coupons
+        case googleAds
     }
 
     /// Card's availability state that determines whether it can be displayed and used.

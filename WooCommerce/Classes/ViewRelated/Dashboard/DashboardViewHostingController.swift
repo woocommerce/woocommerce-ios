@@ -11,6 +11,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
+    private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
 
@@ -51,6 +52,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureMostActiveCouponsView()
         configureLastOrdersView()
         configureReviewsCard()
+        configureGoogleAdsCard()
     }
 
     @available(*, unavailable)
@@ -60,6 +62,9 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        ServiceLocator.analytics.track(.dashboardLoaded)
+
         registerUserActivity()
         presentPrivacyBannerIfNeeded()
         observeModalJustInTimeMessages()
@@ -296,6 +301,49 @@ private extension DashboardViewHostingController {
             let viewController = ReviewsViewController(siteID: viewModel.siteID)
             show(viewController, sender: self)
         }
+    }
+}
+
+// MARK: Google Ads campaigns
+private extension DashboardViewHostingController {
+    func configureGoogleAdsCard() {
+        rootView.onCreateNewGoogleAdsCampaign = { [weak self] in
+            self?.startGoogleAdsCampaignCoordinator(forCampaignCreation: true)
+        }
+
+        rootView.onShowAllGoogleAdsCampaigns = { [weak self] in
+            self?.startGoogleAdsCampaignCoordinator(forCampaignCreation: false)
+        }
+    }
+
+    func startGoogleAdsCampaignCoordinator(forCampaignCreation: Bool) {
+        guard let site = viewModel.stores.sessionManager.defaultSite,
+              let navigationController else {
+            return
+        }
+
+        let coordinator = GoogleAdsCampaignCoordinator(
+            siteID: viewModel.siteID,
+            siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
+            source: .myStore,
+            shouldStartCampaignCreation: forCampaignCreation,
+            shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
+            navigationController: navigationController,
+            onCompletion: { [weak self] createdNewCampaign in
+                if createdNewCampaign {
+                    self?.viewModel.googleAdsDashboardCardViewModel.reloadCard()
+                }
+            }
+        )
+        coordinator.start()
+        googleAdsCampaignCoordinator = coordinator
+
+        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.hasPaidCampaigns
+        ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
+            source: .myStore,
+            type: forCampaignCreation ? .campaignCreation : .dashboard,
+            hasCampaigns: hasCampaigns
+        ))
     }
 }
 

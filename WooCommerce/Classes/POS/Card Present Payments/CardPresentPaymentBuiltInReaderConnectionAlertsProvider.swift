@@ -31,6 +31,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
@@ -40,8 +41,9 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                 endSearch: cancelSearch)
         }
         return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
-                                       retrySearch: retrySearch,
-                                       endSearch: cancelSearch)
+                                              showsInAuthenticatedWebView: showsInAuthenticatedWebView,
+                                              retrySearch: retrySearch,
+                                              endSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
@@ -52,8 +54,12 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .updateFailed(tryAgain: tryAgain,
-                      cancelUpdate: close)
+        if let tryAgain {
+            .updateFailed(tryAgain: tryAgain,
+                          cancelUpdate: close)
+        } else {
+            .updateFailedNonRetryable(cancelUpdate: close)
+        }
     }
 
     func updateProgress(requiredUpdate: Bool,

@@ -61,7 +61,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
-        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
+        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
         let noticePresenter: NoticePresenter
@@ -71,7 +71,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
-             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -142,8 +142,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private func refreshDepositSummary() async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
-        await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
-                                                                         pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
+              let depositService = dependencies.wooPaymentsDepositService,
+              await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
+                                                                               pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
             shouldShowDepositSummary = false
             return
         }
@@ -154,7 +155,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             if depositViewModel == nil {
                 isLoadingDepositSummary = true
             }
-            let depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+            let depositCurrencyViewModels = try await depositService.fetchDepositsOverview().map({
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
             isLoadingDepositSummary = false
@@ -213,7 +214,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
         dependencies.onboardingUseCase.clearPluginSelection()
         dependencies.onboardingUseCase.selectPlugin(plugin)
-        presentManagePaymentGateways = false
     }
 
     lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {

@@ -1,1 +1,2 @@
-Notre dernière version enrichit l’écran Ma boutique, avec des renseignements concernant vos commandes les plus récentes, les produits dont le stock est bas, les codes promo actifs, les avis clients, etc. Examinez de plus près les performances de votre boutique avec ces nouveautés !
+Notre dernière mise à jour améliore l’espace Statistiques en y incluant les campagnes Google Ads et introduit les Notes de la boîte de réception dans le tableau de bord dynamique et le menu principal. Profitez d’une meilleure expérience avec l’application grâce à notre dernière mise à jour !
+

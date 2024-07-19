@@ -29,9 +29,6 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     private weak var viewController: UIViewController?
 
-    /// Store creation coordinator in the logged-out state.
-    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
-
     private(set) lazy var auxiliaryView: UIView? = {
         let button = UIButton(type: .custom)
         button.applyLinkButtonStyle(enableMultipleLines: true)

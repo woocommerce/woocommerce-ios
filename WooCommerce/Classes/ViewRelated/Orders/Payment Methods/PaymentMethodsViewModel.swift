@@ -173,7 +173,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     func markOrderAsPaidByCash(with info: OrderPaidByCashInfo?) async {
         showLoadingIndicator = true
         do {
-            try await markOrderAsPaid()
+            try await markOrderCompletedWithCashOnDelivery()
             updateOrderAsynchronously()
             if let info, info.addNoteWithChangeData {
                 await addPaidByCashNoteToOrder(with: info)
@@ -332,19 +332,40 @@ final class PaymentMethodsViewModel: ObservableObject {
     }
 }
 
-// MARK: Helpers
+// MARK: - Cash Payment
+
 private extension PaymentMethodsViewModel {
-    /// Mark an order as paid and notify if successful.
+    /// Mark an order as Completed with Cash on Delivery payment method
     ///
     @MainActor
-    func markOrderAsPaid() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: .completed) { error in
-                guard let error else {
-                    return continuation.resume(returning: ())
+    func markOrderCompletedWithCashOnDelivery() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            guard let order = ordersResultController.fetchedObjects.first else {
+                DDLogError("⛔️ Order \(orderID) not found, can't mark order as paid.")
+                continuation.resume(throwing: PaymentMethodsError.orderNotFound)
+                return
+            }
+
+            let cashOnDeliveryID = PaymentGateway.Constants.cashOnDeliveryGatewayID
+            let cashOnDeliveryPaymentGateway = storage.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: cashOnDeliveryID)
+            let cashOnDeliveryTitle = cashOnDeliveryPaymentGateway?.title ?? Localization.cashOnDeliveryPaymentMethodTitle
+
+            let modifiedOrder = order.copy(status: .completed,
+                                           paymentMethodID: cashOnDeliveryID,
+                                           paymentMethodTitle: cashOnDeliveryTitle)
+            let fieldsToUpdate: [OrderUpdateField] = [.status, .paymentMethodID, .paymentMethodTitle]
+            stores.dispatch(OrderAction.updateOrder(siteID: siteID,
+                                                    order: modifiedOrder,
+                                                    giftCard: nil,
+                                                    fields: fieldsToUpdate,
+                                                    onCompletion: { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
-                continuation.resume(throwing: error)
-            })
+            }))
         }
     }
 
@@ -366,7 +387,10 @@ private extension PaymentMethodsViewModel {
         presentNoticeSubject.send(.completed)
         trackFlowCompleted(method: .cash, cardReaderType: .none)
     }
+}
 
+// MARK: - Helpers
+private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
     func bindStoreCPPState() {
@@ -493,6 +517,9 @@ private extension PaymentMethodsViewModel {
         static let orderPaidByCashNoteText = NSLocalizedString("paymentMethods.orderPaidByCashNoteText.note",
                                                                value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
                                                                comment: "Note from the cash tender view.")
+        static let cashOnDeliveryPaymentMethodTitle = NSLocalizedString("paymentMethods.cashOnDelivery.title",
+                                                                        value: "Pay in Person",
+                                                                        comment: "A title for a payment method where customer pays by cash in person")
     }
 }
 
@@ -502,6 +529,10 @@ enum PaymentMethodsNotice: Equatable {
     case created
     case completed
     case error(String)
+}
+
+enum PaymentMethodsError: Error {
+    case orderNotFound
 }
 
 private extension CardReaderDiscoveryMethod {

@@ -55,31 +55,6 @@ struct SubscriptionsView: View {
                 Text(viewModel.planInfo)
             })
 
-            VStack(alignment: .leading, spacing: Layout.sectionsSpacing) {
-                Text(Localization.experienceFeatures)
-                    .bold()
-                    .headlineStyle()
-
-                ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
-                    VStack(alignment: .leading, spacing: Layout.featureSpacing) {
-                        Text(feature.title)
-                            .foregroundColor(Color(.text))
-                            .font(.subheadline.weight(.semibold))
-                        ForEach(feature.contents, id: \.self) { text in
-                            HStack {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(Color(uiColor: .accent))
-                                Text(text)
-                                    .foregroundColor(Color(.text))
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                    .listRowSeparator(.hidden)
-                }
-            }
-            .renderedIf(viewModel.shouldShowFreeTrialFeatures)
-
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
                     onReportIssueTapped?()

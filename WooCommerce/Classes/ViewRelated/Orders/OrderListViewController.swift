@@ -14,6 +14,10 @@ protocol OrderListViewControllerDelegate: AnyObject {
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
 
+    /// Called when new the order list has been synced and the sync timestamp changes.
+    ///
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date)
+
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
@@ -25,7 +29,7 @@ protocol OrderListViewControllerDelegate: AnyObject {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-final class OrderListViewController: UIViewController, GhostableViewController {
+final class OrderListViewController: UIViewController {
     /// Callback closure when an order is selected either manually (by the user) or automatically in multi-column view.
     /// `allViewModels` is a list of order details view models that are available in a stack when the split view is collapsed
     /// so that the user can navigate between order details easily. `index` is the default index of order details to be shown.
@@ -86,12 +90,27 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private let syncingCoordinator = SyncingCoordinator()
 
     /// Timestamp for last successful sync.
+    /// Reads and feeds from `OrderListSyncBackgroundTask.latestSyncDate`
     ///
-    private var lastFullSyncTimestamp: Date?
+    private(set) var lastFullSyncTimestamp: Date {
+        get {
+            OrderListSyncBackgroundTask.latestSyncDate
+        }
+        set {
+            OrderListSyncBackgroundTask.latestSyncDate = newValue
+            delegate?.orderListViewControllerSyncTimestampChanged(newValue)
+        }
+    }
 
     /// Minimum time interval allowed between full sync.
     ///
-    private let minimalIntervalBetweenSync: TimeInterval = 30
+    private let minimalIntervalBetweenSync: TimeInterval = {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            return 30 * 60 // 30m
+        } else {
+            return 30 // 30s
+        }
+    }()
 
     /// UI Active State
     ///
@@ -276,14 +295,16 @@ private extension OrderListViewController {
     ///
     func configureViewModel() {
         viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
-            guard let self = self,
-                  // Avoid synchronizing if the view is not visible. The refresh will be handled in
-                  // `viewWillAppear` instead.
-                  self.viewIfLoaded?.window != nil else {
-                return
-            }
+            guard let self else { return }
 
-            self.syncingCoordinator.resynchronize()
+            // Avoid synchronizing if the view is not visible. The refresh will be handled in
+            // `viewWillAppear` instead.
+            guard self.viewIfLoaded?.window != nil else { return }
+
+            // Send a delegate event in case the updated happened while the app was in the background.
+            self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
+
+            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -424,13 +445,18 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
-        if pageNumber == syncingCoordinator.pageFirstIndex,
-           reason == SyncReason.viewWillAppear.rawValue,
-           let lastFullSyncTimestamp = lastFullSyncTimestamp,
-           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            onCompletion?(true)
-            return
+        // Decide if we need to continue with the sync depending on custom conditions between sync reason and latest sync
+        if let syncReason = SyncReason(rawValue: reason ?? ""), pageNumber == syncingCoordinator.pageFirstIndex {
+
+            switch syncReason {
+            case .viewWillAppear where Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync:
+                onCompletion?(true) // less than 30m from last full sync
+                return
+            case .viewWillAppear where ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks):
+                refreshControl.showRefreshAnimation(on: self.tableView)
+            default:
+                break
+            }
         }
 
         transitionToSyncingState()
@@ -473,6 +499,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 self.transitionToResultsUpdatedState()
+                self.refreshControl.endRefreshing()
                 onCompletion?(error == nil)
         }
 
@@ -648,23 +675,6 @@ extension OrderListViewController {
             }
             onCompletion?(hasBeenSelected)
         }
-    }
-}
-
-// MARK: - Placeholders & Ghostable Table
-//
-private extension OrderListViewController {
-
-    /// Renders the Placeholder Orders
-    ///
-    func displayPlaceholderOrders() {
-        displayGhostContent()
-    }
-
-    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
-    ///
-    func removePlaceholderOrders() {
-        removeGhostContent()
     }
 }
 
@@ -885,7 +895,7 @@ private extension OrderListViewController {
         case .empty:
             displayEmptyViewController()
         case .placeholder:
-            displayPlaceholderOrders()
+            break
         case .syncing:
             ensureFooterSpinnerIsStarted()
         case .results:
@@ -898,7 +908,7 @@ private extension OrderListViewController {
         case .empty:
             removeEmptyViewController()
         case .placeholder:
-            removePlaceholderOrders()
+            break
         case .syncing:
             ensureFooterSpinnerIsStopped()
         case .results:

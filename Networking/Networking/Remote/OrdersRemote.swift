@@ -220,6 +220,19 @@ public class OrdersRemote: Remote {
         }
     }
 
+    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                case let .success(order):
+                    continuation.resume(returning: order)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Updates the `OrderStatus` of a given Order.
     ///
     /// - Parameters:
@@ -285,6 +298,10 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     case .customerID:
                         params[Order.CodingKeys.customerID.rawValue] = order.customerID
+                    case .paymentMethodID:
+                        params[Order.CodingKeys.paymentMethodID.rawValue] = order.paymentMethodID
+                    case .paymentMethodTitle:
+                        params[Order.CodingKeys.paymentMethodTitle.rawValue] = order.paymentMethodTitle
                     }
                 }
 
@@ -305,6 +322,19 @@ public class OrdersRemote: Remote {
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
+        }
+    }
+
+    public func updatePOSOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                case let .success(order):
+                    continuation.resume(returning: order)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            }
         }
     }
 
@@ -442,6 +472,8 @@ public extension OrdersRemote {
         case items
         case status
         case customerID
+        case paymentMethodID
+        case paymentMethodTitle
     }
 
     /// Order fields supported for create

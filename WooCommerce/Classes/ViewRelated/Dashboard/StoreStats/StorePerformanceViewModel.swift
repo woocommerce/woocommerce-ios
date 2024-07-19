@@ -57,7 +57,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
     private var waitingTracker: WaitingTimeTracker?
-    private let syncingDidFinishPublisher = PassthroughSubject<Void, Never>()
+    private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -70,6 +70,28 @@ final class StorePerformanceViewModel: ObservableObject {
             return false
         }
         return true
+    }
+
+    /// Determines if the redacted state should be shown.
+    /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
+    ///
+    var showRedactedState: Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return syncingData
+        }
+        return syncingData && periodViewModel?.noDataFound == true
+    }
+
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
     }
 
     init(siteID: Int64,
@@ -131,9 +153,16 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+
+        // Preemptively show any cached content
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            periodViewModel?.loadCachedContent()
+        }
+
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
@@ -148,15 +177,17 @@ final class StorePerformanceViewModel: ObservableObject {
             case .thisWeek, .thisMonth, .thisYear:
                 siteVisitStatMode = .default
             }
+            syncingDidFinishPublisher.send(nil)
         } catch DotcomError.noRestRoute {
             statsVersion = .v3
+            syncingDidFinishPublisher.send(DotcomError.noRestRoute)
         } catch {
             statsVersion = .v4
             DDLogError("⛔️ Error loading store stats: \(error)")
             handleSyncError(error: error)
+            syncingDidFinishPublisher.send(error)
         }
         syncingData = false
-        syncingDidFinishPublisher.send()
     }
 
     func hideStorePerformance() {
@@ -236,10 +267,15 @@ private extension StorePerformanceViewModel {
     func observeSyncingCompletion() {
         syncingDidFinishPublisher
             .receive(on: DispatchQueue.global(qos: .background))
-            .sink { [weak self] in
+            .sink { [weak self] error in
                 guard let self else { return }
                 waitingTracker?.end()
                 analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
+                if let error {
+                    analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .performance, error: error))
+                } else {
+                    analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .performance))
+                }
             }
             .store(in: &subscriptions)
     }
@@ -406,10 +442,12 @@ private extension StorePerformanceViewModel {
             }
 
             // rethrow any failure.
-            for try await result in group {
-                // no-op if result doesn't throw error.
+            for try await _ in group {
+                // no-op if result doesn't throw any error
             }
         }
+
+        DashboardTimestampStore.saveTimestamp(.now, for: .performance, at: timeRange.timestampRange)
     }
 
     /// Syncs store stats for dashboard UI.

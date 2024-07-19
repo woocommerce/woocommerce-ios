@@ -1,1 +1,2 @@
-Questa ultima versione arricchisce la schermata de Il mio negozio, che ora contiene dettagli sugli ultimi ordini, sui prodotti in esaurimento, sui coupon attivi, sulle recensioni dei clienti e molto altro ancora. Scopri di più sulle prestazioni del tuo negozio con queste nuove aggiunte!
+Il nostro ultimo aggiornamento migliora l'Analytics Hub includendo le campagne di Google Ads e introduce le Note di posta in arrivo nella Bacheca dinamica e nel Menu Hub. Goditi un'esperienza dell'app migliore con il nostro ultimo aggiornamento.
+

@@ -411,7 +411,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Active";
 
@@ -656,16 +655,16 @@ which should be translated separately and considered part of this sentence. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Charge Taxes";
 
 /* Description of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiDescription" = "Quickly generate details for you";
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Let us generate product details for you";
 
 /* Title of the option to add new product with AI assistance */
-"addProductWithAIActionSheet.aiTitle" = "Create a product with AI";
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Create a product with AI";
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"addProductWithAIActionSheet.learnMore" = "[Learn more.](https://automattic.com/ai-guidelines/)";
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Learn more.](https://automattic.com/ai-guidelines/)";
 
 /* Label to indicate AI-generated content on the product creation action sheet. */
-"addProductWithAIActionSheet.legalText" = "Powered by AI.";
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Powered by AI.";
 
 /* Description of the option to add new product manually */
 "addProductWithAIActionSheet.manualDescription" = "Add a product and the details manually";
@@ -743,6 +742,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
+
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "Casual";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "Convincing";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "Flowery";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "Formal";
 
 /* Country option for a site address. */
 "Albania" = "Albania";
@@ -909,6 +920,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "Gift Cards";
 
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Google Campaigns";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Orders";
 
@@ -948,6 +962,24 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Net Amount";
 
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "Campaigns";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "Unable to load Google campaigns analytics";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "Programs Report";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "Spend: %@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Google Campaigns";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "Total Sales";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Enable Jetpack Stats";
 
@@ -977,6 +1009,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.sessionsCard.Title" = "SESSIONS";
+
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "Metric";
 
 /* Country option for a site address. */
 "Andorra" = "Andorra";
@@ -1503,6 +1538,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Retry";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Audience";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
 
@@ -1545,6 +1583,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Shop Now";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Suggested by AI";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Preview";
 
@@ -1583,6 +1624,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Increase visibility and get your products sold quickly.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Active";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "Canceled";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Completed";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "In Moderation";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Rejected";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Scheduled";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Unknown";
 
 /* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.addPaymentMethod" = "Add a payment method";
@@ -1651,7 +1713,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Learn how Blaze works";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD daily.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Quick start, big impact";
@@ -1892,6 +1954,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius and Saba";
+
+/* Display label for bookable product type. */
+"Bookable" = "Bookable";
 
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Boost sales with special offers";
@@ -2168,9 +2233,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Cancel Upgrade";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "Canceled";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -2590,6 +2652,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Collect payments, setup Tap to Pay, order card readers and more.";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Order total has changed since the beginning of payment. Please go back and check the order is correct, then try the payment again.";
 
 /* Country option for a site address. */
 "Colombia" = "Colombia";
@@ -3378,6 +3443,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "Most active coupons";
+
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "Google Ads campaigns";
 
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "Inbox";
@@ -4532,9 +4600,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Finish Setup in Store Admin";
 
-/* Status name of a completed Blaze campaign */
-"Finished" = "Finished";
-
 /* Country option for a site address. */
 "Finland" = "Finland";
 
@@ -4776,6 +4841,66 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown on screen after the Google sign up process failed. */
 "Google sign up failed." = "Google sign up failed.";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "Disabled";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "Enabled";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "Removed";
+
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "Google for WooCommerce";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "Done";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "Your new campaign has been created. Exciting times ahead for your sales!";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "Ready to Go!";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "Clicks";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "Conversions";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "Impressions";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "Total Sales";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "Total Spend";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "Create Campaign";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "Hide Google Ads";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "Promote your products across Google Search, Shopping, Youtube, Gmail, and more.";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "Drive sales and generate more traffic with Google Ads";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "Paid campaign performance";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "Clicks";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "Impressions";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "View all campaigns";
+
 /* Button title that dismisses the Write with AI tooltip
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Got it";
@@ -4977,6 +5102,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Product Review";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "Google for WooCommerce";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "Drive sales and generate more traffic with Google Ads";
 
 /* Country option for a site address. */
 "Hungary" = "Hungary";
@@ -5457,6 +5588,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "Last Sold";
+
+/* Time for when the orders were last updated */
+"Last Updated: %@" = "Last Updated: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "Last Week";
@@ -7003,6 +7137,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Package Type" = "Package Type";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "Remove Photo";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "Replace Photo";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "View Photo";
+
 /* The title for the customer payment cell */
 "Paid" = "Paid";
 
@@ -7100,6 +7243,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when payment is declined for a non specific reason. */
 "Payment was declined for an unspecified reason. Try another means of payment" = "Payment was declined for an unspecified reason. Try another means of payment";
 
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "Pay in Person";
+
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "The order was paid by cash. Customer paid %1$@. The change due was %2$@.";
 
@@ -7114,8 +7260,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "Pending";
 
 /* Display label for the subscription status type */
@@ -7404,6 +7549,234 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the POS menu in the hub menu */
 "Point of Sale Mode" = "Point of Sale Mode";
 
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Payment cancelled on reader";
+
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Cancel";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "To turn on your card reader, briefly press its power button.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Scanning for reader";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Retry payment";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "We couldn't load complete order information to check the payment status. Please check the latest order separately or retry.";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Learn more";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "Payment status unknown";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Payment failed";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Try Again";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Payment failed";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Processing payment";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "Payment successful!";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
+"pointOfSale.cardPresent.preparingCardReader.message" = "Checking order";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "Preparing card reader";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Insert card to pay";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Present card to pay";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Tap card to pay";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tap or insert card to pay";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tap, insert or swipe to pay";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Ready for payment";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Dismiss";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Open Device Settings";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Bluetooth permission required";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Cancel";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "We couldn't connect your reader";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Try again";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Cancel";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "The reader has a critically low battery. Please charge the reader or try a different reader.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Try Again";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "We couldn't connect your reader";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Dismiss";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Connection failed";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Cancel";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Enter Address";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Retry After Updating";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Please correct your store address to proceed";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Cancel";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Retry After Updating";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Please correct your store's postcode/ZIP";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Please wait...";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Connecting to reader";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Cancel";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Connect";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Several readers found";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Scanning for readers";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader  */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Cancel";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Connect to Reader";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Keep Searching";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title" = "Do you want to connect to reader %1$@?";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Cancel";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Your reader will automatically restart and reconnect after the update is complete.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% complete";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Updating software";
+
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "Due to an error from capturing payment and refreshing order, we couldn't load complete order information. To avoid undercharging or double charging, please check the latest order separately before proceeding.";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Please check order payment status";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "I understand";
+
+/* Label for a dismiss button when a software update has finished */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Dismiss";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% complete";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Software updated";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Cancel";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Try Again";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "We couldn’t update your reader’s software";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Updating the reader software failed because the reader’s battery is %.0f%% charged. Please charge the reader above 50%% before trying again.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Cancel";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Updating the reader software failed because the reader is low on battery. Please charge the reader above 50% before trying again.";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Please charge reader";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Dismiss";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "We couldn’t update your reader’s software";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Cancel anyway";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% complete";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Updating software";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Dismiss";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Connecting reader failed";
+
 /* Country option for a site address. */
 "Poland" = "Poland";
 
@@ -7413,6 +7786,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Portugal" = "Portugal";
+
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "Create a simple product";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "POS currently only supports simple products";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "Your store doesn't have any products";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "No products";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "Retry";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "Give it another go?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "Error loading products";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "Products";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -7651,6 +8048,63 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "Almost there.";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "Great prompt!";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "Getting better.";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "Add more details.";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "Mention additional relevant information or characteristics.";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "You've given us enough to work with, but you may add more detail to make it even better.";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "Can you describe the fit and any distinctive features of the item?";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "The more details you provide, the better your generated details will be.";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "Add your product’s name and key features, benefits, or details to help it get found online.";
+
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "Generate Product Details";
+
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.photoSelected" = "Photo selected";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design";
+
+/* Button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Read text from product photo";
+
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
+"productCreationAIStartingInfoView.subtitle" = "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Starting information";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "No text detected. Please select another packaging photo or enter product details manually.";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "Photo removed";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "Undo";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually.";
+
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Got a minute? Help us improve our AI-assisted features with your quick feedback.";
 
@@ -7677,6 +8131,81 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "Private published";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "Photo will be added to product";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "Cancel";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "Categories";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "Details";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "Is this result good?";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "Generate Again";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "In stock";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "Inventory";
+
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "Name, Summary & Description";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "Photo selected";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "Price";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "Describe your product";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "Name your product";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "A brief excerpt about your product";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "Product type";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "Retry";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "Save as draft";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "Shipping";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "You can edit or regenerate your product details before saving.";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "Tags";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "Preview";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "Undo edits";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "Option %1$d of %2$d";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "Photo removed";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "Undo";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Error uploading the file. Please try again.";
@@ -7781,6 +8310,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "Add Products";
+
+/* Message explaining unsupported bookable products for order creation */
+"productSelectorViewModel.bookableProductUnsupportedReason" = "Bookable products are not supported for order creation";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld products selected";
@@ -8111,9 +8643,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
-
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Rejected";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -8476,9 +9005,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schedule sale";
 
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Scheduled";
-
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Search";
 
@@ -8646,6 +9172,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Select your test product, add to cart, and complete checkout on that web store as a real customer.";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "OK";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "Unable to select image";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "Send";
@@ -10408,6 +10940,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the AI tone and voice selection sheet. */
 "Tone and voice" = "Tone and voice";
 
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "Tone of voice";
+
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
@@ -10766,9 +11301,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@";
 
@@ -10859,8 +11391,7 @@ which should be translated separately and considered part of this sentence. */
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "unknown";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Unknown";
@@ -11238,6 +11769,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* User role badge */
 "Viewer" = "Viewer";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "Done";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "Package photo";
 
 /* Label for total store views in the Analytics Hub */
 "Views" = "Views";

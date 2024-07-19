@@ -55,7 +55,7 @@ struct ProductDiscountView: View {
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        if let price = viewModel.price {
+                        if let price = viewModel.totalPricePreDiscount {
                             Text(discountDetailsViewModel.calculatePriceAfterDiscount(price))
                         }
                     }

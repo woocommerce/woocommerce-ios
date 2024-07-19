@@ -202,6 +202,8 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.themesPendingInstall] = nil
         defaults[.siteIDPendingStoreSwitch] = nil
         defaults[.expectedStoreNamePendingStoreSwitch] = nil
+        defaults[.latestBackgroundOrderSyncDate] = nil
+        DashboardTimestampStore.resetStore()
         imageCache.clearCache()
     }
 

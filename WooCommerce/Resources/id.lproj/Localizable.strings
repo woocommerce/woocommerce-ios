@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-09 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Aktif";
 
@@ -539,12 +538,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Tambahkan harga ke varian agar terlihat di toko Anda";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Tambahkan produk";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Tambahkan produk dan detail secara manual";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
@@ -588,8 +583,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Tambahkan detail, manfaat, atau fitur utama agar produk Anda lebih mudah ditemukan secara online.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "Tambahkan secara manual";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -1155,6 +1149,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "Bonaire, Saint Eustatius dan Saba";
 
+/* Display label for bookable product type. */
+"Bookable" = "Dapat dipesan";
+
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "Dongkrak penjualan dengan penawaran khusus";
 
@@ -1391,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Batalkan Upgrade";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "Dibatalkan";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -2126,9 +2120,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Buat persentase diskon untuk produk yang dipilih";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Buat produk dengan AI";
 
 /* Title of the store creation web view. */
 "Create a store" = "Buat toko";
@@ -3239,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Selesaikan penyiapan %1$@ di admin toko Anda";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "Selesai";
 
 /* Country option for a site address. */
 "Finland" = "Finlandia";
@@ -5378,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "Tertunda";
 
 /* Display label for the subscription status type */
@@ -5683,9 +5670,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Didukung oleh";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Berbasis AI.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Berbasis AI. %1$@.";
 
@@ -5801,14 +5785,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "Pengaturan Privasi";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Privat";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Catatan privat";
-
-/* Display label for the product's private status */
-"Privately published" = "Diterbitkan secara privat";
 
 /* Display label for processing order status. */
 "Processing" = "Memproses";
@@ -6022,9 +6004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Awal Kuartal hingga Saat Ini";
 
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Buat detail secara cepat untuk Anda";
-
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Bangun dan jual produk dengan cepat menggunakan toko online yang menawan.";
 
@@ -6158,9 +6137,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Harga normal: %@";
-
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "Ditolak";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -6522,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Jadwalkan obral";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "Terjadwal";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Cari";
@@ -8476,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Tidak dapat memproses pembayaran. Kami tidak dapat terhubung dengan sistem pembayaran. Harap hubungi dukungan jika error ini berlanjut.";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Tidak dapat memproses pembayaran. Kami tidak dapat mengambil detail pesanan terbaru. Periksa koneksi jaringan Anda dan coba lagi.";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Tidak dapat memproses pembayaran. Kami tidak dapat mengambil detail pesanan terbaru. Periksa koneksi jaringan Anda dan coba lagi. Error dasar: %1$@";
 
@@ -8566,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "Kepulauan Virgin Amerika Serikat";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Tidak diketahui";
@@ -9517,9 +9486,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[KOMENTAR]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Baca selengkapnya.](https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Batal";
 
@@ -9541,11 +9507,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Kenakan Pajak";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Pilih jenis produk";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "Kami buatkan detail produk untuk Anda.";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "Buat produk dengan AI";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[Baca selengkapnya.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "Berbasis AI.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Tambahkan produk dan informasi secara manual";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Tambahkan secara manual";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Pilih jenis produk";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Buat Produk";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Sambungkan toko yang sudah ada";
+
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "Kasual";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "Persuasif";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "Berbunga-bunga";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "Formal";
 
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "Laporan Paket Produk";
@@ -9555,6 +9554,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "Kartu Hadiah";
+
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Kampanye Google";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Pesanan";
@@ -9594,6 +9596,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Jumlah Bersih";
+
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "Kampanye";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "Tidak dapat memuat analitik kampanye Google";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "Laporan Program";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "Pengeluaran: %@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Kampanye Google";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "Total Penjualan";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktifkan Jetpack Stats";
@@ -9869,6 +9889,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "Coba lagi";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "Audiens";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Anggaran";
 
@@ -9911,6 +9934,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Beli Sekarang";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "Disarankan oleh AI";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "Pratinjau";
 
@@ -9949,6 +9975,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Tingkatkan visibilitas dan buat produk Anda laris manis.";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "Aktif";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "Dibatalkan";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "Selesai";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "Dalam Moderasi";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "Ditolak";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "Terjadwal";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "Tidak diketahui";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Kebijakan Iklan";
@@ -10017,7 +10064,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "Cari tahu cara kerja Blaze";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "Pasang iklan dalam hitungan menit — tanpa perlu jadi ahli atau banyak biaya, dari $5 USD saja.";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "Pasang iklan dalam hitungan menit — tanpa perlu jadi ahli atau banyak biaya, dari 5 dolar AS saja per hari.";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "Pasang praktis, hasil strategis";
@@ -10260,19 +10307,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "Produk fisik unik yang mungkin perlu dikirimkan kepada pelanggan";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Produk fisik sederhana";
+"bottomSheetProductType.simpleProduct.title" = "Produk fisik";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "Produk digital unik, seperti layanan atau buku, musik, dan video yang dapat diunduh";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Produk virtual sederhana";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Produk virtual";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "Langganan produk unik yang memungkinkan pembayaran berulang";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Produk langganan sederhana";
+"bottomSheetProductType.subscriptionProduct.title" = "Langganan sederhana";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Produk dengan variasi, seperti warna atau ukuran";
@@ -10284,7 +10331,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "Langganan produk dengan variasi";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Produk langganan variabel";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Langganan variabel";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Batal";
@@ -10352,6 +10399,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Total pesanan telah berubah sejak awal pembayaran. Silakan kembali dan periksa apakah pesanan sudah benar, lalu coba pembayaran lagi.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Pilih produk untuk kampanye Blaze.";
@@ -10452,11 +10502,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Nilai pesanan rata-rata";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "ALAMAT PENAGIHAN";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Panggil";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "Kota";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Salin";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "Salin alamat email";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Salin nomor";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Negara";
@@ -10482,11 +10544,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "Lokasi";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Pesan";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Pesanan";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "PESANAN";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Hubungi pelanggan via telepon";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "Tidak ada nomor telepon";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Kode pos";
@@ -10500,11 +10571,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "Email";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "ALAMAT PENGIRIMAN";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Kirim pesan Telegram";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Total pengeluaran";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Nama pengguna";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "Kirim pesan WhatsApp";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Buat pesanan baru";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "Pelanggan tidak ditemukan";
@@ -10762,6 +10845,18 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Produk";
 
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "Google untuk WooCommerce";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "Selesai";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "Kampanye baru sudah dibuat. Bersiaplah menyambut naiknya penjualan Anda!";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "Semua Siap!";
+
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Pelanggan";
 
@@ -10770,6 +10865,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Ulasan Produk";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "Google untuk WooCommerce";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "Tingkatkan penjualan dan dorong lalu lintas dengan Google Ads";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Seharusnya bisa lebih baik";
@@ -11248,6 +11349,231 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugin";
 
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Batal";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "Untuk mengaktifkan pembaca kartu Anda, tekan tombol dayanya.";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "Memindai pembaca";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Coba ulang pembayaran";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "Kami tidak dapat memuat informasi lengkap pesanan untuk memeriksa status pembayaran. Mohon periksa pesanan terakhir secara terpisah atau coba lagi.";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Baca selengkapnya";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "Status pembayaran tidak diketahui";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.cancel.button.title" = "Batalkan Pembayaran";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "Pembayaran gagal";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Coba Lagi";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "Batalkan Pembayaran";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Pembayaran gagal";
+
+/* Button to cancel preparation of the reader on the Point of Sale checkout. */
+"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "Batal";
+
+/* Button to cancel a payment */
+"pointOfSale.cardPresent.presentCard.cancel.button.title" = "Batal";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Masukkan kartu untuk membayar";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Siapkan kartu untuk membayar";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Ketuk kartu untuk membayar";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Ketuk atau masukkan kartu untuk membayar";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Ketuk, sisipkan, atau geser untuk membayar";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Pembaca sudah siap";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Tutup";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "Buka Pengaturan Perangkat";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "Izin pengaktifan Bluetooth diperlukan";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "Batal";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "Tidak dapat menyambungkan pembaca";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "Coba lagi";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "Batal";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "Daya baterai pembaca sangat rendah. Harap isi daya pembaca atau coba gunakan pembaca lain.";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "Coba Lagi";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "Tidak dapat menyambungkan pembaca";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "Tutup";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "Koneksi gagal";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "Batal";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "Masukan Alamat";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "Coba Lagi Setelah Memperbarui";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "Mohon koreksi alamat toko Anda untuk melanjutkan";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "Batal";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "Anda dapat mengatur kode pos toko di wp-admin > WooCommerce > Pengaturan (Umum)";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "Coba Lagi Setelah Memperbarui";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "Mohon koreksi kode pos toko Anda";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "Harap tunggu...";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Menyambungkan ke pembaca";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Batal";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "Hubungkan";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "Ditemukan beberapa pembaca";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "Memindai pembaca";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "Batal";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Hubungkan ke Pembaca";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Terus Mencari";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title" = "Anda ingin menghubungkan ke pembaca kartu %1$@?";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Batal";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "Pembaca akan otomatis dimulai ulang dan dihubungkan kembali setelah pembaruan selesai.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "%.0f%% selesai";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Memperbarui perangkat lunak";
+
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "Karena terjadi error saat mengambil pembayaran dan menyegarkan pesanan, kami tidak dapat memuat informasi lengkap pesanan. Untuk menghindari penagihan kurang dari jumlah yang seharusnya atau penagihan ganda, harap periksa pesanan terakhir secara terpisah sebelum melanjutkan.";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Mohon periksa status pembayaran pesanan";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Saya paham";
+
+/* Label for a dismiss button when a software update has finished */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Tutup";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% selesai";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "Perangkat lunak diperbarui";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "Batal";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "Coba Lagi";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "Pembaruan perangkat lunak pembaca gagal karena daya baterai pembaca %.0f%%. Isi daya pembaca di atas 50%% sebelum mencoba lagi.";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "Batal";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "Pembaruan perangkat lunak pembaca gagal karena daya baterai pembaca rendah. Isi daya pembaca di atas 50% sebelum mencoba lagi.";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "Isi daya pembaca";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "Tutup";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "Kami tidak dapat memperbarui perangkat lunak pembaca Anda";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "Batalkan saja";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "Perangkat lunak pembaca kartu Anda perlu diperbarui untuk menerima pembayaran. Pembatalan akan memblok sambungan pembaca Anda.";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "%.0f%% selesai";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "Memperbarui perangkat lunak";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "Tutup";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Menyambungkan pembaca gagal";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Tutup";
 
@@ -11256,6 +11582,51 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "pribadi";
+
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "Buat Detail Produk";
+
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "Foto dipilih";
+
+/* Title of button which removes selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "Hapus Foto";
+
+/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "Ganti Foto";
+
+/* Title of button which opens the selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "Lihat Foto";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "Misalnya: Kaus katun hitam, kain lembut, jahitan awet, desain unik.";
+
+/* Button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "Baca teks dari foto produk";
+
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
+"productCreationAIStartingInfoView.subtitle" = "Ceritakan produk Anda, apa produk tersebut dan keunikannya, lalu tunggu keajaiban AI.";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "Informasi mulai";
+
+/* Title of the button to dismiss the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.done" = "Selesai";
+
+/* Title of the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "Foto kemasan";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "Tidak ada teks yang terdeteksi. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "Foto dihapus";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "Batal";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "Terjadi error saat memindai foto. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Boleh minta waktunya sebentar? Bantu kami memperbaiki fitur berbantuan AI dengan feedback cepat.";
@@ -11271,6 +11642,72 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Ingatkan Saya Nanti";
+
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Lainnya";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standar";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Langganan";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Diterbitkan secara privat";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "Batal";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "Kategori";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "Detail";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "Apakah hasil ini bagus?";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "Buat Lagi";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "Tersedia";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "Persediaan";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "Harga";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "Deskripsikan produk Anda";
+
+/* Title of the name and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.productNameAndDescription" = "Nama dan Deskripsi";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "Namai produk Anda";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "Tipe produk";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "Coba lagi";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "Simpan sebagai draf";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "Pengiriman";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "Anda dapat menyunting atau membuat ulang detail produk sebelum menyimpan.";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "Tag";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "Pratinjau";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Error saat mengunggah file. Coba lagi.";
@@ -11337,6 +11774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Biaya Pendaftaran";
+
+/* Message explaining unsupported bookable products for order creation */
+"productSelectorViewModel.bookableProductUnsupportedReason" = "Produk yang dapat dipesan tidak didukung untuk pembuatan pesanan";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld produk dipilih";
@@ -11478,6 +11918,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Batal";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "Oke";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "Tidak dapat memilih gambar";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pembayaran Selesai";
@@ -11781,6 +12227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Gunakan %1$@";
 
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "Gaya bahasa";
+
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Tambah";
 
@@ -11832,8 +12281,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Buka Woo di iPhone, hubungkan toko, dan dekatkan jam tangan Anda";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "Terjadi error saat memuat data toko";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "Tidak bisa";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Pastikan jam tangan Anda terhubung dengan internet dan Anda tidak jauh dari telepon.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Gagal memuat data toko";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Coba lagi";
@@ -11862,8 +12317,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "Menunggu pesanan pertama Anda!";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "Terjadi error saat memuat daftar pesanan";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Pastikan jam tangan Anda terhubung dengan internet dan Anda tidak jauh dari telepon.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Gagal memuat pesanan";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Coba lagi";

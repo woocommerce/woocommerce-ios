@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.5
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
+
+## 19.4
+Discover the latest updates to our app! The Analytics Hub now includes analytics for Google Ads campaigns, provided the Google Listings & Ads extension is active and connected. We've also enabled Inbox Notes in both the Dynamic Dashboard and the Hub Menu, offering users a centralized, non-intrusive method for receiving important updates, feature announcements, and pertinent information. Update now to enjoy these new features and enhance your experience! 
+
+## 19.3
+Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
+
+## 19.2
+Enhance your WooCommerce experience with our latest update! Now you can pick videos from your local library for downloadable files and view private tags on the product list tab. We've fixed the customer list loading issue in order creation and improved dashboard stability. Plus, bookable products are now disabled in order forms. Enjoy smoother payments with added log insights. Update today!
+
 ## 19.1
 Discover the latest updates to our WooCommerce app! We've added a "Private" filter option for enhanced product searches on iOS and revamped the product creation sheet for better organization. The privacy settings screen now has its navigation bar restored. The Customers section now displays phone numbers and addresses, with options to copy or contact directly. Plus, you can create new orders for registered customers with ease!
 

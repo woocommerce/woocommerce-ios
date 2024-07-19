@@ -494,8 +494,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.print)
     }
 
-    func test_playSquareImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.playSquareImage)
+    func test_switchingModeImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.switchingModeImage)
     }
 
     func testPlusImageIconIsNotNil() {
@@ -829,6 +829,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.circularTimeIcon)
     }
 
+    func test_google_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.googleLogo)
+    }
+
     func test_lock_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.lockImage)
     }
@@ -959,5 +963,21 @@ final class IconsTests: XCTestCase {
 
     func test_tooltipImage_is_not_nil() {
         XCTAssertNotNil(UIImage.tooltipImage)
+    }
+
+    func test_posNewTransactionImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posNewTransactionImage)
+    }
+
+    func test_posPaymentSuccessfulImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posPaymentSuccessfulImage)
+    }
+
+    func test_posProcessingPaymentImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posProcessingPaymentImage)
+    }
+
+    func test_posReadyForPaymentImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posReadyForPaymentImage)
     }
 }

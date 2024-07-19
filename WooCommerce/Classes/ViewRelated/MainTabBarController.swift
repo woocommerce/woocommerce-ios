@@ -676,7 +676,7 @@ private extension MainTabBarController {
             switch error.error {
             case .failedSavingProductAfterImageUpload:
                 self.handleErrorSavingProductAfterImageUpload(error)
-            case .failedUploadingImage:
+            case .failedUploadingImage, .noActionHandlerFound, .noRemoteProductIDFound:
                 self.handleErrorUploadingImage(error)
             }
         }

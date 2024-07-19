@@ -61,7 +61,7 @@ private extension FeedbackView {
         static let contentInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
         static let iconSize: CGFloat = 20
-        static let buttonSpacing: CGFloat = 16
+        static let buttonSpacing: CGFloat = 24
     }
 }
 

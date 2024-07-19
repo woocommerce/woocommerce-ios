@@ -11,6 +11,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     @Published private(set) var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? = nil
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
+    private let showsInAuthenticatedWebView: Bool
     private let retrySearchAction: () -> Void
 
     private var openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel {
@@ -18,7 +19,11 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             title: Localization.openAdmin,
             actionHandler: { [weak self] in
                 guard let self else { return }
-                shouldShowSettingsWebView = true
+                if showsInAuthenticatedWebView {
+                    shouldShowSettingsWebView = true
+                } else {
+                    UIApplication.shared.open(settingsAdminUrl)
+                }
                 primaryButtonViewModel = retryButtonViewModel
             })
     }
@@ -26,9 +31,11 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     private var retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(settingsAdminUrl: URL,
+         showsInAuthenticatedWebView: Bool,
          retrySearchAction: @escaping () -> Void,
          cancelSearchAction: @escaping () -> Void) {
         self.settingsAdminUrl = settingsAdminUrl
+        self.showsInAuthenticatedWebView = showsInAuthenticatedWebView
         self.retrySearchAction = retrySearchAction
         self.retryButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.retry,

@@ -110,13 +110,16 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .reviews))
         syncingData = true
         syncingError = nil
         do {
             try await synchronizeReviews(filter: currentFilter)
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .reviews))
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing reviews: \(error)")
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .reviews, error: error))
         }
         syncingData = false
     }

@@ -4,12 +4,16 @@ import SwiftUI
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var selectPackageImageCoordinator: SelectPackageImageCoordinator?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
+        }
+        viewModel.startingInfoViewModel.onPickPackagePhoto = { [weak self] source in
+            await self?.presentImageSelectionFlow(source: source)
         }
     }
 
@@ -57,6 +61,26 @@ private extension AddProductWithAIContainerHostingController {
         self.addProductFromImageCoordinator = coordinator
         coordinator.start()
     }
+
+    /// Presents the image selection flow to select package photo
+    ///
+    @MainActor
+    func presentImageSelectionFlow(source: MediaPickingSource) async -> MediaPickerImage? {
+        await withCheckedContinuation { continuation in
+            guard let navigationController else {
+                continuation.resume(returning: nil)
+                return
+            }
+            let coordinator = SelectPackageImageCoordinator(siteID: viewModel.siteID,
+                                                            mediaSource: source,
+                                                            sourceNavigationController: navigationController,
+                                                            onImageSelected: { image in
+                continuation.resume(returning: image)
+            })
+            selectPackageImageCoordinator = coordinator
+            coordinator.start()
+        }
+    }
 }
 
 /// Container view for the product creation with AI flow.
@@ -73,17 +97,28 @@ struct AddProductWithAIContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            progressView
+            if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) == false {
+                progressView
+            }
 
             switch viewModel.currentStep {
             case .productName:
-                AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
-                                         onUsePackagePhoto: onUsePackagePhoto,
-                                         onContinueWithProductName: { name in
-                    withAnimation {
-                        viewModel.onContinueWithProductName(name: name)
-                    }
-                })
+                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+                    ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
+                                                      onContinueWithFeatures: { features in
+                        withAnimation {
+                            viewModel.onProductFeaturesAdded(features: features)
+                        }
+                    })
+                } else {
+                    AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
+                                             onUsePackagePhoto: onUsePackagePhoto,
+                                             onContinueWithProductName: { name in
+                        withAnimation {
+                            viewModel.onContinueWithProductName(name: name)
+                        }
+                    })
+                }
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
                                                         productName: viewModel.productName,
@@ -93,14 +128,24 @@ struct AddProductWithAIContainerView: View {
                     }
                 })
             case .preview:
-                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
-                                                          productName: viewModel.productName,
-                                                          productDescription: viewModel.productDescription,
-                                                          productFeatures: viewModel.productFeatures) { product in
-                    viewModel.didCreateProduct(product)
-                }, onDismiss: {
-                    viewModel.backtrackOrDismiss()
-                })
+                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+                    ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                      productFeatures: viewModel.productFeatures,
+                                                                                      imageState: viewModel.startingInfoViewModel.imageState) { product in
+                        viewModel.didCreateProduct(product)
+                    }, onDismiss: {
+                        viewModel.backtrackOrDismiss()
+                    })
+                } else {
+                    LegacyProductDetailPreviewView(viewModel: LegacyProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                                  productName: viewModel.productName,
+                                                                                                  productDescription: viewModel.productDescription,
+                                                                                                  productFeatures: viewModel.productFeatures) { product in
+                        viewModel.didCreateProduct(product)
+                    }, onDismiss: {
+                        viewModel.backtrackOrDismiss()
+                    })
+                }
             }
         }
         .onAppear() {

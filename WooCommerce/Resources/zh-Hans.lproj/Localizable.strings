@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-11 09:54:06+0000 */
+/* Translation-Revision-Date: 2024-07-09 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -419,7 +419,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "激活";
 
@@ -539,12 +538,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "为您的变体添加价格，以在商店中显示";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "添加产品";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "手动添加产品和详细信息";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "添加产品图片";
@@ -588,8 +583,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "添加关键功能、优势或详情，提高产品在网上的曝光率。";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "手动添加";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -1155,6 +1149,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bonaire, Saint Eustatius and Saba" = "博内尔岛，圣尤斯特修斯和萨巴";
 
+/* Display label for bookable product type. */
+"Bookable" = "可预订";
+
 /* Description of the Coupons menu in the hub menu */
 "Boost sales with special offers" = "使用特别优惠来提高销售额";
 
@@ -1391,9 +1388,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "取消升级";
-
-/* Status name of a canceled Blaze campaign */
-"Canceled" = "已取消";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -2126,9 +2120,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "创建应用于选定商品的百分比折扣";
-
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "通过 AI 创建一个产品";
 
 /* Title of the store creation web view. */
 "Create a store" = "创建商店";
@@ -3239,9 +3230,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "在您的商店管理中完成 %1$@ 设置";
-
-/* Status name of a completed Blaze campaign */
-"Finished" = "已完成";
 
 /* Country option for a site address. */
 "Finland" = "芬兰";
@@ -5378,8 +5366,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type
-   Status name of an active Blaze campaign */
+   Display label for the subscription status type */
 "Pending" = "待审";
 
 /* Display label for the subscription status type */
@@ -5683,9 +5670,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "提供支持：";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "由 AI 提供支持。";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "由 AI 提供支持。%1$@。";
 
@@ -5801,14 +5785,12 @@ which should be translated separately and considered part of this sentence. */
    Privacy settings screen title */
 "Privacy Settings" = "隐私设置";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "非公开";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
-
-/* Display label for the product's private status */
-"Privately published" = "已私密发布";
 
 /* Display label for processing order status. */
 "Processing" = "正在处理";
@@ -6022,9 +6004,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "季初至今";
 
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "为您快速生成详细信息";
-
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "快速设置美观的在线商店并开始销售。";
 
@@ -6158,9 +6137,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "正常价格：%@";
-
-/* Status name of a rejected Blaze campaign */
-"Rejected" = "已拒绝";
 
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -6522,9 +6498,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "安排促销";
-
-/* Status name of a scheduled Blaze campaign */
-"Scheduled" = "已定时";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "搜索";
@@ -8476,9 +8449,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown during In-Person Payments when the payment gateway is not available. */
 "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "无法处理付款。 无法连接到付款系统。 如果此错误仍然存在，请联系支持人员。";
 
-/* Error message when collecting an In-Person Payment and unable to update the order. */
-"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "无法处理付款。 无法获取最新订单详细信息。 请检查您的网络连接，然后重试。";
-
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "无法处理付款。 无法获取最新订单详细信息。 请检查您的网络连接，然后重试。 潜在错误：%1$@";
 
@@ -8566,8 +8536,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "United States Virgin Islands" = "美属维尔京群岛";
 
-/* Status name of a Blaze campaign without specified state
-   Unknown Application State
+/* Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "未知";
@@ -9517,9 +9486,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[评论]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[了解更多。] (https:\/\/automattic.com\/ai-guidelines\/)";
-
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "取消";
 
@@ -9541,11 +9507,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "收取税费";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "选择产品类型";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiDescription" = "让我们为您生成产品详细信息";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.createProductWithAI.aiTitle" = "通过 AI 创建产品";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.createProductWithAI.learnMore" = "[了解更多。] (https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.createProductWithAI.legalText" = "由 AI 提供支持。";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "手动添加产品和详情";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "手动添加";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "选择产品类型";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "创建产品";
 
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "连接现有商店";
+
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "随意";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "自信";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "华丽";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "正式";
 
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "产品捆绑报告";
@@ -9555,6 +9554,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "礼品卡";
+
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Google 广告活动";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "订单";
@@ -9594,6 +9596,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "净额";
+
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "广告活动";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "无法加载 Google 广告活动分析";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "计划报告";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "支出：%@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Google 广告活动";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "总销售额";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "启用 Jetpack Stats";
@@ -9869,6 +9889,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the error alert displayed on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry" = "重试";
 
+/* Section title on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.audience" = "受众";
+
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "预算";
 
@@ -9911,6 +9934,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "立即购买";
 
+/* Suggested by AI title in the Blaze Campaign Creation Form. */
+"blazeCampaignCreationForm.suggestedByAI" = "AI 建议";
+
 /* Title of the Blaze campaign creation screen */
 "blazeCampaignCreationForm.title" = "预览";
 
@@ -9949,6 +9975,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "提高展示率，让产品更快售出。";
+
+/* Status name of an approved Blaze campaign */
+"blazeCampaignListItem.status.active" = "已启用";
+
+/* Status name of a canceled Blaze campaign */
+"blazeCampaignListItem.status.canceled" = "已取消";
+
+/* Status name of a completed Blaze campaign */
+"blazeCampaignListItem.status.completed" = "已完成";
+
+/* Status name of a pending Blaze campaign */
+"blazeCampaignListItem.status.inModeration" = "审核中";
+
+/* Status name of a rejected Blaze campaign */
+"blazeCampaignListItem.status.rejected" = "已拒绝";
+
+/* Status name of a scheduled Blaze campaign */
+"blazeCampaignListItem.status.scheduled" = "已预发布";
+
+/* Status name of a Blaze campaign without specified state */
+"blazeCampaignListItem.status.unknown" = "未知";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "广告政策";
@@ -10017,7 +10064,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeCreateCampaignIntroView.learnHowBlazeWorks" = "了解 Blaze 的运作机制";
 
 /* Subtitle for the quick start big impact feature */
-"blazeCreateCampaignIntroView.quickStart.subtitle" = "几分钟内发布广告 — 无需经验或高额预算，起价仅为 5 美元。";
+"blazeCreateCampaignIntroView.quickStart.subtitle" = "几分钟内发布广告 — 无需经验或高额预算，起价仅为每天 5 美元。";
 
 /* Title for the quick start big impact feature */
 "blazeCreateCampaignIntroView.quickStart.title" = "起步快，影响大";
@@ -10260,19 +10307,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "您需要配送给客户的独特实体产品";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "简单实体产品";
+"bottomSheetProductType.simpleProduct.title" = "实体产品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "独特数字产品，例如服务、可下载的书籍、音乐或视频";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "简单虚拟产品";
+"bottomSheetProductType.simpleVirtualProduct.title" = "虚拟产品";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "支持定期付款的独特产品订阅";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "简单订阅产品";
+"bottomSheetProductType.subscriptionProduct.title" = "简单订阅";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "包含颜色或尺寸等变体的产品";
@@ -10284,7 +10331,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "有变体的产品订阅";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "可变订阅产品";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "可变订阅";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
@@ -10352,6 +10399,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "开始付款后，订单总额已发生变化。 请返回检查订单正确与否，然后再次尝试付款。";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "为 Blaze 广告活动选择产品。";
@@ -10452,11 +10502,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "平均订单价值";
 
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "账单地址";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "拨号";
+
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "城市";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "复制";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "复制电子邮件地址";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "复制号码";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "国家\/地区";
@@ -10482,11 +10544,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "位置";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "发送短信";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "订单";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "订单";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "通过电话联系客户";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "无电话号码";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "邮政编码";
@@ -10500,11 +10571,23 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "电子邮件";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "配送地址";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "发送 Telegram 消息";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "总支出";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "用户名";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "发送 WhatsApp 消息";
+
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "创建新订单";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "未找到客户";
@@ -10762,6 +10845,18 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "产品";
 
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "Google for WooCommerce";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "完成";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "您的新广告活动已创建。 您的销售工作将迎来激动人心的时刻！";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "准备就绪！";
+
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "客户";
 
@@ -10770,6 +10865,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "产品评论";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "Google for WooCommerce";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "通过 Google Ads 推动销售并增加流量";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "有待改进";
@@ -11248,6 +11349,231 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "插件";
 
+/* Label for a cancel button */
+"pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "取消";
+
+/* Label within the modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.instruction" = "要打开读卡器，请短按电源按钮。";
+
+/* Title label for modal dialog that appears when searching for a card reader */
+"pointOfSale.cardPresent.modalScanningForReader.title" = "正在扫描读卡器";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "重试付款";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "我们无法加载完整的订单信息以查看付款状态。 请单独查看最新订单或重试。";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "了解更多";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "付款状态未知";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.cancel.button.title" = "取消付款";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.title" = "付款失败";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "重试";
+
+/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "取消付款";
+
+/* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "付款失败";
+
+/* Button to cancel preparation of the reader on the Point of Sale checkout. */
+"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "取消";
+
+/* Button to cancel a payment */
+"pointOfSale.cardPresent.presentCard.cancel.button.title" = "取消";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "插入银行卡进行付款";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "出示银行卡进行付款";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "点按银行卡进行付款";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "点按或插入银行卡进行付款";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "点按、插入或刷银行卡进行付款";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "读卡器已准备就绪";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "忽略";
+
+/* Opens iOS's Device Settings for the app */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title" = "打开设备设置";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"pointOfSale.cardPresentPayment.alert.bluetoothRequired.title" = "需要蓝牙权限";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title" = "取消";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.title" = "我们无法连接您的读卡器";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue. */
+"pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title" = "重试";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title" = "取消";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details" = "读卡器电量严重不足。 请为读卡器充电或更换读卡器。";
+
+/* Button to try again after connecting to a specific reader fails due to a critically low battery. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title" = "重试";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to it having a critically low battery */
+"pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title" = "我们无法连接您的读卡器";
+
+/* Button to dismiss. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title" = "忽略";
+
+/* Error message. Presented to users after collecting a payment fails */
+"pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title" = "连接失败";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title" = "取消";
+
+/* Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title" = "输入地址";
+
+/* Button to try again after connecting to a specific reader fails due to address problems. Intended for use after the merchant corrects the address in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title" = "请更新后再试";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to address problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title" = "请更正您的商店地址以便继续";
+
+/* Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.cancel.button.title" = "取消";
+
+/* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.errorDetails" = "您可以在“wp-admin > WooCommerce > 设置（常规）”中设置您商店的邮编";
+
+/* Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.retry.button.title" = "请更新后再试";
+
+/* Title of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
+"pointOfSale.cardPresentPayment.alert.connectingFailedUpdatePostCode.title" = "请更正您商店的邮编";
+
+/* Label within the modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.instruction" = "请稍候…";
+
+/* Title label for modal dialog that appears when connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "正在连接读卡器";
+
+/* Button to allow the user to close the modal without connecting. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "取消";
+
+/* Button in a cell to allow the user to connect to that reader for that cell */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.connect.button.title" = "连接";
+
+/* Title of a modal presenting a list of readers to choose from. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.headline" = "找到多个读卡器";
+
+/* Label for a cell informing the user that reader scanning is ongoing. */
+"pointOfSale.cardPresentPayment.alert.foundMultipleReaders.scanning.label" = "正在扫描读卡器";
+
+/* Label for a button that when tapped, cancels the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.cancel.button.title" = "取消";
+
+/* Label for a button that when tapped, starts the process of connecting to a card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "连接读卡器";
+
+/* Label for a button that when tapped, continues searching for card readers */
+"pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "继续搜索";
+
+/* Dialog title that displays the name of a found card reader */
+"pointOfSale.cardPresentPayment.alert.foundReader.title" = "是否要连接读卡器 %1$@？";
+
+/* Label for a cancel button when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "取消";
+
+/* Label that displays when an optional software update is happening */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.message" = "更新完成后，您的读卡器将自动重新启动并重新连接。";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.progress.format" = "已完成 %.0f%%";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "正在更新软件";
+
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "由于捕获付款和刷新订单时出错，我们无法加载完整的订单信息。 为了避免少收费或双重收费，请单独查看最新订单后再继续。";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "请查看订单付款状态";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "知道了";
+
+/* Label for a dismiss button when a software update has finished */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "忽略";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "已完成 %.0f%%";
+
+/* Dialog title that displays when a software update just finished installing */
+"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.title" = "软件已更新";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.cancelButton.title" = "取消";
+
+/* Button to retry a software update. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.retryButton.title" = "重试";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title" = "我们无法更新您的读卡器软件";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. Please leave the %.0f%% intact, as it represents the current percentage of charge. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.batteryLevelInfo" = "因读卡器电池电量只有 %.0f%%，读卡器软件更新失败。 请先为读卡器充电至 50%% 以上，然后重试。";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.cancelButton.title" = "取消";
+
+/* Button to dismiss the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.noBatteryLevelInfo" = "因读卡器电池电量低，读卡器软件更新失败。 请先为读卡器充电至 50% 以上，然后重试。";
+
+/* Title of the alert presented when an update fails because the reader is low on battery. */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedLowBattery.title" = "请为读卡器充电";
+
+/* Button to dismiss. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.cancelButton.title" = "忽略";
+
+/* Error message. Presented to users when updating the card reader software fails */
+"pointOfSale.cardPresentPayment.alert.readerUpdateFailedNonRetryable.title" = "我们无法更新您的读卡器软件";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.button.cancel.title" = "仍然取消";
+
+/* Label that displays when a mandatory software update is happening */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.message" = "您需要更新读卡器软件才能进行收款。 取消将阻断您的读卡器连接。";
+
+/* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.progress.format" = "已完成 %.0f%%";
+
+/* Dialog title that displays when a software update is being installed */
+"pointOfSale.cardPresentPayment.alert.requiredReaderUpdateInProgress.title" = "正在更新软件";
+
+/* Button to dismiss the alert presented when finding a reader to connect to fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title" = "忽略";
+
+/* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
+"pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "连接读卡器失败";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "关闭";
 
@@ -11256,6 +11582,51 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "私人";
+
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "生成产品详细信息";
+
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "照片已选择";
+
+/* Title of button which removes selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "删除照片";
+
+/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "替换照片";
+
+/* Title of button which opens the selected package photo in starting info screen. */
+"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "查看照片";
+
+/* Placeholder text on the product features field */
+"productCreationAIStartingInfoView.placeholder" = "例如：黑色棉质 T 恤、柔软的面料、结实的缝线、独特的设计";
+
+/* Button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.readTextFromPhoto" = "读取产品照片中的文本";
+
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
+"productCreationAIStartingInfoView.subtitle" = "向我们介绍您的产品，包括它是什么以及它有哪些独特之处，然后静待 AI 施展魔力。";
+
+/* Title on the starting info screen. */
+"productCreationAIStartingInfoView.title" = "起始信息";
+
+/* Title of the button to dismiss the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.done" = "完成";
+
+/* Title of the view package photo screen. */
+"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "包装照片";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "未检测到文本。 请选择其他包装照片或手动输入产品详细信息。";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "照片已删除";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "撤销";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "扫描照片时出错。 请选择其他包装照片或手动输入产品详细信息。";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "有时间吗？ 请提供快速反馈，以帮助我们改进人工智能辅助功能。";
@@ -11271,6 +11642,72 @@ which should be translated separately and considered part of this sentence. */
 
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "稍后提醒我";
+
+/* Category label for other product creation types */
+"productCreationCategory.other" = "其他";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "标准";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "订阅";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "已私密发布";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "取消";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "分类";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "详细信息";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "您对此结果是否满意？";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "再次生成";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "有货";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "库存";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "价格";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "描述您的产品";
+
+/* Title of the name and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.productNameAndDescription" = "名称和描述";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "为您的产品命名";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "产品类型";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "重试";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "保存为草稿";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "配送";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "在保存之前，您可以编辑或重新生成产品详细信息。";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "标签";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "预览";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "上传文件时出错。 请重试。";
@@ -11337,6 +11774,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "注册费用";
+
+/* Message explaining unsupported bookable products for order creation */
+"productSelectorViewModel.bookableProductUnsupportedReason" = "不支持为可预订产品创建订单";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "已选择 %ld 个产品";
@@ -11478,6 +11918,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "取消";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "确定";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "无法选择图片";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "付款完成";
@@ -11781,6 +12227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "使用 %1$@";
 
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "语调";
+
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "添加";
 
@@ -11832,8 +12281,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "在您的 iPhone 上打开 Woo，连接您的商店，然后将您的手表放在附近";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "加载商店数据时出错";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "无法连接";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "确保您的手表连接到互联网，且手机就在附近。";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "商店数据加载失败";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "重试";
@@ -11862,8 +12317,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the watch orders list screen when there are no orders */
 "watch.orders.empty.title" = "正在等待您的首个订单！";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "加载订单列表时出错";
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "确保您的手表连接到互联网，且手机就在附近。";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "订单加载失败";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "重试";

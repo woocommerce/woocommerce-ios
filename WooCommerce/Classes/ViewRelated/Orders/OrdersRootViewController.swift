@@ -127,6 +127,7 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+        updateTimeoutText()
     }
 
     /// Shows `SearchViewController`.
@@ -418,12 +419,26 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
         // Do nothing here
     }
 
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
+        updateTimeoutText()
+    }
+
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
     func clearFilters() {
         filters = FilterOrderListViewModel.Filters()
+    }
+
+    private func updateTimeoutText() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return
+        }
+
+        let syncTimestamp = OrderListSyncBackgroundTask.latestSyncDate
+        let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
     }
 }
 

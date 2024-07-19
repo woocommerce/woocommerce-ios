@@ -35,6 +35,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .stock))
         syncingData = true
         syncingError = nil
         do {
@@ -43,9 +44,11 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             reports = stock.compactMap { item in
                 savedReports[item.productID]
             }
-            .sorted { $0.stockQuantity < $1.stockQuantity }
+            .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
             syncingError = error
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .stock, error: error))
         }
         syncingData = false
     }

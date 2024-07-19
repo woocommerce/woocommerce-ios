@@ -31,6 +31,20 @@ final class ProductReportListMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
     }
 
+    func test_product_reports_with_string_stock_quantity_are_properly_parsed() throws {
+        // When
+        let list = mapProductReports(from: "product-report-string-stock-quantity")
+
+        // Then
+        XCTAssertEqual(list.count, 1)
+        let firstItem = try XCTUnwrap(list.first)
+        XCTAssertEqual(firstItem.productID, 248)
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
+        XCTAssertEqual(firstItem.itemsSold, 8)
+        XCTAssertEqual(firstItem.stockQuantity, 55.4)
+        XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
+    }
+
     func test_variation_reports_are_properly_parsed() throws {
         // When
         let list = mapProductReports(from: "variation-report")

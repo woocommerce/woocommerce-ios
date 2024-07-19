@@ -11,9 +11,9 @@ extension Networking.AIProduct {
     ///
     public static func fake() -> Networking.AIProduct {
         .init(
-            name: .fake(),
-            description: .fake(),
-            shortDescription: .fake(),
+            names: .fake(),
+            descriptions: .fake(),
+            shortDescriptions: .fake(),
             virtual: .fake(),
             shipping: .fake(),
             tags: .fake(),
@@ -568,6 +568,70 @@ extension Networking.GiftCardStatsTotals {
             usedAmount: .fake(),
             refundedAmount: .fake(),
             netAmount: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaign {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            rawStatus: .fake(),
+            rawType: .fake(),
+            amount: .fake(),
+            country: .fake(),
+            targetedLocations: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStats {
+        .init(
+            siteID: .fake(),
+            totals: .fake(),
+            campaigns: .fake(),
+            nextPageToken: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsItem {
+        .init(
+            campaignID: .fake(),
+            campaignName: .fake(),
+            rawStatus: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsTotals {
+        .init(
+            sales: .fake(),
+            spend: .fake(),
+            clicks: .fake(),
+            impressions: .fake(),
+            conversions: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsConnection {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsConnection {
+        .init(
+            id: .fake(),
+            currency: .fake(),
+            symbol: .fake(),
+            rawStatus: .fake()
         )
     }
 }

@@ -133,7 +133,6 @@ struct OrderFormPresentationWrapper: View {
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
                         ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                            source: .orderForm(flow: flow),
                                             isPresented: isShowingProductSelector,
                                             viewModel: productSelectorViewModel)
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
@@ -227,6 +226,10 @@ struct OrderForm: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    private var isLoading: Bool {
+        viewModel.paymentDataViewModel.isLoading
+    }
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
@@ -276,7 +279,8 @@ struct OrderForm: View {
                                             flow: flow,
                                             presentProductSelector: presentProductSelector,
                                             viewModel: viewModel,
-                                            navigationButtonID: $navigationButtonID)
+                                            navigationButtonID: $navigationButtonID,
+                                            isLoading: isLoading)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -387,6 +391,9 @@ struct OrderForm: View {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
+                                .redacted(reason: isLoading ? .placeholder : [])
+                                .shimmering(active: isLoading)
+
                         }
                         .font(.headline)
                         .padding([.bottom, .horizontal])
@@ -573,6 +580,9 @@ private struct ProductsSection: View {
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
 
+    /// Tracks if the order is loading (syncing remotely)
+    let isLoading: Bool
+
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -664,7 +674,8 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
-                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           isLoading: isLoading,
+                                           shouldDisableDiscountEditing: isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.setDiscountViewModel)
                     .sheet(item: $viewModel.discountViewModel, content: { discountViewModel in
@@ -715,7 +726,6 @@ private struct ProductsSection: View {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
                     ProductSelectorNavigationView(
                         configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        source: .orderForm(flow: flow),
                         isPresented: $viewModel.isProductSelectorPresented,
                         viewModel: productSelectorViewModel)
                     .onDisappear {

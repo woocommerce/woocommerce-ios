@@ -1,1 +1,2 @@
-Nuestra última versión enriquece la pantalla Mi tienda, ahora con detalles sobre los pedidos más recientes, los productos con pocas existencias, los cupones activos, las reseñas de los clientes y mucho más. ¡Obtén más información sobre el rendimiento de tu tienda con estas nuevas funciones!
+Nuestra última actualización mejora el Analytics Hub al incluir las campañas de Google ADS e introduce las Notas de la bandeja de entrada en el Escritorio dinámico y el Menú del Hub. Disfruta de una mejor experiencia en la aplicación con nuestra última actualización.
+

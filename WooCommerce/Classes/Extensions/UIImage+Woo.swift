@@ -1063,10 +1063,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Play square image
+    /// Switching mode image
     ///
-    static var playSquareImage: UIImage {
-        UIImage(systemName: "play.square")!
+    static var switchingModeImage: UIImage {
+        UIImage(systemName: "arrow.left.arrow.right")!
     }
 
     /// Plus Icon
@@ -1395,6 +1395,12 @@ extension UIImage {
         return UIImage(named: "icon-circular-time")!
     }
 
+    /// Google Icon
+    ///
+    static var googleLogo: UIImage {
+        return UIImage(named: "google-logo")!
+    }
+
     /// Lock Image
     ///
     static var lockImage: UIImage {
@@ -1558,6 +1564,22 @@ extension UIImage {
 
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
+    }
+
+    static var posNewTransactionImage: UIImage {
+        UIImage(named: String.posNewTransactionImageName)!
+    }
+
+    static var posPaymentSuccessfulImage: UIImage {
+        UIImage(named: String.posPaymentSuccessfulImageName)!
+    }
+
+    static var posProcessingPaymentImage: UIImage {
+        UIImage(named: String.posProcessingPaymentImageName)!
+    }
+
+    static var posReadyForPaymentImage: UIImage {
+        UIImage(named: String.posReadyForPaymentImageName)!
     }
 }
 

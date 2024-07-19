@@ -1,1 +1,2 @@
-Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
+Our latest update improves the Analytics Hub by including Google Ads campaigns, and introduces Inbox Notes in the Dynamic Dashboard and Hub Menu. Enjoy a better app experience with our latest update!
+

@@ -1,4 +1,7 @@
 import Yosemite
+import Networking
+import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Order search.
 final class OrderSearchUICommand: SearchUICommand {
@@ -19,26 +22,32 @@ final class OrderSearchUICommand: SearchUICommand {
     var resynchronizeModels: (() -> Void) = {}
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     private let siteID: Int64
+    private let storageManager: StorageManagerType
+    private let analytics: Analytics
+    private let stores: StoresManager
 
     private let onSelectSearchResult: ((Order, UIViewController) -> Void)
 
     init(siteID: Int64,
-         onSelectSearchResult: @escaping ((Order, UIViewController) -> Void)) {
+         onSelectSearchResult: @escaping ((Order, UIViewController) -> Void),
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.onSelectSearchResult = onSelectSearchResult
+        self.storageManager = storageManager
+        self.analytics = analytics
+        self.stores = stores
         configureResultsController()
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
         return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -77,8 +86,8 @@ final class OrderSearchUICommand: SearchUICommand {
             onCompletion?(error == nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
-        ServiceLocator.analytics.track(.ordersListSearch, withProperties: ["search": "\(keyword)"])
+        stores.dispatch(action)
+        analytics.track(.ordersListSearch, withProperties: ["search": "\(keyword)"])
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
@@ -116,7 +125,6 @@ private extension OrderSearchUICommand {
         for orderStatus in listAll where orderStatus.status == order.status {
             return orderStatus
         }
-
         return nil
     }
 }

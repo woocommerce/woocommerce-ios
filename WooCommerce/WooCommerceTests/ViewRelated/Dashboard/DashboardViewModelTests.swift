@@ -18,6 +18,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     @MainActor
     private let inboxEligibilityChecker = MockInboxEligibilityChecker()
+    private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
     /// Mock Storage: InMemory
     private var storageManager: MockStorageManager!
@@ -175,58 +176,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
-    // MARK: Local announcements
-
-    @MainActor
-    func test_it_does_not_trigger_AppSettingsAction_for_local_announcement_when_jitm_is_available() async {
-        // Given
-        let message = Yosemite.JustInTimeMessage.fake().copy(template: .modal)
-        mockReloadingData(jitmResult: .success([message]))
-
-        // Sets the prerequisites for the product description AI local announcement.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
-
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertNotNil(viewModel.modalJustInTimeMessageViewModel)
-        XCTAssertNil(viewModel.localAnnouncementViewModel)
-    }
-
-    @MainActor
-    func test_it_sets_localAnnouncementViewModel_when_jitm_is_nil_and_local_announcement_is_available() async {
-        // Given
-        // No JITM.
-        mockReloadingData(jitmResult: .success([]))
-        // Sets the prerequisites for the product description AI local announcement.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
-
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertNil(viewModel.modalJustInTimeMessageViewModel)
-        XCTAssertNotNil(viewModel.localAnnouncementViewModel)
-    }
-
-    @MainActor
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -398,18 +347,17 @@ final class DashboardViewModelTests: XCTestCase {
     // MARK: Dashboard cards
 
     @MainActor
-    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_eligible_for_inbox() async {
+    func test_generated_default_cards_are_as_expected_when_site_is_eligible_for_inbox() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -420,7 +368,8 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
-                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         // When
         await viewModel.reloadAllData()
@@ -430,17 +379,16 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_not_eligible_for_inbox() async {
+    func test_generated_default_cards_are_as_expected_when_site_is_not_eligible_for_inbox() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         inboxEligibilityChecker.isEligible = false
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storeHasOrders: false)
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -451,31 +399,8 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
-                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        assertEqual(expectedCards, viewModel.dashboardCards)
-    }
-
-    @MainActor
-    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled_and_store_has_no_orders() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-        mockReloadingData(storeHasOrders: false)
-
-        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .blaze, availability: .hide, enabled: false)]
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
 
         // When
         await viewModel.reloadAllData()
@@ -487,15 +412,14 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let order = Order.fake().copy(siteID: sampleSiteID)
         insertSampleOrder(readOnlyOrder: order)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData(storeHasOrders: true)
 
@@ -514,14 +438,13 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let order = Order.fake().copy(siteID: sampleSiteID)
         insertSampleOrder(readOnlyOrder: order)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData()
 
         // Last orders cards need to be set with availability: .show and enabled: false to make them available.
@@ -537,15 +460,14 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
         userDefaults[.completedAllStoreOnboardingTasks] = true
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData()
 
@@ -558,38 +480,8 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_dashboard_cards_respects_existing_ordering_from_saved_cards() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
-
-        // Add order so that analytics cards are enabled
-        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
-        insertSampleOrder(readOnlyOrder: insertOrder)
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
-
-        let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
-                           DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                           DashboardCard(type: .performance, availability: .show, enabled: true)]
-
-        mockReloadingData(storedDashboardCards: storedCards)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        assertEqual(storedCards, viewModel.dashboardCards)
-    }
-
-    @MainActor
     func test_dashboard_cards_respects_enabled_setting_from_saved_cards() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
-
         // Add order so that analytics cards are enabled
         let order = Order.fake().copy(siteID: sampleSiteID)
         insertSampleOrder(readOnlyOrder: order)
@@ -597,8 +489,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                            DashboardCard(type: .performance, availability: .show, enabled: true),
@@ -617,17 +509,38 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(topPerformersCard.enabled)
     }
 
+    @MainActor
+    func test_dashboard_cards_contain_google_ads_card_when_store_is_eligible() async {
+        // Given
+        let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        mockReloadingData()
+
+        // Google card need to be set with availability: .show and enabled: true by default if available.
+        let expectedGoogleCard = DashboardCard(type: .googleAds, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedGoogleCard))
+    }
+
     // MARK: Show New Cards Notice
 
     @MainActor
     func test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         inboxEligibilityChecker.isEligible = true
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           featureFlags: featureFlagService,
                                            inboxEligibilityChecker: inboxEligibilityChecker)
         let completeCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: true),
@@ -648,11 +561,9 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_showNewCardsNotice_is_true_when_not_all_new_cards_are_in_saved_cards() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker)
         let incompleteNewCardsSet: [DashboardCard] = []
@@ -672,11 +583,9 @@ final class DashboardViewModelTests: XCTestCase {
             .init(type: .inbox, availability: .show, enabled: false),
             .init(type: .reviews, availability: .show, enabled: false)
         ]
-        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           featureFlags: featureFlagService,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker)
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
@@ -711,8 +620,6 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .getLocalAnnouncementVisibility(_, completion):
-                completion(true)
             case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
                 completion(false)
             case let .loadDashboardCards(_, onCompletion):

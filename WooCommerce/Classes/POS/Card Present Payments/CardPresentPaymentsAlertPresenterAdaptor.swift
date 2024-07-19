@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import enum Yosemite.ServerSidePaymentCaptureError
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
     typealias AlertDetails = CardPresentPaymentEventDetails
@@ -15,6 +16,17 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
         switch eventDetails {
+        case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _),
+                .paymentErrorNonRetryable(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _):
+            paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
+        case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment),
+            .paymentErrorNonRetryable(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in
+                    cancelPayment()
+                    self?.paymentEventSubject.send(.idle)
+                })
+            ))
         case .paymentError(let error, let tryAgain, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentError(
@@ -53,7 +65,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             self?.latestReaderConnectionHandler = nil
         }
         self.latestReaderConnectionHandler = wrappedConnectionHandler
-        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: wrappedConnectionHandler))
+        paymentEventSubject.send(.show(eventDetails: .foundMultipleReaders(readerIDs: readerIDs, selectionHandler: wrappedConnectionHandler)))
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {
@@ -61,7 +73,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             paymentEventSubject.send(.idle) // TODO: Consider more error handling here
             return
         }
-        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: latestReaderConnectionHandler))
+        paymentEventSubject.send(.show(eventDetails: .foundMultipleReaders(readerIDs: readerIDs, selectionHandler: latestReaderConnectionHandler)))
     }
 
     func dismiss() {

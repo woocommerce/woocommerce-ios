@@ -59,6 +59,11 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onViewAllReviews: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onCreateNewGoogleAdsCampaign: (() -> Void)?
+    /// Set externally in the hosting controller.
+    var onShowAllGoogleAdsCampaigns: (() -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -234,7 +239,12 @@ private extension DashboardView {
                         } onViewOrderDetail: { order in
                             onViewOrderDetail?(order)
                         }
-
+                    case .googleAds:
+                        GoogleAdsDashboardCard(viewModel: viewModel.googleAdsDashboardCardViewModel, onCreateNewCampaign: {
+                            onCreateNewGoogleAdsCampaign?()
+                        }, onShowAllCampaigns: {
+                            onShowAllGoogleAdsCampaigns?()
+                        })
                     }
 
                     // Append feedback card after the first card

@@ -51,6 +51,25 @@ extension WooAnalyticsEvent {
         static func dashboardCardAddNewSectionsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dynamicDashboardAddNewSectionsTapped, properties: [:])
         }
+
+        /// When a dashboard card starts loading data.
+        static func cardLoadingStarted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingStarted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When a dashboard card completes loading data without error
+        static func cardLoadingCompleted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingCompleted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When a dashboard card fails to load data
+        static func cardLoadingFailed(type: DashboardCard.CardType, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingFailed,
+                              properties: [Keys.type.rawValue: type.analyticName],
+                              error: error)
+        }
     }
 }
 
@@ -75,6 +94,8 @@ extension DashboardCard.CardType {
             "orders"
         case .coupons:
             "coupons"
+        case .googleAds:
+            "google-ads"
         }
     }
 }

@@ -9,6 +9,9 @@ struct HubMenu: View {
     /// Set from the hosting controller to handle switching store.
     var switchStoreHandler: () -> Void = {}
 
+    /// Set from the hosting controller to open Google Ads campaigns.
+    var googleAdsCampaignHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
@@ -53,7 +56,11 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         }
 
-        viewModel.selectedMenuID = menu.id
+        if menu.id == HubMenuViewModel.GoogleAds.id {
+            googleAdsCampaignHandler()
+        } else {
+            viewModel.selectedMenuID = menu.id
+        }
     }
 }
 
@@ -123,10 +130,12 @@ private extension HubMenu {
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
         .overlay {
-            NavigationLink(value: menu.id) {
-                EmptyView()
+            if menu.id != HubMenuViewModel.GoogleAds.id {
+                NavigationLink(value: menu.id) {
+                    EmptyView()
+                }
+                .opacity(0)
             }
-            .opacity(0)
         }
     }
 
@@ -162,13 +171,17 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                if let cardPresentPaymentService = viewModel.cardPresentPaymentService {
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                   let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                      credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
                         hideAppTabBar: { isHidden in
                             AppDelegate.shared.setShouldHideTabBar(isHidden)
                         },
-                        cardPresentPaymentService: cardPresentPaymentService)
+                        cardPresentPaymentService: cardPresentPaymentService,
+                        orderService: orderService,
+                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
@@ -192,14 +205,22 @@ private extension HubMenu {
     }
 
     @ViewBuilder
-    func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
+    func webView(url: URL,
+                 title: String,
+                 shouldAuthenticate: Bool,
+                 urlToTriggerExit: String? = nil,
+                 redirectHandler: ((URL) -> Void)? = nil) -> some View {
         Group {
             if shouldAuthenticate {
                 AuthenticatedWebView(isPresented: .constant(true),
-                                     url: url)
+                                     url: url,
+                                     urlToTriggerExit: urlToTriggerExit,
+                                     redirectHandler: redirectHandler)
             } else {
                 WebView(isPresented: .constant(true),
-                        url: url)
+                        url: url,
+                        urlToTriggerExit: urlToTriggerExit,
+                        redirectHandler: redirectHandler)
             }
         }
         .navigationTitle(title)
@@ -252,7 +273,7 @@ private extension HubMenu {
                 case .leading:
                     return .chevronImage
                 case .enteringMode:
-                    return .playSquareImage
+                    return .switchingModeImage
                         .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }

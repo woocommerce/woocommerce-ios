@@ -20,35 +20,26 @@ final class StoreOnboardingCoordinator: Coordinator {
     let site: Site
     private let onTaskCompleted: (_ task: TaskType) -> Void
     private let reloadTasks: () -> Void
-    private let onUpgradePlan: (() -> Void)?
 
     init(navigationController: UINavigationController,
          site: Site,
          onTaskCompleted: @escaping (_ task: TaskType) -> Void,
-         reloadTasks: @escaping () -> Void,
-         onUpgradePlan: (() -> Void)? = nil) {
+         reloadTasks: @escaping () -> Void) {
         self.navigationController = navigationController
         self.site = site
         self.onTaskCompleted = onTaskCompleted
         self.reloadTasks = reloadTasks
-        self.onUpgradePlan = onUpgradePlan
     }
 
     /// Navigates to the fullscreen store onboarding view.
     func start() {
-        Task { @MainActor in
-            let onboardingNavigationController = UINavigationController()
-            let storeOnboardViewModel = StoreOnboardingViewModel(siteID: site.siteID,
-                                                                 isExpanded: true)
-            let onboardingViewController = StoreOnboardingViewHostingController(
-                viewModel: storeOnboardViewModel,
-                navigationController: onboardingNavigationController,
-                site: site,
-                onUpgradePlan: onUpgradePlan
-            )
-            onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
-            navigationController.present(onboardingNavigationController, animated: true)
-        }
+        let onboardingNavigationController = UINavigationController()
+        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
+                                                                                             isExpanded: true),
+                                                                            navigationController: onboardingNavigationController,
+                                                                            site: site)
+        onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
+        navigationController.present(onboardingNavigationController, animated: true)
     }
 
     /// Navigates to complete an onboarding task.

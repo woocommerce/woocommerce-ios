@@ -18,6 +18,7 @@ enum CardPresentPaymentEventDetails {
     case connectingFailedChargeReader(retrySearch: () -> Void,
                                       endSearch: () -> Void)
     case connectingFailedUpdateAddress(wcSettingsAdminURL: URL,
+                                       showsInAuthenticatedWebView: Bool,
                                        retrySearch: () -> Void,
                                        endSearch: () -> Void)
     case preparingForPayment(cancelPayment: () -> Void)
@@ -28,10 +29,12 @@ enum CardPresentPaymentEventDetails {
                      connect: () -> Void,
                      continueSearch: () -> Void,
                      endSearch: () -> Void)
+    case foundMultipleReaders(readerIDs: [String],
+                              selectionHandler: (String?) -> Void)
     case updateProgress(requiredUpdate: Bool,
                         progress: Float,
                         cancelUpdate: (() -> Void)?)
-    case updateFailed(tryAgain: (() -> Void)?,
+    case updateFailed(tryAgain: () -> Void,
                       cancelUpdate: () -> Void)
     case updateFailedNonRetryable(cancelUpdate: () -> Void)
     case updateFailedLowBattery(batteryLevel: Double?,
@@ -44,6 +47,7 @@ enum CardPresentPaymentEventDetails {
                       cancelPayment: () -> Void)
     case paymentErrorNonRetryable(error: any Error,
                                   cancelPayment: () -> Void)
+    case paymentCaptureError(cancelPayment: () -> Void)
     case processing
     case displayReaderMessage(message: String)
     case cancelledOnReader

@@ -1,1 +1,2 @@
-Vår senaste version förbättrar skärmen Min butik, där du nu kan hitta information om dina senaste beställningar, produkter som håller på att ta slut i lager, aktiva rabattkoder, kundrecensioner med mera. Gör en djupdykning i din butiks prestanda med dessa nya tillägg.
+Vår senaste uppdatering förbättrar analyshubben genom att inkludera Google Ads-kampanjer och introducerar Inkorgsanteckningar i den dynamiska adminpanelen och hubbmenyn. Ta del av en bättre appupplevelse med vår senaste uppdatering.
+

@@ -1,8 +1,45 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.6
+-----
+
+- [*] Order Creation: Improved tax-inclusive product price presentation [https://github.com/woocommerce/woocommerce-ios/pull/13305]
+- [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
+- [**] Stats: The Google Campaigns analytics card now supports selecting any available campaign metric. [https://github.com/woocommerce/woocommerce-ios/pull/13366]
+- [internal] Blaze: Check that product URL is not empty before campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13351]
+- [Internal] Removed feature flag for product description AI [https://github.com/woocommerce/woocommerce-ios/pull/13334]
+- [Internal] Removed feature flag for product sharing AI [https://github.com/woocommerce/woocommerce-ios/pull/13337]
+- [Internal] Removed feature flag for product description AI tooltip [https://github.com/woocommerce/woocommerce-ios/pull/13341]
+- [Internal] Removed feature flag for the native Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13356]
+- [Internal] Removed feature flag for dynamic dashboard M2. [https://github.com/woocommerce/woocommerce-ios/pull/13359]
+- [Internal] Removed store creation related code. [https://github.com/woocommerce/woocommerce-ios/pull/13379]
+
+19.5
+-----
+- [**] Cash Payment: Set the payment method and payment method title to orders completed with cash payment. [https://github.com/woocommerce/woocommerce-ios/pull/13257]
+
+19.4
+-----
+- [**] Stats: The Analytics Hub (accessed by tapping "View all store analytics" on the My Store dashboard) now includes analytics for Google Ads campaigns, when the Google Listings & Ads extension is active and connected to Google. [https://github.com/woocommerce/woocommerce-ios/pull/13245]
+- [***] Inbox Notes have been enabled in both the Dynamic Dashboard and the Hub Menu, offering users a centralized and non-intrusive method for receiving important updates, feature announcements, and pertinent information. [https://github.com/woocommerce/woocommerce-ios/pull/13214]
+
+19.3
+-----
+- [*] Blaze Campaigns: Added date range checks to ensure campaign start dates are within 60 days from today to avoid validation errors. [https://github.com/woocommerce/woocommerce-ios/pull/13124]
+- [*] Payments: fixed issue when connecting to a card reader after cancelling reader discovery [https://github.com/woocommerce/woocommerce-ios/issues/13125]
+- [*] Payments: fixed issue when connecting to a card reader after an error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/13126]
+- [*] Blaze i3: Implemented ux improvements for a more intuitive and streamlined interface. [https://github.com/woocommerce/woocommerce-ios/pull/13172]
+- [*] Payments: improved collect payment error handling, by checking whether the payment was actually successful on some errors [https://github.com/woocommerce/woocommerce-ios/pull/13165]
+
 19.2
 -----
+- [*] Internal: Add additional logs for payment gateway accounts missing requirements. [https://github.com/woocommerce/woocommerce-ios/pull/13078]
+- [*] The `Private` tag was not displayed for products set to private on the product list tab. [https://github.com/woocommerce/woocommerce-ios/pull/13083]
+- [*] Product Form: Support picking videos from local library for downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/13051]
+- [*] Disable bookable products from the order creation form. [https://github.com/woocommerce/woocommerce-ios/pull/13022]
 - [internal] Update: ZendeskSupportSDK from v6.0 to v.8.0.3 [https://github.com/woocommerce/woocommerce-ios/pull/12984]
+- [*] Order Creation: Fixes a bug where the customer list would not load when adding a customer to an order, if the store had a customer with no previous activity. [https://github.com/woocommerce/woocommerce-ios/pull/13094]
+- [*] Dynamic dashboard: Fix potential issue rendering Stock card when stock quantity is non-integer. [https://github.com/woocommerce/woocommerce-ios/pull/13098]
 
 19.1
 -----

@@ -52,6 +52,12 @@ extension UserDefaults {
         // Store Creation
         case siteIDPendingStoreSwitch
         case expectedStoreNamePendingStoreSwitch
+
+        // Watch
+        case watchDependencies
+
+        // Background Task Refresh
+        case latestBackgroundOrderSyncDate
     }
 }
 

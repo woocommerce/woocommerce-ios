@@ -1,5 +1,7 @@
 import SwiftUI
+import class WooFoundation.CurrencyFormatter
 import protocol Yosemite.POSItemProvider
+import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
@@ -8,12 +10,16 @@ struct PointOfSaleEntryPointView: View {
 
     init(itemProvider: POSItemProvider,
          hideAppTabBar: @escaping ((Bool) -> Void),
-         cardPresentPaymentService: CardPresentPaymentFacade) {
+         cardPresentPaymentService: CardPresentPaymentFacade,
+         orderService: POSOrderServiceProtocol,
+         currencyFormatter: CurrencyFormatter) {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            items: itemProvider.providePointOfSaleItems(),
-            cardPresentPaymentService: cardPresentPaymentService)
+            itemProvider: itemProvider,
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderService: orderService,
+            currencyFormatter: currencyFormatter)
         )
     }
 
@@ -32,6 +38,8 @@ struct PointOfSaleEntryPointView: View {
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               hideAppTabBar: { _ in },
-                              cardPresentPaymentService: CardPresentPaymentPreviewService())
+                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                              orderService: POSOrderPreviewService(),
+                              currencyFormatter: .init(currencySettings: .init()))
 }
 #endif

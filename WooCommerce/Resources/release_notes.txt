@@ -1,1 +1,3 @@
-Discover the latest updates to our WooCommerce app! We've added a "Private" filter option for enhanced product searches on iOS and revamped the product creation sheet for better organization. The privacy settings screen now has its navigation bar restored. The Customers section now displays phone numbers and addresses, with options to copy or contact directly. Plus, you can create new orders for registered customers with ease!
+
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
+

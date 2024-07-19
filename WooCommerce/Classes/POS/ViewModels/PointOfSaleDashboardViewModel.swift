@@ -12,7 +12,7 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
-    var cartViewModel: CartViewModel
+    private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: orderStageSubject.eraseToAnyPublisher())
     let totalsViewModel: AnyTotalsViewModel
 
     @Published private(set) var isCartCollapsed: Bool = true
@@ -43,13 +43,16 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter,
-         totalsViewModel: AnyTotalsViewModel? = nil) {
+         totalsViewModel: AnyTotalsViewModel? = nil,
+         cartViewModel: CartViewModel? = nil) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
         self.totalsViewModel = totalsViewModel ?? AnyTotalsViewModel(TotalsViewModel(orderService: orderService,
                                                                                      cardPresentPaymentService: cardPresentPaymentService,
                                                                                      currencyFormatter: currencyFormatter))
-        self.cartViewModel = CartViewModel(orderStage: orderStageSubject.eraseToAnyPublisher())
+        if let cartViewModel = cartViewModel {
+            self.cartViewModel = cartViewModel
+        }
 
         observeSelectedItemToAddToCart()
         observeCartItemsForCollapsedState()

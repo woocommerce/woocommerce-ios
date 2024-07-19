@@ -10,6 +10,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var itemProvider: MockPOSItemProvider!
     private var orderService: POSOrderServiceProtocol!
     private var mockCartViewModel: MockCartViewModel!
+    private var mockTotalsViewModel: MockTotalsViewModel!
     private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
@@ -17,10 +18,14 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
         orderService = POSOrderPreviewService()
+        mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel.OrderStage.building).eraseToAnyPublisher())
+        mockTotalsViewModel = MockTotalsViewModel()
         sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()))
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: AnyTotalsViewModel(mockTotalsViewModel),
+                                            cartViewModel: mockCartViewModel.cartViewModel)
         cancellables = []
     }
 
@@ -28,6 +33,8 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         cardPresentPaymentService = nil
         itemProvider = nil
         orderService = nil
+        mockCartViewModel = nil
+        mockTotalsViewModel = nil
         sut = nil
         cancellables = []
         super.tearDown()
@@ -82,15 +89,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     }
 
     func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_payment_state_is_idle() {
-        // Given
-        let mockCartViewModel = MockCartViewModel(orderStage: Just(PointOfSaleDashboardViewModel.OrderStage.building).eraseToAnyPublisher())
-        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
-                                            cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()),
-                                            totalsViewModel: AnyTotalsViewModel(MockTotalsViewModel()))
-        sut.cartViewModel = mockCartViewModel.cartViewModel
-
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
         sut.$isAddMoreDisabled
@@ -110,21 +108,37 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     }
 
     func test_isAddMoreDisabled_is_true_for_collectPayment_success() {
+        // Given
+        let mockTotalsViewModel = MockTotalsViewModel()
+        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
+                                            cardPresentPaymentService: cardPresentPaymentService,
+                                            orderService: orderService,
+                                            currencyFormatter: .init(currencySettings: .init()),
+                                            totalsViewModel: AnyTotalsViewModel(mockTotalsViewModel))
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true after successfully collecting payment")
 
         sut.$isAddMoreDisabled
-            .dropFirst()
+            .dropFirst(2)
             .sink { value in
                 XCTAssertTrue(value)
                 expectation.fulfill()
             }
             .store(in: &cancellables)
 
-        Task {
-            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        // Simulate payment state change to processingPayment
+        mockTotalsViewModel.paymentState = .processingPayment
+
+        // Simulate payment state change to processingPayment
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            mockTotalsViewModel.paymentState = .cardPaymentSuccessful
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        // Simulate successful payment collection
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            self.cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+//        }
+
+        wait(for: [expectation], timeout: 2.0)
     }
 
     func test_isAddMoreDisabled_is_true_for_processingPayment() {

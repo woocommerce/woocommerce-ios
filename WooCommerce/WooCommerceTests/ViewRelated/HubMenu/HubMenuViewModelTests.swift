@@ -496,7 +496,7 @@ final class HubMenuViewModelTests: XCTestCase {
         var fetchAdsCampaignsTriggered = false
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {
-            case let .fetchAdsCampaigns(siteID, onCompletion):
+            case let .fetchAdsCampaigns(_, onCompletion):
                 onCompletion(.success([]))
                 fetchAdsCampaignsTriggered = true
             default:
@@ -504,10 +504,14 @@ final class HubMenuViewModelTests: XCTestCase {
             }
         }
 
+        let eligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
+                                         stores: stores,
+                                         googleAdsEligibilityChecker: eligibilityChecker)
+        viewModel.refreshGoogleAdsCampaignCheck()
         waitUntil {
             fetchAdsCampaignsTriggered
         }
@@ -527,7 +531,7 @@ final class HubMenuViewModelTests: XCTestCase {
         var fetchAdsCampaignsTriggered = false
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {
-            case let .fetchAdsCampaigns(siteID, onCompletion):
+            case let .fetchAdsCampaigns(_, onCompletion):
                 let campaign = GoogleAdsCampaign.fake().copy(id: 134254)
                 onCompletion(.success([campaign]))
                 fetchAdsCampaignsTriggered = true
@@ -536,10 +540,14 @@ final class HubMenuViewModelTests: XCTestCase {
             }
         }
 
+        let eligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
+                                         stores: stores,
+                                         googleAdsEligibilityChecker: eligibilityChecker)
+        viewModel.refreshGoogleAdsCampaignCheck()
         waitUntil {
             fetchAdsCampaignsTriggered
         }

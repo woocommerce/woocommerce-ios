@@ -4,7 +4,6 @@
 -----
 
 - [*] Order Creation: Improved tax-inclusive product price presentation [https://github.com/woocommerce/woocommerce-ios/pull/13305]
-- [**] Google Ads campaign management is now available for stores with plugin version 2.7.5 or later. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 - [**] Product Creation AI: Milestone 1 which simplifies package photo flow and revamps UI. [https://github.com/woocommerce/woocommerce-ios/pull/13331]
 - [**] Stats: The Google Campaigns analytics card now supports selecting any available campaign metric. [https://github.com/woocommerce/woocommerce-ios/pull/13366]
 - [internal] Blaze: Check that product URL is not empty before campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13351]

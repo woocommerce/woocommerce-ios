@@ -133,11 +133,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
             mockTotalsViewModel.paymentState = .cardPaymentSuccessful
         }
 
-        // Simulate successful payment collection
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//            self.cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-//        }
-
         wait(for: [expectation], timeout: 2.0)
     }
 

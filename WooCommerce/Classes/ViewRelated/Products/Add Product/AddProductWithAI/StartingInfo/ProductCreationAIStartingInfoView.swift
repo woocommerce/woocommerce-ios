@@ -6,7 +6,11 @@ struct ProductCreationAIStartingInfoView: View {
     @ObservedObject private var viewModel: ProductCreationAIStartingInfoViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
+    private var isCompact: Bool {
+        verticalSizeClass == .compact
+    }
     private let onContinueWithFeatures: (String) -> Void
 
     init(viewModel: ProductCreationAIStartingInfoViewModel,
@@ -35,26 +39,22 @@ struct ProductCreationAIStartingInfoView: View {
                     VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
                         VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
                             VStack(spacing: 0) {
-                                ZStack(alignment: .topLeading) {
-                                    TextEditor(text: $viewModel.features)
-                                        .id(Constant.textEditorID)
-                                        .bodyStyle()
-                                        .foregroundStyle(.secondary)
-                                        .padding(insets: Layout.messageContentInsets)
-                                        .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
-                                        .focused($editorIsFocused)
-                                    // Scrolls to the "TextEditor" view with a smooth animation while typing.
-                                        .onChange(of: viewModel.features) { _ in
-                                            scrollToTextEditor(using: proxy)
-                                        }
-                                    // Scrolls to the "TextEditor" view with a smooth animation when the editor is focused in a small screen.
-                                    .onChange(of: editorIsFocused) { isFocused in
-                                        if isFocused {
-                                            scrollToTextEditor(using: proxy)
-                                        }
+                                TextField(Localization.placeholder, text: $viewModel.features, axis: .vertical)
+                                .id(Constant.textFieldID)
+                                .bodyStyle()
+                                .foregroundStyle(.secondary)
+                                .lineLimit(Constant.textFieldMinLineLength...)
+                                .padding(insets: Layout.messageContentInsets)
+                                .focused($editorIsFocused)
+                                // Scrolls to the "TextField" view with a smooth animation while typing.
+                                .onChange(of: viewModel.features) { _ in
+                                    scrollToTextField(using: proxy)
+                                }
+                                // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
+                                .onChange(of: editorIsFocused) { isFocused in
+                                    if isFocused {
+                                        scrollToTextField(using: proxy)
                                     }
-                                    // Placeholder text
-                                    placeholderText
                                 }
 
                                 Divider()
@@ -121,14 +121,21 @@ struct ProductCreationAIStartingInfoView: View {
             }
             .scrollDismissesKeyboard(.immediately)
         }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                generateButton(isPrimary: false)
+                    .renderedIf(isCompact)
+            }
+        }
         .safeAreaInset(edge: .bottom) {
             VStack {
                 Divider()
                 // CTA to generate product details.
-                generateButton
+                generateButton(isPrimary: true)
                     .padding()
             }
             .background(Color(uiColor: .systemBackground))
+            .renderedIf(!isCompact)
         }
         .sheet(isPresented: $viewModel.isShowingViewPhotoSheet, content: {
             if case let .success(image) = viewModel.imageState {
@@ -163,17 +170,7 @@ private extension ProductCreationAIStartingInfoView {
         }
     }
 
-    var placeholderText: some View {
-        Text(Localization.placeholder)
-            .foregroundColor(Color(.placeholderText))
-            .bodyStyle()
-            .padding(insets: Layout.placeholderInsets)
-            // Allows gestures to pass through to the `TextEditor`.
-            .allowsHitTesting(false)
-            .renderedIf(viewModel.features.isEmpty)
-    }
-
-    var generateButton: some View {
+    func generateButton(isPrimary: Bool) -> some View {
         Button {
             // continue
             editorIsFocused = false
@@ -181,13 +178,16 @@ private extension ProductCreationAIStartingInfoView {
         } label: {
             Text(Localization.generateProductDetails)
         }
-        .buttonStyle(PrimaryButtonStyle())
+        .if(isPrimary, transform: { button in
+            button.buttonStyle(PrimaryButtonStyle())
+        })
         .disabled(viewModel.features.isEmpty)
     }
 
-    private func scrollToTextEditor(using proxy: ScrollViewProxy) {
+
+    private func scrollToTextField(using proxy: ScrollViewProxy) {
         withAnimation {
-            proxy.scrollTo(Constant.textEditorID, anchor: .top)
+            proxy.scrollTo(Constant.textFieldID, anchor: .top)
         }
     }
 }
@@ -202,7 +202,6 @@ private extension ProductCreationAIStartingInfoView {
         static let textFieldBlockSpacing: CGFloat = 24
 
         static let editorBlockSpacing: CGFloat = 8
-        static let minimumEditorHeight: CGFloat = 70
         static let cornerRadius: CGFloat = 8
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
@@ -217,7 +216,8 @@ private extension ProductCreationAIStartingInfoView {
     }
 
     enum Constant {
-        static let textEditorID = "TextEditor"
+        static let textFieldID = "TextField"
+        static let textFieldMinLineLength = 3
     }
 
     enum Localization {

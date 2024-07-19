@@ -16,7 +16,6 @@ final class DashboardViewModelTests: XCTestCase {
 
     private let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
-    @MainActor
     private let inboxEligibilityChecker = MockInboxEligibilityChecker()
     private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
@@ -176,6 +175,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
+    @MainActor
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()

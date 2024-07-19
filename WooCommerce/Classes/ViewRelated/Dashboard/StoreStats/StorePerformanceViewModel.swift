@@ -164,7 +164,7 @@ final class StorePerformanceViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
             currentDate = .now // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
-            let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange)
+            let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
             try await syncUseCase.sync()
 
             trackDashboardStatsSyncComplete()

@@ -14,9 +14,9 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    /// Whether the store is eligible for Google Ads campaign creation.
+    /// Whether the store is eligible for Google Ads campaign creation. Optimistically defaults to `true`, to show loading view while checking eligibility.
     ///
-    @Published private(set) var isEligibleForGoogleAds: Bool = false
+    @Published private(set) var isEligibleForGoogleAds: Bool = true
 
     /// Campaign stats for the current period
     ///
@@ -193,7 +193,7 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Whether to show the call to action to create a new campaign.
     ///
     var showCampaignCTA: Bool {
-        false // TODO-13368: Add logic for when to show the call to action
+        !hasPaidCampaigns && isEligibleForGoogleAds
     }
 
     /// Whether there are paid campaigns to display.
@@ -210,6 +210,7 @@ extension GoogleAdsCampaignReportCardViewModel {
 
     /// Checks whether the store is eligible for campaign creation.
     ///
+    @MainActor
     private func checkGoogleAdsEligibility() async -> Bool {
         isEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: siteID)
         return isEligibleForGoogleAds

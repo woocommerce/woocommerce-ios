@@ -6,7 +6,7 @@ struct ProductCreationAIStartingInfoView: View {
     @ObservedObject private var viewModel: ProductCreationAIStartingInfoViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
-    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var isCompact: Bool {
         verticalSizeClass == .compact
@@ -43,7 +43,7 @@ struct ProductCreationAIStartingInfoView: View {
                                 .id(Constant.textFieldID)
                                 .bodyStyle()
                                 .foregroundStyle(.secondary)
-                                .lineLimit(Constant.textFieldMinLineLenght...)
+                                .lineLimit(Constant.textFieldMinLineLength...)
                                 .padding(insets: Layout.messageContentInsets)
                                 .focused($editorIsFocused)
                                 // Scrolls to the "TextField" view with a smooth animation while typing.
@@ -217,7 +217,7 @@ private extension ProductCreationAIStartingInfoView {
 
     enum Constant {
         static let textFieldID = "TextField"
-        static let textFieldMinLineLenght = 3
+        static let textFieldMinLineLength = 3
     }
 
     enum Localization {

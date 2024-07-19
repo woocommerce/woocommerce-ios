@@ -64,6 +64,10 @@ private extension WebCheckoutViewModel {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Checkout", comment: "Title of the WPCOM checkout web view.")
+        static let title = NSLocalizedString(
+            "webCheckoutViewModel.title",
+            value: "Checkout",
+            comment: "Title of the WPCOM checkout web view."
+        )
     }
 }

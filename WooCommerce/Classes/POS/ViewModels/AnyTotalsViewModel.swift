@@ -12,15 +12,15 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
 
-    var isSyncingOrderPublisher: Published<Bool>.Publisher
-    var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher
-    var showsCardReaderSheetPublisher: Published<Bool>.Publisher
-    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher
-    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher
+    var isSyncingOrderPublisher: Published<Bool>.Publisher { $_isSyncingOrder }
+    var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $_paymentState }
+    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
+    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
+    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
+    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
+    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
+    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var wrapped: any TotalsViewModelProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -37,16 +37,10 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.formattedOrderTotalPrice = wrapped.formattedOrderTotalPrice
         self.formattedOrderTotalTaxPrice = wrapped.formattedOrderTotalTaxPrice
 
-        self.isSyncingOrderPublisher = wrapped.isSyncingOrderPublisher
-        self.paymentStatePublisher = wrapped.paymentStatePublisher
-        self.showsCardReaderSheetPublisher = wrapped.showsCardReaderSheetPublisher
-        self.cardPresentPaymentAlertViewModelPublisher = wrapped.cardPresentPaymentAlertViewModelPublisher
-        self.cardPresentPaymentEventPublisher = wrapped.cardPresentPaymentEventPublisher
-        self.connectionStatusPublisher = wrapped.connectionStatusPublisher
-        self.formattedCartTotalPricePublisher = wrapped.formattedCartTotalPricePublisher
-        self.formattedOrderTotalPricePublisher = wrapped.formattedOrderTotalPricePublisher
-        self.formattedOrderTotalTaxPricePublisher = wrapped.formattedOrderTotalTaxPricePublisher
+        bindPublishers()
+    }
 
+    private func bindPublishers() {
         wrapped.isSyncingOrderPublisher
             .assign(to: \._isSyncingOrder, on: self)
             .store(in: &cancellables)

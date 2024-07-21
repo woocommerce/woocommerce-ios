@@ -46,7 +46,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
         self.totalsViewModel = totalsViewModel ?? AnyTotalsViewModel(TotalsViewModel(orderService: orderService,
                                                                                      cardPresentPaymentService: cardPresentPaymentService,
-                                                                                     currencyFormatter: currencyFormatter))
+                                                                                     currencyFormatter: currencyFormatter,
+                                                                                     paymentState: .acceptingCard,
+                                                                                    isSyncingOrder: false))
         if let cartViewModel = cartViewModel {
             self.cartViewModel = cartViewModel
         }

@@ -24,9 +24,9 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
-    @Published var paymentState: PaymentState = .acceptingCard
+    @Published var paymentState: PaymentState
 
-    @Published var isSyncingOrder: Bool = false
+    @Published var isSyncingOrder: Bool
 
     @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
 
@@ -77,8 +77,8 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter,
-         paymentState: PaymentState = .acceptingCard,
-         isSyncingOrder: Bool = false) {
+         paymentState: PaymentState,
+         isSyncingOrder: Bool) {
         self.orderService = orderService
         self.cardPresentPaymentService = cardPresentPaymentService
         self.currencyFormatter = currencyFormatter

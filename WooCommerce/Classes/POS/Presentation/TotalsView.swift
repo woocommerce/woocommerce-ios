@@ -211,6 +211,8 @@ private extension TotalsView {
                                 currencyFormatter: .init(currencySettings: .init())),
                totalsViewModel: .init(AnyTotalsViewModel(TotalsViewModel(orderService: POSOrderPreviewService(),
                                                                         cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                                        currencyFormatter: .init(currencySettings: .init())))))
+                                                                        currencyFormatter: .init(currencySettings: .init()),
+                                                                         paymentState: .acceptingCard,
+                                                                        isSyncingOrder: false))))
 }
 #endif

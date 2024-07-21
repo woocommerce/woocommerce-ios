@@ -32,6 +32,7 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
             }
         } catch {
             DDLogError("⛔️ Error checking Google ads connection: \(error)")
+            return false
         }
 
         /// Ensures that the plugin is running the correct version.

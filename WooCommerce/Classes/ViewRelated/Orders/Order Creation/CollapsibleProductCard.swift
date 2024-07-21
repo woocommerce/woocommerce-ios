@@ -17,15 +17,20 @@ struct CollapsibleProductCard: View {
     /// Tracks if discount should be allowed or disallowed.
     var shouldDisallowDiscounts: Bool = false
 
+    /// Tracks if the order is loading (syncing remotely)
+    private let isLoading: Bool
+
     @ScaledMetric private var scale: CGFloat = 1
 
     init(viewModel: CollapsibleProductCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
+         isLoading: Bool,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
          onAddDiscount: @escaping (_ productRowID: Int64) -> Void) {
         self.viewModel = viewModel
         self.flow = flow
+        self.isLoading = isLoading
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.shouldDisallowDiscounts = shouldDisallowDiscounts
         self.onAddDiscount = onAddDiscount
@@ -35,6 +40,7 @@ struct CollapsibleProductCard: View {
         if viewModel.childProductRows.isEmpty {
             CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                       flow: flow,
+                                      isLoading: isLoading,
                                       showsBorder: true,
                                       shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                       shouldDisallowDiscounts: shouldDisallowDiscounts,
@@ -44,6 +50,7 @@ struct CollapsibleProductCard: View {
                 // Parent product
                 CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                           flow: flow,
+                                          isLoading: isLoading,
                                           showsBorder: false,
                                           shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                           shouldDisallowDiscounts: shouldDisallowDiscounts,
@@ -56,6 +63,7 @@ struct CollapsibleProductCard: View {
                 ForEach(viewModel.childProductRows) { childRow in
                     CollapsibleProductRowCard(viewModel: childRow,
                                               flow: flow,
+                                              isLoading: isLoading,
                                               showsBorder: false,
                                               shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                               shouldDisallowDiscounts: shouldDisallowDiscounts,
@@ -102,6 +110,9 @@ private struct CollapsibleProductRowCard: View {
     //
     var shouldDisallowDiscounts: Bool = false
 
+    /// Tracks if the order is loading (syncing remotely)
+    private let isLoading: Bool
+
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
@@ -119,12 +130,14 @@ private struct CollapsibleProductRowCard: View {
 
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
+         isLoading: Bool,
          showsBorder: Bool,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
          onAddDiscount: @escaping (_ productRowID: Int64) -> Void) {
         self.viewModel = viewModel
         self.flow = flow
+        self.isLoading = isLoading
         self.showsBorder = showsBorder
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.shouldDisallowDiscounts = shouldDisallowDiscounts
@@ -183,7 +196,7 @@ private struct CollapsibleProductRowCard: View {
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel, isLoading: isLoading)
                             .font(.subheadline)
                             .renderedIf(!viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                     }
@@ -208,7 +221,7 @@ private struct CollapsibleProductRowCard: View {
                     Text(Localization.priceLabel)
                         .subheadlineStyle()
                     Spacer()
-                    CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
+                    CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel, isLoading: isLoading)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
 
@@ -225,6 +238,8 @@ private struct CollapsibleProductRowCard: View {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
                     Text(viewModel.totalPriceAfterDiscountLabel ?? "")
+                        .redacted(reason: isLoading ? .placeholder : [])
+                        .shimmering(active: isLoading)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
                 .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
@@ -351,6 +366,7 @@ private extension CollapsibleProductRowCard {
                     if let discountLabel = viewModel.discountLabel {
                         Text(minusSign + discountLabel)
                             .foregroundColor(.green)
+                            .shimmering(active: isLoading)
                     }
                 }
                 // Redacts the discount editing row while product data is reloaded during remote sync.
@@ -535,20 +551,23 @@ struct CollapsibleProductCard_Previews: PreviewProvider {
                                                                     childProductRows: childViewModels)
         VStack {
             CollapsibleProductCard(viewModel: viewModel,
-                                      flow: .creation,
-                                      shouldDisableDiscountEditing: false,
-                                      shouldDisallowDiscounts: false,
-                                      onAddDiscount: { _ in })
+                                   flow: .creation,
+                                   isLoading: false,
+                                   shouldDisableDiscountEditing: false,
+                                   shouldDisallowDiscounts: false,
+                                   onAddDiscount: { _ in })
             CollapsibleProductCard(viewModel: readOnlyViewModel,
                                    flow: .creation,
+                                   isLoading: false,
                                    shouldDisableDiscountEditing: false,
                                    shouldDisallowDiscounts: false,
                                    onAddDiscount: { _ in })
             CollapsibleProductCard(viewModel: bundleParentViewModel,
-                                      flow: .creation,
-                                      shouldDisableDiscountEditing: false,
-                                      shouldDisallowDiscounts: false,
-                                      onAddDiscount: { _ in })
+                                   flow: .creation,
+                                   isLoading: false,
+                                   shouldDisableDiscountEditing: false,
+                                   shouldDisallowDiscounts: false,
+                                   onAddDiscount: { _ in })
         }
         .padding()
     }

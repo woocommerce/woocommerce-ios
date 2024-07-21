@@ -545,30 +545,6 @@ private extension RemoteOrderSynchronizer {
 
 // MARK: Definitions
 private extension RemoteOrderSynchronizer {
-    /// Simple type to serve negative IDs.
-    /// This is needed to differentiate if an item ID has been synced remotely while providing a unique ID to consumers.
-    /// If the ID is a negative number we assume that it's a local ID.
-    /// Warning: This is not thread safe.
-    ///
-    final class LocalIDStore {
-        /// Last used ID
-        ///
-        private var currentID: Int64 = 0
-
-        /// Returns true if a given ID is deemed to be local(zero or negative).
-        ///
-        static func isIDLocal(_ id: Int64) -> Bool {
-            id <= 0
-        }
-
-        /// Creates a new and unique local ID for this session.
-        ///
-        func dispatchLocalID() -> Int64 {
-            currentID -= 1
-            return currentID
-        }
-    }
-
     /// Defines the types of operations the synchronizer performs.
     ///
     enum OperationType {
@@ -587,26 +563,11 @@ private extension Order {
     /// Returns true if the order contains any local line (items, shipping, fees, or coupons).
     ///
     func containsLocalLines() -> Bool {
-        let containsLocalLineItems = items.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.itemID) }
-        let containsLocalShippingLines = shippingLines.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.shippingID) }
-        let containsLocalFeeLines = fees.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.feeID) }
-        let containsLocalCouponsLines = coupons.contains { RemoteOrderSynchronizer.LocalIDStore.isIDLocal($0.couponID) }
+        let containsLocalLineItems = items.contains { LocalIDStore.isIDLocal($0.itemID) }
+        let containsLocalShippingLines = shippingLines.contains { LocalIDStore.isIDLocal($0.shippingID) }
+        let containsLocalFeeLines = fees.contains { LocalIDStore.isIDLocal($0.feeID) }
+        let containsLocalCouponsLines = coupons.contains { LocalIDStore.isIDLocal($0.couponID) }
         return containsLocalLineItems || containsLocalShippingLines || containsLocalFeeLines || containsLocalCouponsLines
-    }
-
-    /// Removes the `itemID`, `total` & `subtotal` values from local items.
-    /// This is needed to:
-    /// 1. Create the item without the local ID, the remote API would fail otherwise.
-    /// 2. Let the remote source calculate the correct item price & total as it can vary depending on the store configuration. EG: `prices_include_tax` is set.
-    ///
-    func sanitizingLocalItems() -> Order {
-        let sanitizedItems: [OrderItem] = items.map { item in
-            guard RemoteOrderSynchronizer.LocalIDStore.isIDLocal(item.itemID) else {
-                return item
-            }
-            return item.copy(itemID: .zero, subtotal: "", total: "")
-        }
-        return copy(items: sanitizedItems)
     }
 
     /// Returns true if the order contains any items with bundle configuration updates.

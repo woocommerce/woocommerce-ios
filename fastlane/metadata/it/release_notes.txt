@@ -1,1 +1,3 @@
-Scopri gli ultimi aggiornamenti dell'app WooCommerce per dispositivi mobili. Abbiamo migliorato le campagne Blaze con controlli dell'intervallo di date per prevenire errori di convalida, ottimizzato l'esperienza utente per un'interfaccia più intuitiva e risolto diversi problemi con le connessioni del lettore di schede. Inoltre, abbiamo perfezionato la gestione degli errori durante la riscossione dei pagamenti per un'esperienza più fluida. Aggiorna ora per una migliore esperienza WooCommerce.
+
+Aggiorna ora la tua app WooCommerce per migliorare l'esperienza di pagamento in contanti! Abbiamo risolto il problema per cui gli ordini pagati in contanti non mostravano il metodo di pagamento e il titolo. Ora, quando si ricevono pagamenti in contanti, l'app imposta questi dettagli correttamente, proprio come sul web, garantendo chiarezza nei dettagli dell'ordine e nelle ricevute.
+

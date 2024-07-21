@@ -9,6 +9,13 @@ public protocol POSItem {
     var productType: ProductType { get }
 }
 
+extension POSItem {
+    // Equatable conformance
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.itemID == rhs.itemID
+    }
+}
+
 public protocol POSItemProvider {
     func providePointOfSaleItems() async throws -> [POSItem]
 }

@@ -8,9 +8,11 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent
     @Published var connectionStatus: CardReaderConnectionStatus
-    @Published var formattedCartTotalPrice: String?
-    @Published var formattedOrderTotalPrice: String?
-    @Published var formattedOrderTotalTaxPrice: String?
+
+    // Wrapping the computed properties
+    @Published private var _formattedCartTotalPrice: String?
+    @Published private var _formattedOrderTotalPrice: String?
+    @Published private var _formattedOrderTotalTaxPrice: String?
 
     var isSyncingOrderPublisher: Published<Bool>.Publisher { $_isSyncingOrder }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $_paymentState }
@@ -18,9 +20,9 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
     var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
+    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $_formattedCartTotalPrice }
+    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $_formattedOrderTotalPrice }
+    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $_formattedOrderTotalTaxPrice }
 
     private var wrapped: any TotalsViewModelProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -33,9 +35,9 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.cardPresentPaymentAlertViewModel = wrapped.cardPresentPaymentAlertViewModel
         self.cardPresentPaymentEvent = wrapped.cardPresentPaymentEvent
         self.connectionStatus = wrapped.connectionStatus
-        self.formattedCartTotalPrice = wrapped.formattedCartTotalPrice
-        self.formattedOrderTotalPrice = wrapped.formattedOrderTotalPrice
-        self.formattedOrderTotalTaxPrice = wrapped.formattedOrderTotalTaxPrice
+        self._formattedCartTotalPrice = wrapped.formattedCartTotalPrice
+        self._formattedOrderTotalPrice = wrapped.formattedOrderTotalPrice
+        self._formattedOrderTotalTaxPrice = wrapped.formattedOrderTotalTaxPrice
 
         bindPublishers()
     }
@@ -60,13 +62,13 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
             .assign(to: \.connectionStatus, on: self)
             .store(in: &cancellables)
         wrapped.formattedCartTotalPricePublisher
-            .assign(to: \.formattedCartTotalPrice, on: self)
+            .assign(to: \._formattedCartTotalPrice, on: self)
             .store(in: &cancellables)
         wrapped.formattedOrderTotalPricePublisher
-            .assign(to: \.formattedOrderTotalPrice, on: self)
+            .assign(to: \._formattedOrderTotalPrice, on: self)
             .store(in: &cancellables)
         wrapped.formattedOrderTotalTaxPricePublisher
-            .assign(to: \.formattedOrderTotalTaxPrice, on: self)
+            .assign(to: \._formattedOrderTotalTaxPrice, on: self)
             .store(in: &cancellables)
     }
 
@@ -94,6 +96,14 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         wrapped.isPriceFieldRedacted
     }
 
+    var isSubtotalFieldRedacted: Bool {
+        wrapped.isSubtotalFieldRedacted
+    }
+
+    var isTaxFieldRedacted: Bool {
+        wrapped.isTaxFieldRedacted
+    }
+
     var isTotalPriceFieldRedacted: Bool {
         wrapped.isTotalPriceFieldRedacted
     }
@@ -106,7 +116,7 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         wrapped.showRecalculateButton
     }
 
-    var order: POSOrder? {
+    var order: Order? {
         wrapped.order
     }
 
@@ -128,5 +138,18 @@ class AnyTotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     func onTotalsViewDisappearance() {
         wrapped.onTotalsViewDisappearance()
+    }
+
+    // Computed properties for formatted prices
+    var formattedCartTotalPrice: String? {
+        wrapped.formattedCartTotalPrice
+    }
+
+    var formattedOrderTotalPrice: String? {
+        wrapped.formattedOrderTotalPrice
+    }
+
+    var formattedOrderTotalTaxPrice: String? {
+        wrapped.formattedOrderTotalTaxPrice
     }
 }

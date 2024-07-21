@@ -1,5 +1,6 @@
 import Combine
-import Yosemite
+import struct Yosemite.Order
+import protocol Yosemite.POSItem
 
 protocol TotalsViewModelProtocol {
     var isSyncingOrder: Bool { get set }
@@ -8,9 +9,9 @@ protocol TotalsViewModelProtocol {
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentEvent: CardPresentPaymentEvent { get set }
     var connectionStatus: CardReaderConnectionStatus { get set }
-    var formattedCartTotalPrice: String? { get set }
-    var formattedOrderTotalPrice: String? { get set }
-    var formattedOrderTotalTaxPrice: String? { get set }
+    var formattedCartTotalPrice: String? { get }
+    var formattedOrderTotalPrice: String? { get }
+    var formattedOrderTotalTaxPrice: String? { get }
 
     var isSyncingOrderPublisher: Published<Bool>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
@@ -22,12 +23,15 @@ protocol TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { get }
 
+
     var isShimmering: Bool { get }
     var isPriceFieldRedacted: Bool { get }
     var isTotalPriceFieldRedacted: Bool { get }
+    var isSubtotalFieldRedacted: Bool { get }
+    var isTaxFieldRedacted: Bool { get }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
     var showRecalculateButton: Bool { get }
-    var order: POSOrder? { get }
+    var order: Order? { get }
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem])
     func startNewTransaction()

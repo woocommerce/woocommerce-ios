@@ -123,7 +123,7 @@ struct BlazeCampaignCreationForm: View {
                 // Ad destination
                 if viewModel.adDestinationViewModel != nil {
                     detailView(title: Localization.adDestination,
-                               content: viewModel.finalDestinationURL,
+                               content: viewModel.finalDestinationURL.isNotEmpty ? viewModel.finalDestinationURL : Localization.adDestinationEmpty,
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
@@ -204,6 +204,13 @@ struct BlazeCampaignCreationForm: View {
 
             Button(Localization.NoImageErrorAlert.addImage) {
                 viewModel.didTapEditAd()
+            }
+        }
+        .alert(Localization.NoDestinationURLAlert.noURLFound, isPresented: $viewModel.isShowingMissingDestinationURLAlert) {
+            Button(Localization.NoDestinationURLAlert.cancel, role: .cancel) { }
+
+            Button(Localization.NoDestinationURLAlert.selectURL) {
+                isShowingAdDestinationScreen = true
             }
         }
         .onAppear() {
@@ -438,11 +445,17 @@ private extension BlazeCampaignCreationForm {
             value: "Ad destination",
             comment: "Title of the Ad destination field on the Blaze campaign creation screen"
         )
+        static let adDestinationEmpty = NSLocalizedString(
+            "blazeCampaignCreationForm.adDestination.empty",
+            value: "Select destination URL",
+            comment: "Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen"
+        )
         static let confirmDetails = NSLocalizedString(
             "blazeCampaignCreationForm.confirmDetails",
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
+
         enum AISuggestionsErrorAlert {
             static let fetchingAISuggestions = NSLocalizedString(
                 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions",
@@ -460,6 +473,7 @@ private extension BlazeCampaignCreationForm {
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
             )
         }
+
         enum NoImageErrorAlert {
             static let noImageFound = NSLocalizedString(
                 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
@@ -475,6 +489,24 @@ private extension BlazeCampaignCreationForm {
                 "blazeCampaignCreationForm.noImageErrorAlert.addImage",
                 value: "Add Image",
                 comment: "Button on the alert to add an image for the Blaze campaign"
+            )
+        }
+
+        enum NoDestinationURLAlert {
+            static let noURLFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound",
+                value: "Please select a destination URL for the Blaze campaign",
+                comment: "Message asking to select a destination URL for the Blaze campaign"
+            )
+            static let cancel = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the alert asking to select a destination URL for the Blaze campaign"
+            )
+            static let selectURL = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.selectURL",
+                value: "Select URL",
+                comment: "Button on the alert to select a destination URL for the Blaze campaign"
             )
         }
 

@@ -1,1 +1,3 @@
-Upptäck de senaste uppdateringarna i WooCommerce-mobilappen. Vi har förbättrat Blaze-kampanjerna med datumintervallskontroller för att förhindra valideringsfel, förbättrat användargränssnitt för ett mer intuitivt gränssnitt och åtgärdat flertalet problem med kortläsaranslutningar. Dessutom har vi förfinat felhanteringen under betalningsinsamlingen för en smidigare upplevelse. Uppdatera nu för en bättre WooCommerce-upplevelse.
+
+Uppdatera din WooCommerce-app nu för en förbättrad kontantbetalningsupplevelse. Vi har åtgärdat problemet som gjorde att beställningar som betalats kontant inte visade betalningsmetod och rubrik. När du tar emot kontanta betalningar ställer appen nu in dessa uppgifter korrekt, precis som på webben, vilket säkerställer tydlighet i din beställningsinformation och dina kvitton.
+

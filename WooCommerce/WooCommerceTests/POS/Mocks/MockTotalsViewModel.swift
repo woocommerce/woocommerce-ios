@@ -2,10 +2,10 @@ import Combine
 import Foundation
 @testable import WooCommerce
 import protocol Yosemite.POSItem
-import struct Yosemite.POSOrder
+import struct Yosemite.Order
 
 final class MockTotalsViewModel: TotalsViewModelProtocol {
-    var order: Yosemite.POSOrder?
+    var order: Yosemite.Order?
 
     @Published var isSyncingOrder: Bool = false
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
@@ -32,6 +32,14 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     }
 
     var isPriceFieldRedacted: Bool {
+        formattedOrderTotalTaxPrice == nil || isSyncingOrder
+    }
+
+    var isSubtotalFieldRedacted: Bool {
+        formattedCartTotalPrice == nil || isSyncingOrder
+    }
+
+    var isTaxFieldRedacted: Bool {
         formattedOrderTotalTaxPrice == nil || isSyncingOrder
     }
 

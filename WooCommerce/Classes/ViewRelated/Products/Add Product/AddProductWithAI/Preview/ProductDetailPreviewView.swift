@@ -131,6 +131,9 @@ struct ProductDetailPreviewView: View {
                     await viewModel.generateProductDetails()
                 }
             }
+            .onDisappear {
+                viewModel.onViewDisappear()
+            }
             .onChange(of: viewModel.errorState) { newValue in
                 isShowingErrorAlert = newValue != .none
             }
@@ -232,9 +235,7 @@ private extension ProductDetailPreviewView {
 
     var generateAgainButton: some View {
         Button {
-            Task { @MainActor in
-                await viewModel.generateProductDetails()
-            }
+            viewModel.didTapGenerateAgain()
         } label: {
             Text(Localization.generateAgain)
         }
@@ -257,6 +258,7 @@ private extension ProductDetailPreviewView {
                              onTapRemovePhoto: {
                 viewModel.didTapRemovePhoto()
             })
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         }
     }
 }

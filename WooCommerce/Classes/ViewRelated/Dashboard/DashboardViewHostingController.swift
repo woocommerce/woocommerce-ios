@@ -14,6 +14,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
     private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+    private var isAppActive = true
 
     /// Presenter for the privacy choices banner
     private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
@@ -68,6 +69,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         registerUserActivity()
         presentPrivacyBannerIfNeeded()
         observeModalJustInTimeMessages()
+        registerForSystemNotifications()
 
         Task {
             await viewModel.reloadAllData()
@@ -137,6 +139,31 @@ private extension DashboardViewHostingController {
             let inboxViewModel = InboxViewModel(siteID: viewModel.siteID)
             let hostingController = UIHostingController(rootView: Inbox(viewModel: inboxViewModel))
             show(hostingController, sender: self)
+        }
+    }
+
+    func registerForSystemNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAppDeactivation),
+                                               name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAppActivation),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    /// Tracks when the app goes to background.
+    ///
+    @objc func handleAppDeactivation() {
+        isAppActive = false
+    }
+
+    /// Call on `viewModel.onViewAppear` when the view appears due to coming from the background.
+    ///
+    @objc func handleAppActivation() {
+        // Avoid reloading if the view is not visible. The refresh will be handled in
+        // `viewWillAppear/onAppear` instead.
+        guard !isAppActive, viewIfLoaded?.window != nil else { return }
+        isAppActive = true
+        Task {
+            await viewModel.onViewAppear()
         }
     }
 }
@@ -338,7 +365,7 @@ private extension DashboardViewHostingController {
         coordinator.start()
         googleAdsCampaignCoordinator = coordinator
 
-        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.lastCampaign != nil
+        let hasCampaigns = viewModel.googleAdsDashboardCardViewModel.hasPaidCampaigns
         ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
             source: .myStore,
             type: forCampaignCreation ? .campaignCreation : .dashboard,

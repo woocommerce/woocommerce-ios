@@ -73,15 +73,16 @@ struct OrderPaymentSection: View {
 private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
-            ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+            ForEach(viewModel.couponLineViewModels, id: \.title) { couponViewModel in
                 VStack(alignment: .leading, spacing: .zero) {
                     TitleAndValueRow(title: Localization.coupon,
                                      titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                                     value: .content(viewModel.discount),
-                                     selectionStyle: editableRowsSelectionStyle) {
-                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                                     value: .content(couponViewModel.discount),
+                                     selectionStyle: editableRowsSelectionStyle,
+                                     isLoading: viewModel.isLoading) {
+                        selectedCouponLineDetailsViewModel = couponViewModel.detailsViewModel
                     }
-                    Text(viewModel.detailsViewModel.code)
+                    Text(couponViewModel.detailsViewModel.code)
                         .footnoteStyle()
                         .padding(.horizontal, Constants.horizontalPadding)
                 }
@@ -94,17 +95,23 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var existingShippingRow: some View {
         TitleAndValueRow(title: Localization.shippingTotal,
-                         value: .content(shippingLineViewModel.paymentData.shippingTotal))
+                         value: .content(shippingLineViewModel.paymentData.shippingTotal),
+                         isLoading: viewModel.isLoading)
         .renderedIf(shippingLineViewModel.paymentData.shouldShowShippingTotal)
     }
 
     @ViewBuilder var productsRow: some View {
-        TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
+        TitleAndValueRow(title: Localization.productsTotal,
+                         value: .content(viewModel.itemsTotal),
+                         selectionStyle: .none,
+                         isLoading: viewModel.isLoading) {}
             .renderedIf(viewModel.shouldShowProductsTotal)
     }
 
     @ViewBuilder var customAmountsRow: some View {
-        TitleAndValueRow(title: Localization.customAmountsTotal, value: .content(viewModel.customAmountsTotal))
+        TitleAndValueRow(title: Localization.customAmountsTotal,
+                         value: .content(viewModel.customAmountsTotal),
+                         isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowTotalCustomAmounts)
     }
 
@@ -146,7 +153,10 @@ private extension OrderPaymentSection {
     @ViewBuilder var appliedGiftCardsSection: some View {
         VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
             ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
-                TitleAndValueRow(title: giftCard.code, value: .content(giftCard.amount), selectionStyle: .none)
+                TitleAndValueRow(title: giftCard.code,
+                                 value: .content(giftCard.amount),
+                                 selectionStyle: .none,
+                                 isLoading: viewModel.isLoading)
             }
         }
         .renderedIf(viewModel.appliedGiftCards.isNotEmpty)
@@ -184,23 +194,27 @@ private extension OrderPaymentSection {
             Text(viewModel.taxesTotal)
                 .bodyStyle()
                 .frame(width: nil, alignment: .trailing)
+                .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                .shimmering(active: viewModel.isLoading)
         }
     }
 
     @ViewBuilder var taxLines: some View {
-        ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
+        ForEach(viewModel.taxLineViewModels, id: \.title) { taxLineViewModel in
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
-                    Text(viewModel.title)
+                    Text(taxLineViewModel.title)
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(viewModel.value)
+                    Text(taxLineViewModel.value)
                         .footnoteStyle()
                         .multilineTextAlignment(.trailing)
                         .frame(width: nil, alignment: .trailing)
+                        .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                        .shimmering(active: viewModel.isLoading)
                 }
             }
         }
@@ -219,6 +233,8 @@ private extension OrderPaymentSection {
                     .footnoteStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(width: nil, alignment: .trailing)
+                    .redacted(reason: viewModel.isLoading ? .placeholder : [])
+                    .shimmering(active: viewModel.isLoading)
             }
         }
     }
@@ -254,7 +270,9 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var discountsTotalRow: some View {
-        TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+        TitleAndValueRow(title: Localization.discountTotal,
+                         value: .content(viewModel.discountTotal),
+                         isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
 

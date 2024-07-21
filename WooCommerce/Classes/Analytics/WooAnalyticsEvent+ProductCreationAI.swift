@@ -3,8 +3,13 @@ import Foundation
 extension WooAnalyticsEvent {
     enum ProductCreationAI {
         private enum Key: String {
-            case value = "value"
+            case value
             case isFirstAttempt = "is_first_attempt"
+            case numberOfTexts = "number_of_texts"
+            case name
+            case shortDescription = "short_description"
+            case description
+            case field
         }
 
         static func entryPointDisplayed() -> WooAnalyticsEvent {
@@ -74,6 +79,38 @@ extension WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .productCreationAISurveySkipButtonTapped,
                                   properties: [:])
             }
+        }
+
+        /// When the user taps on the “Read text from product photo” button or the “Replace photo” button
+        static func packagePhotoSelectionFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIStartedPackagePhotoSelectionFlow, properties: [:])
+        }
+
+        /// Finished detecting text from the package photo
+        static func packagePhotoTextDetected(wordCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAITextDetected, properties: [Key.numberOfTexts.rawValue: wordCount])
+        }
+
+        /// When text detection fails
+        static func packagePhotoTextDetectionFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAITextDetectionFailed, properties: [:], error: error)
+        }
+
+        /// Upon successfully generating options of Name, Summary and Description fields.
+        static func nameDescriptionOptionsGenerated(nameCount: Int,
+                                                    shortDescriptionCount: Int,
+                                                    descriptionCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIGeneratedNameDescriptionOptions,
+                              properties: [
+                                Key.name.rawValue: nameCount,
+                                Key.shortDescription.rawValue: shortDescriptionCount,
+                                Key.description.rawValue: descriptionCount
+                              ])
+        }
+
+        /// When the user taps on the “Undo edits” button
+        static func undoEditTapped(for field: ProductDetailPreviewViewModel.EditableField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIUndoEditTapped, properties: [Key.field.rawValue: field.rawValue])
         }
     }
 }

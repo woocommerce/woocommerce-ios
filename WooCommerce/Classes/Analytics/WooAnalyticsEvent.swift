@@ -2665,6 +2665,8 @@ extension WooAnalyticsEvent {
             case compare
             case enabledCards = "enabled_cards"
             case disabledCards = "disabled_cards"
+            case card
+            case selectedMetric = "selected_metric"
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2741,6 +2743,15 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubSettingsSaved, properties: [
                 Keys.enabledCards.rawValue: cards.filter { $0.enabled }.map { $0.type.rawValue }.joined(separator: ","),
                 Keys.disabledCards.rawValue: cards.filter { !$0.enabled }.map { $0.type.rawValue }.joined(separator: ",")
+            ])
+        }
+
+        /// Tracks when a new metric is selected on a card in the Analytics Hub.
+        ///
+        static func selectedMetric(_ selectedMetric: String, for cardType: AnalyticsCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubCardMetricSelected, properties: [
+                Keys.card.rawValue: cardType.rawValue,
+                Keys.selectedMetric.rawValue: selectedMetric
             ])
         }
     }

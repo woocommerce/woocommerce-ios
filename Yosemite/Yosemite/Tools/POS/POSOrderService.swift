@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import class WooFoundation.CurrencyFormatter
 
 /// POSCartItem is different from the CartItem in the POS app layer.
 /// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
@@ -16,60 +17,6 @@ public struct POSCartItem {
     }
 }
 
-public struct POSOrder {
-    public let siteID: Int64
-    public let orderID: Int64
-    public let total: String
-    public let totalTax: String
-    public let currency: String
-    let items: [POSOrderItem]
-}
-
-public extension POSOrder {
-    init(order: Order) {
-        self.init(siteID: order.siteID,
-                  orderID: order.orderID,
-                  total: order.total,
-                  totalTax: order.totalTax,
-                  currency: order.currency,
-                  items: order.items.map { POSOrderItem(orderItem: $0) })
-    }
-}
-
-struct POSOrderItem {
-    let itemID: Int64
-
-    /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
-    let productID: Int64
-    let quantity: Decimal
-
-    func toOrderItem() -> OrderItem {
-        .init(itemID: itemID,
-              name: "",
-              productID: productID,
-              variationID: .zero,
-              quantity: quantity,
-              price: .zero,
-              sku: nil,
-              subtotal: "",
-              subtotalTax: "",
-              taxClass: "",
-              taxes: [],
-              total: "",
-              totalTax: "",
-              attributes: [],
-              addOns: [],
-              parent: nil,
-              bundleConfiguration: [])
-    }
-
-    init(orderItem: OrderItem) {
-        self.itemID = orderItem.itemID
-        self.productID = orderItem.productID
-        self.quantity = orderItem.quantity
-    }
-}
-
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
@@ -77,13 +24,7 @@ public protocol POSOrderServiceProtocol {
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [POSCartItem], order: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder
-
-    /// Creates WOO Order from POS Order.
-    /// - Parameters:
-    ///   - posOrder: POS order.
-    /// - Returns: Order created from posOrder data.
-    func order(from posOrder: POSOrder) -> Order
+    func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [POSItem]) async throws -> Order
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -109,38 +50,16 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [POSCartItem], order posOrder: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder {
-        let initialOrder: Order = createInitialOrder(from: posOrder)
-
-        let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts)
+    public func syncOrder(cart: [POSCartItem], order posOrder: Order?, allProducts: [POSItem]) async throws -> Order {
+        let initialOrder: Order = posOrder ?? OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
+        let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts).sanitizingLocalItems()
         let syncedOrder: Order
         if posOrder != nil {
             syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items])
         } else {
             syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
-
-        return POSOrder(order: syncedOrder)
-    }
-
-    public func order(from posOrder: POSOrder) -> Order {
-        return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID,
-                                               orderID: posOrder.orderID,
-                                               currency: posOrder.currency,
-                                               total: posOrder.total,
-                                               totalTax: posOrder.totalTax,
-                                               items: posOrder.items.map { $0.toOrderItem() })
-    }
-}
-
-private extension POSOrderService {
-    func createInitialOrder(from posOrder: POSOrder?) -> Order {
-        if let posOrder {
-            return order(from: posOrder)
-        }
-        else {
-            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
-        }
+        return syncedOrder
     }
 }
 
@@ -162,11 +81,11 @@ private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
 private extension POSOrderService {
     func updateOrder(_ order: Order, cart: [POSCartItem], allProducts: [POSItem]) -> Order {
         let cartProducts = cart.map { POSOrderSyncProductType(productID: $0.product.productID,
-                                                                      price: $0.product.price,
-                                                                      productType: $0.product.productType) }
+                                                              price: $0.product.price,
+                                                              productType: $0.product.productType) }
         let allProducts = allProducts.map { POSOrderSyncProductType(productID: $0.productID,
-                                                                            price: $0.price,
-                                                                            productType: $0.productType) }
+                                                                    price: $0.price,
+                                                                    productType: $0.productType) }
 
         // Removes all existing items by setting quantity to 0.
         let itemsToRemove = order.items.compactMap {

@@ -113,10 +113,15 @@ private extension GoogleAdsCampaignCoordinator {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
         let queryItems = components?.queryItems
         let creationSucceeded = queryItems?.first(where: {
-            $0.name == Constants.campaignParam &&
-            $0.value == Constants.savedValue
+            $0.name == Constants.Parameters.campaign &&
+            $0.value == Constants.ParameterValues.saved
         }) != nil
-        if creationSucceeded {
+        let setupAndCreationSucceed = queryItems?.first(where: {
+            $0.name == Constants.Parameters.guide &&
+            ($0.value == Constants.ParameterValues.creationSuccess ||
+             $0.value == Constants.ParameterValues.submissionSuccess)
+        }) != nil
+        if creationSucceeded || setupAndCreationSucceed {
             analytics.track(event: .GoogleAds.campaignCreationSuccess(source: source))
 
             // dismisses the web view
@@ -131,9 +136,9 @@ private extension GoogleAdsCampaignCoordinator {
     func createGoogleAdsCampaignURL() -> URL? {
         let path: String = {
             if shouldStartCampaignCreation {
-                Constants.campaignCreationPath
+                Constants.Path.campaignCreation
             } else {
-                Constants.campaignDashboardPath
+                Constants.Path.campaignDashboard
             }
         }()
         return URL(string: siteAdminURL.appending(path))
@@ -166,10 +171,21 @@ private extension GoogleAdsCampaignCoordinator {
 
 private extension GoogleAdsCampaignCoordinator {
     enum Constants {
-        static let campaignDashboardPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
-        static let campaignCreationPath = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard&subpath=%2Fcampaigns%2Fcreate"
-        static let campaignParam = "campaign"
-        static let savedValue = "saved"
+        enum Path {
+            static let campaignDashboard = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard"
+            static let campaignCreation = "admin.php?page=wc-admin&path=%2Fgoogle%2Fdashboard&subpath=%2Fcampaigns%2Fcreate"
+        }
+
+        enum Parameters {
+            static let campaign = "campaign"
+            static let guide = "guide"
+        }
+
+        enum ParameterValues {
+            static let saved = "saved"
+            static let creationSuccess = "campaign-creation-success"
+            static let submissionSuccess = "submission-success"
+        }
     }
 
     enum Localization {

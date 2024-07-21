@@ -305,7 +305,6 @@ public typealias StorageWCAnalyticsCustomer = Storage.WCAnalyticsCustomer
 public typealias StorageWCPayCharge = Storage.WCPayCharge
 public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
-public typealias LocalAnnouncement = Storage.LocalAnnouncement
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
 

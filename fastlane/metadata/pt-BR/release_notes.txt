@@ -1,1 +1,3 @@
-Conheça a mais nova atualização do aplicativo móvel do WooCommerce! Nós aprimoramos as campanhas do Blaze com verificações de intervalo de datas para evitar erros de validação, melhoramos a UX com uma interface mais intuitiva e corrigimos vários erros de conexão de leitores de cartão. E para oferecer uma experiência mais agradável, nós melhoramos o tratamento de erros ao receber pagamentos. Atualize agora mesmo para ter uma experiência ainda melhor no WooCommerce!
+
+Atualize o aplicativo do WooCommerce agora e aproveite uma experiência melhor de pagamento em dinheiro. Corrigimos um problema em que os pedidos pagos em dinheiro não exibiam a forma de pagamento nem o título. Agora, o aplicativo configura essas informações corretamente, assim como a versão Web, deixando isso claro nos seus recibos e detalhes do pedido.
+

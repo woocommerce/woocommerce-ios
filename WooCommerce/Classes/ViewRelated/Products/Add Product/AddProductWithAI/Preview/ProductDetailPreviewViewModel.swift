@@ -7,9 +7,9 @@ import protocol Storage.StorageManagerType
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
-    enum EditableField: Equatable {
+    enum EditableField: String {
         case name
-        case shortDescription
+        case shortDescription = "short_description"
         case description
     }
 
@@ -116,6 +116,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let onProductCreated: (Product) -> Void
 
+    private let productImageUploader: ProductImageUploaderProtocol
+
     private var currency: String
     private var currencyFormatter: CurrencyFormatter
 
@@ -125,6 +127,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let shippingValueLocalizer: ShippingValueLocalizer
     private var hasSyncedCategories = false
     private var hasSyncedTags = false
+
+    /// Local ID used for background image upload
+    private let localProductID: Int64 = 0
+    private var createdProductID: Int64?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -140,6 +146,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    private lazy var productImageActionHandler: ProductImageActionHandler = {
+        let key = ProductImageUploaderKey(siteID: siteID,
+                                          productOrVariationID: .product(id: localProductID),
+                                          isLocalID: true)
+        return productImageUploader.actionHandler(key: key, originalStatuses: [])
+    }()
+
     init(siteID: Int64,
          productFeatures: String,
          imageState: ImageState,
@@ -148,6 +161,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -168,7 +182,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.weightUnit = weightUnit
         self.dimensionUnit = dimensionUnit
         self.shippingValueLocalizer = shippingValueLocalizer
-
+        self.productImageUploader = productImageUploader
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
@@ -186,6 +200,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let aiTone = userDefaults.aiTone(for: siteID)
             let aiProduct = try await generateProduct(language: language,
                                                            tone: aiTone)
+            analytics.track(event: .ProductCreationAI.nameDescriptionOptionsGenerated(
+                nameCount: aiProduct.names.count,
+                shortDescriptionCount: aiProduct.shortDescriptions.count,
+                descriptionCount: aiProduct.descriptions.count
+            ))
             try displayAIProductDetails(aiProduct: aiProduct)
             generatedAIProduct = aiProduct
             isGeneratingDetails = false
@@ -208,17 +227,34 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         let generatedProduct = product(from: generatedAIProduct)
         errorState = .none
         isSavingProduct = true
+        uploadPackagingImageIfNeeded()
+
+        defer {
+            isSavingProduct = false
+        }
+
         do {
             let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
             let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
+            createdProductID = remoteProduct.productID
+
+            guard case .success = imageState else {
+                analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
+                return onProductCreated(remoteProduct)
+            }
+
+            /// Updates local product with images
+            replaceProductID(newID: remoteProduct.productID)
+            let images = await updateProductWithUploadedImages(productID: remoteProduct.productID)
+            let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
-            onProductCreated(remoteProduct)
+            onProductCreated(updatedProduct)
+
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
             errorState = .savingProduct
         }
-        isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
@@ -226,6 +262,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                         isUseful: vote == .up))
 
         shouldShowFeedbackView = false
+    }
+
+    func didTapGenerateAgain() {
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: false))
+        Task { @MainActor in
+            await generateProductDetails()
+        }
     }
 
     // MARK: Switch options
@@ -266,12 +309,18 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             self?.imageState = previousState
         })
     }
+
+    func onViewDisappear() {
+        cancelBackgroundImageUploadIfNeeded()
+    }
 }
 
 // MARK: - Undo edits
 //
 extension ProductDetailPreviewViewModel {
     func undoEdits(in updatedField: EditableField) {
+        analytics.track(event: .ProductCreationAI.undoEditTapped(for: updatedField))
+
         guard let generatedAIProduct else {
             return
         }
@@ -628,6 +677,65 @@ private extension ProductDetailPreviewViewModel {
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {
+
+    /// Sets up image uploader to upload packaging image if it's available.
+    ///
+    func uploadPackagingImageIfNeeded() {
+        guard case let .success(packagingImage) = imageState else {
+            return
+        }
+        switch packagingImage.source {
+        case let .asset(asset):
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+        case let .media(media):
+            productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
+        case .productImage:
+            // This asset type is not supported for product creation!
+            break
+        }
+        productImageUploader.stopEmittingErrors(key: .init(siteID: siteID, productOrVariationID: .product(id: localProductID), isLocalID: true))
+    }
+
+    /// Replaces the actual product ID for pending images for background upload.
+    ///
+    func replaceProductID(newID: Int64) {
+        productImageUploader.replaceLocalID(siteID: siteID,
+                                            localID: .product(id: localProductID),
+                                            remoteID: newID)
+    }
+
+    /// Updates the product with provided ID with uploaded images.
+    /// Returns all the uploaded images.
+    ///
+    @MainActor
+    func updateProductWithUploadedImages(productID: Int64) async -> [ProductImage] {
+        await withCheckedContinuation { continuation in
+            let key = ProductImageUploaderKey(siteID: siteID,
+                                              productOrVariationID: .product(id: productID),
+                                              isLocalID: false)
+            productImageUploader
+                .saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
+                    switch result {
+                    case .success(let images):
+                        continuation.resume(returning: images)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error saving images for new product: \(error)")
+                        continuation.resume(returning: [])
+                    }
+                }
+        }
+    }
+
+    func cancelBackgroundImageUploadIfNeeded() {
+        guard isSavingProduct, case .success = imageState else {
+            return
+        }
+        let id: ProductOrVariationID = .product(id: createdProductID ?? localProductID)
+        productImageUploader.startEmittingErrors(key: .init(siteID: siteID,
+                                                            productOrVariationID: id,
+                                                            isLocalID: createdProductID == nil))
+    }
+
     /// Saves the local categories and tags to remote
     ///
     @MainActor

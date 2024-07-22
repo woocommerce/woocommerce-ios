@@ -92,7 +92,9 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
                 .trackSize(size: $floatingSize)
         }
-        .environment(\.floatingControlAreaSize, CGSizeMake(floatingSize.width + Constants.floatingControlOffset, floatingSize.height + Constants.floatingControlOffset))
+        .environment(\.floatingControlAreaSize,
+                      CGSizeMake(floatingSize.width + Constants.floatingControlOffset,
+                                 floatingSize.height + Constants.floatingControlOffset))
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {

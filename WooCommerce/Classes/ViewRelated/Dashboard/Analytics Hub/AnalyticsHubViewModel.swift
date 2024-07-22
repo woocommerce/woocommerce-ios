@@ -48,6 +48,10 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
+        self.googleCampaignsCard = GoogleAdsCampaignReportCardViewModel(siteID: siteID,
+                                                                        timeRange: selectedType,
+                                                                        usageTracksEventEmitter: usageTracksEventEmitter)
+
         bindViewModelsWithData()
         bindCardSettingsWithData()
     }
@@ -128,11 +132,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Google Campaigns Card ViewModel
     ///
-    var googleCampaignsCard: GoogleAdsCampaignReportCardViewModel {
-        GoogleAdsCampaignReportCardViewModel(siteID: siteID,
-                                             timeRange: timeRangeSelectionType,
-                                             usageTracksEventEmitter: usageTracksEventEmitter)
-    }
+    var googleCampaignsCard: GoogleAdsCampaignReportCardViewModel
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
@@ -603,6 +603,10 @@ private extension AnalyticsHubViewModel {
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
+
+                self.googleCampaignsCard = GoogleAdsCampaignReportCardViewModel(siteID: siteID,
+                                                                                timeRange: newSelectionType,
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
 
                 // Update data on range selection change
                 Task.init {

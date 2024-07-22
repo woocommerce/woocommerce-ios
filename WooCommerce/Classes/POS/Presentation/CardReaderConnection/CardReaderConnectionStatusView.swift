@@ -17,10 +17,10 @@ struct CardReaderConnectionStatusView: View {
         Group {
             switch connectionViewModel.connectionStatus {
             case .connected:
-                HStack(spacing: Layout.buttonImageAndTextSpacing) {
+                HStack(spacing: Constants.buttonImageAndTextSpacing) {
                     Image(systemName: "circle.fill")
                         .resizable()
-                        .frame(width: Layout.imageDimension * scale, height: Layout.imageDimension * scale)
+                        .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
                         .foregroundColor(Color.wooEmeraldShade40)
                     Text("Reader Connected")
                         .foregroundColor(Color.primaryText)
@@ -29,10 +29,10 @@ struct CardReaderConnectionStatusView: View {
                 Button {
                     connectionViewModel.connectReader()
                 } label: {
-                    HStack(spacing: Layout.buttonImageAndTextSpacing) {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         Image(systemName: "circle.fill")
                             .resizable()
-                            .frame(width: Layout.imageDimension * scale, height: Layout.imageDimension * scale)
+                            .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
                             .foregroundColor(Color.wooAmberShade60)
                         Text("Connect your reader")
                     }
@@ -40,14 +40,15 @@ struct CardReaderConnectionStatusView: View {
                 }
             }
         }
-        .font(.system(size: 16.0, weight: .semibold))
+        .font(Constants.font)
     }
 }
 
 private extension CardReaderConnectionStatusView {
-    enum Layout {
+    enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
+        static let font = Font.system(size: 16.0, weight: .semibold)
     }
 }
 

@@ -1299,7 +1299,8 @@ lane :test_without_building do |options|
 
   trainer(
     path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
-    fail_build: true
+    fail_build: true,
+    output_remove_retry_attempts: true
   )
 end
 

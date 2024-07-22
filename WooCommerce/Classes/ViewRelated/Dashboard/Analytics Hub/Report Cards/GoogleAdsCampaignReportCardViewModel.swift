@@ -54,6 +54,19 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData = .sales
 
+    /// View model for the web analytics report link
+    ///
+    private(set) lazy var reportViewModel: AnalyticsReportLinkViewModel? = {
+        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRangeSelectionType, storeAdminURL: storeAdminURL) else {
+            return nil
+        }
+        return AnalyticsReportLinkViewModel(reportType: .googlePrograms,
+                                            period: timeRangeSelectionType,
+                                            webViewTitle: Localization.reportTitle,
+                                            reportURL: url,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }()
+
     init(siteID: Int64,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
@@ -143,19 +156,6 @@ extension GoogleAdsCampaignReportCardViewModel {
     ///
     var showCampaignsError: Bool {
         isRedacted ? false : currentPeriodStats == nil
-    }
-
-    /// View model for the web analytics report link
-    ///
-    var reportViewModel: AnalyticsReportLinkViewModel? {
-        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRangeSelectionType, storeAdminURL: storeAdminURL) else {
-            return nil
-        }
-        return AnalyticsReportLinkViewModel(reportType: .googlePrograms,
-                                            period: timeRangeSelectionType,
-                                            webViewTitle: Localization.reportTitle,
-                                            reportURL: url,
-                                            usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items from the provided `GoogleAdsCampaignStats`.

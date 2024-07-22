@@ -88,7 +88,7 @@ private extension AnalyticsHubHostingViewController {
         viewModel.analytics.track(event: .GoogleAds.entryPointTapped(
             source: .analyticsHub,
             type: .campaignCreation,
-            hasCampaigns: viewModel.googleCampaignsCard.hasPaidCampaigns
+            hasCampaigns: viewModel.googleCampaignsCard.campaignsData.isNotEmpty
         ))
     }
 }

@@ -85,6 +85,10 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     @Published private(set) var showCampaignsError: Bool = false
 
+    /// Whether to show the call to action to create a new campaign.
+    ///
+    @Published private(set) var showCampaignCTA: Bool = false
+
     init(siteID: Int64,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
@@ -166,6 +170,15 @@ extension GoogleAdsCampaignReportCardViewModel {
                 return currentPeriodStats == nil
             }
             .assign(to: &$showCampaignsError)
+
+        $isEligibleForGoogleAds.combineLatest($campaignsData, $isRedacted, $showCampaignsError)
+            .map { isEligible, campaignsData, isRedacted, showCampaignsError in
+                guard !isRedacted, !showCampaignsError else {
+                    return false
+                }
+                return isEligible && campaignsData.isEmpty
+            }
+            .assign(to: &$showCampaignCTA)
     }
 
     /// Delta text for the selected stat
@@ -218,21 +231,6 @@ extension GoogleAdsCampaignReportCardViewModel {
 
 // MARK: Google Ads Campaign Creation
 extension GoogleAdsCampaignReportCardViewModel {
-    /// Whether to show the call to action to create a new campaign.
-    ///
-    var showCampaignCTA: Bool {
-        guard !isRedacted, !showCampaignsError else {
-            return false
-        }
-        return isEligibleForGoogleAds && !hasPaidCampaigns
-    }
-
-    /// Whether there are paid campaigns to display.
-    ///
-    var hasPaidCampaigns: Bool {
-        campaignsData.isNotEmpty
-    }
-
     /// Tracks when the call to action is displayed.
     ///
     func onDisplayCallToAction() {

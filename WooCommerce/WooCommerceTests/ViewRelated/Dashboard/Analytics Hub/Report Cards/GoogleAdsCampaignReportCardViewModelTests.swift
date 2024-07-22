@@ -222,6 +222,112 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         let sourceProperty = try XCTUnwrap(analyticsProvider.receivedProperties.first?["source"] as? String)
         assertEqual("analytics_hub", sourceProperty)
     }
+
+    func test_showCampaignsCTA_is_false_when_card_is_loading() async {
+        // Given
+        var showCampaignCTAWhileLoading: Bool?
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                showCampaignCTAWhileLoading = vm.showCampaignCTA
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.reload()
+
+        // Then
+        assertEqual(false, showCampaignCTAWhileLoading)
+    }
+
+    func test_showCampaignsCTA_is_false_when_card_has_loading_error() async {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "", code: 0)))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.reload()
+
+        // Then
+        XCTAssertFalse(vm.showCampaignCTA)
+    }
+
+    func test_showCampaignsCTA_is_false_when_card_has_campaigns_data() async {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake().copy(campaigns: [.fake()])))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.reload()
+
+        // Then
+        XCTAssertFalse(vm.showCampaignCTA)
+    }
+
+    func test_showCampaignsCTA_is_false_when_store_is_ineligible_for_Google_Ads() {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: false))
+
+        // Then
+        XCTAssertFalse(vm.showCampaignCTA)
+    }
+
+    func test_showCampaignsCTA_is_true_when_eligible_for_Google_Ads_and_no_campaigns_in_stats() async {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.reload()
+
+        // Then
+        XCTAssertTrue(vm.showCampaignCTA)
+    }
 }
 
 private extension GoogleAdsCampaignReportCardViewModelTests {

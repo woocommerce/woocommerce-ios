@@ -200,6 +200,9 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return periodViewModel.update(state: .loading(cached: []))
+        }
         let items = topEarnerStats?.items?.sorted(by: >) ?? []
         periodViewModel.update(state: .loading(cached: items))
     }

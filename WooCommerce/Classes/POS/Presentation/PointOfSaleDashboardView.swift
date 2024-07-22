@@ -89,10 +89,10 @@ struct PointOfSaleDashboardView: View {
             }
             floatingControlView
                 .shadow(color: Color.black.opacity(0.08), radius: 4)
-                .offset(x: 24, y: -24)
+                .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
                 .trackSize(size: $floatingSize)
         }
-        .environment(\.floatingControlSize, floatingSize)
+        .environment(\.floatingControlAreaSize, CGSizeMake(floatingSize.width + Constants.floatingControlOffset, floatingSize.height + Constants.floatingControlOffset))
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
@@ -114,15 +114,15 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
-struct FloatingControlSizeKey: EnvironmentKey {
+struct FloatingControlAreaSizeKey: EnvironmentKey {
     static let defaultValue = CGSize.zero
 }
 
 extension EnvironmentValues {
-  var floatingControlSize: CGSize {
-    get { self[FloatingControlSizeKey.self] }
-    set { self[FloatingControlSizeKey.self] = newValue }
-  }
+    var floatingControlAreaSize: CGSize {
+        get { self[FloatingControlAreaSizeKey.self] }
+        set { self[FloatingControlAreaSizeKey.self] = newValue }
+    }
 }
 
 private extension PointOfSaleDashboardView {
@@ -131,6 +131,7 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let buttonImageAndTextSpacing: CGFloat = 12
+        static let floatingControlOffset: CGFloat = 24
     }
 }
 

@@ -4,7 +4,7 @@ import protocol Yosemite.POSItem
 struct ItemListView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
-    @Environment(\.floatingControlSize) var floatingControlSize: CGSize
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -124,14 +124,16 @@ private extension ItemListView {
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
-            ForEach(items, id: \.productID) { item in
-                Button(action: {
-                    viewModel.select(item)
-                }, label: {
-                    ItemCardView(item: item)
-                })
+            VStack {
+                ForEach(items, id: \.productID) { item in
+                    Button(action: {
+                        viewModel.select(item)
+                    }, label: {
+                        ItemCardView(item: item)
+                    })
+                }
             }
-            Color.clear.padding(.bottom, floatingControlSize.height)
+            .padding(.bottom, floatingControlAreaSize.height)
         }
     }
 

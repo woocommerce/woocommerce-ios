@@ -4,7 +4,7 @@ import protocol Yosemite.POSItem
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
-    @Environment(\.floatingControlSize) var floatingControlSize: CGSize
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -53,14 +53,16 @@ struct CartView: View {
             } else {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
-                            ItemRowView(cartItem: cartItem,
-                                        onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
-                                cartViewModel.removeItemFromCart(cartItem)
-                            } : nil)
-                            .id(cartItem.id)
+                        VStack {
+                            ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
+                                ItemRowView(cartItem: cartItem,
+                                            onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
+                                    cartViewModel.removeItemFromCart(cartItem)
+                                } : nil)
+                                .id(cartItem.id)
+                            }
                         }
-                        Color.clear.padding(.bottom, floatingControlSize.height)
+                        .padding(.bottom, floatingControlAreaSize.height)
                     }
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,

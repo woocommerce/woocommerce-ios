@@ -13,4 +13,7 @@ extension String {
     static var posReadyForPaymentImageName: String {
         return "pos-ready-for-payment"
     }
+    static var posCartBackImageName: String {
+        return "pos-cart-back"
+    }
 }

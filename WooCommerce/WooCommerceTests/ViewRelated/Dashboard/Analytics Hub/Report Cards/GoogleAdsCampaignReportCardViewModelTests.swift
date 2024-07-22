@@ -328,6 +328,29 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(vm.showCampaignCTA)
     }
+
+    func test_showCampaignsCTA_is_false_when_campaign_was_successfully_created() async {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      stores: stores,
+                                                      googleAdsEligibilityChecker: MockGoogleAdsEligibilityChecker(isEligible: true))
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.onGoogleCampaignCreated()
+
+        // Then
+        XCTAssertFalse(vm.showCampaignCTA)
+    }
 }
 
 private extension GoogleAdsCampaignReportCardViewModelTests {

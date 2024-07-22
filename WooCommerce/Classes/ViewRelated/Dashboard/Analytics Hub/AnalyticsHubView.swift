@@ -77,7 +77,7 @@ private extension AnalyticsHubHostingViewController {
             onCompletion: { [weak self] createdNewCampaign in
                 if createdNewCampaign {
                     Task { @MainActor in
-                        await self?.viewModel.updateData(for: [.googleCampaigns])
+                        await self?.viewModel.googleCampaignsCard.onGoogleCampaignCreated()
                     }
                 }
             }

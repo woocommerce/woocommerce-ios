@@ -50,9 +50,40 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     let allStats = GoogleAdsCampaignStatsTotals.TotalData.allCases
 
+    // MARK: Stats Properties
+
     /// The currently selected stat to display. Defaults to total sales.
     ///
     @Published var selectedStat: GoogleAdsCampaignStatsTotals.TotalData = .sales
+
+    /// Value for the selected stat.
+    ///
+    @Published private(set) var statValue: String = StatsDataTextFormatter.createGoogleCampaignsStatText(for: .sales, from: nil)
+
+    /// Delta percentage for the selected stat.
+    ///
+    @Published private var delta: DeltaPercentage = StatsDataTextFormatter.createDeltaPercentage(from: Optional<Decimal>.none, to: Optional<Decimal>.none)
+
+    /// Campaigns data to render.
+    ///
+    @Published private(set) var campaignsData: [TopPerformersRow.Data] = []
+
+    /// View model for the web analytics report link
+    ///
+    private(set) lazy var reportViewModel: AnalyticsReportLinkViewModel? = {
+        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRangeSelectionType, storeAdminURL: storeAdminURL) else {
+            return nil
+        }
+        return AnalyticsReportLinkViewModel(reportType: .googlePrograms,
+                                            period: timeRangeSelectionType,
+                                            webViewTitle: Localization.reportTitle,
+                                            reportURL: url,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }()
+
+    /// Indicates if there was an error loading campaigns part of the card.
+    ///
+    @Published private(set) var showCampaignsError: Bool = false
 
     init(siteID: Int64,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
@@ -68,6 +99,8 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
         self.analytics = analytics
         self.stores = stores
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
+
+        bindStatsPropertiesWithData()
     }
 
     /// Reloads the data for the card.
@@ -92,25 +125,47 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     }
 }
 
+// MARK: Card Data
 extension GoogleAdsCampaignReportCardViewModel {
-
-    // MARK: Selected Stat (Total)
-
-    /// Value for the selected stat
+    /// Binds stats properties to render on card with stats data.
     ///
-    var statValue: String {
-        guard !isRedacted else {
-            return "1000"
-        }
-        return StatsDataTextFormatter.createGoogleCampaignsStatText(for: selectedStat, from: currentPeriodStats)
-    }
+    private func bindStatsPropertiesWithData() {
+        $currentPeriodStats.combineLatest($selectedStat, $isRedacted)
+            .map { currentPeriodStats, selectedStat, isRedacted in
+                guard !isRedacted else {
+                    return "1000"
+                }
+                return StatsDataTextFormatter.createGoogleCampaignsStatText(for: selectedStat, from: currentPeriodStats)
+            }
+            .assign(to: &$statValue)
 
-    /// Delta percentage for the selected stat
-    ///
-    private var delta: DeltaPercentage {
-        isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createDeltaPercentage(from: previousPeriodStats?.totals.getDoubleValue(for: selectedStat),
-                                                       to: currentPeriodStats?.totals.getDoubleValue(for: selectedStat))
+        $currentPeriodStats.combineLatest($previousPeriodStats, $selectedStat, $isRedacted)
+            .map { currentPeriodStats, previousPeriodStats, selectedStat, isRedacted in
+                guard !isRedacted else {
+                    return DeltaPercentage(string: "0%", direction: .zero)
+                }
+                return StatsDataTextFormatter.createDeltaPercentage(from: previousPeriodStats?.totals.getDoubleValue(for: selectedStat),
+                                                                    to: currentPeriodStats?.totals.getDoubleValue(for: selectedStat))
+            }
+            .assign(to: &$delta)
+
+        $currentPeriodStats.combineLatest($selectedStat, $isRedacted)
+            .map { [weak self] currentPeriodStats, selectedStat, isRedacted in
+                guard let self, !isRedacted else {
+                    return [.init(showImage: false, name: "Campaign", details: "Spend: $100", value: "$500")]
+                }
+                return campaignRows(from: currentPeriodStats, for: selectedStat)
+            }
+            .assign(to: &$campaignsData)
+
+        $currentPeriodStats.combineLatest($isRedacted)
+            .map { currentPeriodStats, isRedacted in
+                guard !isRedacted else {
+                    return false
+                }
+                return currentPeriodStats == nil
+            }
+            .assign(to: &$showCampaignsError)
     }
 
     /// Delta text for the selected stat
@@ -131,36 +186,9 @@ extension GoogleAdsCampaignReportCardViewModel {
         delta.direction.deltaBackgroundColor
     }
 
-    // MARK: Campaigns report
-
-    /// Campaigns data to render.
-    ///
-    var campaignsData: [TopPerformersRow.Data] {
-        isRedacted ? [.init(showImage: false, name: "Campaign", details: "Spend: $100", value: "$500")] : campaignRows(from: currentPeriodStats)
-    }
-
-    /// Indicates if there was an error loading campaigns part of the card.
-    ///
-    var showCampaignsError: Bool {
-        isRedacted ? false : currentPeriodStats == nil
-    }
-
-    /// View model for the web analytics report link
-    ///
-    var reportViewModel: AnalyticsReportLinkViewModel? {
-        guard let url = AnalyticsWebReport.getUrl(for: .googlePrograms, timeRange: timeRangeSelectionType, storeAdminURL: storeAdminURL) else {
-            return nil
-        }
-        return AnalyticsReportLinkViewModel(reportType: .googlePrograms,
-                                            period: timeRangeSelectionType,
-                                            webViewTitle: Localization.reportTitle,
-                                            reportURL: url,
-                                            usageTracksEventEmitter: usageTracksEventEmitter)
-    }
-
     /// Helper functions to create `TopPerformersRow.Data` items from the provided `GoogleAdsCampaignStats`.
     ///
-    private func campaignRows(from stats: GoogleAdsCampaignStats?) -> [TopPerformersRow.Data] {
+    private func campaignRows(from stats: GoogleAdsCampaignStats?, for selectedStat: GoogleAdsCampaignStatsTotals.TotalData) -> [TopPerformersRow.Data] {
         // Sort campaigns by the selected stat.
         guard let sortedCampaigns = stats?.campaigns.sorted(by: {
             $0.subtotals.getDoubleValue(for: selectedStat) > $1.subtotals.getDoubleValue(for: selectedStat)

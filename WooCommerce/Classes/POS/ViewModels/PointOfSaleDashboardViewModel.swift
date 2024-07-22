@@ -11,8 +11,8 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
-    private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: orderStageSubject.eraseToAnyPublisher())
-    let totalsViewModel: AnyTotalsViewModel
+    private let cartViewModel: CartViewModel
+    private let totalsViewModel: any TotalsViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
@@ -40,18 +40,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter,
-         totalsViewModel: AnyTotalsViewModel? = nil,
-         cartViewModel: CartViewModel? = nil) {
+         totalsViewModel: (any TotalsViewModelProtocol),
+         cartViewModel: CartViewModel) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
-        self.totalsViewModel = totalsViewModel ?? AnyTotalsViewModel(TotalsViewModel(orderService: orderService,
-                                                                                     cardPresentPaymentService: cardPresentPaymentService,
-                                                                                     currencyFormatter: currencyFormatter,
-                                                                                     paymentState: .acceptingCard,
-                                                                                    isSyncingOrder: false))
-        if let cartViewModel = cartViewModel {
-            self.cartViewModel = cartViewModel
-        }
+        self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
+
+        orderStageSubject.assign(to: &cartViewModel.$orderStage)
 
         observeSelectedItemToAddToCart()
         observeCartSubmission()

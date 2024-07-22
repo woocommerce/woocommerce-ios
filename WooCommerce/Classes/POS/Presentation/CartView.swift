@@ -149,15 +149,18 @@ import Combine
 #Preview {
     // TODO:
     // Simplify this by mocking `CartViewModel`
-    // https://github.com/woocommerce/woocommerce-ios/issues/13207
-    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
-    let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
+    let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                          currencyFormatter: .init(currencySettings: .init()),
+                                          paymentState: .acceptingCard,
+                                          isSyncingOrder: false)
+    let cartViewModel = CartViewModel()
     let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            orderService: POSOrderPreviewService(),
-                                                           currencyFormatter: .init(currencySettings: .init()))
-    let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
-
+                                                           currencyFormatter: .init(currencySettings: .init()),
+                                                           totalsViewModel: totalsViewModel,
+                                                           cartViewModel: cartViewModel)
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

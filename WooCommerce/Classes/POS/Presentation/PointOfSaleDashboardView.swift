@@ -4,11 +4,15 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: AnyTotalsViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel,
+         totalsViewModel: TotalsViewModel,
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
-        self.totalsViewModel = viewModel.totalsViewModel
+        self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
     }
 
     private var isCartShown: Bool {
@@ -62,7 +66,7 @@ struct PointOfSaleDashboardView: View {
                 case .idle,
                         .show, // handled above
                         .showOnboarding:
-                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
         })
@@ -87,16 +91,16 @@ private extension PointOfSaleDashboardView {
     }
 
     var cartView: some View {
-        CartView(viewModel: viewModel,
-                 cartViewModel: viewModel.cartViewModel)
+        CartView(viewModel: viewModel, cartViewModel: cartViewModel)
     }
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel,
-                   totalsViewModel: viewModel.totalsViewModel)
-        .background(Color(UIColor.systemBackground))
-        .frame(maxWidth: .infinity)
-        .cornerRadius(16)
+                   totalsViewModel: totalsViewModel,
+                   cartViewModel: cartViewModel)
+            .background(Color(UIColor.systemBackground))
+            .frame(maxWidth: .infinity)
+            .cornerRadius(16)
     }
 
     var productListView: some View {
@@ -119,12 +123,20 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                     orderService: POSOrderPreviewService(),
-                                                     currencyFormatter: .init(currencySettings: .init())))
+    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                   currencyFormatter: .init(currencySettings: .init()),
+                                   paymentState: .acceptingCard,
+                                   isSyncingOrder: false)
+    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              orderService: POSOrderPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()),
+                                              totalsViewModel: totalsVM,
+                                              cartViewModel: .init())
+
+    return NavigationStack {
+        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: .init())
     }
 }
 #endif

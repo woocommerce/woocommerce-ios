@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `ReviewsDashboardCard`
 ///
+@MainActor
 final class ReviewsDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Reviews card
     var onDismiss: (() -> Void)?

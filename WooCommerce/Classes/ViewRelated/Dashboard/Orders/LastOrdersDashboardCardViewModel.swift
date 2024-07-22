@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `LastOrdersDashboardCard`
 ///
+@MainActor
 final class LastOrdersDashboardCardViewModel: ObservableObject {
     enum OrderStatusRow: Identifiable {
         case any

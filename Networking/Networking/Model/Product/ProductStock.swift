@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents stock details for a Product.
 ///
-public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFakeable {
+public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFakeable, Sendable {
 
     public let siteID: Int64
     public let productID: Int64

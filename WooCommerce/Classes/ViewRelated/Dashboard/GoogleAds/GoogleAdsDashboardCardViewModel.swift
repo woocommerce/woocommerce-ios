@@ -4,6 +4,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// View model for `GoogleAdsDashboardCard`.
+@MainActor
 final class GoogleAdsDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?

@@ -32,6 +32,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     // MARK: - `numberOfTasksCompleted``
 
+    @MainActor
     func test_numberOfTasksCompleted_returns_correct_count() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -52,7 +53,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: - `tasksForDisplay``
-
+    @MainActor
     func test_tasksForDisplay_returns_first_3_incomplete_tasks_including_wcpay_when_isExpanded_is_false() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -76,6 +77,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
     }
 
+    @MainActor
     func test_tasksForDisplay_returns_first_3_incomplete_tasks_not_including_payments_when_isExpanded_is_false() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -99,6 +101,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
     }
 
+    @MainActor
     func test_tasksForDisplay_returns_all_tasks_when_isExpanded_is_true() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -118,6 +121,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 4)
     }
 
+    @MainActor
     func test_tasksForDisplay_returns_first_3_incomplete_tasks_when_view_all_button_is_visible_in_collapsed_mode() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -143,6 +147,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
     }
 
+    @MainActor
     func test_tasksForDisplay_returns_all_tasks_when_view_all_button_is_hidden_in_collapsed_mode() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -164,6 +169,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
+    @MainActor
     func test_launch_store_task_is_marked_as_complete_for_already_public_store() async throws {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
@@ -184,6 +190,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(launchStoreTask.isComplete)
     }
 
+    @MainActor
     func test_launch_store_task_is_not_marked_as_complete_for_non_public_store() async throws {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .privateSite)
@@ -204,6 +211,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(launchStoreTask.isComplete)
     }
 
+    @MainActor
     func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store_with_default_name() async {
         // Given
         sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
@@ -227,7 +235,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: - shouldShowViewAllButton
-
+    @MainActor
     func test_view_all_button_is_hidden_in_expanded_mode() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -247,6 +255,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowViewAllButton)
     }
 
+    @MainActor
     func test_view_all_button_is_visible_in_collapsed_mode() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -266,6 +275,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowViewAllButton)
     }
 
+    @MainActor
     func test_view_all_button_is_hidden_when_view_is_redacted_while_loading() async {
         // Given
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -288,6 +298,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
     }
 
+    @MainActor
     func test_view_all_button_is_visible_after_view_is_loaded_and_unredacted() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -308,6 +319,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowViewAllButton)
     }
 
+    @MainActor
     func test_view_all_button_is_visible_when_task_count_is_greater_than_3() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -327,6 +339,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowViewAllButton)
     }
 
+    @MainActor
     func test_view_all_button_is_hidden_when_task_count_is_3() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -345,6 +358,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowViewAllButton)
     }
 
+    @MainActor
     func test_view_all_button_is_hidden_when_task_count_is_less_than_3() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -363,7 +377,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: - isRedacted
-
+    @MainActor
     func test_view_is_redacted_while_loading_tasks() async {
         // Given
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -385,6 +399,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
     }
 
+    @MainActor
     func test_view_is_unredacted_after_finishing_loading_tasks_successfully() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
@@ -404,6 +419,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isRedacted)
     }
 
+    @MainActor
     func test_view_is_unredacted_after_failing_to_load_tasks() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
@@ -419,7 +435,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: - Loading tasks
-
+    @MainActor
     func test_it_loads_previously_loaded_data_when_loading_tasks_fails() async {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
@@ -447,6 +463,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
     }
 
+    @MainActor
     func test_it_filters_out_unsupported_tasks_from_response() async {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
@@ -469,6 +486,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), initialTasks)
     }
 
+    @MainActor
     func test_it_does_not_send_network_request_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
@@ -493,6 +511,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.count == placeholderTaskCount)
     }
 
+    @MainActor
     func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -518,7 +537,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: completedAllStoreOnboardingTasks user defaults
-
+    @MainActor
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -539,6 +558,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
+    @MainActor
     func test_completedAllStoreOnboardingTasks_is_true_when_there_are_no_pending_tasks() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -559,6 +579,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
     }
 
+    @MainActor
     func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_fails() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
@@ -576,6 +597,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
+    @MainActor
     func test_completedAllStoreOnboardingTasks_is_not_changed_when_tasks_request_returns_empty_array() async {
         // Given
         mockLoadOnboardingTasks(result: .success([]))
@@ -594,7 +616,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     // MARK: - canShowInDashboard
-
+    @MainActor
     func test_canShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
@@ -609,6 +631,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.canShowInDashboard)
     }
 
+    @MainActor
     func test_canShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
         // Given
         mockLoadOnboardingTasks(result: .success([]))
@@ -623,6 +646,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.canShowInDashboard)
     }
 
+    @MainActor
     func test_canShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -644,6 +668,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.canShowInDashboard)
     }
 
+    @MainActor
     func test_canShowInDashboard_is_false_when_all_tasks_are_complete() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -665,6 +690,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.canShowInDashboard)
     }
 
+    @MainActor
     func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
@@ -683,6 +709,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
     }
 
+    @MainActor
     func test_reloadTasks_ends_waitingTimeTracker_when_fetching_tasks_fails() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
@@ -701,6 +728,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssert(tracker.startupActionsPending.isEmpty)
     }
 
+    @MainActor
     func test_reloadTasks_notifies_waitingTimeTracker_when_fetching_tasks_succeeds() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
@@ -725,7 +753,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
     }
 
-    /// Skipped until the feature flag is on for dynamic dashboard.
+    @MainActor
     func test_hideTaskList_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

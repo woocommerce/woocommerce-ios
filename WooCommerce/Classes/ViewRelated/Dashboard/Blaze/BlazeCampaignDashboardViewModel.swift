@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCampaignDashboardView`.
+@MainActor
 final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// UI state of the Blaze campaign view in dashboard.
     enum State: Equatable {

@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 
 /// View model for `TopPerformersDashboardView`
 ///
+@MainActor
 final class TopPerformersDashboardViewModel: ObservableObject {
 
     // Set externally to trigger callback upon hiding the Top Performers card.

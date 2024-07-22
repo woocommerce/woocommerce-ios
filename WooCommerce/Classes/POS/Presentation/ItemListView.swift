@@ -4,6 +4,7 @@ import protocol Yosemite.POSItem
 struct ItemListView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
+    @Environment(\.floatingControlSize) var floatingControlSize: CGSize
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -130,6 +131,7 @@ private extension ItemListView {
                     ItemCardView(item: item)
                 })
             }
+            Color.clear.padding(.bottom, floatingControlSize.height)
         }
     }
 

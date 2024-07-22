@@ -15,44 +15,86 @@ struct PointOfSaleDashboardView: View {
         !viewModel.itemListViewModel.isEmptyOrError
     }
 
-    var body: some View {
-        VStack {
-            HStack {
-                switch viewModel.orderStage {
-                case .building:
-                    GeometryReader { geometry in
-                        HStack {
-                            productListView
-                            cartView
-                                .renderedIf(isCartShown)
-                                .frame(width: geometry.size.width * Constants.cartWidth)
-                        }
+    private var floatingControlView: some View {
+        HStack {
+            Menu {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        Image(systemName: "arrow.down.right.and.arrow.up.left")
+                        Text("Exit POS")
                     }
-                case .finalizing:
-                    GeometryReader { geometry in
-                        HStack {
-                            if !viewModel.isTotalsViewFullScreen {
+                }
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        Image(systemName: "questionmark.circle")
+                        Text("Get Support")
+                    }
+                }
+            } label: {
+                HStack {
+                    Text("⋯")
+                        .font(.system(size: 24.0, weight: .semibold))
+                }
+                .frame(width: 56, height: 56)
+                .background(Color.white)
+                .cornerRadius(8.0)
+            }
+            .disabled(viewModel.isExitPOSDisabled)
+            HStack {
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+                    .padding(24)
+            }
+            .frame(height: 56)
+            .background(Color.white)
+            .cornerRadius(8.0)
+        }
+        .background(Color.clear)
+    }
+
+    @State private var floatingSize: CGSize = .zero
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            VStack {
+                HStack {
+                    switch viewModel.orderStage {
+                    case .building:
+                        GeometryReader { geometry in
+                            HStack {
+                                productListView
                                 cartView
+                                    .renderedIf(isCartShown)
                                     .frame(width: geometry.size.width * Constants.cartWidth)
-                                Spacer()
                             }
-                            totalsView
+                        }
+                    case .finalizing:
+                        GeometryReader { geometry in
+                            HStack {
+                                if !viewModel.isTotalsViewFullScreen {
+                                    cartView
+                                        .frame(width: geometry.size.width * Constants.cartWidth)
+                                    Spacer()
+                                }
+                                totalsView
+                            }
                         }
                     }
                 }
+                .frame(maxHeight: .infinity)
+                .padding()
             }
-            .padding()
+            floatingControlView
+                .shadow(color: Color.black.opacity(0.08), radius: 4)
+                .offset(x: 24, y: -24)
+                .trackSize(size: $floatingSize)
         }
+        .environment(\.floatingControlSize, floatingSize)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
-                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
-            }
-        }
-        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
-        .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
@@ -72,11 +114,23 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+struct FloatingControlSizeKey: EnvironmentKey {
+    static let defaultValue = CGSize.zero
+}
+
+extension EnvironmentValues {
+  var floatingControlSize: CGSize {
+    get { self[FloatingControlSizeKey.self] }
+    set { self[FloatingControlSizeKey.self] = newValue }
+  }
+}
+
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
+        static let buttonImageAndTextSpacing: CGFloat = 12
     }
 }
 

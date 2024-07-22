@@ -173,6 +173,12 @@ extension GoogleAdsCampaignReportCardViewModel {
     var hasPaidCampaigns: Bool {
         campaignsData.isNotEmpty
     }
+
+    /// Tracks when the call to action is displayed.
+    ///
+    func onDisplayCallToAction() {
+        analytics.track(event: .GoogleAds.entryPointDisplayed(source: .analyticsHub))
+    }
 }
 
 // MARK: Constants

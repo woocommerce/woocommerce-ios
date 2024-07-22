@@ -19,6 +19,9 @@ struct GoogleAdsCampaignReportCard: View {
                              buttonLabel: Localization.CallToAction.button,
                              isLoading: .constant(false),
                              buttonAction: onCreateNewCampaign)
+            .onAppear(perform: {
+                viewModel.onDisplayCallToAction()
+            })
         } else {
             VStack(alignment: .leading) {
 

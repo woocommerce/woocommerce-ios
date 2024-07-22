@@ -35,8 +35,8 @@ struct TopPerformersDashboardView: View {
             } else {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.header)
 
                 Divider()
 
@@ -47,8 +47,8 @@ struct TopPerformersDashboardView: View {
 
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
             }
 
         }

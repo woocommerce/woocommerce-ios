@@ -13,10 +13,10 @@ struct TopPerformersPeriodView: View {
             TopPerformersView(itemTitle: Localization.productsTitle,
                               valueTitle: Localization.itemsSoldTitle,
                               rows: viewModel.rows,
-                              isRedacted: viewModel.isRedacted)
+                              isRedacted: viewModel.redacted.rows)
             .padding(Layout.padding)
-            .redacted(reason: viewModel.isRedacted ? .placeholder : [])
-            .shimmering(active: viewModel.isRedacted)
+            .redacted(reason: viewModel.redacted.rows ? .placeholder : [])
+            .shimmering(active: viewModel.redacted.rows)
         } else {
             TopPerformersEmptyView()
         }
@@ -42,7 +42,7 @@ private extension TopPerformersPeriodView {
 
 struct DashboardTopPerformersView_Previews: PreviewProvider {
     static var previews: some View {
-        TopPerformersPeriodView(viewModel: .init(state: .loading, onTap: { _ in }))
+        TopPerformersPeriodView(viewModel: .init(state: .loading(cached: []), onTap: { _ in }))
         TopPerformersPeriodView(viewModel: .init(state: .loaded(rows: [.init(productID: 12,
                                                                                 productName: "Fun product",
                                                                                 quantity: 6,

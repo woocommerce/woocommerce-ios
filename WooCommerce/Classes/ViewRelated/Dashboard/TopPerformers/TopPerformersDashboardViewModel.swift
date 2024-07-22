@@ -30,7 +30,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         Date()
     }
 
-    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
+    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading(cached: [])) { [weak self] topPerformersItem in
         guard let self else { return }
 
         trackInteraction()
@@ -200,7 +200,8 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
-        periodViewModel.update(state: .loading)
+        let items = topEarnerStats?.items?.sorted(by: >) ?? []
+        periodViewModel.update(state: .loading(cached: items))
     }
 
     func updateUIInLoadedState() {

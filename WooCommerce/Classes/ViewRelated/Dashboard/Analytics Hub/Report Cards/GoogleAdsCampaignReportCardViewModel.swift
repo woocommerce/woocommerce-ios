@@ -10,13 +10,13 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    /// Google Ads campaign creation eligibility checker
+    /// Google Ads campaign creation eligibility checker. Optimistically defaults to `true`, to show loading view while checking eligibility.
     ///
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     /// Whether the store is eligible for Google Ads campaign creation.
     ///
-    @Published private(set) var isEligibleForGoogleAds: Bool = false
+    @Published private(set) var isEligibleForGoogleAds: Bool = true
 
     /// Campaign stats for the current period
     ///

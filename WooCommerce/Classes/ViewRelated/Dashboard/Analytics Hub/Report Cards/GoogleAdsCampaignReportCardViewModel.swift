@@ -221,7 +221,10 @@ extension GoogleAdsCampaignReportCardViewModel {
     /// Whether to show the call to action to create a new campaign.
     ///
     var showCampaignCTA: Bool {
-        !hasPaidCampaigns && isEligibleForGoogleAds
+        guard !isRedacted, !showCampaignsError else {
+            return false
+        }
+        return isEligibleForGoogleAds && !hasPaidCampaigns
     }
 
     /// Whether there are paid campaigns to display.

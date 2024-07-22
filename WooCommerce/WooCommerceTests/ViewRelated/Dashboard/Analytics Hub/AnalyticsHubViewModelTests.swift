@@ -90,8 +90,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingGiftCardsCardRedacted: Bool = false
         let storage = MockStorageManager()
         insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
-                             SitePlugin.SupportedPlugin.WCGiftCards.first,
-                             SitePlugin.SupportedPlugin.GoogleForWooCommerce.first],
+                             SitePlugin.SupportedPlugin.WCGiftCards.first],
                             to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in

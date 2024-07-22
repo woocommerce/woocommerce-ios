@@ -168,7 +168,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .giftCards:
             isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         case .googleCampaigns:
-            googleCampaignsCard.isEligibleForGoogleAds
+            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce) && googleCampaignsCard.isEligibleForGoogleAds
         default:
             true
         }

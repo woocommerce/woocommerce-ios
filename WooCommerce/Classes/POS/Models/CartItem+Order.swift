@@ -23,10 +23,14 @@ extension CartItem {
             // sort items by productIDs to have them in same order for comparison
             singleQuantityOrderItems.sort { $0.productID < $1.productID }
             singleQuantityCartItems.sort { $0.productID < $1.productID }
-            // check if product item is different, prices included
+            // check if product item is different
             for (index, cartItem) in singleQuantityCartItems.enumerated() {
                 let orderItem = singleQuantityOrderItems[index]
-                if cartItem.productID != orderItem.productID || cartItem.price != orderItem.price.stringValue {
+                if cartItem.productID != orderItem.productID {
+                    // TODO: https://github.com/woocommerce/woocommerce-ios/pull/13328/files#r1687631533
+                    // - we should also add a logic to compare prices
+                    // - but we should be aware of the fact that some
+                    // products already have tax in the price
                     return true
                 }
             }

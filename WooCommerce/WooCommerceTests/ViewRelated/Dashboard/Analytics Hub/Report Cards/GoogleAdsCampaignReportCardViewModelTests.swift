@@ -158,4 +158,20 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         assertEqual("$200", firstCampaign.value)
     }
 
+    func test_onDisplayCallToAction_tracks_expected_event() throws {
+        // Given
+        let vm = GoogleAdsCampaignReportCardViewModel(currentPeriodStats: nil,
+                                                      previousPeriodStats: nil,
+                                                      timeRange: .today,
+                                                      usageTracksEventEmitter: eventEmitter,
+                                                      analytics: analytics)
+
+        // When
+        vm.onDisplayCallToAction()
+
+        // Then
+        assertEqual(["googleads_entry_point_displayed"], analyticsProvider.receivedEvents)
+        let sourceProperty = try XCTUnwrap(analyticsProvider.receivedProperties.first?["source"] as? String)
+        assertEqual("analytics_hub", sourceProperty)
+    }
 }

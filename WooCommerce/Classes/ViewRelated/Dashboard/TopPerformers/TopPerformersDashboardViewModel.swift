@@ -183,7 +183,7 @@ private extension TopPerformersDashboardViewModel {
             }
             .store(in: &subscriptions)
     }
-    
+
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
@@ -193,12 +193,12 @@ private extension TopPerformersDashboardViewModel {
             stores.dispatch(action)
         }
     }
-    
+
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
-    
+
     func updateResultsController() {
         let resultsController = createResultsController(timeRange: timeRange)
         self.resultsController = resultsController
@@ -208,14 +208,14 @@ private extension TopPerformersDashboardViewModel {
         resultsController.onDidResetContent = { [weak self] in
             self?.updateUIInLoadedState()
         }
-        
+
         do {
             try resultsController.performFetch()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
-    
+
     func updateUIInLoadingState() {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
             return periodViewModel.update(state: .loading(cached: []))
@@ -223,7 +223,7 @@ private extension TopPerformersDashboardViewModel {
         let items = topEarnerStats?.items?.sorted(by: >) ?? []
         periodViewModel.update(state: .loading(cached: items))
     }
-    
+
     func updateUIInLoadedState() {
         guard !syncingData else {
             return
@@ -233,7 +233,7 @@ private extension TopPerformersDashboardViewModel {
         }
         periodViewModel.update(state: .loaded(rows: items))
     }
-    
+
     func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {
         let granularity = timeRange.topEarnerStatsGranularity
         let formattedDateString: String = {
@@ -242,7 +242,7 @@ private extension TopPerformersDashboardViewModel {
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
-        
+
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }

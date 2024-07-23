@@ -20,7 +20,7 @@ struct TopPerformersCardDataSyncUseCase {
         self.timeRange = timeRange
         self.stores = stores
     }
-    
+
     /// Sync all stats needed for the performance card.
     ///
     @MainActor
@@ -31,7 +31,7 @@ struct TopPerformersCardDataSyncUseCase {
             }
             return initialTimeRange
         }()
-        
+
         try await syncTopPerformersStats(timeRange: timeRange)
     }
 

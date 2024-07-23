@@ -250,7 +250,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(receivedIsSyncingOrder)
     }
-    
+
     func test_observeCartAddMoreAction_updates_orderStage_to_building() {
         // Given
         let expectation = XCTestExpectation(description: "Expect orderStage to be .building when adding more to the cart")
@@ -258,7 +258,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
         // Attach sink to observe changes to orderStage
         sut.$orderStage
-            // Ignore the initial value of orderStage to ensure that the test only reacts to changes in the orderStage after the subscription has started. Avoids immediately fulfilling the expectation upon subscribing.
+            // Ignore the initial value of orderStage to ensure that the test only reacts to changes in the orderStage after the subscription has started.
             .dropFirst()
             .sink { orderStage in
                 receivedOrderStage = orderStage

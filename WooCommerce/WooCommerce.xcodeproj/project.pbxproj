@@ -2359,6 +2359,8 @@
 		DA1D68C22C36F0980097859A /* String+POS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D68C12C36F0980097859A /* String+POS.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
+		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
+		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
@@ -5313,6 +5315,8 @@
 		DA1D68C12C36F0980097859A /* String+POS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+POS.swift"; sourceTree = "<group>"; };
 		DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderPreviewService.swift; sourceTree = "<group>"; };
 		DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModelTests.swift; sourceTree = "<group>"; };
+		DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+Order.swift"; sourceTree = "<group>"; };
+		DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemTests.swift; sourceTree = "<group>"; };
 		DE001322279A793A00EB0350 /* CouponWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponWooTests.swift; sourceTree = "<group>"; };
 		DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationView.swift; sourceTree = "<group>"; };
 		DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModel.swift; sourceTree = "<group>"; };
@@ -9061,6 +9065,7 @@
 			isa = PBXGroup;
 			children = (
 				68F151E02C0DA7910082AEC8 /* CartItem.swift */,
+				DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -12007,6 +12012,7 @@
 		DABF35242C11B40C006AF826 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				DAD988C72C4A9D49009DE9E3 /* Models */,
 				02CD3BFC2C35D01600E575C4 /* Mocks */,
 				DABF35252C11B412006AF826 /* ViewModels */,
 			);
@@ -12022,6 +12028,14 @@
 				6885E2CD2C32B2E2004C8D70 /* TotalsViewModelTests.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		DAD988C72C4A9D49009DE9E3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		DE02ABB82B569803008E0AC4 /* ConfirmPayment */ = {
@@ -14727,6 +14741,7 @@
 				26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */,
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
+				DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */,
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
 				D8B4D5F226C2CF5B00F34E94 /* InPersonPaymentsStripeAccountOverdueView.swift in Sources */,
 				EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */,
@@ -16245,6 +16260,7 @@
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,
+				DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */,
 				028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */,
 				B90C65D129AD02CC004CAB9E /* CardPresentPaymentsOnboardingIPPUsersRefresherTests.swift in Sources */,
 				02038C5F2AF21BC300CD36D9 /* ConfigurableBundleItemViewModelTests.swift in Sources */,

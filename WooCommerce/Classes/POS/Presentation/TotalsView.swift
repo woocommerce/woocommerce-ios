@@ -5,7 +5,7 @@ struct TotalsView: View {
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, 
+    init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -219,7 +219,7 @@ private extension TotalsView {
                                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               orderService: POSOrderPreviewService(),
                                               currencyFormatter: .init(currencySettings: .init()),
-                                              totalsViewModel: totalsVM, 
+                                              totalsViewModel: totalsVM,
                                               cartViewModel: cartViewModel)
     return TotalsView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartViewModel)
 }

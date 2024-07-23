@@ -13,15 +13,20 @@ struct CardReaderConnectionStatusView: View {
         self.connectionViewModel = connectionViewModel
     }
 
+    @ViewBuilder
+    private func circleIcon(with color: Color) -> some View {
+        Image(systemName: "circle.fill")
+            .resizable()
+            .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
+            .foregroundColor(color)
+    }
+
     var body: some View {
         Group {
             switch connectionViewModel.connectionStatus {
             case .connected:
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                    Image(systemName: "circle.fill")
-                        .resizable()
-                        .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
-                        .foregroundColor(Color.wooEmeraldShade40)
+                    circleIcon(with: Color.wooEmeraldShade40)
                     Text("Reader Connected")
                         .foregroundColor(Color.primaryText)
                 }
@@ -30,13 +35,10 @@ struct CardReaderConnectionStatusView: View {
                     connectionViewModel.connectReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(systemName: "circle.fill")
-                            .resizable()
-                            .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
-                            .foregroundColor(Color.wooAmberShade60)
+                        circleIcon(with: Color.wooAmberShade60)
                         Text("Connect your reader")
+                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                     }
-                    .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                 }
             }
         }

@@ -14,7 +14,7 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
     ///
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    /// Whether the store is eligible for Google Ads campaign creation.
+    /// Whether the store is eligible for Google Ads campaign creation. Optimistically defaults to `true`, to show loading view while checking eligibility.
     ///
     @Published private(set) var isEligibleForGoogleAds: Bool = true
 
@@ -83,7 +83,24 @@ final class GoogleAdsCampaignReportCardViewModel: ObservableObject {
 
     /// Indicates if there was an error loading campaigns part of the card.
     ///
-    @Published private(set) var showCampaignsError: Bool = false
+    var showCampaignsError: Bool {
+        isRedacted ? false : currentPeriodStats == nil
+    }
+
+    /// Whether to show the call to action to create a new campaign.
+    ///
+    var showCampaignCTA: Bool {
+        guard !isRedacted, !showCampaignsError else {
+            return false
+        }
+        return isEligibleForGoogleAds && campaignsData.isEmpty && !didCreateCampaign
+    }
+
+    /// Whether a paid campaign has been created via the call to action.
+    ///
+    /// This can be set to `true` to prevent the call to action from being persistently displayed, even if there are no campaign analytics yet.
+    ///
+    @Published private var didCreateCampaign: Bool = false
 
     init(siteID: Int64,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
@@ -157,15 +174,6 @@ extension GoogleAdsCampaignReportCardViewModel {
                 return campaignRows(from: currentPeriodStats, for: selectedStat)
             }
             .assign(to: &$campaignsData)
-
-        $currentPeriodStats.combineLatest($isRedacted)
-            .map { currentPeriodStats, isRedacted in
-                guard !isRedacted else {
-                    return false
-                }
-                return currentPeriodStats == nil
-            }
-            .assign(to: &$showCampaignsError)
     }
 
     /// Delta text for the selected stat
@@ -218,22 +226,18 @@ extension GoogleAdsCampaignReportCardViewModel {
 
 // MARK: Google Ads Campaign Creation
 extension GoogleAdsCampaignReportCardViewModel {
-    /// Whether to show the call to action to create a new campaign.
-    ///
-    var showCampaignCTA: Bool {
-        false // TODO-13368: Add logic for when to show the call to action
-    }
-
-    /// Whether there are paid campaigns to display.
-    ///
-    var hasPaidCampaigns: Bool {
-        campaignsData.isNotEmpty
-    }
-
     /// Tracks when the call to action is displayed.
     ///
     func onDisplayCallToAction() {
         analytics.track(event: .GoogleAds.entryPointDisplayed(source: .analyticsHub))
+    }
+
+    /// Closure to be called when a campaign is successfully created from the call to action.
+    ///
+    @MainActor
+    func onGoogleCampaignCreated() async {
+        didCreateCampaign = true
+        await reload()
     }
 
     /// Checks whether the store is eligible for campaign creation.

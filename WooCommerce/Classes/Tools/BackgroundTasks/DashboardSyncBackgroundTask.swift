@@ -32,8 +32,10 @@ struct DashboardSyncBackgroundTask {
                 switch card.type {
                 case .performance:
                     group.addTask { try await performanceTask() }
+                case .topPerformers:
+                    group.addTask { try await topPerformersTask() }
 
-                case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock, .topPerformers:
+                case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock:
                     DDLogInfo("⚠️ Synchronizing \(card.type.name) card in the background is not yet supported...")
                     return
                 }
@@ -48,17 +50,32 @@ struct DashboardSyncBackgroundTask {
         DDLogInfo("📱 Finished synchronizing dashboard cards in the background...")
     }
 
-    /// Load the supposed visible cards from storage.
+    /// Run the performance card update task.
     ///
     @MainActor
     private func performanceTask() async throws {
         do {
             DDLogInfo("📱 Synchronizing Performance card in the background...")
-            let useCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone)
+            let useCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, stores: stores)
             try await useCase.sync()
             DDLogInfo("📱 Successfully synchronized Performance card in the background")
         } catch {
             DDLogError("⛔️ Error synchronizing Performance card in the background: \(error)")
+            throw error
+        }
+    }
+
+    /// Run the top performers card update task.
+    ///
+    @MainActor
+    private func topPerformersTask() async throws {
+        do {
+            DDLogInfo("📱 Synchronizing Top Performers card in the background...")
+            let useCase = TopPerformersCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, stores: stores)
+            try await useCase.sync()
+            DDLogInfo("📱 Successfully synchronized Top Performers card in the background")
+        } catch {
+            DDLogError("⛔️ Error synchronizing Top Performers card in the background: \(error)")
             throw error
         }
     }

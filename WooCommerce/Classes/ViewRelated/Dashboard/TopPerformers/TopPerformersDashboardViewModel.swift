@@ -102,7 +102,10 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .topPerformers))
         do {
-            try await syncTopEarnersStats()
+
+            let useCase = TopPerformersCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
+            try await useCase.sync()
+
             syncingDidFinishPublisher.send(nil)
         } catch {
             syncingError = error
@@ -242,29 +245,6 @@ private extension TopPerformersDashboardViewModel {
 
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
-
-    @MainActor
-    func syncTopEarnersStats() async throws {
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                                 timeRange: timeRange,
-                                                                 timeZone: siteTimezone,
-                                                                 earliestDateToInclude: earliestDateToInclude,
-                                                                 latestDateToInclude: latestDateToInclude,
-                                                                 quantity: Constants.topEarnerStatsLimit,
-                                                                 forceRefresh: true,
-                                                                 saveInStorage: true,
-                                                                 onCompletion: { result in
-                let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                continuation.resume(with: voidResult)
-            }))
-        }
-
-        // Test if this reaches when an error is thrown
-        DashboardTimestampStore.saveTimestamp(.now, for: .topPerformers, at: timeRange.timestampRange)
-    }
 }
 
 // MARK: Constants
@@ -272,7 +252,6 @@ private extension TopPerformersDashboardViewModel {
 private extension TopPerformersDashboardViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
-        static let topEarnerStatsLimit: Int = 5
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

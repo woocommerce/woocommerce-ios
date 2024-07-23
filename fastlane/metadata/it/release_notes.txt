@@ -1,2 +1,3 @@
-Il nostro ultimo aggiornamento migliora l'Analytics Hub includendo le campagne di Google Ads e introduce le Note di posta in arrivo nella Bacheca dinamica e nel Menu Hub. Goditi un'esperienza dell'app migliore con il nostro ultimo aggiornamento.
+
+Aggiorna ora la tua app WooCommerce per migliorare l'esperienza di pagamento in contanti! Abbiamo risolto il problema per cui gli ordini pagati in contanti non mostravano il metodo di pagamento e il titolo. Ora, quando si ricevono pagamenti in contanti, l'app imposta questi dettagli correttamente, proprio come sul web, garantendo chiarezza nei dettagli dell'ordine e nelle ricevute.
 

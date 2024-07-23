@@ -1,2 +1,3 @@
-Mit unserem neuesten Update verbessern wir den Analyse-Hub durch Google Ads-Kampagnen und führen Inbox Notes im dynamischen Dashboard und dem Hub-Menü ein. Genieße dank unserem neuesten Update ein besseres App-Erlebnis!
+
+Aktualisiere deine WooCommerce-App jetzt für eine verbesserte Barzahlungserfahrung! Wir haben das Problem behoben, bei dem die Zahlungsmethode und der Titel für bar bezahlte Bestellungen nicht angezeigt wurden. Bei Barzahlungen werden diese Angaben in der App nun korrekt angegeben, genau wie im Internet, sodass deine Bestelldetails und Belege genau sind.
 

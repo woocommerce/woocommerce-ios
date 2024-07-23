@@ -1,4 +1,3 @@
-import BackgroundTasks
 import Foundation
 import Yosemite
 
@@ -21,34 +20,26 @@ struct OrderListSyncBackgroundTask {
 
     let stores: StoresManager
 
-    let backgroundTask: BGAppRefreshTask?
-
-    init(siteID: Int64, backgroundTask: BGAppRefreshTask?, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.backgroundTask = backgroundTask
         self.stores = stores
     }
 
     /// Runs the sync task.
-    /// Marks the `backgroundTask` as completed when finished.
-    /// Returns a `task` to be canceled when required.
     ///
-    func dispatch() -> Task<Void, Never> {
-        Task { @MainActor in
-            do {
+    @MainActor
+    func dispatch() async throws {
+        do {
+            DDLogInfo("📱 Synchronizing orders in the background...")
 
-                DDLogInfo("📱 Synchronizing orders in the background...")
+            let useCase = CurrentOrderListSyncUseCase(siteID: siteID, stores: stores)
+            try await useCase.sync()
+            Self.latestSyncDate = Date.now
 
-                let useCase = CurrentOrderListSyncUseCase(siteID: siteID, stores: stores)
-                try await useCase.sync()
-                Self.latestSyncDate = Date.now
-
-                DDLogInfo("📱 Successfully synchronized orders in the background")
-                backgroundTask?.setTaskCompleted(success: true)
-            } catch {
-                DDLogError("⛔️ Error synchronizing orders in the background: \(error)")
-                backgroundTask?.setTaskCompleted(success: false)
-            }
+            DDLogInfo("📱 Successfully synchronized orders in the background")
+        } catch {
+            DDLogError("⛔️ Error synchronizing orders in the background: \(error)")
+            throw error
         }
     }
 }

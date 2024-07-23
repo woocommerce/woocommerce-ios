@@ -160,6 +160,27 @@ extension GoogleAdsCampaignReportCardViewModel {
     }
 }
 
+// MARK: Google Ads Campaign Creation
+extension GoogleAdsCampaignReportCardViewModel {
+    /// Whether to show the call to action to create a new campaign.
+    ///
+    var showCampaignCTA: Bool {
+        false // TODO-13368: Add logic for when to show the call to action
+    }
+
+    /// Whether there are paid campaigns to display.
+    ///
+    var hasPaidCampaigns: Bool {
+        campaignsData.isNotEmpty
+    }
+
+    /// Tracks when the call to action is displayed.
+    ///
+    func onDisplayCallToAction() {
+        analytics.track(event: .GoogleAds.entryPointDisplayed(source: .analyticsHub))
+    }
+}
+
 // MARK: Constants
 private extension GoogleAdsCampaignReportCardViewModel {
     enum Localization {

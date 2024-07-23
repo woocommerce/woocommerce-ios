@@ -1,2 +1,3 @@
-Vår senaste uppdatering förbättrar analyshubben genom att inkludera Google Ads-kampanjer och introducerar Inkorgsanteckningar i den dynamiska adminpanelen och hubbmenyn. Ta del av en bättre appupplevelse med vår senaste uppdatering.
+
+Uppdatera din WooCommerce-app nu för en förbättrad kontantbetalningsupplevelse. Vi har åtgärdat problemet som gjorde att beställningar som betalats kontant inte visade betalningsmetod och rubrik. När du tar emot kontanta betalningar ställer appen nu in dessa uppgifter korrekt, precis som på webben, vilket säkerställer tydlighet i din beställningsinformation och dina kvitton.
 

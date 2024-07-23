@@ -82,10 +82,6 @@ private extension PointOfSaleDashboardView {
 
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
-    var collapsedCartView: some View {
-        CollapsedCartView()
-    }
-
     var cartView: some View {
         CartView(viewModel: viewModel,
                  cartViewModel: viewModel.cartViewModel)

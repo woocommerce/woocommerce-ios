@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-09 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-16 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -4117,6 +4117,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "마지막 판매 명세";
+
+/* Time for when the orders were last updated */
+"Last Updated: %@" = "최근 업데이트: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "지난주";
@@ -9645,6 +9648,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when session data is unavailable in the Analytics Hub */
 "analyticsHub.sessionsCard.dataUnavailable.Message" = "세션 데이터 사용 불가";
 
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "지표";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "취소";
 
@@ -10625,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "가장 많이 사용된 쿠폰";
 
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "Google Ads 캠페인";
+
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "받은 편지함";
 
@@ -10845,6 +10854,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "상품";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "비활성화됨";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "활성화됨";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "제거됨";
+
 /* Title of the Google Ads campaign view */
 "googleAdsCampaignCoordinator.googleForWooCommerce" = "우커머스용 Google";
 
@@ -10856,6 +10874,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the celebration view when a Google ads campaign is successfully created. */
 "googleAdsCampaignCoordinator.successTitle" = "모든 준비를 마쳤습니다!";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "클릭 수";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "전환";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "노출 수";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "총매출액";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "총지출";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "캠페인 생성";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "Google Ads 숨기기";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "Google 검색, 쇼핑, YouTube, Gmail 등에서 상품을 홍보하세요.";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "Google Ads로 매출과 트래픽을 늘리세요";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "유료 캠페인 성과";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "클릭 수";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "노출 수";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "모든 캠페인 보기";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "고객";
@@ -11331,8 +11388,20 @@ which should be translated separately and considered part of this sentence. */
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "사진 제거";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "사진 바꾸기";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "사진 보기";
+
 /* No comment provided by engineer. */
 "password" = "비밀번호";
+
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "대면 결제";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "주문이 현금으로 결제되었습니다. 고객이 %1$@을(를) 결제했습니다. %2$@이(가) 거슬러줄 잔돈이었습니다.";
@@ -11348,6 +11417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "플러그인";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "판독기에서 결제 취소됨";
 
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "취소";
@@ -11370,26 +11442,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "결제 상태 알 수 없음";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.cancel.button.title" = "결제 취소";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "결제 실패";
 
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "다시 시도";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "결제 취소";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "결제 실패";
 
-/* Button to cancel preparation of the reader on the Point of Sale checkout. */
-"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "취소";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "결제 처리 중";
 
-/* Button to cancel a payment */
-"pointOfSale.cardPresent.presentCard.cancel.button.title" = "취소";
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "결제 성공!";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
+"pointOfSale.cardPresent.preparingCardReader.message" = "주문 확인하기";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "카드 리더 준비하기";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "결제할 카드 삽입";
@@ -11407,7 +11479,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "누르거나 삽입하거나 살짝 밀어서 결제하기";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "리더 준비 완료";
+"pointOfSale.cardPresent.presentCard.title" = "결제 준비";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "해제";
@@ -11574,6 +11646,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "리더를 연결하지 못했음";
 
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "단순 상품 생성";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "현재 POS에서는 단순 상품만 지원합니다.";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "스토어에 상품 없음";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "제품 없음";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "다시 시도";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "한 번 더 시도할까요?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "상품 로드 오류";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "상품";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "닫기";
 
@@ -11583,20 +11679,38 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "비공개";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "거의 다 되었습니다.";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "잘 설명해 주셨습니다!";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "결과가 더 나아집니다.";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "상세 정보를 추가하세요.";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "추가 관련 정보 또는 특징을 말씀해 주세요.";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "작업에 충분한 정보를 제공해 주셨지만 상세 정보를 추가하여 결과를 더욱 개선할 수도 있습니다.";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "아이템의 착용감과 기타 특징에 대해 설명해 주시겠어요?";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "더 많은 상세 정보를 제공할수록 생성되는 상세 정보가 더 좋아집니다.";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "온라인에서 상품을 찾는 데 도움이 되도록 상품의 이름, 주요 기능, 이점 또는 상세 정보를 추가하세요.";
+
 /* Button to generate product details in the starting info screen. */
 "productCreationAIStartingInfoView.generateProductDetails" = "상품 상세 정보 만들기";
 
 /* Text to explain that a package photo has been selected in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.photoSelected" = "사진 선택됨";
-
-/* Title of button which removes selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.removePhoto" = "사진 제거";
-
-/* Title of the button which opens photo selection flow to replace selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.replacePhoto" = "사진 바꾸기";
-
-/* Title of button which opens the selected package photo in starting info screen. */
-"productCreationAIStartingInfoView.packagePhotoView.viewPhoto" = "사진 보기";
+"productCreationAIStartingInfoView.photoSelected" = "사진 선택됨";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "예: 검은색 면 티셔츠, 부드러운 원단, 튼튼한 바느질, 독특한 디자인";
@@ -11609,12 +11723,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "시작하기 위한 정보";
-
-/* Title of the button to dismiss the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.done" = "완료";
-
-/* Title of the view package photo screen. */
-"productCreationAIStartingInfoView.viewPhoto.packagePhoto" = "포장 사진";
 
 /* No text detected message while adding package photo in the starting information screen. */
 "productCreationAIStartingInfoViewModel.noTextDetected" = "감지된 텍스트가 없습니다. 다른 포장 사진을 선택하거나 수동으로 상품 상세 정보를 입력하세요.";
@@ -11655,6 +11763,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "비공개로 게시됨";
 
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "상품에 사진이 추가됩니다.";
+
 /* Button on the error alert displayed on the add product with AI Preview screen. */
 "productDetailPreviewView.cancel" = "취소";
 
@@ -11676,17 +11787,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the inventory field on the add product with AI Preview screen. */
 "productDetailPreviewView.inventory" = "재고";
 
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "이름, 요약 및 설명";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "사진 선택됨";
+
 /* Title of the price field on the add product with AI Preview screen. */
 "productDetailPreviewView.price" = "가격";
 
 /* Placeholder text for the product description field on the add product with AI Preview screen. */
 "productDetailPreviewView.productDescriptionPlaceholder" = "상품 설명";
 
-/* Title of the name and description fields on the add product with AI Preview screen. */
-"productDetailPreviewView.productNameAndDescription" = "이름 및 설명";
-
 /* Placeholder text for the product name field on on the add product with AI Preview screen. */
 "productDetailPreviewView.productNamePlaceholder" = "상품 이름 지정";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "제품 요약문";
 
 /* Title of the product type field on the add product with AI Preview screen. */
 "productDetailPreviewView.productType" = "상품 유형";
@@ -11708,6 +11825,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product with AI Preview screen. */
 "productDetailPreviewView.title" = "미리보기";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "편집 실행 취소";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "옵션 %1$d\/%2$d";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "사진 제거됨";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "실행 취소";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "파일 업로드 중 오류가 발생했습니다. 다시 시도하세요.";
@@ -12277,6 +12406,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "상품 상세 정보 보기";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "완료";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "포장 사진";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "iPhone에서 Woo를 열고 스토어에 연결한 다음 Watch를 가까이에 두세요.";

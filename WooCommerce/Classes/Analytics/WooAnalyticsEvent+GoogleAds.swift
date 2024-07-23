@@ -5,6 +5,7 @@ extension WooAnalyticsEvent {
         enum Source: String {
             case moreMenu = "more_menu"
             case myStore = "my_store"
+            case analyticsHub = "analytics_hub"
         }
 
         enum FlowType: String {

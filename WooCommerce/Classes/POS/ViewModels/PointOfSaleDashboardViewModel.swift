@@ -11,7 +11,7 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
-    let cartViewModel: CartViewModel
+    let cartViewModel: any CartViewModelProtocol
     let totalsViewModel: any TotalsViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
@@ -40,15 +40,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter,
-         totalsViewModel: (any TotalsViewModelProtocol),
-         cartViewModel: CartViewModel) {
+         totalsViewModel: any TotalsViewModelProtocol,
+         cartViewModel: any CartViewModelProtocol) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
 
-        orderStageSubject.assign(to: &cartViewModel.$orderStage)
-
+        observeOrderStage()
         observeSelectedItemToAddToCart()
         observeCartSubmission()
         observeCartAddMoreAction()
@@ -97,7 +96,7 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observeCartItemsToCheckIfCartIsEmpty() {
-        cartViewModel.$itemsInCart
+        cartViewModel.itemsInCartPublisher
             .filter { $0.isEmpty }
             .sink { [weak self] _ in
                 self?.orderStage = .building
@@ -147,6 +146,10 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isTotalsViewFullScreen)
+    }
+
+    private func observeOrderStage() {
+        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
     }
 }
 

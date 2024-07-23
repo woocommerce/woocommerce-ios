@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import protocol Yosemite.POSItem
 
-final class CartViewModel: ObservableObject {
+final class CartViewModel: CartViewModelProtocol {
     /// Emits cart items when the CTA is tapped to submit the cart.
     let cartSubmissionPublisher: AnyPublisher<[CartItem], Never>
     private let cartSubmissionSubject: PassthroughSubject<[CartItem], Never> = .init()
@@ -12,9 +12,11 @@ final class CartViewModel: ObservableObject {
     private let addMoreToCartActionSubject: PassthroughSubject<Void, Never> = .init()
 
     @Published private(set) var itemsInCart: [CartItem] = []
+    var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
 
     // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
-    @Published var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+    @Published private var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
+    private var cancellables = Set<AnyCancellable>()
 
     var canDeleteItemsFromCart: Bool {
         orderStage != .finalizing
@@ -23,6 +25,12 @@ final class CartViewModel: ObservableObject {
     init() {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
+    }
+
+    func bind(to orderStagePublisher: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
+        orderStagePublisher
+            .assign(to: \.orderStage, on: self)
+            .store(in: &cancellables)
     }
 
     func addItemToCart(_ item: POSItem) {

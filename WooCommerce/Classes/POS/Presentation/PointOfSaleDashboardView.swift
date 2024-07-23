@@ -128,15 +128,16 @@ fileprivate extension CardPresentPaymentEvent {
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard,
                                    isSyncingOrder: false)
+    let cartVM = CartViewModel()
     let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               orderService: POSOrderPreviewService(),
                                               currencyFormatter: .init(currencySettings: .init()),
                                               totalsViewModel: totalsVM,
-                                              cartViewModel: .init())
+                                              cartViewModel: cartVM)
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: .init())
+        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartVM)
     }
 }
 #endif

@@ -108,23 +108,11 @@ private extension GoogleAdsCampaignReportCard {
 // MARK: Previews
 struct GoogleAdsCampaignReportCardPreviews: PreviewProvider {
     static var previews: some View {
-        let viewModel = GoogleAdsCampaignReportCardViewModel(currentPeriodStats: GoogleAdsCampaignReportCardViewModel.sampleStats(),
-                                                             previousPeriodStats: GoogleAdsCampaignReportCardViewModel.sampleStats(),
+        let viewModel = GoogleAdsCampaignReportCardViewModel(siteID: 123,
                                                              timeRange: .today,
-                                                             usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter(),
-                                                             storeAdminURL: "https://woocommerce.com")
+                                                             usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter())
         GoogleAdsCampaignReportCard(viewModel: viewModel, onCreateNewCampaign: {})
             .addingTopAndBottomDividers()
             .previewLayout(.sizeThatFits)
-
-        let emptyViewModel = GoogleAdsCampaignReportCardViewModel(currentPeriodStats: nil,
-                                                                  previousPeriodStats: nil,
-                                                                  timeRange: .today,
-                                                                  usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter(),
-                                                                  storeAdminURL: "https://woocommerce.com")
-        GoogleAdsCampaignReportCard(viewModel: emptyViewModel, onCreateNewCampaign: {})
-            .addingTopAndBottomDividers()
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("No data")
     }
 }

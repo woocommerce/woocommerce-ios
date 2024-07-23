@@ -296,9 +296,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(receivedOrderStage, .building)
     }
-
-    // TODO:
-    // https://github.com/woocommerce/woocommerce-ios/issues/13210
 }
 
 private extension PointOfSaleDashboardViewModelTests {

@@ -20,6 +20,10 @@ final class CartViewModel: ObservableObject {
         orderStage != .finalizing
     }
 
+    var isCartEmpty: Bool {
+        return itemsInCart.isEmpty
+    }
+
     init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()

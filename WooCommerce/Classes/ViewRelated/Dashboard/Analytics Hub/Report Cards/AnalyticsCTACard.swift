@@ -22,7 +22,7 @@ struct AnalyticsCTACard: View {
 
     /// Action for the call to action button
     ///
-    let buttonAction: () async -> Void
+    let buttonAction: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.titleSpacing) {
@@ -35,9 +35,7 @@ struct AnalyticsCTACard: View {
                 .bodyStyle()
 
             Button {
-                Task { @MainActor in
-                    await buttonAction()
-                }
+                buttonAction()
             } label: {
                 Text(buttonLabel)
             }

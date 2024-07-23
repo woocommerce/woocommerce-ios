@@ -127,6 +127,7 @@ private extension CartView {
         }
         .buttonStyle(.borderedProminent)
         .tint(Color.primaryTint)
+        .disabled(cartViewModel.isCartEmpty)
     }
 
     var addMoreButton: some View {

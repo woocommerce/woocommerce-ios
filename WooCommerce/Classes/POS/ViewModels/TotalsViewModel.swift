@@ -2,6 +2,7 @@ import SwiftUI
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
+import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
@@ -109,6 +110,10 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+        guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
+            return
+        }
+        // calculate totals and sync order if there was a change in the cart
         Task { @MainActor in
             await syncOrder(for: cartItems, allItems: allItems)
         }

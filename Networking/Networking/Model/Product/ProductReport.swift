@@ -3,7 +3,7 @@ import Codegen
 
 /// A struct to decode product reports.
 ///
-public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     public let productID: Int64
     public let variationID: Int64?
     public let name: String

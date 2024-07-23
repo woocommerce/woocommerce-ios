@@ -15,6 +15,7 @@ final class DashboardViewModelTests: XCTestCase {
     private var userDefaults: UserDefaults!
 
     private let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+
     private let inboxEligibilityChecker = MockInboxEligibilityChecker()
     private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
@@ -34,6 +35,7 @@ final class DashboardViewModelTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     func test_default_statsVersion_is_v4() {
         // Given
         let viewModel = DashboardViewModel(siteID: 0)
@@ -173,6 +175,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
+    @MainActor
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -187,6 +190,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(siteURLToShare)
     }
 
+    @MainActor
     func test_siteURLToShare_return_url_if_site_is_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -202,6 +206,7 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual(expectedURL, siteURLToShare?.absoluteString)
     }
 
+    @MainActor
     func test_different_timezones_correctly_trigger_tracks_with_parameters() {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -3600)
@@ -222,6 +227,7 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual("0", properties["store_timezone"] as? String)
     }
 
+    @MainActor
     func test_different_decimal_timezones_correctly_trigger_tracks_with_parameters() {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -5400)
@@ -242,6 +248,7 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual("2.5", properties["store_timezone"] as? String)
     }
 
+    @MainActor
     func test_same_local_and_store_timezone_do_not_trigger_tracks() {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -7200)
@@ -256,7 +263,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Dashboard cards
-
+    @MainActor
     func test_dashboard_cards_are_saved_to_app_settings() throws {
         // Given
         let uuid = UUID().uuidString
@@ -280,6 +287,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(setDashboardCardsActionCalled)
     }
 
+    @MainActor
     func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
         // Given
         let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
@@ -299,6 +307,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: hasOrders state
+    @MainActor
     func test_hasOrders_is_true_when_site_has_orders() {
         // Given
         let insertOrder = Order.fake().copy(siteID: sampleSiteID)

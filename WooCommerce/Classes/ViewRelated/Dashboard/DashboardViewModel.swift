@@ -7,6 +7,7 @@ import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
+@MainActor
 final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
@@ -702,7 +703,7 @@ private extension DashboardViewModel {
 // MARK: - Constants
 //
 private extension DashboardViewModel {
-    enum Constants {
+    enum Constants: Sendable {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
         static let orderPageNumber = 1

@@ -158,6 +158,18 @@ final class CartViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.cartLabelColor, expectedCartLabelColor)
     }
+
+    func test_isCartEmpty() {
+        // Given
+        let item = Self.makeItem()
+        XCTAssertTrue(sut.isCartEmpty)
+
+        // When
+        sut.addItemToCart(item)
+
+        // Then
+        XCTAssertFalse(sut.isCartEmpty)
+    }
 }
 
 private extension CartViewModelTests {

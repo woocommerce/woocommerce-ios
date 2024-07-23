@@ -22,7 +22,11 @@ final class CartViewModel: CartViewModelProtocol {
         orderStage != .finalizing
     }
 
-    init() {
+    var isCartEmpty: Bool {
+        return itemsInCart.isEmpty
+    }
+
+    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }

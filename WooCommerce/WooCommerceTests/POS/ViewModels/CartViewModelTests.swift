@@ -14,6 +14,7 @@ final class CartViewModelTests: XCTestCase {
         super.setUp()
         orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
         sut = CartViewModel()
+        sut.bind(to: orderStageSubject.eraseToAnyPublisher())
     }
 
     override func tearDown() {

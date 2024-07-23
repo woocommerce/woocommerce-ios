@@ -12,6 +12,7 @@ struct ItemListView: View {
     var body: some View {
         VStack {
             headerView()
+                .renderedIf(viewModel.state != .loading)
             switch viewModel.state {
             case .empty(let emptyModel):
                 emptyView(emptyModel)

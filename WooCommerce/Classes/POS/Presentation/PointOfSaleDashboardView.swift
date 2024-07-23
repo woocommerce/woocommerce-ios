@@ -23,9 +23,11 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { geometry in
                         HStack {
                             productListView
-                            cartView
-                                .renderedIf(isCartShown)
-                                .frame(width: geometry.size.width * Constants.cartWidth)
+                            if !viewModel.isProductListFullScreen {
+                                cartView
+                                    .renderedIf(isCartShown)
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                            }
                         }
                     }
                 case .finalizing:
@@ -49,6 +51,7 @@ struct PointOfSaleDashboardView: View {
             ToolbarItem(placement: .bottomBar) {
                 POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
                                isExitPOSDisabled: $viewModel.isExitPOSDisabled)
+                .renderedIf(!viewModel.isProductListFullScreen)
             }
         }
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)

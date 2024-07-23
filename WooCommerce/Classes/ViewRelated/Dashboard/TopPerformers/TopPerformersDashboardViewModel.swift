@@ -42,6 +42,19 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         resultsController?.fetchedObjects.first
     }
 
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+              let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
+    }
+
+
     private var waitingTracker: WaitingTimeTracker?
     private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
     private var subscriptions = Set<AnyCancellable>()
@@ -248,6 +261,9 @@ private extension TopPerformersDashboardViewModel {
                 continuation.resume(with: voidResult)
             }))
         }
+
+        // Test if this reaches when an error is thrown
+        DashboardTimestampStore.saveTimestamp(.now, for: .topPerformers, at: timeRange.timestampRange)
     }
 }
 

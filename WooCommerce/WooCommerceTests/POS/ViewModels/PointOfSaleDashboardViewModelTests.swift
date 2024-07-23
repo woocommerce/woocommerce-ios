@@ -82,7 +82,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
     }
 
-    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_payment_state_is_idle() {
+    func test_isAddMoreDisabled_is_true_when_order_is_syncing_and_paymentState_is_idle() {
         // Given
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true while syncing order and payment state is idle")
 
@@ -119,7 +119,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 2.0)
     }
 
-    func test_isAddMoreDisabled_is_true_for_processingPayment() {
+    func test_isAddMoreDisabled_is_true_for_paymentState_processingPayment() {
         // Given
         let expectation = XCTestExpectation(description: "Expect isAddMoreDisabled to be true when paymentState is processingPayment or cardPaymentSuccessful")
 
@@ -137,7 +137,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_isExitPOSDisabled_is_true_for_processingPayment() {
+    func test_isExitPOSDisabled_is_true_for_paymentState_processingPayment() {
         // Given
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be true when paymentState is processingPayment")
 
@@ -155,12 +155,11 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_isExitPOSDisabled_is_false_for_idle() {
+    func test_isExitPOSDisabled_is_false_for_paymentState_idle() {
         // Given
         let expectation = XCTestExpectation(description: "Expect isExitPOSDisabled to be false when paymentState is idle")
 
         sut.$isExitPOSDisabled
-            .dropFirst()
             .sink { value in
                 XCTAssertFalse(value)
                 expectation.fulfill()
@@ -173,7 +172,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_isTotalsViewFullScreen_is_true_for_processingPayment() {
+    func test_isTotalsViewFullScreen_is_true_for_paymentState_processingPayment() {
         // Given
         let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be true when paymentState is processingPayment")
 
@@ -191,12 +190,11 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_isTotalsViewFullScreen_is_false_for_idle() {
+    func test_isTotalsViewFullScreen_is_false_for_paymentState_idle() {
         // Given
-        let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be true when paymentState is processingPayment")
+        let expectation = XCTestExpectation(description: "Expect isTotalsViewFullScreen to be false when paymentState is idle")
 
         sut.$isTotalsViewFullScreen
-            .dropFirst()
             .sink { value in
                 XCTAssertFalse(value)
                 expectation.fulfill()
@@ -209,27 +207,17 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_observeCartSubmission_updates_orderStage_and_starts_syncing_order() {
+    func test_observeCartSubmission_updates_orderStage() {
         // Given
         let expectation = XCTestExpectation(description: "Expect orderStage to be .finalizing and isSyncingOrder to be true")
         let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-        var receivedIsSyncingOrder: Bool = false
-
-        // Observe the isSyncingOrderPublisher to verify its value
-        mockTotalsViewModel.isSyncingOrderPublisher
-            .sink { isSyncingOrder in
-                receivedIsSyncingOrder = isSyncingOrder
-                if isSyncingOrder {
-                    expectation.fulfill()
-                }
-            }
-            .store(in: &cancellables)
 
         // Attach sink to observe changes to orderStage
         var orderStageValue: PointOfSaleDashboardViewModel.OrderStage?
         sut.$orderStage
             .sink { orderStage in
                 orderStageValue = orderStage
+                expectation.fulfill()
             }
             .store(in: &cancellables)
 
@@ -239,8 +227,50 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(orderStageValue, .finalizing)
+    }
+
+    func test_observeCartSubmission_starts_syncing_order() {
+        // Given
+        let expectation = XCTestExpectation(description: "Expect orderStage to be .finalizing and isSyncingOrder to be true")
+        let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
+        var receivedIsSyncingOrder: Bool = false
+
+        // Attach sink to observe changes to isSyncingOrder
+        mockTotalsViewModel.isSyncingOrderPublisher
+            .sink { isSyncingOrder in
+                receivedIsSyncingOrder = isSyncingOrder
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        mockCartViewModel.submitCart(with: customCartItems)
+
+        // Then
+        wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(receivedIsSyncingOrder)
     }
+
+    func test_observeCartAddMoreAction_updates_orderStage_to_building() {
+        // Given
+        let expectation = XCTestExpectation(description: "Expect orderStage to be .building when adding more to the cart")
+
+        var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
+        // Attach sink to observe changes to orderStage
+        sut.$orderStage
+            .sink { orderStage in
+                receivedOrderStage = orderStage
+                XCTAssertEqual(receivedOrderStage, .building)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        mockCartViewModel.addMoreToCart()
+
+        wait(for: [expectation], timeout: 1.0)
+    }
+
 
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210

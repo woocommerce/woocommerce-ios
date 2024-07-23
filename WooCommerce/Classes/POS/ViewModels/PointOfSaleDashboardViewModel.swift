@@ -11,8 +11,8 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
-    private(set) lazy var cartViewModel: CartViewModel = CartViewModel(orderStage: $orderStage.eraseToAnyPublisher())
-    let totalsViewModel: TotalsViewModel
+    let cartViewModel: any CartViewModelProtocol
+    let totalsViewModel: any TotalsViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
@@ -21,7 +21,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case finalizing
     }
 
-    @Published private(set) var orderStage: OrderStage = .building
+    @Published private(set) var orderStage: OrderStage = .building {
+        didSet {
+            orderStageSubject.send(orderStage)
+        }
+    }
+
+    private let orderStageSubject = PassthroughSubject<OrderStage, Never>()
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
@@ -33,14 +39,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter) {
+         currencyFormatter: CurrencyFormatter,
+         totalsViewModel: any TotalsViewModelProtocol,
+         cartViewModel: any CartViewModelProtocol) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
+        self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+        self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
 
-        self.itemListViewModel = .init(itemProvider: itemProvider)
-        self.totalsViewModel = TotalsViewModel(orderService: orderService,
-                                               cardPresentPaymentService: cardPresentPaymentService,
-                                               currencyFormatter: currencyFormatter)
-
+        observeOrderStage()
         observeSelectedItemToAddToCart()
         observeCartSubmission()
         observeCartAddMoreAction()
@@ -54,53 +61,51 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         orderStage = .building
         totalsViewModel.startNewTransaction()
     }
+
+    private func startSyncingOrder(cartItems: [CartItem]) {
+        totalsViewModel.startSyncingOrder(with: cartItems, allItems: itemListViewModel.items)
+    }
 }
 
 private extension PointOfSaleDashboardViewModel {
     func observeSelectedItemToAddToCart() {
-        itemListViewModel.selectedItemPublisher.sink { [weak self] selectedItem in
-            self?.cartViewModel.addItemToCart(selectedItem)
-        }
-        .store(in: &cancellables)
+        itemListViewModel.selectedItemPublisher
+            .sink { [weak self] selectedItem in
+                self?.cartViewModel.addItemToCart(selectedItem)
+            }
+            .store(in: &cancellables)
     }
 
     func observeCartSubmission() {
-        cartViewModel.cartSubmissionPublisher.sink { [weak self] cartItems in
-            guard let self else { return }
-            orderStage = .finalizing
-            startSyncingOrder(cartItems: cartItems)
-        }
-        .store(in: &cancellables)
+        cartViewModel.cartSubmissionPublisher
+            .sink { [weak self] cartItems in
+                guard let self else { return }
+                self.orderStage = .finalizing
+                self.startSyncingOrder(cartItems: cartItems)
+            }
+            .store(in: &cancellables)
     }
 
     func observeCartAddMoreAction() {
-        cartViewModel.addMoreToCartActionPublisher.sink { [weak self] in
-            guard let self else { return }
-            orderStage = .building
-        }
-        .store(in: &cancellables)
+        cartViewModel.addMoreToCartActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.orderStage = .building
+            }
+            .store(in: &cancellables)
     }
 
     func observeCartItemsToCheckIfCartIsEmpty() {
-        cartViewModel.$itemsInCart
+        cartViewModel.itemsInCartPublisher
             .filter { $0.isEmpty }
             .sink { [weak self] _ in
                 self?.orderStage = .building
             }
-        .store(in: &cancellables)
+            .store(in: &cancellables)
     }
-}
 
-private extension PointOfSaleDashboardViewModel {
-    func startSyncingOrder(cartItems: [CartItem]) {
-        totalsViewModel.startSyncingOrder(with: cartItems,
-                                          allItems: itemListViewModel.items)
-    }
-}
-
-private extension PointOfSaleDashboardViewModel {
     func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(totalsViewModel.$paymentState, totalsViewModel.$isSyncingOrder)
+        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.isSyncingOrderPublisher)
             .map { paymentState, isSyncingOrder in
                 switch paymentState {
                 case .processingPayment,
@@ -114,7 +119,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isAddMoreDisabled)
 
-        totalsViewModel.$paymentState
+        totalsViewModel.paymentStatePublisher
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment:
@@ -128,7 +133,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isExitPOSDisabled)
 
-        totalsViewModel.$paymentState
+        totalsViewModel.paymentStatePublisher
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,
@@ -141,6 +146,10 @@ private extension PointOfSaleDashboardViewModel {
                 }
             }
             .assign(to: &$isTotalsViewFullScreen)
+    }
+
+    private func observeOrderStage() {
+        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
     }
 }
 

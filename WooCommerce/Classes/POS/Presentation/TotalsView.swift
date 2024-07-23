@@ -3,10 +3,14 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel,
+         totalsViewModel: TotalsViewModel,
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -48,7 +52,7 @@ struct TotalsView: View {
                         if totalsViewModel.showRecalculateButton {
                             Button(Localization.calculateAmounts) {
                                 totalsViewModel.calculateAmountsTapped(
-                                    with: viewModel.cartViewModel.itemsInCart,
+                                    with: cartViewModel.itemsInCart,
                                     allItems: viewModel.itemListViewModel.items)
                             }
                         }
@@ -205,12 +209,18 @@ private extension TotalsView {
 
 #if DEBUG
 #Preview {
-    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
-                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService(),
-                                currencyFormatter: .init(currencySettings: .init())),
-               totalsViewModel: .init(orderService: POSOrderPreviewService(),
-                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                      currencyFormatter: .init(currencySettings: .init())))
+    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                   currencyFormatter: .init(currencySettings: .init()),
+                                    paymentState: .acceptingCard,
+                                   isSyncingOrder: false)
+    let cartViewModel = CartViewModel()
+    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              orderService: POSOrderPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()),
+                                              totalsViewModel: totalsVM,
+                                              cartViewModel: cartViewModel)
+    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartViewModel)
 }
 #endif

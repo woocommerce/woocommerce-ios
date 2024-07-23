@@ -13,7 +13,8 @@ final class CartViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
-        sut = CartViewModel(orderStage: orderStageSubject.eraseToAnyPublisher())
+        sut = CartViewModel()
+        sut.bind(to: orderStageSubject.eraseToAnyPublisher())
     }
 
     override func tearDown() {

@@ -10,7 +10,7 @@ class MockCartViewModel: ObservableObject {
     }
 
     init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
-        self.cartViewModel = CartViewModel(orderStage: orderStage)
+        self.cartViewModel = CartViewModel()
     }
 
     func submitCart(with items: [CartItem]) {

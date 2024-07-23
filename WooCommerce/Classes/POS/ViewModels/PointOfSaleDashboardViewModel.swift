@@ -11,8 +11,8 @@ import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: ItemListViewModel
-    private let cartViewModel: CartViewModel
-    private let totalsViewModel: any TotalsViewModelProtocol
+    let cartViewModel: CartViewModel
+    let totalsViewModel: any TotalsViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 

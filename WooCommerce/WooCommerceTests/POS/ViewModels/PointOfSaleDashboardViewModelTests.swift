@@ -24,7 +24,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                             cardPresentPaymentService: cardPresentPaymentService,
                                             orderService: orderService,
                                             currencyFormatter: .init(currencySettings: .init()),
-                                            totalsViewModel: AnyTotalsViewModel(mockTotalsViewModel),
+                                            totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel.cartViewModel)
         cancellables = []
     }

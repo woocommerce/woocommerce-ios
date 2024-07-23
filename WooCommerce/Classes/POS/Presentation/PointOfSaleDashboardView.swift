@@ -15,46 +15,6 @@ struct PointOfSaleDashboardView: View {
         !viewModel.itemListViewModel.isEmptyOrError
     }
 
-    private var floatingControlView: some View {
-        HStack {
-            Menu {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(systemName: "arrow.down.right.and.arrow.up.left")
-                        Text("Exit POS")
-                    }
-                }
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(systemName: "questionmark.circle")
-                        Text("Get Support")
-                    }
-                }
-            } label: {
-                HStack {
-                    Text("⋯")
-                        .font(.system(size: 24.0, weight: .semibold))
-                }
-                .frame(width: 56, height: 56)
-                .background(Color.white)
-                .cornerRadius(8.0)
-            }
-            .disabled(viewModel.isExitPOSDisabled)
-            HStack {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-                    .padding(24)
-            }
-            .frame(height: 56)
-            .background(Color.white)
-            .cornerRadius(8.0)
-        }
-        .background(Color.clear)
-    }
-
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
@@ -87,7 +47,7 @@ struct PointOfSaleDashboardView: View {
                 .frame(maxHeight: .infinity)
                 .padding()
             }
-            floatingControlView
+            POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.08), radius: 4)
                 .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
                 .trackSize(size: $floatingSize)
@@ -167,6 +127,66 @@ fileprivate extension CardPresentPaymentEvent {
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
         }
+    }
+}
+
+struct POSFloatingControlView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+
+    init(viewModel: PointOfSaleDashboardViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        HStack {
+            Menu {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        Image(systemName: "arrow.down.right.and.arrow.up.left")
+                        Text("Exit POS")
+                    }
+                }
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                    // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        Image(systemName: "questionmark.circle")
+                        Text("Get Support")
+                    }
+                }
+            } label: {
+                HStack {
+                    Text("⋯")
+                        .font(Constants.ellipsisFont)
+                }
+                .frame(width: Constants.size, height: Constants.size)
+                .background(Color.white)
+                .cornerRadius(Constants.cornerRadius)
+            }
+            .disabled(viewModel.isExitPOSDisabled)
+            HStack {
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+                    .padding(Constants.cardStatusPadding)
+            }
+            .frame(height: Constants.size)
+            .background(Color.white)
+            .cornerRadius(Constants.cornerRadius)
+        }
+        .background(Color.clear)
+    }
+}
+
+private extension POSFloatingControlView {
+    enum Constants {
+        static let buttonImageAndTextSpacing: CGFloat = 12
+        static let cardStatusPadding: CGFloat = 24
+        static let size: CGFloat = 56
+        static let cornerRadius: CGFloat = 8
+        static let ellipsisFont = Font.system(size: 24.0, weight: .semibold)
     }
 }
 

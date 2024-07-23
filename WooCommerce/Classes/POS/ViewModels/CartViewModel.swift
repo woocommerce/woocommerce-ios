@@ -26,7 +26,7 @@ final class CartViewModel: CartViewModelProtocol {
         return itemsInCart.isEmpty
     }
 
-    init(orderStage: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
+    init() {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }

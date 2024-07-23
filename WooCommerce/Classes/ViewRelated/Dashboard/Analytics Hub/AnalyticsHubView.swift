@@ -77,7 +77,7 @@ private extension AnalyticsHubHostingViewController {
             onCompletion: { [weak self] createdNewCampaign in
                 if createdNewCampaign {
                     Task { @MainActor in
-                        await self?.viewModel.updateData(for: [.googleCampaigns])
+                        await self?.viewModel.googleCampaignsCard.onGoogleCampaignCreated()
                     }
                 }
             }
@@ -88,7 +88,7 @@ private extension AnalyticsHubHostingViewController {
         viewModel.analytics.track(event: .GoogleAds.entryPointTapped(
             source: .analyticsHub,
             type: .campaignCreation,
-            hasCampaigns: viewModel.googleCampaignsCard.hasPaidCampaigns
+            hasCampaigns: viewModel.googleCampaignsCard.campaignsData.isNotEmpty
         ))
     }
 }

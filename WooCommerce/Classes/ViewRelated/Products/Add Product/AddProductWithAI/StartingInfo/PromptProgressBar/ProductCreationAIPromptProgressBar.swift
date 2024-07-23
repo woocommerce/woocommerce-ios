@@ -23,7 +23,8 @@ struct ProductCreationAIPromptProgressBar: View {
             .animation(.easeIn, value: viewModel.status)
         })
         .padding(Layout.padding)
-        .background(Color(UIColor.listBackground))
+        .background(Color(light: Color(.systemColor(.systemGray6)),
+                          dark: Color(.systemColor(.systemGray5))))
         .cornerRadius(Layout.radius)
         .onAppear(perform: {
             viewModel.updateText(to: text)

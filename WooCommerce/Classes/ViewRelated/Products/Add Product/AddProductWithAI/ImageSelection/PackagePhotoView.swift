@@ -69,7 +69,8 @@ struct PackagePhotoView: View {
             }
         }
         .padding(Layout.padding)
-        .background(Color(.systemColor(.systemGray6)))
+        .background(Color(light: Color(.systemColor(.systemGray6)),
+                          dark: Color(.systemColor(.systemGray5))))
     }
 
     enum Layout {

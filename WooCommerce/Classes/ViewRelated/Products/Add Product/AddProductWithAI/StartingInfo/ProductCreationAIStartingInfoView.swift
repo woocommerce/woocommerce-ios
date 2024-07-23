@@ -123,7 +123,6 @@ private extension ProductCreationAIStartingInfoView {
         switch viewModel.imageState {
         case .empty:
             readTextFromPhotoButton
-                .padding(insets: Layout.readTextFromPhotoButtonInsets)
                 .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
                     Task { @MainActor in
                         await viewModel.selectImage(from: source)
@@ -156,25 +155,45 @@ private extension ProductCreationAIStartingInfoView {
     }
 
     var readTextFromPhotoButton: some View {
-        HStack {
-            Button {
-                viewModel.didTapReadTextFromPhoto()
-            } label: {
-                HStack(alignment: .center, spacing: Layout.UsePackagePhoto.spacing) {
+        Button {
+            viewModel.didTapReadTextFromPhoto()
+        } label: {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .top,
+                          spacing: Layout.UsePackagePhoto.spacing) {
+                VStack {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.accentColor)
-                        .bodyStyle()
-                        .padding(Layout.UsePackagePhoto.padding)
-
-                    Text(Localization.readTextFromPhoto)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.accentColor)
-                        .bodyStyle()
+                        .frame(width: Layout.UsePackagePhoto.imageSize * scale,
+                               height: Layout.UsePackagePhoto.imageSize * scale)
                 }
+                .frame(width: Layout.UsePackagePhoto.imageHolderViewSize * scale,
+                       height: Layout.UsePackagePhoto.imageHolderViewSize * scale)
+                .background(Color(light: Color(.systemColor(.systemGray5)),
+                                  dark: Color(.systemColor(.systemGray4))))
+                .clipShape(RoundedRectangle(cornerRadius: Layout.UsePackagePhoto.imageHolderViewCornerRadius))
+
+                VStack(alignment: .leading) {
+                    Text(Localization.scanPhotoTitle)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                        .bodyStyle()
+                    Text(Localization.scanPhotoDescription)
+                        .footnoteStyle()
+                }
+                .multilineTextAlignment(.leading)
+
+                Spacer()
             }
-            Spacer()
+            .frame(maxWidth: .infinity)
+            .padding(Layout.insets)
+            .background(Color(light: Color(.systemColor(.systemGray6)),
+                              dark: Color(.systemColor(.systemGray5))))
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         }
     }
 
@@ -214,11 +233,12 @@ private extension ProductCreationAIStartingInfoView {
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let dividerHeight: CGFloat = 1
-        static let readTextFromPhotoButtonInsets: EdgeInsets = .init(top: 11, leading: 16, bottom: 11, trailing: 16)
 
         enum UsePackagePhoto {
-            static let padding: CGFloat = 4
-            static let spacing: CGFloat = 4
+            static let imageSize: CGFloat = 24
+            static let imageHolderViewSize: CGFloat = 48
+            static let imageHolderViewCornerRadius: CGFloat = 4
+            static let spacing: CGFloat = 16
             static let cameraSFSymbol = "camera"
         }
     }
@@ -244,10 +264,15 @@ private extension ProductCreationAIStartingInfoView {
             value: "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design",
             comment: "Placeholder text on the product features field"
         )
-        static let readTextFromPhoto = NSLocalizedString(
-            "productCreationAIStartingInfoView.readTextFromPhoto",
-            value: "Read text from product photo",
-            comment: "Button to upload package photo to read text from the photo"
+        static let scanPhotoTitle = NSLocalizedString(
+            "productCreationAIStartingInfoView.scanPhotoTitle",
+            value: "Scan a product photo",
+            comment: "Title of button to upload package photo to read text from the photo"
+        )
+        static let scanPhotoDescription = NSLocalizedString(
+            "productCreationAIStartingInfoView.scanPhotoDescription",
+            value: "Add a text scanned from a photo",
+            comment: "Description of button to upload package photo to read text from the photo"
         )
         static let generateProductDetails = NSLocalizedString(
             "productCreationAIStartingInfoView.generateProductDetails",

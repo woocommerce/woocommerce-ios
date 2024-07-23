@@ -250,7 +250,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(receivedIsSyncingOrder)
     }
-
+    
     func test_observeCartAddMoreAction_updates_orderStage_to_building() {
         // Given
         let expectation = XCTestExpectation(description: "Expect orderStage to be .building when adding more to the cart")
@@ -258,6 +258,8 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
         // Attach sink to observe changes to orderStage
         sut.$orderStage
+            // Ignore the initial value of orderStage to ensure that the test only reacts to changes in the orderStage after the subscription has started. Avoids immediately fulfilling the expectation upon subscribing.
+            .dropFirst()
             .sink { orderStage in
                 receivedOrderStage = orderStage
                 XCTAssertEqual(receivedOrderStage, .building)
@@ -271,6 +273,29 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
+    func test_observeCartItemsToCheckIfCartIsEmpty_updates_orderStage_to_building() {
+        // Given
+        let expectation = XCTestExpectation(description: "Expect orderStage to be .building when cart becomes empty")
+        var receivedOrderStage: PointOfSaleDashboardViewModel.OrderStage?
+
+        // Attach sink to observe changes to orderStage
+        sut.$orderStage
+            .dropFirst() // Ignore the initial value. Avoids immediately fulfilling the expectation upon subscribing.
+            .sink { orderStage in
+                receivedOrderStage = orderStage
+                if orderStage == .building {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+
+        // When
+        mockCartViewModel.itemsInCart = [] // Trigger the empty cart condition
+
+        // Then
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(receivedOrderStage, .building)
+    }
 
     // TODO:
     // https://github.com/woocommerce/woocommerce-ios/issues/13210

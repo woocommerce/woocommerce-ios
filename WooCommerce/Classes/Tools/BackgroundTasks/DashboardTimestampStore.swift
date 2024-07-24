@@ -10,6 +10,7 @@ struct DashboardTimestampStore {
     ///
     enum Card: String, CaseIterable {
         case performance
+        case topPerformers
     }
 
     /// Supported time ranges

@@ -17,8 +17,10 @@ final class TotalsViewModelTests: XCTestCase {
         cardPresentPaymentService = MockCardPresentPaymentService()
         orderService = POSOrderPreviewService()
         sut = TotalsViewModel(orderService: orderService,
-                                               cardPresentPaymentService: cardPresentPaymentService,
-                                               currencyFormatter: .init(currencySettings: .init()))
+                              cardPresentPaymentService: cardPresentPaymentService,
+                              currencyFormatter: .init(currencySettings: .init()),
+                              paymentState: .acceptingCard,
+                              isSyncingOrder: false)
     }
     func test_isSyncingOrder() {}
     func test_startSyncOrder() {}

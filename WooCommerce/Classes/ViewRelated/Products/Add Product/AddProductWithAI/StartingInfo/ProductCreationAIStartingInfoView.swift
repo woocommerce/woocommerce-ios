@@ -38,69 +38,16 @@ struct ProductCreationAIStartingInfoView: View {
 
                     VStack(alignment: .leading, spacing: Layout.textFieldBlockSpacing) {
                         VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
-                            VStack(spacing: 0) {
-                                TextField(Localization.placeholder, text: $viewModel.features, axis: .vertical)
-                                .id(Constant.textFieldID)
-                                .bodyStyle()
-                                .foregroundStyle(.secondary)
-                                .lineLimit(Constant.textFieldMinLineLength...)
-                                .padding(insets: Layout.messageContentInsets)
-                                .focused($editorIsFocused)
-                                // Scrolls to the "TextField" view with a smooth animation while typing.
-                                .onChange(of: viewModel.features) { _ in
-                                    scrollToTextField(using: proxy)
-                                }
-                                // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
-                                .onChange(of: editorIsFocused) { isFocused in
-                                    if isFocused {
-                                        scrollToTextField(using: proxy)
-                                    }
+                            VStack(spacing: Layout.editorBlockSpacing) {
+                                textField(with: proxy)
+
+                                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) &&
+                                    (editorIsFocused || viewModel.features.isNotEmpty) {
+                                    ProductCreationAIPromptProgressBar(text: $viewModel.features)
                                 }
 
-                                Divider()
-                                    .frame(height: Layout.dividerHeight)
-                                    .foregroundColor(Color(.separator))
-
-                                switch viewModel.imageState {
-                                case .empty:
-                                    readTextFromPhotoButton
-                                        .padding(insets: Layout.readTextFromPhotoButtonInsets)
-                                        .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-                                            Task { @MainActor in
-                                                await viewModel.selectImage(from: source)
-                                            }
-                                        })
-                                case .loading, .success:
-                                    PackagePhotoView(title: Localization.photoSelected,
-                                                     imageState: viewModel.imageState,
-                                                     onTapViewPhoto: {
-                                        viewModel.didTapViewPhoto()
-                                    },
-                                                     onTapReplacePhoto: {
-                                        viewModel.didTapReplacePhoto()
-                                    },
-                                                     onTapRemovePhoto: {
-                                        viewModel.didTapRemovePhoto()
-                                    })
-                                    .clipShape(
-                                        .rect(
-                                            bottomLeadingRadius: Layout.cornerRadius,
-                                            bottomTrailingRadius: Layout.cornerRadius
-                                        )
-                                    )
-                                    .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
-                                        Task { @MainActor in
-                                            await viewModel.selectImage(from: source)
-                                        }
-                                    })
-                                }
+                                photoSection
                             }
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
-                            )
-                        }
-                        if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) && (editorIsFocused || viewModel.features.isNotEmpty) {
-                            ProductCreationAIPromptProgressBar(text: $viewModel.features)
                         }
 
                         ToneOfVoiceView(viewModel: .init(siteID: viewModel.siteID))
@@ -147,26 +94,101 @@ struct ProductCreationAIStartingInfoView: View {
 }
 
 private extension ProductCreationAIStartingInfoView {
-    var readTextFromPhotoButton: some View {
-        HStack {
-            Button {
-                viewModel.didTapReadTextFromPhoto()
-            } label: {
-                HStack(alignment: .center, spacing: Layout.UsePackagePhoto.spacing) {
-                    Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
-                        .renderingMode(.template)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.accentColor)
-                        .bodyStyle()
-                        .padding(Layout.UsePackagePhoto.padding)
-
-                    Text(Localization.readTextFromPhoto)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.accentColor)
-                        .bodyStyle()
+    func textField(with proxy: ScrollViewProxy) -> some View {
+        TextField(Localization.placeholder, text: $viewModel.features, axis: .vertical)
+            .id(Constant.textFieldID)
+            .bodyStyle()
+            .foregroundStyle(.secondary)
+            .lineLimit(Constant.textFieldMinLineLength...)
+            .padding(insets: Layout.messageContentInsets)
+            .focused($editorIsFocused)
+            // Scrolls to the "TextField" view with a smooth animation while typing.
+            .onChange(of: viewModel.features) { _ in
+                scrollToTextField(using: proxy)
+            }
+            // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
+            .onChange(of: editorIsFocused) { isFocused in
+                if isFocused {
+                    scrollToTextField(using: proxy)
                 }
             }
-            Spacer()
+            .overlay(
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                    .stroke(editorIsFocused ? Color(.brand) : Color(.separator))
+            )
+    }
+
+    @ViewBuilder
+    var photoSection: some View {
+        switch viewModel.imageState {
+        case .empty:
+            readTextFromPhotoButton
+                .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+                    Task { @MainActor in
+                        await viewModel.selectImage(from: source)
+                    }
+                })
+        case .loading, .success:
+            PackagePhotoView(title: Localization.photoSelected,
+                             subTitle: Localization.textAddedToInfo,
+                             imageState: viewModel.imageState,
+                             onTapViewPhoto: {
+                viewModel.didTapViewPhoto()
+            },
+                             onTapReplacePhoto: {
+                viewModel.didTapReplacePhoto()
+            },
+                             onTapRemovePhoto: {
+                viewModel.didTapRemovePhoto()
+            })
+            .mediaSourceActionSheet(showsActionSheet: $viewModel.isShowingMediaPickerSourceSheet, selectMedia: { source in
+                Task { @MainActor in
+                    await viewModel.selectImage(from: source)
+                }
+            })
+        }
+    }
+
+    var readTextFromPhotoButton: some View {
+        Button {
+            viewModel.didTapReadTextFromPhoto()
+        } label: {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .top,
+                          spacing: Layout.UsePackagePhoto.spacing) {
+                VStack {
+                    Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
+                        .renderingMode(.template)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                        .frame(width: Layout.UsePackagePhoto.imageSize * scale,
+                               height: Layout.UsePackagePhoto.imageSize * scale)
+                }
+                .frame(width: Layout.UsePackagePhoto.imageHolderViewSize * scale,
+                       height: Layout.UsePackagePhoto.imageHolderViewSize * scale)
+                .background(Color(light: Color(.systemColor(.systemGray5)),
+                                  dark: Color(.systemColor(.systemGray4))))
+                .clipShape(RoundedRectangle(cornerRadius: Layout.UsePackagePhoto.imageHolderViewCornerRadius))
+
+                VStack(alignment: .leading) {
+                    Text(Localization.scanPhotoTitle)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.accentColor)
+                        .bodyStyle()
+                    Text(Localization.scanPhotoDescription)
+                        .footnoteStyle()
+                }
+                .multilineTextAlignment(.leading)
+
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            .padding(Layout.insets)
+            .background(Color(light: Color(.systemColor(.systemGray6)),
+                              dark: Color(.systemColor(.systemGray5))))
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
         }
     }
 
@@ -206,11 +228,12 @@ private extension ProductCreationAIStartingInfoView {
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let dividerHeight: CGFloat = 1
-        static let readTextFromPhotoButtonInsets: EdgeInsets = .init(top: 11, leading: 16, bottom: 11, trailing: 16)
 
         enum UsePackagePhoto {
-            static let padding: CGFloat = 4
-            static let spacing: CGFloat = 4
+            static let imageSize: CGFloat = 24
+            static let imageHolderViewSize: CGFloat = 48
+            static let imageHolderViewCornerRadius: CGFloat = 4
+            static let spacing: CGFloat = 16
             static let cameraSFSymbol = "camera"
         }
     }
@@ -236,10 +259,15 @@ private extension ProductCreationAIStartingInfoView {
             value: "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design",
             comment: "Placeholder text on the product features field"
         )
-        static let readTextFromPhoto = NSLocalizedString(
-            "productCreationAIStartingInfoView.readTextFromPhoto",
-            value: "Read text from product photo",
-            comment: "Button to upload package photo to read text from the photo"
+        static let scanPhotoTitle = NSLocalizedString(
+            "productCreationAIStartingInfoView.scanPhotoTitle",
+            value: "Scan a product photo",
+            comment: "Title of button to upload package photo to read text from the photo"
+        )
+        static let scanPhotoDescription = NSLocalizedString(
+            "productCreationAIStartingInfoView.scanPhotoDescription",
+            value: "Add a text scanned from a photo",
+            comment: "Description of button to upload package photo to read text from the photo"
         )
         static let generateProductDetails = NSLocalizedString(
             "productCreationAIStartingInfoView.generateProductDetails",
@@ -250,6 +278,11 @@ private extension ProductCreationAIStartingInfoView {
             "productCreationAIStartingInfoView.photoSelected",
             value: "Photo selected",
             comment: "Text to explain that a package photo has been selected in starting info screen."
+        )
+        static let textAddedToInfo = NSLocalizedString(
+            "productCreationAIStartingInfoView.textAddedToInfo",
+            value: "Photo text added to starting info",
+            comment: "Text to explain that text scanned from a package photo has been added to the starting info screen."
         )
     }
 }

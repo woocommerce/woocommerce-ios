@@ -49,7 +49,7 @@ private extension PointOfSaleLoadingView {
         static let progressViewSize: CGFloat = 112
         static let progressViewLineWidth: CGFloat = 48
         static let textSpacing: CGFloat = 16
-        static let progressViewSpacing: CGFloat = 96
+        static let progressViewSpacing: CGFloat = 72
     }
 }
 

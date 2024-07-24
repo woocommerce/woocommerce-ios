@@ -32,7 +32,7 @@ struct PackagePhotoView: View {
             EditableImageView(imageState: imageState,
                               emptyContent: {})
             .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
-            .cornerRadius(Layout.cornerRadius)
+            .cornerRadius(Layout.imageCornerRadius)
 
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
@@ -63,21 +63,24 @@ struct PackagePhotoView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .frame(width: Layout.ellipisButtonSize * scale, height: Layout.ellipisButtonSize * scale)
+                    .frame(width: Layout.ellipsisButtonSize * scale, height: Layout.ellipsisButtonSize * scale)
                     .bodyStyle()
                     .foregroundStyle(Color.secondary)
             }
         }
         .padding(Layout.padding)
-        .background(Color(.systemColor(.systemGray6)))
+        .background(Color(light: Color(.systemColor(.systemGray6)),
+                          dark: Color(.systemColor(.systemGray5))))
+        .clipShape(RoundedRectangle(cornerRadius: Layout.viewCornerRadius))
     }
 
     enum Layout {
         static let spacing: CGFloat = 16
-        static let cornerRadius: CGFloat = 4
+        static let imageCornerRadius: CGFloat = 4
         static let padding = EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
         static let packagePhotoSize: CGFloat = 48
-        static let ellipisButtonSize: CGFloat = 24
+        static let ellipsisButtonSize: CGFloat = 24
+        static let viewCornerRadius: CGFloat = 8
     }
 
     enum Localization {

@@ -156,7 +156,6 @@ private extension StoreOnboardingViewModel {
             .map { .init(task: $0, badgeText: nil) }
     }
 
-    @MainActor
     func update(state: State) {
         switch state {
         case .loading:
@@ -178,7 +177,6 @@ private extension StoreOnboardingViewModel {
         onStateChange?()
     }
 
-    @MainActor
     func checkIfAllTasksAreCompleted(_ tasksFromServer: [StoreOnboardingTaskViewModel]) {
         guard tasksFromServer.isNotEmpty else {
             return

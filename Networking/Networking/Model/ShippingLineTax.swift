@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the taxes for a specific shipping item.
 ///
-public struct ShippingLineTax: Decodable, Hashable, GeneratedFakeable {
+public struct ShippingLineTax: Decodable, Hashable, Sendable, GeneratedFakeable {
 
     /// Tax ID for shipping item
     ///

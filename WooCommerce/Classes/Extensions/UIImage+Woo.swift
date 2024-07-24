@@ -1581,6 +1581,10 @@ extension UIImage {
     static var posReadyForPaymentImage: UIImage {
         UIImage(named: String.posReadyForPaymentImageName)!
     }
+
+    static var posRemoveCartItemImage: UIImage {
+        UIImage(named: String.posRemoveCartItemImageName)!
+    }
 }
 
 private extension UIImage {

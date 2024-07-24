@@ -130,6 +130,7 @@ private extension ProductCreationAIStartingInfoView {
                 })
         case .loading, .success:
             PackagePhotoView(title: Localization.photoSelected,
+                             subTitle: Localization.textAddedToInfo,
                              imageState: viewModel.imageState,
                              onTapViewPhoto: {
                 viewModel.didTapViewPhoto()
@@ -277,6 +278,11 @@ private extension ProductCreationAIStartingInfoView {
             "productCreationAIStartingInfoView.photoSelected",
             value: "Photo selected",
             comment: "Text to explain that a package photo has been selected in starting info screen."
+        )
+        static let textAddedToInfo = NSLocalizedString(
+            "productCreationAIStartingInfoView.textAddedToInfo",
+            value: "Photo text added to starting info",
+            comment: "Text to explain that text scanned from a package photo has been added to the starting info screen."
         )
     }
 }

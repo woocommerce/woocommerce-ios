@@ -164,7 +164,7 @@ fileprivate extension CardPresentPaymentEvent {
                                               itemListViewModel: itemsListVM)
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM, 
+        PointOfSaleDashboardView(viewModel: posVM,
                                  totalsViewModel: totalsVM,
                                  cartViewModel: cartVM,
                                  itemListViewModel: itemsListVM)

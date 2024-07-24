@@ -79,7 +79,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
 
         // When
-        let dateString = StatsStoreV4.buildDateString(from: defaultDate, with: .day)
+        let dateString = StatsStoreV4.buildDateString(from: defaultDate, timeRange: .today)
         let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: 22)
         insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 
@@ -149,7 +149,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         observeStatsEmittedValues(viewModel: viewModel)
 
         // When
-        let dateString = StatsStoreV4.buildDateString(from: defaultDate, with: .day)
+        let dateString = StatsStoreV4.buildDateString(from: defaultDate, timeRange: .today)
         let siteSummaryStats = Yosemite.SiteSummaryStats.fake().copy(siteID: siteID, date: dateString, visitors: 15)
         insertSiteSummaryStats(siteSummaryStats, timeRange: timeRange)
 

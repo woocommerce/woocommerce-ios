@@ -46,6 +46,10 @@ extension Color {
         Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.6)
     }
 
+    static var posTertiaryTexti3: Color {
+        Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.3)
+    }
+
     static var posIconGrayi3: Color {
         return Color.gray
     }
@@ -58,6 +62,10 @@ extension Color {
         Color.white
     }
 
+    static var posBackgroundEmptyWhitei3: Color {
+        Color(red: 250.0 / 255.0, green: 250.0 / 255.0, blue: 250.0 / 255.0)
+    }
+
     static var posTotalsSeparator: Color {
         Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
     }
@@ -68,5 +76,9 @@ extension Color {
 
     static var posTotalsGradientGreen: Color {
         Color(red: 239.0 / 255.0, green: 246.0 / 255.0, blue: 235.0 / 255.0)
+    }
+
+    static var posCheckoutBackground: Color {
+        Color(uiColor: .wooCommercePurple(.shade50))
     }
 }

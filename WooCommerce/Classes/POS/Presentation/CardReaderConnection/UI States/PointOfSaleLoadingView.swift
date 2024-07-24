@@ -21,7 +21,7 @@ struct PointOfSaleLoadingView: View {
         }
     }
 
-    var progressView: some View {
+    private var progressView: some View {
         ProgressView()
             .progressViewStyle(IndefiniteCircularProgressViewStyle(
                 size: Layout.progressViewSize,

@@ -19,24 +19,26 @@ struct PointOfSaleDashboardView: View {
         !viewModel.itemListViewModel.isEmptyOrError
     }
 
+    @State private var floatingSize: CGSize = .zero
+
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomLeading) {
             if viewModel.isInitialLoading {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
             } else {
                 contentView
                     .transition(.push(from: .top))
-                    .toolbar {
-                        ToolbarItem(placement: .bottomBar) {
-                            POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
-                                           isExitPOSDisabled: $viewModel.isExitPOSDisabled)
-                        }
-                    }
-                    .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
-                    .toolbarBackground(.visible, for: .bottomBar)
+
+                POSFloatingControlView(viewModel: viewModel)
+                    .shadow(color: Color.black.opacity(0.08), radius: 4)
+                    .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
+                    .trackSize(size: $floatingSize)
             }
         }
+        .environment(\.floatingControlAreaSize,
+                      CGSizeMake(floatingSize.width + Constants.floatingControlOffset,
+                                 floatingSize.height + Constants.floatingControlOffset))
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
@@ -84,8 +86,20 @@ struct PointOfSaleDashboardView: View {
                     }
                 }
             }
+            .frame(maxHeight: .infinity)
             .padding()
         }
+    }
+}
+
+struct FloatingControlAreaSizeKey: EnvironmentKey {
+    static let defaultValue = CGSize.zero
+}
+
+extension EnvironmentValues {
+    var floatingControlAreaSize: CGSize {
+        get { self[FloatingControlAreaSizeKey.self] }
+        set { self[FloatingControlAreaSizeKey.self] = newValue }
     }
 }
 
@@ -94,6 +108,8 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
+        static let buttonImageAndTextSpacing: CGFloat = 12
+        static let floatingControlOffset: CGFloat = 24
     }
 }
 

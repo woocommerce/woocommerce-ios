@@ -13,46 +13,44 @@ struct CardReaderConnectionStatusView: View {
         self.connectionViewModel = connectionViewModel
     }
 
+    @ViewBuilder
+    private func circleIcon(with color: Color) -> some View {
+        Image(systemName: "circle.fill")
+            .resizable()
+            .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
+            .foregroundColor(color)
+    }
+
     var body: some View {
         Group {
             switch connectionViewModel.connectionStatus {
-                case .connected:
-                    HStack(spacing: Layout.buttonImageAndTextSpacing) {
-                        Image(systemName: "wave.3.forward.circle.fill")
-                            .resizable()
-                            .frame(width: Layout.imageDimension * scale, height: Layout.imageDimension * scale)
-                            .foregroundColor(.init(uiColor: .wooCommercePurple(.shade30)))
-                        Text("Reader Connected")
-                            .foregroundColor(.init(uiColor: .wooCommercePurple(.shade80)))
+            case .connected:
+                HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                    circleIcon(with: Color.wooEmeraldShade40)
+                    Text("Reader Connected")
+                        .foregroundColor(Color.primaryText)
+                }
+            case .disconnected:
+                Button {
+                    connectionViewModel.connectReader()
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        circleIcon(with: Color.wooAmberShade60)
+                        Text("Connect your reader")
+                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                     }
-                case .disconnected:
-                    HStack {
-                        HStack(spacing: Layout.disconnectedTextAndButtonSpacing) {
-                            Image(systemName: "bolt.fill")
-                                .resizable()
-                                .frame(width: Layout.imageDimension * scale, height: Layout.imageDimension * scale)
-                                .foregroundColor(Color.wooAmberShade40)
-                            Text("Reader disconnected")
-                                .foregroundColor(Color.wooAmberShade80)
-                        }
-
-                        Button {
-                            connectionViewModel.connectReader()
-                        } label: {
-                            Text("Connect now")
-                        }
-                        .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
-                    }
+                }
             }
         }
+        .font(Constants.font)
     }
 }
 
 private extension CardReaderConnectionStatusView {
-    enum Layout {
+    enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
-        static let disconnectedTextAndButtonSpacing: CGFloat = 8
-        static let imageDimension: CGFloat = 16
+        static let imageDimension: CGFloat = 12
+        static let font = Font.system(size: 16.0, weight: .semibold)
     }
 }
 

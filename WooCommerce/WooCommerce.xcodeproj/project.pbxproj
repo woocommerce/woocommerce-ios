@@ -2362,6 +2362,7 @@
 		D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9697264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift */; };
 		D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
+		DA0DBE2F2C4FC61D00DF14C0 /* POSFloatingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */; };
 		DA1D68C02C36EF850097859A /* POSCardPresentPaymentMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D68BF2C36EF840097859A /* POSCardPresentPaymentMessageView.swift */; };
 		DA1D68C22C36F0980097859A /* String+POS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D68C12C36F0980097859A /* String+POS.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
@@ -5324,6 +5325,7 @@
 		D8F3A97E258865BD0085859B /* PasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordScreen.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
+		DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFloatingControlView.swift; sourceTree = "<group>"; };
 		DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		DA1D68BF2C36EF840097859A /* POSCardPresentPaymentMessageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = POSCardPresentPaymentMessageView.swift; sourceTree = "<group>"; };
 		DA1D68C12C36F0980097859A /* String+POS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+POS.swift"; sourceTree = "<group>"; };
@@ -6570,6 +6572,7 @@
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
+				DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */,
 				68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				026826A22BF59DF60036F959 /* ItemRowView.swift */,
@@ -15706,6 +15709,7 @@
 				0204E3622B8CD40B00F1B5FD /* WooAnalyticsEvent+Products.swift in Sources */,
 				4508BF622660E34A00707869 /* ShippingLabelCarrierAndRatesTopBanner.swift in Sources */,
 				DE7E5E7F2B4BC52C002E28D2 /* MultiSelectionList.swift in Sources */,
+				DA0DBE2F2C4FC61D00DF14C0 /* POSFloatingControlView.swift in Sources */,
 				DE02ABAD2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift in Sources */,
 				45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,

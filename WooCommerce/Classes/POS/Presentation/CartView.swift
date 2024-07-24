@@ -4,6 +4,7 @@ import protocol Yosemite.POSItem
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
+    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -13,6 +14,8 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
+                backAddMoreButton
+                    .disabled(viewModel.isAddMoreDisabled)
                 Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
                     .foregroundColor(cartViewModel.cartLabelColor)
@@ -67,6 +70,7 @@ struct CartView: View {
                                 .id(cartItem.id)
                             }
                         }
+                        .padding(.bottom, floatingControlAreaSize.height)
                     }
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,
@@ -89,9 +93,7 @@ struct CartView: View {
                         .padding(Constants.checkoutButtonPadding)
                 }
             case .finalizing:
-                addMoreButton
-                    .padding(Constants.checkoutButtonPadding)
-                    .disabled(viewModel.isAddMoreDisabled)
+                EmptyView()
             }
         }
         .frame(maxWidth: .infinity)
@@ -148,18 +150,21 @@ private extension CartView {
         .buttonStyle(POSCheckoutButtonStyle())
     }
 
-    var addMoreButton: some View {
-        Button {
-            cartViewModel.addMoreToCart()
-        } label: {
-            Spacer()
-            Text("Add More")
-                .font(.title)
-                .padding(20)
-            Spacer()
+    @ViewBuilder
+    var backAddMoreButton: some View {
+        switch viewModel.orderStage {
+        case .building:
+            EmptyView()
+        case .finalizing:
+            Button {
+                cartViewModel.addMoreToCart()
+            } label: {
+                Image(uiImage: .posCartBackImage)
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            }
+
         }
-        .buttonStyle(.borderedProminent)
-        .tint(Color.secondaryBackground)
     }
 }
 

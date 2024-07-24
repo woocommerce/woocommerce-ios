@@ -28,8 +28,16 @@ extension Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
 
+    static var wooEmeraldShade40: Color {
+        Color(red: 3.0 / 255.0, green: 212.0 / 255.0, blue: 121.0 / 255.0)
+    }
+
     static var wooAmberShade40: Color {
         Color(red: 255.0 / 255.0, green: 166.0 / 255.0, blue: 14.0 / 255.0)
+    }
+
+    static var wooAmberShade60: Color {
+        Color(red: 241.0 / 255.0, green: 102.0 / 255.0, blue: 24.0 / 255.0)
     }
 
     static var wooAmberShade80: Color {

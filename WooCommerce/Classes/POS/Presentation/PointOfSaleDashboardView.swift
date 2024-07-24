@@ -19,41 +19,48 @@ struct PointOfSaleDashboardView: View {
         !viewModel.itemListViewModel.isEmptyOrError
     }
 
+    @State private var floatingSize: CGSize = .zero
+
     var body: some View {
-        VStack {
-            switch viewModel.orderStage {
-                case .building:
-                    GeometryReader { geometry in
-                        HStack {
-                            productListView
-                            cartView
-                                .renderedIf(isCartShown)
-                                .frame(width: geometry.size.width * Constants.cartWidth)
-                        }
-                    }
-                case .finalizing:
-                    GeometryReader { geometry in
-                        HStack {
-                            if !viewModel.isTotalsViewFullScreen {
+        ZStack(alignment: .bottomLeading) {
+            VStack {
+                HStack {
+                    switch viewModel.orderStage {
+                    case .building:
+                        GeometryReader { geometry in
+                            HStack {
+                                productListView
                                 cartView
+                                    .renderedIf(isCartShown)
                                     .frame(width: geometry.size.width * Constants.cartWidth)
-                                Spacer()
                             }
-                            totalsView
+                        }
+                    case .finalizing:
+                        GeometryReader { geometry in
+                            HStack {
+                                if !viewModel.isTotalsViewFullScreen {
+                                    cartView
+                                        .frame(width: geometry.size.width * Constants.cartWidth)
+                                    Spacer()
+                                }
+                                totalsView
+                            }
                         }
                     }
                 }
+                .frame(maxHeight: .infinity)
+                .padding()
+            }
+            POSFloatingControlView(viewModel: viewModel)
+                .shadow(color: Color.black.opacity(0.08), radius: 4)
+                .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
+                .trackSize(size: $floatingSize)
         }
+        .environment(\.floatingControlAreaSize,
+                      CGSizeMake(floatingSize.width + Constants.floatingControlOffset,
+                                 floatingSize.height + Constants.floatingControlOffset))
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
-                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
-            }
-        }
-        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
-        .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
@@ -73,11 +80,24 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+struct FloatingControlAreaSizeKey: EnvironmentKey {
+    static let defaultValue = CGSize.zero
+}
+
+extension EnvironmentValues {
+    var floatingControlAreaSize: CGSize {
+        get { self[FloatingControlAreaSizeKey.self] }
+        set { self[FloatingControlAreaSizeKey.self] = newValue }
+    }
+}
+
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
+        static let buttonImageAndTextSpacing: CGFloat = 12
+        static let floatingControlOffset: CGFloat = 24
     }
 }
 

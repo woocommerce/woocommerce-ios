@@ -21,8 +21,7 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                switch viewModel.orderStage {
+            switch viewModel.orderStage {
                 case .building:
                     GeometryReader { geometry in
                         HStack {
@@ -44,8 +43,6 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 }
-            }
-            .padding()
         }
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)

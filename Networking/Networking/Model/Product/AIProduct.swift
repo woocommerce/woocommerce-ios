@@ -120,12 +120,15 @@ public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatabl
 //
 public extension Product {
     init(siteID: Int64,
+         name: String,
+         fullDescription: String?,
+         shortDescription: String?,
          aiProduct: AIProduct,
          categories: [ProductCategory],
          tags: [ProductTag]) {
         self.init(siteID: siteID,
                   productID: 0,
-                  name: aiProduct.names.first ?? "",
+                  name: name,
                   slug: "",
                   permalink: "",
                   date: Date(),
@@ -137,8 +140,8 @@ public extension Product {
                   statusKey: ProductStatus.draft.rawValue,
                   featured: false,
                   catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
-                  fullDescription: aiProduct.descriptions.first,
-                  shortDescription: aiProduct.shortDescriptions.first,
+                  fullDescription: fullDescription,
+                  shortDescription: shortDescription,
                   sku: "",
                   price: "",
                   regularPrice: aiProduct.price,

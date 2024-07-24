@@ -13,49 +13,57 @@ struct CartView: View {
     var body: some View {
         VStack {
             HStack {
-                Image(uiImage: .shoppingCartIcon)
-                    .resizable()
-                    .frame(width: Constants.iconSize, height: Constants.iconSize)
-                    .foregroundColor(.black)
-                Text("Cart")
+                Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(cartViewModel.cartLabelColor)
                 Spacer()
-                if let temsInCartLabel = cartViewModel.itemsInCartLabel {
-                    Text(temsInCartLabel)
+                if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                    Text(itemsInCartLabel)
                         .font(Constants.secondaryFont)
                         .foregroundColor(Color.posSecondaryTexti3)
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {
-                        Text("Clear all")
+                        Text(Localization.clearButtonTitle)
                             .font(Constants.secondaryFont)
                             .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
                     }
-                    .padding(.horizontal, 8)
+                    .padding(.horizontal, Constants.itemHorizontalPadding)
                     .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 32)
-            .padding(.vertical, 8)
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
-            ScrollViewReader { proxy in
-                ScrollView {
-                    ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
-                        ItemRowView(cartItem: cartItem,
-                                    onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
-                            cartViewModel.removeItemFromCart(cartItem)
-                        } : nil)
-                        .id(cartItem.id)
-                    }
+            if cartViewModel.itemsInCart.isEmpty {
+                VStack {
+                    Spacer()
+                    Image(uiImage: .shoppingBagsImage)
+                    Text(Localization.addItemsToCartHint)
+                        .font(Constants.secondaryFont)
+                        .foregroundColor(Color.posSecondaryTexti3)
+                        .multilineTextAlignment(.center)
+                    Spacer()
                 }
-                .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
-                    if viewModel.orderStage == .building,
-                       let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
-                        withAnimation {
-                            proxy.scrollTo(last)
+            } else {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
+                            ItemRowView(cartItem: cartItem,
+                                        onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
+                                cartViewModel.removeItemFromCart(cartItem)
+                            } : nil)
+                            .id(cartItem.id)
+                        }
+                    }
+                    .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                        if viewModel.orderStage == .building,
+                           let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
+                            withAnimation {
+                                proxy.scrollTo(last)
+                            }
                         }
                     }
                 }
@@ -64,10 +72,10 @@ struct CartView: View {
             switch viewModel.orderStage {
             case .building:
                 checkoutButton
-                    .padding(32)
+                    .padding(Constants.checkoutButtonPadding)
             case .finalizing:
                 addMoreButton
-                    .padding(32)
+                    .padding(Constants.checkoutButtonPadding)
                     .disabled(viewModel.isAddMoreDisabled)
             }
         }
@@ -78,9 +86,27 @@ struct CartView: View {
 
 private extension CartView {
     enum Constants {
-        static let iconSize: CGFloat = 40
         static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let secondaryFont: Font = .system(size: 20, weight: .semibold, design: .default)
+        static let checkoutButtonPadding: CGFloat = 32
+        static let itemHorizontalPadding: CGFloat = 8
+        static let horizontalPadding: CGFloat = 32
+        static let verticalPadding: CGFloat = 8
+    }
+
+    enum Localization {
+        static let cartTitle = NSLocalizedString(
+            "pos.cartView.cartTitle",
+            value: "Cart",
+            comment: "Title at the header for the Cart view.")
+        static let clearButtonTitle = NSLocalizedString(
+            "pos.cartView.clearButtonTitle",
+            value: "Clear",
+            comment: "Title for the 'Clear' button to remove all products from the Cart.")
+        static let addItemsToCartHint = NSLocalizedString(
+            "pos.cartView.addItemsToCartHint",
+            value: "Tap on a product to \n add it to the cart",
+            comment: "Hint to add products to the Cart when this is empty.")
     }
 }
 
@@ -101,6 +127,7 @@ private extension CartView {
         }
         .buttonStyle(.borderedProminent)
         .tint(Color.primaryTint)
+        .disabled(cartViewModel.isCartEmpty)
     }
 
     var addMoreButton: some View {
@@ -123,15 +150,18 @@ import Combine
 #Preview {
     // TODO:
     // Simplify this by mocking `CartViewModel`
-    // https://github.com/woocommerce/woocommerce-ios/issues/13207
-    let orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
-    let orderStagePublisher = orderStageSubject.eraseToAnyPublisher()
+    let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                          cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                          currencyFormatter: .init(currencySettings: .init()),
+                                          paymentState: .acceptingCard,
+                                          isSyncingOrder: false)
+    let cartViewModel = CartViewModel()
     let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
                                                            cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            orderService: POSOrderPreviewService(),
-                                                           currencyFormatter: .init(currencySettings: .init()))
-    let cartViewModel = CartViewModel(orderStage: orderStagePublisher)
-
+                                                           currencyFormatter: .init(currencySettings: .init()),
+                                                           totalsViewModel: totalsViewModel,
+                                                           cartViewModel: cartViewModel)
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

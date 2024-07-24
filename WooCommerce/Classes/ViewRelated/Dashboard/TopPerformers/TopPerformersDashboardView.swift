@@ -35,8 +35,8 @@ struct TopPerformersDashboardView: View {
             } else {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.header)
 
                 Divider()
 
@@ -45,10 +45,15 @@ struct TopPerformersDashboardView: View {
                 Divider()
                     .padding(.leading, Layout.padding)
 
+                timestampView
+                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                    .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.rows)
+
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
             }
 
         }
@@ -156,6 +161,12 @@ private extension TopPerformersDashboardView {
             .frame(maxWidth: .infinity)
     }
 
+    var timestampView: some View {
+        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+            .footnoteStyle()
+            .frame(maxWidth: .infinity, alignment: .center)
+    }
+
     func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
         let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: item),
                                                                siteID: viewModel.siteID,
@@ -187,6 +198,10 @@ private extension TopPerformersDashboardView {
             value: "Custom",
             comment: "Title of the custom time range on the Top Performers card on the Dashboard screen"
         )
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the top performers card was last updated")
+            return String.localizedStringWithFormat(format, time)
+        }
     }
 }
 

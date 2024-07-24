@@ -5,6 +5,8 @@ import protocol Yosemite.POSOrderServiceProtocol
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
+    @StateObject private var totalsViewModel: TotalsViewModel
+    @StateObject private var cartViewModel: CartViewModel
 
     private let hideAppTabBar: ((Bool) -> Void)
 
@@ -15,16 +17,29 @@ struct PointOfSaleEntryPointView: View {
          currencyFormatter: CurrencyFormatter) {
         self.hideAppTabBar = hideAppTabBar
 
-        _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
+        let totalsViewModel = TotalsViewModel(orderService: orderService,
+                                              cardPresentPaymentService: cardPresentPaymentService,
+                                              currencyFormatter: currencyFormatter,
+                                              paymentState: .acceptingCard,
+                                              isSyncingOrder: false)
+        let cartViewModel = CartViewModel()
+
+        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             itemProvider: itemProvider,
             cardPresentPaymentService: cardPresentPaymentService,
             orderService: orderService,
-            currencyFormatter: currencyFormatter)
+            currencyFormatter: currencyFormatter,
+            totalsViewModel: totalsViewModel,
+            cartViewModel: cartViewModel)
         )
+        self._cartViewModel = StateObject(wrappedValue: cartViewModel)
+        self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
     }
 
     var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel)
+        PointOfSaleDashboardView(viewModel: viewModel,
+                                 totalsViewModel: totalsViewModel,
+                                 cartViewModel: cartViewModel)
             .onAppear {
                 hideAppTabBar(true)
             }

@@ -1331,7 +1331,7 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                gatewayID: "cod",
+                gatewayID: PaymentGateway.Constants.cashOnDeliveryGatewayID,
                 title: title,
                 description: description,
                 enabled: enabled

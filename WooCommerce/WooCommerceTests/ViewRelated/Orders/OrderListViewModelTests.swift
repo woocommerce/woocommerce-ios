@@ -501,18 +501,5 @@ private extension OrderListViewModelTests {
         return readonlyOrder
     }
 
-    func insertCODPaymentGateway() {
-        //let codGateway = PaymentGateway.fake().copy(siteID: siteID, gatewayID: "cod", enabled: true)
-        let codGateway = PaymentGateway(siteID: siteID,
-                                        gatewayID: "cod",
-                                        title: "Pay in Person",
-                                        description: "Pay by cash or card when you pick up in store",
-                                        enabled: true,
-                                        features: [],
-                                        instructions: nil)
-        let storageGateway = storage.insertNewObject(ofType: StoragePaymentGateway.self)
-        storageGateway.update(with: codGateway)
-    }
-
     final class MockError: Error { }
 }

@@ -205,6 +205,7 @@ enum WooAnalyticsStat: String {
     case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
     case analyticsHubSettingsOpened = "analytics_hub_settings_opened"
     case analyticsHubSettingsSaved = "analytics_hub_settings_saved"
+    case analyticsHubCardMetricSelected = "analytics_hub_card_metric_selected"
 
     // MARK: Blaze Events
     //
@@ -958,6 +959,13 @@ enum WooAnalyticsStat: String {
     case productCreationAISurveyStartSurveyButtonTapped = "product_creation_ai_survey_start_survey_button_tapped"
     case productCreationAISurveySkipButtonTapped = "product_creation_ai_survey_skip_button_tapped"
 
+    // V2 events
+    case productCreationAIStartedPackagePhotoSelectionFlow = "product_creation_ai_started_package_photo_selection_flow"
+    case productCreationAITextDetected = "product_creation_ai_text_detected"
+    case productCreationAITextDetectionFailed = "product_creation_ai_text_detection_failed"
+    case productCreationAIGeneratedNameDescriptionOptions = "product_creation_ai_generated_name_description_options"
+    case productCreationAIUndoEditTapped = "product_creation_ai_undo_edit_tapped"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"
@@ -1226,6 +1234,14 @@ enum WooAnalyticsStat: String {
     case watchOrdersListOpened = "watch_orders_list_opened"
     case watchPushNotificationTapped = "watch_push_notification_tapped"
     case watchOrderDetailOpened = "watch_order_detail_opened"
+
+    // MARK: Google ads campaign management
+    case googleAdsEntryPointDisplayed = "googleads_entry_point_displayed"
+    case googleAdsEntryPointTapped = "googleads_entry_point_tapped"
+    case googleAdsFlowStarted = "googleads_flow_started"
+    case googleAdsFlowCanceled = "googleads_flow_canceled"
+    case googleAdsFlowError = "googleads_flow_error"
+    case googleAdsCampaignCreationSuccess = "googleads_campaign_creation_success"
 }
 
 extension WooAnalyticsStat {

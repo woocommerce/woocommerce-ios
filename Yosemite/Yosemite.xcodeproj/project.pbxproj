@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */; };
+		016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */; };
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */; };
@@ -432,6 +434,8 @@
 		DA3F0E172C218ADA00B8C2F8 /* OrderSyncProductInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */; };
 		DA3F0E192C218E7E00B8C2F8 /* ProductInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */; };
 		DA3F0E1C2C218EF100B8C2F8 /* POSOrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */; };
+		DAD988C22C491525009DE9E3 /* Order+LocalItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */; };
+		DAD988C42C4A5147009DE9E3 /* LocalIDStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C32C4A5147009DE9E3 /* LocalIDStoreTests.swift */; };
 		DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */; };
 		DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */; };
 		DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */; };
@@ -509,6 +513,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePrice.swift"; sourceTree = "<group>"; };
+		016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+BasePriceTests.swift"; sourceTree = "<group>"; };
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsFeatureSwitch.swift"; sourceTree = "<group>"; };
@@ -939,6 +945,8 @@
 		DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSyncProductInput.swift; sourceTree = "<group>"; };
 		DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformer.swift; sourceTree = "<group>"; };
 		DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderService.swift; sourceTree = "<group>"; };
+		DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+LocalItems.swift"; sourceTree = "<group>"; };
+		DAD988C32C4A5147009DE9E3 /* LocalIDStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalIDStoreTests.swift; sourceTree = "<group>"; };
 		DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteAction.swift; sourceTree = "<group>"; };
 		DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
 		DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStoreTests.swift; sourceTree = "<group>"; };
@@ -1070,6 +1078,7 @@
 			children = (
 				0225512022FC2F3000D98613 /* WCAnalyticsStatsInterval+Date.swift */,
 				FEEB2F5C268A15730075A6E0 /* User+Roles.swift */,
+				DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1080,6 +1089,7 @@
 				029B00A5230D64CD00B0AE66 /* Enums */,
 				0225512322FC310E00D98613 /* Extensions */,
 				E1F54D0327AD4DAF00012983 /* CardPresentConfigurationTests.swift */,
+				DAD988C32C4A5147009DE9E3 /* LocalIDStoreTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1091,6 +1101,7 @@
 				D8652E312630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift */,
 				FEEB2F5E268A1C5E0075A6E0 /* User+RolesTests.swift */,
 				02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */,
+				016EFCAF2C41559D0016BDAA /* OrderItem+BasePriceTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1292,6 +1303,7 @@
 				4591A6B3274BB29000F51DCD /* StoredOrderSettings.swift */,
 				EE9D030D2B88550F0077CED1 /* FilterOrdersByProduct.swift */,
 				86BB4C952B89FCF30096E92D /* CustomerFilter.swift */,
+				016EFCAD2C4155650016BDAA /* OrderItem+BasePrice.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -2250,6 +2262,7 @@
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				4591A6B0274BB23000F51DCD /* OrderDateRangeFilter.swift in Sources */,
+				DAD988C22C491525009DE9E3 /* Order+LocalItems.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */,
 				02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */,
@@ -2418,6 +2431,7 @@
 				E16C59BB28F9393E007D55BB /* InAppPurchaseStore.swift in Sources */,
 				025CA2CC238F518600B05C81 /* ProductShippingClassAction.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
+				016EFCAE2C4155650016BDAA /* OrderItem+BasePrice.swift in Sources */,
 				2685C10D263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift in Sources */,
 				933A27352222352500C2143A /* Logging.swift in Sources */,
 				261CF1ED255B37B40090D8D3 /* PaymentGatewayAction.swift in Sources */,
@@ -2598,6 +2612,7 @@
 				026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */,
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,
 				EE4D51B82ACD3C9800783D77 /* MockProductCategoriesRemote.swift in Sources */,
+				016EFCB02C41559D0016BDAA /* OrderItem+BasePriceTests.swift in Sources */,
 				45ED4F16239E939A004F1BE3 /* TaxStoreTests.swift in Sources */,
 				57264572250BE2E7005BBD7C /* OrdersUpsertUseCaseTests.swift in Sources */,
 				0286A1BE2A0CC4810099EF94 /* MockFeatureFlagRemote.swift in Sources */,
@@ -2613,6 +2628,7 @@
 				DEDA8DB32B184B950076BF0F /* WordPressThemeStoreTests.swift in Sources */,
 				45182D2327B55F9C00B4C05C /* InboxNotesStoreTests.swift in Sources */,
 				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,
+				DAD988C42C4A5147009DE9E3 /* LocalIDStoreTests.swift in Sources */,
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,
 				D4CBAE5C26D401BC00BBE6D1 /* AnnouncementsStoreTests.swift in Sources */,
 				EEB4E2CD29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift in Sources */,

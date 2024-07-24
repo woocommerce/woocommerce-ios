@@ -4,7 +4,7 @@ struct ToneOfVoiceView: View {
     @ObservedObject var viewModel: AIToneVoiceViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
+        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center) {
             Text(Localization.title)
                 .bodyStyle()
 

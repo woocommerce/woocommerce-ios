@@ -25,19 +25,6 @@ final class StorePickerCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_storeCreationFromLogin_configuration_shows_storePicker() throws {
-        // Given
-        let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: .prologue))
-
-        // When
-        coordinator.start()
-
-        // Then
-        waitUntil {
-            self.navigationController.topViewController is StorePickerViewController
-        }
-    }
-
     func test_standard_configuration_presents_storePicker() throws {
         // Given
         let coordinator = StorePickerCoordinator(navigationController, config: .standard)

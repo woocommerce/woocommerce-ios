@@ -5,10 +5,18 @@ struct PointOfSaleDashboardView: View {
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel,
+         totalsViewModel: TotalsViewModel,
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
-        self.totalsViewModel = viewModel.totalsViewModel
+        self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
+    }
+
+    private var isCartShown: Bool {
+        !viewModel.itemListViewModel.isEmptyOrError
     }
 
     var body: some View {
@@ -16,20 +24,12 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    if viewModel.isCartCollapsed {
-                        // 1. Initial state: Product list is visible and cart is collapsed
-                        productListView
-                            .frame(maxWidth: .infinity)
-                        Spacer()
-                        collapsedCartView
-                    } else {
-                        // 2. Products in cart: Both product list and cart are visible
-                        GeometryReader { geometry in
-                            HStack {
-                                productListView
-                                cartView
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                            }
+                    GeometryReader { geometry in
+                        HStack {
+                            productListView
+                            cartView
+                                .renderedIf(isCartShown)
+                                .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }
                 case .finalizing:
@@ -66,12 +66,12 @@ struct PointOfSaleDashboardView: View {
                 case .idle,
                         .show, // handled above
                         .showOnboarding:
-                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
         })
         .task {
-            await viewModel.itemSelectorViewModel.populatePointOfSaleItems()
+            await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
     }
 }
@@ -80,31 +80,27 @@ private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
-        static let cartWidth: CGFloat = 0.4
+        static let cartWidth: CGFloat = 0.35
     }
 }
 
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
-    var collapsedCartView: some View {
-        CollapsedCartView()
-    }
-
     var cartView: some View {
-        CartView(viewModel: viewModel,
-                 cartViewModel: viewModel.cartViewModel)
+        CartView(viewModel: viewModel, cartViewModel: cartViewModel)
     }
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel,
-                   totalsViewModel: viewModel.totalsViewModel)
-        .background(Color(UIColor.systemBackground))
-        .frame(maxWidth: .infinity)
-        .cornerRadius(16)
+                   totalsViewModel: totalsViewModel,
+                   cartViewModel: cartViewModel)
+            .background(Color(UIColor.systemBackground))
+            .frame(maxWidth: .infinity)
+            .cornerRadius(16)
     }
 
     var productListView: some View {
-        ItemListView(viewModel: viewModel.itemSelectorViewModel)
+        ItemListView(viewModel: viewModel.itemListViewModel)
     }
 }
 
@@ -123,12 +119,21 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    NavigationStack {
-        PointOfSaleDashboardView(
-            viewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                     orderService: POSOrderPreviewService(),
-                                                     currencyFormatter: .init(currencySettings: .init())))
+    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                   currencyFormatter: .init(currencySettings: .init()),
+                                   paymentState: .acceptingCard,
+                                   isSyncingOrder: false)
+    let cartVM = CartViewModel()
+    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              orderService: POSOrderPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()),
+                                              totalsViewModel: totalsVM,
+                                              cartViewModel: cartVM)
+
+    return NavigationStack {
+        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartVM)
     }
 }
 #endif

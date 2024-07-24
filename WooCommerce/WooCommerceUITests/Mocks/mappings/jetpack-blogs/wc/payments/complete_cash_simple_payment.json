@@ -7,7 +7,7 @@
                 "matches": ".*path=/wc/v3/orders/630%26_method%3Dpost"
             },
             {
-                "contains": "%7B%22status%22%3A%22completed"
+                "contains": "status%22%3A%22completed"
             }
         ]
     },

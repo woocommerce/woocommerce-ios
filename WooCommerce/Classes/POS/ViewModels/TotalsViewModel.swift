@@ -2,12 +2,14 @@ import SwiftUI
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
+import struct Yosemite.OrderItem
 import struct Yosemite.POSCartItem
-import struct Yosemite.POSOrder
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-final class TotalsViewModel: ObservableObject {
+final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
+    var isPriceFieldRedacted: Bool
+
     enum PaymentState {
         case idle
         case acceptingCard
@@ -17,49 +19,51 @@ final class TotalsViewModel: ObservableObject {
     }
 
     @Published var showsCardReaderSheet: Bool = false
-    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
 
-    /// Order created the first time the checkout is shown for a given transaction.
-    /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    @Published private(set) var order: POSOrder?
-    @Published private(set) var isSyncingOrder: Bool = false
+    @Published private(set) var order: Order? = nil
+    private var totalsCalculator: OrderTotalsCalculator? = nil
+    @Published var paymentState: PaymentState
 
-    @Published private(set) var paymentState: PaymentState = .acceptingCard
+    @Published var isSyncingOrder: Bool
 
-    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
 
-    // MARK: - Order total amounts
+    @Published var formattedCartTotalPrice: String?
+    @Published var formattedOrderTotalPrice: String?
+    @Published var formattedOrderTotalTaxPrice: String?
 
-    @Published private(set) var formattedCartTotalPrice: String?
+    var computedFormattedCartTotalPrice: String? {
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
+    }
 
-    var formattedOrderTotalPrice: String? {
+    var computedFormattedOrderTotalPrice: String? {
         formattedPrice(order?.total, currency: order?.currency)
     }
 
-    var formattedOrderTotalTaxPrice: String? {
+    var computedFormattedOrderTotalTaxPrice: String? {
         formattedPrice(order?.totalTax, currency: order?.currency)
     }
 
-    // MARK: - View states
-
     var showRecalculateButton: Bool {
-        !areAmountsFullyCalculated &&
-        isSyncingOrder == false
+        !areAmountsFullyCalculated && isSyncingOrder == false
     }
 
     var areAmountsFullyCalculated: Bool {
-        isSyncingOrder == false &&
-        formattedOrderTotalTaxPrice != nil &&
-        formattedOrderTotalPrice != nil
+        isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
     }
 
     var isShimmering: Bool {
         isSyncingOrder
     }
 
-    var isPriceFieldRedacted: Bool {
+    var isSubtotalFieldRedacted: Bool {
+        formattedCartTotalPrice == nil || isSyncingOrder
+    }
+
+    var isTaxFieldRedacted: Bool {
         formattedOrderTotalTaxPrice == nil || isSyncingOrder
     }
 
@@ -73,22 +77,44 @@ final class TotalsViewModel: ObservableObject {
 
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
-         currencyFormatter: CurrencyFormatter) {
+         currencyFormatter: CurrencyFormatter,
+         paymentState: PaymentState,
+         isSyncingOrder: Bool) {
         self.orderService = orderService
         self.cardPresentPaymentService = cardPresentPaymentService
         self.currencyFormatter = currencyFormatter
+        self.paymentState = paymentState
+        self.isSyncingOrder = isSyncingOrder
+        self.isPriceFieldRedacted = false
+        self.formattedCartTotalPrice = nil
+        self.formattedOrderTotalPrice = nil
+        self.formattedOrderTotalTaxPrice = nil
 
-        observeConnectedReaderForStatus()
-        observeCardPresentPaymentEvents()
+        // Initialize all properties before calling methods
+        self.observeConnectedReaderForStatus()
+        self.observeCardPresentPaymentEvents()
     }
+
+    var isSyncingOrderPublisher: Published<Bool>.Publisher { $isSyncingOrder }
+    var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
+    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
+    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
+    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
+    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
+    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
+    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
         startSyncingOrder(with: cartItems, allItems: allItems)
     }
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+        guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
+            return
+        }
+        // calculate totals and sync order if there was a change in the cart
         Task { @MainActor in
-            calculateCartTotal(cartItems: cartItems)
             await syncOrder(for: cartItems, allItems: allItems)
         }
     }
@@ -102,6 +128,7 @@ final class TotalsViewModel: ObservableObject {
     func startNewTransaction() {
         paymentState = .acceptingCard
         clearOrder()
+        cardPresentPaymentInlineMessage = nil
     }
 
     @MainActor
@@ -112,30 +139,24 @@ final class TotalsViewModel: ObservableObject {
 
 // MARK: - Order syncing
 
-private extension TotalsViewModel {
+extension TotalsViewModel {
     @MainActor
     func syncOrder(for cartProducts: [CartItem], allItems: [POSItem]) async {
         guard isSyncingOrder == false else {
             return
         }
         isSyncingOrder = true
-        let cart = cartProducts
-            .map {
-                POSCartItem(itemID: nil,
-                            product: $0.item,
-                            quantity: Decimal($0.quantity))
-            }
+        let cart = cartProducts.map {
+            POSCartItem(itemID: nil, product: $0.item, quantity: Decimal($0.quantity))
+        }
         defer {
             isSyncingOrder = false
         }
         do {
             isSyncingOrder = true
-            let order = try await orderService.syncOrder(cart: cart,
-                                                         order: order,
-                                                         allProducts: allItems)
-            self.order = order
+            let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
+            self.updateOrder(syncedOrder)
             isSyncingOrder = false
-            // TODO: this is temporary solution
             await prepareConnectedReaderForPayment()
             DDLogInfo("🟢 [POS] Synced order: \(order)")
         } catch {
@@ -143,16 +164,16 @@ private extension TotalsViewModel {
         }
     }
 
-    func calculateCartTotal(cartItems: [CartItem]) {
-        formattedCartTotalPrice = { cartItems in
-            let totalValue: Decimal = cartItems.reduce(0) { partialResult, cartItem in
-                let itemPrice = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).convertToDecimal(cartItem.item.price) ?? 0
-                let quantity = cartItem.quantity
-                let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                return partialResult + total
-            }
-            return currencyFormatter.formatAmount(totalValue)
-        }(cartItems)
+    private func updateFormattedPrices() {
+        formattedCartTotalPrice = computedFormattedCartTotalPrice
+        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
+        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
+    }
+
+    private func updateOrder(_ updatedOrder: Order) {
+        self.order = updatedOrder
+        totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
+        updateFormattedPrices()
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -161,7 +182,9 @@ private extension TotalsViewModel {
         }
         return currencyFormatter.formatAmount(price, with: currency)
     }
+}
 
+extension TotalsViewModel {
     func clearOrder() {
         order = nil
     }
@@ -176,8 +199,7 @@ private extension TotalsViewModel {
             return
         }
         do {
-            let finalOrder = orderService.order(from: order)
-            try await collectPayment(for: finalOrder)
+            try await collectPayment(for: order)
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
@@ -242,7 +264,7 @@ private extension TotalsViewModel {
             }
         }.assign(to: &$showsCardReaderSheet)
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap({ PaymentState(from: $0) })
+            .compactMap { PaymentState(from: $0) }
             .assign(to: &$paymentState)
     }
 }

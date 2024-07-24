@@ -17,6 +17,7 @@ enum SiteVisitStatsMode {
 
 /// View model for `StorePerformanceView`.
 ///
+@MainActor
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var statsIntervalData: [StoreStatsChartData] = []
@@ -69,6 +70,28 @@ final class StorePerformanceViewModel: ObservableObject {
             return false
         }
         return true
+    }
+
+    /// Determines if the redacted state should be shown.
+    /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
+    ///
+    var showRedactedState: Bool {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return syncingData
+        }
+        return syncingData && periodViewModel?.noDataFound == true
+    }
+
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
+              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
     }
 
     init(siteID: Int64,
@@ -130,12 +153,21 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+
+        // Preemptively show any cached content
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            periodViewModel?.loadCachedContent()
+        }
+
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
-            try await syncAllStats()
+            currentDate = .now // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
+            let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
+            try await syncUseCase.sync()
+
             trackDashboardStatsSyncComplete()
             statsVersion = .v4
             switch timeRange {
@@ -394,94 +426,6 @@ private extension StorePerformanceViewModel {
 // MARK: - Syncing data
 //
 private extension StorePerformanceViewModel {
-    @MainActor
-    func syncAllStats() async throws {
-        currentDate = Date()
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask { [weak self] in
-                try await self?.syncStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            group.addTask { [weak self] in
-                try await self?.syncSiteVisitStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            group.addTask { [weak self] in
-                try await self?.syncSiteSummaryStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            // rethrow any failure.
-            for try await result in group {
-                // no-op if result doesn't throw any error
-            }
-        }
-    }
-
-    /// Syncs store stats for dashboard UI.
-    @MainActor
-    func syncStats(latestDateToInclude: Date) async throws {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveStats(siteID: siteID,
-                                                        timeRange: timeRange,
-                                                        timeZone: siteTimezone,
-                                                        earliestDateToInclude: earliestDateToInclude,
-                                                        latestDateToInclude: latestDateToInclude,
-                                                        quantity: timeRange.maxNumberOfIntervals,
-                                                        forceRefresh: true,
-                                                        onCompletion: { result in
-                continuation.resume(with: result)
-            }))
-        }
-    }
-
-    /// Syncs visitor stats for dashboard UI.
-    @MainActor
-    func syncSiteVisitStats(latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
-            return
-        }
-
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                                 siteTimezone: siteTimezone,
-                                                                 timeRange: timeRange,
-                                                                 latestDateToInclude: latestDateToInclude,
-                                                                 onCompletion: { result in
-                if case let .failure(error) = result {
-                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                }
-                continuation.resume(with: result)
-            }))
-        }
-    }
-
-    /// Syncs summary stats for dashboard UI.
-    @MainActor
-    func syncSiteSummaryStats(latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
-            return
-        }
-
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
-                                                                   siteTimezone: siteTimezone,
-                                                                   period: timeRange.summaryStatsGranularity,
-                                                                   quantity: 1,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   saveInStorage: true) { result in
-                   if case let .failure(error) = result {
-                       DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                   }
-
-                   let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                continuation.resume(with: voidResult)
-               })
-        }
-    }
-
     private func handleSyncError(error: Error) {
         switch error {
         case let siteStatsStoreError as SiteStatsStoreError:

@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Represents a card on the Dashboard screen.
-public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
+public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Sendable {
     /// The type of dashboard card.
     public let type: CardType
 
@@ -21,7 +21,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
     }
 
     /// Types of cards to display on the Dashboard screen.
-    public enum CardType: String, Codable, CaseIterable {
+    public enum CardType: String, Codable, CaseIterable, Sendable {
         case onboarding
         case performance
         case topPerformers
@@ -36,7 +36,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
 
     /// Card's availability state that determines whether it can be displayed and used.
     /// Affects how it's shown (or not shown) in Dashboard and Customize.
-    public enum AvailabilityState: String, Codable {
+    public enum AvailabilityState: String, Codable, Sendable {
         case show           // Shown in Dashboard and Customize
         case unavailable    // Shown in Dashboard and Customize (as "Unavailable")
         case hide           // Not shown in Dashboard and Customize

@@ -1,1 +1,3 @@
-WooCommerce mobil uygulamasında en yeni güncellemelerimizi keşfedin! Doğrulama hatalarını önlemek için Blaze Kampanyalarını geliştirdik, daha kolay anlaşılır bir arayüz için kullanıcı deneyimini iyileştirdik ve kart okuyucu bağlantılarındaki birden fazla sorunu düzelttik. Ayrıca daha pürüzsüz bir deneyim için ödeme alma esnasındaki hata işlemeyi geliştirdik. Daha iyi bir WooCommerce deneyimi için şimdi güncelleyin!
+
+İyileştirilmiş bir nakit ödeme deneyimi için WooCommerce uygulamanızı hemen güncelleyin! Nakit ödenen siparişlerde ödeme yönteminin ve başlığının gözükmemesi sorununu düzelttik. Artık nakit ödeme toplarken uygulama, tıpkı web üzerinde olduğu gibi bu ayrıntıları doğru ayarlayarak sipariş ayrıntılarınızda ve makbuzlarınızda netlik olmasını sağlar.
+

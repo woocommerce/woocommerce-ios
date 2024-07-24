@@ -1,2 +1,2 @@
-Our latest update improves the Analytics Hub by including Google Ads campaigns, and introduces Inbox Notes in the Dynamic Dashboard and Hub Menu. Enjoy a better app experience with our latest update!
 
+Discover our latest update! We’ve introduced product creation with AI and enhanced order creation with better tax-inclusive pricing displays. Plus, our Google Campaigns analytics card now lets you choose any available campaign metric for detailed insights. Enjoy a smoother, smarter WooCommerce experience!

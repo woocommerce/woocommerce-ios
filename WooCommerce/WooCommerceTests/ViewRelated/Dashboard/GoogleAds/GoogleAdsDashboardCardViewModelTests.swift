@@ -53,7 +53,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let error = NSError(domain: "Test", code: 500)
         mockRequest(lastCampaignResult: .failure(error))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
@@ -64,16 +64,16 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     func test_shouldShowShowAllCampaignsButton_returns_true_when_last_campaign_found() async {
         // Given
         let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
-        XCTAssertNil(viewModel.lastCampaign)
+        XCTAssertFalse(viewModel.hasPaidCampaigns)
         XCTAssertFalse(viewModel.shouldShowShowAllCampaignsButton)
 
         // When
         let lastCampaign = GoogleAdsCampaign.fake().copy(id: 14325)
         mockRequest(lastCampaignResult: .success([lastCampaign]))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
-        XCTAssertEqual(viewModel.lastCampaign, lastCampaign)
+        XCTAssertTrue(viewModel.hasPaidCampaigns)
         XCTAssertTrue(viewModel.shouldShowShowAllCampaignsButton)
     }
 
@@ -86,7 +86,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let error = NSError(domain: "Test", code: 500)
         mockRequest(lastCampaignResult: .failure(error))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertFalse(viewModel.shouldShowCreateCampaignButton)
@@ -94,17 +94,16 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         // When
         let lastCampaign = GoogleAdsCampaign.fake().copy(id: 14325)
         mockRequest(lastCampaignResult: .success([lastCampaign]))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertTrue(viewModel.shouldShowCreateCampaignButton)
     }
 
     @MainActor
-    func test_syncingData_is_false_immediately_after_fetching_last_campaign_completes( ) async {
+    func test_syncingData_is_false_after_fetching_stats( ) async {
         // Given
         let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
-        XCTAssertFalse(viewModel.syncingData)
 
         // When
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
@@ -113,13 +112,13 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
                 XCTAssertTrue(viewModel.syncingData)
                 onCompletion(.success([.fake().copy(id: 13453)]))
             case let .retrieveCampaignStats(_, _, _, _, _, onCompletion):
-                XCTAssertFalse(viewModel.syncingData)
+                XCTAssertTrue(viewModel.syncingData)
                 onCompletion(.success(.fake()))
             default:
                 break
             }
         }
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
         XCTAssertFalse(viewModel.syncingData)
@@ -127,10 +126,10 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_lastCampaignStats_is_the_total_when_no_campaign_stats_are_found() async {
+    func test_performanceStats_is_updated_correctly() async {
         // Given
         let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
-        XCTAssertNil(viewModel.lastCampaignStats)
+        XCTAssertNil(viewModel.performanceStats)
 
         // When
         let totals = GoogleAdsCampaignStatsTotals.fake().copy(sales: 0, spend: 0, clicks: 0, impressions: 0)
@@ -141,32 +140,10 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
         )
         mockRequest(lastCampaignResult: .success([.fake().copy(id: 12423)]),
                     lastCampaignStatsResult: .success(statsResult))
-        await viewModel.fetchLastCampaign()
+        await viewModel.reloadCard()
 
         // Then
-        XCTAssertEqual(viewModel.lastCampaignStats, totals)
-    }
-
-    @MainActor
-    func test_lastCampaignStats_is_correct_when_stats_are_found_for_last_campaign() async {
-        // Given
-        let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
-        XCTAssertNil(viewModel.lastCampaignStats)
-
-        // When
-        let campaign = GoogleAdsCampaign.fake().copy(id: 12423)
-        let subtotals = GoogleAdsCampaignStatsTotals.fake().copy(sales: 1, spend: 0, clicks: 2, impressions: 5)
-        let statsResult = GoogleAdsCampaignStats.fake().copy(
-            siteID: sampleSiteID,
-            totals: .fake(),
-            campaigns: [.fake().copy(campaignID: campaign.id, subtotals: subtotals)]
-        )
-        mockRequest(lastCampaignResult: .success([campaign]),
-                    lastCampaignStatsResult: .success(statsResult))
-        await viewModel.fetchLastCampaign()
-
-        // Then
-        XCTAssertEqual(viewModel.lastCampaignStats, subtotals)
+        XCTAssertEqual(viewModel.performanceStats, totals)
     }
 }
 

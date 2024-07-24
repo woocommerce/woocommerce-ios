@@ -26,11 +26,13 @@ struct PackagePhotoView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Layout.spacing) {
+        AdaptiveStack(horizontalAlignment: .leading,
+                      verticalAlignment: .center,
+                      spacing: Layout.spacing) {
             EditableImageView(imageState: imageState,
                               emptyContent: {})
             .frame(width: Layout.packagePhotoSize * scale, height: Layout.packagePhotoSize * scale)
-            .cornerRadius(Layout.cornerRadius)
+            .cornerRadius(Layout.imageCornerRadius)
 
             VStack(alignment: .leading, spacing: 0) {
                 Text(title)
@@ -41,6 +43,7 @@ struct PackagePhotoView: View {
                         .footnoteStyle()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
 
@@ -60,28 +63,24 @@ struct PackagePhotoView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .frame(width: Layout.ellipisButtonSize * scale, height: Layout.ellipisButtonSize * scale)
+                    .frame(width: Layout.ellipsisButtonSize * scale, height: Layout.ellipsisButtonSize * scale)
                     .bodyStyle()
                     .foregroundStyle(Color.secondary)
             }
         }
         .padding(Layout.padding)
-        .background(Color(.systemColor(.systemGray6)))
-        .clipShape(
-            .rect(
-                bottomLeadingRadius: Layout.textFieldOverlayCornerRadius,
-                bottomTrailingRadius: Layout.textFieldOverlayCornerRadius
-            )
-        )
+        .background(Color(light: Color(.systemColor(.systemGray6)),
+                          dark: Color(.systemColor(.systemGray5))))
+        .clipShape(RoundedRectangle(cornerRadius: Layout.viewCornerRadius))
     }
 
     enum Layout {
         static let spacing: CGFloat = 16
-        static let cornerRadius: CGFloat = 4
+        static let imageCornerRadius: CGFloat = 4
         static let padding = EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        static let textFieldOverlayCornerRadius: CGFloat = 8
         static let packagePhotoSize: CGFloat = 48
-        static let ellipisButtonSize: CGFloat = 24
+        static let ellipsisButtonSize: CGFloat = 24
+        static let viewCornerRadius: CGFloat = 8
     }
 
     enum Localization {

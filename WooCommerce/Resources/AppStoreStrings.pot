@@ -61,10 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v19.4-whats-new"
+msgctxt "v19.6-whats-new"
 msgid ""
-"Our latest update improves the Analytics Hub by including Google Ads campaigns, and introduces Inbox Notes in the Dynamic Dashboard and Hub Menu. Enjoy a better app experience with our latest update!\n"
 "\n"
+"Discover our latest update! We’ve introduced product creation with AI and enhanced order creation with better tax-inclusive pricing displays. Plus, our Google Campaigns analytics card now lets you choose any available campaign metric for detailed insights. Enjoy a smoother, smarter WooCommerce experience!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

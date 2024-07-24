@@ -272,6 +272,7 @@ class DefaultStoresManager: StoresManager {
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.latestBackgroundOrderSyncDate] = nil
+        DashboardTimestampStore.resetStore()
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 

@@ -1,1 +1,3 @@
-Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
+
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
+

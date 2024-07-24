@@ -30,6 +30,9 @@ protocol AuthenticatedWebViewModel {
     /// Handler after receiving response for a navigation
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy
 
+    /// Triggered when a navigation completes.
+    func didFinishNavigation(for url: URL)
+
     /// Triggered when provisional navigation fails
     ///
     func didFailProvisionalNavigation(with error: Error)
@@ -40,6 +43,10 @@ protocol AuthenticatedWebViewModel {
 extension AuthenticatedWebViewModel {
     func decidePolicy(for response: URLResponse) async -> WKNavigationResponsePolicy {
         return .allow
+    }
+
+    func didFinishNavigation(for url: URL) {
+        // NO-OP
     }
 
     func didFailProvisionalNavigation(with error: Error) {

@@ -366,6 +366,9 @@ private extension LegacyProductDetailPreviewViewModel {
         }
 
         return Product(siteID: siteID,
+                       name: aiProduct.names.first ?? "",
+                       fullDescription: aiProduct.descriptions.first,
+                       shortDescription: aiProduct.shortDescriptions.first,
                        aiProduct: aiProduct,
                        categories: categories,
                        tags: tags)

@@ -137,7 +137,7 @@ public struct ProductInputTransformer {
                                          product: product,
                                          quantity: quantity,
                                          discount: discount ?? defaultDiscount,
-                                         baseSubtotal: baseSubtotal(on: item),
+                                         baseSubtotal: item.basePrice.decimalValue,
                                          bundleConfiguration: bundleConfiguration)
         }
 
@@ -146,7 +146,7 @@ public struct ProductInputTransformer {
                                      product: product,
                                      quantity: quantity,
                                      discount: discount ?? defaultDiscount,
-                                     baseSubtotal: baseSubtotal(on: item),
+                                     baseSubtotal: item.basePrice.decimalValue,
                                      bundleConfiguration: bundleConfiguration)
     }
 }
@@ -260,15 +260,5 @@ private extension ProductInputTransformer {
                                  variationAttributes: attributes)
             }
         })
-    }
-
-    /// Calculates the subtotal of a single quantity of an item
-    ///
-    static func baseSubtotal(on item: OrderItem) -> Decimal? {
-        guard let itemSubtotal = Decimal(string: item.subtotal) else {
-            return nil
-        }
-
-        return itemSubtotal / item.quantity
     }
 }

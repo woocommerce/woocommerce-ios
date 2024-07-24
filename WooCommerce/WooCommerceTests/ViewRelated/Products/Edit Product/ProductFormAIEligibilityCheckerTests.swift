@@ -6,8 +6,7 @@ final class ProductFormAIEligibilityCheckerTests: XCTestCase {
 
     func test_description_feature_is_enabled_when_site_is_wpcom() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: true), featureFlagService: featureFlagService)
+        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: true))
 
         // When
         let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
@@ -18,8 +17,7 @@ final class ProductFormAIEligibilityCheckerTests: XCTestCase {
 
     func test_description_feature_is_disabled_when_site_is_not_wpcom() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: false), featureFlagService: featureFlagService)
+        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: false))
 
         // When
         let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
@@ -30,9 +28,7 @@ final class ProductFormAIEligibilityCheckerTests: XCTestCase {
 
     func test_description_feature_is_enabled_when_site_is_not_wpcom_and_ai_assistant_feature_is_active() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isAIAssistantFeatureActive: true, isWordPressComStore: false),
-                                                      featureFlagService: featureFlagService)
+        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isAIAssistantFeatureActive: true, isWordPressComStore: false))
 
         // When
         let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
@@ -43,20 +39,7 @@ final class ProductFormAIEligibilityCheckerTests: XCTestCase {
 
     func test_description_feature_is_disabled_when_site_is_nil() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: true)
-        let checker = ProductFormAIEligibilityChecker(site: nil, featureFlagService: featureFlagService)
-
-        // When
-        let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)
-
-        // Then
-        XCTAssertFalse(isDescriptionAIEnabled)
-    }
-
-    func test_description_feature_is_disabled_when_site_is_wpcom_and_feature_flag_is_off() throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIEnabled: false)
-        let checker = ProductFormAIEligibilityChecker(site: .fake().copy(isWordPressComStore: true), featureFlagService: featureFlagService)
+        let checker = ProductFormAIEligibilityChecker(site: nil)
 
         // When
         let isDescriptionAIEnabled = checker.isFeatureEnabled(.description)

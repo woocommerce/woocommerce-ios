@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCampaignDashboardView`.
+@MainActor
 final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// UI state of the Blaze campaign view in dashboard.
     enum State: Equatable {
@@ -122,7 +123,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @MainActor
     func checkAvailability() async {
-        isSiteEligibleForBlaze = await checkSiteEligibility()
+        isSiteEligibleForBlaze = checkSiteEligibility()
         try? await synchronizePublishedProducts()
         updateAvailability()
     }
@@ -134,7 +135,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
 
-        isSiteEligibleForBlaze = await checkSiteEligibility()
+        isSiteEligibleForBlaze = checkSiteEligibility()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
@@ -196,12 +197,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
 // MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
-    @MainActor
-    func checkSiteEligibility() async -> Bool {
+    func checkSiteEligibility() -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
         }
-        return await blazeEligibilityChecker.isSiteEligible(site)
+        return blazeEligibilityChecker.isSiteEligible(site)
     }
 
     @MainActor

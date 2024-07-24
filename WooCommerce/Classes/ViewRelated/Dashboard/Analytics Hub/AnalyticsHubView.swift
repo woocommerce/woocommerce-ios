@@ -6,6 +6,8 @@ import SwiftUI
 ///
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
 
+    private let viewModel: AnalyticsHubViewModel
+
     /// Presents an error notice in the tab bar context after this `self` is dismissed.
     ///
     private let systemNoticePresenter: NoticePresenter
@@ -15,20 +17,25 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     ///
     var notice: Notice?
 
+    /// Coordinator to handle Google Ads campaign creation.
+    private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
+
     init(siteID: Int64,
          timeZone: TimeZone,
          timeRange: StatsTimeRangeV4,
          systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
-        let viewModel = AnalyticsHubViewModel(siteID: siteID, timeZone: timeZone, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
+        self.viewModel = AnalyticsHubViewModel(siteID: siteID, timeZone: timeZone, statsTimeRange: timeRange, usageTracksEventEmitter: usageTracksEventEmitter)
         self.systemNoticePresenter = systemNoticePresenter
-        super.init(rootView: AnalyticsHubView(viewModel: viewModel))
+        super.init(rootView: AnalyticsHubView(viewModel: self.viewModel))
 
         // Needed to pop the hosting controller from within the SwiftUI view
         rootView.dismissWithNotice = { [weak self] notice in
             self?.notice = notice
             self?.navigationController?.popViewController(animated: true)
         }
+
+        configureGoogleAdsCard()
     }
 
     @available(*, unavailable)
@@ -44,6 +51,48 @@ final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubV
     }
 }
 
+// MARK: Google Ads campaigns
+private extension AnalyticsHubHostingViewController {
+    func configureGoogleAdsCard() {
+        rootView.onCreateNewGoogleAdsCampaign = { [weak self] in
+            self?.startGoogleAdsCampaignCreation()
+        }
+    }
+
+    /// Initializes a `GoogleAdsCampaignCoordinator` to handle campaign creation.
+    ///
+    func startGoogleAdsCampaignCreation() {
+        guard let site = viewModel.stores.sessionManager.defaultSite,
+              let navigationController else {
+            return
+        }
+
+        let coordinator = GoogleAdsCampaignCoordinator(
+            siteID: viewModel.siteID,
+            siteAdminURL: site.adminURLWithFallback()?.absoluteString ?? site.adminURL,
+            source: .analyticsHub,
+            shouldStartCampaignCreation: true,
+            shouldAuthenticateAdminPage: viewModel.stores.shouldAuthenticateAdminPage(for: site),
+            navigationController: navigationController,
+            onCompletion: { [weak self] createdNewCampaign in
+                if createdNewCampaign {
+                    Task { @MainActor in
+                        await self?.viewModel.googleCampaignsCard.onGoogleCampaignCreated()
+                    }
+                }
+            }
+        )
+        coordinator.start()
+        googleAdsCampaignCoordinator = coordinator
+
+        viewModel.analytics.track(event: .GoogleAds.entryPointTapped(
+            source: .analyticsHub,
+            type: .campaignCreation,
+            hasCampaigns: viewModel.googleCampaignsCard.campaignsData.isNotEmpty
+        ))
+    }
+}
+
 /// Main Analytics Hub View
 ///
 struct AnalyticsHubView: View {
@@ -55,6 +104,9 @@ struct AnalyticsHubView: View {
     /// Needed because we need access to the UIHostingController `popViewController` method.
     ///
     var dismissWithNotice: ((Notice) -> Void) = { _ in }
+
+    /// Set this closure with UIKit code to create a new Google Ads campaign.
+    var onCreateNewGoogleAdsCampaign: (() -> Void)?
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
@@ -134,7 +186,10 @@ private extension AnalyticsHubView {
         case .giftCards:
             AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
         case .googleCampaigns:
-            AnalyticsTopPerformersCard(campaignsViewModel: viewModel.googleCampaignsCard)
+            GoogleAdsCampaignReportCard(viewModel: viewModel.googleCampaignsCard,
+                                        onCreateNewCampaign: {
+                onCreateNewGoogleAdsCampaign?()
+            })
         }
     }
 }

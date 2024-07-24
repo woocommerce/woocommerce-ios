@@ -298,6 +298,10 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     case .customerID:
                         params[Order.CodingKeys.customerID.rawValue] = order.customerID
+                    case .paymentMethodID:
+                        params[Order.CodingKeys.paymentMethodID.rawValue] = order.paymentMethodID
+                    case .paymentMethodTitle:
+                        params[Order.CodingKeys.paymentMethodTitle.rawValue] = order.paymentMethodTitle
                     }
                 }
 
@@ -468,6 +472,8 @@ public extension OrdersRemote {
         case items
         case status
         case customerID
+        case paymentMethodID
+        case paymentMethodTitle
     }
 
     /// Order fields supported for create

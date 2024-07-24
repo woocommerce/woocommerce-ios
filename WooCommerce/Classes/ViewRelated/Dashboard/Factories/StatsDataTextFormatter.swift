@@ -157,6 +157,57 @@ struct StatsDataTextFormatter {
                             numberOfFractionDigits: numberOfFractionDigits)
     }
 
+    // MARK: Google Ads Campaign Stats
+
+    /// Creates the text to display for a campaign stats metric, from the provided stats.
+    ///
+    static func createGoogleCampaignsStatText(for stat: GoogleAdsCampaignStatsTotals.TotalData,
+                                              from campaignStats: GoogleAdsCampaignStats?,
+                                              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                              currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                              numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        guard let campaignStats else {
+            return Constants.placeholderText
+        }
+        switch stat {
+        case .sales:
+            return formatAmount(campaignStats.totals.sales,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .spend:
+            return formatAmount(campaignStats.totals.spend,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .clicks, .impressions, .conversions:
+            return NumberFormatter.localizedString(from: campaignStats.totals.getDoubleValue(for: stat) as NSNumber) ?? Constants.placeholderText
+        }
+    }
+
+    /// Creates the text to display for a campaign stat subtotal, from the provided campaign.
+    ///
+    static func createGoogleCampaignsSubtotalText(for stat: GoogleAdsCampaignStatsTotals.TotalData,
+                                                  from campaign: GoogleAdsCampaignStatsItem,
+                                                  currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                                  currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                                  numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        switch stat {
+        case .sales:
+            formatAmount(campaign.subtotals.sales,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .spend:
+            formatAmount(campaign.subtotals.spend,
+                         currencyFormatter: currencyFormatter,
+                         currencyCode: currencyCode,
+                         numberOfFractionDigits: numberOfFractionDigits)
+        case .clicks, .impressions, .conversions:
+            NumberFormatter.localizedString(from: campaign.subtotals.getDoubleValue(for: stat) as NSNumber) ?? Constants.placeholderText
+        }
+    }
+
     // MARK: Generic helpers
 
     /// Creates the text to display for an amount with currency settings.
@@ -167,13 +218,13 @@ struct StatsDataTextFormatter {
                              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                              currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                              numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
-      guard let amount else {
-          return Constants.placeholderText
-      }
-      // If amount is an integer, no decimal points are shown.
-      let numberOfDecimals: Int? = amount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
-      return currencyFormatter.formatAmount(amount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
-  }
+        guard let amount else {
+            return Constants.placeholderText
+        }
+        // If amount is an integer, no decimal points are shown.
+        let numberOfDecimals: Int? = amount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
+        return currencyFormatter.formatAmount(amount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+    }
 }
 
 extension StatsDataTextFormatter {

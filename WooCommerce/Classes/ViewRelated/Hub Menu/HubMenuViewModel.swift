@@ -64,6 +64,8 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
 
+    @Published private(set) var viewAppeared = false
+
     @Published private(set) var shouldAuthenticateAdminPage = false
 
     @Published private(set) var hasGoogleAdsCampaigns = false
@@ -146,12 +148,17 @@ final class HubMenuViewModel: ObservableObject {
                                                            featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
+        observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
         createCardPresentPaymentService()
     }
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+        viewAppeared = true
+        if !hasGoogleAdsCampaigns {
+            refreshGoogleAdsCampaignCheck()
+        }
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -173,9 +180,10 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
-    @MainActor
-    func refreshGoogleAdsCampaignCheck() async {
-        hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+    func refreshGoogleAdsCampaignCheck() {
+        Task { @MainActor in
+            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+        }
     }
 
     deinit {
@@ -318,42 +326,25 @@ private extension HubMenuViewModel {
                 self?.updateMenuItemEligibility(with: site)
             }
             .store(in: &cancellables)
-
-        $currentSite
-            .compactMap { $0 }
-            .asyncMap { [weak self] site -> Bool in
-                guard let self else {
-                    return false
-                }
-                return await checkIfSiteHasGoogleAdsCampaigns()
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$hasGoogleAdsCampaigns)
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
 
-        /// We're dispatching 3 separate tasks because using task group to
-        /// asynchronously update variables in the main thread is considered unsafe
-        /// when enabling concurrency checks.
-        /// Using task group would require more effort like this:
-        /// https://www.hackingwithswift.com/quick-start/concurrency/how-to-handle-different-result-types-in-a-task-group
+        isSiteEligibleForBlaze = blazeEligibilityChecker.isSiteEligible(site)
 
-        Task { @MainActor in
-            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
-        }
+        isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
-        }
-
-        Task { @MainActor in
-            isSiteEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+            hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
         }
     }
 
     @MainActor
     func checkIfSiteHasGoogleAdsCampaigns() async -> Bool {
+        guard isSiteEligibleForGoogleAds else {
+            return false
+        }
         do {
             let campaigns = try await fetchGoogleAdsCampaigns()
             return campaigns.isNotEmpty
@@ -378,6 +369,19 @@ private extension HubMenuViewModel {
             }
         }
         .assign(to: &$planName)
+    }
+
+    func observeGoogleAdsEntryPointAvailability() {
+        $isSiteEligibleForGoogleAds.removeDuplicates()
+            .combineLatest($viewAppeared)
+            .filter { isEligible, viewAppeared in
+                // only tracks the display if the view appeared
+                return isEligible && viewAppeared
+            }
+            .sink { _ in
+                ServiceLocator.analytics.track(event: .GoogleAds.entryPointDisplayed(source: .moreMenu))
+            }
+            .store(in: &cancellables)
     }
 
     @MainActor

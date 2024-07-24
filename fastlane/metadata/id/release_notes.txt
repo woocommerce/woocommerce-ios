@@ -1,1 +1,3 @@
-Temukan pembaruan terkini di aplikasi seluler WooCommerce! Kami telah melengkapi Kampanye Blaze dengan pemeriksaan rentang tanggal untuk mencegah error validasi, memperbaiki UX agar antarmuka lebih intuitif, dan mengatasi berbagai masalah koneksi pembaca kartu. Kami juga telah menyempurnakan penanganan error selama penarikan pembayaran agar pengalaman Anda lebih lancar. Perbarui sekarang untuk pengalaman WooCommerce yang lebih baik!
+
+Perbarui aplikasi WooCommerce Anda sekarang juga untuk pengalaman pembayaran tunai yang lebih baik! Kami telah mengatasi masalah tampilan metode dan nama pembayaran untuk pesanan tunai. Sekarang, saat menerima pembayaran tunai, aplikasi akan mengatur detailnya dengan benar, sehingga detail pesanan dan tanda terima menjadi lebih jelas seperti pada situs.
+

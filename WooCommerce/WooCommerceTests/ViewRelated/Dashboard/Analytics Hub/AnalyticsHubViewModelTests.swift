@@ -28,8 +28,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Given
         let storage = MockStorageManager()
         insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
-                             SitePlugin.SupportedPlugin.WCGiftCards.first,
-                             SitePlugin.SupportedPlugin.GoogleForWooCommerce.first],
+                             SitePlugin.SupportedPlugin.WCGiftCards.first],
                             to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -56,17 +55,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 break
             }
         }
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case let .checkConnection(_, completion):
-                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, _, completion):
-                let campaignStats = GoogleAdsCampaignStats.fake().copy(totals: .fake().copy(sales: 285))
-                completion(.success(campaignStats))
-            default:
-                break
-            }
-        }
 
         // When
         await vm.updateData()
@@ -79,7 +67,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.sessionsCard.isRedacted)
         XCTAssertFalse(vm.bundlesCard.isRedacted)
         XCTAssertFalse(vm.giftCardsCard.isRedacted)
-        XCTAssertFalse(vm.googleCampaignsCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
@@ -89,7 +76,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
         XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
         XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
-        XCTAssertEqual(vm.googleCampaignsCard.totalSales, "$285")
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -102,11 +88,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingBundlesStatsCardRedacted: Bool = false
         var loadingBundlesSoldCardRedacted: Bool = false
         var loadingGiftCardsCardRedacted: Bool = false
-        var loadingGoogleCampaignsCardRedacted: Bool = false
         let storage = MockStorageManager()
         insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
-                             SitePlugin.SupportedPlugin.WCGiftCards.first,
-                             SitePlugin.SupportedPlugin.GoogleForWooCommerce.first],
+                             SitePlugin.SupportedPlugin.WCGiftCards.first],
                             to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -141,17 +125,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 break
             }
         }
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case let .checkConnection(_, completion):
-                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, _, completion):
-                loadingGoogleCampaignsCardRedacted = vm.googleCampaignsCard.isRedacted
-                completion(.success(GoogleAdsCampaignStats.fake()))
-            default:
-                break
-            }
-        }
 
         // When
         await vm.updateData()
@@ -165,7 +138,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(loadingBundlesStatsCardRedacted)
         XCTAssertTrue(loadingBundlesSoldCardRedacted)
         XCTAssertTrue(loadingGiftCardsCardRedacted)
-        XCTAssertTrue(loadingGoogleCampaignsCardRedacted)
     }
 
     func test_bundles_card_shows_correct_loading_state_and_data_with_network_update() {
@@ -585,80 +557,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(vm.enabledCards.contains(.giftCards))
-    }
-
-    @MainActor
-    func test_google_campaigns_card_is_displayed_when_plugin_active_and_google_ads_connected() async {
-        // Given
-        let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
-                                                                            active: true))
-        let vm = createViewModel(storage: storage)
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case let .checkConnection(_, completion):
-                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "connected")))
-            case let .retrieveCampaignStats(_, _, _, _, _, completion):
-                completion(.success(.fake()))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertTrue(vm.enabledCards.contains(.googleCampaigns))
-    }
-
-    @MainActor
-    func test_google_campaigns_card_not_displayed_when_plugin_active_and_google_ads_disconnected() async {
-        // Given
-        let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
-                                                                            active: true))
-        let vm = createViewModel(storage: storage)
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
-            switch action {
-            case let .checkConnection(_, completion):
-                completion(.success(GoogleAdsConnection.fake().copy(rawStatus: "disconnected")))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertFalse(vm.enabledCards.contains(.googleCampaigns))
     }
 
     @MainActor

@@ -56,10 +56,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isEUShippingNoticeDismissed: Bool
 
-    /// The settings stored locally that indicate whether each local announcement's has been dismissed.
-    ///
-    public var localAnnouncementDismissed: [LocalAnnouncement: Bool]
-
     public init(installationDate: Date?,
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
@@ -70,8 +66,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                 featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings],
                 sitesWithAtLeastOneIPPTransactionFinished: Set<Int64>,
-                isEUShippingNoticeDismissed: Bool,
-                localAnnouncementDismissed: [LocalAnnouncement: Bool]) {
+                isEUShippingNoticeDismissed: Bool) {
         self.installationDate = installationDate
         self.feedbacks = feedbacks
         self.isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled
@@ -83,7 +78,6 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
         self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
-        self.localAnnouncementDismissed = localAnnouncementDismissed
     }
 
     public static var `default`: Self {
@@ -96,8 +90,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:],
               sitesWithAtLeastOneIPPTransactionFinished: [],
-              isEUShippingNoticeDismissed: false,
-              localAnnouncementDismissed: [:])
+              isEUShippingNoticeDismissed: false)
     }
 
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
@@ -127,8 +120,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            localAnnouncementDismissed: localAnnouncementDismissed
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 
@@ -149,30 +141,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings,
             sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            localAnnouncementDismissed: localAnnouncementDismissed
-        )
-    }
-
-    /// Returns a new instance of `GeneralAppSettings` with the provided feature announcement campaign seetings updated.
-    ///
-    public func updatingAsDismissed(localAnnouncement: LocalAnnouncement) -> GeneralAppSettings {
-        let updatedSettings = localAnnouncementDismissed.merging([localAnnouncement: true]) {
-            _, new in new
-        }
-
-        return GeneralAppSettings(
-            installationDate: installationDate,
-            feedbacks: feedbacks,
-            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
-            isPointOfSaleEnabled: isPointOfSaleEnabled,
-            knownCardReaders: knownCardReaders,
-            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
-            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
-            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-            localAnnouncementDismissed: updatedSettings
+            isEUShippingNoticeDismissed: isEUShippingNoticeDismissed
         )
     }
 }
@@ -198,8 +167,6 @@ extension GeneralAppSettings {
         self.sitesWithAtLeastOneIPPTransactionFinished = try container.decodeIfPresent(Set<Int64>.self,
                                                                                         forKey: .sitesWithAtLeastOneIPPTransactionFinished) ?? Set<Int64>([])
         self.isEUShippingNoticeDismissed = try container.decodeIfPresent(Bool.self, forKey: .isEUShippingNoticeDismissed) ?? false
-        self.localAnnouncementDismissed = try container.decodeIfPresent([LocalAnnouncement: Bool].self,
-                                                                        forKey: .localAnnouncementDismissed) ?? [:]
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

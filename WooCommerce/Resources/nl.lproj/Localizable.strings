@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-03 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-07-10 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9531,6 +9531,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Een bestaande winkel koppelen";
 
+/* Title of Casual AI Tone */
+"aiToneVoice.casual" = "Casual";
+
+/* Title of Convincing AI Tone */
+"aiToneVoice.convincing" = "Overtuigend";
+
+/* Title of Flowery AI Tone */
+"aiToneVoice.flowery" = "Fleurig";
+
+/* Title of Formal AI Tone */
+"aiToneVoice.formal" = "Formeel";
+
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "Rapport productbundels";
 
@@ -9539,6 +9551,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Gift Cards analytics card in the Customize Analytics screen */
 "analyticsHub.customize.giftCards" = "Cadeaubonnen";
+
+/* Name for the Google Campaigns analytics card in the Customize Analytics screen */
+"analyticsHub.customize.googleCampaigns" = "Google-campagnes";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Bestellingen";
@@ -9578,6 +9593,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Nettobedrag";
+
+/* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.campaignsList.title" = "Campagnes";
+
+/* Text displayed when there is an error loading Google Ads campaigns stats data. */
+"analyticsHub.googleCampaigns.noCampaignStats" = "Kan analyses van Google-campagnes niet laden";
+
+/* Title for the Google Programs report linked in the Analytics Hub */
+"analyticsHub.googleCampaigns.reportTitle" = "Programmarapport";
+
+/* Label for the total spend amount on a Google Ads campaign in the Analytics Hub.The placeholder is a formatted monetary amount, e.g. Spend: $123. */
+"analyticsHub.googleCampaigns.spendSubtitle" = "Uitgaven: %@";
+
+/* Title for the Google campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.title" = "Google-campagnes";
+
+/* Title for the Total Sales column on the Google Ads campaigns card on the analytics hub screen. */
+"analyticsHub.googleCampaigns.totalSalesTitle" = "Totale omzet";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Schakel Jetpack-statistieken in";
@@ -10809,6 +10842,18 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
 
+/* Title of the Google Ads campaign view */
+"googleAdsCampaignCoordinator.googleForWooCommerce" = "Google voor WooCommerce";
+
+/* Button to dismiss the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successCTA" = "Gereed";
+
+/* Subtitle of the celebration view when a Google Ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successSubtitle" = "Je nieuwe campagne is gemaakt. Er komen geweldige momenten aan voor jouw omzet!";
+
+/* Title of the celebration view when a Google ads campaign is successfully created. */
+"googleAdsCampaignCoordinator.successTitle" = "Klaar voor de start!";
+
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Klanten";
 
@@ -10817,6 +10862,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Productbeoordeling";
+
+/* Title of the hub menu Google Ads button */
+"hubMenuViewModel.googleAds" = "Google voor WooCommerce";
+
+/* Description of the hub menu Google Ads button */
+"hubMenuViewModel.googleAdsDescription" = "Verkoop meer en genereer meer verkeer met Google Ads";
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Kan beter";
@@ -11301,8 +11352,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Scannen op lezer";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.cancel.button.title" = "Betaling annuleren";
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Betaling opnieuw proberen";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.message" = "We konden de volledige bestellingsinformatie niet laden om de betaalstatus te controleren. Controleer de laatste bestelling afzonderlijk of probeer het opnieuw.";
+
+/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Meer informatie";
+
+/* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.title" = "Status van betaling is onbekend";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Betaling mislukt";
@@ -11310,20 +11370,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Probeer opnieuw";
 
-/* Button to dismiss modal overlay. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.cancel.button.title" = "Betaling annuleren";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betaling mislukt";
-
-/* Button to cancel preparation of the reader on the Point of Sale checkout. */
-"pointOfSale.cardPresent.preparingCardReader.cancel.button.title" = "Annuleren";
-
-/* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "Kaartlezer voorbereiden";
-
-/* Button to cancel a payment */
-"pointOfSale.cardPresent.presentCard.cancel.button.title" = "Annuleren";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Voer kaart in om te betalen";
@@ -11339,9 +11387,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tik, voer in of swipe om te betalen";
-
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.presentCard.title" = "Lezer is gereed";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Afwijzen";
@@ -11445,6 +11490,15 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Software bijwerken";
 
+/* Subtitle of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "We konden de volledige bestellingsinformatie niet weergeven vanwege een fout bij het registreren van de betaling en vernieuwen van de bestelling. Controleer de laatste bestelling afzonderlijk voor je verdergaat om te lage of dubbele betaling te voorkomen.";
+
+/* Title of the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Controleer de betaalstatus van de bestelling";
+
+/* Button to dismiss the alert presented when payment capture fails. */
+"pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Ik begrijp het";
+
 /* Label for a dismiss button when a software update has finished */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Afwijzen";
 
@@ -11508,20 +11562,32 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "privé";
 
-/* Continue button on the starting info screen. */
-"productCreationAIStartingInfoView.continueText" = "Doorgaan";
+/* Button to generate product details in the starting info screen. */
+"productCreationAIStartingInfoView.generateProductDetails" = "Productgegevens genereren";
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Bijvoorbeeld: zwart katoenen T-shirt, zachte stof, duurzaam stikwerk, uniek ontwerp";
 
-/* Upload package photo button on the text field */
+/* Button to upload package photo to read text from the photo */
 "productCreationAIStartingInfoView.readTextFromPhoto" = "Tekst lezen van productfoto";
 
-/* Subtitle on the starting info screen. */
+/* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Vertel ons over je product. Wat is het en wat maakt het uniek? Laat daarna de AI zijn werk doen.";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Gegevens om te beginnen";
+
+/* No text detected message while adding package photo in the starting information screen. */
+"productCreationAIStartingInfoViewModel.noTextDetected" = "Geen tekst gedetecteerd. Kies een andere foto van de verpakking of voer de productgegevens handmatig in.";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.title" = "Foto verwijderd";
+
+/* Button to undo the package photo removal action. */
+"productCreationAIStartingInfoViewModel.photoRemovedNotice.undo" = "Ongedaan maken";
+
+/* Text detection failed error message on the starting information screen. */
+"productCreationAIStartingInfoViewModel.textDetectionFailed" = "Er is een fout opgetreden bij het scannen van de foto. Kies een andere foto van de verpakking of voer de productgegevens handmatig in.";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Heb je een momentje? Help ons onze functies met AI te verbeteren met wat korte feedback.";
@@ -11549,6 +11615,57 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "Gepubliceerd als privé";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.cancel" = "Annuleren";
+
+/* Title of the categories field on the add product with AI Preview screen. */
+"productDetailPreviewView.categories" = "Categorieën";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"productDetailPreviewView.details" = "Details";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"productDetailPreviewView.feedbackQuestion" = "Is dit resultaat goed?";
+
+/* Button to regenerate AI product details again with AI Preview screen. */
+"productDetailPreviewView.generateAgain" = "Opnieuw genereren";
+
+/* Value of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inStock" = "Op voorraad";
+
+/* Title of the inventory field on the add product with AI Preview screen. */
+"productDetailPreviewView.inventory" = "Inventaris";
+
+/* Title of the price field on the add product with AI Preview screen. */
+"productDetailPreviewView.price" = "Prijs";
+
+/* Placeholder text for the product description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productDescriptionPlaceholder" = "Beschrijf je product";
+
+/* Placeholder text for the product name field on on the add product with AI Preview screen. */
+"productDetailPreviewView.productNamePlaceholder" = "Geef je product een naam";
+
+/* Title of the product type field on the add product with AI Preview screen. */
+"productDetailPreviewView.productType" = "Producttype";
+
+/* Button on the error alert displayed on the add product with AI Preview screen. */
+"productDetailPreviewView.retry" = "Opnieuw proberen";
+
+/* Button to save product details on the add product with AI Preview screen. */
+"productDetailPreviewView.saveAsDraft" = "Opslaan als concept";
+
+/* Title of the shipping field on the add product with AI Preview screen. */
+"productDetailPreviewView.shipping" = "Verzending";
+
+/* Subtitle on the add product with AI Preview screen. */
+"productDetailPreviewView.subtitle" = "Je kan je productgegevens bewerken of opnieuw genereren voordat je ze opslaat.";
+
+/* Title of the tags field on the add product with AI Preview screen. */
+"productDetailPreviewView.tags" = "Tags";
+
+/* Title on the add product with AI Preview screen. */
+"productDetailPreviewView.title" = "Voorbeeldweergave";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Fout bij uploaden van bestand. Probeer het nog eens.";
@@ -11759,6 +11876,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Annuleren";
+
+/* Dismiss button on the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.ok" = "OK";
+
+/* Title of the alert when there is an error selecting image */
+"selectPackageImageCoordinator.imageErrorAlert.title" = "Kan afbeelding niet selecteren";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betaling is gelukt";
@@ -12061,6 +12184,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Gebruik %1$@";
+
+/* Title of the AI tone selection button. */
+"toneOfVoiceView.title" = "Toon";
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Toevoegen";

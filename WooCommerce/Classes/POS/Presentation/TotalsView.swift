@@ -3,10 +3,14 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
+    @ObservedObject private var cartViewModel: CartViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel,
+         totalsViewModel: TotalsViewModel,
+         cartViewModel: CartViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
     }
 
     var body: some View {
@@ -21,17 +25,17 @@ struct TotalsView: View {
                     VStack(alignment: .leading, spacing: 32) {
                         HStack {
                             VStack(spacing: Constants.totalsVerticalSpacing) {
-                                priceFieldView(title: "Subtotal",
+                                priceFieldView(title: Localization.subtotal,
                                                formattedPrice: totalsViewModel.formattedCartTotalPrice,
-                                               shimmeringActive: false,
-                                               redacted: false)
+                                               shimmeringActive: totalsViewModel.isShimmering,
+                                               redacted: totalsViewModel.isSubtotalFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
-                                priceFieldView(title: "Taxes",
+                                priceFieldView(title: Localization.taxes,
                                                formattedPrice:
                                                 totalsViewModel.formattedOrderTotalTaxPrice,
                                                shimmeringActive: totalsViewModel.isShimmering,
-                                               redacted: totalsViewModel.isPriceFieldRedacted)
+                                               redacted: totalsViewModel.isTaxFieldRedacted)
                                 Divider()
                                     .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
@@ -46,10 +50,10 @@ struct TotalsView: View {
                                 .stroke(Color.posTotalsSeparator, lineWidth: Constants.defaultBorderLineWidth)
                         )
                         if totalsViewModel.showRecalculateButton {
-                            Button("Calculate amounts") {
+                            Button(Localization.calculateAmounts) {
                                 totalsViewModel.calculateAmountsTapped(
-                                    with: viewModel.cartViewModel.itemsInCart,
-                                    allItems: viewModel.itemSelectorViewModel.items)
+                                    with: cartViewModel.itemsInCart,
+                                    allItems: viewModel.itemListViewModel.items)
                             }
                         }
                     }
@@ -93,7 +97,7 @@ private extension TotalsView {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
                 Image(uiImage: .posNewTransactionImage)
-                Text("New transaction")
+                Text(Localization.newTransaction)
                     .font(Constants.newTransactionButtonFont)
                 Spacer()
             }
@@ -148,7 +152,7 @@ private extension TotalsView {
 
     @ViewBuilder func totalPriceView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         HStack(alignment: .top, spacing: .zero) {
-            Text("Total")
+            Text(Localization.total)
                 .font(Constants.totalTitleFont)
                 .fontWeight(.semibold)
             Spacer()
@@ -178,16 +182,45 @@ private extension TotalsView {
         static let newTransactionButtonPadding: CGFloat = 16
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
     }
+
+    enum Localization {
+        static let total = NSLocalizedString(
+            "pos.totalsView.total",
+            value: "Total",
+            comment: "Title for total amount field")
+        static let subtotal = NSLocalizedString(
+            "pos.totalsView.subtotal",
+            value: "Subtotal",
+            comment: "Title for subtotal amount field")
+        static let taxes = NSLocalizedString(
+            "pos.totalsView.taxes",
+            value: "Taxes",
+            comment: "Title for taxes amount field")
+        static let newTransaction = NSLocalizedString(
+            "pos.totalsView.newTransaction",
+            value: "New transaction",
+            comment: "Button title for new transaction button")
+        static let calculateAmounts = NSLocalizedString(
+            "pos.totalsView.calculateAmounts",
+            value: "Calculate amounts",
+            comment: "Button title for calculate amounts button")
+    }
 }
 
 #if DEBUG
 #Preview {
-    TotalsView(viewModel: .init(itemProvider: POSItemProviderPreview(),
-                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderPreviewService(),
-                                currencyFormatter: .init(currencySettings: .init())),
-               totalsViewModel: .init(orderService: POSOrderPreviewService(),
-                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                      currencyFormatter: .init(currencySettings: .init())))
+    let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                   currencyFormatter: .init(currencySettings: .init()),
+                                    paymentState: .acceptingCard,
+                                   isSyncingOrder: false)
+    let cartViewModel = CartViewModel()
+    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              orderService: POSOrderPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()),
+                                              totalsViewModel: totalsVM,
+                                              cartViewModel: cartViewModel)
+    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartViewModel)
 }
 #endif

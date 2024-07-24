@@ -4,8 +4,10 @@ import enum Storage.StatsVersion
 import enum Networking.DotcomError
 @testable import WooCommerce
 
+
 final class StorePerformanceViewModelTests: XCTestCase {
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -21,6 +23,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(now.adding(days: -30)).isSameDay(as: startDateForCustomRange))
     }
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -35,6 +38,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.endDateForCustomRange, endDate)
     }
 
+    @MainActor
     func test_granularityText_is_nil_for_non_custom_time_range() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -46,6 +50,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.granularityText)
     }
 
+    @MainActor
     func test_granularityText_is_not_nil_for_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -59,6 +64,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.granularityText)
     }
 
+    @MainActor
     func test_loadLastTimeRange_is_fetched_upon_initialization() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -81,6 +87,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_saveLastTimeRange_is_triggered_when_updating_time_range() {
         // Given
         var savedTimeRange: StatsTimeRangeV4?
@@ -102,6 +109,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(savedTimeRange, .thisYear)
     }
 
+    @MainActor
     func test_shouldHighlightStats_is_updated_correctly() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -291,6 +299,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
     }
 
+    @MainActor
     func test_hideStorePerformance_triggers_onDismiss() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -306,6 +315,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertTrue(onDismissTriggered)
     }
 
+    @MainActor
     func test_hideStorePerformance_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

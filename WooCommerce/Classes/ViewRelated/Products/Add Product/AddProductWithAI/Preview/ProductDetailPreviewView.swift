@@ -5,7 +5,7 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
     @State private var isShowingErrorAlert: Bool = false
-    @FocusState private var focusedField: FocusedField?
+    @FocusState private var focusedField: ProductDetailPreviewViewModel.EditableField?
 
     private let onDismiss: () -> Void
 
@@ -131,6 +131,9 @@ struct ProductDetailPreviewView: View {
                     await viewModel.generateProductDetails()
                 }
             }
+            .onDisappear {
+                viewModel.onViewDisappear()
+            }
             .onChange(of: viewModel.errorState) { newValue in
                 isShowingErrorAlert = newValue != .none
             }
@@ -169,10 +172,9 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .name,
                           shouldEnableUndo: viewModel.hasChangesToProductName,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productName = viewModel.generatedProduct?.name ?? ""
+            viewModel.undoEdits(in: .name)
         })
-        .focused($focusedField, equals: FocusedField.name)
+        .focused($focusedField, equals: .name)
     }
 
     var shortDescriptionTextField: some View {
@@ -182,10 +184,9 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .shortDescription,
                           shouldEnableUndo: viewModel.hasChangesToProductShortDescription,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productShortDescription = viewModel.generatedProduct?.shortDescription ?? ""
+            viewModel.undoEdits(in: .shortDescription)
         })
-        .focused($focusedField, equals: FocusedField.shortDescription)
+        .focused($focusedField, equals: .shortDescription)
     }
 
     var descriptionTextField: some View {
@@ -195,31 +196,30 @@ private extension ProductDetailPreviewView {
                           isFocused: focusedField == .description,
                           shouldEnableUndo: viewModel.hasChangesToProductDescription,
                           onUndoEdits: {
-            // TODO: update this
-            viewModel.productDescription = viewModel.generatedProduct?.fullDescription ?? ""
+            viewModel.undoEdits(in: .description)
         })
-        .focused($focusedField, equals: FocusedField.description)
+        .focused($focusedField, equals: .description)
     }
 
     var summaryOptionsSwitch: some View {
         HStack {
-            Text("Option 1 of 3")
+            Text(viewModel.optionsTitle)
                 .secondaryBodyStyle()
 
             Spacer()
 
             OptionSwitchButton(isForward: false) {
-                // TODO: move to previous option
+                viewModel.switchToPreviousOption()
             }
-            .disabled(true) // TODO: set this to false for non-first options
+            .disabled(!viewModel.canSelectPreviousOption)
 
             OptionSwitchButton(isForward: true) {
-                // TODO: move to next option
+                viewModel.switchToNextOption()
             }
-            .disabled(false) // TODO: set this to true for last option
+            .disabled(!viewModel.canSelectNextOption)
         }
         .padding(.top, Layout.contentVerticalSpacing)
-        .renderedIf(viewModel.isGeneratingDetails == false) // TODO: also hidden when there is 1 option only?
+        .renderedIf(viewModel.isGeneratingDetails == false && viewModel.canSwitchBetweenOptions)
     }
 
     var feedbackBanner: some View {
@@ -235,9 +235,7 @@ private extension ProductDetailPreviewView {
 
     var generateAgainButton: some View {
         Button {
-            Task { @MainActor in
-                await viewModel.generateProductDetails()
-            }
+            viewModel.didTapGenerateAgain()
         } label: {
             Text(Localization.generateAgain)
         }
@@ -328,12 +326,6 @@ private extension ProductDetailPreviewView {
                 .background(.blue)
                 .clipShape(.rect(cornerRadius: 10))
         }
-    }
-
-    enum FocusedField: Equatable {
-        case name
-        case shortDescription
-        case description
     }
 
     struct UndoableTextField: View {

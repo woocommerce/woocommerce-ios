@@ -13,23 +13,21 @@ struct MediaSourceActionSheet: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .actionSheet(isPresented: showsActionSheet) {
-                ActionSheet(title: Text(Localization.title),
-                            message: nil,
-                            buttons: [
-                                (UIImagePickerController.isSourceTypeAvailable(.camera) ?
-                                    .default(Text(Localization.camera)) {
-                                        selectMedia(.camera)
-                                    } : nil),
-                                .default(Text(Localization.photoLibrary)) {
-                                    selectMedia(.photoLibrary)
-                                },
-                                .default(Text(Localization.siteMediaLibrary)) {
-                                    selectMedia(.siteMediaLibrary)
-                                },
-                                .cancel()
-                            ].compactMap { $0 })
-            }
+            .confirmationDialog(Text(Localization.title), isPresented: showsActionSheet, actions: {
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    Button(Localization.camera) {
+                        selectMedia(.camera)
+                    }
+                }
+
+                Button(Localization.photoLibrary) {
+                    selectMedia(.photoLibrary)
+                }
+
+                Button(Localization.siteMediaLibrary) {
+                    selectMedia(.siteMediaLibrary)
+                }
+            })
     }
 }
 

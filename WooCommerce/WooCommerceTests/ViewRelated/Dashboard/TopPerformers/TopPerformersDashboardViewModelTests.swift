@@ -4,6 +4,7 @@ import Yosemite
 
 final class TopPerformersDashboardViewModelTests: XCTestCase {
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -19,6 +20,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(now.adding(days: -30)).isSameDay(as: startDateForCustomRange))
     }
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_custom_time_range() throws {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -33,6 +35,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.endDateForCustomRange, endDate)
     }
 
+    @MainActor
     func test_loadLastTimeRange_is_fetched_upon_initialization() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -55,6 +58,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_saveLastTimeRange_is_triggered_when_updating_time_range() {
         // Given
         var savedTimeRange: StatsTimeRangeV4?
@@ -76,6 +80,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(savedTimeRange, .thisYear)
     }
 
+    @MainActor
     func test_dismissTopPerformers_triggers_onDismiss() {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -91,6 +96,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(onDismissTriggered)
     }
 
+    @MainActor
     func test_dismissTopPerformers_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

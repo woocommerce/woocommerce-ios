@@ -193,8 +193,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         tagline.isNotEmpty && description.isNotEmpty
     }
 
-    @Published var isShowingMissingImageErrorAlert: Bool = false
-    @Published var isShowingPaymentInfo: Bool = false
+    @Published var isShowingMissingImageErrorAlert = false
+    @Published var isShowingMissingDestinationURLAlert = false
+    @Published var isShowingPaymentInfo = false
 
     /// ResultController to get the product for the given product ID
     ///
@@ -311,6 +312,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     func didTapConfirmDetails() {
         guard image != nil else {
             return isShowingMissingImageErrorAlert = true
+        }
+
+        guard finalDestinationURL.isNotEmpty else {
+            return isShowingMissingDestinationURLAlert = true
         }
 
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }

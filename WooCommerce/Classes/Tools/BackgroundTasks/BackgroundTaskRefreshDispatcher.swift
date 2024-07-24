@@ -11,7 +11,7 @@ final class BackgroundTaskRefreshDispatcher {
     func scheduleAppRefresh() {
 
         // Do not run this code while running test because this framework is not enabled in the simulator
-        guard Self.isNotRunningTests() else {
+        guard Self.isNotRunningTests(), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
             return
         }
 
@@ -29,7 +29,7 @@ final class BackgroundTaskRefreshDispatcher {
     func registerSystemTaskIdentifier() {
 
         // Do not run this code while running test because this framework is not enabled in the simulator
-        guard Self.isNotRunningTests() else {
+        guard Self.isNotRunningTests(), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
             return
         }
 
@@ -52,11 +52,31 @@ final class BackgroundTaskRefreshDispatcher {
         // Schedule a new refresh task.
         scheduleAppRefresh()
 
-        let ordersSyncTask = OrderSyncBackgroundTask(siteID: siteID, backgroundTask: backgroundTask).dispatch()
+        // Launch all refresh tasks in parallel.
+        let refreshTasks = Task {
+            do {
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    group.addTask {
+                        try await OrderListSyncBackgroundTask(siteID: siteID).dispatch()
+                    }
+                    group.addTask {
+                        try await DashboardSyncBackgroundTask(siteID: siteID).dispatch()
+                    }
+
+                    // Rethrows error
+                    for try await _ in group {
+                        // No=op
+                    }
+                }
+                backgroundTask.setTaskCompleted(success: true)
+            } catch {
+                backgroundTask.setTaskCompleted(success: false)
+            }
+        }
 
         // Provide the background task with an expiration handler that cancels the operation.
         backgroundTask.expirationHandler = {
-            ordersSyncTask.cancel()
+            refreshTasks.cancel()
         }
      }
 }

@@ -34,9 +34,9 @@ struct POSFloatingControlView: View {
                         .font(Constants.ellipsisFont)
                 }
                 .frame(width: Constants.size, height: Constants.size)
-                .background(Color.white)
-                .cornerRadius(Constants.cornerRadius)
             }
+            .background(Color.white)
+            .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
             HStack {
                 CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)

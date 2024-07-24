@@ -6,7 +6,7 @@ import Codegen
 /// The order of the statuses declaration is according to the Order's lifecycle
 /// and it is used to determine the user facing display order
 ///
-public enum OrderStatusEnum: Codable, Hashable, Comparable, GeneratedFakeable {
+public enum OrderStatusEnum: Codable, Hashable, Comparable, Sendable, GeneratedFakeable {
     case autoDraft
     case pending
     case processing

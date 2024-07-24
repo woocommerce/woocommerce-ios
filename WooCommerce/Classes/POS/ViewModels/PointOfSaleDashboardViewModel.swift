@@ -1,18 +1,15 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
-import protocol Yosemite.POSOrderServiceProtocol
 import Combine
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    let itemListViewModel: ItemListViewModel
     let cartViewModel: any CartViewModelProtocol
     let totalsViewModel: any TotalsViewModelProtocol
+    let itemListViewModel: any ItemListViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
@@ -37,14 +34,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemProvider: POSItemProvider,
-         cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter,
+    init(cardPresentPaymentService: CardPresentPaymentFacade,
          totalsViewModel: any TotalsViewModelProtocol,
-         cartViewModel: any CartViewModelProtocol) {
+         cartViewModel: any CartViewModelProtocol,
+         itemListViewModel: any ItemListViewModelProtocol) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
-        self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+        self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
 
@@ -157,7 +152,7 @@ private extension PointOfSaleDashboardViewModel {
 
 private extension PointOfSaleDashboardViewModel {
     func observeItemListState() {
-        Publishers.CombineLatest(itemListViewModel.$state, itemListViewModel.$items)
+        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
             .map { state, items -> Bool in
                 return state == .loading && items.isEmpty
             }

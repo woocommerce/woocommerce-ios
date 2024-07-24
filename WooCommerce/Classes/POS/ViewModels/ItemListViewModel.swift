@@ -3,7 +3,7 @@ import SwiftUI
 import protocol Yosemite.POSItem
 import protocol Yosemite.POSItemProvider
 
-final class ItemListViewModel: ObservableObject {
+final class ItemListViewModel: ItemListViewModelProtocol {
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
@@ -29,6 +29,10 @@ final class ItemListViewModel: ObservableObject {
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
 
     let selectedItemPublisher: AnyPublisher<POSItem, Never>
+
+    var itemsPublisher: Published<[POSItem]>.Publisher { $items }
+    var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
+    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { $isHeaderBannerDismissed }
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider

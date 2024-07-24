@@ -6,13 +6,16 @@ struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
+    @ObservedObject private var itemListViewModel: ItemListViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel) {
+         cartViewModel: CartViewModel,
+         itemListViewModel: ItemListViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
+        self.itemListViewModel = itemListViewModel
     }
 
     private var isCartShown: Bool {
@@ -129,7 +132,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: viewModel.itemListViewModel)
+        ItemListView(viewModel: itemListViewModel)
     }
 }
 
@@ -154,15 +157,17 @@ fileprivate extension CardPresentPaymentEvent {
                                    paymentState: .acceptingCard,
                                    isSyncingOrder: false)
     let cartVM = CartViewModel()
-    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                              orderService: POSOrderPreviewService(),
-                                              currencyFormatter: .init(currencySettings: .init()),
+    let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
+    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
-                                              cartViewModel: cartVM)
+                                              cartViewModel: cartVM,
+                                              itemListViewModel: itemsListVM)
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartVM)
+        PointOfSaleDashboardView(viewModel: posVM, 
+                                 totalsViewModel: totalsVM,
+                                 cartViewModel: cartVM,
+                                 itemListViewModel: itemsListVM)
     }
 }
 #endif

@@ -16,11 +16,13 @@ struct PointOfSaleDashboardView: View {
     }
 
     var body: some View {
-        Group {
+        ZStack {
             if viewModel.isInitialLoading {
                 PointOfSaleLoadingView()
+                    .transition(.opacity)
             } else {
                 contentView
+                    .transition(.push(from: .top))
                     .toolbar {
                         ToolbarItem(placement: .bottomBar) {
                             POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
@@ -31,6 +33,7 @@ struct PointOfSaleDashboardView: View {
                     .toolbarBackground(.visible, for: .bottomBar)
             }
         }
+        .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {

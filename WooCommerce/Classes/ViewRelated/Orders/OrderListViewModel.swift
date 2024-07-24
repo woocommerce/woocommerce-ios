@@ -298,10 +298,6 @@ private extension OrderListViewModel {
             ServiceLocator.crashLogging.logError(error)
         }
     }
-
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.first(where: { $0.status == order.status })
-    }
 }
 
 // MARK: - Banners
@@ -332,9 +328,7 @@ extension OrderListViewModel {
             return nil
         }
 
-        let status = lookUpOrderStatus(for: order)
-
-        return OrderListCellViewModel(order: order, status: status, currencySettings: ServiceLocator.currencySettings)
+        return OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

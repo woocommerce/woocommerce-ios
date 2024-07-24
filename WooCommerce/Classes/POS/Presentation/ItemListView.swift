@@ -12,12 +12,12 @@ struct ItemListView: View {
     var body: some View {
         VStack {
             headerView()
-                .renderedIf(viewModel.state != .loading)
             switch viewModel.state {
             case .empty(let emptyModel):
                 emptyView(emptyModel)
             case .loading:
-                PointOfSaleLoadingView()
+                /// TODO: handle pull to refresh
+                listView(viewModel.items)
             case .loaded(let items):
                 listView(items)
             case .error(let errorModel):

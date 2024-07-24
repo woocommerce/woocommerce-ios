@@ -16,6 +16,42 @@ struct PointOfSaleDashboardView: View {
     }
 
     var body: some View {
+        Group {
+            if viewModel.isInitialLoading {
+                PointOfSaleLoadingView()
+            } else {
+                contentView
+                    .toolbar {
+                        ToolbarItem(placement: .bottomBar) {
+                            POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
+                                           isExitPOSDisabled: $viewModel.isExitPOSDisabled)
+                        }
+                    }
+                    .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
+                    .toolbarBackground(.visible, for: .bottomBar)
+            }
+        }
+        .background(Color.posBackgroundGreyi3)
+        .navigationBarBackButtonHidden(true)
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch totalsViewModel.cardPresentPaymentEvent {
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
+        })
+        .task {
+            await viewModel.itemListViewModel.populatePointOfSaleItems()
+        }
+    }
+
+    var contentView: some View {
         VStack {
             HStack {
                 switch viewModel.orderStage {
@@ -23,11 +59,9 @@ struct PointOfSaleDashboardView: View {
                     GeometryReader { geometry in
                         HStack {
                             productListView
-                            if !viewModel.isProductListFullScreen {
-                                cartView
-                                    .renderedIf(isCartShown)
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                            }
+                            cartView
+                                .renderedIf(isCartShown)
+                                .frame(width: geometry.size.width * Constants.cartWidth)
                         }
                     }
                 case .finalizing:
@@ -44,33 +78,6 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             .padding()
-        }
-        .background(Color.posBackgroundGreyi3)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel,
-                               isExitPOSDisabled: $viewModel.isExitPOSDisabled)
-                .renderedIf(!viewModel.isProductListFullScreen)
-            }
-        }
-        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
-        .toolbarBackground(.visible, for: .bottomBar)
-        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(viewModel.totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
-        })
-        .task {
-            await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
     }
 }

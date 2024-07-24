@@ -1163,8 +1163,15 @@ private extension ProductFormViewController {
             source: .productDetailPromoteButton,
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: {
-                // no-op
+            onCampaignCreated: { [weak self] in
+                /// Re-sync Blaze campaigns to update storage items.
+                ServiceLocator.stores.dispatch(BlazeAction.synchronizeCampaignsList(
+                    siteID: site.siteID,
+                    skip: 0,
+                    limit: PaginationTracker.Defaults.pageSize) { _ in
+                        self?.updateFormTableContent()
+                    }
+                )
             }
         )
         coordinator.start()

@@ -33,7 +33,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     /// Emits a void value informing when Blaze eligibility is computed
     var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
-        blazeEligiblityUpdateSubject.eraseToAnyPublisher()
+        blazeEligibilityUpdateSubject.eraseToAnyPublisher()
     }
 
     /// The latest product value.
@@ -61,7 +61,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
-    private let blazeEligiblityUpdateSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligibilityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
@@ -72,9 +72,12 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                 matching: predicate,
-                                                                                sortedBy: [])
+                                                                                sortedBy: [sortDescriptorByID])
         return resultsController
     }()
 
@@ -788,16 +791,14 @@ private extension ProductFormViewModel {
             isEligibleForBlaze = false
             return
         }
-        Task { @MainActor in
-            let isEligible = await blazeEligibilityChecker.isProductEligible(
-                site: site,
-                product: originalProduct,
-                isPasswordProtected: password?.isNotEmpty == true
-            )
-            isEligibleForBlaze = isEligible
-            updateActionsFactory()
-            blazeEligiblityUpdateSubject.send()
-        }
+        let isEligible = blazeEligibilityChecker.isProductEligible(
+            site: site,
+            product: originalProduct,
+            isPasswordProtected: password?.isNotEmpty == true
+        )
+        isEligibleForBlaze = isEligible
+        updateActionsFactory()
+        blazeEligibilityUpdateSubject.send()
     }
 
     /// Performs initial fetch from storage and updates results.
@@ -820,6 +821,7 @@ private extension ProductFormViewModel {
 
     func updateBlazeCampaignResult() {
         hasActiveBlazeCampaign = hasBlazeCampaign()
+        updateActionsFactory()
     }
 }
 

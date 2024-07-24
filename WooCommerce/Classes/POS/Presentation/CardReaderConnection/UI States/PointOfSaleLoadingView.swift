@@ -25,7 +25,8 @@ struct PointOfSaleLoadingView: View {
         ProgressView()
             .progressViewStyle(IndefiniteCircularProgressViewStyle(
                 size: Layout.progressViewSize,
-                lineWidth: Layout.progressViewLineWidth))
+                lineWidth: Layout.progressViewLineWidth,
+                lineCap: .butt))
     }
 }
 

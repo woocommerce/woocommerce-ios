@@ -3,6 +3,7 @@ import SwiftUI
 public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     var size: CGFloat
     var lineWidth: CGFloat = Constants.lineWidth
+    var lineCap: CGLineCap = .round
     private let arcStart: Double = Constants.initialArcStart
     private let animationDuration: Double = 1.6
 
@@ -53,7 +54,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
                 to: CGFloat(arcEnd))
             .stroke(
                 Color(.primary),
-                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: lineCap))
             .frame(width: size)
             .rotationEffect(rotation)
     }

@@ -124,9 +124,6 @@ private extension PointOfSaleDashboardView {
         TotalsView(viewModel: viewModel,
                    totalsViewModel: totalsViewModel,
                    cartViewModel: cartViewModel)
-            .background(Color(UIColor.systemBackground))
-            .frame(maxWidth: .infinity)
-            .cornerRadius(16)
     }
 
     var productListView: some View {

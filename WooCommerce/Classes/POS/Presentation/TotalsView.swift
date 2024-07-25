@@ -16,12 +16,13 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                VStack {
-                    Spacer()
-                    cardReaderView
-                        .font(.title)
-                        .padding()
-                    Spacer()
+                VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                    if !totalsViewModel.isSyncingOrder {
+                        cardReaderView
+                            .font(.title)
+                            .padding()
+                    }
+
                     totalsFieldsView
                 }
                 paymentsActionButtons
@@ -145,9 +146,7 @@ private extension TotalsView {
             if let inlinePaymentMessage = totalsViewModel.cardPresentPaymentInlineMessage {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
-                POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader connected",
-                                                                  buttons: [.init(title: "Collect Payment",
-                                                                                  actionHandler: totalsViewModel.cardPaymentTapped)]))
+                EmptyView()
             }
         case .disconnected:
             POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader disconnected",
@@ -162,6 +161,8 @@ private extension TotalsView {
         static let pricesIdealWidth: CGFloat = 382
         static let defaultBorderLineWidth: CGFloat = 1
         static let defaultBorderLineCornerRadius: CGFloat = 8
+
+        static let verticalSpacing: CGFloat = 80
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8

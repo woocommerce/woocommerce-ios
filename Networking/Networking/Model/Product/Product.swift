@@ -104,6 +104,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
+    
+    /// If not `nil` the product is protected by password. This parameter is available from WooCommerce 8.1.
+    /// If under `<8.1`, it should be used `Post` entity under WP.
+    public let password: String?
 
     // MARK: Composite Product properties
 
@@ -256,7 +260,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 minAllowedQuantity: String?,
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
-                combineVariationQuantities: Bool?) {
+                combineVariationQuantities: Bool?,
+                password: String?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -332,6 +337,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
+        self.password = password
     }
 
     /// The public initializer for Product.
@@ -547,6 +553,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if let combineVariationQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) {
             combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
         }
+        
+        // Password
+        let password = container.failsafeDecodeIfPresent(stringForKey: .password)
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -622,7 +631,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   minAllowedQuantity: minAllowedQuantity,
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
-                  combineVariationQuantities: combineVariationQuantities)
+                  combineVariationQuantities: combineVariationQuantities,
+                  password: password)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -736,6 +746,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
         }
+        
+        // Password
+        try container.encode(password, forKey: .password)
     }
 
     private func buildMetaDataValuePairs() -> [KeyValuePair] {
@@ -839,6 +852,8 @@ private extension Product {
         case maxAllowedQuantity     = "max_quantity"
         case groupOfQuantity        = "group_of_quantity"
         case combineVariations      = "combine_variations"
+        
+        case password = "post_password"
     }
 
     enum MetadataKeys {

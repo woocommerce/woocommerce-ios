@@ -87,8 +87,7 @@ struct CartView: View {
             case .building:
                 if cartViewModel.isCartEmpty {
                     EmptyView()
-                }
-                else {
+                } else {
                     checkoutButton
                         .padding(Constants.checkoutButtonPadding)
                 }

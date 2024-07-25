@@ -5,7 +5,7 @@ struct ItemListView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
-    @State private var showModal: Bool = false
+    @State private var showSimpleProductsModal: Bool = false
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -32,13 +32,13 @@ struct ItemListView: View {
             .padding(.horizontal, Constants.itemListPadding)
             .background(Color.posBackgroundGreyi3)
 
-            if showModal {
-                SimpleProductsModalView(isPresented: $showModal)
+            if showSimpleProductsModal {
+                SimpleProductsModalView(isPresented: $showSimpleProductsModal)
                     .background(Color.clear)
                     .transition(.move(edge: .bottom))
                     .onAppear {
                         withAnimation(.easeInOut) {
-                            showModal = true
+                            showSimpleProductsModal = true
                         }
                     }
             }
@@ -69,7 +69,7 @@ private extension ItemListView {
         HStack {
             Button(action: {
                 withAnimation(.easeInOut) {
-                    showModal.toggle()
+                    showSimpleProductsModal.toggle()
                 }
             }) {
                 Image(uiImage: .infoImage)

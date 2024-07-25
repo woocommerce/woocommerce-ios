@@ -1242,6 +1242,13 @@ enum WooAnalyticsStat: String {
     case googleAdsFlowCanceled = "googleads_flow_canceled"
     case googleAdsFlowError = "googleads_flow_error"
     case googleAdsCampaignCreationSuccess = "googleads_campaign_creation_success"
+
+    // MARK: Background Data Updates
+    case backgroundDataSynced = "background_data_synced"
+    case backgroundDataSyncError = "background_data_sync_error"
+    case pushNotificationOrderBackgroundSynced = "push_notification_order_background_synced"
+    case pushNotificationOrderBackgroundSyncError = "push_notification_order_background_sync_error"
+    case backgroundUpdatesDisabled = "background_updates_disabled"
 }
 
 extension WooAnalyticsStat {

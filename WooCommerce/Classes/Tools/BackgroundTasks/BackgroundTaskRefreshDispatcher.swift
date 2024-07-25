@@ -77,7 +77,7 @@ final class BackgroundTaskRefreshDispatcher {
                     }
                 }
 
-                let timeTaken = Date.now.timeIntervalSince(startTime)
+                let timeTaken = round(Date.now.timeIntervalSince(startTime))
                 ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(timeTaken: timeTaken))
                 backgroundTask.setTaskCompleted(success: true)
 

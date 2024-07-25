@@ -54,7 +54,7 @@ struct PushNotificationBackgroundSynchronizer {
                 try await synchronizeOrder(siteID: pushNotification.siteID, orderID: orderID)
             }
 
-            let timeTaken = Date.now.timeIntervalSince(startTime)
+            let timeTaken = round(Date.now.timeIntervalSince(startTime))
             ServiceLocator.analytics.track(event: .BackgroundUpdates.orderPushNotificationSynced(timeTaken: timeTaken))
 
             return .newData

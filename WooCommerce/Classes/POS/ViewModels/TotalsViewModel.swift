@@ -111,6 +111,9 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
+            Task { @MainActor in
+                await prepareConnectedReaderForPayment()
+            }
             return
         }
         // calculate totals and sync order if there was a change in the cart

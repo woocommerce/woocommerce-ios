@@ -51,25 +51,25 @@ struct ItemListView: View {
 private extension ItemListView {
     @ViewBuilder
     func headerView() -> some View {
-        switch viewModel.shouldShowHeaderBanner {
-        case true:
-            VStack {
-                headerTextView
-                bannerCardView
-            }
-        case false:
+        VStack {
             HStack {
                 headerTextView
-                Spacer()
-                Button(action: {
-                    openInfoBanner()
-                }, label: {
-                    Image(systemName: "info.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                        .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
-                })
+                if !viewModel.shouldShowHeaderBanner && viewModel.isHeaderBannerDismissed {
+                    Spacer()
+                    Button(action: {
+                        openInfoBanner()
+                    }, label: {
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
+                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                    })
+                }
+            }
+            if viewModel.shouldShowHeaderBanner {
+                bannerCardView
+                    .padding(.vertical, 16)
             }
         }
     }
@@ -85,7 +85,7 @@ private extension ItemListView {
                     showSimpleProductsModal.toggle()
                 }
             }) {
-                Image(uiImage: .infoImage)
+                Image(systemName: "info.circle")
                     .padding(Constants.iconPadding)
                     .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
                     .foregroundColor(Color.primaryTint)
@@ -101,7 +101,7 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(uiImage: .closeButton)
+                    Image(systemName: "xmark.circle")
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
                         .foregroundColor(.gray)
                 })

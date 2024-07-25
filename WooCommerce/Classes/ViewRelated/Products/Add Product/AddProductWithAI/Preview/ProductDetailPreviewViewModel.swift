@@ -265,7 +265,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 
     func didTapGenerateAgain() {
-        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: false))
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: false,
+                                                                        features: productFeatures))
         Task { @MainActor in
             await generateProductDetails()
         }

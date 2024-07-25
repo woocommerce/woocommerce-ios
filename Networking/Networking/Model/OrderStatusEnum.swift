@@ -6,7 +6,7 @@ import Codegen
 /// The order of the statuses declaration is according to the Order's lifecycle
 /// and it is used to determine the user facing display order
 ///
-public enum OrderStatusEnum: Codable, Hashable, Comparable, GeneratedFakeable {
+public enum OrderStatusEnum: Codable, Hashable, Comparable, Sendable, GeneratedFakeable {
     case autoDraft
     case pending
     case processing
@@ -16,6 +16,65 @@ public enum OrderStatusEnum: Codable, Hashable, Comparable, GeneratedFakeable {
     case refunded
     case failed
     case custom(String)
+}
+
+public extension OrderStatusEnum {
+    /// Returns the localized text version of the Enum
+    ///
+    var localizedName: String {
+        switch self {
+        case .autoDraft:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.autoDraft",
+                value: "Draft",
+                comment: "Display label for auto-draft order status."
+            )
+        case .pending:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.pending",
+                value: "Pending Payment",
+                comment: "Display label for pending order status."
+            )
+        case .processing:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.processing",
+                value: "Processing",
+                comment: "Display label for processing order status."
+            )
+        case .onHold:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.onHold",
+                value: "On hold",
+                comment: "Display label for on hold order status."
+            )
+        case .failed:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.failed",
+                value: "Failed",
+                comment: "Display label for failed order status."
+            )
+        case .cancelled:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.cancelled",
+                value: "Cancelled",
+                comment: "Display label for cancelled order status."
+            )
+        case .completed:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.completed",
+                value: "Completed",
+                comment: "Display label for completed order status."
+            )
+        case .refunded:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.refunded",
+                value: "Refunded",
+                comment: "Display label for refunded order status."
+            )
+        case .custom(let payload):
+            return payload // unable to localize at runtime.
+        }
+    }
 }
 
 /// RawRepresentable Conformance

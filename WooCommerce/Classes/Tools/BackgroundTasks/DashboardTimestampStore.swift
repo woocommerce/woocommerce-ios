@@ -36,6 +36,12 @@ struct DashboardTimestampStore {
         store.set(timestamp, forKey: createKey(for: card, at: range))
     }
 
+    /// Removes a timestamp for the given card and range.
+    ///
+    static func removeTimestamp(for card: Card, at range: TimeRange, store: UserDefaults = UserDefaults.standard) {
+        store.removeObject(forKey: createKey(for: card, at: range))
+    }
+
     /// Loads the timestamp for the given card and range.
     ///
     static func loadTimestamp(for card: Card, at range: TimeRange, store: UserDefaults = UserDefaults.standard) -> Date? {
@@ -47,7 +53,7 @@ struct DashboardTimestampStore {
     static func resetStore(store: UserDefaults = UserDefaults.standard) {
         for card in Card.allCases {
             for range in TimeRange.allCases {
-                store.removeObject(forKey: createKey(for: card, at: range))
+                removeTimestamp(for: card, at: range, store: store)
             }
         }
     }
@@ -64,5 +70,33 @@ extension StatsTimeRangeV4 {
         case .thisYear: return .year
         case .custom: return .custom
         }
+    }
+}
+
+/// Extension to convert `DashboardTimestampStore.Card` into `DashboardCard.CardType`
+///
+extension DashboardTimestampStore.Card {
+    var dashboardCard: DashboardCard.CardType {
+        switch self {
+        case .performance: return .performance
+        case .topPerformers: return .topPerformers
+        }
+    }
+}
+
+extension DashboardTimestampStore {
+
+    /// Returns `true` if it hasn't passed more than 30 minutes since the timestamp was stored.`False` otherwise.
+    ///
+    static func isTimestampFresh(for card: Card, at range: TimeRange, store: UserDefaults = UserDefaults.standard) -> Bool {
+
+        // Time delta trigger
+        let recencyTime: TimeInterval = 30 * 60
+
+        guard let timestamp = loadTimestamp(for: card, at: range, store: store) else {
+            return false
+        }
+
+        return Date().timeIntervalSince(timestamp) < recencyTime
     }
 }

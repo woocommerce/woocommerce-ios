@@ -58,7 +58,6 @@ final class OrderSearchUICommandTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(cellViewModel, "Expected createCellViewModel to return an OrderListCellViewModel instance")
-        XCTAssertEqual(cellViewModel.statusString, "on-hold", "Expected order status name to match")
         XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
     }
 

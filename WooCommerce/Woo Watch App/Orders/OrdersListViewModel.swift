@@ -63,7 +63,7 @@ final class OrdersListViewModel: ObservableObject {
     ///
     static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
-            let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
+            let orderViewModel = OrderListCellViewModel(order: order, currencySettings: currencySettings)
 
             let items = order.items.enumerated().map { index, orderItem in
                 OrdersListView.OrderItem(id: orderItem.itemID,

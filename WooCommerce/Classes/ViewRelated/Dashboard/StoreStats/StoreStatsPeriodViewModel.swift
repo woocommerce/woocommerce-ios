@@ -105,7 +105,7 @@ final class StoreStatsPeriodViewModel {
     private lazy var summaryStatsResultsController: ResultsController<StorageSiteSummaryStats> = {
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-            return StatsStoreV4.buildDateString(from: date, with: .day)
+            return StatsStoreV4.buildDateString(from: date, timeRange: .today)
         }()
         let predicate = NSPredicate(format: "siteID = %ld AND period == %@ AND date == %@",
                                     siteID,

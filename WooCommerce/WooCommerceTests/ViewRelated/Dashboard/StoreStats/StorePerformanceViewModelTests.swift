@@ -156,7 +156,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4) // Initial value
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v3)
@@ -171,7 +171,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
 
         // When
         viewModel.didSelectTimeRange(.thisMonth)
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
@@ -190,7 +190,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date().endOfDay(timezone: .current)
         let startDate = Date().startOfDay(timezone: .current)
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
@@ -209,7 +209,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToCustomRange)
@@ -228,7 +228,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
@@ -247,7 +247,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -261,7 +261,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.noPermission)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -277,7 +277,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -293,7 +293,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)

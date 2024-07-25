@@ -22,7 +22,7 @@ struct TotalsView: View {
                         .font(.title)
                         .padding()
                     Spacer()
-                    totalsLinesView
+                    totalsFieldsView
                 }
                 paymentsActionButtons
                     .padding()
@@ -35,27 +35,26 @@ struct TotalsView: View {
 }
 
 private extension TotalsView {
-    var totalsLinesView: some View {
+    var totalsFieldsView: some View {
         HStack(alignment: .center) {
             Spacer()
             VStack() {
-                priceFieldView(title: Localization.subtotal,
-                               formattedPrice: totalsViewModel.formattedCartTotalPrice,
-                               shimmeringActive: totalsViewModel.isShimmering,
-                               redacted: totalsViewModel.isSubtotalFieldRedacted)
+                subtotalFieldView(title: Localization.subtotal,
+                                  formattedPrice: totalsViewModel.formattedCartTotalPrice,
+                                  shimmeringActive: totalsViewModel.isShimmering,
+                                  redacted: totalsViewModel.isSubtotalFieldRedacted)
                 Spacer().frame(height: Constants.subtotalsVerticalSpacing)
-                priceFieldView(title: Localization.taxes,
-                               formattedPrice:
-                                totalsViewModel.formattedOrderTotalTaxPrice,
-                               shimmeringActive: totalsViewModel.isShimmering,
-                               redacted: totalsViewModel.isTaxFieldRedacted)
+                subtotalFieldView(title: Localization.taxes,
+                                  formattedPrice: totalsViewModel.formattedOrderTotalTaxPrice,
+                                  shimmeringActive: totalsViewModel.isShimmering,
+                                  redacted: totalsViewModel.isTaxFieldRedacted)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 Divider()
                     .overlay(Color.posTotalsSeparator)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
-                totalPriceFieldView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
-                                    shimmeringActive: totalsViewModel.isShimmering,
-                                    redacted: totalsViewModel.isTotalPriceFieldRedacted)
+                totalFieldView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
+                               shimmeringActive: totalsViewModel.isShimmering,
+                               redacted: totalsViewModel.isTotalPriceFieldRedacted)
             }
             .padding(Constants.totalsLineViewPadding)
             .frame(minWidth: Constants.pricesIdealWidth)
@@ -65,28 +64,47 @@ private extension TotalsView {
     }
 
     @ViewBuilder
-    func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
-        HStack(alignment: .top, spacing: .zero) {
-            Text(title)
-                .font(Constants.subtotalTitleFont)
-            Spacer()
-            Text(formattedPrice ?? "")
-                .font(Constants.subtotalAmountFont)
+    func subtotalFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
+        if shimmeringActive {
+            shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
+        } else {
+            HStack(alignment: .top, spacing: .zero) {
+                Text(title)
+                    .font(Constants.subtotalTitleFont)
+                Spacer()
+                Text(formattedPrice ?? "")
+                    .font(Constants.subtotalAmountFont)
+                    .redacted(reason: redacted ? [.placeholder] : [])
+            }
+            .foregroundColor(Color.primaryText)
         }
-        .foregroundColor(Color.primaryText)
     }
 
     @ViewBuilder
-    func totalPriceFieldView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
-        HStack(alignment: .top, spacing: .zero) {
-            Text(Localization.total)
-                .font(Constants.totalTitleFont)
-                .fontWeight(.semibold)
-            Spacer(minLength: Constants.totalsHorizontalSpacing)
-            Text(formattedPrice ?? "")
-                .font(Constants.totalAmountFont)
+    func totalFieldView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
+        if shimmeringActive {
+            shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
+        } else {
+            HStack(alignment: .top, spacing: .zero) {
+                Text(Localization.total)
+                    .font(Constants.totalTitleFont)
+                    .fontWeight(.semibold)
+                Spacer(minLength: Constants.totalsHorizontalSpacing)
+                Text(formattedPrice ?? "")
+                    .font(Constants.totalAmountFont)
+                    .redacted(reason: redacted ? [.placeholder] : [])
+            }
+            .foregroundColor(Color.primaryText)
         }
-        .foregroundColor(Color.primaryText)
+    }
+
+    func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
+        Color.posTotalsSeparator
+            .frame(width: width, height: height)
+            .fixedSize(horizontal: true, vertical: true)
+            .redacted(reason: [.placeholder])
+            .shimmering(active: true)
+            .cornerRadius(Constants.shimmeringCornerRadius)
     }
 }
 
@@ -153,6 +171,11 @@ private extension TotalsView {
         static let subtotalAmountFont: Font = Font.system(size: 24)
         static let totalTitleFont: Font = Font.system(.largeTitle, design: .default, weight: .medium)
         static let totalAmountFont: Font = Font.system(.largeTitle, design: .default, weight: .bold)
+
+        static let shimmeringCornerRadius: CGFloat = 4
+        static let shimmeringWidth: CGFloat = 334
+        static let subtotalsShimmeringHeight: CGFloat = 36
+        static let totalShimmeringHeight: CGFloat = 40
 
         static let newTransactionButtonSpacing: CGFloat = 20
         static let newTransactionButtonPadding: CGFloat = 16

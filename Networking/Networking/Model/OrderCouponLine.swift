@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a CouponLine Entity within an Order.
 ///
-public struct OrderCouponLine: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderCouponLine: Codable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let couponID: Int64
     public let code: String
     public let discount: String

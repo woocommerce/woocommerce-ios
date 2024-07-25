@@ -3,7 +3,7 @@ import Codegen
 
 /// OrderGiftCard entity: Represents a gift card applied to an order.
 ///
-public struct OrderGiftCard: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderGiftCard: Codable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
 
     /// Remote ID for the gift card
     ///

@@ -179,8 +179,8 @@ extension WooAnalyticsEvent {
             }
 
             /// Tracked when campaign creation fails
-            static func campaignCreationFailed() -> WooAnalyticsEvent {
-                WooAnalyticsEvent(statName: .blazeCampaignCreationFailed, properties: [:])
+            static func campaignCreationFailed(error: Error) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCampaignCreationFailed, properties: [:], error: error)
             }
         }
     }

@@ -168,6 +168,8 @@ final class DashboardViewModel: ObservableObject {
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
                              hasOrders: hasOrders)
+
+        await reloadCardsWithBackgroundUpdateSupportIfNeeded()
     }
 
     func handleCustomizationDismissal() {
@@ -175,7 +177,7 @@ final class DashboardViewModel: ObservableObject {
     }
 
     @MainActor
-    func reloadAllData() async {
+    func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
         checkInboxEligibility()
         await withTaskGroup(of: Void.self) { group in
@@ -185,7 +187,7 @@ final class DashboardViewModel: ObservableObject {
             if dashboardCards.isNotEmpty {
                 group.addTask { [weak self] in
                     guard let self else { return }
-                    await reloadCards(showOnDashboardCards)
+                    await reloadCardsIfNeeded(showOnDashboardCards, forceRefresh: forceCardsRefresh)
                 }
             }
             group.addTask { [weak self] in
@@ -249,7 +251,7 @@ final class DashboardViewModel: ObservableObject {
 
         Task { @MainActor in
             analytics.track(.dashboardPulledToRefresh)
-            await reloadAllData()
+            await reloadAllData(forceCardsRefresh: true)
         }
     }
 }
@@ -346,7 +348,7 @@ private extension DashboardViewModel {
 
                 if newlyEnabledCards.isNotEmpty {
                     Task { @MainActor in
-                        await self.reloadCards(newlyEnabledCards)
+                        await self.reloadCardsIfNeeded(newlyEnabledCards)
                     }
                 }
             })
@@ -354,7 +356,7 @@ private extension DashboardViewModel {
     }
 
     @MainActor
-    func reloadCards(_ cards: [DashboardCard]) async {
+    func reloadCardsIfNeeded(_ cards: [DashboardCard], forceRefresh: Bool = false) async {
         await withTaskGroup(of: Void.self) { group in
             cards.forEach { card in
                 switch card.type {
@@ -364,11 +366,11 @@ private extension DashboardViewModel {
                     }
                 case .performance:
                     group.addTask { [weak self] in
-                        await self?.storePerformanceViewModel.reloadData()
+                        await self?.storePerformanceViewModel.reloadDataIfNeeded(forceRefresh: forceRefresh)
                     }
                 case .topPerformers:
                     group.addTask { [weak self] in
-                        await self?.topPerformersViewModel.reloadData()
+                        await self?.topPerformersViewModel.reloadDataIfNeeded(forceRefresh: forceRefresh)
                     }
                 case .blaze:
                     group.addTask { [weak self] in
@@ -401,6 +403,19 @@ private extension DashboardViewModel {
                 }
             }
         }
+    }
+
+    /// Reload supported card data if needed, but only if we are not already loading data.
+    ///
+    func reloadCardsWithBackgroundUpdateSupportIfNeeded() async {
+        guard !isReloadingAllData && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+            return
+        }
+
+        let supportedCards = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
+        let supportedVisibleCards = showOnDashboardCards.filter { supportedCards.contains($0.type) }
+
+        await reloadCardsIfNeeded(supportedVisibleCards)
     }
 }
 

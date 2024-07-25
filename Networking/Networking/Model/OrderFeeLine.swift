@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a FeeLine Entity within an Order.
 ///
-public struct OrderFeeLine: Equatable, Codable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderFeeLine: Equatable, Codable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let feeID: Int64
 
     /// Fee Name

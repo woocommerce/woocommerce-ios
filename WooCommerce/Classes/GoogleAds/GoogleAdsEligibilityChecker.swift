@@ -78,9 +78,9 @@ private extension DefaultGoogleAdsEligibilityChecker {
     enum Constants {
         static let pluginSlug = "google-listings-and-ads/google-listings-and-ads.php"
 
-        /// Version 2.7.5 is required to check for campaign creation success on the web.
-        /// Ref: https://github.com/woocommerce/google-listings-and-ads/releases/tag/2.7.5.
+        /// Version 2.7.7 is required for an optimized experience of the plugin on the mobile web.
+        /// Ref: https://github.com/woocommerce/google-listings-and-ads/releases/tag/2.7.7.
         /// We can remove this limit once we support native experience.
-        static let pluginMinimumVersion = "2.7.5"
+        static let pluginMinimumVersion = "2.7.7"
     }
 }

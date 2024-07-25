@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the Taxes for a specific Order Item.
 ///
-public struct OrderItemTax: Codable, Equatable, Hashable, GeneratedFakeable {
+public struct OrderItemTax: Codable, Equatable, Hashable, Sendable, GeneratedFakeable {
 
     /// Tax ID for line item
     ///

@@ -21,12 +21,6 @@ final class OrderSearchUICommand: SearchUICommand {
 
     var resynchronizeModels: (() -> Void) = {}
 
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     private let siteID: Int64
     private let storageManager: StorageManagerType
     private let analytics: Analytics
@@ -44,7 +38,6 @@ final class OrderSearchUICommand: SearchUICommand {
         self.storageManager = storageManager
         self.analytics = analytics
         self.stores = stores
-        configureResultsController()
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
@@ -71,8 +64,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
-        let orderStatus = lookUpOrderStatus(for: model)
-        return OrderListCellViewModel(order: model, status: orderStatus, currencySettings: ServiceLocator.currencySettings)
+        return OrderListCellViewModel(order: model, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Synchronizes the Orders matching a given Keyword
@@ -108,23 +100,5 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
         NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
-    }
-}
-
-private extension OrderSearchUICommand {
-    func configureResultsController() {
-        do {
-            try statusResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch Order statuses in order search for Site \(siteID): \(error)")
-        }
-    }
-
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.status == order.status {
-            return orderStatus
-        }
-        return nil
     }
 }

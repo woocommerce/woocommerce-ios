@@ -159,7 +159,7 @@ private extension TopPerformerDataViewController {
     func createResultsController(siteTimeZone: TimeZone) -> ResultsController<StorageTopEarnerStats> {
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
-            return StatsStoreV4.buildDateString(from: date, with: granularity)
+            return StatsStoreV4.buildDateString(from: date, timeRange: timeRange)
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)

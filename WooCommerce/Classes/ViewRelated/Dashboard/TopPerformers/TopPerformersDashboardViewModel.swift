@@ -85,17 +85,30 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
+        guard timeRange != newTimeRange else { return }
         timeRange = newTimeRange
+
         saveLastTimeRange(timeRange)
         updateResultsController()
 
         Task { [weak self] in
-            await self?.reloadData()
+            await self?.reloadDataIfNeeded()
         }
     }
 
+    /// Reloads the card data if significantly time has passed.
+    /// Set `forceRefresh` to `true` to always sync data, useful for pull to refresh scenarios.
     @MainActor
-    func reloadData() async {
+    func reloadDataIfNeeded(forceRefresh: Bool = false) async {
+
+        // Preemptively show any cached content
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
+            // Stop if data is relatively new
+            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
+                return updateUIInLoadedState()
+            }
+        }
+
         syncingData = true
         syncingError = nil
         updateUIInLoadingState()
@@ -197,6 +210,11 @@ private extension TopPerformersDashboardViewModel {
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
+
+        // Assume we don't have a timestamp for a new custom range since we don't support saving multiple custom ranges timestamps.
+        if timeRange.timestampRange == .custom {
+            DashboardTimestampStore.removeTimestamp(for: .topPerformers, at: .custom)
+        }
     }
 
     func updateResultsController() {
@@ -238,7 +256,7 @@ private extension TopPerformersDashboardViewModel {
         let granularity = timeRange.topEarnerStatsGranularity
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-            return StatsStoreV4.buildDateString(from: date, with: granularity)
+            return StatsStoreV4.buildDateString(from: date, timeRange: timeRange)
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)

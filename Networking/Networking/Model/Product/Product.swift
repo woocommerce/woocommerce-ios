@@ -104,7 +104,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
-    
+
     /// If not `nil` the product is protected by password. This parameter is available from WooCommerce 8.1.
     /// If under `<8.1`, it should be used `Post` entity under WP.
     public let password: String?
@@ -553,7 +553,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if let combineVariationQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) {
             combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
         }
-        
+
         // Password
         let password = container.failsafeDecodeIfPresent(stringForKey: .password)
 
@@ -746,7 +746,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
         }
-        
+
         // Password
         try container.encode(password, forKey: .password)
     }
@@ -852,7 +852,7 @@ private extension Product {
         case maxAllowedQuantity     = "max_quantity"
         case groupOfQuantity        = "group_of_quantity"
         case combineVariations      = "combine_variations"
-        
+
         case password = "post_password"
     }
 

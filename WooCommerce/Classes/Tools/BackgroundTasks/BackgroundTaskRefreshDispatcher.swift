@@ -55,6 +55,9 @@ final class BackgroundTaskRefreshDispatcher {
         // Launch all refresh tasks in parallel.
         let refreshTasks = Task {
             do {
+
+                let startTime = Date.now
+
                 try await withThrowingTaskGroup(of: Void.self) { group in
                     group.addTask {
                         try await OrderListSyncBackgroundTask(siteID: siteID).dispatch()
@@ -68,14 +71,21 @@ final class BackgroundTaskRefreshDispatcher {
                         // No=op
                     }
                 }
+
+                let timeTaken = Date.now.timeIntervalSince(startTime)
+                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(timeTaken: timeTaken))
                 backgroundTask.setTaskCompleted(success: true)
+
             } catch {
+                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncError(error))
                 backgroundTask.setTaskCompleted(success: false)
             }
         }
 
         // Provide the background task with an expiration handler that cancels the operation.
         backgroundTask.expirationHandler = {
+
+            ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncError(BackgroundError.expired))
             refreshTasks.cancel()
         }
      }
@@ -84,5 +94,13 @@ final class BackgroundTaskRefreshDispatcher {
 private extension BackgroundTaskRefreshDispatcher {
     static func isNotRunningTests() -> Bool {
         return NSClassFromString("XCTestCase") == nil
+    }
+}
+
+/// To easily track expired background time error.
+///
+extension BackgroundTaskRefreshDispatcher {
+    private enum BackgroundError: Error {
+        case expired
     }
 }

@@ -10,7 +10,7 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController {
+final class ProductsViewController: UIViewController, GhostableViewController {
     enum NavigationContentType {
         case productForm(product: Product)
         case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
@@ -267,7 +267,12 @@ final class ProductsViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView)
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removeGhostContent()
+            self.displayGhostContent(over: tableView)
+        }
 
         navigationController?.navigationBar.removeShadow()
     }
@@ -1491,7 +1496,9 @@ private extension ProductsViewController {
             displayNoResultsOverlay()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
-            if !isFirstPage {
+            if isFirstPage && resultsController.isEmpty {
+                displayGhostContent(over: tableView)
+            } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
             // Remove error banner when sync starts
@@ -1509,6 +1516,7 @@ private extension ProductsViewController {
             removeAllOverlays()
         case .syncing:
             ensureFooterSpinnerIsStopped()
+            removeGhostContent()
             showTopBannerViewIfNeeded()
             showOrHideToolbar()
         case .results:

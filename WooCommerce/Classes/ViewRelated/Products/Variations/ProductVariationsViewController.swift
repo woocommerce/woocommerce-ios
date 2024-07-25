@@ -8,7 +8,7 @@ import protocol WooFoundation.Analytics
 
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
-final class ProductVariationsViewController: UIViewController {
+final class ProductVariationsViewController: UIViewController, GhostableViewController {
 
     /// Empty state screen
     ///
@@ -732,6 +732,7 @@ private extension ProductVariationsViewController {
             break
         case .syncing(let pageNumber):
             if pageNumber == syncingCoordinator.pageFirstIndex {
+                displayGhostContent(over: tableView)
                 hideMoreActionsNavigationBarButton()
             } else {
                 ensureFooterSpinnerIsStarted()
@@ -745,6 +746,7 @@ private extension ProductVariationsViewController {
         switch state {
         case .syncing:
             ensureFooterSpinnerIsStopped()
+            removeGhostContent()
             showOrHideMoreActionsNavigationBarButton()
         case .noResultsPlaceholder, .results:
             break

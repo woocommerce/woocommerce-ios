@@ -33,6 +33,9 @@ struct PushNotificationBackgroundSynchronizer {
         }
 
         do {
+
+            let startTime = Date.now
+
             // I'm not sure why we need to sync all notifications instead of only the current one.
             // This is legacy code copied from PushNotificationsManager
             try await synchronizeNotifications()
@@ -51,10 +54,14 @@ struct PushNotificationBackgroundSynchronizer {
                 try await synchronizeOrder(siteID: pushNotification.siteID, orderID: orderID)
             }
 
+            let timeTaken = Date.now.timeIntervalSince(startTime)
+            ServiceLocator.analytics.track(event: .BackgroundUpdates.orderPushNotificationSynced(timeTaken: timeTaken))
+
             return .newData
 
         } catch {
             DDLogError("⛔️ Error synchronizing notification dependencies: \(error)")
+            ServiceLocator.analytics.track(event: .BackgroundUpdates.orderPushNotificationSyncError(error))
             return .noData
         }
     }

@@ -25,4 +25,7 @@ extension String {
     static var posRemoveCartItemImageName: String {
         return "pos-remove-cart-item"
     }
+    static var posDismissProductsBannerImageName: String {
+        return "pos-dismiss-products-banner"
+    }
 }

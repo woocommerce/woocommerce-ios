@@ -995,4 +995,8 @@ final class IconsTests: XCTestCase {
     func test_posRemoveCartItemImage_is_not_nil() {
         XCTAssertNotNil(UIImage.posRemoveCartItemImage)
     }
+
+    func test_posDismissProductsBannerImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.posDismissProductsBannerImage)
+    }
 }

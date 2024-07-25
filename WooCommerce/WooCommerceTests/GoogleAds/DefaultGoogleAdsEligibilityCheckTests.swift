@@ -68,7 +68,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
         let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
         let plugin = SystemPlugin.fake().copy(siteID: sampleSite,
                                               plugin: pluginSlug,
-                                              version: "2.7.4",
+                                              version: "2.7.6",
                                               active: true)
         let connection = GoogleAdsConnection.fake().copy(rawStatus: "connected")
         mockRequests(syncedPlugins: [plugin], adsConnection: connection)
@@ -87,7 +87,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
         let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
         let plugin = SystemPlugin.fake().copy(siteID: sampleSite,
                                               plugin: pluginSlug,
-                                              version: "2.7.5",
+                                              version: "2.7.7",
                                               active: true)
         let connection = GoogleAdsConnection.fake().copy(rawStatus: "connected")
         mockRequests(syncedPlugins: [plugin], adsConnection: connection)

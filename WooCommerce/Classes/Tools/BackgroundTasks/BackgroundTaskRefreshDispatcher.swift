@@ -1,3 +1,4 @@
+import UIKit
 import Foundation
 import BackgroundTasks
 
@@ -38,6 +39,10 @@ final class BackgroundTaskRefreshDispatcher {
                 return
             }
             self.handleAppRefresh(backgroundTask: refreshTask)
+        }
+
+        if UIApplication.shared.backgroundRefreshStatus != .available {
+            ServiceLocator.analytics.track(event: .BackgroundUpdates.disabled())
         }
     }
 

@@ -67,7 +67,7 @@ public extension OrderStatusEnum {
             )
         case .refunded:
             return NSLocalizedString(
-                "orderStatusEnum.localizedName.autoDraft",
+                "orderStatusEnum.localizedName.refunded",
                 value: "Refunded",
                 comment: "Display label for refunded order status."
             )

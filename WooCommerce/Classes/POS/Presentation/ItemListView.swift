@@ -80,13 +80,13 @@ private extension ItemListView {
             VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
                     .font(Constants.bannerTitleFont)
-                    .padding(.bottom, 16)
+                    .padding(.bottom, Constants.bannerTitleBottomPadding)
                 Text(Localization.headerBannerSubtitle)
                     .font(Constants.bannerSubtitleFont)
                 Text(Localization.headerBannerHint)
                     .font(Constants.bannerSubtitleFont)
             }
-            .padding(.vertical, 26)
+            .padding(.vertical, Constants.bannerVerticalPadding)
             Spacer()
             VStack {
                 Button(action: {
@@ -103,7 +103,7 @@ private extension ItemListView {
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posBackgroundWhitei3)
-        .cornerRadius(8.0)
+        .cornerRadius(Constants.bannerCornerRadius)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .onTapGesture {
             openInfoBanner()
@@ -185,6 +185,9 @@ private extension ItemListView {
         static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
         static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
         static let bannerHeight: CGFloat = 164
+        static let bannerCornerRadius: CGFloat = 8
+        static let bannerVerticalPadding: CGFloat = 26
+        static let bannerTitleBottomPadding: CGFloat = 16
         static let infoIconSize: CGFloat = 36
         static let bannerInfoIconSize: CGFloat = 44
         static let closeIconSize: CGFloat = 26

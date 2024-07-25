@@ -36,11 +36,10 @@ extension WooAnalyticsEvent {
 
         static func generateDetailsTapped(isFirstAttempt: Bool,
                                           features: String) -> WooAnalyticsEvent {
-            let wordCount = features.split { $0 == " " || $0.isNewline }.count
-            let properties: [String: WooAnalyticsEventPropertyType?] = [Key.isFirstAttempt.rawValue: isFirstAttempt,
-                                                                        Key.featureWordCount.rawValue: wordCount]
+            let wordCount = features.components(separatedBy: .whitespacesAndNewlines).count
             return WooAnalyticsEvent(statName: .productCreationAIGenerateDetailsTapped,
-                                     properties: properties.compactMapValues { $0 })
+                                     properties: [Key.isFirstAttempt.rawValue: isFirstAttempt,
+                                                  Key.featureWordCount.rawValue: wordCount])
         }
 
         static func generateProductDetailsSuccess() -> WooAnalyticsEvent {

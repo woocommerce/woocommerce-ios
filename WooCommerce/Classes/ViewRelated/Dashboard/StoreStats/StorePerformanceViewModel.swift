@@ -121,11 +121,15 @@ final class StorePerformanceViewModel: ObservableObject {
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
+        guard timeRange != newTimeRange else { return }
+
         timeRange = newTimeRange
-        Task { [weak self] in
-            await self?.reloadData()
-        }
         saveLastTimeRange(timeRange)
+
+        Task { [weak self] in
+            await self?.reloadDataIfNeeded()
+        }
+
         shouldHighlightStats = false
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
     }
@@ -151,12 +155,19 @@ final class StorePerformanceViewModel: ObservableObject {
         }
     }
 
+    /// Reloads the card data if significantly time has passed.
+    /// Set `forceRefresh` to `true` to always sync data, useful for pull to refresh scenarios.
     @MainActor
-    func reloadData() async {
+    func reloadDataIfNeeded(forceRefresh: Bool = false) async {
 
         // Preemptively show any cached content
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
             periodViewModel?.loadCachedContent()
+
+            // Stop if data is relatively new
+            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
+                return
+            }
         }
 
         syncingData = true
@@ -378,6 +389,11 @@ private extension StorePerformanceViewModel {
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
+
+        // Assume we don't have a timestamp for a new custom range since we don't support saving multiple custom ranges timestamps.
+        if timeRange.timestampRange == .custom {
+            DashboardTimestampStore.removeTimestamp(for: .performance, at: .custom)
+        }
     }
 
     /// Initial redaction state logic for site visit stats.

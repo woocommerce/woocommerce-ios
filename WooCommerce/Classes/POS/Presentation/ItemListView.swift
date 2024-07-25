@@ -5,30 +5,44 @@ struct ItemListView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @State private var showModal: Bool = false
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack {
-            headerView()
-            switch viewModel.state {
-            case .empty(let emptyModel):
-                emptyView(emptyModel)
-            case .loading:
-                loadingView
-            case .loaded(let items):
-                listView(items)
-            case .error(let errorModel):
-                errorView(errorModel)
+        ZStack {
+            VStack {
+                headerView()
+                switch viewModel.state {
+                case .empty(let emptyModel):
+                    emptyView(emptyModel)
+                case .loading:
+                    loadingView
+                case .loaded(let items):
+                    listView(items)
+                case .error(let errorModel):
+                    errorView(errorModel)
+                }
+            }
+            .refreshable {
+                await viewModel.reload()
+            }
+            .padding(.horizontal, Constants.itemListPadding)
+            .background(Color.posBackgroundGreyi3)
+
+            if showModal {
+                SimpleProductsModalView(isPresented: $showModal)
+                    .background(Color.clear)
+                    .transition(.move(edge: .bottom))
+                    .onAppear {
+                        withAnimation(.easeInOut) {
+                            showModal = true
+                        }
+                    }
             }
         }
-        .refreshable {
-            await viewModel.reload()
-        }
-        .padding(.horizontal, Constants.itemListPadding)
-        .background(Color.posBackgroundGreyi3)
     }
 }
 
@@ -47,23 +61,22 @@ private extension ItemListView {
             HStack {
                 headerTextView
                 Spacer()
-                Button(action: {
-                    // TODO:
-                    // https://github.com/woocommerce/woocommerce-ios/issues/13357
-                    debugPrint("Not implemented")
-                }, label: {
-                    Image(uiImage: .infoImage)
-                })
             }
         }
     }
 
     var bannerCardView: some View {
         HStack {
-            Image(uiImage: .infoImage)
-                .padding(Constants.iconPadding)
-                .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                .foregroundColor(Color.primaryTint)
+            Button(action: {
+                withAnimation(.easeInOut) {
+                    showModal.toggle()
+                }
+            }) {
+                Image(uiImage: .infoImage)
+                    .padding(Constants.iconPadding)
+                    .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
+                    .foregroundColor(Color.primaryTint)
+            }
             VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
                     .font(Constants.bannerTitleFont)

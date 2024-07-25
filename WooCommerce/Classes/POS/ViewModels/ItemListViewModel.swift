@@ -8,6 +8,7 @@ final class ItemListViewModel: ObservableObject {
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
+    @Published private(set) var isModalBannerDismissed: Bool = true
 
     var isEmptyOrError: Bool {
         switch state {
@@ -23,6 +24,12 @@ final class ItemListViewModel: ObservableObject {
         // - Loading the item list
         // - Hasn't been already been previously dismissed
         !isHeaderBannerDismissed && state.isLoaded
+    }
+
+    var shouldShowModalBanner: Bool {
+        // The modal banner is shown when:
+        // - It hasn't been previously dismissed
+        !isModalBannerDismissed
     }
 
     private let itemProvider: POSItemProvider
@@ -69,6 +76,22 @@ final class ItemListViewModel: ObservableObject {
 
     func dismissBanner() {
         isHeaderBannerDismissed = true
+    }
+
+    func dismissModalBanner() {
+        isModalBannerDismissed = true
+    }
+
+    func toggleModalBanner() {
+        isModalBannerDismissed.toggle()
+    }
+
+    // New computed property for binding
+    var modalBannerBinding: Binding<Bool> {
+        Binding<Bool>(
+            get: { !self.isModalBannerDismissed },
+            set: { self.isModalBannerDismissed = !$0 }
+        )
     }
 }
 

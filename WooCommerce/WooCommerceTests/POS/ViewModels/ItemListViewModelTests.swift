@@ -228,6 +228,23 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, true)
     }
 
+    func test_shouldShowModalBanner_state_toggles_when_toggleModalBanner_is_called() {
+        // Given
+        XCTAssertFalse(sut.shouldShowModalBanner)
+
+        // When
+        sut.toggleModalBanner()
+
+        // Then
+        XCTAssertTrue(sut.shouldShowModalBanner)
+
+        // When
+        sut.toggleModalBanner()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowModalBanner)
+    }
+
     func test_isEmptyOrError_when_itemListViewModel_loaded_normally_then_returns_false() async {
         // Given/When
         await sut.populatePointOfSaleItems()

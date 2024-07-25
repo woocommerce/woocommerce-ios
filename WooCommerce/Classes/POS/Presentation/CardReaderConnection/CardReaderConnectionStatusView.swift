@@ -30,7 +30,7 @@ struct CardReaderConnectionStatusView: View {
                     Text("Reader Connected")
                         .foregroundColor(Color.primaryText)
                 }
-                .padding(.vertical, Constants.horizontalPadding)
+                .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
             case .disconnected:
                 Button {
@@ -42,7 +42,7 @@ struct CardReaderConnectionStatusView: View {
                             .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                     }
                 }
-                .padding(.vertical, Constants.horizontalPadding)
+                .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
                 .overlay {
                     RoundedRectangle(cornerRadius: Constants.overlayRadius)

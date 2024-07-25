@@ -26,13 +26,13 @@ struct ItemRowView: View {
                            height: Constants.productCardHeight * scale)
                     .foregroundColor(.gray)
             }
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
                 Text(cartItem.item.name)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(Color.primaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(Color.primaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
             }
@@ -78,6 +78,7 @@ private extension ItemRowView {
         static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
         static let buttonWidth: CGFloat = 56
+        static let itemNameAndPriceSpacing: CGFloat = 8
         static let itemNameFont: Font = .system(size: 16, weight: .semibold, design: .default)
         static let itemPriceFont: Font = .system(size: 16, weight: .regular, design: .default)
     }

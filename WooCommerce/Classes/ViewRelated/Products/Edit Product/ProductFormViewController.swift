@@ -164,7 +164,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProductName()
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
-        observeUpdateBlazeEligibility()
+        trackBlazeEntryPointIfNeeded()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -773,18 +773,10 @@ private extension ProductFormViewController {
         }
     }
 
-    /// Updates table rows when Blaze eligibility is computed.
-    /// Needed to show/hide the "Promote with Blaze" button accordingly.
-    ///
-    func observeUpdateBlazeEligibility() {
-        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
-            guard let self else { return }
-            self.updateFormTableContent()
-            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
-            }
+    func trackBlazeEntryPointIfNeeded() {
+        if viewModel.canPromoteWithBlaze() && !viewModel.shouldShowBlazeIntroView {
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
         }
-
     }
 
     /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.

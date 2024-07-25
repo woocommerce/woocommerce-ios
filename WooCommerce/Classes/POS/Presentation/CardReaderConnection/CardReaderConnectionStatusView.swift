@@ -30,6 +30,8 @@ struct CardReaderConnectionStatusView: View {
                     Text("Reader Connected")
                         .foregroundColor(Color.primaryText)
                 }
+                .padding(.vertical, Constants.horizontalPadding)
+                .padding(.vertical, Constants.verticalPadding)
             case .disconnected:
                 Button {
                     connectionViewModel.connectReader()
@@ -39,6 +41,12 @@ struct CardReaderConnectionStatusView: View {
                         Text("Connect your reader")
                             .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                     }
+                }
+                .padding(.vertical, Constants.horizontalPadding)
+                .padding(.vertical, Constants.verticalPadding)
+                .overlay {
+                    RoundedRectangle(cornerRadius: Constants.overlayRadius)
+                        .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
                 }
             }
         }
@@ -51,6 +59,11 @@ private extension CardReaderConnectionStatusView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
         static let font = Font.system(size: 16.0, weight: .semibold)
+        static let horizontalPadding: CGFloat = 16
+        static let verticalPadding: CGFloat = 8
+        static let overlayRadius: CGFloat = 4
+        static let overlayLineWidth: CGFloat = 2
+        static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
     }
 }
 

@@ -78,7 +78,8 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onProductFeaturesAdded(features: String) {
-        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails))
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails,
+                                                                        features: features))
         productFeatures = features
         currentStep = .preview
         isFirstAttemptGeneratingDetails = false

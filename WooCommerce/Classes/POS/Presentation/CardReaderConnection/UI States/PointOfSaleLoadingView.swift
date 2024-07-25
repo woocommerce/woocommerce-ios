@@ -27,8 +27,8 @@ struct PointOfSaleLoadingView: View {
                 size: Layout.progressViewSize,
                 lineWidth: Layout.progressViewLineWidth,
                 lineCap: .butt,
-                circleColor: .wooPurple10,
-                fillColor: .wooPurple50))
+                circleColor: Color(.wooCommercePurple(.shade10)),
+                fillColor: Color(.wooCommercePurple(.shade50))))
     }
 }
 

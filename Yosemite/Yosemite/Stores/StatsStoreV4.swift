@@ -329,7 +329,7 @@ private extension StatsStoreV4 {
                                                                                    latestDateToInclude: latestDateToInclude,
                                                                                    quantity: quantity)
         return convertProductsReportIntoTopEarners(siteID: siteID,
-                                                   granularity: timeRange.topEarnerStatsGranularity,
+                                                   timeRange: timeRange,
                                                    date: latestDateToInclude,
                                                    productsReport: productsReport,
                                                    quantity: quantity)
@@ -565,11 +565,11 @@ private extension StatsStoreV4 {
     /// Converts the `[ProductsReportItem]` list in a Products analytics report into `TopEarnerStats`
     ///
     func convertProductsReportIntoTopEarners(siteID: Int64,
-                                                  granularity: StatGranularity,
-                                                  date: Date,
-                                                  productsReport: [ProductsReportItem],
-                                                  quantity: Int) -> TopEarnerStats {
-        let statsDate = Self.buildDateString(from: date, with: granularity)
+                                             timeRange: StatsTimeRangeV4,
+                                             date: Date,
+                                             productsReport: [ProductsReportItem],
+                                             quantity: Int) -> TopEarnerStats {
+        let statsDate = Self.buildDateString(from: date, timeRange: timeRange)
         let statsItems = productsReport.map { product in
             TopEarnerStatsItem(productID: product.productID,
                                productName: product.productName,
@@ -578,7 +578,7 @@ private extension StatsStoreV4 {
                                currency: "", // TODO: Remove currency https://github.com/woocommerce/woocommerce-ios/issues/2549
                                imageUrl: product.imageUrl)
         }
-        return TopEarnerStats(siteID: siteID, date: statsDate, granularity: granularity, limit: quantity.description, items: statsItems)
+        return TopEarnerStats(siteID: siteID, date: statsDate, granularity: timeRange.topEarnerStatsGranularity, limit: quantity.description, items: statsItems)
     }
 }
 
@@ -586,18 +586,22 @@ private extension StatsStoreV4 {
 //
 public extension StatsStoreV4 {
 
-    /// Converts a Date into the appropriately formatted string based on the `OrderStatGranularity`
+    /// Converts a Date into the appropriately formatted string based on the `timeRange`
     ///
-    static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
-        switch granularity {
-        case .day:
+    static func buildDateString(from date: Date, timeRange: StatsTimeRangeV4) -> String {
+        switch timeRange {
+        case .today:
             return DateFormatter.Stats.statsDayFormatter.string(from: date)
-        case .week:
+        case .thisWeek:
             return DateFormatter.Stats.statsWeekFormatter.string(from: date)
-        case .month:
+        case .thisMonth:
             return DateFormatter.Stats.statsMonthFormatter.string(from: date)
-        case .year:
+        case .thisYear:
             return DateFormatter.Stats.statsYearFormatter.string(from: date)
+        case let .custom(from, to):
+            let fromDate = DateFormatter.Stats.statsDayFormatter.string(from: from)
+            let toDate = DateFormatter.Stats.statsDayFormatter.string(from: to)
+            return "\(fromDate)/\(toDate)"
         }
     }
 }

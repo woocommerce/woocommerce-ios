@@ -28,7 +28,7 @@ struct TopPerformersDashboardView: View {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
                     Task {
-                        await viewModel.reloadData()
+                        await viewModel.reloadDataIfNeeded(forceRefresh: true)
                     }
                 })
                 .padding(.horizontal, Layout.padding)

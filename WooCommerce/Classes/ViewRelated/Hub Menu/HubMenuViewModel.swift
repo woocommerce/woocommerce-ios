@@ -262,6 +262,7 @@ private extension HubMenuViewModel {
 
         items.append(WoocommerceAdmin())
         items.append(ViewStore())
+        items.append(Coupons())
         items.append(Reviews())
 
         if eligibleForInbox {

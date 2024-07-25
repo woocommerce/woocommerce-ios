@@ -61,8 +61,21 @@ private extension ItemListView {
             HStack {
                 headerTextView
                 Spacer()
+                Button(action: {
+                    openInfoBanner()
+                }, label: {
+                    Image(systemName: "info.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
+                        .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                })
             }
         }
+    }
+
+    private func openInfoBanner() {
+        showSimpleProductsModal.toggle()
     }
 
     var bannerCardView: some View {
@@ -174,7 +187,7 @@ private extension ItemListView {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let bannerTitleFont: Font = .system(size: 26, weight: .bold, design: .default)
         static let bannerHeight: CGFloat = 120
-        static let infoIconSize: CGFloat = 48
+        static let infoIconSize: CGFloat = 24
         static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 24
         static let headerPadding: CGFloat = 8

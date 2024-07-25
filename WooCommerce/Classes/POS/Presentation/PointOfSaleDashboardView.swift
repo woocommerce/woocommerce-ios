@@ -24,32 +24,28 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             VStack {
-                HStack {
-                    switch viewModel.orderStage {
-                    case .building:
-                        GeometryReader { geometry in
-                            HStack {
-                                productListView
-                                cartView
-                                    .renderedIf(isCartShown)
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                            }
+                switch viewModel.orderStage {
+                case .building:
+                    GeometryReader { geometry in
+                        HStack {
+                            productListView
+                            cartView
+                                .renderedIf(isCartShown)
+                                .frame(width: geometry.size.width * Constants.cartWidth)
                         }
-                    case .finalizing:
-                        GeometryReader { geometry in
-                            HStack {
-                                if !viewModel.isTotalsViewFullScreen {
-                                    cartView
-                                        .frame(width: geometry.size.width * Constants.cartWidth)
-                                    Spacer()
-                                }
-                                totalsView
+                    }
+                case .finalizing:
+                    GeometryReader { geometry in
+                        HStack {
+                            if !viewModel.isTotalsViewFullScreen {
+                                cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                                Spacer()
                             }
+                            totalsView
                         }
                     }
                 }
-                .frame(maxHeight: .infinity)
-                .padding()
             }
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.08), radius: 4)

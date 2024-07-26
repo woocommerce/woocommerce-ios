@@ -72,14 +72,12 @@ private extension ItemListView {
     var bannerCardView: some View {
         HStack {
             Button(action: {
-                withAnimation(.easeInOut) {
-                    dashboardViewModel.showSimpleProductsModal.toggle()
-                }
+                dashboardViewModel.showSimpleProductsModal.toggle()
             }) {
                 Image(systemName: "info.circle")
                     .padding(Constants.iconPadding)
                     .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                    .foregroundColor(Color.primaryTint)
+                    .foregroundColor(Color(uiColor: .wooCommercePurple(.shade30)))
             }
             VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
@@ -92,9 +90,9 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(systemName: "xmark.circle")
+                    Image(uiImage: .posDismissProductsBannerImage)
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.posTertiaryTexti3)
                 })
                 .padding(Constants.iconPadding)
                 Spacer()
@@ -176,13 +174,16 @@ private extension ItemListView {
 private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let bannerTitleFont: Font = .system(size: 26, weight: .bold, design: .default)
-        static let bannerHeight: CGFloat = 120
-        static let infoIconSize: CGFloat = 24
+        static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
+        static let bannerHeight: CGFloat = 164
+        static let bannerCornerRadius: CGFloat = 8
+        static let bannerVerticalPadding: CGFloat = 26
+        static let bannerTitleBottomPadding: CGFloat = 16
+        static let infoIconSize: CGFloat = 36
         static let closeIconSize: CGFloat = 26
-        static let iconPadding: CGFloat = 24
+        static let iconPadding: CGFloat = 26
         static let headerPadding: CGFloat = 8
-        static let itemListPadding: CGFloat = 32
+        static let itemListPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -211,16 +212,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()),
-                 dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                                   orderService: POSOrderPreviewService(),
-                                                                   currencyFormatter: .init(currencySettings: .init()),
-                                                                   totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
-                                                                                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                                                                    currencyFormatter: .init(currencySettings: .init()),
-                                                                                                    paymentState: .acceptingCard,
-                                                                                                    isSyncingOrder: false),
-                                                                   cartViewModel: CartViewModel()))
+    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()), dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(), cardPresentPaymentService: CardPresentPaymentPreviewService(), orderService: POSOrderPreviewService(), currencyFormatter: .init(currencySettings: .init()), totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(), cardPresentPaymentService: CardPresentPaymentPreviewService(), currencyFormatter: .init(currencySettings: .init()), paymentState: .acceptingCard, isSyncingOrder: false), cartViewModel: CartViewModel()))
 }
 #endif

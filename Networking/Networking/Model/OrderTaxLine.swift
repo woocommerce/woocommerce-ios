@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a TaxLine Entity within an Order.
 ///
-public struct OrderTaxLine: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderTaxLine: Decodable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let taxID: Int64
     public let rateCode: String
     public let rateID: Int64

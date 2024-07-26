@@ -17,12 +17,10 @@ import WooFoundationWatchOS
 //
 struct OrderListCellViewModel {
     private let order: Order
-    private let orderStatus: OrderStatus?
     private let currencyFormatter: CurrencyFormatter
 
-    init(order: Order, status: OrderStatus?, currencySettings: CurrencySettings) {
+    init(order: Order, currencySettings: CurrencySettings) {
         self.order = order
-        self.orderStatus = status
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
@@ -69,15 +67,13 @@ struct OrderListCellViewModel {
     /// Status of the order
     ///
     var status: OrderStatusEnum {
-        return orderStatus?.status ?? order.status
+        return order.status
     }
 
     /// Textual representation of the status
     ///
-    /// There are unsupported extensions with even more statuses available.
-    /// So if orderStatus doesn't have a name, let's use the order.status to display those as slugs.
     var statusString: String {
-        return orderStatus?.name ?? order.status.rawValue
+        return order.status.localizedName
     }
 
     /// The localized unabbreviated total for a given order item, which includes the currency.

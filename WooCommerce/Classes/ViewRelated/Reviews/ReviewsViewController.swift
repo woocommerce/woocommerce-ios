@@ -2,7 +2,7 @@ import UIKit
 
 // MARK: - ReviewsViewController
 //
-final class ReviewsViewController: UIViewController {
+final class ReviewsViewController: UIViewController, GhostableViewController {
 
     typealias ViewModel = ReviewsViewModelOutput & ReviewsViewModelActionsHandler
 
@@ -153,7 +153,12 @@ final class ReviewsViewController: UIViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView)
+        refreshControl.resetAnimation(in: tableView) { [unowned self] in
+            // ghost animation is also removed after switching tabs
+            // show make sure it's displayed again
+            self.removeGhostContent()
+            self.displayGhostContent()
+        }
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -410,7 +415,7 @@ private extension ReviewsViewController {
         case .results:
             break
         case .placeholder:
-            break
+            displayGhostContent()
         case .syncing(let pageNumber):
             if pageNumber != SyncingCoordinator.Defaults.pageFirstIndex {
                 ensureFooterSpinnerIsStarted()
@@ -427,10 +432,10 @@ private extension ReviewsViewController {
         case .results:
             break
         case .placeholder:
-            break
+            removeGhostContent()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            break
+            removeGhostContent()
         }
     }
 

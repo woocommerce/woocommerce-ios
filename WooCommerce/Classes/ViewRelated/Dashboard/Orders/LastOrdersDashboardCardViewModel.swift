@@ -149,6 +149,10 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func updateOrderStatus(_ status: OrderStatusRow) async {
+        guard selectedOrderStatus != status.status else {
+            /// Do nothing if the same status is selected.
+            return
+        }
         selectedOrderStatus = status.status
         stores.dispatch(AppSettingsAction.setLastSelectedOrderStatus(siteID: siteID, status: selectedOrderStatus?.rawValue))
 

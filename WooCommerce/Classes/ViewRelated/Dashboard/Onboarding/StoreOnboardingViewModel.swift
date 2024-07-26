@@ -108,7 +108,7 @@ class StoreOnboardingViewModel: ObservableObject {
         }
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
-        await update(state: .loading)
+        update(state: .loading)
 
         let tasks: [StoreOnboardingTaskViewModel]
         var syncingError: Error?
@@ -120,12 +120,12 @@ class StoreOnboardingViewModel: ObservableObject {
         }
 
         if tasks.isNotEmpty {
-            await checkIfAllTasksAreCompleted(tasks)
-            await update(state: .loaded(rows: tasks))
+            checkIfAllTasksAreCompleted(tasks)
+            update(state: .loaded(rows: tasks))
         } else if taskViewModels.isNotEmpty {
-            await update(state: .loaded(rows: taskViewModels))
+            update(state: .loaded(rows: taskViewModels))
         } else {
-            await update(state: .failed)
+            update(state: .failed)
         }
 
         if let syncingError {
@@ -156,7 +156,6 @@ private extension StoreOnboardingViewModel {
             .map { .init(task: $0, badgeText: nil) }
     }
 
-    @MainActor
     func update(state: State) {
         switch state {
         case .loading:
@@ -178,7 +177,6 @@ private extension StoreOnboardingViewModel {
         onStateChange?()
     }
 
-    @MainActor
     func checkIfAllTasksAreCompleted(_ tasksFromServer: [StoreOnboardingTaskViewModel]) {
         guard tasksFromServer.isNotEmpty else {
             return

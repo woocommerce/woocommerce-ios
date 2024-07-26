@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 extension WooAnalyticsEvent {
     enum ProductCreationAI {
@@ -10,6 +11,7 @@ extension WooAnalyticsEvent {
             case shortDescription = "short_description"
             case description
             case field
+            case featureWordCount = "feature_word_count"
         }
 
         static func entryPointDisplayed() -> WooAnalyticsEvent {
@@ -32,9 +34,12 @@ extension WooAnalyticsEvent {
                               properties: [Key.value.rawValue: tone.rawValue.lowercased()])
         }
 
-        static func generateDetailsTapped(isFirstAttempt: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productCreationAIGenerateDetailsTapped,
-                              properties: [Key.isFirstAttempt.rawValue: isFirstAttempt])
+        static func generateDetailsTapped(isFirstAttempt: Bool,
+                                          features: String) -> WooAnalyticsEvent {
+            let wordCount = features.components(separatedBy: .whitespacesAndNewlines).count
+            return WooAnalyticsEvent(statName: .productCreationAIGenerateDetailsTapped,
+                                     properties: [Key.isFirstAttempt.rawValue: isFirstAttempt,
+                                                  Key.featureWordCount.rawValue: wordCount])
         }
 
         static func generateProductDetailsSuccess() -> WooAnalyticsEvent {

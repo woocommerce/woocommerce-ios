@@ -8,7 +8,7 @@ import Foundation
 /// - thisMonth: daily data starting 1st of this month until now.
 /// - thisYear: monthly data starting January of this year until now.
 /// - custom: Data for a custom date range.
-public enum StatsTimeRangeV4 {
+public enum StatsTimeRangeV4: Sendable {
     case today
     case thisWeek
     case thisMonth

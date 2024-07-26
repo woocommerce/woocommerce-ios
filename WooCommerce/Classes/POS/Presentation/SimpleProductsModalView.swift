@@ -29,7 +29,7 @@ struct SimpleProductsModalView: View {
                     .font(.system(size: 16))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
-                    .frame(width: 736, height: 36)
+                    .frame(width: 736, height: 72)
                     .padding(.horizontal, 16)
 
                 VStack(spacing: 8) {
@@ -102,7 +102,8 @@ private extension SimpleProductsModalView {
         )
         static let modalDescription = NSLocalizedString(
             "simpleProductsModal.description",
-            value: "Only simple physical products can be used with POS right now.\nOther product types, such as variable and virtual, will be available in future updates.",
+            value: "Only simple physical products can be used with POS right now.\n\n" +
+                   "Other product types, such as variable and virtual, will be available in future updates.",
             comment: "Description of the simple products modal"
         )
         static let paymentDescription = NSLocalizedString(

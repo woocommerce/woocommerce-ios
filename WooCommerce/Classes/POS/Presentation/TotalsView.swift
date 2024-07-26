@@ -5,6 +5,9 @@ struct TotalsView: View {
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
 
+    /// Used for synchronizing totals fields animation
+    @Namespace private var totalsFieldAnimation
+
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
          cartViewModel: CartViewModel) {
@@ -18,14 +21,16 @@ struct TotalsView: View {
             VStack(alignment: .center) {
                 Spacer()
                 VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                    if !totalsViewModel.isSyncingOrder {
+                    if totalsViewModel.isShowingCardPresentPaymentStatus {
                         cardReaderView
                             .font(.title)
                             .padding()
+                            .transition(.opacity)
                     }
 
                     totalsFieldsView
                 }
+                .animation(.default, value: totalsViewModel.isShowingCardPresentPaymentStatus)
                 paymentsActionButtons
                     .padding()
                 Spacer()
@@ -70,6 +75,7 @@ private extension TotalsView {
     func subtotalFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
+                .matchedGeometryEffect(id: "subtotalFieldView:_\(title)", in: totalsFieldAnimation)
         } else {
             HStack(alignment: .top, spacing: .zero) {
                 Text(title)
@@ -80,6 +86,8 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .foregroundColor(Color.primaryText)
+            .matchedGeometryEffect(id: "subtotalFieldView:_\(title)", in: totalsFieldAnimation)
+            .animation(.default, value: totalsViewModel.isShimmering)
         }
     }
 
@@ -87,6 +95,7 @@ private extension TotalsView {
     func totalFieldView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
+                .matchedGeometryEffect(id: "totalFieldView", in: totalsFieldAnimation)
         } else {
             HStack(alignment: .top, spacing: .zero) {
                 Text(Localization.total)
@@ -98,6 +107,9 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .foregroundColor(Color.primaryText)
+            .transition(.opacity)
+            .matchedGeometryEffect(id: "totalFieldView", in: totalsFieldAnimation)
+            .animation(.default, value: totalsViewModel.isShimmering)
         }
     }
 

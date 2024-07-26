@@ -17,7 +17,8 @@ struct ItemListView: View {
             case .empty(let emptyModel):
                 emptyView(emptyModel)
             case .loading:
-                loadingView
+                /// TODO: handle pull to refresh
+                listView(viewModel.items)
             case .loaded(let items):
                 listView(items)
             case .error(let errorModel):
@@ -116,14 +117,6 @@ private extension ItemListView {
             .padding(.vertical, Constants.headerPadding)
             .font(Constants.titleFont)
             .foregroundColor(Color.posPrimaryTexti3)
-    }
-
-    var loadingView: some View {
-        VStack {
-            Spacer()
-            Text("Loading...")
-            Spacer()
-        }
     }
 
     @ViewBuilder

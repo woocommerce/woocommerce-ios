@@ -23,7 +23,46 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            VStack {
+            if viewModel.isInitialLoading {
+                PointOfSaleLoadingView()
+                    .transition(.opacity)
+            } else {
+                contentView
+                    .transition(.push(from: .top))
+
+                POSFloatingControlView(viewModel: viewModel)
+                    .shadow(color: Color.black.opacity(0.08), radius: 4)
+                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                    .trackSize(size: $floatingSize)
+            }
+        }
+        .environment(\.floatingControlAreaSize,
+                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                                 floatingSize.height + Constants.floatingControlVerticalOffset))
+        .animation(.easeInOut, value: viewModel.isInitialLoading)
+        .background(Color.posBackgroundGreyi3)
+        .navigationBarBackButtonHidden(true)
+        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch totalsViewModel.cardPresentPaymentEvent {
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
+        })
+        .task {
+            await viewModel.itemListViewModel.populatePointOfSaleItems()
+        }
+    }
+
+    private var contentView: some View {
+        VStack {
+            HStack {
                 switch viewModel.orderStage {
                 case .building:
                     GeometryReader { geometry in
@@ -47,31 +86,8 @@ struct PointOfSaleDashboardView: View {
                     }
                 }
             }
-            POSFloatingControlView(viewModel: viewModel)
-                .shadow(color: Color.black.opacity(0.08), radius: 4)
-                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                .trackSize(size: $floatingSize)
-        }
-        .environment(\.floatingControlAreaSize,
-                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
-                                 floatingSize.height + Constants.floatingControlVerticalOffset))
-        .background(Color.posBackgroundGreyi3)
-        .navigationBarBackButtonHidden(true)
-        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
-        })
-        .task {
-            await viewModel.itemListViewModel.populatePointOfSaleItems()
+            .frame(maxHeight: .infinity)
+            .padding()
         }
     }
 }

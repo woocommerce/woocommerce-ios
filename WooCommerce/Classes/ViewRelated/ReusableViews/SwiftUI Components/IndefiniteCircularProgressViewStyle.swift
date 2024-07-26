@@ -3,6 +3,10 @@ import SwiftUI
 public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     var size: CGFloat
     var lineWidth: CGFloat = Constants.lineWidth
+    var lineCap: CGLineCap = .round
+    var circleColor: Color = Color(.primary).opacity(Constants.backgroundOpacity)
+    var fillColor: Color = Color(.primary)
+
     private let arcStart: Double = Constants.initialArcStart
     private let animationDuration: Double = 1.6
 
@@ -39,9 +43,8 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     private func progressCircleView() -> some View {
         Circle()
             .stroke(
-                Color(.primary),
+                circleColor,
                 lineWidth: lineWidth)
-            .opacity(Constants.backgroundOpacity)
             .overlay(progressFill())
             .frame(width: size, height: size)
     }
@@ -52,8 +55,8 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
                 from: CGFloat(Constants.initialArcStart),
                 to: CGFloat(arcEnd))
             .stroke(
-                Color(.primary),
-                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                fillColor,
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: lineCap))
             .frame(width: size)
             .rotationEffect(rotation)
     }

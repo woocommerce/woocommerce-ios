@@ -33,6 +33,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isExitPOSDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
+    @Published var isInitialLoading: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -53,6 +54,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
+        observeItemListState()
     }
 
     func startNewTransaction() {
@@ -150,6 +152,16 @@ private extension PointOfSaleDashboardViewModel {
 
     private func observeOrderStage() {
         cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeItemListState() {
+        Publishers.CombineLatest(itemListViewModel.$state, itemListViewModel.$items)
+            .map { state, items -> Bool in
+                return state == .loading && items.isEmpty
+            }
+            .assign(to: &$isInitialLoading)
     }
 }
 

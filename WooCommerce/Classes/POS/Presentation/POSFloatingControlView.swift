@@ -53,7 +53,7 @@ struct POSFloatingControlView: View {
 private extension POSFloatingControlView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
-        static let cardStatusPadding: CGFloat = 24
+        static let cardStatusPadding: CGFloat = 8
         static let size: CGFloat = 56
         static let cornerRadius: CGFloat = 8
         static let ellipsisFont = Font.system(size: 24.0, weight: .semibold)

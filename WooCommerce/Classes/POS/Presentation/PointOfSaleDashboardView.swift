@@ -49,12 +49,12 @@ struct PointOfSaleDashboardView: View {
             }
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.08), radius: 4)
-                .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
+                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
         }
         .environment(\.floatingControlAreaSize,
-                      CGSizeMake(floatingSize.width + Constants.floatingControlOffset,
-                                 floatingSize.height + Constants.floatingControlOffset))
+                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                                 floatingSize.height + Constants.floatingControlVerticalOffset))
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
@@ -93,7 +93,8 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let buttonImageAndTextSpacing: CGFloat = 12
-        static let floatingControlOffset: CGFloat = 24
+        static let floatingControlHorizontalOffset: CGFloat = 24
+        static let floatingControlVerticalOffset: CGFloat = 0
     }
 }
 

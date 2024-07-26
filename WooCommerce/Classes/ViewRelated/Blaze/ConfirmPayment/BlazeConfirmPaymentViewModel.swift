@@ -133,7 +133,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
             analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
         } catch {
-            analytics.track(event: .Blaze.Payment.campaignCreationFailed())
+            analytics.track(event: .Blaze.Payment.campaignCreationFailed(error: error))
             campaignCreationError = error as? BlazeCampaignCreationError ?? .failedToCreateCampaign
         }
         isCreatingCampaign = false

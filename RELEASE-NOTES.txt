@@ -2,7 +2,11 @@
 
 19.7
 -----
+- [*] Order status is consistent across the order list/dashboard card/filter list/search list. [https://github.com/woocommerce/woocommerce-ios/pull/13408]
 - [*] Stats: The Google Campaign analytics card now has a call to action to create a paid campaign if there are no campaign analytics for the selected time period. [https://github.com/woocommerce/woocommerce-ios/pull/13397]
+- [*] Blaze: Hide the Promote with Blaze button on the product form after creating a campaign. [https://github.com/woocommerce/woocommerce-ios/pull/13410]
+- [**] Google Ads campaign management is now available for stores with plugin version 2.7.7 or later. [https://github.com/woocommerce/woocommerce-ios/pull/13421]
+- [*] Product Creation AI: Progress bar and guidance text to encourage users to enter product features. [https://github.com/woocommerce/woocommerce-ios/pull/13412]
 
 19.6
 -----

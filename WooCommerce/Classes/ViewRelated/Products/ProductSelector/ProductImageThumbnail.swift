@@ -18,7 +18,7 @@ struct ProductImageThumbnail: View {
         )
     }
 
-    init(productImageURL: URL?, productImageSize: CGFloat, scale: CGFloat, productImageCornerRadius: CGFloat, foregroundColor: Color) {
+    init(productImageURL: URL?, productImageSize: CGFloat, scale: CGFloat, productImageCornerRadius: CGFloat = 0, foregroundColor: Color) {
         self.productImageURL = productImageURL
         self.productImageSize = productImageSize
         self.scale = scale

@@ -39,32 +39,6 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         super.tearDown()
     }
 
-
-    func test_when_viewmodel_is_created_then_blazeEligibilityObservable_is_updated() {
-        // Arrange
-        let product = Product.fake()
-        let model = EditableProductModel(product: product)
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        var isBlazeEligibilityUpdated: Bool? = nil
-        let expectationForBlazeEligibility = self.expectation(description: "blazeEligibilityUpdateSubject is called")
-        expectationForBlazeEligibility.expectedFulfillmentCount = 1
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(siteID: defaultSiteID)))
-
-        // Action
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             stores: stores)
-        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink {
-            isBlazeEligibilityUpdated = true
-            expectationForBlazeEligibility.fulfill()
-        }
-
-        // Assert
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
-        XCTAssertEqual(isBlazeEligibilityUpdated, true)
-    }
-
     func testObservablesFromEditActionsOfTheSameData() {
         // Arrange
         let product = Fakes.ProductFactory.productWithEditableDataFilled()

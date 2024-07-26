@@ -1593,6 +1593,14 @@ extension UIImage {
     static var posGetSupportImage: UIImage {
         UIImage(named: String.posGetSupportImageName)!
     }
+
+    static var posRemoveCartItemImage: UIImage {
+        UIImage(named: String.posRemoveCartItemImageName)!
+    }
+
+    static var posDismissProductsBannerImage: UIImage {
+        UIImage(named: String.posDismissProductsBannerImageName)!
+    }
 }
 
 private extension UIImage {

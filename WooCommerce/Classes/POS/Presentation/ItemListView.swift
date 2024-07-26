@@ -12,7 +12,7 @@ struct ItemListView: View {
 
     var body: some View {
         VStack {
-            headerView()
+            headerView
             switch viewModel.state {
             case .empty(let emptyModel):
                 emptyView(emptyModel)
@@ -37,55 +37,78 @@ struct ItemListView: View {
 ///
 private extension ItemListView {
     @ViewBuilder
-    func headerView() -> some View {
-        switch viewModel.shouldShowHeaderBanner {
-        case true:
-            VStack {
-                headerTextView
-                bannerCardView
-            }
-        case false:
+    var headerView: some View {
+        VStack {
             HStack {
                 headerTextView
-                Spacer()
-                Button(action: {
-                    // TODO:
-                    // https://github.com/woocommerce/woocommerce-ios/issues/13357
-                    debugPrint("Not implemented")
-                }, label: {
-                    Image(uiImage: .infoImage)
-                })
+                if !viewModel.shouldShowHeaderBanner {
+                    Spacer()
+                    Button(action: {
+                        openInfoBanner()
+                    }, label: {
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
+                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                    })
+                }
+            }
+            if viewModel.shouldShowHeaderBanner {
+                bannerCardView
+                    .padding(.vertical, 16)
             }
         }
     }
 
+    private func openInfoBanner() {
+        // TODO:
+        // https://github.com/woocommerce/woocommerce-ios/issues/13357
+    }
+
     var bannerCardView: some View {
-        HStack {
-            Image(uiImage: .infoImage)
-                .padding(Constants.iconPadding)
-                .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                .foregroundColor(Color.primaryTint)
+        HStack(alignment: .top) {
+            VStack {
+                Spacer()
+                Image(systemName: "info.circle")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
+                    .padding(Constants.iconPadding)
+                    .foregroundColor(Color(uiColor: .wooCommercePurple(.shade30)))
+                Spacer()
+            }
             VStack(alignment: .leading) {
                 Text(Localization.headerBannerTitle)
                     .font(Constants.bannerTitleFont)
+                    .padding(.bottom, Constants.bannerTitleBottomPadding)
                 Text(Localization.headerBannerSubtitle)
+                    .font(Constants.bannerSubtitleFont)
                 Text(Localization.headerBannerHint)
+                    .font(Constants.bannerSubtitleFont)
             }
+            .padding(.vertical, Constants.bannerVerticalPadding)
             Spacer()
             VStack {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(uiImage: .closeButton)
+                    Image(uiImage: .posDismissProductsBannerImage)
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color.posTertiaryTexti3)
                 })
                 .padding(Constants.iconPadding)
                 Spacer()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: Constants.bannerHeight * scale)
+        .frame(maxWidth: .infinity)
+        .fixedSize(horizontal: false, vertical: true)
         .background(Color.posBackgroundWhitei3)
+        .cornerRadius(Constants.bannerCornerRadius)
+        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .onTapGesture {
+            openInfoBanner()
+        }
     }
 
     var headerTextView: some View {
@@ -152,13 +175,18 @@ private extension ItemListView {
 private extension ItemListView {
     enum Constants {
         static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let bannerTitleFont: Font = .system(size: 26, weight: .bold, design: .default)
-        static let bannerHeight: CGFloat = 120
-        static let infoIconSize: CGFloat = 48
+        static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
+        static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
+        static let bannerHeight: CGFloat = 164
+        static let bannerCornerRadius: CGFloat = 8
+        static let bannerVerticalPadding: CGFloat = 26
+        static let bannerTitleBottomPadding: CGFloat = 16
+        static let infoIconSize: CGFloat = 36
+        static let bannerInfoIconSize: CGFloat = 44
         static let closeIconSize: CGFloat = 26
-        static let iconPadding: CGFloat = 24
+        static let iconPadding: CGFloat = 26
         static let headerPadding: CGFloat = 8
-        static let itemListPadding: CGFloat = 32
+        static let itemListPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -179,7 +207,7 @@ private extension ItemListView {
         )
         static let headerBannerHint = NSLocalizedString(
             "pos.itemlistview.headerBannerHint",
-            value: "Other product types, such as variable and virtual, will become available in future updates.",
+            value: "Other product types, such as variable and virtual, will become available in future updates. Learn more",
             comment: "Additional text within the product selector header banner, which explains current POS limitations"
         )
     }

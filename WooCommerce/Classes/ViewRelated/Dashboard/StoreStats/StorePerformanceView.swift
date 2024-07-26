@@ -309,7 +309,7 @@ private extension StorePerformanceView {
         DashboardCardErrorView(onRetry: {
             ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
             Task {
-                await viewModel.reloadData()
+                await viewModel.reloadDataIfNeeded(forceRefresh: true)
             }
         })
     }

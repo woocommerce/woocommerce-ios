@@ -12,7 +12,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         let formatted = viewModel.dateCreated
@@ -26,7 +26,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         let formatted = viewModel.dateCreated
@@ -34,32 +34,16 @@ final class OrderListCellViewModelTests: XCTestCase {
         XCTAssertTrue(formatted.contains(expectedYearString))
     }
 
-    func test_OrderStatus_is_used_when_passed_to_view_model() {
-        // Given
-        let order = MockOrders().sampleOrder()
-        let orderStatus = OrderStatus(name: UUID().uuidString,
-                                      siteID: 0,
-                                      slug: UUID().uuidString,
-                                      total: 0)
-
-        // When
-        let viewModel = OrderListCellViewModel(order: order, status: orderStatus, currencySettings: ServiceLocator.currencySettings)
-
-        // Then
-        XCTAssertEqual(viewModel.status, .custom(orderStatus.slug))
-        XCTAssertEqual(viewModel.statusString, orderStatus.name)
-    }
-
-    func test_status_from_order_is_used_when_OrderStatus_is_nil() {
+    func test_status_from_order_is_used() {
         // Given
         let order = MockOrders().sampleOrder()
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.status, order.status)
-        XCTAssertEqual(viewModel.statusString, order.status.rawValue)
+        XCTAssertEqual(viewModel.statusString, order.status.localizedName)
     }
 
     func test_OrderListCell_accessoryView_uses_chevron_with_tertiaryLabel_tint_as_disclosure_indicator() {
@@ -68,7 +52,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedImage = UIImage(systemName: "chevron.forward")
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         guard let accessoryView = viewModel.accessoryView else {

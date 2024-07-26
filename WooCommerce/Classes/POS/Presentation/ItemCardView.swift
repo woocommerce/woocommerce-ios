@@ -16,7 +16,6 @@ struct ItemCardView: View {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardHeight,
                                       scale: scale,
-                                      productImageCornerRadius: Constants.productImageCornerRadius,
                                       foregroundColor: .clear)
             } else {
                 // TODO:
@@ -28,6 +27,7 @@ struct ItemCardView: View {
             }
             Text(item.name)
                 .foregroundStyle(Color.posPrimaryTexti3)
+                .multilineTextAlignment(.leading)
                 .font(Constants.itemNameFont)
                 .padding(.horizontal, Constants.horizontalElementSpacing)
             Spacer()
@@ -43,21 +43,22 @@ struct ItemCardView: View {
                 .stroke(Color.black, lineWidth: Constants.nilOutline)
         }
         .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
     }
 }
 
 private extension ItemCardView {
     enum Constants {
-        static let productCardHeight: CGFloat = 120
+        static let productCardHeight: CGFloat = 112
         static let productCardCornerRadius: CGFloat = 8
         static let productImageCornerRadius: CGFloat = 0
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0
         static let horizontalCardSpacing: CGFloat = 0
-        static let horizontalElementSpacing: CGFloat = 16
-        static let itemNameFont: Font = .system(size: 24, weight: .medium, design: .default)
-        static let itemPriceFont: Font = .system(size: 24, weight: .light, design: .default)
+        static let horizontalElementSpacing: CGFloat = 32
+        static let itemNameFont: Font = .system(size: 24, weight: .bold, design: .default)
+        static let itemPriceFont: Font = .system(size: 24, weight: .regular, design: .default)
     }
 }
 

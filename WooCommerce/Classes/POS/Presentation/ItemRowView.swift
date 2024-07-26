@@ -17,7 +17,6 @@ struct ItemRowView: View {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardHeight,
                                       scale: scale,
-                                      productImageCornerRadius: Constants.productCardCornerRadius,
                                       foregroundColor: .clear)
             } else {
                 // TODO:
@@ -27,13 +26,13 @@ struct ItemRowView: View {
                            height: Constants.productCardHeight * scale)
                     .foregroundColor(.gray)
             }
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
                 Text(cartItem.item.name)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(Color.primaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.posPrimaryTexti3)
+                    .foregroundColor(Color.primaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
             }
@@ -42,39 +41,46 @@ struct ItemRowView: View {
                 Button(action: {
                     onItemRemoveTapped()
                 }, label: {
-                    Image(systemName: "x.circle")
+                    HStack {
+                        Spacer()
+                        Image(uiImage: UIImage.posRemoveCartItemImage)
+                        Spacer()
+                    }
                 })
                 .frame(width: Constants.buttonWidth,
                        height: Constants.buttonWidth,
                        alignment: .trailing)
-                .padding(.horizontal, Constants.horizontalPadding)
                 .foregroundColor(Color.posIconGrayi3)
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
-        .background(Color.posBackgroundGreyi3)
+        .background(Color.posBackgroundWhitei3)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)
         }
         .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
         .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.vertical, Constants.verticalPadding)
+        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
     }
 }
 
 private extension ItemRowView {
     enum Constants {
-        static let productCardHeight: CGFloat = 64
+        static let productCardHeight: CGFloat = 72
         static let productCardCornerRadius: CGFloat = 8
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0
-        static let horizontalPadding: CGFloat = 32
+        static let verticalPadding: CGFloat = 4
+        static let horizontalPadding: CGFloat = 16
         static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
         static let buttonWidth: CGFloat = 56
-        static let itemNameFont: Font = .system(size: 16, weight: .medium, design: .default)
-        static let itemPriceFont: Font = .system(size: 16, weight: .light, design: .default)
+        static let itemNameAndPriceSpacing: CGFloat = 8
+        static let itemNameFont: Font = .system(size: 16, weight: .semibold, design: .default)
+        static let itemPriceFont: Font = .system(size: 16, weight: .regular, design: .default)
     }
 }
 

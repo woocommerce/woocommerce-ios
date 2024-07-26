@@ -89,7 +89,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func hideModal() {
         activeModal = nil
     }
-    
+
 }
 
 private extension PointOfSaleDashboardViewModel {

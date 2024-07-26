@@ -221,6 +221,16 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()), dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(), cardPresentPaymentService: CardPresentPaymentPreviewService(), orderService: POSOrderPreviewService(), currencyFormatter: .init(currencySettings: .init()), totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(), cardPresentPaymentService: CardPresentPaymentPreviewService(), currencyFormatter: .init(currencySettings: .init()), paymentState: .acceptingCard, isSyncingOrder: false), cartViewModel: CartViewModel()))
+    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()),
+                 dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
+                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                   orderService: POSOrderPreviewService(),
+                                                                   currencyFormatter: .init(currencySettings: .init()),
+                                                                   totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                                                    currencyFormatter: .init(currencySettings: .init()),
+                                                                                                    paymentState: .acceptingCard,
+                                                                                                    isSyncingOrder: false),
+                                                                   cartViewModel: CartViewModel()))
 }
 #endif

@@ -1394,6 +1394,7 @@ private extension EditableOrderViewModel {
                 if syncRequired && syncApproach == .onRecalculateButtonTap {
                     return .recalculate(loading: requestInProgress)
                 }
+                DDLogDebug("requestInProgress: \(requestInProgress)")
 
                 switch flow {
                 case .creation:

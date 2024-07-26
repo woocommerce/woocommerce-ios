@@ -923,6 +923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Net Amount";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "Add paid campaign";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "Campaigns";
 
@@ -940,6 +943,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google Campaigns";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Drive sales and generate more traffic with Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Enable Jetpack Stats";
@@ -2184,8 +2190,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Cancel Upgrade";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "Cancelled";
 
 /* Error message shown when the input URL does not point to an existing site. */
@@ -2612,9 +2617,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Complete the payment and await a push notification about the order on your WooCommerce app.";
-
-/* Display label for completed order status. */
-"Completed" = "Completed";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Component Options";
@@ -3831,8 +3833,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media on device";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "Draft";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -4356,9 +4357,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External/Affiliate" = "External/Affiliate";
-
-/* Display label for failed order status. */
-"Failed" = "Failed";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Failed to delete coupon. Please try again.";
@@ -5447,7 +5445,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "Last Sold";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "Last Updated: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -6483,9 +6482,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "On back order";
 
-/* Display label for on hold order status. */
-"On hold" = "On hold";
-
 /* Display label for the subscription status type */
 "On Hold" = "On Hold";
 
@@ -6875,6 +6871,30 @@ which should be translated separately and considered part of this sentence. */
 /* Additional message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "Orders can still be created manually without enabling this feature." = "Orders can still be created manually without enabling this feature.";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Draft";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "Cancelled";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Completed";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Failed";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "On hold";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Pending Payment";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "Processing";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Refunded";
+
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "Every %1$@ %2$@";
 
@@ -7081,8 +7101,7 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "Pending";
 
@@ -7638,13 +7657,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.failedToLoadTitle" = "Error loading products";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Other product types, such as variable and virtual, will become available in future updates.";
+"pos.itemlistview.headerBannerHint" = "Other product types, such as variable and virtual, will become available in future updates. Learn more";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Only simple physical products are available with POS right now.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Showing simple products only";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "Let’s serve some customers";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "Starting up";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Products";
@@ -7801,9 +7826,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
 
-/* Display label for processing order status. */
-"Processing" = "Processing";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Processing payment";
@@ -7929,11 +7951,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "For example: Black cotton t-shirt, soft fabric, durable stitching, unique design";
 
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "Read text from product photo";
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Add a text scanned from a photo";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Scan a product photo";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Tell us about your product, what it is and what makes it unique, then let the AI work its magic.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "Photo text added to starting info";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Starting information";
@@ -8435,8 +8463,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "Custom Amounts Refund";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "Refunded";
 
 /* Title of the refund detail cell when the refund was done manually. */

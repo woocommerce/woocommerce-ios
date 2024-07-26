@@ -38,6 +38,20 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showSimpleProductsModal: Bool = false
 
+    @Published var activeModal: ModalType? = nil
+
+    enum ModalType: Identifiable {
+        case simpleProducts
+        // Add other modals if needed
+
+        var id: String {
+            switch self {
+            case .simpleProducts:
+                return "simpleProducts"
+            }
+        }
+    }
+
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
@@ -67,6 +81,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     private func startSyncingOrder(cartItems: [CartItem]) {
         totalsViewModel.startSyncingOrder(with: cartItems, allItems: itemListViewModel.items)
     }
+
+    func showModal(_ modal: ModalType) {
+        activeModal = modal
+    }
+
+    func hideModal() {
+        activeModal = nil
+    }
+    
 }
 
 private extension PointOfSaleDashboardViewModel {

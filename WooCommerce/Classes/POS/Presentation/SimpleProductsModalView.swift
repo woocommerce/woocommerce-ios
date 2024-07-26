@@ -11,62 +11,49 @@ struct SimpleProductsModalView: View {
                     Text(Localization.modalTitle)
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.black)
-                        .frame(width: 656, height: 40)
+                        .frame(width: Constants.modalTitleWidth, height: Constants.modalTitleHeight)
                         .multilineTextAlignment(.center)
                     Spacer()
                     Button(action: {
-                        isPresented.toggle()
+                        isPresented = false
                     }) {
                         Image(systemName: "xmark")
                             .foregroundColor(Color.gray)
                             .frame(width: 32, height: 32)
-                            .padding(.top, -24)
                     }
                 }
                 .padding(.horizontal, 16)
-
-                Text(Localization.modalDescription)
+                Text(Localization.modalMessage)
                     .font(.system(size: 16))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
-                    .frame(width: 736, height: 72)
+                    .frame(width: Constants.modalMessageWidth, height: Constants.modalMessageHeight)
                     .padding(.horizontal, 16)
-
-                VStack(spacing: 8) {
-                    Text(Localization.paymentDescription)
+                VStack {
+                    Text(Localization.modalHint)
                         .font(.system(size: 14))
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                        .frame(width: 736, height: 24)
-                        .padding(.horizontal, 16)
-
-                    Button(action: {
-                        // Add action for creating an order in store management
-                    }) {
-                        Text(Localization.createOrder)
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(Color.purple)
-                            .frame(width: 736, height: 24)
-                    }
+                        .frame(width: Constants.modalHintWidth, height: Constants.modalHintHeight)
+                    Text(Localization.modalAction)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(Color.purple)
+                        .frame(width: Constants.modalActionWidth, height: Constants.modalActionHeight)
                 }
-                .padding(16)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
-
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
                 Button(action: {
-                    isPresented.toggle()
+                    isPresented = false
                 }) {
                     Text("OK")
                         .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(Color.purple)
+                        .foregroundColor(.purple)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
                                 .stroke(Color.purple, lineWidth: 2)
                         )
-                        .cornerRadius(8)
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
@@ -82,39 +69,40 @@ struct SimpleProductsModalView: View {
     }
 }
 
+// Constants and Localization enums
 private extension SimpleProductsModalView {
     enum Constants {
-        static let modalWidth: CGFloat = 896
-        static let modalHeight: CGFloat = 486
-        static let titleFontSize: CGFloat = 24
-        static let descriptionFontSize: CGFloat = 16
-        static let paymentDescriptionFontSize: CGFloat = 14
-        static let buttonFontSize: CGFloat = 18
-        static let buttonCornerRadius: CGFloat = 8
-        static let buttonStrokeWidth: CGFloat = 2
+        static let modalTitleWidth: CGFloat = 656
+        static let modalTitleHeight: CGFloat = 40
+        static let modalMessageWidth: CGFloat = 736
+        static let modalMessageHeight: CGFloat = 36
+        static let modalHintWidth: CGFloat = 736
+        static let modalHintHeight: CGFloat = 24
+        static let modalActionWidth: CGFloat = 736
+        static let modalActionHeight: CGFloat = 24
     }
 
     enum Localization {
         static let modalTitle = NSLocalizedString(
-            "simpleProductsModal.title",
+            "pos.simpleProductsModal.title",
             value: "Why can't I see my products?",
             comment: "Title of the simple products modal"
         )
-        static let modalDescription = NSLocalizedString(
-            "simpleProductsModal.description",
+        static let modalMessage = NSLocalizedString(
+            "pos.simpleProductsModal.message",
             value: "Only simple physical products can be used with POS right now.\n\n" +
                    "Other product types, such as variable and virtual, will be available in future updates.",
-            comment: "Description of the simple products modal"
+            comment: "Message in the simple products modal"
         )
-        static let paymentDescription = NSLocalizedString(
-            "simpleProductsModal.paymentDescription",
+        static let modalHint = NSLocalizedString(
+            "pos.simpleProductsModal.hint",
             value: "To take payment for a non-simple product, exit POS and create a new order from the orders tab.",
-            comment: "Payment description in the simple products modal"
+            comment: "Hint in the simple products modal"
         )
-        static let createOrder = NSLocalizedString(
-            "simpleProductsModal.createOrder",
+        static let modalAction = NSLocalizedString(
+            "pos.simpleProductsModal.action",
             value: "+ Create an order in store management",
-            comment: "Button text for creating an order in store management"
+            comment: "Action text in the simple products modal"
         )
     }
 }

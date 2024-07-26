@@ -7,6 +7,7 @@
 - [*] Blaze: Hide the Promote with Blaze button on the product form after creating a campaign. [https://github.com/woocommerce/woocommerce-ios/pull/13410]
 - [**] Google Ads campaign management is now available for stores with plugin version 2.7.7 or later. [https://github.com/woocommerce/woocommerce-ios/pull/13421]
 - [*] Product Creation AI: Progress bar and guidance text to encourage users to enter product features. [https://github.com/woocommerce/woocommerce-ios/pull/13412]
+- [*] Blaze: Hide the product URL destination in campaign creation if the URL is empty. [https://github.com/woocommerce/woocommerce-ios/pull/13430]
 
 19.6
 -----

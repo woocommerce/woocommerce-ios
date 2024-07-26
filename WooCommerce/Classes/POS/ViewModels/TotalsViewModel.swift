@@ -13,6 +13,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     enum PaymentState {
         case idle
         case acceptingCard
+        case validatingOrder
         case preparingReader
         case processingPayment
         case cardPaymentSuccessful
@@ -278,6 +279,8 @@ private extension TotalsViewModel.PaymentState {
         case .idle:
             self = .idle
         case .show(.validatingOrder):
+            self = .validatingOrder
+        case .show(.preparingForPayment):
             self = .preparingReader
         case .show(.tapSwipeOrInsertCard):
             self = .acceptingCard

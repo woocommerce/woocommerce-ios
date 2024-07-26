@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		011DF3442C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */; };
+		011DF3462C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift */; };
 		0157A9962C4FEA7200866FFD /* PointOfSaleLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */; };
 		01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */; };
 		01664F9E2C50E685007CB5DD /* Font+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01664F9D2C50E685007CB5DD /* Font+WooCommercePOS.swift */; };
@@ -3001,6 +3003,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift; sourceTree = "<group>"; };
+		011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift; sourceTree = "<group>"; };
 		0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleLoadingView.swift; sourceTree = "<group>"; };
 		01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProgressViewStyle.swift; sourceTree = "<group>"; };
 		01664F9D2C50E685007CB5DD /* Font+WooCommercePOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+WooCommercePOS.swift"; sourceTree = "<group>"; };
@@ -7561,6 +7565,7 @@
 				205B7ECE2C19FD5200D14A36 /* PointOfSaleCardPresentPaymentSuccessMessageViewModel.swift */,
 				205B7ECC2C19FD2F00D14A36 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel.swift */,
 				0230B4D12C333E0800F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel.swift */,
+				011DF3432C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift */,
 			);
 			path = "Reader Messages";
 			sourceTree = "<group>";
@@ -7576,6 +7581,7 @@
 				205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */,
 				205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */,
 				0230B4D52C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift */,
+				011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift */,
 			);
 			path = "Reader Messages";
 			sourceTree = "<group>";
@@ -14985,6 +14991,7 @@
 				DED039292BC7A04B005D0571 /* StorePerformanceView.swift in Sources */,
 				03E471C4293A1F8D001A58AD /* BuiltInReaderConnectionAlertsProvider.swift in Sources */,
 				20CC1EDD2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift in Sources */,
+				011DF3462C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift in Sources */,
 				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,
 				EE4C45652C352D60001A3D94 /* AIToneVoice.swift in Sources */,
 				DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */,
@@ -15846,6 +15853,7 @@
 				20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */,
+				011DF3442C53A5CF000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel.swift in Sources */,
 				20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */,
 				B53B898D20D462A000EDB467 /* DefaultStoresManager.swift in Sources */,
 				24F98C502502AEE200F49B68 /* EventLogging.swift in Sources */,

@@ -1,3 +1,2 @@
 
-Perbarui aplikasi WooCommerce Anda sekarang juga untuk pengalaman pembayaran tunai yang lebih baik! Kami telah mengatasi masalah tampilan metode dan nama pembayaran untuk pesanan tunai. Sekarang, saat menerima pembayaran tunai, aplikasi akan mengatur detailnya dengan benar, sehingga detail pesanan dan tanda terima menjadi lebih jelas seperti pada situs.
-
+Temukan pembaruan terkini kami! Kami memperkenalkan pembuatan produk dengan AI dan menyempurnakan pembuatan pesanan dengan tampilan harga termasuk pajak yang lebih baik. Selain itu, kartu analitik Kampanye Google kini memungkinkan Anda memilih metrik kampanye yang tersedia untuk wawasan yang terperinci. Nikmati pengalaman WooCommerce yang lebih mulus dan cerdas!

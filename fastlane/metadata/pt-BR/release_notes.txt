@@ -1,3 +1,2 @@
 
-Atualize o aplicativo do WooCommerce agora e aproveite uma experiência melhor de pagamento em dinheiro. Corrigimos um problema em que os pedidos pagos em dinheiro não exibiam a forma de pagamento nem o título. Agora, o aplicativo configura essas informações corretamente, assim como a versão Web, deixando isso claro nos seus recibos e detalhes do pedido.
-
+Veja o que há de novo na atualização mais recente! Nós apresentamos um produto criado por IA e melhoramos a criação de pedidos com uma melhor exibição de preços com impostos inclusos. E mais, agora nosso cartão de análise para campanhas do Google permite escolher qualquer métrica de campanha disponível para ver informações detalhadas. Tenha uma experiência mais fluida e eficiente no WooCommerce!

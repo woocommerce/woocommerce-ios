@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 113 (Release 19.7.0.0)
+- @pmusolino 2024-07-25
+    - Added `password` attribute to `Product` entity.
+
 ## Model 112 (Release 19.0.0.0)
 - @pmusolino 2024-05-31
     - Added `visibility` attribute to `Site` entity.

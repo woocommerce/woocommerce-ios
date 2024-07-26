@@ -2860,6 +2860,32 @@ final class MigrationTests: XCTestCase {
         // Verify that the new attribute has been set correctly
         XCTAssertEqual(newSite.value(forKey: "visibility") as? Int64, -1)
     }
+
+    func test_migrating_from_112_to_113_adds_new_password_attributes_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 112")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 112)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["password"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 113")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductEntity = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        XCTAssertNil(migratedProductEntity.value(forKey: "password") as? String, "Confirm expected property exists and is nil by default.")
+
+        migratedProductEntity.setValue("test", forKey: "password")
+        try targetContext.save()
+
+        let password = try XCTUnwrap(migratedProductEntity.value(forKey: "password") as? String)
+        XCTAssertEqual(password, "test", "Confirm expected property exists, and is false by default.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3166,6 +3192,11 @@ private extension MigrationTests {
         // Required since model 33
         if modelVersion >= 33 {
             product.setValue(Date(), forKey: "Date")
+        }
+
+        // Field available from model 113
+        if modelVersion >= 113 {
+            product.setValue("test", forKey: "password")
         }
 
         return product

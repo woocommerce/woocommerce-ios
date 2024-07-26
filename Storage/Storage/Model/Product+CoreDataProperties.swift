@@ -86,7 +86,7 @@ extension Product {
     @NSManaged public var compositeComponents: NSOrderedSet?
     @NSManaged public var subscription: ProductSubscription?
     @NSManaged public var isSampleItem: Bool
-
+    @NSManaged public var password: String?
 }
 
 // MARK: Generated accessors for attributes

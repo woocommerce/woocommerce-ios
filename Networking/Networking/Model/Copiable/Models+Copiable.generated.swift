@@ -2086,7 +2086,8 @@ extension Networking.Product {
             minAllowedQuantity: minAllowedQuantity,
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
-            combineVariationQuantities: combineVariationQuantities
+            combineVariationQuantities: combineVariationQuantities,
+            password: password
         )
     }
 }

@@ -15,7 +15,8 @@ struct TotalsView: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .center) {
+                Spacer()
                 VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                     if !totalsViewModel.isSyncingOrder {
                         cardReaderView
@@ -27,6 +28,7 @@ struct TotalsView: View {
                 }
                 paymentsActionButtons
                     .padding()
+                Spacer()
             }
         }
         .onDisappear {
@@ -162,7 +164,7 @@ private extension TotalsView {
         static let defaultBorderLineWidth: CGFloat = 1
         static let defaultBorderLineCornerRadius: CGFloat = 8
 
-        static let verticalSpacing: CGFloat = 80
+        static let verticalSpacing: CGFloat = 56
 
         static let totalsLineViewPadding: EdgeInsets = .init(top: 20, leading: 24, bottom: 20, trailing: 24)
         static let subtotalsVerticalSpacing: CGFloat = 8

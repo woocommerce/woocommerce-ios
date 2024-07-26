@@ -1,6 +1,7 @@
 import Foundation
 
 enum PointOfSaleCardPresentPaymentMessageType {
+    case validatingOrder(viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel)
     case preparingForPayment(viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel)
     case tapSwipeOrInsertCard(viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel)
     case processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel)

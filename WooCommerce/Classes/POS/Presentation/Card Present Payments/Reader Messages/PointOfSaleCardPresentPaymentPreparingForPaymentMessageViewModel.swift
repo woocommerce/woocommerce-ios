@@ -8,14 +8,14 @@ struct PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel {
 private extension PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSale.cardPresent.preparingCardReader.title",
-            value: "Preparing card reader",
+            "pointOfSale.cardPresent.preparingForPayment.title",
+            value: "Getting ready",
             comment: "Title shown on the Point of Sale checkout while the reader is being prepared."
         )
         static let message = NSLocalizedString(
-            "pointOfSale.cardPresent.preparingCardReader.message",
-            value: "Checking order",
-            comment: "Message shown on the Point of Sale checkout while the reader is being prepared and order being checked."
+            "pointOfSale.cardPresent.preparingForPayment.message",
+            value: "Preparing card for payment",
+            comment: "Message shown on the Point of Sale checkout while the reader is being prepared."
         )
     }
 }

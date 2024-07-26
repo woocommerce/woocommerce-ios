@@ -115,6 +115,7 @@ private extension PointOfSaleDashboardViewModel {
                     return true
                 case .idle,
                         .acceptingCard,
+                        .validatingOrder,
                         .preparingReader:
                     return isSyncingOrder
                 }
@@ -128,6 +129,7 @@ private extension PointOfSaleDashboardViewModel {
                     return true
                 case .idle,
                         .acceptingCard,
+                        .validatingOrder,
                         .preparingReader,
                         .cardPaymentSuccessful:
                     return false
@@ -142,6 +144,7 @@ private extension PointOfSaleDashboardViewModel {
                         .cardPaymentSuccessful:
                     return true
                 case .idle,
+                        .validatingOrder,
                         .preparingReader,
                         .acceptingCard:
                     return false

@@ -58,6 +58,9 @@ private extension ItemListView {
             if viewModel.shouldShowHeaderBanner {
                 bannerCardView
                     .padding(.vertical, 16)
+                    .onTapGesture {
+                        openInfoBanner()
+                    }
             }
         }
     }

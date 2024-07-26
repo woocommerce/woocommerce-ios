@@ -77,6 +77,20 @@ struct PointOfSaleDashboardView: View {
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
+        .overlay(
+            SimpleProductsModalView(isPresented: $viewModel.showSimpleProductsModal)
+                .background(Color.clear)
+                .transition(.move(edge: .bottom))
+                .onAppear {
+                    withAnimation(.easeInOut) {
+                        viewModel.showSimpleProductsModal = true
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black.opacity(0.4))
+                .edgesIgnoringSafeArea(.all)
+                .renderedIf(viewModel.showSimpleProductsModal)
+        )
     }
 }
 
@@ -117,7 +131,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productListView: some View {
-        ItemListView(viewModel: viewModel.itemListViewModel)
+        ItemListView(viewModel: viewModel.itemListViewModel, dashboardViewModel: viewModel)
     }
 }
 

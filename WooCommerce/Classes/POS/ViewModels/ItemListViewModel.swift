@@ -9,6 +9,7 @@ final class ItemListViewModel: ObservableObject {
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published private(set) var isModalBannerDismissed: Bool = true
+    @Published var showSimpleProductsModal: Bool = false
 
     var isEmptyOrError: Bool {
         switch state {

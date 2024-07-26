@@ -4,45 +4,33 @@ import protocol Yosemite.POSItem
 struct ItemListView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
+    @ObservedObject var dashboardViewModel: PointOfSaleDashboardViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
-    @State private var showSimpleProductsModal: Bool = false
 
-    init(viewModel: ItemListViewModel) {
+    init(viewModel: ItemListViewModel, dashboardViewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
+        self.dashboardViewModel = dashboardViewModel
     }
 
     var body: some View {
-        ZStack {
-            VStack {
-                headerView()
-                switch viewModel.state {
-                case .empty(let emptyModel):
-                    emptyView(emptyModel)
-                case .loading:
-                    loadingView
-                case .loaded(let items):
-                    listView(items)
-                case .error(let errorModel):
-                    errorView(errorModel)
-                }
-            }
-            .refreshable {
-                await viewModel.reload()
-            }
-            .padding(.horizontal, Constants.itemListPadding)
-            .background(Color.posBackgroundGreyi3)
-
-            if showSimpleProductsModal {
-                SimpleProductsModalView(isPresented: $showSimpleProductsModal)
-                    .background(Color.clear)
-                    .transition(.move(edge: .bottom))
-                    .onAppear {
-                        withAnimation(.easeInOut) {
-                            showSimpleProductsModal = true
-                        }
-                    }
+        VStack {
+            headerView()
+            switch viewModel.state {
+            case .empty(let emptyModel):
+                emptyView(emptyModel)
+            case .loading:
+                loadingView
+            case .loaded(let items):
+                listView(items)
+            case .error(let errorModel):
+                errorView(errorModel)
             }
         }
+        .refreshable {
+            await viewModel.reload()
+        }
+        .padding(.horizontal, Constants.itemListPadding)
+        .background(Color.posBackgroundGreyi3)
     }
 }
 
@@ -75,14 +63,14 @@ private extension ItemListView {
     }
 
     private func openInfoBanner() {
-        showSimpleProductsModal.toggle()
+        dashboardViewModel.showSimpleProductsModal.toggle()
     }
 
     var bannerCardView: some View {
         HStack {
             Button(action: {
                 withAnimation(.easeInOut) {
-                    showSimpleProductsModal.toggle()
+                    dashboardViewModel.showSimpleProductsModal.toggle()
                 }
             }) {
                 Image(systemName: "info.circle")
@@ -220,6 +208,6 @@ private extension ItemListView {
 
 #if DEBUG
 #Preview {
-    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()))
+    ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()), dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(), cardPresentPaymentService: CardPresentPaymentPreviewService(), orderService: POSOrderPreviewService(), currencyFormatter: .init(currencySettings: .init()), totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(), cardPresentPaymentService: CardPresentPaymentPreviewService(), currencyFormatter: .init(currencySettings: .init()), paymentState: .acceptingCard, isSyncingOrder: false), cartViewModel: CartViewModel()))
 }
 #endif

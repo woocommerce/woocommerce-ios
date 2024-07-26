@@ -36,6 +36,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    @Published var showSimpleProductsModal: Bool = false
+
     init(itemProvider: POSItemProvider,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,

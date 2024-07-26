@@ -20,11 +20,11 @@ struct SimpleProductsModalView: View {
                         Image(systemName: "xmark")
                             .foregroundColor(Color.gray)
                             .frame(width: 32, height: 32)
-                            .padding(.top, -24) // Move the button further up
+                            .padding(.top, -24)
                     }
                 }
                 .padding(.horizontal, 16)
-                
+
                 Text(Localization.modalDescription)
                     .font(.system(size: 16))
                     .foregroundColor(.black)
@@ -72,13 +72,13 @@ struct SimpleProductsModalView: View {
                 .padding(.top, 16)
             }
             .padding()
-            .frame(width: 896, height: 486) // Fixed width and height
+            .frame(width: 896, height: 486)
             .background(Color.white)
             .cornerRadius(16)
             .shadow(radius: 10)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity) // Center the modal
-        .background(Color.black.opacity(0.2).edgesIgnoringSafeArea(.all)) // Reduced opacity
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black.opacity(0.2).edgesIgnoringSafeArea(.all))
     }
 }
 

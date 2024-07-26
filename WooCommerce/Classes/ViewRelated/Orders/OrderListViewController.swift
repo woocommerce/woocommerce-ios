@@ -105,11 +105,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// Minimum time interval allowed between full sync.
     ///
     private let minimalIntervalBetweenSync: TimeInterval = {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
-            return 30 * 60 // 30m
-        } else {
-            return 30 // 30s
-        }
+        return 30 * 60 // 30m
     }()
 
     /// UI Active State
@@ -452,7 +448,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             case .viewWillAppear where Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync:
                 onCompletion?(true) // less than 30m from last full sync
                 return
-            case .viewWillAppear where ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks):
+            case .viewWillAppear:
                 refreshControl.showRefreshAnimation(on: self.tableView)
             default:
                 break

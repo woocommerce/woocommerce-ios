@@ -296,6 +296,29 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(receivedOrderStage, .building)
     }
+
+    func test_showModal_updates_activeModal() {
+        XCTAssertNil(sut.activeModal, "activeModal should be nil initially")
+
+        sut.showModal(.simpleProducts)
+
+        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
+    }
+
+    func test_hideModal_resets_activeModal_to_nil() {
+        sut.activeModal = .simpleProducts
+        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
+
+        sut.hideModal()
+
+        XCTAssertNil(sut.activeModal, "activeModal should be nil after hiding the modal")
+    }
+
+    func test_ModalType_conformsToIdentifiable() {
+        let modal = PointOfSaleDashboardViewModel.ModalType.simpleProducts
+        XCTAssertEqual(modal.id, "simpleProducts", "ModalType id should be 'simpleProducts'")
+    }
+
 }
 
 private extension PointOfSaleDashboardViewModelTests {

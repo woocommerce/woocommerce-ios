@@ -6,7 +6,8 @@ struct PointOfSaleLoadingView: View {
             Spacer()
             VStack(alignment: .center) {
                 Spacer()
-                progressView
+                ProgressView()
+                    .progressViewStyle(POSProgressViewStyle())
                 Spacer().frame(height: Layout.progressViewSpacing)
                 Text(Localization.title)
                     .font(.posBody)
@@ -19,16 +20,6 @@ struct PointOfSaleLoadingView: View {
             .multilineTextAlignment(.center)
             Spacer()
         }
-    }
-
-    private var progressView: some View {
-        ProgressView()
-            .progressViewStyle(IndefiniteCircularProgressViewStyle(
-                size: Layout.progressViewSize,
-                lineWidth: Layout.progressViewLineWidth,
-                lineCap: .butt,
-                circleColor: Color(.wooCommercePurple(.shade10)),
-                fillColor: Color(.wooCommercePurple(.shade50))))
     }
 }
 
@@ -48,8 +39,6 @@ private extension PointOfSaleLoadingView {
     }
 
     enum Layout {
-        static let progressViewSize: CGFloat = 112
-        static let progressViewLineWidth: CGFloat = 48
         static let textSpacing: CGFloat = 16
         static let progressViewSpacing: CGFloat = 72
     }

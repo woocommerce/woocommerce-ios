@@ -4,68 +4,70 @@ struct SimpleProductsModalView: View {
     @Binding var isPresented: Bool
 
     var body: some View {
-        VStack {
-            VStack(spacing: 16) {
-                HStack {
-                    Spacer()
-                    Text(Localization.modalTitle)
-                        .font(.system(size: 24, weight: .bold))
+        ZStack {
+            Color.black.opacity(0.2)
+                .edgesIgnoringSafeArea(.all)
+            VStack {
+                VStack(spacing: 16) {
+                    HStack {
+                        Spacer()
+                        Text(Localization.modalTitle)
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.black)
+                            .frame(width: Constants.modalTitleWidth, height: Constants.modalTitleHeight)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                        Button(action: {
+                            isPresented = false
+                        }) {
+                            Image(systemName: "xmark")
+                                .foregroundColor(Color.gray)
+                                .frame(width: 32, height: 32)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    Text(Localization.modalMessage)
+                        .font(.system(size: 16))
                         .foregroundColor(.black)
-                        .frame(width: Constants.modalTitleWidth, height: Constants.modalTitleHeight)
                         .multilineTextAlignment(.center)
-                    Spacer()
+                        .frame(width: Constants.modalMessageWidth, height: Constants.modalMessageHeight)
+                        .padding(.horizontal, 16)
+                    VStack {
+                        Text(Localization.modalHint)
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .frame(width: Constants.modalHintWidth, height: Constants.modalHintHeight)
+                        Text(Localization.modalAction)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(Color.purple)
+                            .frame(width: Constants.modalActionWidth, height: Constants.modalActionHeight)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
                     Button(action: {
                         isPresented = false
                     }) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(Color.gray)
-                            .frame(width: 32, height: 32)
+                        Text("OK")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.purple)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.purple, lineWidth: 2)
+                            )
                     }
-                }
-                .padding(.horizontal, 16)
-                Text(Localization.modalMessage)
-                    .font(.system(size: 16))
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.center)
-                    .frame(width: Constants.modalMessageWidth, height: Constants.modalMessageHeight)
                     .padding(.horizontal, 16)
-                VStack {
-                    Text(Localization.modalHint)
-                        .font(.system(size: 14))
-                        .foregroundColor(.black)
-                        .multilineTextAlignment(.center)
-                        .frame(width: Constants.modalHintWidth, height: Constants.modalHintHeight)
-                    Text(Localization.modalAction)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(Color.purple)
-                        .frame(width: Constants.modalActionWidth, height: Constants.modalActionHeight)
+                    .padding(.top, 16)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                Button(action: {
-                    isPresented = false
-                }) {
-                    Text("OK")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.purple)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.purple, lineWidth: 2)
-                        )
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
+                .padding()
+                .frame(width: 896, height: 486)
+                .background(Color.white)
+                .cornerRadius(16)
+                .shadow(radius: 10)
             }
-            .padding()
-            .frame(width: 896, height: 486)
-            .background(Color.white)
-            .cornerRadius(16)
-            .shadow(radius: 10)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.opacity(0.2).edgesIgnoringSafeArea(.all))
     }
 }
 

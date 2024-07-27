@@ -37,6 +37,13 @@ struct PointOfSaleDashboardView: View {
                     .shadow(color: Color.black.opacity(0.08), radius: 4)
                     .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                     .trackSize(size: $floatingSize)
+                    .zIndex(1)
+            }
+
+            if viewModel.showSimpleProductsModal {
+                SimpleProductsModalView(isPresented: $viewModel.showSimpleProductsModal)
+                    .zIndex(2)
+                    .background(Color.black.opacity(0.4).edgesIgnoringSafeArea(.all))
             }
         }
         .environment(\.floatingControlAreaSize,
@@ -46,14 +53,11 @@ struct PointOfSaleDashboardView: View {
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
-            // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
             } else {
                 switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
+                case .idle, .show, .showOnboarding:
                     Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
@@ -92,20 +96,6 @@ struct PointOfSaleDashboardView: View {
             .frame(maxHeight: .infinity)
             .padding()
         }
-        .overlay(
-            SimpleProductsModalView(isPresented: $viewModel.showSimpleProductsModal)
-                .background(Color.clear)
-                .transition(.move(edge: .bottom))
-                .onAppear {
-                    withAnimation(.easeInOut) {
-                        viewModel.showSimpleProductsModal = true
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black.opacity(0.4))
-                .edgesIgnoringSafeArea(.all)
-                .renderedIf(viewModel.showSimpleProductsModal)
-        )
     }
 }
 
@@ -122,8 +112,6 @@ extension EnvironmentValues {
 
 private extension PointOfSaleDashboardView {
     enum Constants {
-        // For the moment we're just considering landscape for the POS mode
-        // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
@@ -156,7 +144,7 @@ fileprivate extension CardPresentPaymentEvent {
         case .show:
             return "Event"
         case .showOnboarding(let onboardingViewModel):
-            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)"
         }
     }
 }

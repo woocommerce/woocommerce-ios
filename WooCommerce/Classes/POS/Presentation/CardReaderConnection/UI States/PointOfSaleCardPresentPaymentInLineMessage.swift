@@ -11,6 +11,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
 
         // TODO: replace temporary inline message UI based on design
         switch messageType {
+        case .validatingOrder(let viewModel):
+            PointOfSaleCardPresentPaymentValidatingOrderMessageView(viewModel: viewModel)
         case .preparingForPayment(let viewModel):
             PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
         case .tapSwipeOrInsertCard(let viewModel):

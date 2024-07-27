@@ -1,3 +1,2 @@
 
-¡Actualiza tu aplicación de WooCommerce ahora para conseguir una experiencia de pago en efectivo mejorada! Hemos solucionado un error por el que los pedidos pagados en efectivo no se mostraban en el método de pago ni en el título. Ahora, al cobrar los pagos en efectivo, la aplicación muestra estos detalles correctamente, como en la web, lo que asegura la claridad en los detalles de tu pedido y en los recibos.
-
+Descubre nuestra última novedad. Hemos introducido la creación de productos con IA y mejorado la creación de pedidos con una mejor visualización de los precios con impuestos incluidos. Además, nuestra tarjeta de análisis de Google Campaigns ahora te permite elegir cualquier métrica de campaña disponible para obtener información detallada. Disfruta de una experiencia de WooCommerce más fluida e inteligente.

@@ -190,12 +190,14 @@ import Combine
                                           paymentState: .acceptingCard,
                                           isSyncingOrder: false)
     let cartViewModel = CartViewModel()
-    let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
+    let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
+    let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                           itemProvider: POSItemProviderPreview(),
                                                            orderService: POSOrderPreviewService(),
                                                            currencyFormatter: .init(currencySettings: .init()),
                                                            totalsViewModel: totalsViewModel,
-                                                           cartViewModel: cartViewModel)
+                                                           cartViewModel: cartViewModel,
+                                                           itemListViewModel: itemsListViewModel)
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

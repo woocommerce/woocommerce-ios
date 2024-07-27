@@ -408,7 +408,7 @@ private extension DashboardViewModel {
     /// Reload supported card data if needed, but only if we are not already loading data.
     ///
     func reloadCardsWithBackgroundUpdateSupportIfNeeded() async {
-        guard !isReloadingAllData && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+        guard !isReloadingAllData else {
             return
         }
 

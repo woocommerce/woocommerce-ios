@@ -7,6 +7,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
     @StateObject private var totalsViewModel: TotalsViewModel
     @StateObject private var cartViewModel: CartViewModel
+    @StateObject private var itemListViewModel: ItemListViewModel
 
     private let hideAppTabBar: ((Bool) -> Void)
 
@@ -23,23 +24,26 @@ struct PointOfSaleEntryPointView: View {
                                               paymentState: .acceptingCard,
                                               isSyncingOrder: false)
         let cartViewModel = CartViewModel()
+        let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
 
-        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            itemProvider: itemProvider,
-            cardPresentPaymentService: cardPresentPaymentService,
-            orderService: orderService,
-            currencyFormatter: currencyFormatter,
-            totalsViewModel: totalsViewModel,
-            cartViewModel: cartViewModel)
+        self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
+                                                                                  itemProvider: itemProvider,
+                                                                                  orderService: orderService,
+                                                                                  currencyFormatter: currencyFormatter,
+                                                                                  totalsViewModel: totalsViewModel,
+                                                                                  cartViewModel: cartViewModel,
+                                                                                  itemListViewModel: itemListViewModel)
         )
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)
         self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
+        self._itemListViewModel = StateObject(wrappedValue: itemListViewModel)
     }
 
     var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel,
                                  totalsViewModel: totalsViewModel,
-                                 cartViewModel: cartViewModel)
+                                 cartViewModel: cartViewModel,
+                                 itemListViewModel: itemListViewModel)
             .onAppear {
                 hideAppTabBar(true)
             }

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.8
+-----
+- [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).
+
 19.7
 -----
 - [*] Order status is consistent across the order list/dashboard card/filter list/search list. [https://github.com/woocommerce/woocommerce-ios/pull/13408]
@@ -7,6 +11,7 @@
 - [*] Blaze: Hide the Promote with Blaze button on the product form after creating a campaign. [https://github.com/woocommerce/woocommerce-ios/pull/13410]
 - [**] Google Ads campaign management is now available for stores with plugin version 2.7.7 or later. [https://github.com/woocommerce/woocommerce-ios/pull/13421]
 - [*] Product Creation AI: Progress bar and guidance text to encourage users to enter product features. [https://github.com/woocommerce/woocommerce-ios/pull/13412]
+- [*] Blaze: Hide the product URL destination in campaign creation if the URL is empty. [https://github.com/woocommerce/woocommerce-ios/pull/13430]
 
 19.6
 -----

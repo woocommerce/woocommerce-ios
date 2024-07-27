@@ -19,7 +19,8 @@ struct ItemListView: View {
             case .empty(let emptyModel):
                 emptyView(emptyModel)
             case .loading:
-                loadingView
+                /// TODO: handle pull to refresh
+                listView(viewModel.items)
             case .loaded(let items):
                 listView(items)
             case .error(let errorModel):
@@ -119,14 +120,6 @@ private extension ItemListView {
             .foregroundColor(Color.posPrimaryTexti3)
     }
 
-    var loadingView: some View {
-        VStack {
-            Spacer()
-            Text("Loading...")
-            Spacer()
-        }
-    }
-
     @ViewBuilder
     func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
         VStack {
@@ -222,15 +215,17 @@ private extension ItemListView {
 #if DEBUG
 #Preview {
     ItemListView(viewModel: ItemListViewModel(itemProvider: POSItemProviderPreview()),
-                 dashboardViewModel: PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                                   cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                 dashboardViewModel: PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                                   itemProvider: POSItemProviderPreview(),
                                                                    orderService: POSOrderPreviewService(),
                                                                    currencyFormatter: .init(currencySettings: .init()),
-                                                                   totalsViewModel: TotalsViewModel(orderService: POSOrderPreviewService(),
+                                                                   totalsViewModel:
+                                                                    TotalsViewModel(orderService: POSOrderPreviewService(),
                                                                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                                                                     currencyFormatter: .init(currencySettings: .init()),
                                                                                                     paymentState: .acceptingCard,
                                                                                                     isSyncingOrder: false),
-                                                                   cartViewModel: CartViewModel()))
+                                                                   cartViewModel: CartViewModel(),
+                                                                   itemListViewModel: ItemListViewModel(itemProvider: POSItemProviderPreview())))
 }
 #endif

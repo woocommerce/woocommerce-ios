@@ -62,6 +62,36 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_generalMenuElements_include_the_correct_default_elements() {
+        // Given
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         inboxEligibilityChecker: inboxEligibilityChecker)
+
+        viewModel.setupMenuElements()
+
+        // Then
+        let expectedElementsIDs = Set([
+            HubMenuViewModel.WoocommerceAdmin.id,
+            HubMenuViewModel.ViewStore.id,
+            HubMenuViewModel.Coupons.id,
+            HubMenuViewModel.Reviews.id,
+            HubMenuViewModel.Customers.id
+        ])
+        let generalElementsIds = Set(viewModel.generalElements.map { $0.self.id })
+        XCTAssertTrue(expectedElementsIDs.isSubset(of: generalElementsIds))
+    }
+
+    @MainActor
     func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
         // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)

@@ -191,7 +191,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        minAllowedQuantity: minAllowedQuantity,
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
-                       combineVariationQuantities: combineVariationQuantities?.boolValue)
+                       combineVariationQuantities: combineVariationQuantities?.boolValue,
+                       password: password)
     }
 
     // MARK: - Private Helpers

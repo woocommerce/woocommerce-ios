@@ -45,8 +45,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     /// Returns the last updated timestamp for the current time range.
     ///
     var lastUpdatedTimestamp: String {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
-              let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
             return ""
         }
 
@@ -102,11 +101,9 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func reloadDataIfNeeded(forceRefresh: Bool = false) async {
 
         // Preemptively show any cached content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
-            // Stop if data is relatively new
-            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
-                return updateUIInLoadedState()
-            }
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
+            return updateUIInLoadedState()
         }
 
         syncingData = true
@@ -235,9 +232,6 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
-            return periodViewModel.update(state: .loading(cached: []))
-        }
         let items = topEarnerStats?.items?.sorted(by: >) ?? []
         periodViewModel.update(state: .loading(cached: items))
     }

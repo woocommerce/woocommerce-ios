@@ -1,3 +1,2 @@
 
-Mettez à jour votre application WooCommerce dès à présent pour profiter d’une expérience de paiement en espèces améliorée ! Nous avons corrigé le problème qui faisait que les commandes réglées en espèces n’affichaient pas leur moyen de paiement et le titre. Désormais, lorsque vous collectez des paiements en espèces, l’application configure correctement ces détails, comme sur le Web, ce qui garantit la clarté des détails et reçus de vos commandes.
-
+Découvrez notre dernière mise à jour ! Nous avons introduit la création de produit avec l’IA et perfectionné la création de commande avec un meilleur affichage des prix TTC. Par ailleurs, notre carte statistique Campagnes Google vous permet désormais de choisir tout indicateur de campagne disponible pour obtenir des tendances détaillées. Profitez d’une expérience WooCommerce plus fluide et plus intelligente !

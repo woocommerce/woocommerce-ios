@@ -301,28 +301,6 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(receivedOrderStage, .building)
     }
 
-    func test_showModal_updates_activeModal() {
-        XCTAssertNil(sut.activeModal, "activeModal should be nil initially")
-
-        sut.showModal(.simpleProducts)
-
-        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
-    }
-
-    func test_hideModal_resets_activeModal_to_nil() {
-        sut.activeModal = .simpleProducts
-        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
-
-        sut.hideModal()
-
-        XCTAssertNil(sut.activeModal, "activeModal should be nil after hiding the modal")
-    }
-
-    func test_ModalType_conformsToIdentifiable() {
-        let modal = PointOfSaleDashboardViewModel.ModalType.simpleProducts
-        XCTAssertEqual(modal.id, "simpleProducts", "ModalType id should be 'simpleProducts'")
-    }
-
     func test_isInitialLoading_when_item_list_loading_and_empty_then_true() {
         // Given
         mockItemListViewModel.items = []
@@ -349,6 +327,86 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)
+    }
+
+    func test_showModal_sets_activeModal() {
+        // Given
+        let expectation = XCTestExpectation(description: "Expect activeModal to be set")
+        let modalType: PointOfSaleDashboardViewModel.ActiveModal = .simpleProducts // Use ActiveModal instead of ModalType
+
+        var receivedActiveModal: PointOfSaleDashboardViewModel.ActiveModal? // Change the type here
+        // Attach sink to observe changes to activeModal
+        sut.$activeModal
+            .dropFirst()
+            .sink { activeModal in
+                receivedActiveModal = activeModal
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        sut.showModal(modalType)
+
+        // Then
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(receivedActiveModal, modalType)
+    }
+
+    func test_hideModal_clears_activeModal() {
+        // Given
+        let expectation = XCTestExpectation(description: "Expect activeModal to be cleared")
+        let modalType: PointOfSaleDashboardViewModel.ActiveModal = .simpleProducts // Use ActiveModal instead of ModalType
+
+        var receivedActiveModal: PointOfSaleDashboardViewModel.ActiveModal? // Change the type here
+        // Attach sink to observe changes to activeModal
+        sut.$activeModal
+            .dropFirst(2) // Drop initial and first update from showModal
+            .sink { activeModal in
+                receivedActiveModal = activeModal
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        sut.showModal(modalType)
+        sut.hideModal()
+
+        // Then
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNil(receivedActiveModal)
+    }
+
+    func test_shouldShowModal_whenModalIsActive() {
+        // Given
+        sut.showModal(.simpleProducts)
+
+        // When
+        let result = sut.shouldShowModal(.simpleProducts)
+
+        // Then
+        XCTAssertTrue(result, "Expected shouldShowModal to return true when the modal is active")
+    }
+
+    func test_showModal_updates_activeModal() {
+        XCTAssertNil(sut.activeModal, "activeModal should be nil initially")
+
+        sut.showModal(.simpleProducts)
+
+        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
+    }
+
+    func test_hideModal_resets_activeModal_to_nil() {
+        sut.activeModal = .simpleProducts
+        XCTAssertEqual(sut.activeModal, .simpleProducts, "activeModal should be set to .simpleProducts")
+
+        sut.hideModal()
+
+        XCTAssertNil(sut.activeModal, "activeModal should be nil after hiding the modal")
+    }
+
+    func test_ActiveModal_conformsToIdentifiable() {
+        let modal = PointOfSaleDashboardViewModel.ActiveModal.simpleProducts
+        XCTAssertEqual(modal.id, "simpleProducts", "ActiveModal id should be 'simpleProducts'")
     }
 }
 

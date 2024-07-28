@@ -32,15 +32,6 @@ struct ItemListView: View {
         }
         .padding(.horizontal, Constants.itemListPadding)
         .background(Color.posBackgroundGreyi3)
-        .sheet(item: $dashboardViewModel.activeModal) { modal in
-            switch modal {
-            case .simpleProducts:
-                SimpleProductsModalView(isPresented: Binding(
-                    get: { dashboardViewModel.activeModal == .simpleProducts },
-                    set: { if !$0 { dashboardViewModel.hideModal() } }
-                ))
-            }
-        }
     }
 }
 
@@ -76,13 +67,13 @@ private extension ItemListView {
     }
 
     private func openInfoBanner() {
-        dashboardViewModel.showSimpleProductsModal.toggle()
+        dashboardViewModel.showModal(.simpleProducts)
     }
 
     var bannerCardView: some View {
         HStack {
             Button(action: {
-                dashboardViewModel.showSimpleProductsModal.toggle()
+                dashboardViewModel.showModal(.simpleProducts)
             }) {
                 Image(systemName: "info.circle")
                     .padding(Constants.iconPadding)

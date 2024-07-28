@@ -40,10 +40,14 @@ struct PointOfSaleDashboardView: View {
                     .zIndex(1)
             }
 
-            if viewModel.showSimpleProductsModal {
-                SimpleProductsModalView(isPresented: $viewModel.showSimpleProductsModal)
-                    .zIndex(2)
-                    .background(Color.black.opacity(0.4).edgesIgnoringSafeArea(.all))
+            if viewModel.shouldShowModal(.simpleProducts) {
+                SimpleProductsModalView(isPresented: Binding(
+                    get: { viewModel.shouldShowModal(.simpleProducts) },
+                    set: { if !$0 { viewModel.hideModal() } }
+                ))
+                .transition(.move(edge: .bottom))
+                .zIndex(2)
+                .background(Color.black.opacity(0.4).edgesIgnoringSafeArea(.all))
             }
         }
         .environment(\.floatingControlAreaSize,

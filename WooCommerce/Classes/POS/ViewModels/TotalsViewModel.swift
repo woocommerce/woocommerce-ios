@@ -24,7 +24,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    @Published private(set) var isShowingCardPresentPaymentStatus: Bool = false
+    @Published private(set) var isShowingCardReaderStatus: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
@@ -247,7 +247,7 @@ private extension TotalsViewModel {
 
                 return true
             }
-            .assign(to: &$isShowingCardPresentPaymentStatus)
+            .assign(to: &$isShowingCardReaderStatus)
     }
 
     func observeCardPresentPaymentEvents() {

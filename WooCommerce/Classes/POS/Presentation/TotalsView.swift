@@ -21,7 +21,7 @@ struct TotalsView: View {
             VStack(alignment: .center) {
                 Spacer()
                 VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                    if totalsViewModel.isShowingCardPresentPaymentStatus {
+                    if totalsViewModel.isShowingCardReaderStatus {
                         cardReaderView
                             .font(.title)
                             .padding()
@@ -30,7 +30,7 @@ struct TotalsView: View {
 
                     totalsFieldsView
                 }
-                .animation(.default, value: totalsViewModel.isShowingCardPresentPaymentStatus)
+                .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
                 paymentsActionButtons
                     .padding()
                 Spacer()

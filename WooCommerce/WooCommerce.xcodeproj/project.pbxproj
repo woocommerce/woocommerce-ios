@@ -1291,6 +1291,7 @@
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
 		4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */; };
 		4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */; };
+		458BAC6E2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		4590B64C261C673B00A6FCE0 /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B64B261C673B00A6FCE0 /* WeightFormatter.swift */; };
 		4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */; };
@@ -4211,6 +4212,7 @@
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
 		4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSettingsViewController.xib; sourceTree = "<group>"; };
 		4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModel.swift; sourceTree = "<group>"; };
+		458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPasswordEligibilityUseCase.swift; sourceTree = "<group>"; };
 		459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Helpers.swift"; sourceTree = "<group>"; };
 		4590B64B261C673B00A6FCE0 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
@@ -8547,6 +8549,7 @@
 			children = (
 				4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */,
 				4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */,
+				458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */,
 				4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */,
 				451C77722404534000413F73 /* ProductSettingsSections.swift */,
 				451C77702404518600413F73 /* ProductSettingsRows.swift */,
@@ -15778,6 +15781,7 @@
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */,
+				458BAC6E2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift in Sources */,
 				0388E1A829E04687007DF84D /* DeepLinkNavigator.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
 				02B60DF72A586C7F004C47FF /* AddProductFromImageFormImageView.swift in Sources */,

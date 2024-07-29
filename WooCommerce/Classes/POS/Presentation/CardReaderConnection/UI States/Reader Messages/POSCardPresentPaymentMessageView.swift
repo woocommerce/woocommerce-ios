@@ -34,13 +34,14 @@ struct POSCardPresentPaymentMessageView: View {
                 if let imageName = viewModel.imageName {
                     Image(imageName)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: Layout.imageSize, height: Layout.imageSize)
                 }
 
                 if viewModel.showProgress {
                     ProgressView()
                         .progressViewStyle(POSProgressViewStyle())
+                        .frame(width: Layout.imageSize, height: Layout.imageSize)
                 }
 
                 VStack(alignment: .center, spacing: Layout.textSpacing) {
@@ -73,7 +74,7 @@ struct POSCardPresentPaymentMessageView: View {
 
 private extension POSCardPresentPaymentMessageView {
     enum Layout {
-        static let imageSize: CGFloat = 104
+        static let imageSize: CGFloat = 156
         static let textSpacing: CGFloat = 4
         static let verticalSpacing: CGFloat = 72
     }

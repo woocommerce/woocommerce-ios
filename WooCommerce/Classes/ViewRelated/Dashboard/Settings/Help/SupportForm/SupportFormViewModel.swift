@@ -31,6 +31,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     @Published var subject = ""
 
+    /// Variable that holds the siteAddress of the ticket.
+    ///
+    @Published var siteAddress = ""
+
     /// Variable that holds the description of the ticket.
     ///
     @Published var description = ""
@@ -58,7 +62,7 @@ public final class SupportFormViewModel: ObservableObject {
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
-        area == nil || subject.isEmpty || description.isEmpty
+        area == nil || subject.isEmpty || siteAddress.isEmpty || description.isEmpty
     }
 
     var identitySubmitButtonDisabled: Bool {

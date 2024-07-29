@@ -1,6 +1,7 @@
 import Foundation
 import class WordPressShared.EmailFormatValidator
 import protocol WooFoundation.Analytics
+import struct Yosemite.Site
 
 /// Data Source for the Support Request
 ///
@@ -59,6 +60,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let analyticsProvider: Analytics
 
+    /// To fetch the default site URL if possible.
+    ///
+    private let defaultSite: Site?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -89,11 +94,13 @@ public final class SupportFormViewModel: ObservableObject {
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
-         analyticsProvider: Analytics = ServiceLocator.analytics) {
+         analyticsProvider: Analytics = ServiceLocator.analytics,
+         defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
+        self.defaultSite = defaultSite
     }
 
     /// Tracks when the support form is viewed.
@@ -102,9 +109,8 @@ public final class SupportFormViewModel: ObservableObject {
         analyticsProvider.track(.supportNewRequestViewed)
         requestZendeskIdentityIfNeeded()
 
-        if let siteAddress = ServiceLocator.stores.sessionManager.defaultSite?.url {
-            self.siteAddress = siteAddress
-        }
+        // Populates the site address field if there is any.
+        self.siteAddress = defaultSite?.url ?? ""
     }
 
     /// Selects an area.

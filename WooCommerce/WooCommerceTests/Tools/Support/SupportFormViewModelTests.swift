@@ -1,4 +1,5 @@
 import XCTest
+import Yosemite
 @testable import WooCommerce
 
 @MainActor
@@ -165,17 +166,32 @@ final class SupportFormViewModelTests: XCTestCase {
         }
     }
 
-    func test() {
+    func test_site_address_is_sent_when_submitting_request() {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
         let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
 
         // When
-        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
         viewModel.selectArea(area)
+        viewModel.siteAddress = "site-address"
         viewModel.submitSupportRequest()
 
+        // Then
+        XCTAssertTrue(zendesk.latestInvokedCustomFields.values.contains("site-address"))
+    }
+
+    func test_default_site_is_populated_when_available() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let defaultSite = Site.fake().copy(url: "site-address")
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk, defaultSite: defaultSite)
+
+        // When
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertEqual(viewModel.siteAddress, defaultSite.url)
     }
 }
 

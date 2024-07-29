@@ -67,7 +67,7 @@ struct StorePerformanceView: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
             } else {
-                UnavailableAnalyticsView()
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
             }
         }
@@ -362,6 +362,11 @@ private extension StorePerformanceView {
             let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the performance card was last updated")
             return String.localizedStringWithFormat(format, time)
         }
+        static let unavailableAnalytics = NSLocalizedString(
+            "storePerformanceView.unavailableAnalyticsView.title",
+            value: "We can't display your store's performance",
+            comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
+        )
     }
 }
 

@@ -7,7 +7,7 @@ struct UnavailableAnalyticsView: View {
 
     private let title: String
 
-    init(title: String = Localization.title) {
+    init(title: String) {
         self.title = title
     }
 
@@ -54,11 +54,6 @@ private extension UnavailableAnalyticsView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "unavailableAnalyticsView.title",
-            value: "We can't display your store's analytics",
-            comment: "Title when the Analytics feature is unavailable"
-        )
         static let details = NSLocalizedString(
             "unavailableAnalyticsView.details",
             value: "Make sure you are running the latest version of WooCommerce on your site" +
@@ -79,5 +74,5 @@ private extension UnavailableAnalyticsView {
 }
 
 #Preview {
-    UnavailableAnalyticsView()
+    UnavailableAnalyticsView(title: "No analytics available")
 }

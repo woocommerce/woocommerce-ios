@@ -37,7 +37,7 @@ struct StorePerformanceView: View {
             if viewModel.loadingError != nil {
                 errorStateView
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.statsVersion == .v4 {
+            } else if viewModel.analyticsEnabled {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
@@ -99,7 +99,7 @@ private extension StorePerformanceView {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
+                .renderedIf(!viewModel.analyticsEnabled || viewModel.loadingError != nil)
 
             Text(DashboardCard.CardType.performance.name)
                 .headlineStyle()

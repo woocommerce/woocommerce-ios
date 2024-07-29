@@ -5,19 +5,25 @@ import SwiftUI
 struct UnavailableAnalyticsView: View {
     @State private var showingSupportForm = false
 
+    private let title: String
+
+    init(title: String = Localization.title) {
+        self.title = title
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: Layout.padding) {
             Image(uiImage: .noStoreImage)
-            Text(Localization.title)
+            Text(title)
                 .headlineStyle()
             Text(Localization.details)
                 .bodyStyle()
-                .multilineTextAlignment(.center)
             Button(Localization.buttonTitle) {
                 showingSupportForm = true
             }
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingSupportForm) {
             supportForm
@@ -50,7 +56,7 @@ private extension UnavailableAnalyticsView {
     enum Localization {
         static let title = NSLocalizedString(
             "unavailableAnalyticsView.title",
-            value: "We can’t display your store’s analytics",
+            value: "We can't display your store's analytics",
             comment: "Title when the Analytics feature is unavailable"
         )
         static let details = NSLocalizedString(

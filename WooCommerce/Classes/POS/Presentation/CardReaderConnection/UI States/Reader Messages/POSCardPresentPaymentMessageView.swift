@@ -8,8 +8,24 @@ struct POSCardPresentPaymentMessageViewModel {
     var buttons: [CardPresentPaymentsModalButtonViewModel] = []
 }
 
+struct POSCardPresentPaymentMessageViewStyle {
+    var titleColor: Color
+    var messageColor: Color
+
+    static let dimmed = POSCardPresentPaymentMessageViewStyle(
+        titleColor: Color(.neutral(.shade40)),
+        messageColor: Color(.neutral(.shade60))
+    )
+
+    static let standard = POSCardPresentPaymentMessageViewStyle(
+        titleColor: .posPrimaryTexti3,
+        messageColor: .posPrimaryTexti3
+    )
+}
+
 struct POSCardPresentPaymentMessageView: View {
     let viewModel: POSCardPresentPaymentMessageViewModel
+    var style: POSCardPresentPaymentMessageViewStyle = .standard
 
     var body: some View {
         HStack(alignment: .center) {
@@ -29,13 +45,13 @@ struct POSCardPresentPaymentMessageView: View {
 
                 VStack(alignment: .center, spacing: Layout.textSpacing) {
                     Text(viewModel.title)
-                        .foregroundStyle(Color(.neutral(.shade40)))
+                        .foregroundStyle(style.titleColor)
                         .font(.posBody)
 
                     if let message = viewModel.message {
                         Text(message)
                             .font(.posTitle)
-                            .foregroundStyle(Color(.neutral(.shade60)))
+                            .foregroundStyle(style.messageColor)
                             .bold()
                     }
                 }

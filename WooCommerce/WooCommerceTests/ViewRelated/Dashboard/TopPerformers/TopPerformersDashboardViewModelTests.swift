@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 final class TopPerformersDashboardViewModelTests: XCTestCase {
@@ -81,6 +83,40 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockTopPerformersStats(with: stores, error: DotcomError.noRestRoute)
+
+        // When
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_notFound_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        mockTopPerformersStats(with: stores, error: NetworkError.notFound(response: nil))
+
+        // When
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
     func test_dismissTopPerformers_triggers_onDismiss() {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -110,5 +146,23 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["type"], "top_performers")
+    }
+}
+
+private extension TopPerformersDashboardViewModelTests {
+    func mockTopPerformersStats(with stores: MockStoresManager,
+                                error: Error? = nil) {
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
+                if let error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(.fake()))
+                }
+            default:
+                break
+            }
+        }
     }
 }

@@ -18,3 +18,4 @@ Closes: #
 
 ---
 - [ ] I have considered if this change warrants user-facing release notes and have added them to `RELEASE-NOTES.txt` if necessary.
+- [ ] This PR includes refactoring; smoke testing of the entire section is needed.

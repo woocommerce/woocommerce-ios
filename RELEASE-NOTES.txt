@@ -3,6 +3,7 @@
 19.8
 -----
 - [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).
+- [*] Dynamic Dashboard: Display unavailable analytics view when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13440]
 
 19.7
 -----

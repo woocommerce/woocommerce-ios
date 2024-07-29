@@ -58,6 +58,35 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNil(sut.order)
         XCTAssertNil(sut.cardPresentPaymentInlineMessage)
     }
+
+    func test_isShowingCardPresentPaymentStatus_when_order_syncing_then_false() {
+        // Given
+        sut.isSyncingOrder = true
+
+        // Then
+        XCTAssertFalse(sut.isShowingCardPresentPaymentStatus)
+    }
+
+
+    func test_isShowingCardPresentPaymentStatus_when_connected_and_payment_message_exists_then_true() {
+        // Given
+        sut.isSyncingOrder = false
+        cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+
+        // Then
+        XCTAssertTrue(sut.isShowingCardPresentPaymentStatus)
+    }
+
+    func test_isShowingCardPresentPaymentStatus_when_connected_and_no_payment_message_then_false() {
+        // Given
+        sut.isSyncingOrder = false
+        cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        cardPresentPaymentService.paymentEvent = .idle
+
+        // Then
+        XCTAssertFalse(sut.isShowingCardPresentPaymentStatus)
+    }
 }
 
 private extension TotalsViewModelTests {

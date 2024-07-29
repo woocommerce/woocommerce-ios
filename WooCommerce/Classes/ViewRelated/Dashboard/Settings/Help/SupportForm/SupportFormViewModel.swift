@@ -101,6 +101,10 @@ public final class SupportFormViewModel: ObservableObject {
     func onViewAppear() {
         analyticsProvider.track(.supportNewRequestViewed)
         requestZendeskIdentityIfNeeded()
+
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultSite?.url {
+            self.siteAddress = siteAddress
+        }
     }
 
     /// Selects an area.
@@ -122,7 +126,7 @@ public final class SupportFormViewModel: ObservableObject {
 
         showLoadingIndicator = true
         zendeskProvider.createSupportRequest(formID: area.datasource.formID,
-                                             customFields: area.datasource.customFields,
+                                             customFields: area.datasource.customFields(siteAddress: siteAddress),
                                              tags: assembleTags(),
                                              subject: subject,
                                              description: description) { [weak self] result in

@@ -164,6 +164,19 @@ final class SupportFormViewModelTests: XCTestCase {
             viewModel.shouldShowErrorAlert == true
         }
     }
+
+    func test() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+
+        // When
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        viewModel.selectArea(area)
+        viewModel.submitSupportRequest()
+
+    }
 }
 
 private extension SupportFormViewModelTests {

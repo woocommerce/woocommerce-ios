@@ -159,4 +159,16 @@ final class SupportDataSourcesTests: XCTestCase {
             360000089123 // Device Free Space
         ].sorted())
     }
+
+    func test_site_address_custom_field_is_inserted_correctly() {
+        // Given
+        let dataSOurce = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())
+
+        // When
+        let customFields = dataSOurce.customFields(siteAddress: "site-address")
+
+        // Then
+        XCTAssertEqual(customFields[22054927], // Site Address
+                       "site-address")
+    }
 }

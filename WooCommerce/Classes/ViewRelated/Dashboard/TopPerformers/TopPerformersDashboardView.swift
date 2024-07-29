@@ -24,7 +24,10 @@ struct TopPerformersDashboardView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.syncingError != nil {
+            if !viewModel.analyticsEnabled {
+                UnavailableAnalyticsView()
+                    .padding(.horizontal, Layout.padding)
+            } else if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
                     Task {

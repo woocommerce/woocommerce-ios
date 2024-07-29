@@ -2,6 +2,8 @@ import Combine
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `TopPerformersDashboardView`
 ///
@@ -15,6 +17,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published var selectedItem: TopEarnerStatsItem?
     @Published private(set) var syncingError: Error?
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -116,8 +119,15 @@ final class TopPerformersDashboardViewModel: ObservableObject {
             let useCase = TopPerformersCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
             try await useCase.sync()
 
+            analyticsEnabled = true
             syncingDidFinishPublisher.send(nil)
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
             syncingDidFinishPublisher.send(error)
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")

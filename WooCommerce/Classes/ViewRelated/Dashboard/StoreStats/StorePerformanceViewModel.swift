@@ -76,17 +76,13 @@ final class StorePerformanceViewModel: ObservableObject {
     /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
     ///
     var showRedactedState: Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
-            return syncingData
-        }
         return syncingData && periodViewModel?.noDataFound == true
     }
 
     /// Returns the last updated timestamp for the current time range.
     ///
     var lastUpdatedTimestamp: String {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
-              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
             return ""
         }
 
@@ -161,13 +157,11 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadDataIfNeeded(forceRefresh: Bool = false) async {
 
         // Preemptively show any cached content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
-            periodViewModel?.loadCachedContent()
+        periodViewModel?.loadCachedContent()
 
-            // Stop if data is relatively new
-            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
-                return
-            }
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
+            return
         }
 
         syncingData = true

@@ -22,4 +22,10 @@ extension String {
     static var posGetSupportImageName: String {
         return "pos-get-support"
     }
+    static var posRemoveCartItemImageName: String {
+        return "pos-remove-cart-item"
+    }
+    static var posDismissProductsBannerImageName: String {
+        return "pos-dismiss-products-banner"
+    }
 }

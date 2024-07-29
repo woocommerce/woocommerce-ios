@@ -6,13 +6,16 @@ struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
+    @ObservedObject private var itemListViewModel: ItemListViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel) {
+         cartViewModel: CartViewModel,
+         itemListViewModel: ItemListViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
+        self.itemListViewModel = itemListViewModel
     }
 
     private var isCartShown: Bool {
@@ -23,42 +26,23 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            VStack {
-                HStack {
-                    switch viewModel.orderStage {
-                    case .building:
-                        GeometryReader { geometry in
-                            HStack {
-                                productListView
-                                cartView
-                                    .renderedIf(isCartShown)
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                            }
-                        }
-                    case .finalizing:
-                        GeometryReader { geometry in
-                            HStack {
-                                if !viewModel.isTotalsViewFullScreen {
-                                    cartView
-                                        .frame(width: geometry.size.width * Constants.cartWidth)
-                                    Spacer()
-                                }
-                                totalsView
-                            }
-                        }
-                    }
-                }
-                .frame(maxHeight: .infinity)
-                .padding()
+            if viewModel.isInitialLoading {
+                PointOfSaleLoadingView()
+                    .transition(.opacity)
+            } else {
+                contentView
+                    .transition(.push(from: .top))
+
+                POSFloatingControlView(viewModel: viewModel)
+                    .shadow(color: Color.black.opacity(0.08), radius: 4)
+                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                    .trackSize(size: $floatingSize)
             }
-            POSFloatingControlView(viewModel: viewModel)
-                .shadow(color: Color.black.opacity(0.08), radius: 4)
-                .offset(x: Constants.floatingControlOffset, y: -Constants.floatingControlOffset)
-                .trackSize(size: $floatingSize)
         }
         .environment(\.floatingControlAreaSize,
-                      CGSizeMake(floatingSize.width + Constants.floatingControlOffset,
-                                 floatingSize.height + Constants.floatingControlOffset))
+                      CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
+                                 floatingSize.height + Constants.floatingControlVerticalOffset))
+        .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
@@ -76,6 +60,37 @@ struct PointOfSaleDashboardView: View {
         })
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
+        }
+    }
+
+    private var contentView: some View {
+        VStack {
+            HStack {
+                switch viewModel.orderStage {
+                case .building:
+                    GeometryReader { geometry in
+                        HStack {
+                            productListView
+                            cartView
+                                .renderedIf(isCartShown)
+                                .frame(width: geometry.size.width * Constants.cartWidth)
+                        }
+                    }
+                case .finalizing:
+                    GeometryReader { geometry in
+                        HStack {
+                            if !viewModel.isTotalsViewFullScreen {
+                                cartView
+                                    .frame(width: geometry.size.width * Constants.cartWidth)
+                                Spacer()
+                            }
+                            totalsView
+                        }
+                    }
+                }
+            }
+            .frame(maxHeight: .infinity)
+            .padding()
         }
     }
 }
@@ -97,7 +112,8 @@ private extension PointOfSaleDashboardView {
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
         static let buttonImageAndTextSpacing: CGFloat = 12
-        static let floatingControlOffset: CGFloat = 24
+        static let floatingControlHorizontalOffset: CGFloat = 24
+        static let floatingControlVerticalOffset: CGFloat = 0
     }
 }
 
@@ -111,13 +127,10 @@ private extension PointOfSaleDashboardView {
         TotalsView(viewModel: viewModel,
                    totalsViewModel: totalsViewModel,
                    cartViewModel: cartViewModel)
-            .background(Color(UIColor.systemBackground))
-            .frame(maxWidth: .infinity)
-            .cornerRadius(16)
     }
 
     var productListView: some View {
-        ItemListView(viewModel: viewModel.itemListViewModel)
+        ItemListView(viewModel: itemListViewModel)
     }
 }
 
@@ -142,15 +155,17 @@ fileprivate extension CardPresentPaymentEvent {
                                    paymentState: .acceptingCard,
                                    isSyncingOrder: false)
     let cartVM = CartViewModel()
-    let posVM = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                              orderService: POSOrderPreviewService(),
-                                              currencyFormatter: .init(currencySettings: .init()),
+    let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
+    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
-                                              cartViewModel: cartVM)
+                                              cartViewModel: cartVM,
+                                              itemListViewModel: itemsListVM)
 
     return NavigationStack {
-        PointOfSaleDashboardView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartVM)
+        PointOfSaleDashboardView(viewModel: posVM,
+                                 totalsViewModel: totalsVM,
+                                 cartViewModel: cartVM,
+                                 itemListViewModel: itemsListVM)
     }
 }
 #endif

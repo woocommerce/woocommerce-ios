@@ -1,18 +1,15 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import protocol Yosemite.POSItemProvider
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
-import protocol Yosemite.POSOrderServiceProtocol
 import Combine
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
 import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    let itemListViewModel: ItemListViewModel
     let cartViewModel: any CartViewModelProtocol
     let totalsViewModel: any TotalsViewModelProtocol
+    let itemListViewModel: any ItemListViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
@@ -33,17 +30,16 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isExitPOSDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
+    @Published var isInitialLoading: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemProvider: POSItemProvider,
-         cardPresentPaymentService: CardPresentPaymentFacade,
-         orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter,
+    init(cardPresentPaymentService: CardPresentPaymentFacade,
          totalsViewModel: any TotalsViewModelProtocol,
-         cartViewModel: any CartViewModelProtocol) {
+         cartViewModel: any CartViewModelProtocol,
+         itemListViewModel: any ItemListViewModelProtocol) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
-        self.itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
+        self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
 
@@ -53,6 +49,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartAddMoreAction()
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
+        observeItemListState()
     }
 
     func startNewTransaction() {
@@ -113,6 +110,7 @@ private extension PointOfSaleDashboardViewModel {
                     return true
                 case .idle,
                         .acceptingCard,
+                        .validatingOrder,
                         .preparingReader:
                     return isSyncingOrder
                 }
@@ -126,6 +124,7 @@ private extension PointOfSaleDashboardViewModel {
                     return true
                 case .idle,
                         .acceptingCard,
+                        .validatingOrder,
                         .preparingReader,
                         .cardPaymentSuccessful:
                     return false
@@ -140,6 +139,7 @@ private extension PointOfSaleDashboardViewModel {
                         .cardPaymentSuccessful:
                     return true
                 case .idle,
+                        .validatingOrder,
                         .preparingReader,
                         .acceptingCard:
                     return false
@@ -150,6 +150,16 @@ private extension PointOfSaleDashboardViewModel {
 
     private func observeOrderStage() {
         cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeItemListState() {
+        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
+            .map { state, items -> Bool in
+                return state == .loading && items.isEmpty
+            }
+            .assign(to: &$isInitialLoading)
     }
 }
 

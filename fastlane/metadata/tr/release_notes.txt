@@ -1,3 +1,2 @@
 
-İyileştirilmiş bir nakit ödeme deneyimi için WooCommerce uygulamanızı hemen güncelleyin! Nakit ödenen siparişlerde ödeme yönteminin ve başlığının gözükmemesi sorununu düzelttik. Artık nakit ödeme toplarken uygulama, tıpkı web üzerinde olduğu gibi bu ayrıntıları doğru ayarlayarak sipariş ayrıntılarınızda ve makbuzlarınızda netlik olmasını sağlar.
-
+En son güncellemelerimizi keşfedin! Yapay Zeka ile ürün oluşturmayı ve daha iyi vergi dahil fiyatlandırma görüntülemeleriyle sipariş oluşturmayı tanıttık. Ayrıca Google Kampanyaları analizleri kartı artık ayrıntılı bilgiler için herhangi bir mevcut kampanya analizini seçmenizi sağlar. Daha kolay ve akıllı bir WooCommerce deneyiminin keyfini çıkarın!

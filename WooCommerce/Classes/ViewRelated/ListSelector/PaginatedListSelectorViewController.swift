@@ -54,7 +54,7 @@ extension PaginatedListSelectorDataSource {
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
-    UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate
+    UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate, GhostableViewController
 where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
@@ -381,6 +381,7 @@ private extension PaginatedListSelectorViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
+        displayGhostContent()
 
         resultsController.stopForwardingEvents()
     }
@@ -388,6 +389,7 @@ private extension PaginatedListSelectorViewController {
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderProducts() {
+        removeGhostContent()
         resultsController.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }

@@ -109,25 +109,28 @@ extension CardPresentPaymentEventDetails {
                     cancelUpdateAction: cancelUpdate)))
 
         /// Payment messages
-        case .preparingForPayment(cancelPayment: let cancelPayment):
+        case .validatingOrder:
+            return .message(.validatingOrder(
+                viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel()))
+        case .preparingForPayment:
             return .message(.preparingForPayment(
                 viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
 
-        case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
+        case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: _):
             return .message(.tapSwipeOrInsertCard(
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
 
-        case .paymentSuccess(done: let done):
+        case .paymentSuccess:
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
 
-        case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: let cancelPayment):
+        case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: _):
             return .message(.paymentError(
                 viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                     error: error,
                     tryAgainButtonAction: tryAgain)))
 
-        case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
+        case .paymentErrorNonRetryable(error: let error, cancelPayment: _):
             return .message(.paymentErrorNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
                     error: error)))
@@ -148,8 +151,7 @@ extension CardPresentPaymentEventDetails {
                 viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
 
         /// Not-yet supported types
-        case .selectSearchType,
-                .validatingOrder:
+        case .selectSearchType:
             return nil
         }
     }

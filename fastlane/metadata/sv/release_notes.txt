@@ -1,3 +1,2 @@
 
-Uppdatera din WooCommerce-app nu för en förbättrad kontantbetalningsupplevelse. Vi har åtgärdat problemet som gjorde att beställningar som betalats kontant inte visade betalningsmetod och rubrik. När du tar emot kontanta betalningar ställer appen nu in dessa uppgifter korrekt, precis som på webben, vilket säkerställer tydlighet i din beställningsinformation och dina kvitton.
-
+Ta del av vår senaste uppdatering! Vi har infört möjligheten att skapa produkter med hjälp av AI, och förbättrat skapande av beställning med tydligare prisangivelser inklusive moms. Dessutom kan du nu välja alla tillgängliga kampanjnyckeltal på vårt Google Campaigns-analyskort för att få detaljerade insikter. Du får en smidigare och smartare WooCommerce-upplevelse.

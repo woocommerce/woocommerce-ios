@@ -1,18 +1,8 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentValidatingOrderMessageView: View {
+struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     let title: String
     let message: String
-
-    init(title: String, message: String) {
-        self.title = title
-        self.message = message
-    }
-
-    init(viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel) {
-        self.title = viewModel.title
-        self.message = viewModel.message
-    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -40,6 +30,5 @@ struct PointOfSaleCardPresentPaymentValidatingOrderMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentValidatingOrderMessageView(
-        viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel())
+    PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: "Checking order", message: "Getting ready")
 }

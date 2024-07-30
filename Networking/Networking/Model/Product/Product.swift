@@ -540,7 +540,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Password
         let password = container.failsafeDecodeIfPresent(stringForKey: .password)
-        
+
         // Composite Product properties
         let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
@@ -845,7 +845,7 @@ private extension Product {
         case bundleMinSize                  = "bundle_min_size"
         case bundleMaxSize                  = "bundle_max_size"
         case bundledItems                   = "bundled_items"
-        
+
         case password = "post_password"
 
         case compositeComponents    = "composite_components"

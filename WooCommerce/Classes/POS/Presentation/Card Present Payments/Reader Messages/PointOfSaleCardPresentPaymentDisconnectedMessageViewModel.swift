@@ -1,17 +1,17 @@
 import Foundation
 
-struct PointOfSaleCardPresentPaymentDisconnectedMessageViewModel {
+struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     let title = Localization.title
-    let collectPaymentViewModel: CardPresentPaymentsModalButtonViewModel
+    let collectPaymentButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(collectPaymentAction: @escaping () -> Void) {
-        self.collectPaymentViewModel = CardPresentPaymentsModalButtonViewModel(
+        self.collectPaymentButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.collectPayment,
             actionHandler: collectPaymentAction)
     }
 }
 
-private extension PointOfSaleCardPresentPaymentDisconnectedMessageViewModel {
+private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.cardPresent.readerDisconnected.title",

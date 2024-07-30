@@ -151,7 +151,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentDisconnectedMessageView(viewModel: .init(collectPaymentAction: totalsViewModel.cardPaymentTapped))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(collectPaymentAction: totalsViewModel.cardPaymentTapped))
         }
     }
 }

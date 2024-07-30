@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentDisconnectedMessageView: View {
-    let viewModel: PointOfSaleCardPresentPaymentDisconnectedMessageViewModel
+struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
+    let viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel
 
     var body: some View {
         HStack(alignment: .center) {
@@ -15,7 +15,7 @@ struct PointOfSaleCardPresentPaymentDisconnectedMessageView: View {
                 }
 
                 HStack {
-                    Button(viewModel.collectPaymentViewModel.title, action: viewModel.collectPaymentViewModel.actionHandler)
+                    Button(viewModel.collectPaymentButtonViewModel.title, action: viewModel.collectPaymentButtonViewModel.actionHandler)
                 }
                 .padding()
             }
@@ -26,8 +26,8 @@ struct PointOfSaleCardPresentPaymentDisconnectedMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentDisconnectedMessageView(
-        viewModel: PointOfSaleCardPresentPaymentDisconnectedMessageViewModel(
+    PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
+        viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel(
             collectPaymentAction: {})
     )
 }

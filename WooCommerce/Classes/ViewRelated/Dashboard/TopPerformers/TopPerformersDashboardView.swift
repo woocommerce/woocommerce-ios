@@ -207,7 +207,7 @@ private extension TopPerformersDashboardView {
         }
         static let unavailableAnalytics = NSLocalizedString(
             "topPerformersDashboardView.unavailableAnalyticsView.title",
-            value: "We can't display your store's top performers",
+            value: "Unable to display your store's top performers",
             comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
         )
     }

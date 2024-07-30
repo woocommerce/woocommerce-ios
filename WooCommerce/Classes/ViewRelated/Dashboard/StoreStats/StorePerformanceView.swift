@@ -364,7 +364,7 @@ private extension StorePerformanceView {
         }
         static let unavailableAnalytics = NSLocalizedString(
             "storePerformanceView.unavailableAnalyticsView.title",
-            value: "We can't display your store's performance",
+            value: "Unable to display your store's performance",
             comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
         )
     }

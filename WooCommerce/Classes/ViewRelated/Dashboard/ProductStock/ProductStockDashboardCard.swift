@@ -250,7 +250,7 @@ private extension ProductStockDashboardCard {
         )
         static let unavailableAnalytics = NSLocalizedString(
             "productStockDashboardCard.unavailableAnalyticsView.title",
-            value: "We can't display your store's stock analytics",
+            value: "Unable to display your store's stock analytics",
             comment: "Title when the Stock card is disabled because the analytics feature is unavailable"
         )
     }

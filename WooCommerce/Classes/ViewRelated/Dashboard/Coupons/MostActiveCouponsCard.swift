@@ -219,7 +219,7 @@ private extension MostActiveCouponsCard {
         )
         static let unavailableAnalytics = NSLocalizedString(
             "mostActiveCouponsCard.unavailableAnalyticsView.title",
-            value: "We can't display your store's coupon analytics",
+            value: "Unable to display your store's coupon analytics",
             comment: "Title when the Most Active Coupons card is disabled because the analytics feature is unavailable"
         )
     }

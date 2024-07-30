@@ -6,13 +6,14 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
-                Rectangle()
-                    .foregroundStyle(Color(.wooCommercePurple(.shade20)))
-                    .cornerRadius(13)
-                    .frame(width: Layout.headerSize.width, height: Layout.headerSize.height)
+            VStack(alignment: .center, spacing: Layout.headerSpacing) {
+                Image(viewModel.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
+                           height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                VStack(alignment: .center, spacing: Layout.textSpacing) {
                     Text(viewModel.title)
                         .foregroundStyle(.white)
                         .font(.posBody)
@@ -29,15 +30,15 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     }
 }
 
+private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView {
+    enum Layout {
+        static let headerSpacing: CGFloat = 48
+        static let textSpacing: CGFloat = 16
+    }
+}
+
 #Preview {
     PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(
         viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(
             message: "Remove card"))
-}
-
-private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView {
-    enum Layout {
-        static let headerSize: CGSize = .init(width: 130, height: 114.4)
-        static let cornerRadius: CGFloat = 13
-    }
 }

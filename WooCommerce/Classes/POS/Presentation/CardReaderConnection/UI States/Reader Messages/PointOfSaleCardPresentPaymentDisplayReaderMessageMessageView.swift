@@ -4,7 +4,17 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
 
     var body: some View {
-        POSCardPresentPaymentMessageView(viewModel: .init(title: viewModel.message))
+        HStack(alignment: .center) {
+            Spacer()
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Text(viewModel.message)
+                    .font(.posTitle)
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .bold()
+            }
+            .multilineTextAlignment(.center)
+            Spacer()
+        }
     }
 }
 

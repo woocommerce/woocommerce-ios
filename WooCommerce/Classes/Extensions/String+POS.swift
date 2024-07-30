@@ -1,6 +1,6 @@
 import Foundation
 
-extension String {
+enum PointOfSaleAssets {
     static var posNewTransactionImageName: String {
         "pos-new-transaction-icon"
     }

@@ -1567,39 +1567,39 @@ extension UIImage {
     }
 
     static var posNewTransactionImage: UIImage {
-        UIImage(named: String.posNewTransactionImageName)!
+        UIImage(named: PointOfSaleAssets.posNewTransactionImageName)!
     }
 
     static var posPaymentSuccessfulImage: UIImage {
-        UIImage(named: String.posPaymentSuccessfulImageName)!
+        UIImage(named: PointOfSaleAssets.posPaymentSuccessfulImageName)!
     }
 
     static var posProcessingPaymentImage: UIImage {
-        UIImage(named: String.posProcessingPaymentImageName)!
+        UIImage(named: PointOfSaleAssets.posProcessingPaymentImageName)!
     }
 
     static var posReadyForPaymentImage: UIImage {
-        UIImage(named: String.posReadyForPaymentImageName)!
+        UIImage(named: PointOfSaleAssets.posReadyForPaymentImageName)!
     }
 
     static var posCartBackImage: UIImage {
-        UIImage(named: String.posCartBackImageName)!
+        UIImage(named: PointOfSaleAssets.posCartBackImageName)!
     }
 
     static var posExitImage: UIImage {
-        UIImage(named: String.posExitImageName)!
+        UIImage(named: PointOfSaleAssets.posExitImageName)!
     }
 
     static var posGetSupportImage: UIImage {
-        UIImage(named: String.posGetSupportImageName)!
+        UIImage(named: PointOfSaleAssets.posGetSupportImageName)!
     }
 
     static var posRemoveCartItemImage: UIImage {
-        UIImage(named: String.posRemoveCartItemImageName)!
+        UIImage(named: PointOfSaleAssets.posRemoveCartItemImageName)!
     }
 
     static var posDismissProductsBannerImage: UIImage {
-        UIImage(named: String.posDismissProductsBannerImageName)!
+        UIImage(named: PointOfSaleAssets.posDismissProductsBannerImageName)!
     }
 }
 

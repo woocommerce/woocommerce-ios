@@ -29,6 +29,8 @@ struct TotalsView: View {
                     }
 
                     totalsFieldsView
+                        .transition(.opacity)
+                        .animation(.default, value: totalsViewModel.isShimmering)
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
                 paymentsActionButtons
@@ -87,7 +89,6 @@ private extension TotalsView {
             }
             .foregroundColor(Color.primaryText)
             .matchedGeometryEffect(id: "subtotalFieldView:_\(title)", in: totalsFieldAnimation)
-            .animation(.default, value: totalsViewModel.isShimmering)
         }
     }
 
@@ -107,9 +108,7 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .foregroundColor(Color.primaryText)
-            .transition(.opacity)
             .matchedGeometryEffect(id: "totalFieldView", in: totalsFieldAnimation)
-            .animation(.default, value: totalsViewModel.isShimmering)
         }
     }
 

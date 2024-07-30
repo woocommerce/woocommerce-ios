@@ -58,6 +58,10 @@ extension Color {
         Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.3)
     }
 
+    static var posQuaternaryText: Color {
+        Color(red: 235.0 / 255.0, green: 235.0 / 255.0, blue: 245.0 / 255.0, opacity: 0.16)
+    }
+
     static var posIconGrayi3: Color {
         return Color.gray
     }

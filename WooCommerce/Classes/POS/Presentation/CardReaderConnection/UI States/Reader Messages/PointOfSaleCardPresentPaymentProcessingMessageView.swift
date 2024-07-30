@@ -6,22 +6,34 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+            VStack(alignment: .center, spacing: Layout.headerSpacing) {
                 Image(viewModel.imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                            height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+
+                VStack(alignment: .center, spacing: Layout.textSpacing) {
                     Text(viewModel.title)
+                        .foregroundStyle(.white)
+                        .font(.posBody)
+
+                    Text(viewModel.message)
                         .font(.posTitle)
-                        .foregroundStyle(Color.posPrimaryTexti3)
+                        .foregroundStyle(Color.posQuaternaryText)
                         .bold()
                 }
             }
             .multilineTextAlignment(.center)
             Spacer()
         }
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentProcessingMessageView {
+    enum Layout {
+        static let headerSpacing: CGFloat = 48
+        static let textSpacing: CGFloat = 16
     }
 }
 

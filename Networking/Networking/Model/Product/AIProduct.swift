@@ -195,12 +195,12 @@ public extension Product {
                   bundleMinSize: nil,
                   bundleMaxSize: nil,
                   bundledItems: [],
+                  password: nil,
                   compositeComponents: [],
                   subscription: nil,
                   minAllowedQuantity: nil,
                   maxAllowedQuantity: nil,
                   groupOfQuantity: nil,
-                  combineVariationQuantities: nil,
-                  password: nil)
+                  combineVariationQuantities: nil)
     }
 }

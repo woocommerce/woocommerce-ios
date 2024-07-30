@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
-    let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
+struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
+    let viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel
 
     var body: some View {
         HStack(alignment: .center) {
@@ -14,10 +14,6 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                            height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                     Text(viewModel.title)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .font(.posBody)
-
-                    Text(viewModel.message)
                         .font(.posTitle)
                         .foregroundStyle(Color.posPrimaryTexti3)
                         .bold()
@@ -30,8 +26,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
-        viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
-            inputMethods: [.tap, .insert]
-        ))
+    PointOfSaleCardPresentPaymentProcessingMessageView(
+        viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()
+    )
 }

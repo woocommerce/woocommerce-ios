@@ -7582,14 +7582,14 @@
 			isa = PBXGroup;
 			children = (
 				02CD3BFB2C3491DA00E575C4 /* Presented Views */,
+				DA1D68BF2C36EF840097859A /* POSCardPresentPaymentMessageView.swift */,
+				011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift */,
 				205E79472C204B21001BA266 /* PointOfSaleCardPresentPaymentPreparingForPaymentMessageView.swift */,
 				205E794A2C2051B5001BA266 /* PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView.swift */,
-				DA1D68BF2C36EF840097859A /* POSCardPresentPaymentMessageView.swift */,
 				205E794C2C2057B9001BA266 /* PointOfSaleCardPresentPaymentErrorMessageView.swift */,
 				205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */,
 				205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */,
 				0230B4D52C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift */,
-				011DF3452C53A919000AFDD9 /* PointOfSaleCardPresentPaymentValidatingOrderMessageView.swift */,
 			);
 			path = "Reader Messages";
 			sourceTree = "<group>";

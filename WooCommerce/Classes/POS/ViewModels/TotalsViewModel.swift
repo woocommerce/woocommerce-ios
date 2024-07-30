@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
@@ -23,6 +24,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
+    @Published private(set) var isShowingCardReaderStatus: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
@@ -230,6 +232,20 @@ private extension TotalsViewModel {
                 connectedReader == nil ? .disconnected: .connected
             }
             .assign(to: &$connectionStatus)
+
+        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
+            .map { connectionStatus, isSyncingOrder, message in
+                if isSyncingOrder {
+                    return false
+                }
+
+                if connectionStatus == .connected {
+                    return message != nil
+                }
+
+                return true
+            }
+            .assign(to: &$isShowingCardReaderStatus)
     }
 
     func observeCardPresentPaymentEvents() {

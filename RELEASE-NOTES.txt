@@ -3,6 +3,7 @@
 19.8
 -----
 - [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).
+- [internal] Enable Blaze only if the store has Jetpack installed and connected. [https://github.com/woocommerce/woocommerce-ios/pull/13448]
 
 19.7
 -----

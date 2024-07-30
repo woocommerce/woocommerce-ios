@@ -1001,4 +1001,16 @@ final class IconsTests: XCTestCase {
     func test_posDismissProductsBannerImage_is_not_nil() {
         XCTAssertNotNil(Image(PointOfSaleAssets.dismissProductsBannerImageName))
     }
+
+    func test_posReaderConnectionScanningImage_is_not_nil() {
+        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionScanningImageName))
+    }
+
+    func test_posReaderConnectionDoYouWantToConnectImage_is_not_nil() {
+        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionDoYouWantToConnectImageName))
+    }
+
+    func test_posReaderConnectionConnectingImage_is_not_nil() {
+        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionConnectingImageName))
+    }
 }

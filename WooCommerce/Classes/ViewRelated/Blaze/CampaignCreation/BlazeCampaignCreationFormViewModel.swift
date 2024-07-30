@@ -128,7 +128,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
+    lazy private(set) var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
             DDLogError("Error: unable to create BlazeAdDestinationSettingViewModel because productURL and/or siteURL is empty.")
@@ -142,7 +142,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                 self.targetUrl = targetUrl
                 self.urlParams = urlParams
         }
-    }
+    }()
 
     // For Ad destination purposes
     private var productURL: String? {

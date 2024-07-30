@@ -2,30 +2,30 @@ import Foundation
 
 extension String {
     static var posNewTransactionImageName: String {
-        return "pos-new-transaction-icon"
+        "pos-new-transaction-icon"
     }
     static var posPaymentSuccessfulImageName: String {
-        return "pos-payment-successful"
+        "pos-payment-successful"
     }
     static var posProcessingPaymentImageName: String {
-        return "pos-processing-payment"
+        "pos-processing-payment"
     }
     static var posReadyForPaymentImageName: String {
-        return "pos-ready-for-payment"
+        "pos-ready-for-payment"
     }
     static var posCartBackImageName: String {
-        return "pos-cart-back"
+        "pos-cart-back"
     }
     static var posExitImageName: String {
-        return "pos-exit"
+        "pos-exit"
     }
     static var posGetSupportImageName: String {
-        return "pos-get-support"
+        "pos-get-support"
     }
     static var posRemoveCartItemImageName: String {
-        return "pos-remove-cart-item"
+        "pos-remove-cart-item"
     }
     static var posDismissProductsBannerImageName: String {
-        return "pos-dismiss-products-banner"
+        "pos-dismiss-products-banner"
     }
 }

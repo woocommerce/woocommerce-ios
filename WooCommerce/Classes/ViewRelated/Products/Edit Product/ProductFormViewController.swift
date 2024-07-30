@@ -779,7 +779,7 @@ private extension ProductFormViewController {
         }
     }
 
-    /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
+    /// Updates table view model and datasource.
     ///
     func reloadLinkedPromoCell() {
         tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
@@ -787,9 +787,7 @@ private extension ProductFormViewController {
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
 
-        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
-            self?.tableView.reloadData()
-        }
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
     func findLinkedPromoCellIndexPath() -> IndexPath? {

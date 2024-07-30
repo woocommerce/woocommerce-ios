@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
         VStack {
             Text(viewModel.title)
 
-            viewModel.image
+            Image(viewModel.imageName)
 
             Text(viewModel.instruction)
         }

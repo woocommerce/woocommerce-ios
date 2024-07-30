@@ -10,8 +10,11 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
     var body: some View {
         VStack {
             Text(viewModel.title)
-            viewModel.image
+
+            Image(viewModel.imageName)
+
             Text(viewModel.instruction)
+
             Button(viewModel.buttonViewModel.title,
                    action: viewModel.buttonViewModel.actionHandler)
             .buttonStyle(SecondaryButtonStyle())

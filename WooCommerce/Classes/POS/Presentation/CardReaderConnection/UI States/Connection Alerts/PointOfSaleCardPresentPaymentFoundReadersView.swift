@@ -7,7 +7,7 @@ struct PointOfSaleCardPresentPaymentFoundReadersView: View {
         VStack {
             Text(viewModel.title)
 
-            viewModel.image
+            Image(viewModel.imageName)
 
             Button(viewModel.connectButton.title,
                    action: viewModel.connectButton.actionHandler)

@@ -43,8 +43,17 @@ struct TotalsView: View {
                 Spacer()
             }
         }
+        .background(backgroundColor)
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
+        }
+    }
+
+    var backgroundColor: Color {
+        if totalsViewModel.paymentState == .processingPayment {
+            return Color(.wooCommercePurple(.shade70))
+        } else {
+            return .clear
         }
     }
 }

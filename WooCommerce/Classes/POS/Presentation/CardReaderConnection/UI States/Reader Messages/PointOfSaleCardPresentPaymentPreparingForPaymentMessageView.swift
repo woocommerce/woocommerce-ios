@@ -4,10 +4,7 @@ struct PointOfSaleCardPresentPaymentPreparingForPaymentMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel
 
     var body: some View {
-        let messageViewModel = POSCardPresentPaymentMessageViewModel(showProgress: true,
-                                                                     title: viewModel.title,
-                                                                     message: viewModel.message)
-        POSCardPresentPaymentMessageView(viewModel: messageViewModel, style: .dimmed)
+        PointOfSaleCardPresentPaymentValidatingOrderMessageView(title: viewModel.title, message: viewModel.message)
     }
 }
 

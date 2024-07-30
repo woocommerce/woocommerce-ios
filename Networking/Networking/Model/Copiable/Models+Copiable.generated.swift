@@ -1928,13 +1928,13 @@ extension Networking.Product {
         bundleMinSize: NullableCopiableProp<Decimal> = .copy,
         bundleMaxSize: NullableCopiableProp<Decimal> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
+        password: NullableCopiableProp<String> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
         subscription: NullableCopiableProp<ProductSubscription> = .copy,
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
-        combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
-        password: NullableCopiableProp<String> = .copy
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -2005,13 +2005,13 @@ extension Networking.Product {
         let bundleMinSize = bundleMinSize ?? self.bundleMinSize
         let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
         let bundledItems = bundledItems ?? self.bundledItems
+        let password = password ?? self.password
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
         let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
         let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
-        let password = password ?? self.password
 
         return Networking.Product(
             siteID: siteID,
@@ -2083,13 +2083,13 @@ extension Networking.Product {
             bundleMinSize: bundleMinSize,
             bundleMaxSize: bundleMaxSize,
             bundledItems: bundledItems,
+            password: password,
             compositeComponents: compositeComponents,
             subscription: subscription,
             minAllowedQuantity: minAllowedQuantity,
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
-            combineVariationQuantities: combineVariationQuantities,
-            password: password
+            combineVariationQuantities: combineVariationQuantities
         )
     }
 }

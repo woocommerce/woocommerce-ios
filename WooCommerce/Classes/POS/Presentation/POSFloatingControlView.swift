@@ -15,7 +15,7 @@ struct POSFloatingControlView: View {
                     presentationMode.wrappedValue.dismiss()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(uiImage: UIImage.posExitImage)
+                        Image(PointOfSaleAssets.posExitImageName)
                         Text("Exit POS")
                     }
                 }
@@ -24,7 +24,7 @@ struct POSFloatingControlView: View {
                     // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(uiImage: UIImage.posGetSupportImage)
+                        Image(PointOfSaleAssets.posGetSupportImageName)
                         Text("Get Support")
                     }
                 }

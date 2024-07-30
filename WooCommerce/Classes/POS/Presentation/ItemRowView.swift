@@ -43,7 +43,7 @@ struct ItemRowView: View {
                 }, label: {
                     HStack {
                         Spacer()
-                        Image(uiImage: UIImage.posRemoveCartItemImage)
+                        Image(PointOfSaleAssets.posRemoveCartItemImageName)
                         Spacer()
                     }
                 })

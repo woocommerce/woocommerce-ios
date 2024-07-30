@@ -1,7 +1,7 @@
 import Foundation
 
 struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
-    let imageName = String.posPaymentSuccessfulImageName
+    let imageName = PointOfSaleAssets.posPaymentSuccessfulImageName
     let title = Localization.paymentSuccessful
 }
 

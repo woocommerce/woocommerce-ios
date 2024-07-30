@@ -1,5 +1,6 @@
 import XCTest
 import Gridicons
+import SwiftUI
 @testable import WooCommerce
 
 final class IconsTests: XCTestCase {
@@ -966,37 +967,37 @@ final class IconsTests: XCTestCase {
     }
 
     func test_posNewTransactionImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posNewTransactionImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posNewTransactionImageName))
     }
 
     func test_posPaymentSuccessfulImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posPaymentSuccessfulImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posPaymentSuccessfulImageName))
     }
 
     func test_posProcessingPaymentImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posProcessingPaymentImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posProcessingPaymentImageName))
     }
 
     func test_posReadyForPaymentImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posReadyForPaymentImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posReadyForPaymentImageName))
     }
     func test_posCartBackImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posCartBackImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posCartBackImageName))
     }
 
     func test_posExitImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posExitImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posExitImageName))
     }
 
     func test_posGetSupportImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posGetSupportImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posGetSupportImageName))
     }
 
     func test_posRemoveCartItemImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posRemoveCartItemImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posRemoveCartItemImageName))
     }
 
     func test_posDismissProductsBannerImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posDismissProductsBannerImage)
+        XCTAssertNotNil(Image(PointOfSaleAssets.posDismissProductsBannerImageName))
     }
 }

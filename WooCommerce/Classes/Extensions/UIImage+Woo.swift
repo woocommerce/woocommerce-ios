@@ -1565,42 +1565,6 @@ extension UIImage {
     static var magnifyingGlassNotFound: UIImage {
         UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
-
-    static var posNewTransactionImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posNewTransactionImageName)!
-    }
-
-    static var posPaymentSuccessfulImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posPaymentSuccessfulImageName)!
-    }
-
-    static var posProcessingPaymentImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posProcessingPaymentImageName)!
-    }
-
-    static var posReadyForPaymentImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posReadyForPaymentImageName)!
-    }
-
-    static var posCartBackImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posCartBackImageName)!
-    }
-
-    static var posExitImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posExitImageName)!
-    }
-
-    static var posGetSupportImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posGetSupportImageName)!
-    }
-
-    static var posRemoveCartItemImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posRemoveCartItemImageName)!
-    }
-
-    static var posDismissProductsBannerImage: UIImage {
-        UIImage(named: PointOfSaleAssets.posDismissProductsBannerImageName)!
-    }
 }
 
 private extension UIImage {

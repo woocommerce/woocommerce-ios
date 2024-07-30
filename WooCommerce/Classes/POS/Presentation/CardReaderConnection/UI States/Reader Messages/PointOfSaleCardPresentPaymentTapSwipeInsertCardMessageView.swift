@@ -4,9 +4,10 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
 
     var body: some View {
-        POSCardPresentPaymentMessageView(viewModel: .init(imageName: viewModel.imageName,
-                                                          title: viewModel.title,
-                                                          message: viewModel.message))
+        let messageViewModel = POSCardPresentPaymentMessageViewModel(imageName: viewModel.imageName,
+                                                                     title: viewModel.title,
+                                                                     message: viewModel.message)
+        POSCardPresentPaymentMessageView(viewModel: messageViewModel, style: .standard)
     }
 }
 

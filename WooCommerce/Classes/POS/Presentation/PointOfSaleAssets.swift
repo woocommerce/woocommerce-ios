@@ -1,39 +1,39 @@
 import Foundation
 
 enum PointOfSaleAssets {
-    static var posNewTransactionImageName: String {
+    static var newTransactionImageName: String {
         "pos-new-transaction-icon"
     }
 
-    static var posPaymentSuccessfulImageName: String {
+    static var paymentSuccessfulImageName: String {
         "pos-payment-successful"
     }
 
-    static var posProcessingPaymentImageName: String {
+    static var processingPaymentImageName: String {
         "pos-processing-payment"
     }
 
-    static var posReadyForPaymentImageName: String {
+    static var readyForPaymentImageName: String {
         "pos-ready-for-payment"
     }
 
-    static var posCartBackImageName: String {
+    static var cartBackImageName: String {
         "pos-cart-back"
     }
 
-    static var posExitImageName: String {
+    static var exitImageName: String {
         "pos-exit"
     }
 
-    static var posGetSupportImageName: String {
+    static var getSupportImageName: String {
         "pos-get-support"
     }
 
-    static var posRemoveCartItemImageName: String {
+    static var removeCartItemImageName: String {
         "pos-remove-cart-item"
     }
 
-    static var posDismissProductsBannerImageName: String {
+    static var dismissProductsBannerImageName: String {
         "pos-dismiss-products-banner"
     }
 }

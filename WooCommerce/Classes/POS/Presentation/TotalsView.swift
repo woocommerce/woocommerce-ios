@@ -142,7 +142,7 @@ private extension TotalsView {
         }, label: {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
-                Image(PointOfSaleAssets.posNewTransactionImageName)
+                Image(PointOfSaleAssets.newTransactionImageName)
                 Text(Localization.newTransaction)
                     .font(Constants.newTransactionButtonFont)
                 Spacer()

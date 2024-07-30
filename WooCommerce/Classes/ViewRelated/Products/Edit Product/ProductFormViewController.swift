@@ -790,19 +790,6 @@ private extension ProductFormViewController {
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
-    func findLinkedPromoCellIndexPath() -> IndexPath? {
-        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
-            if case .primaryFields(rows: let sectionRows) = section {
-                for (rowIndex, row) in sectionRows.enumerated() {
-                    if case .linkedProductsPromo = row {
-                        return IndexPath(row: rowIndex, section: sectionIndex)
-                    }
-                }
-            }
-        }
-        return nil
-    }
-
     func onProductUpdated(product: ProductModel) {
         updateMoreDetailsButtonVisibility()
         tableViewModel = DefaultProductFormTableViewModel(product: product,

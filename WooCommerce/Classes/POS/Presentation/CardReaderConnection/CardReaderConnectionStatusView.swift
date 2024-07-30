@@ -7,10 +7,12 @@ enum CardReaderConnectionStatus {
 
 struct CardReaderConnectionStatusView: View {
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(connectionViewModel: CardReaderConnectionViewModel) {
+    init(connectionViewModel: CardReaderConnectionViewModel, totalsViewModel: TotalsViewModel) {
         self.connectionViewModel = connectionViewModel
+        self.totalsViewModel = totalsViewModel
     }
 
     @ViewBuilder
@@ -28,7 +30,7 @@ struct CardReaderConnectionStatusView: View {
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
                     circleIcon(with: Color.wooEmeraldShade40)
                     Text("Reader Connected")
-                        .foregroundColor(Color.primaryText)
+                        .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
@@ -39,7 +41,7 @@ struct CardReaderConnectionStatusView: View {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color.wooAmberShade60)
                         Text("Connect your reader")
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
+                            .foregroundColor(disconnectedFontColor)
                     }
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
@@ -51,6 +53,22 @@ struct CardReaderConnectionStatusView: View {
             }
         }
         .font(Constants.font)
+    }
+
+    private var connectedFontColor: Color {
+        if totalsViewModel.paymentState == .processingPayment {
+            return .posSecondaryTextDark
+        } else {
+            return .primaryText
+        }
+    }
+
+    private var disconnectedFontColor: Color {
+        if totalsViewModel.paymentState == .processingPayment {
+            return .posSecondaryTextDark
+        } else {
+            return Color(.wooCommercePurple(.shade60))
+        }
     }
 }
 
@@ -71,7 +89,12 @@ private extension CardReaderConnectionStatusView {
 
 #Preview {
     VStack {
-        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
+        let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
+                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                              currencyFormatter: .init(currencySettings: .init()),
+                                              paymentState: .acceptingCard,
+                                              isSyncingOrder: false)
+        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()), totalsViewModel: totalsViewModel)
     }
 }
 

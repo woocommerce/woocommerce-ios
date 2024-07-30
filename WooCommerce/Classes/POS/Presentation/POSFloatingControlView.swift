@@ -3,9 +3,11 @@ import SwiftUI
 struct POSFloatingControlView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = totalsViewModel
     }
 
     var body: some View {
@@ -32,21 +34,39 @@ struct POSFloatingControlView: View {
                 HStack {
                     Text("⋯")
                         .font(Constants.ellipsisFont)
+                        .foregroundStyle(fontColor)
                 }
                 .frame(width: Constants.size, height: Constants.size)
             }
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
             HStack {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel, totalsViewModel: totalsViewModel)
                     .padding(Constants.cardStatusPadding)
+                    .foregroundStyle(fontColor)
             }
             .frame(height: Constants.size)
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
         }
         .background(Color.clear)
+    }
+
+    private var backgroundColor: Color {
+        if totalsViewModel.paymentState == .processingPayment {
+            return Color(.wooCommercePurple(.shade80))
+        } else {
+            return .white
+        }
+    }
+
+    private var fontColor: Color {
+        if totalsViewModel.paymentState == .processingPayment {
+            return .posSecondaryTextDark
+        } else {
+            return .primaryText
+        }
     }
 }
 

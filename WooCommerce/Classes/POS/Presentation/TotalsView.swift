@@ -49,7 +49,7 @@ struct TotalsView: View {
         }
     }
 
-    var backgroundColor: Color {
+    private var backgroundColor: Color {
         if totalsViewModel.paymentState == .processingPayment {
             return Color(.wooCommercePurple(.shade70))
         } else {

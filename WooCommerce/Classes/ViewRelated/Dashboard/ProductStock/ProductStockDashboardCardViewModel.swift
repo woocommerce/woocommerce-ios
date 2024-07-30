@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `ProductStockDashboardCard`
 ///
@@ -13,6 +15,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedStockType: StockType = .lowStock
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     private let stores: StoresManager
@@ -45,8 +48,16 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
                 savedReports[item.productID]
             }
             .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
+
+            analyticsEnabled = true
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
             analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .stock, error: error))
         }

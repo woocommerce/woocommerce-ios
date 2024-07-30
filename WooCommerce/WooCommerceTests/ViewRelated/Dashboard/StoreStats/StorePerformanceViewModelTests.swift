@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 
@@ -148,18 +149,33 @@ final class StorePerformanceViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_statsVersion_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
-        mockSyncAllStats(with: stores, toReturn: .v3)
-        XCTAssertEqual(viewModel.statsVersion, .v4) // Initial value
+        mockSyncAllStats(with: stores, retrieveStatsError: DotcomError.noRestRoute)
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
 
         // When
         await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
-        XCTAssertEqual(viewModel.statsVersion, .v3)
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_notFound_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        mockSyncAllStats(with: stores, retrieveStatsError: NetworkError.notFound(response: nil))
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
     }
 
     @MainActor
@@ -336,16 +352,16 @@ final class StorePerformanceViewModelTests: XCTestCase {
 //
 private extension StorePerformanceViewModelTests {
     func mockSyncAllStats(with stores: MockStoresManager,
-                          toReturn statsVersion: StatsVersion = .v4,
+                          retrieveStatsError: Error? = nil,
                           visitorStatsError: Error? = nil,
                           siteSummaryStatsError: Error? = nil) {
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
-                if statsVersion == .v4 {
-                    onCompletion(.success(()))
+                if let retrieveStatsError {
+                    onCompletion(.failure(retrieveStatsError))
                 } else {
-                    onCompletion(.failure(DotcomError.noRestRoute))
+                    onCompletion(.success(()))
                 }
             case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
                 if let visitorStatsError {

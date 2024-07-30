@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 final class ProductStockDashboardCardViewModelTests: XCTestCase {
@@ -99,5 +101,53 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, productReportError)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
+        // Given
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .fetchStockReport(_, _, _, _, _, completion):
+                completion(.failure(DotcomError.noRestRoute))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_notFound_error() async {
+        // Given
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .fetchStockReport(_, _, _, _, _, completion):
+                completion(.failure(NetworkError.notFound(response: nil)))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
     }
 }

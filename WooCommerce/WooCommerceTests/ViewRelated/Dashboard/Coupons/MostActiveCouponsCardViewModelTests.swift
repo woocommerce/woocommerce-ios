@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -118,6 +120,56 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.syncingData)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_loading_most_active_coupons_fails_with_noRestRoute() async {
+        // Given
+        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID, stores: stores)
+        let error = DotcomError.noRestRoute
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
+                completion(.failure(error))
+            case let .loadCoupons(_, _, completion):
+                XCTAssertTrue(viewModel.syncingData)
+                completion(.success([Coupon.fake()]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_loading_most_active_coupons_fails_with_notFound() async {
+        // Given
+        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID, stores: stores)
+        let error = NetworkError.notFound(response: nil)
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
+                completion(.failure(error))
+            case let .loadCoupons(_, _, completion):
+                XCTAssertTrue(viewModel.syncingData)
+                completion(.success([Coupon.fake()]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
     }
 
     @MainActor

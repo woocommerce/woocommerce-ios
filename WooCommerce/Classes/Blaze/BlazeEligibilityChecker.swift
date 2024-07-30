@@ -38,9 +38,14 @@ private extension BlazeEligibilityChecker {
         guard site.isAdmin && site.canBlaze else {
             return false
         }
+
+        /// Blaze DSP requires a Jetpack full sync to work. So, Jetpack CP sites are excluded from Blaze.
+        /// More discussion links at - https://github.com/woocommerce/woocommerce-ios/issues/13057
+        ///
         guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
             return false
         }
+
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

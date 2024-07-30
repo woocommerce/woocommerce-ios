@@ -31,9 +31,11 @@ struct TotalsView: View {
                             .transition(.opacity)
                     }
 
-                    totalsFieldsView
-                        .transition(.opacity)
-                        .animation(.default, value: totalsViewModel.isShimmering)
+                    if totalsViewModel.isShowingTotalsFields {
+                        totalsFieldsView
+                            .transition(.opacity)
+                            .animation(.default, value: totalsViewModel.isShimmering)
+                    }
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
                 paymentsActionButtons

@@ -30,7 +30,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .paymentCaptureError(let viewModel):
             PointOfSaleCardPresentPaymentCaptureErrorMessageView(viewModel: viewModel)
         case .cancelledOnReader(let viewModel):
-            POSCardPresentPaymentMessageView(viewModel: POSCardPresentPaymentMessageViewModel(title: viewModel.title))
+            PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel)
         }
     }
 }

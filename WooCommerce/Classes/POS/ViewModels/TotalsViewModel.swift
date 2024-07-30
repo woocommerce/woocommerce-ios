@@ -233,9 +233,7 @@ private extension TotalsViewModel {
             }
             .assign(to: &$connectionStatus)
 
-        Publishers.CombineLatest3($connectionStatus.removeDuplicates(),
-                                  $isSyncingOrder.removeDuplicates(),
-                                  $cardPresentPaymentInlineMessage)
+        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
             .map { connectionStatus, isSyncingOrder, message in
                 if isSyncingOrder {
                     return false

@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// Different display modes of site visit stats
 ///
@@ -33,7 +34,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
-    @Published private(set) var statsVersion: StatsVersion = .v4
+    @Published private(set) var analyticsEnabled = true
 
     @Published private(set) var loadingError: Error?
 
@@ -174,7 +175,7 @@ final class StorePerformanceViewModel: ObservableObject {
             try await syncUseCase.sync()
 
             trackDashboardStatsSyncComplete()
-            statsVersion = .v4
+            analyticsEnabled = true
             switch timeRange {
             case .custom:
                 updateSiteVisitStatModeForCustomRange()
@@ -186,13 +187,15 @@ final class StorePerformanceViewModel: ObservableObject {
                 siteVisitStatMode = .default
             }
             syncingDidFinishPublisher.send(nil)
-        } catch DotcomError.noRestRoute {
-            statsVersion = .v3
-            syncingDidFinishPublisher.send(DotcomError.noRestRoute)
         } catch {
-            statsVersion = .v4
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+                handleSyncError(error: error)
+            }
             DDLogError("⛔️ Error loading store stats: \(error)")
-            handleSyncError(error: error)
             syncingDidFinishPublisher.send(error)
         }
         syncingData = false

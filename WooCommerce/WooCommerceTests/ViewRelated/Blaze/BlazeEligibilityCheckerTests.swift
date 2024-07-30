@@ -77,6 +77,35 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    func test_isEligible_is_false_when_jetpack_not_installed() {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: false)
+        let checker = BlazeEligibilityChecker(stores: stores)
+
+        // When
+        let isEligible = checker.isSiteEligible(site)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_false_when_jetpack_installed_but_not_connected() {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: true,
+                            isJetpackConnected: false)
+        let checker = BlazeEligibilityChecker(stores: stores)
+
+        // When
+        let isEligible = checker.isSiteEligible(site)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
     // MARK: - `isProductEligible`
 
     func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() {
@@ -177,8 +206,13 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
 }
 
 private extension BlazeEligibilityCheckerTests {
-    func mockSite(isEligibleForBlaze: Bool, isAdmin: Bool = true) -> Site {
+    func mockSite(isEligibleForBlaze: Bool,
+                  isAdmin: Bool = true,
+                  isJetpackThePluginInstalled: Bool = true,
+                  isJetpackConnected: Bool = true) -> Site {
         Site.fake().copy(siteID: 134,
+                         isJetpackThePluginInstalled: isJetpackThePluginInstalled,
+                         isJetpackConnected: isJetpackConnected,
                          canBlaze: isEligibleForBlaze,
                          isAdmin: isAdmin)
     }

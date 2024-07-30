@@ -89,8 +89,6 @@ struct PointOfSaleDashboardView: View {
                     }
                 }
             }
-            .frame(maxHeight: .infinity)
-            .padding()
         }
     }
 }

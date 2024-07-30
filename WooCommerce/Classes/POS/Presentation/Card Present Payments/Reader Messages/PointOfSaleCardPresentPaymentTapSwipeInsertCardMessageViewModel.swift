@@ -35,31 +35,31 @@ private extension PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewMode
 
         static let tapInsertOrSwipe = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.tapSwipeInsert",
-            value: "Tap, insert or swipe to pay",
+            value: "Tap, swipe, or insert card",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
 
         static let tapOrInsert = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.tapInsert",
-            value: "Tap or insert card to pay",
+            value: "Tap or insert card",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
 
         static let tap = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.tap",
-            value: "Tap card to pay",
+            value: "Tap card",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
 
         static let insert = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.insert",
-            value: "Insert card to pay",
+            value: "Insert card",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
 
         static let presentCard = NSLocalizedString(
             "pointOfSale.cardPresent.presentCard.present",
-            value: "Present card to pay",
+            value: "Present card",
             comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
     }

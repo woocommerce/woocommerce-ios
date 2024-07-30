@@ -7,7 +7,6 @@ import struct Yosemite.DashboardCard
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
-    @State private var showingSupportForm = false
 
     private var statsValueColor: Color {
         guard viewModel.hasRevenue else {
@@ -37,7 +36,7 @@ struct StorePerformanceView: View {
             if viewModel.loadingError != nil {
                 errorStateView
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.statsVersion == .v4 {
+            } else if viewModel.analyticsEnabled {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
@@ -68,7 +67,7 @@ struct StorePerformanceView: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
             } else {
-                contentUnavailableView
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
             }
         }
@@ -84,9 +83,6 @@ struct StorePerformanceView: View {
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
         }
-        .sheet(isPresented: $showingSupportForm) {
-            supportForm
-        }
         .onAppear {
             viewModel.onViewAppear()
         }
@@ -99,7 +95,7 @@ private extension StorePerformanceView {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
+                .renderedIf(!viewModel.analyticsEnabled || viewModel.loadingError != nil)
 
             Text(DashboardCard.CardType.performance.name)
                 .headlineStyle()
@@ -289,22 +285,6 @@ private extension StorePerformanceView {
         .disabled(viewModel.syncingData)
     }
 
-    var contentUnavailableView: some View {
-        VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .noStoreImage)
-            Text(Localization.ContentUnavailable.title)
-                .headlineStyle()
-            Text(Localization.ContentUnavailable.details)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-            Button(Localization.ContentUnavailable.buttonTitle) {
-                showingSupportForm = true
-            }
-            .buttonStyle(SecondaryButtonStyle())
-        }
-        .frame(maxWidth: .infinity)
-    }
-
     var errorStateView: some View {
         DashboardCardErrorView(onRetry: {
             ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
@@ -312,21 +292,6 @@ private extension StorePerformanceView {
                 await viewModel.reloadDataIfNeeded(forceRefresh: true)
             }
         })
-    }
-
-    var supportForm: some View {
-        NavigationView {
-            SupportForm(isPresented: $showingSupportForm,
-                        viewModel: SupportFormViewModel())
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.ContentUnavailable.done) {
-                        showingSupportForm = false
-                    }
-                }
-            }
-        }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -397,29 +362,11 @@ private extension StorePerformanceView {
             let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the performance card was last updated")
             return String.localizedStringWithFormat(format, time)
         }
-        enum ContentUnavailable {
-            static let title = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.title",
-                value: "We can’t display your store’s analytics",
-                comment: "Title when we can't show stats because user is on a deprecated WooCommerce Version"
-            )
-            static let details = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.details",
-                value: "Make sure you are running the latest version of WooCommerce on your site" +
-                " and enabling Analytics in WooCommerce Settings.",
-                comment: "Text that explains how to update WooCommerce to get the latest stats"
-            )
-            static let buttonTitle = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.buttonTitle",
-                value: "Still need help? Contact us",
-                comment: "Button title to contact support to get help with deprecated stats module"
-            )
-            static let done = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.dismissSupport",
-                value: "Done",
-                comment: "Button to dismiss the support form from the Dashboard stats error screen."
-            )
-        }
+        static let unavailableAnalytics = NSLocalizedString(
+            "storePerformanceView.unavailableAnalyticsView.title",
+            value: "Unable to display your store's performance",
+            comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
+        )
     }
 }
 

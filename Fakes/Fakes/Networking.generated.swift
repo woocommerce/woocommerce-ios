@@ -1235,13 +1235,13 @@ extension Networking.Product {
             bundleMinSize: .fake(),
             bundleMaxSize: .fake(),
             bundledItems: .fake(),
+            password: .fake(),
             compositeComponents: .fake(),
             subscription: .fake(),
             minAllowedQuantity: .fake(),
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
-            combineVariationQuantities: .fake(),
-            password: .fake()
+            combineVariationQuantities: .fake()
         )
     }
 }

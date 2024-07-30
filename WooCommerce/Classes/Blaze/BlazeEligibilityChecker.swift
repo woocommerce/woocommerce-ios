@@ -38,6 +38,9 @@ private extension BlazeEligibilityChecker {
         guard site.isAdmin && site.canBlaze else {
             return false
         }
+        guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
+            return false
+        }
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

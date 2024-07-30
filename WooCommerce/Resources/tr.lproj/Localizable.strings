@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-29 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Yükseltmeyi İptal Et";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "İptal Edildi";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Ödemeyi tamamlayın ve WooCommerce uygulamanızda siparişle ilgili bir anlık bildirim almayı bekleyin.";
-
-/* Display label for completed order status. */
-"Completed" = "Tamamlandı";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Bileşen Seçenekleri";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "İndirilebilir dosyalar";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "Taslak";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Harici\/İş Ortağı";
-
-/* Display label for failed order status. */
-"Failed" = "Başarısız";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Kupon silinemedi. Lütfen tekrar deneyin.";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "Son Satılan";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "Son Güncellenme: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "Geri dönen sipariş";
 
-/* Display label for on hold order status. */
-"On hold" = "Beklemede";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Varyasyon başına yalnızca bir fotoğraf görüntülenebilir";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Ödemeler";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "Bekleyen";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Özel not";
 
-/* Display label for processing order status. */
-"Processing" = "İşlemde";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Ödeme işleniyor";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "%1$@ kaynağından geri ödeme yap";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "İade Edildi";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -9277,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Net Tutar";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "Ücretli kampanya ekle";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "Kampanyalar";
 
@@ -9294,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google Kampanyaları";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Google Ads ile satışları teşvik edin ve trafiği artırın.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack Stats'i Etkinleştir";
@@ -11065,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Vergiler";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Taslak";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "İptal edildi";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Tamamlandı";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Başarısız";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "Beklemede";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Ödeme Bekleniyor";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "İşleniyor";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Geri ödeme yapıldı";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11363,13 +11378,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.failedToLoadTitle" = "Ürünler yüklenirken hata oluştu";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Değişken ve sanal gibi diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
+"pos.itemlistview.headerBannerHint" = "Değişken ve sanal gibi diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak. Daha fazla bilgi edinin";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Şu anda POS ile yalnızca basit fiziksel ürünler kullanılabiliyor.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Yalnızca basit ürünler gösteriliyor";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "Birkça müşteriye hizmet edelim";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "Başlatılıyor";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Ürünler";
@@ -11434,11 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Örnek: Siyah pamuklu tişört, yumuşak kumaş, dayanıklı dikiş, benzersiz tasarım";
 
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "Ürün fotoğrafından metinleri okuyun";
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Bir fotoğraftan taranan metin ekleyin";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Bir ürün fotoğrafı tara";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Ürününüzün ne olduğu, neyin ürününüzü benzersiz kıldığını bize bildirin, ardından Yapay Zeka yeteneğini konuştursun.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "Fotoğraf metni başlangıç menüsüne eklendi";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Başlangıç bilgisi";

@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Cancelar mejora";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "Cancelada";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Completa el pago y espera una notificación push sobre el pedido en tu aplicación de WooCommerce.";
-
-/* Display label for completed order status. */
-"Completed" = "Completado";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Opciones de componentes";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Archivos descargables";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "Borrador";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Externo\/Afiliado";
-
-/* Display label for failed order status. */
-"Failed" = "Fallado";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "No se ha podido eliminar el cupón. Inténtalo de nuevo.";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "Última venta";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "Última actualización: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "Pedido en proceso";
 
-/* Display label for on hold order status. */
-"On hold" = "Suspendido";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Solo se puede mostrar una foto por cada variación";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Pagos";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "Pendiente";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Nota privada";
 
-/* Display label for processing order status. */
-"Processing" = "Se está procesando";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Procesando pago";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "Reembolso de %1$@";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -11362,9 +11347,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Se ha producido un error al cargar los productos";
 
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Otros tipos de productos, como los variables y los virtuales, estarán disponibles en futuras actualizaciones.";
-
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "En estos momentos, solo los productos físicos sencillos están disponibles con TPV.";
 
@@ -11433,9 +11415,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Por ejemplo: camiseta de algodón negra, tejido suave, costuras duraderas, diseño único";
-
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "Texto que se lee en la foto del producto";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Háblanos de tu producto, qué es y qué lo hace único; después, deja que la IA haga su magia.";

@@ -1,2 +1,1 @@
-
-最新のアップデートをご確認ください ! AI を活用した商品作成を導入し、税込価格表示を改善して注文作成を強化しました。 さらに、Google キャンペーンの分析カードでは、利用可能なキャンペーンメトリックを選択して詳細な統計概要を取得できるようになりました。 よりスムーズでスマートな WooCommerce エクスペリエンスをお楽しみください !
+Exciting updates in our WooCommerce mobile app! Manage Google Ads campaigns with plugin version 2.7.7 or later. Enjoy consistent order status across various lists. Easily create paid campaigns with our new call to action in Google Campaign analytics. Plus, we've improved Blaze and Product Creation AI features for a smoother experience. 今すぐアップデートしましょう !

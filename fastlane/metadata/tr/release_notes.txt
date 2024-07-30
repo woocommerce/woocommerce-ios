@@ -1,2 +1,1 @@
-
-En son güncellemelerimizi keşfedin! Yapay Zeka ile ürün oluşturmayı ve daha iyi vergi dahil fiyatlandırma görüntülemeleriyle sipariş oluşturmayı tanıttık. Ayrıca Google Kampanyaları analizleri kartı artık ayrıntılı bilgiler için herhangi bir mevcut kampanya analizini seçmenizi sağlar. Daha kolay ve akıllı bir WooCommerce deneyiminin keyfini çıkarın!
+WooCommerce mobil uygulamasında heyecan verici güncellemeler! Eklenti sürümü 2.7.7 veya daha yenisiyle Google Ads kampanyalarını yönetin. Çeşitli listelerde tutarlı sipariş durumunun keyfini çıkarın. Google Kampanya analizlerindeki yeni harekete geçme çağrılarımızla kolayca ücretli kampanyalar oluşturun. Ayrıca daha sorunsuz bir deneyim için Blaze ve Ürün Oluşturma Yapay Zekası özellerini iyileştirdik. Hemen güncelleyin!

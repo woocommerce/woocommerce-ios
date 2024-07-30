@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-30 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "アップグレードをキャンセル";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "キャンセル済み";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "支払いを完了し、注文に関するプッシュ通知が WooCommerce アプリに届くのを待ちます。";
-
-/* Display label for completed order status. */
-"Completed" = "完了";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "コンポーネントオプション";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "ダウンロード可能なファイル";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "下書き";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部 \/ アフィリエイト";
-
-/* Display label for failed order status. */
-"Failed" = "失敗";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "クーポンの削除に失敗しました。 再度お試しください。";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "最近売れた商品";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "最終更新日時: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "入荷待ち";
 
-/* Display label for on hold order status. */
-"On hold" = "保留中";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "表示できる写真はバリエーションごとに1点のみです";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "支払い";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "承認待ち";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
 
-/* Display label for processing order status. */
-"Processing" = "処理中";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "支払いを処理しています";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "%1$@の支払いを返金";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "返金済み";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -9277,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "正味金額";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "有料キャンペーンを追加";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "キャンペーン";
 
@@ -9294,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google キャンペーン";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Google 広告で売上を伸ばし、トラフィックを増やしましょう。";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack 統計を有効化";
@@ -11065,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "税";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "下書き";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "キャンセル";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "完了";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "失敗";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "保留中";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "支払い待ち";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "処理中";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "返金済み";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11363,13 +11378,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.failedToLoadTitle" = "商品の読み込み中にエラーが発生しました";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "バリエーションや仮想などの他の商品タイプは、今後のアップデートで利用可能になります。";
+"pos.itemlistview.headerBannerHint" = "バリエーションや仮想などの他の商品タイプは、今後のアップデートで利用可能になります。 さらに詳しく";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "現在、POS で利用できるのはシンプルな物理的商品のみです。";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "シンプルな商品のみ表示中";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "お客様にサービスを提供しましょう";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "開始";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "商品";
@@ -11434,11 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "例: 黒色の綿 T シャツ、やわらかな生地、丈夫な縫製、ユニークなデザイン";
 
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "商品写真からテキストを読む";
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "写真からスキャンしたテキストを追加";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "商品写真をスキャン";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "商品が何かと、そのユニークポイントを教えてください。あとは AI の魔法に任せましょう。";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "開始情報に写真テキストを追加しました";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "開始情報";

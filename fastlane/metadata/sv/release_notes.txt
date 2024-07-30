@@ -1,2 +1,0 @@
-
-Ta del av vår senaste uppdatering! Vi har infört möjligheten att skapa produkter med hjälp av AI, och förbättrat skapande av beställning med tydligare prisangivelser inklusive moms. Dessutom kan du nu välja alla tillgängliga kampanjnyckeltal på vårt Google Campaigns-analyskort för att få detaljerade insikter. Du får en smidigare och smartare WooCommerce-upplevelse.

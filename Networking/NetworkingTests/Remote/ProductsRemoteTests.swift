@@ -111,13 +111,13 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
                                       maxAllowedQuantity: nil,
                                       groupOfQuantity: nil,
-                                      combineVariationQuantities: nil,
-                                      password: nil)
+                                      combineVariationQuantities: nil)
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -225,13 +225,13 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
                                       maxAllowedQuantity: nil,
                                       groupOfQuantity: nil,
-                                      combineVariationQuantities: nil,
-                                      password: nil)
+                                      combineVariationQuantities: nil)
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 

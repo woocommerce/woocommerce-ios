@@ -5,7 +5,10 @@ struct TotalsView: View {
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
 
-    /// Used for synchronizing totals fields animation
+    /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
+    /// This makes SwiftUI treat these views as a single entity in the context of animation.
+    /// It allows for a simultaneous transition from the shimmering effect to the text fields,
+    /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
 
     init(viewModel: PointOfSaleDashboardViewModel,

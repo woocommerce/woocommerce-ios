@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                         .bold()
                 }
             }
+            .padding(.bottom)
             .multilineTextAlignment(.center)
             Spacer()
         }

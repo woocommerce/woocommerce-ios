@@ -1933,7 +1933,8 @@ extension Networking.Product {
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
-        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
+        password: NullableCopiableProp<String> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -2010,6 +2011,7 @@ extension Networking.Product {
         let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
+        let password = password ?? self.password
 
         return Networking.Product(
             siteID: siteID,

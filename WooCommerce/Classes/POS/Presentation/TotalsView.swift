@@ -55,19 +55,22 @@ private extension TotalsView {
                 subtotalFieldView(title: Localization.subtotal,
                                   formattedPrice: totalsViewModel.formattedCartTotalPrice,
                                   shimmeringActive: totalsViewModel.isShimmering,
-                                  redacted: totalsViewModel.isSubtotalFieldRedacted)
+                                  redacted: totalsViewModel.isSubtotalFieldRedacted,
+                                  matchedGeometryId: Constants.matchedGeometrySubtotalId)
                 Spacer().frame(height: Constants.subtotalsVerticalSpacing)
                 subtotalFieldView(title: Localization.taxes,
                                   formattedPrice: totalsViewModel.formattedOrderTotalTaxPrice,
                                   shimmeringActive: totalsViewModel.isShimmering,
-                                  redacted: totalsViewModel.isTaxFieldRedacted)
+                                  redacted: totalsViewModel.isTaxFieldRedacted,
+                                  matchedGeometryId: Constants.matchedGeometryTaxId)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 Divider()
                     .overlay(Color.posTotalsSeparator)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 totalFieldView(formattedPrice: totalsViewModel.formattedOrderTotalPrice,
                                shimmeringActive: totalsViewModel.isShimmering,
-                               redacted: totalsViewModel.isTotalPriceFieldRedacted)
+                               redacted: totalsViewModel.isTotalPriceFieldRedacted,
+                               matchedGeometryId: Constants.matchedGeometryTotalId)
             }
             .padding(Constants.totalsLineViewPadding)
             .frame(minWidth: Constants.pricesIdealWidth)
@@ -77,10 +80,14 @@ private extension TotalsView {
     }
 
     @ViewBuilder
-    func subtotalFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
+    func subtotalFieldView(title: String,
+                           formattedPrice: String?,
+                           shimmeringActive: Bool,
+                           redacted: Bool,
+                           matchedGeometryId: String) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
-                .matchedGeometryEffect(id: "subtotalFieldView:_\(title)", in: totalsFieldAnimation)
+                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         } else {
             HStack(alignment: .top, spacing: .zero) {
                 Text(title)
@@ -91,15 +98,18 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .foregroundColor(Color.primaryText)
-            .matchedGeometryEffect(id: "subtotalFieldView:_\(title)", in: totalsFieldAnimation)
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
 
     @ViewBuilder
-    func totalFieldView(formattedPrice: String?, shimmeringActive: Bool, redacted: Bool) -> some View {
+    func totalFieldView(formattedPrice: String?,
+                        shimmeringActive: Bool,
+                        redacted: Bool,
+                        matchedGeometryId: String) -> some View {
         if shimmeringActive {
             shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
-                .matchedGeometryEffect(id: "totalFieldView", in: totalsFieldAnimation)
+                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         } else {
             HStack(alignment: .top, spacing: .zero) {
                 Text(Localization.total)
@@ -111,7 +121,7 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .foregroundColor(Color.primaryText)
-            .matchedGeometryEffect(id: "totalFieldView", in: totalsFieldAnimation)
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
 
@@ -197,6 +207,11 @@ private extension TotalsView {
         static let newTransactionButtonSpacing: CGFloat = 20
         static let newTransactionButtonPadding: CGFloat = 16
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
+
+        /// Used for synchronizing animations of shimmeringLine and textField
+        static let matchedGeometrySubtotalId: String = UUID().uuidString
+        static let matchedGeometryTaxId: String = UUID().uuidString
+        static let matchedGeometryTotalId: String = UUID().uuidString
     }
 
     enum Localization {

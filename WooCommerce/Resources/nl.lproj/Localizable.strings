@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-24 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Upgrade annuleren";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "Geannuleerd";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1676,9 +1675,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Voltooi de betaling en wacht op een pushbericht over de bestelling in je WooCommerce-app.";
-
-/* Display label for completed order status. */
-"Completed" = "Voltooid";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Componentopties";
@@ -2517,8 +2513,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Downloadbare bestanden";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "Concept";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2990,9 +2985,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern\/affiliate";
-
-/* Display label for failed order status. */
-"Failed" = "Mislukt";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Verwijderen van coupon mislukt. Probeer het nog eens.";
@@ -3963,6 +3955,11 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for last sold products on the Select Product screen. */
 "Last Sold" = "Laatst verkocht";
 
+/* Time for when the orders were last updated
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
+"Last Updated: %@" = "Laatst bijgewerkt op: %@";
+
 /* Title of the Analytics Hub Last Week selection range */
 "Last Week" = "Afgelopen week";
 
@@ -4826,9 +4823,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "Wordt nabesteld";
 
-/* Display label for on hold order status. */
-"On hold" = "In de wacht";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Er kan slechts één foto worden weergegeven per variatie";
 
@@ -5174,8 +5168,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Betalingen";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "In afwachting";
 
@@ -5591,9 +5584,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privébericht";
 
-/* Display label for processing order status. */
-"Processing" = "Bezig met verwerken";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Betaling wordt verwerkt";
@@ -5886,8 +5876,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "Betaling terugbetalen van %1$@";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "Terugbetaald";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -9318,6 +9307,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when session data is unavailable in the Analytics Hub */
 "analyticsHub.sessionsCard.dataUnavailable.Message" = "Sessiegegevens niet beschikbaar";
 
+/* Label for the selected metric on an analytics card in the Analytics Hub. */
+"analyticsHub.statSelectionBar.metricLabel" = "Meetwaarde";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Annuleren";
 
@@ -10310,6 +10302,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.coupons" = "Meest actieve coupons";
 
+/* Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.googleAdsCampaigns" = "Google Ads-campagnes";
+
 /* Name for the Inbox dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.inbox" = "Inbox";
 
@@ -10527,6 +10522,15 @@ which should be translated separately and considered part of this sentence. */
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
 
+/* Status name of a disabled Google Ads campaign */
+"googleAdsCampaign.status.disabled" = "Uitgeschakeld";
+
+/* Status name of a enabled Google Ads campaign */
+"googleAdsCampaign.status.enabled" = "Ingeschakeld";
+
+/* Status name of a removed Google Ads campaign */
+"googleAdsCampaign.status.removed" = "Verwijderd";
+
 /* Title of the Google Ads campaign view */
 "googleAdsCampaignCoordinator.googleForWooCommerce" = "Google voor WooCommerce";
 
@@ -10538,6 +10542,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the celebration view when a Google ads campaign is successfully created. */
 "googleAdsCampaignCoordinator.successTitle" = "Klaar voor de start!";
+
+/* Display name for the clicks stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.clicks" = "Klikken";
+
+/* Display name for the conversions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.conversions" = "Conversies";
+
+/* Display name for the impressions stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.impressions" = "Impressies";
+
+/* Display name for the total sales stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.sales" = "Totale omzet";
+
+/* Display name for the total spend stat in Google Ads campaign stats */
+"googleAdsCampaignStatsTotals.totalData.spend" = "Totaal uitgegeven";
+
+/* Button that when tapped will launch create Google Ads campaign flow. */
+"googleAdsDashboardCard.createCampaign" = "Campagne aanmaken";
+
+/* Menu item to dismiss the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.hideCard" = "Google Ads verbergen";
+
+/* Subtitle label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.details" = "Promoot je producten via Google Search, Shopping, YouTube, Gmail en meer.";
+
+/* Title label on the Google Ads campaigns section on the Dashboard screen */
+"googleAdsDashboardCard.noCampaign.title" = "Verkoop meer en genereer meer verkeer met Google Ads";
+
+/* Title label for the Google Ads paid campaign performance section */
+"googleAdsDashboardCard.stats.title" = "Prestaties betaalde campagne";
+
+/* Title label for the total clicks of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalClicks" = "Klikken";
+
+/* Title label for the total impressions of Google Ads paid campaigns */
+"googleAdsDashboardCard.stats.totalImpressions" = "Impressies";
+
+/* Button to navigate to the Google Ads campaign dashboard. */
+"googleAdsDashboardCard.viewAll" = "Alle campagnes weergeven";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Klanten";
@@ -11010,8 +11053,20 @@ which should be translated separately and considered part of this sentence. */
 /* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
 "os.version.format.major.only" = "%1$@";
 
+/* Title of button which removes selected package photo. */
+"packagePhotoView.removePhoto" = "Foto verwijderen";
+
+/* Title of the button which opens photo selection flow to replace selected package photo. */
+"packagePhotoView.replacePhoto" = "Foto vervangen";
+
+/* Title of button which opens the selected package photo. */
+"packagePhotoView.viewPhoto" = "Foto weergeven";
+
 /* No comment provided by engineer. */
 "password" = "Wachtwoord";
+
+/* A title for a payment method where customer pays by cash in person */
+"paymentMethods.cashOnDelivery.title" = "Fysiek betalen";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "De bestelling werd met cash betaald. De klant betaalde %1$@. Het wisselgeld was %2$@.";
@@ -11027,6 +11082,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugins";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.cancelledOnReader.title" = "Betaling geannuleerd op lezer";
 
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Annuleren";
@@ -11058,6 +11116,18 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betaling mislukt";
 
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.title" = "Betaling wordt verwerkt";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentSuccessful.title" = "Betaling gelukt!";
+
+/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
+"pointOfSale.cardPresent.preparingCardReader.message" = "Bestelling controleren";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingCardReader.title" = "Kaartlezer voorbereiden";
+
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.insert" = "Voer kaart in om te betalen";
 
@@ -11072,6 +11142,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tik, voer in of swipe om te betalen";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.presentCard.title" = "Gereed voor betaling";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Afwijzen";
@@ -11247,14 +11320,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Wissen";
 
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Andere producttypen, zoals variabel en virtueel, worden in toekomstige updates beschikbaar.";
+/* Text for the button appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsButtonTitle" = "Een simpel product aanmaken";
+
+/* Text appearing on the item list screen as hint when there are no products to load. */
+"pos.itemList.emptyProductsHint" = "POS ondersteunt momenteel alleen simpele producten";
+
+/* Text appearing as subtitle on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsSubtitle" = "Je winkel heeft geen producten";
+
+/* Text appearing on the item list screen when there are no products to load. */
+"pos.itemList.emptyProductsTitle" = "Geen producten";
+
+/* Text for the button appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadButtonTitle" = "Opnieuw proberen";
+
+/* Text appearing on the item list screen as subtitle when there's an error loading products. */
+"pos.itemList.failedToLoadSubtitle" = "Nog een keertje proberen?";
+
+/* Text appearing on the item list screen when there's an error loading products. */
+"pos.itemList.failedToLoadTitle" = "Fout bij laden van producten";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Alleen simpele fysieke producten zijn momenteel beschikbaar met POS.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Alleen simpele producten weergeven";
+
+/* Title of the Point of Sale product selector */
+"pos.itemlistview.productSelectorTitle" = "Producten";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Bedragen berekenen";
@@ -11280,14 +11374,41 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "privé";
 
+/* State when the prompt description is almost there for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.almostDone" = "Je bent er bijna.";
+
+/* State when the prompt description is completed and great for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.completed" = "Geweldige opdracht!";
+
+/* State when the prompt description is improving for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.halfway" = "Het gaat de goede kant op.";
+
+/* State when more details need to be added for the main prompt description suggestion in product creation with AI. */
+"productCreationAIPromptProgressBar.main.inProgress" = "Meer informatie toevoegen.";
+
+/* State prompting for more additional relevant info of the product for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.almostDone" = "Beschrijf aanvullende relevante informatie of kenmerken.";
+
+/* State indicating sufficient details have been provided, more can be added for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.completed" = "We hebben genoeg informatie om mee aan de slag te kunnen, maar als je nog meer details toevoegt, zal het resultaat nog beter zijn.";
+
+/* State when the description should include fit and distinctive features for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.halfway" = "Kan je de afmetingen en opvallende kenmerken van het artikel beschrijven?";
+
+/* State when more details will improve the generated content for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.inProgress" = "Hoe meer informatie je toevoegt, hoe beter je gegenereerde details zullen zijn.";
+
+/* Initial state with instructions to add product name and key details for the prompt description in product creation with AI. */
+"productCreationAIPromptProgressBar.secondary.start" = "Voeg belangrijke functies, voordelen of details van je product toe, zodat het beter vindbaar is online.";
+
 /* Button to generate product details in the starting info screen. */
 "productCreationAIStartingInfoView.generateProductDetails" = "Productgegevens genereren";
 
+/* Text to explain that a package photo has been selected in starting info screen. */
+"productCreationAIStartingInfoView.photoSelected" = "Foto geselecteerd";
+
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Bijvoorbeeld: zwart katoenen T-shirt, zachte stof, duurzaam stikwerk, uniek ontwerp";
-
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "Tekst lezen van productfoto";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Vertel ons over je product. Wat is het en wat maakt het uniek? Laat daarna de AI zijn werk doen.";
@@ -11334,6 +11455,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label in product for the product's private status */
 "productDetail.privateStatusLabel" = "Gepubliceerd als privé";
 
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.addedToProduct" = "Foto wordt toegevoegd aan product";
+
 /* Button on the error alert displayed on the add product with AI Preview screen. */
 "productDetailPreviewView.cancel" = "Annuleren";
 
@@ -11355,6 +11479,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the inventory field on the add product with AI Preview screen. */
 "productDetailPreviewView.inventory" = "Inventaris";
 
+/* Title of the name, short description and description fields on the add product with AI Preview screen. */
+"productDetailPreviewView.nameSummaryAndDescription" = "Naam, overzicht en beschrijving";
+
+/* Text to explain that a package photo has been selected in product preview screen. */
+"productDetailPreviewView.photoSelected" = "Foto geselecteerd";
+
 /* Title of the price field on the add product with AI Preview screen. */
 "productDetailPreviewView.price" = "Prijs";
 
@@ -11363,6 +11493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text for the product name field on on the add product with AI Preview screen. */
 "productDetailPreviewView.productNamePlaceholder" = "Geef je product een naam";
+
+/* Placeholder text for the product short description field on the add product with AI Preview screen. */
+"productDetailPreviewView.productShortDescriptionPlaceholder" = "Een korte samenvatting van je product";
 
 /* Title of the product type field on the add product with AI Preview screen. */
 "productDetailPreviewView.productType" = "Producttype";
@@ -11384,6 +11517,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the add product with AI Preview screen. */
 "productDetailPreviewView.title" = "Voorbeeldweergave";
+
+/* Button to undo edits for generated product name or summary in product preview screen. */
+"productDetailPreviewView.undoEdits" = "Wijzigingen verwijderen";
+
+/* Title for the option switch view in AI preview screen. Reads like: Option 1 of 3 The %1$d is a placeholder for the currently displayed option index. The %2$d is a placeholder for the total number of options available. */
+"productDetailPreviewViewModel.optionSwitch.title" = "Optie %1$d van %2$d";
+
+/* Title of the notice that confirms that the package photo is removed. */
+"productDetailPreviewViewModel.photoRemovedNotice.title" = "Foto verwijderd";
+
+/* Button to undo the package photo removal action. */
+"productDetailPreviewViewModel.photoRemovedNotice.undo" = "Ongedaan maken";
 
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Fout bij uploaden van bestand. Probeer het nog eens.";
@@ -11956,6 +12101,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Productgegevens bekijken";
+
+/* Title of the button to dismiss the view package photo screen. */
+"viewPackagePhoto.done" = "Gereed";
+
+/* Title of the view package photo screen. */
+"viewPackagePhoto.packagePhoto" = "Pakketfoto";
 
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Open Woo op je iPhone, koppel je winkel en houd je Watch dichtbij";

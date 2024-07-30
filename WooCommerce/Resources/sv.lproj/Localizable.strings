@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-22 10:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-26 15:36:01+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Avbryt uppgradering";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "Avbruten";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Slutför betalningen och vänta på en push-avisering om beställningen i din WooCommerce-app.";
-
-/* Display label for completed order status. */
-"Completed" = "Färdig";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Komponentalternativ";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Nedladdningsbara filer";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "Utkast";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern";
-
-/* Display label for failed order status. */
-"Failed" = "Misslyckades";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Misslyckades att ta bort rabattkod. Försök igen.";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "Senast sålda";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "Senaste uppdatering: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "Beställningsvara";
 
-/* Display label for on hold order status. */
-"On hold" = "Pausad";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "Endast ett foto kan visas per variation";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Betalningar";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "Inväntar granskning";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privat notering";
 
-/* Display label for processing order status. */
-"Processing" = "Behandlas";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Bearbetar betalning";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "Återbetala betalning från %1$@";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "Återbetalad";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -9277,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Nettobelopp";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "Lägg till betald kampanj";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "Kampanjer";
 
@@ -9294,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google-kampanjer";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Öka försäljningen och generera mer trafik med Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktivera Jetpack Stats";
@@ -11065,6 +11056,27 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Momser";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Utkast";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "Avbruten";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Slutförd";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Misslyckades";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Inväntar betalning";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "Bearbetar";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Återbetald";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11363,13 +11375,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.failedToLoadTitle" = "Det gick inte att läsa in produkterna";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
+"pos.itemlistview.headerBannerHint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar. Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Visar endast enkla produkter";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "Låt oss betjäna några kunder";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Produkter";
@@ -11434,11 +11449,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Till exempel: Svart t-shirt i bomull, mjukt tyg, slitstarka sömmar, unik design";
 
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "Läs text från produktfoto";
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Lägg till en text skannat från ett foto";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Skanna ett produktfoto";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Berätta för oss om din produkt, vad det är och vad som gör produkten unik, och låt sedan AI:n göra sitt jobb.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "Fototext tillagd till startinformation";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Startinformation";

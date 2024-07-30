@@ -4,10 +4,27 @@ struct PointOfSaleCardPresentPaymentValidatingOrderMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel
 
     var body: some View {
-        let messageViewModel = POSCardPresentPaymentMessageViewModel(showProgress: true,
-                                                                     title: viewModel.title,
-                                                                     message: viewModel.message)
-        POSCardPresentPaymentMessageView(viewModel: messageViewModel, style: .dimmed)
+        HStack(alignment: .center) {
+            Spacer()
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+                ProgressView()
+                    .progressViewStyle(POSProgressViewStyle())
+                    .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
+                           height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .foregroundStyle(Color(.neutral(.shade40)))
+                        .font(.posBody)
+
+                    Text(viewModel.message)
+                        .font(.posTitle)
+                        .foregroundStyle(Color(.neutral(.shade60)))
+                        .bold()
+                }
+            }
+            .multilineTextAlignment(.center)
+            Spacer()
+        }
     }
 }
 

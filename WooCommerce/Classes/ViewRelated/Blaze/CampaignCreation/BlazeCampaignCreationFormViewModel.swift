@@ -146,12 +146,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     // For Ad destination purposes
     private var productURL: String? {
-        let productLink = product?.permalink
-        if let productLink, let siteURL, productLink.isEmpty {
+        if let product, let siteURL, product.permalink.isEmpty {
             /// fallback to the default product URL {site_url}?post_type=product&p={product_id}
-            return String(format: "%@?post_type=product&p=%d", siteURL, productID)
+            return product.alternativePermalink(with: siteURL)
         }
-        return productLink
+        return product?.permalink
     }
     private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 

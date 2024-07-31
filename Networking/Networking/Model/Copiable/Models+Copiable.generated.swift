@@ -1928,6 +1928,7 @@ extension Networking.Product {
         bundleMinSize: NullableCopiableProp<Decimal> = .copy,
         bundleMaxSize: NullableCopiableProp<Decimal> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
+        password: NullableCopiableProp<String> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
         subscription: NullableCopiableProp<ProductSubscription> = .copy,
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
@@ -2004,6 +2005,7 @@ extension Networking.Product {
         let bundleMinSize = bundleMinSize ?? self.bundleMinSize
         let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
         let bundledItems = bundledItems ?? self.bundledItems
+        let password = password ?? self.password
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
         let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
@@ -2081,13 +2083,13 @@ extension Networking.Product {
             bundleMinSize: bundleMinSize,
             bundleMaxSize: bundleMaxSize,
             bundledItems: bundledItems,
+            password: password,
             compositeComponents: compositeComponents,
             subscription: subscription,
             minAllowedQuantity: minAllowedQuantity,
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
-            combineVariationQuantities: combineVariationQuantities,
-            password: password
+            combineVariationQuantities: combineVariationQuantities
         )
     }
 }

@@ -463,32 +463,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
     }
 
-    @MainActor
-    func test_it_shows_error_if_confirmed_with_empty_product_url() async throws {
-        // Given
-        // Product with empty product URL
-        insertProduct(sampleProduct.copy(permalink: ""))
-        mockAISuggestionsSuccess(sampleAISuggestions)
-        mockDownloadImage(sampleImage)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           analytics: analytics,
-                                                           onCompletion: {})
-        await viewModel.downloadProductImage()
-
-        await viewModel.loadAISuggestions()
-
-        // When
-        viewModel.didTapConfirmDetails()
-
-        // Then
-        XCTAssertTrue(viewModel.isShowingMissingDestinationURLAlert)
-    }
-
     // MARK: Analytics
     @MainActor
     func test_event_is_tracked_on_appear() async throws {

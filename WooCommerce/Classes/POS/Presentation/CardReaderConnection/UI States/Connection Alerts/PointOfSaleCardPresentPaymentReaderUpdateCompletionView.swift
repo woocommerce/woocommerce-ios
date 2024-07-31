@@ -9,7 +9,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image

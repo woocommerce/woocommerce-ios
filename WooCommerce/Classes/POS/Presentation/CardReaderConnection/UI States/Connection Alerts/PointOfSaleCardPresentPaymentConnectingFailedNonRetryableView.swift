@@ -2,8 +2,9 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel
+    
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image

@@ -4,22 +4,25 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
     let viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             Image(viewModel.imageName)
 
-            Button(viewModel.connectButton.title,
-                   action: viewModel.connectButton.actionHandler)
-            .buttonStyle(PrimaryButtonStyle())
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+                Button(viewModel.connectButton.title,
+                       action: viewModel.connectButton.actionHandler)
+                .buttonStyle(PrimaryButtonStyle())
 
-            Button(viewModel.continueSearchButton.title,
-                   action: viewModel.continueSearchButton.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+                Button(viewModel.continueSearchButton.title,
+                       action: viewModel.continueSearchButton.actionHandler)
+                .buttonStyle(SecondaryButtonStyle())
 
-            Button(viewModel.cancelSearchButton.title,
-                   action: viewModel.cancelSearchButton.actionHandler)
+                Button(viewModel.cancelSearchButton.title,
+                       action: viewModel.cancelSearchButton.actionHandler)
+            }
         }
+        .multilineTextAlignment(.center)
     }
 }
 

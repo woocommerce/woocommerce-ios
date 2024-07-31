@@ -3,19 +3,21 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image
 
-            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                Button(primaryButtonViewModel.title,
-                       action: primaryButtonViewModel.actionHandler)
-            }
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+                if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                    Button(primaryButtonViewModel.title,
+                           action: primaryButtonViewModel.actionHandler)
+                }
 
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+                Button(viewModel.cancelButtonViewModel.title,
+                       action: viewModel.cancelButtonViewModel.actionHandler)
+                .buttonStyle(SecondaryButtonStyle())
+            }
         }
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,

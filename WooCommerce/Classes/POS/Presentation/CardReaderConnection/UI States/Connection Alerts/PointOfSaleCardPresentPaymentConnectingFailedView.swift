@@ -8,7 +8,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image
@@ -17,13 +17,15 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                 Text(errorDetails)
             }
 
-            Button(viewModel.retryButtonViewModel.title,
-                   action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(PrimaryButtonStyle())
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+                Button(viewModel.retryButtonViewModel.title,
+                       action: viewModel.retryButtonViewModel.actionHandler)
+                .buttonStyle(PrimaryButtonStyle())
 
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+                Button(viewModel.cancelButtonViewModel.title,
+                       action: viewModel.cancelButtonViewModel.actionHandler)
+                .buttonStyle(SecondaryButtonStyle())
+            }
         }
     }
 }

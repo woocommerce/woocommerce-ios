@@ -8,18 +8,20 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image
 
-            Button(viewModel.retryButtonViewModel.title,
-                   action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(PrimaryButtonStyle())
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
+                Button(viewModel.retryButtonViewModel.title,
+                       action: viewModel.retryButtonViewModel.actionHandler)
+                .buttonStyle(PrimaryButtonStyle())
 
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+                Button(viewModel.cancelButtonViewModel.title,
+                       action: viewModel.cancelButtonViewModel.actionHandler)
+                .buttonStyle(SecondaryButtonStyle())
+            }
         }
     }
 }

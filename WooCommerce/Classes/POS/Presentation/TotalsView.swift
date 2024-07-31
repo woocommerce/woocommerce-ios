@@ -149,7 +149,7 @@ private extension TotalsView {
             .cornerRadius(Constants.shimmeringCornerRadius)
     }
 
-    /// Hide totals fields after with animation a delay when starting to processing a payment
+    /// Hide totals fields with animation after a delay when starting to processing a payment
     /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
         guard !isShowing && totalsViewModel.paymentState == .processingPayment else {

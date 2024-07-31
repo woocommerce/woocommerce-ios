@@ -117,15 +117,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
     func calculateRemainingCharacters() -> Int {
         let remainingCharacters = Constant.maxParameterLength - parameters.convertToQueryString().count
         let parameterLengthInBaseURL: Int = {
-            if let url = URL(string: baseURL),
-               let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
-               let queryItems = urlComponents.queryItems, queryItems.isNotEmpty {
-                return queryItems
-                    .map { "\($0.name)=\($0.value ?? "")" }
-                    .joined(separator: "&")
-                    .count
-            }
-            return 0
+            return baseURL.urlParameters
+                .map { "\($0.name)=\($0.value ?? "")" }
+                .joined(separator: "&")
+                .count
         }()
         // Should stop at zero and not show negative number.
         return max(0, remainingCharacters - parameterLengthInBaseURL)
@@ -177,10 +172,7 @@ private extension BlazeAdDestinationSettingViewModel {
         }
 
         let connectingCharacter: String
-        if let url = URL(string: baseURL),
-           let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
-           let queryItems = urlComponents.queryItems,
-           queryItems.isNotEmpty {
+        if baseURL.urlParameters.isNotEmpty {
             /// If there are existing query params, connecting the base URL with new parameters using "&"
             connectingCharacter = "&"
         } else {
@@ -228,24 +220,26 @@ private extension URLComponents {
     func toBlazeAdURLParameters(baseURL: String) -> [BlazeAdURLParameter] {
         guard let queryItems else { return [] }
 
-        let baseURLParameters: [URLQueryItem] = {
-           if let url = URL(string: baseURL),
-              let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
-              let queryItems = urlComponents.queryItems, queryItems.isNotEmpty {
-               return queryItems
-           }
-            return []
-        }()
-
         return queryItems
             .filter { item in
                 // ignores items in the base URL to keep them fixed
-                !baseURLParameters.contains { $0.name == item.name }
+                !baseURL.urlParameters.contains { $0.name == item.name }
             }
             .map {
                 // URLQueryItem's `value` is an optional String,
                 // so here we're converting to empty string if needed.
                 BlazeAdURLParameter(key: $0.name, value: $0.value ?? "")
             }
+    }
+}
+
+private extension String {
+    var urlParameters: [URLQueryItem] {
+       if let url = URL(string: self),
+          let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
+          let queryItems = urlComponents.queryItems, queryItems.isNotEmpty {
+           return queryItems
+       }
+        return []
     }
 }

@@ -29,9 +29,27 @@ public class AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
+    ///
     public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
         self.requestConverter = RequestConverter(credentials: credentials)
-        self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+
+        // When `DefaultRequestAuthenticator` receives a `credential.applicationPassword` case it doesn't use the information provided in the credential object.
+        // Instead, it fetches it from the Keychain, as it is assumes that the application password credentials are already saved.
+        // This does not work in the watch app, because the keychains are not shared/connected.
+        // To solve this issue without doing a major refactor on how credentials are stored and used,
+        // We are providing an specific application password use case only when running this code in the watch.
+        let applicationPasswordUseCase: ApplicationPasswordUseCase? = {
+#if os(watchOS)
+            if let credentials, case let .applicationPassword(username, password, siteAddress) = credentials {
+                let appPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: UUID().uuidString.lowercased())
+                return OneTimeApplicationPasswordUseCase(applicationPassword: appPassword, siteAddress: siteAddress)
+            }
+#endif
+            return nil
+        }()
+
+        self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials,
+                                                                                                       applicationPasswordUseCase: applicationPasswordUseCase))
         if let sessionManager {
             self.alamofireSession = sessionManager
         }

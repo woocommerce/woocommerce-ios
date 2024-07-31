@@ -5,38 +5,38 @@ import SwiftUI
 
 final class PointOfSaleAssetsTests: XCTestCase {
     func test_posNewTransactionImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.newTransactionImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.newTransaction.imageName))
     }
 
     func test_posPaymentSuccessfulImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.paymentSuccessfulImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.paymentSuccessful.imageName))
     }
 
     func test_posProcessingPaymentImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.processingPaymentImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.processingPayment.imageName))
     }
 
     func test_posReadyForPaymentImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.readyForPaymentImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.readyForPayment.imageName))
     }
 
     func test_posCartBackImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.cartBackImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.cartBack.imageName))
     }
 
     func test_posExitImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.exitImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.exit.imageName))
     }
 
     func test_posGetSupportImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.getSupportImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.getSupport.imageName))
     }
 
     func test_posRemoveCartItemImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.removeCartItemImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.removeCartItem.imageName))
     }
 
     func test_posDismissProductsBannerImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.dismissProductsBannerImageName))
+        XCTAssertNotNil(Image(PointOfSaleAssets.dismissProductsBanner.imageName))
     }
 }

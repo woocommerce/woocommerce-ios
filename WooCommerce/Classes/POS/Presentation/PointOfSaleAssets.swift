@@ -1,6 +1,6 @@
 import Foundation
 
-enum PointOfSaleAssets {
+enum PointOfSaleAssets: CaseIterable {
     case newTransaction
     case paymentSuccessful
     case processingPayment

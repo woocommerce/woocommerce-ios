@@ -53,12 +53,29 @@ private struct AppLinkProvider: TimelineProvider {
 }
 
 private struct AppButtonView: View {
+
+    private var logoAssetName: String {
+#if os(watchOS)
+        "woo-mini-logo"
+#else
+        "woo-logo"
+#endif
+    }
+
+    private var background: some View {
+#if os(watchOS)
+        EmptyView()
+#else
+        AccessoryWidgetBackground()
+#endif
+    }
+
     var body: some View {
-        Image("woo-logo", bundle: nil)
+        Image(logoAssetName, bundle: nil)
             .resizable()
             .scaledToFit()
             .padding(8)
-            .widgetBackground(backgroundView: AccessoryWidgetBackground())
+            .widgetBackground(backgroundView: background)
     }
 }
 

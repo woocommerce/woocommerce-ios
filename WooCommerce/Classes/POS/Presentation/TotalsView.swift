@@ -175,9 +175,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader disconnected",
-                                                              buttons: [.init(title: "Collect Payment",
-                                                                              actionHandler: totalsViewModel.cardPaymentTapped)]))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(collectPaymentAction: totalsViewModel.cardPaymentTapped))
         }
     }
 }

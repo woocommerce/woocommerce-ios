@@ -64,31 +64,24 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var contentView: some View {
-        VStack {
+        GeometryReader { geometry in
             HStack {
-                switch viewModel.orderStage {
-                case .building:
-                    GeometryReader { geometry in
-                        HStack {
-                            productListView
-                            cartView
-                                .renderedIf(isCartShown)
-                                .frame(width: geometry.size.width * Constants.cartWidth)
-                        }
-                    }
-                case .finalizing:
-                    GeometryReader { geometry in
-                        HStack {
-                            if !viewModel.isTotalsViewFullScreen {
-                                cartView
-                                    .frame(width: geometry.size.width * Constants.cartWidth)
-                                Spacer()
-                            }
-                            totalsView
-                        }
-                    }
+                if viewModel.orderStage == .building {
+                    productListView
+                        .transition(.move(edge: .leading))
+                }
+
+                if !viewModel.isTotalsViewFullScreen {
+                    cartView
+                        .frame(width: geometry.size.width * Constants.cartWidth)
+                }
+
+                if viewModel.orderStage == .finalizing {
+                    totalsView
+                        .transition(.move(edge: .trailing))
                 }
             }
+            .animation(.default, value: viewModel.orderStage)
         }
     }
 }

@@ -309,7 +309,7 @@ private extension TotalsViewModel.PaymentState {
             self = .acceptingCard
         case .show(.processing):
             self = .processingPayment
-        case .show(.displayReaderMessage(message: _)):
+        case .show(.displayReaderMessage):
             self = .processingPayment
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel
-    
+
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)

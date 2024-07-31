@@ -19,6 +19,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
+        .multilineTextAlignment(.center)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
                               completion: viewModel.settingsWebViewWasDismissed)

@@ -20,6 +20,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
+        .multilineTextAlignment(.center)
     }
 }
 

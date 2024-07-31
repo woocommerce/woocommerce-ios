@@ -23,6 +23,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
+        .multilineTextAlignment(.center)
     }
 }
 

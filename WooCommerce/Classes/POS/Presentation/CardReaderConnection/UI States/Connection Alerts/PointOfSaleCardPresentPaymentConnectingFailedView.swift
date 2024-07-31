@@ -27,6 +27,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
+        .multilineTextAlignment(.center)
     }
 }
 

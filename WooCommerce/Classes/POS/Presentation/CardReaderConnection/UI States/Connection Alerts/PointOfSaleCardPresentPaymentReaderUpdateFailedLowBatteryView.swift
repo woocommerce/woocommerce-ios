@@ -19,6 +19,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
                    action: viewModel.cancelButtonViewModel.actionHandler)
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

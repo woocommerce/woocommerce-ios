@@ -19,6 +19,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
                    action: viewModel.buttonViewModel.actionHandler)
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

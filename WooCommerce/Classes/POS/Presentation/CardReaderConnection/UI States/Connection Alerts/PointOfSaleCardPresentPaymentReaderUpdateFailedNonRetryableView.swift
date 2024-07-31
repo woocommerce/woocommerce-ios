@@ -17,6 +17,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
                    action: viewModel.cancelButtonViewModel.actionHandler)
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

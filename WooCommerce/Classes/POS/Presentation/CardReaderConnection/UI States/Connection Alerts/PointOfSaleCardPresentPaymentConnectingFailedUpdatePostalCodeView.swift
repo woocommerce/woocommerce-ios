@@ -21,6 +21,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
+        .multilineTextAlignment(.center)
     }
 }
 

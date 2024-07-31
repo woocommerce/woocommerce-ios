@@ -27,6 +27,7 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
             })
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

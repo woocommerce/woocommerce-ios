@@ -68,7 +68,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
                     // Once a parameter is updated, clear the selected parameter to prepare for the next add/update action.
                     clearSelectedParameter()
                 } else {
-                    self.parameters.append(BlazeAdURLParameter(key: key, value: value))
+                    addNewParameter(item: BlazeAdURLParameter(key: key, value: value))
                 }
             }
         )
@@ -116,12 +116,22 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     func calculateRemainingCharacters() -> Int {
         let remainingCharacters = Constant.maxParameterLength - parameters.convertToQueryString().count
+        let parameterLengthInBaseURL: Int = {
+            return baseURL.urlParameters
+                .map { "\($0.name)=\($0.value ?? "")" }
+                .joined(separator: "&")
+                .count
+        }()
         // Should stop at zero and not show negative number.
-        return max(0, remainingCharacters)
+        return max(0, remainingCharacters - parameterLengthInBaseURL)
     }
 
     func selectParameter(item: BlazeAdURLParameter) {
         selectedParameter = item
+    }
+
+    func addNewParameter(item: BlazeAdURLParameter) {
+        parameters.append(item)
     }
 
     func deleteParameter(at offsets: IndexSet) {
@@ -142,7 +152,7 @@ private extension BlazeAdDestinationSettingViewModel {
     func initializeParameters() {
         if let finalDestinationURL = URL(string: initialFinalDestinationURL),
            let urlComponents = URLComponents(url: finalDestinationURL, resolvingAgainstBaseURL: false) {
-            parameters = urlComponents.toBlazeAdURLParameters()
+            parameters = urlComponents.toBlazeAdURLParameters(baseURL: baseURL)
         }
     }
 
@@ -160,7 +170,16 @@ private extension BlazeAdDestinationSettingViewModel {
         guard parameters.isNotEmpty else {
             return baseURL
         }
-        return baseURL + "?" + parameters.convertToQueryString()
+
+        let connectingCharacter: String
+        if baseURL.urlParameters.isNotEmpty {
+            /// If there are existing query params, connecting the base URL with new parameters using "&"
+            connectingCharacter = "&"
+        } else {
+            connectingCharacter = "?"
+        }
+
+        return baseURL + connectingCharacter + parameters.convertToQueryString()
     }
 }
 
@@ -198,9 +217,29 @@ private extension BlazeAdDestinationSettingViewModel {
 
 /// Convert a URLComponents's query items to BlazeAdURLParameter array.
 private extension URLComponents {
-    func toBlazeAdURLParameters() -> [BlazeAdURLParameter] {
+    func toBlazeAdURLParameters(baseURL: String) -> [BlazeAdURLParameter] {
         guard let queryItems else { return [] }
-        // URLQueryItem's `value` is an optional String, so here we're converting to empty string if needed.
-        return queryItems.map { BlazeAdURLParameter(key: $0.name, value: $0.value ?? "") }
+
+        return queryItems
+            .filter { item in
+                // ignores items in the base URL to keep them fixed
+                !baseURL.urlParameters.contains { $0.name == item.name }
+            }
+            .map {
+                // URLQueryItem's `value` is an optional String,
+                // so here we're converting to empty string if needed.
+                BlazeAdURLParameter(key: $0.name, value: $0.value ?? "")
+            }
+    }
+}
+
+private extension String {
+    var urlParameters: [URLQueryItem] {
+       if let url = URL(string: self),
+          let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
+          let queryItems = urlComponents.queryItems, queryItems.isNotEmpty {
+           return queryItems
+       }
+        return []
     }
 }

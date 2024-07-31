@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
-    let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
+struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
+    let viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel
 
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                Text(viewModel.message)
+                Text(viewModel.title)
                     .font(.posTitle)
                     .foregroundStyle(Color.posPrimaryTexti3)
                     .bold()
@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(
-        viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(
-            message: "Please remove card"))
+    PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(
+        viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()
+    )
 }

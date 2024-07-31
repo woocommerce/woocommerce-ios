@@ -1,25 +1,25 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
-    let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
+struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
+    let title: String
+    let message: String
 
     var body: some View {
         HStack(alignment: .center) {
             Spacer()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
-                Image(viewModel.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+                ProgressView()
+                    .progressViewStyle(POSProgressViewStyle())
                     .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                            height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.title)
-                        .foregroundStyle(Color.posPrimaryTexti3)
+                    Text(title)
+                        .foregroundStyle(Color(.neutral(.shade40)))
                         .font(.posBody)
 
-                    Text(viewModel.message)
+                    Text(message)
                         .font(.posTitle)
-                        .foregroundStyle(Color.posPrimaryTexti3)
+                        .foregroundStyle(Color(.neutral(.shade60)))
                         .bold()
                 }
             }
@@ -30,8 +30,5 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
-        viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
-            inputMethods: [.tap, .insert]
-        ))
+    PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: "Checking order", message: "Getting ready")
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-30 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "取消升级";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "已取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "在 WooCommerce 应用程序上完成支付，并等待关于订单的推送通知。";
-
-/* Display label for completed order status. */
-"Completed" = "已完成";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "组件选项";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "可下载文件";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "草稿";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部\/关联";
-
-/* Display label for failed order status. */
-"Failed" = "失败";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "优惠券删除失败。 请重试。";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "上次销售";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "上次更新时间：%@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "延迟交货";
 
-/* Display label for on hold order status. */
-"On hold" = "保留";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "变体仅能显示一张照片";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "付款";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "待审";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
 
-/* Display label for processing order status. */
-"Processing" = "正在处理";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "正在处理付款";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "来自%1$@的退款";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "已退款";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -9277,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "净额";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "添加付费广告活动";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "广告活动";
 
@@ -9294,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google 广告活动";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "通过 Google Ads 推动销售并增加流量。";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "启用 Jetpack Stats";
@@ -11065,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "税费";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "草稿";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "已取消";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "已完成";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "失败";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "保留";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "待付款";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "正在处理";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "已退款";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11363,13 +11378,19 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemList.failedToLoadTitle" = "加载产品时出错";
 
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "其他产品类型（如可变产品和虚拟产品）将在今后的更新中受到支持。";
+"pos.itemlistview.headerBannerHint" = "其他产品类型（如可变产品和虚拟产品）将在今后的更新中受到支持。 了解更多";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "POS 目前仅支持简单实体产品。";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "仅显示简单产品";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "让我们为客户服务";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "开始";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "产品";
@@ -11434,11 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "例如：黑色棉质 T 恤、柔软的面料、结实的缝线、独特的设计";
 
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "读取产品照片中的文本";
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "添加从照片扫描的文字";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "扫描产品照片";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "向我们介绍您的产品，包括它是什么以及它有哪些独特之处，然后静待 AI 施展魔力。";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "照片文字已添加到起始信息中";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "起始信息";

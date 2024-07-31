@@ -91,13 +91,14 @@ final class ProductStoreTests: XCTestCase {
                                                   defaultAttributes: [mockDefaultAttribute],
                                                   addOns: sampleAddOns(),
                                                   bundledItems: [.fake()],
+                                                  password: "Caput Draconis",
                                                   compositeComponents: [.fake()],
                                                   subscription: .fake())
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0, password: "Caput Draconis")
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -177,6 +178,7 @@ final class ProductStoreTests: XCTestCase {
                                                   defaultAttributes: [mockDefaultAttribute],
                                                   addOns: sampleAddOns(),
                                                   bundledItems: [.fake()],
+                                                  password: "Caput Draconis",
                                                   compositeComponents: [.fake()],
                                                   subscription: .fake())
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
@@ -561,14 +563,14 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
-    func testRetrieveSingleProductReturnsExpectedFields() throws {
+    func test_retrieve_single_product_returns_expected_fields() throws {
         // Arrange
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true).copy(password: "Fortuna Major")
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
@@ -638,7 +640,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true).copy(password: "Fortuna Major")
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
@@ -1277,7 +1279,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProduct` returns the expected `Product`.
     ///
-    func testUpdatingProductReturnsExpectedFields() {
+    func test_updating_product_returns_expected_fields() {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1303,6 +1305,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedDownloadable = false
         let expectedBundleStockStatus = ProductStockStatus.insufficientStock
         let expectedBundleStockQuantity: Int64 = 0
+        let expectedPassword: String = "Caput Draconis"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -1349,6 +1352,7 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.bundleStockQuantity, expectedBundleStockQuantity)
             XCTAssertNil(product.bundleMinSize)
             XCTAssertNil(product.bundleMaxSize)
+            XCTAssertEqual(product.password, expectedPassword)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -3115,6 +3119,7 @@ private extension ProductStoreTests {
                        bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [],
+                       password: nil,
                        compositeComponents: [],
                        subscription: nil,
                        minAllowedQuantity: nil,

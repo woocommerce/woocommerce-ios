@@ -22,6 +22,10 @@ final class MockZendeskManager: ZendeskManagerProtocol {
     ///
     private(set) var latestInvokedTags: [String] = []
 
+    /// Tracks which custom fields were invoked via the create request method.
+    ///
+    private(set) var latestInvokedCustomFields: [Int64: String] = [:]
+
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String?) {
         let invocation = NewRequestIfPossibleInvocation(controller: controller, sourceTag: sourceTag)
         newRequestIfPossibleInvocations.append(invocation)
@@ -107,6 +111,7 @@ extension MockZendeskManager {
                               description: String,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
         latestInvokedTags = tags
+        latestInvokedCustomFields = customFields
         if let stubbedCreateSupportRequestResult {
             onCompletion(stubbedCreateSupportRequestResult)
         }

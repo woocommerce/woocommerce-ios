@@ -964,39 +964,4 @@ final class IconsTests: XCTestCase {
     func test_tooltipImage_is_not_nil() {
         XCTAssertNotNil(UIImage.tooltipImage)
     }
-
-    func test_posNewTransactionImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posNewTransactionImage)
-    }
-
-    func test_posPaymentSuccessfulImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posPaymentSuccessfulImage)
-    }
-
-    func test_posProcessingPaymentImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posProcessingPaymentImage)
-    }
-
-    func test_posReadyForPaymentImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posReadyForPaymentImage)
-    }
-    func test_posCartBackImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posCartBackImage)
-    }
-
-    func test_posExitImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posExitImage)
-    }
-
-    func test_posGetSupportImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posGetSupportImage)
-    }
-
-    func test_posRemoveCartItemImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posRemoveCartItemImage)
-    }
-
-    func test_posDismissProductsBannerImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.posDismissProductsBannerImage)
-    }
 }

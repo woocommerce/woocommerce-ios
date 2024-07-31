@@ -1321,8 +1321,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "업그레이드 취소";
 
-/* Display label for cancelled order status.
-   Display label for the subscription status type */
+/* Display label for the subscription status type */
 "Cancelled" = "취소됨";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -1679,9 +1678,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "우커머스 앱에서 결제를 완료하고 주문에 관한 푸시 알림을 기다립니다.";
-
-/* Display label for completed order status. */
-"Completed" = "완료";
 
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "구성 요소 옵션";
@@ -2520,8 +2516,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "다운로드 가능한 파일";
 
-/* Display label for auto-draft order status.
-   Display label for the product's draft status */
+/* Display label for the product's draft status */
 "Draft" = "임시글";
 
 /* Drag and drop helper text above photo list in Product images screen */
@@ -2993,9 +2988,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "외부\/연계";
-
-/* Display label for failed order status. */
-"Failed" = "실패함";
 
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "쿠폰을 삭제하지 못했습니다. 다시 시도하세요.";
@@ -3967,7 +3959,8 @@ which should be translated separately and considered part of this sentence. */
 "Last Sold" = "마지막 판매 명세";
 
 /* Time for when the orders were last updated
-   Time for when the performance card was last updated */
+   Time for when the performance card was last updated
+   Time for when the top performers card was last updated */
 "Last Updated: %@" = "최근 업데이트: %@";
 
 /* Title of the Analytics Hub Last Week selection range */
@@ -4833,9 +4826,6 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's inventory stock status */
 "On back order" = "이월 주문";
 
-/* Display label for on hold order status. */
-"On hold" = "보류됨";
-
 /* Helper text above photo list in Product images screen */
 "Only one photo can be displayed by variation" = "변형당 하나의 사진만 표시할 수 있습니다.";
 
@@ -5181,8 +5171,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for payments setup from onboarding. */
 "Payments" = "결제";
 
-/* Display label for pending order status.
-   Display label for the review's pending status
+/* Display label for the review's pending status
    Display label for the subscription status type */
 "Pending" = "대기중";
 
@@ -5598,9 +5587,6 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
 
-/* Display label for processing order status. */
-"Processing" = "처리 중";
-
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "결제 처리 중";
@@ -5893,8 +5879,7 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title when starting the in-person refund flow with a user name. */
 "Refund payment from %1$@" = "%1$@에서 결제 환불";
 
-/* Display label for refunded order status.
-   The title for the refunded amount cell */
+/* The title for the refunded amount cell */
 "Refunded" = "환불됨";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
@@ -11362,9 +11347,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "상품 로드 오류";
 
-/* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "변형 상품, 가상 상품 등의 다른 상품 유형은 향후 업데이트를 통해 지원될 예정입니다.";
-
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "현재 POS에는 단순 실물 상품만 지원됩니다.";
 
@@ -11433,9 +11415,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "예: 검은색 면 티셔츠, 부드러운 원단, 튼튼한 바느질, 독특한 디자인";
-
-/* Button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.readTextFromPhoto" = "제품 사진에서 텍스트 읽기";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "제품에 대해 이야기해 주세요. 어떤 제품이고 왜 독특한지 설명해 주시면 AI가 마법을 부리기 시작합니다.";

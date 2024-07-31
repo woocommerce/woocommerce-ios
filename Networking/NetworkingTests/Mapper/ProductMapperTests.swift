@@ -28,6 +28,8 @@ final class ProductMapperTests: XCTestCase {
             XCTAssertEqual(product.name, "Book the Green Room")
             XCTAssertEqual(product.slug, "book-the-green-room")
             XCTAssertEqual(product.permalink, "https://example.com/product/book-the-green-room/")
+            XCTAssertEqual(product.alternativePermalink(with: "https://example.com"),
+                           "https://example.com?post_type=product&p=\(dummyProductID)")
 
             let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-02-19T17:33:31")
             let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-02-19T17:48:01")

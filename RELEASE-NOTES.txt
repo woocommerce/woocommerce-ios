@@ -4,7 +4,7 @@
 -----
 - [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).
 - [*] Dynamic Dashboard: Display unavailable analytics view when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13440]
-- [*] Fix large text support in Bar Code Scanner.
+- [*] Fix large text support in Bar Code Scanner. [https://github.com/woocommerce/woocommerce-ios/pull/13464]
 - [internal] Enable Blaze only if the store has Jetpack installed and connected. [https://github.com/woocommerce/woocommerce-ios/pull/13448]
 
 19.7

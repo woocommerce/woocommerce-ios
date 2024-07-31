@@ -17,10 +17,13 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message)
         case .tapSwipeOrInsertCard(let viewModel):
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
+                .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .processing(let viewModel):
             PointOfSaleCardPresentPaymentProcessingMessageView(viewModel: viewModel)
+                .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
+                .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentSuccess(let viewModel):
             PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel)
         case .paymentError(let viewModel):
@@ -33,6 +36,14 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel)
         }
     }
+
+    // MARK: - Animations
+
+    /// Used together with .matchedGeometryEffect
+    /// This makes SwiftUI treat different messages as a single view in the context of animation.
+    /// Allows to smoothly transition from one view to another while also transitioning to full-screen
+    @Namespace private var transitionAnimation
+    private static let transitionAnimationId = UUID().uuidString
 }
 
 #Preview {

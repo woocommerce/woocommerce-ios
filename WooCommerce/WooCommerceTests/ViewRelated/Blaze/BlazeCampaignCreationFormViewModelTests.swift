@@ -10,7 +10,7 @@ import struct Networking.BlazeAISuggestion
 final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
-
+    private let sampleSiteAddress = "https://example.com"
     private let sampleProductID: Int64 = 433
 
     private var sampleProduct: Product {
@@ -44,7 +44,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(url: sampleSiteAddress)))
         storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
         analyticsProvider = MockAnalyticsProvider()
@@ -104,6 +104,21 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.description, "")
+    }
+
+    @MainActor
+    func test_ad_destination_product_url_is_updated_correctly_if_empty() async throws {
+        // Given
+        insertProduct(sampleProduct.copy(permalink: ""))
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
     }
 
     // MARK: On load
@@ -446,32 +461,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
-    }
-
-    @MainActor
-    func test_it_shows_error_if_confirmed_with_empty_product_url() async throws {
-        // Given
-        // Product with empty product URL
-        insertProduct(sampleProduct.copy(permalink: ""))
-        mockAISuggestionsSuccess(sampleAISuggestions)
-        mockDownloadImage(sampleImage)
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           analytics: analytics,
-                                                           onCompletion: {})
-        await viewModel.downloadProductImage()
-
-        await viewModel.loadAISuggestions()
-
-        // When
-        viewModel.didTapConfirmDetails()
-
-        // Then
-        XCTAssertTrue(viewModel.isShowingMissingDestinationURLAlert)
     }
 
     // MARK: Analytics

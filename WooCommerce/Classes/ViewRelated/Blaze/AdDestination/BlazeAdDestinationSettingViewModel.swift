@@ -68,7 +68,7 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
                     // Once a parameter is updated, clear the selected parameter to prepare for the next add/update action.
                     clearSelectedParameter()
                 } else {
-                    self.parameters.append(BlazeAdURLParameter(key: key, value: value))
+                    self.addNewParameter(item: BlazeAdURLParameter(key: key, value: value))
                 }
             }
         )
@@ -133,6 +133,10 @@ final class BlazeAdDestinationSettingViewModel: ObservableObject {
 
     func selectParameter(item: BlazeAdURLParameter) {
         selectedParameter = item
+    }
+
+    func addNewParameter(item: BlazeAdURLParameter) {
+        parameters.append(item)
     }
 
     func deleteParameter(at offsets: IndexSet) {

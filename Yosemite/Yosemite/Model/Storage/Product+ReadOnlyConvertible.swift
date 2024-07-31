@@ -85,6 +85,7 @@ extension Storage.Product: ReadOnlyConvertible {
         bundleStockStatus = product.bundleStockStatus?.rawValue
         bundleMinSize = product.bundleMinSize as? NSDecimalNumber
         bundleMaxSize = product.bundleMaxSize as? NSDecimalNumber
+        password = product.password
         minAllowedQuantity = product.minAllowedQuantity
         maxAllowedQuantity = product.maxAllowedQuantity
         groupOfQuantity = product.groupOfQuantity

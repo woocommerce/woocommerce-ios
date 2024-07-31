@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel {
     let title: String = Localization.title
     let image: Image = .init(uiImage: .softwareUpdateProgress(progress: CGFloat(1.0)))
-    let progressTitle: String = .init(format: Localization.percentCompleteFormat, 100)
+    let progressTitle: String = .init(format: Localization.percentCompleteFormat, 100.0)
     let dismissButtonTitle: String = Localization.dismissButtonText
 }
 

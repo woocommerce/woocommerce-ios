@@ -109,6 +109,16 @@ struct OtherPluginsSupportDataSource: SupportFormMetaDataSource {
     }
 }
 
+extension SupportFormMetaDataSource {
+    /// Adds site address to the datasource metadata
+    ///
+    func customFields(siteAddress: String) -> [Int64: String] {
+        var fields = customFields
+        fields[ZendeskForms.IDs.siteAddress] = siteAddress
+        return fields
+    }
+}
+
 /// Zendesk Constant Values
 ///
 private enum ZendeskForms {
@@ -119,6 +129,7 @@ private enum ZendeskForms {
         static let wooForm: Int64 = 189946
         static let category: Int64 = 25176003
         static let subCategory: Int64 = 25176023
+        static let siteAddress: Int64 = 22054927
     }
 
     /// Custom Field Values

@@ -1,6 +1,5 @@
 import XCTest
 import Gridicons
-import SwiftUI
 @testable import WooCommerce
 
 final class IconsTests: XCTestCase {
@@ -964,53 +963,5 @@ final class IconsTests: XCTestCase {
 
     func test_tooltipImage_is_not_nil() {
         XCTAssertNotNil(UIImage.tooltipImage)
-    }
-
-    func test_posNewTransactionImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.newTransactionImageName))
-    }
-
-    func test_posPaymentSuccessfulImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.paymentSuccessfulImageName))
-    }
-
-    func test_posProcessingPaymentImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.processingPaymentImageName))
-    }
-
-    func test_posReadyForPaymentImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.readyForPaymentImageName))
-    }
-    
-    func test_posCartBackImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.cartBackImageName))
-    }
-
-    func test_posExitImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.exitImageName))
-    }
-
-    func test_posGetSupportImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.getSupportImageName))
-    }
-
-    func test_posRemoveCartItemImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.removeCartItemImageName))
-    }
-
-    func test_posDismissProductsBannerImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.dismissProductsBannerImageName))
-    }
-
-    func test_posReaderConnectionScanningImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionScanningImageName))
-    }
-
-    func test_posReaderConnectionDoYouWantToConnectImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionDoYouWantToConnectImageName))
-    }
-
-    func test_posReaderConnectionConnectingImage_is_not_nil() {
-        XCTAssertNotNil(Image(PointOfSaleAssets.readerConnectionConnectingImageName))
     }
 }

@@ -759,6 +759,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     }
 }
 
+public extension Product {
+    /// Default product URL {site_url}?post_type=product&p={product_id} works for all sites.
+    func alternativePermalink(with siteURL: String) -> String {
+        String(format: "%@?post_type=product&p=%d", siteURL, productID)
+    }
+}
+
 /// Defines all of the Product CodingKeys
 ///
 private extension Product {

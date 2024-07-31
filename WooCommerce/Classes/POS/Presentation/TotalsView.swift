@@ -142,7 +142,7 @@ private extension TotalsView {
         }, label: {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
-                Image(PointOfSaleAssets.newTransactionImageName)
+                Image(PointOfSaleAssets.newTransaction.imageName)
                 Text(Localization.newTransaction)
                     .font(Constants.newTransactionButtonFont)
                 Spacer()
@@ -175,9 +175,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            POSCardPresentPaymentMessageView(viewModel: .init(title: "Reader disconnected",
-                                                              buttons: [.init(title: "Collect Payment",
-                                                                              actionHandler: totalsViewModel.cardPaymentTapped)]))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(collectPaymentAction: totalsViewModel.cardPaymentTapped))
         }
     }
 }

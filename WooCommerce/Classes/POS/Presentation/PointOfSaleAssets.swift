@@ -1,40 +1,37 @@
 import Foundation
 
-enum PointOfSaleAssets {
-    static var newTransactionImageName: String {
-        "pos-new-transaction-icon"
-    }
+enum PointOfSaleAssets: CaseIterable {
+    case newTransaction
+    case paymentSuccessful
+    case processingPayment
+    case readyForPayment
+    case cartBack
+    case exit
+    case getSupport
+    case removeCartItem
+    case dismissProductsBanner
 
-    static var paymentSuccessfulImageName: String {
-        "pos-payment-successful"
-    }
-
-    static var processingPaymentImageName: String {
-        "pos-processing-payment"
-    }
-
-    static var readyForPaymentImageName: String {
-        "pos-ready-for-payment"
-    }
-
-    static var cartBackImageName: String {
-        "pos-cart-back"
-    }
-
-    static var exitImageName: String {
-        "pos-exit"
-    }
-
-    static var getSupportImageName: String {
-        "pos-get-support"
-    }
-
-    static var removeCartItemImageName: String {
-        "pos-remove-cart-item"
-    }
-
-    static var dismissProductsBannerImageName: String {
-        "pos-dismiss-products-banner"
+    var imageName: String {
+        switch self {
+        case .newTransaction:
+            "pos-new-transaction-icon"
+        case .paymentSuccessful:
+            "pos-payment-successful"
+        case .processingPayment:
+            "pos-processing-payment"
+        case .readyForPayment:
+            "pos-ready-for-payment"
+        case .cartBack:
+            "pos-cart-back"
+        case .exit:
+            "pos-exit"
+        case .getSupport:
+            "pos-get-support"
+        case .removeCartItem:
+            "pos-remove-cart-item"
+        case .dismissProductsBanner:
+            "pos-dismiss-products-banner"
+        }
     }
 
     static var readerConnectionScanningImageName: String {

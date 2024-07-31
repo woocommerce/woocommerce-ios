@@ -93,7 +93,7 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(PointOfSaleAssets.dismissProductsBannerImageName)
+                    Image(PointOfSaleAssets.dismissProductsBanner.imageName)
                         .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
                         .foregroundColor(Color.posTertiaryTexti3)
                 })

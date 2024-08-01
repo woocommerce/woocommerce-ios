@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "pos-reader-connection-do-you-want-to-connect.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "pos-reader-connection-do-you-want-to-connect@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "pos-reader-connection-do-you-want-to-connect@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

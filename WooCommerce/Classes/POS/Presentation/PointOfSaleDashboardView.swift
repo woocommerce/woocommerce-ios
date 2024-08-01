@@ -46,7 +46,7 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .sheet(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)

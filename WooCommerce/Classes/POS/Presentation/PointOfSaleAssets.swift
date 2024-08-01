@@ -33,4 +33,16 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-dismiss-products-banner"
         }
     }
+
+    static var readerConnectionScanningImageName: String {
+        "pos-reader-connection-scanning"
+    }
+
+    static var readerConnectionDoYouWantToConnectImageName: String {
+        "pos-reader-connection-do-you-want-to-connect"
+    }
+
+    static var readerConnectionConnectingImageName: String {
+        "pos-reader-connection-connecting"
+    }
 }

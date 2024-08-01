@@ -14,6 +14,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.retryButtonViewModel.title,
                        action: viewModel.retryButtonViewModel.actionHandler)
+                .buttonStyle(PrimaryButtonStyle())
 
                 Button(viewModel.cancelButtonViewModel.title,
                        action: viewModel.cancelButtonViewModel.actionHandler)

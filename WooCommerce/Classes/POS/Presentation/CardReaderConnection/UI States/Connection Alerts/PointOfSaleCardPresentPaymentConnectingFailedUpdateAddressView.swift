@@ -12,6 +12,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                 if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
                     Button(primaryButtonViewModel.title,
                            action: primaryButtonViewModel.actionHandler)
+                    .buttonStyle(PrimaryButtonStyle())
                 }
 
                 Button(viewModel.cancelButtonViewModel.title,

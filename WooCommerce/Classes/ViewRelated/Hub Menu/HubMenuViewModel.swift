@@ -117,8 +117,7 @@ final class HubMenuViewModel: ObservableObject {
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
-                                                                     credentials: credentials)),
-            navigationPath: navigationPathBinding)
+                                                                     credentials: credentials)))
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?

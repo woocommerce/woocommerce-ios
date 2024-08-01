@@ -200,49 +200,19 @@ struct InPersonPaymentsMenu: View {
             }
         }
         .navigationTitle(CardPresentPaymentsOnboardingView.Localization.title)
-        .navigationDestination(for: InPersonPaymentsMenuNavigationDestination.self) { destination in
+        .navigationDestination(isPresented: $viewModel.presentCollectPayment) {
             if let orderViewModel = viewModel.orderViewModel {
-                OrderFormPresentationWrapper(dismissHandler: {
+                orderCreation(orderViewModel: orderViewModel)
+            } else {
+                EmptyView()
+            }
+        }
+        .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+            if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
+                                            dismiss: {
                     viewModel.dismissPaymentCollection()
-                    Task { @MainActor in
-                        await viewModel.onAppear()
-                    }
-                },
-                                             flow: .creation,
-                                             dismissLabel: .backButton,
-                                             viewModel: orderViewModel)
-                .navigationBarHidden(true)
-                .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
-                    // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
-                    if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
-                        orderViewModel.addCustomAmount()
-                    }
-                }) {
-                    SimplePaymentsMigrationView {
-                        viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
-                        viewModel.presentCollectPaymentMigrationSheet = false
-                    }
-                    .presentationDetents([.medium, .large])
-                }
-                .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
-                    if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
-                        PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
-                                                    dismiss: {
-                            viewModel.dismissPaymentCollection()
-                        })
-                    } else {
-                        EmptyView()
-                    }
-                }
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
-                            return
-                        }
-                        viewModel.presentCollectPaymentMigrationSheet = true
-                        viewModel.hasPresentedCollectPaymentMigrationSheet = true
-                    }
-                }
+                })
             } else {
                 EmptyView()
             }
@@ -276,6 +246,41 @@ struct InPersonPaymentsMenu: View {
             pendingDepositDays: 0,
             lastDeposit: nil,
             availableBalance: .zero))])
+    }
+
+    @ViewBuilder
+    private func orderCreation(orderViewModel: EditableOrderViewModel) -> some View {
+        OrderFormPresentationWrapper(dismissHandler: {
+            viewModel.dismissPaymentCollection()
+            Task { @MainActor in
+                await viewModel.onAppear()
+            }
+        },
+                                     flow: .creation,
+                                     dismissLabel: .backButton,
+                                     viewModel: orderViewModel)
+        .navigationBarHidden(true)
+        .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+            // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
+            if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
+                orderViewModel.addCustomAmount()
+            }
+        }) {
+            SimplePaymentsMigrationView {
+                viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+                viewModel.presentCollectPaymentMigrationSheet = false
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
+                    return
+                }
+                viewModel.presentCollectPaymentMigrationSheet = true
+                viewModel.hasPresentedCollectPaymentMigrationSheet = true
+            }
+        }
     }
 }
 
@@ -415,8 +420,7 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))),
-        navigationPath: .constant(NavigationPath()))
+            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
         NavigationStack {
             InPersonPaymentsMenu(viewModel: viewModel)

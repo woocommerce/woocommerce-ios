@@ -7,9 +7,6 @@ import Combine
 
 @MainActor
 final class InPersonPaymentsMenuViewModel: ObservableObject {
-    @Binding var navigationPath: NavigationPath
-    private var navigationPathBeforePaymentCollection: NavigationPath?
-
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -33,6 +30,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     /// Whether the payment methods view is shown after creating an order.
     @Published var presentPaymentMethods: Bool = false
+    @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -106,11 +104,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          dependencies: Dependencies,
-         navigationPath: Binding<NavigationPath>,
          payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
-        self._navigationPath = navigationPath
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
@@ -128,9 +124,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     /// Called when payment collection is shown to leave the payment collection flow.
     func dismissPaymentCollection() {
-        while navigationPath != navigationPathBeforePaymentCollection {
-            navigationPath.removeLast()
-        }
+        presentPaymentMethods = false
+        presentCollectPayment = false
     }
 
     private func updateOutputProperties() async {
@@ -278,8 +273,7 @@ private extension InPersonPaymentsMenuViewModel {
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
         presentPaymentMethods = false
-        navigationPathBeforePaymentCollection = navigationPath
-        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
+        presentCollectPayment = true
     }
 }
 
@@ -440,12 +434,6 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
             presentSetUpTryOutTapToPay = true
         }
     }
-}
-
-/// Destination views that the IPP menu can navigate to.
-/// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
-enum InPersonPaymentsMenuNavigationDestination {
-    case collectPayment
 }
 
 private enum Constants {

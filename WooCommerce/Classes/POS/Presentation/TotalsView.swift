@@ -4,6 +4,7 @@ struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -11,6 +12,7 @@ struct TotalsView: View {
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
     @State private var isShowingTotalsFields: Bool
+    @State private var hasViewAppeared: Bool = false
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
@@ -41,12 +43,21 @@ struct TotalsView: View {
                     }
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
+                .transaction { transaction in
+                    // Disable animations within the view while the view is appearing
+                    if !hasViewAppeared {
+                        transaction.animation = nil
+                    }
+                }
                 paymentsActionButtons
                     .padding()
                 Spacer()
             }
         }
         .background(backgroundColor)
+        .onAppear {
+            hasViewAppeared = true
+        }
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }
@@ -54,10 +65,11 @@ struct TotalsView: View {
     }
 
     private var backgroundColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return Color(.wooCommercePurple(.shade70))
-        } else {
-            return .clear
+        switch backgroundAppearance {
+        case .primary:
+            .clear
+        case .secondary:
+            Color(.wooCommercePurple(.shade70))
         }
     }
 }
@@ -170,7 +182,7 @@ private extension TotalsView {
         }, label: {
             HStack(spacing: Constants.newTransactionButtonSpacing) {
                 Spacer()
-                Image(uiImage: .posNewTransactionImage)
+                Image(PointOfSaleAssets.newTransaction.imageName)
                 Text(Localization.newTransaction)
                     .font(Constants.newTransactionButtonFont)
                 Spacer()

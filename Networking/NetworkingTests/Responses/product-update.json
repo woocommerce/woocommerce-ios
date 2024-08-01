@@ -15,6 +15,7 @@
         "description": "Learn something!",
         "short_description": "<blockquote>HEllloo!!!!</blockquote>",
         "sku": "94115",
+        "post_password": "Caput Draconis",
         "price": "",
         "regular_price": "12.00",
         "sale_price": "10.00",

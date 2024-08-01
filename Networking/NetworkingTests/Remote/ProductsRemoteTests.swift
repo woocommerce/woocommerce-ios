@@ -111,6 +111,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
@@ -224,6 +225,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
@@ -296,7 +298,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
     ///
-    func testLoadAllProductsProperlyRelaysNetwokingErrors() {
+    func test_loadAllProducts_properly_relays_netwoking_errors() {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load all products returns error")
 
@@ -318,7 +320,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly parses the `product` sample response.
     ///
-    func testLoadSingleProductProperlyReturnsParsedProduct() throws {
+    func test_loadSingleProduct_properly_returns_parsed_product() throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load single product")
@@ -344,7 +346,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly parses the `product-external` sample response.
     ///
-    func testLoadSingleExternalProductProperlyReturnsParsedProduct() throws {
+    func test_loadSingleExternalProduct_properly_returns_parsed_product() throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-external")
@@ -370,7 +372,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly relays any Networking Layer errors.
     ///
-    func testLoadSingleProductProperlyRelaysNetwokingErrors() throws {
+    func test_loadSingleProduct_properly_relays_netwoking_errors() throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load single product returns error")
@@ -522,7 +524,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that updateProduct properly parses the `product-update` sample response.
     ///
-    func testUpdateProductProperlyReturnsParsedProduct() {
+    func test_updateProduct_properly_returns_parsed_product() {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
@@ -548,7 +550,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that updateProduct properly relays Networking Layer errors.
     ///
-    func testUpdateProductProperlyRelaysNetwokingErrors() {
+    func test_updateProduct_properly_relays_netwoking_errors() {
         // Given
         let remote = ProductsRemote(network: network)
 

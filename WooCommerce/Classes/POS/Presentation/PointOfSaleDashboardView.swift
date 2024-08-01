@@ -33,7 +33,7 @@ struct PointOfSaleDashboardView: View {
                 contentView
                     .transition(.push(from: .top))
 
-                POSFloatingControlView(viewModel: viewModel, totalsViewModel: totalsViewModel)
+                POSFloatingControlView(viewModel: viewModel)
                     .shadow(color: Color.black.opacity(0.08), radius: 4)
                     .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                     .trackSize(size: $floatingSize)
@@ -42,6 +42,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
+        .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)

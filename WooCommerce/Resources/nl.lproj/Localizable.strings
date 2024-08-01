@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-31 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9259,6 +9259,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Nettobedrag";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "Betaalde campagne toevoegen";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "Campagnes";
 
@@ -9276,6 +9279,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Google-campagnes";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Stimuleer je verkoop en genereer meer verkeer met Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Schakel Jetpack-statistieken in";
@@ -10797,6 +10803,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
 "mostActiveCouponsCard.contentUnavailable.title" = "Kan rapport over coupongebruik niet laden";
 
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "Coupons";
+
 /* Title of the custom time range on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.custom" = "Aangepast";
 
@@ -11043,6 +11052,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Belastingen";
+
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Concept";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "Geannuleerd";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Voltooid";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Mislukt";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "In de wacht";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Betaling in behandeling";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "Bezig met verwerken";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Terugbetaald";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -11341,11 +11374,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Fout bij laden van producten";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBannerHint" = "Andere producttypen, zoals variabel en virtueel, worden in toekomstige updates beschikbaar. Meer informatie";
+
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Alleen simpele fysieke producten zijn momenteel beschikbaar met POS.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Alleen simpele producten weergeven";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "Laten we wat klanten helpen";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "Aan de slag";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Producten";
@@ -11410,8 +11452,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Bijvoorbeeld: zwart katoenen T-shirt, zachte stof, duurzaam stikwerk, uniek ontwerp";
 
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Voeg een tekst toe die van een afbeelding is gescand";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Scan een productafbeelding";
+
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Vertel ons over je product. Wat is het en wat maakt het uniek? Laat daarna de AI zijn werk doen.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "Afbeeldingstekst toegevoegd aan startinformatie";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Gegevens om te beginnen";

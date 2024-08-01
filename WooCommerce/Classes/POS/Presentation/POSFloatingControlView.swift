@@ -2,12 +2,11 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel, totalsViewModel: TotalsViewModel) {
+    init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
-        self.totalsViewModel = totalsViewModel
     }
 
     var body: some View {
@@ -17,7 +16,7 @@ struct POSFloatingControlView: View {
                     presentationMode.wrappedValue.dismiss()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(uiImage: UIImage.posExitImage)
+                        Image(PointOfSaleAssets.exit.imageName)
                         Text("Exit POS")
                     }
                 }
@@ -26,7 +25,7 @@ struct POSFloatingControlView: View {
                     // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(uiImage: UIImage.posGetSupportImage)
+                        Image(PointOfSaleAssets.getSupport.imageName)
                         Text("Get Support")
                     }
                 }
@@ -42,7 +41,7 @@ struct POSFloatingControlView: View {
             .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
             HStack {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel, totalsViewModel: totalsViewModel)
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
                     .padding(Constants.cardStatusPadding)
                     .foregroundStyle(fontColor)
             }
@@ -52,20 +51,24 @@ struct POSFloatingControlView: View {
         }
         .background(Color.clear)
     }
+}
 
-    private var backgroundColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return Color(.wooCommercePurple(.shade80))
-        } else {
-            return .white
+private extension POSFloatingControlView {
+    var backgroundColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            Color(.systemBackground)
+        case .secondary:
+            Color(.wooCommercePurple(.shade80))
         }
     }
 
-    private var fontColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return .posSecondaryTextDark
-        } else {
-            return .primaryText
+    var fontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            .primaryText
+        case .secondary:
+            .posSecondaryTextInverted
         }
     }
 }

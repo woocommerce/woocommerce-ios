@@ -160,7 +160,7 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(uiImage: .posCartBackImage)
+                Image(PointOfSaleAssets.cartBack.imageName)
                     .resizable()
                     .frame(width: 32, height: 32)
             }

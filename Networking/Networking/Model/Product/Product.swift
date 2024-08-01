@@ -255,13 +255,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleMinSize: Decimal?,
                 bundleMaxSize: Decimal?,
                 bundledItems: [ProductBundleItem],
+                password: String?,
                 compositeComponents: [ProductCompositeComponent],
                 subscription: ProductSubscription?,
                 minAllowedQuantity: String?,
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
-                combineVariationQuantities: Bool?,
-                password: String?) {
+                combineVariationQuantities: Bool?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -331,13 +331,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleMinSize = bundleMinSize
         self.bundleMaxSize = bundleMaxSize
         self.bundledItems = bundledItems
+        self.password = password
         self.compositeComponents = compositeComponents
         self.subscription = subscription
         self.minAllowedQuantity = minAllowedQuantity.refinedMinMaxQuantityEmptyValue
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
-        self.password = password
     }
 
     /// The public initializer for Product.
@@ -538,6 +538,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleMaxSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMaxSize)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
+        // Password
+        let password = container.failsafeDecodeIfPresent(stringForKey: .password)
+
         // Composite Product properties
         let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
@@ -553,9 +556,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if let combineVariationQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) {
             combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
         }
-
-        // Password
-        let password = container.failsafeDecodeIfPresent(stringForKey: .password)
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -626,13 +626,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   bundleMinSize: bundleMinSize,
                   bundleMaxSize: bundleMaxSize,
                   bundledItems: bundledItems,
+                  password: password,
                   compositeComponents: compositeComponents,
                   subscription: subscription,
                   minAllowedQuantity: minAllowedQuantity,
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
-                  combineVariationQuantities: combineVariationQuantities,
-                  password: password)
+                  combineVariationQuantities: combineVariationQuantities)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -759,6 +759,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     }
 }
 
+public extension Product {
+    /// Default product URL {site_url}?post_type=product&p={product_id} works for all sites.
+    func alternativePermalink(with siteURL: String) -> String {
+        String(format: "%@?post_type=product&p=%d", siteURL, productID)
+    }
+}
+
 /// Defines all of the Product CodingKeys
 ///
 private extension Product {
@@ -846,14 +853,14 @@ private extension Product {
         case bundleMaxSize                  = "bundle_max_size"
         case bundledItems                   = "bundled_items"
 
+        case password = "post_password"
+
         case compositeComponents    = "composite_components"
 
         case minAllowedQuantity     = "min_quantity"
         case maxAllowedQuantity     = "max_quantity"
         case groupOfQuantity        = "group_of_quantity"
         case combineVariations      = "combine_variations"
-
-        case password = "post_password"
     }
 
     enum MetadataKeys {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 16:54:06+0000 */
+/* Translation-Revision-Date: 2024-07-30 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -9262,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "Valor líquido";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "Adicionar campanha paga";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "Campanhas";
 
@@ -9279,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "Campanhas do Google";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "Aumente suas vendas e o número de visitas com o Google Ads";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Ativar Estatísticas do Jetpack";
@@ -11050,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Impostos";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Rascunho";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "Cancelado";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Concluído";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Falhou";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "Em espera";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Pagamento pendente";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "Processando";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Reembolsado";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11347,11 +11377,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Erro ao carregar produtos";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBannerHint" = "Outros tipos de produtos, como variáveis e virtuais, serão disponibilizados em atualizações futuras. Saiba mais";
+
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "Agora apenas produtos físicos simples estão disponíveis nos pontos de venda.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "Mostrando apenas produtos simples";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "Atenda alguns clientes";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "Comece agora";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Produtos";
@@ -11416,8 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "Por exemplo: uma camisa preta macia de algodão com costura resistente e design único";
 
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Adicionar um texto scanneado de uma imagem";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Scannear a imagem de um produto";
+
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Conte sobre seu produto e o que o torna único, e deixe a mágica com a IA.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "Imagem de texto adicionada a informação inicial";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Informações iniciais";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-29 14:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-31 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -11387,7 +11387,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBannerTitle" = "Yalnızca basit ürünler gösteriliyor";
 
 /* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "Birkça müşteriye hizmet edelim";
+"pos.itemlistview.loading.subtitle" = "Birkaç müşteriye hizmet edelim";
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Başlatılıyor";

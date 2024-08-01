@@ -67,7 +67,6 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isShowingCardReaderStatus)
     }
 
-
     func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() {
         // Given
         sut.isSyncingOrder = false
@@ -86,6 +85,24 @@ final class TotalsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isShowingCardReaderStatus)
+    }
+
+    func test_isShowingTotalsFields_when_payment_processing_then_false() {
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .processing)
+
+        XCTAssertFalse(sut.isShowingTotalsFields)
+    }
+
+    func test_isShowingTotalsFields_when_payment_successful_then_false() {
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+        XCTAssertFalse(sut.isShowingTotalsFields)
+    }
+
+    func test_isShowingTotalsFields_when_preparing_for_reader_then_true() {
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+
+        XCTAssertTrue(sut.isShowingTotalsFields)
     }
 }
 

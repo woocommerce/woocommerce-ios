@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-07-30 16:54:11+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9262,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "المبلغ الصافي";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "إضافة حملة مدفوعة";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "الحملات";
 
@@ -9279,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "حملات غوغل";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "يمكنك زيادة المبيعات وإنشاء مزيد من حركة المرور باستخدام إعلانات غوغل.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "تمكين Jetpack Stats";
@@ -11050,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "الضرائب";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "مسودة";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "ملغى";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "مكتمل";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "فشل";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "موقوف";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "مدفوعات معلقة";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "معالجة";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "تم استرداد المبالغ";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11347,11 +11377,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "خطأ في أثناء تحميل المنتجات";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBannerHint" = "أما أنواع المنتجات الأخرى، مثل: المنتجات المتغيرة والظاهرية، فستصبح متوفرة في التحديثات المستقبلية. معرفة المزيد";
+
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "لا تتوفر سوى المنتجات المادية البسيطة التي تتضمن نقاط بيع الآن.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "إظهار المنتجات البسيطة فقط";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "لنقدم خدمات إلى بعض العملاء";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "تشغيل";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "المنتجات";
@@ -11416,8 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "على سبيل المثال، تيشيرت أسود من القطن، وقماش ناعم، وخياطة متينة، وتصميم فريد";
 
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "إضافة نص ممسوح ضوئيًا من صورة";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "مسح صورة المنتج ضوئيًا";
+
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "أخبرنا حول منتجك، ومضمونه والميزات التي تجعله فريدًا من نوعه، ثم اسمح بالذكاء الاصطناعي بنثر سحره.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "تمت إضافة صورة إلى معلومات البدء";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "معلومات البدء";

@@ -4,6 +4,7 @@ struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -50,10 +51,11 @@ struct TotalsView: View {
     }
 
     private var backgroundColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return Color(.wooCommercePurple(.shade70))
-        } else {
-            return .clear
+        switch backgroundAppearance {
+        case .primary:
+            .clear
+        case .secondary:
+            Color(.wooCommercePurple(.shade70))
         }
     }
 }

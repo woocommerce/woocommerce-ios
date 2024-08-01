@@ -6,13 +6,12 @@ enum CardReaderConnectionStatus {
 }
 
 struct CardReaderConnectionStatusView: View {
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
-    @ObservedObject private var totalsViewModel: TotalsViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(connectionViewModel: CardReaderConnectionViewModel, totalsViewModel: TotalsViewModel) {
+    init(connectionViewModel: CardReaderConnectionViewModel) {
         self.connectionViewModel = connectionViewModel
-        self.totalsViewModel = totalsViewModel
     }
 
     @ViewBuilder
@@ -54,20 +53,24 @@ struct CardReaderConnectionStatusView: View {
         }
         .font(Constants.font)
     }
+}
 
-    private var connectedFontColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return .posSecondaryTextDark
-        } else {
-            return .primaryText
+private extension CardReaderConnectionStatusView {
+    var connectedFontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            .primaryText
+        case .secondary:
+            .posSecondaryTextDark
         }
     }
 
-    private var disconnectedFontColor: Color {
-        if totalsViewModel.paymentState == .processingPayment {
-            return .posSecondaryTextDark
-        } else {
-            return Color(.wooCommercePurple(.shade60))
+    var disconnectedFontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            Color(.wooCommercePurple(.shade60))
+        case .secondary:
+            .posSecondaryTextDark
         }
     }
 }
@@ -89,12 +92,7 @@ private extension CardReaderConnectionStatusView {
 
 #Preview {
     VStack {
-        let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
-                                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                              currencyFormatter: .init(currencySettings: .init()),
-                                              paymentState: .acceptingCard,
-                                              isSyncingOrder: false)
-        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()), totalsViewModel: totalsViewModel)
+        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
     }
 }
 

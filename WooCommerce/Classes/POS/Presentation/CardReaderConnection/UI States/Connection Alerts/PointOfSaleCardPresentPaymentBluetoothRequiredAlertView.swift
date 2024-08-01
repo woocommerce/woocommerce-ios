@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
     private let viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel
-    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel) {
         self.viewModel = viewModel
@@ -21,10 +20,8 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
                        action: viewModel.openSettingsButtonViewModel.actionHandler)
                 .buttonStyle(PrimaryButtonStyle())
 
-                Button(viewModel.dismissButtonViewModel.title) {
-                    dismiss()
-                    viewModel.dismissButtonViewModel.actionHandler()
-                }
+                Button(viewModel.dismissButtonViewModel.title,
+                       action: viewModel.dismissButtonViewModel.actionHandler)
                 .buttonStyle(SecondaryButtonStyle())
             }
         }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -32,21 +33,43 @@ struct POSFloatingControlView: View {
                 HStack {
                     Text("⋯")
                         .font(Constants.ellipsisFont)
+                        .foregroundStyle(fontColor)
                 }
                 .frame(width: Constants.size, height: Constants.size)
             }
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
             HStack {
                 CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
                     .padding(Constants.cardStatusPadding)
+                    .foregroundStyle(fontColor)
             }
             .frame(height: Constants.size)
-            .background(Color.white)
+            .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
         }
         .background(Color.clear)
+    }
+}
+
+private extension POSFloatingControlView {
+    var backgroundColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            Color(.systemBackground)
+        case .secondary:
+            Color(.wooCommercePurple(.shade80))
+        }
+    }
+
+    var fontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            .primaryText
+        case .secondary:
+            .posSecondaryTextInverted
+        }
     }
 }
 

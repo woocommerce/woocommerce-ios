@@ -68,7 +68,7 @@ private extension POSFloatingControlView {
         case .primary:
             .primaryText
         case .secondary:
-            .posSecondaryTextDark
+            .posSecondaryTextInverted
         }
     }
 }

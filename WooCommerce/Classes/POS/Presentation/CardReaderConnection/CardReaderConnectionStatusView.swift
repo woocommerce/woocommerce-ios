@@ -61,7 +61,7 @@ private extension CardReaderConnectionStatusView {
         case .primary:
             .primaryText
         case .secondary:
-            .posSecondaryTextDark
+            .posSecondaryTextInverted
         }
     }
 
@@ -70,7 +70,7 @@ private extension CardReaderConnectionStatusView {
         case .primary:
             Color(.wooCommercePurple(.shade60))
         case .secondary:
-            .posSecondaryTextDark
+            .posSecondaryTextInverted
         }
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel {
     let title: String = Localization.title
     let message: String
-    let imageName = String.posProcessingPaymentImageName
+    let imageName = PointOfSaleAssets.processingPayment.imageName
 }
 
 private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel {

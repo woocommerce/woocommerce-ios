@@ -1,6 +1,7 @@
 import Foundation
 import class WordPressShared.EmailFormatValidator
 import protocol WooFoundation.Analytics
+import struct Yosemite.Site
 
 /// Data Source for the Support Request
 ///
@@ -31,6 +32,10 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     @Published var subject = ""
 
+    /// Variable that holds the siteAddress of the ticket.
+    ///
+    @Published var siteAddress = ""
+
     /// Variable that holds the description of the ticket.
     ///
     @Published var description = ""
@@ -55,10 +60,14 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let analyticsProvider: Analytics
 
+    /// To fetch the default site URL if possible.
+    ///
+    private let defaultSite: Site?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
-        area == nil || subject.isEmpty || description.isEmpty
+        area == nil || subject.isEmpty || siteAddress.isEmpty || description.isEmpty
     }
 
     var identitySubmitButtonDisabled: Bool {
@@ -85,11 +94,13 @@ public final class SupportFormViewModel: ObservableObject {
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
-         analyticsProvider: Analytics = ServiceLocator.analytics) {
+         analyticsProvider: Analytics = ServiceLocator.analytics,
+         defaultSite: Site? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
+        self.defaultSite = defaultSite
     }
 
     /// Tracks when the support form is viewed.
@@ -97,6 +108,9 @@ public final class SupportFormViewModel: ObservableObject {
     func onViewAppear() {
         analyticsProvider.track(.supportNewRequestViewed)
         requestZendeskIdentityIfNeeded()
+
+        // Populates the site address field if there is any.
+        self.siteAddress = defaultSite?.url ?? ""
     }
 
     /// Selects an area.
@@ -118,7 +132,7 @@ public final class SupportFormViewModel: ObservableObject {
 
         showLoadingIndicator = true
         zendeskProvider.createSupportRequest(formID: area.datasource.formID,
-                                             customFields: area.datasource.customFields,
+                                             customFields: area.datasource.customFields(siteAddress: siteAddress),
                                              tags: assembleTags(),
                                              subject: subject,
                                              description: description) { [weak self] result in

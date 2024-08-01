@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
     private let viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel
-    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel) {
         self.viewModel = viewModel
@@ -21,8 +20,6 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
                    action: {
                 if let cancelReaderUpdate = viewModel.cancelReaderUpdate {
                     cancelReaderUpdate()
-                } else {
-                    dismiss()
                 }
             })
             .buttonStyle(SecondaryButtonStyle())

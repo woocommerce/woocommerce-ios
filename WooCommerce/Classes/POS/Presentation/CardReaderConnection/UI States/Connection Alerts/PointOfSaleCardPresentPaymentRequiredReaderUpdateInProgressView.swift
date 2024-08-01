@@ -2,14 +2,13 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
     private let viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
-    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image
@@ -21,12 +20,11 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                    action: {
                 if let cancelReaderUpdate = viewModel.cancelReaderUpdate {
                     cancelReaderUpdate()
-                } else {
-                    dismiss()
                 }
             })
             .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

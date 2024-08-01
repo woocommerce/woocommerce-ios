@@ -1,4 +1,5 @@
 import Foundation
+import enum Yosemite.CardReaderServiceError
 
 struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentEventDetails
@@ -8,7 +9,12 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
 
     func scanningFailed(error: any Error,
                         close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .scanningFailed(error: error, endSearch: close)
+        switch error {
+        case CardReaderServiceError.bluetoothDenied:
+            return .bluetoothRequired(error: error, endSearch: close)
+        default:
+            return .scanningFailed(error: error, endSearch: close)
+        }
     }
 
     func connectingToReader() -> CardPresentPaymentEventDetails {

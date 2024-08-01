@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-26 15:36:01+0000 */
+/* Translation-Revision-Date: 2024-07-31 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -11068,6 +11068,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for failed order status. */
 "orderStatusEnum.localizedName.failed" = "Misslyckades";
 
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "Pausad";
+
 /* Display label for pending order status. */
 "orderStatusEnum.localizedName.pending" = "Inväntar betalning";
 
@@ -11385,6 +11388,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "Låt oss betjäna några kunder";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "Startar";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Produkter";

@@ -6,6 +6,7 @@ enum CardReaderConnectionStatus {
 }
 
 struct CardReaderConnectionStatusView: View {
+    @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -28,7 +29,7 @@ struct CardReaderConnectionStatusView: View {
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
                     circleIcon(with: Color.wooEmeraldShade40)
                     Text("Reader Connected")
-                        .foregroundColor(Color.primaryText)
+                        .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
@@ -39,7 +40,7 @@ struct CardReaderConnectionStatusView: View {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color.wooAmberShade60)
                         Text("Connect your reader")
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
+                            .foregroundColor(disconnectedFontColor)
                     }
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
@@ -51,6 +52,26 @@ struct CardReaderConnectionStatusView: View {
             }
         }
         .font(Constants.font)
+    }
+}
+
+private extension CardReaderConnectionStatusView {
+    var connectedFontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            .primaryText
+        case .secondary:
+            .posSecondaryTextInverted
+        }
+    }
+
+    var disconnectedFontColor: Color {
+        switch backgroundAppearance {
+        case .primary:
+            Color(.wooCommercePurple(.shade60))
+        case .secondary:
+            .posSecondaryTextInverted
+        }
     }
 }
 

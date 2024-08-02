@@ -272,6 +272,7 @@ private extension CodeScannerViewController {
         instructionLabel.textColor = .white
         instructionLabel.textInsets = Constants.instructionTextInsets
         instructionLabel.text = instructionText
+        instructionLabel.numberOfLines = 0
     }
 }
 

@@ -43,7 +43,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     /// This makes SwiftUI treat different messages as a single view in the context of animation.
     /// Allows to smoothly transition from one view to another while also transitioning to full-screen
     @Namespace private var transitionAnimation
-    private static let transitionAnimationId = UUID().uuidString
+    private static let transitionAnimationId = "pos_card_present_payment_in_line_message_matched_geometry_id"
 }
 
 #Preview {

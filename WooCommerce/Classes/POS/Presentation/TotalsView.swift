@@ -237,9 +237,9 @@ private extension TotalsView {
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
 
         /// Used for synchronizing animations of shimmeringLine and textField
-        static let matchedGeometrySubtotalId: String = UUID().uuidString
-        static let matchedGeometryTaxId: String = UUID().uuidString
-        static let matchedGeometryTotalId: String = UUID().uuidString
+        static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
+        static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
+        static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.8
     }

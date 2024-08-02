@@ -4,7 +4,7 @@
 
 19.9
 -----
-
+- [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
 
 19.8
 -----

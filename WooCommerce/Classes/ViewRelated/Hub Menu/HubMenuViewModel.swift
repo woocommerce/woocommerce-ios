@@ -63,6 +63,7 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var showingReviewDetail = false
     @Published var showingCoupons = false
+    @Published var showingPayments = false
 
     @Published private(set) var viewAppeared = false
 
@@ -101,15 +102,6 @@ final class HubMenuViewModel: ObservableObject {
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
-        // There is no straightforward way to convert a @Published var to a Binding value because we cannot use $self.
-        let navigationPathBinding = Binding(
-            get: { [weak self] in
-                self?.navigationPath ?? NavigationPath()
-            },
-            set: { [weak self] in
-                self?.navigationPath = $0
-            }
-        )
         return InPersonPaymentsMenuViewModel(
             siteID: siteID,
             dependencies: .init(
@@ -170,8 +162,7 @@ final class HubMenuViewModel: ObservableObject {
 
     /// Shows the payments menu from the hub menu root view.
     func showPayments() {
-        navigationPath = .init()
-        navigationPath.append(HubMenuNavigationDestination.payments)
+        showingPayments = true
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {

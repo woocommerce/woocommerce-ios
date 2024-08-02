@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.8
+Experience seamless updates with our latest release! Now enjoy background updates for your order list and dashboard analytics cards. We've enhanced the dynamic dashboard to display unavailable analytics views when not logged into WPCom. Plus, we've fixed large text support in the Barcode Scanner for better accessibility. Update now for a smoother experience!
+
 ## 19.7
 Exciting updates in our WooCommerce mobile app! Manage Google Ads campaigns with plugin version 2.7.7 or later. Enjoy consistent order status across various lists. Easily create paid campaigns with our new call to action in Google Campaign analytics. Plus, we've improved Blaze and Product Creation AI features for a smoother experience. Update now!
 

@@ -8,6 +8,12 @@ struct PointOfSaleCardPresentPaymentAlert: View {
     }
 
     var body: some View {
+        alertContent
+            .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
+    }
+
+    @ViewBuilder
+    private var alertContent: some View {
         switch alertType {
         case .scanningForReaders(let alertViewModel):
             PointOfSaleCardPresentPaymentScanningForReadersView(viewModel: alertViewModel)
@@ -16,7 +22,7 @@ struct PointOfSaleCardPresentPaymentAlert: View {
         case .bluetoothRequired(let alertViewModel):
             PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(viewModel: alertViewModel)
         case .foundReader(let alertViewModel):
-            PointOfSaleCardPresentPaymentFoundReadersView(viewModel: alertViewModel)
+            PointOfSaleCardPresentPaymentFoundReaderView(viewModel: alertViewModel)
         case .foundMultipleReaders(let alertViewModel):
             PointOfSaleCardPresentPaymentFoundMultipleReadersView(viewModel: alertViewModel)
         case .requiredReaderUpdateInProgress(let alertViewModel):

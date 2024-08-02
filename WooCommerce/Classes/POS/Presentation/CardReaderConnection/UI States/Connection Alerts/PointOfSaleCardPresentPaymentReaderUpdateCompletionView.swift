@@ -2,26 +2,20 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
     private let viewModel: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel
-    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
             viewModel.image
 
             Text(viewModel.progressTitle)
-
-            Button(viewModel.dismissButtonTitle,
-                   action: {
-                dismiss()
-            })
-            .buttonStyle(SecondaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
     }
 }
 

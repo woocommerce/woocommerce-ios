@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-30 16:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-01 10:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -9284,7 +9284,7 @@ which should be translated separately and considered part of this sentence. */
 "analyticsHub.googleCampaigns.title" = "Campanhas do Google";
 
 /* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
-"analyticsHub.googleCampaignsCTA.message" = "Aumente suas vendas e o número de visitas com o Google Ads";
+"analyticsHub.googleCampaignsCTA.message" = "Aumente suas vendas e o número de visitas com o Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Ativar Estatísticas do Jetpack";
@@ -11066,7 +11066,7 @@ which should be translated separately and considered part of this sentence. */
 "orderStatusEnum.localizedName.completed" = "Concluído";
 
 /* Display label for failed order status. */
-"orderStatusEnum.localizedName.failed" = "Falhou";
+"orderStatusEnum.localizedName.failed" = "Com falha";
 
 /* Display label for on hold order status. */
 "orderStatusEnum.localizedName.onHold" = "Em espera";
@@ -11387,10 +11387,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.headerBannerTitle" = "Mostrando apenas produtos simples";
 
 /* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "Atenda alguns clientes";
+"pos.itemlistview.loading.subtitle" = "Vamos atender a alguns clientes";
 
 /* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "Comece agora";
+"pos.itemlistview.loading.title" = "Iniciando";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Produtos";
@@ -11456,16 +11456,16 @@ which should be translated separately and considered part of this sentence. */
 "productCreationAIStartingInfoView.placeholder" = "Por exemplo: uma camisa preta macia de algodão com costura resistente e design único";
 
 /* Description of button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.scanPhotoDescription" = "Adicionar um texto scanneado de uma imagem";
+"productCreationAIStartingInfoView.scanPhotoDescription" = "Adicionar um texto escaneado de uma imagem";
 
 /* Title of button to upload package photo to read text from the photo */
-"productCreationAIStartingInfoView.scanPhotoTitle" = "Scannear a imagem de um produto";
+"productCreationAIStartingInfoView.scanPhotoTitle" = "Escanear a imagem de um produto";
 
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "Conte sobre seu produto e o que o torna único, e deixe a mágica com a IA.";
 
 /* Text to explain that text scanned from a package photo has been added to the starting info screen. */
-"productCreationAIStartingInfoView.textAddedToInfo" = "Imagem de texto adicionada a informação inicial";
+"productCreationAIStartingInfoView.textAddedToInfo" = "Texto da imagem adicionado às informações iniciais";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "Informações iniciais";

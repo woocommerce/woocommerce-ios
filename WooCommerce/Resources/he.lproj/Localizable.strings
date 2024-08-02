@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-23 16:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-01 10:54:11+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -9262,6 +9262,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net amount used for gift cards in the Analytics Hub */
 "analyticsHub.giftCardsCard.trailingTitle" = "סכום נטו";
 
+/* Label for button to create a paid Google Ads campaign. */
+"analyticsHub.googleCampaignCTA.button" = "להוסיף קמפיין בתשלום";
+
 /* Title for the list of campaigns on the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.campaignsList.title" = "קמפיינים";
 
@@ -9279,6 +9282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Google campaigns card on the analytics hub screen. */
 "analyticsHub.googleCampaigns.title" = "קמפיינים של Google";
+
+/* Text displayed in the Analytics Hub when there are no Google Ads campaign analytics. */
+"analyticsHub.googleCampaignsCTA.message" = "לעודד מכירות ולהגדיל את התעבורה עם Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "להפעיל את Jetpack Stats";
@@ -11050,6 +11056,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "מיסים";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "טיוטה";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "בוטלה";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "הושלמה";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "נכשלה";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "בהשהיה";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "בהמתנה לתשלום";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "בטיפול";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "הוחזר";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11347,11 +11377,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "שגיאה בטעינת המוצרים";
 
+/* Additional text within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBannerHint" = "סוגי מוצרים אחרים, כמו מוצרים עם סוגים או מוצרים וירטואליים, יהיו זמינים בעדכונים בעתיד. למידע נוסף";
+
 /* Subtitle of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerSubtitle" = "רק מוצרים פיזיים פשוטים זמינים עם POS כרגע.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBannerTitle" = "מציג רק מוצרים פשוטים";
+
+/* Subtitle of the Point of Sale entry point loading */
+"pos.itemlistview.loading.subtitle" = "זה הזמן להעניק ללקוחות שירות";
+
+/* Title of the Point of Sale entry point loading */
+"pos.itemlistview.loading.title" = "מתחילים כאן";
 
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "מוצרים";
@@ -11416,8 +11455,17 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder text on the product features field */
 "productCreationAIStartingInfoView.placeholder" = "למשל, חולצת טי שחורה מכותנה, בד רך, תפירה חזקה, עיצוב ייחודי";
 
+/* Description of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoDescription" = "להוסיף טקסט שנסרק מתמונה";
+
+/* Title of button to upload package photo to read text from the photo */
+"productCreationAIStartingInfoView.scanPhotoTitle" = "לסרוק תמונת מוצר";
+
 /* Subtitle on the starting info screen explaining what text to enter in the textfield. */
 "productCreationAIStartingInfoView.subtitle" = "יש לספק מידע לגבי המוצר שלך – מהו, מה מייחד אותו – והבינה המלאכותית תעשה קסמים.";
+
+/* Text to explain that text scanned from a package photo has been added to the starting info screen. */
+"productCreationAIStartingInfoView.textAddedToInfo" = "טקסט התמונה נוסף לפרטי ההתחלה";
 
 /* Title on the starting info screen. */
 "productCreationAIStartingInfoView.title" = "מידע התחלתי";

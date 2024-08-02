@@ -207,16 +207,6 @@ struct InPersonPaymentsMenu: View {
                 EmptyView()
             }
         }
-        .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
-            if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
-                PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
-                                            dismiss: {
-                    viewModel.dismissPaymentCollection()
-                })
-            } else {
-                EmptyView()
-            }
-        }
     }
 
     @ViewBuilder
@@ -260,6 +250,16 @@ struct InPersonPaymentsMenu: View {
                                      dismissLabel: .backButton,
                                      viewModel: orderViewModel)
         .navigationBarHidden(true)
+        .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+            if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
+                                            dismiss: {
+                    viewModel.dismissPaymentCollection()
+                })
+            } else {
+                EmptyView()
+            }
+        }
         .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
             // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
             if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {

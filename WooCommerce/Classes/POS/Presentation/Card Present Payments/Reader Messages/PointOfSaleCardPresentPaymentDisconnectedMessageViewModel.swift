@@ -2,6 +2,7 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     let title = Localization.title
+    let instruction = Localization.instruction
     let collectPaymentButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(collectPaymentAction: @escaping () -> Void) {
@@ -14,15 +15,21 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
 private extension PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSale.cardPresent.readerDisconnected.title",
-            value: "Reader disconnected",
-            comment: "Error message. Presented to users when reader is disconnected on the Point of Sale Checkout"
+            "pointOfSale.cardPresent.readerNotConnected.title",
+            value: "Reader not connected",
+            comment: "Error message. Presented to users when card reader is not connected on the Point of Sale Checkout"
+        )
+
+        static let instruction = NSLocalizedString(
+            "pointOfSale.cardPresent.readerNotConnected.instruction",
+            value: "To process this payment, please connect your reader.",
+            comment: "Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment."
         )
 
         static let collectPayment =  NSLocalizedString(
-            "pointOfSale.cardPresent.readerDisconnected.button.title",
-            value: "Collect Payment",
-            comment: "Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout"
+            "pointOfSale.cardPresent.readerNotConnected.button.title",
+            value: "Connect to reader",
+            comment: "Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA."
         )
     }
 }

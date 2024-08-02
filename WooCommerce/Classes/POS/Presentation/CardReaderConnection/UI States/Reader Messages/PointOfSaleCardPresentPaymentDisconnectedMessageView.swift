@@ -4,24 +4,26 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center) {
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.title)
-                        .font(.posTitle)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .bold()
-                }
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+            POSErrorExclamationMark()
 
-                HStack {
-                    Button(viewModel.collectPaymentButtonViewModel.title, action: viewModel.collectPaymentButtonViewModel.actionHandler)
-                }
-                .padding()
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Text(viewModel.title)
+                    .font(.posTitle)
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .bold()
+                Text(viewModel.instruction)
+                    .font(.posBody)
+                    .foregroundStyle(Color.posPrimaryTexti3)
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+
+            Button(action: viewModel.collectPaymentButtonViewModel.actionHandler) {
+                Text(viewModel.collectPaymentButtonViewModel.title)
+            }
+            .buttonStyle(POSPrimaryButtonStyle())
+            .padding(.horizontal, 40)
         }
+        .multilineTextAlignment(.center)
     }
 }
 

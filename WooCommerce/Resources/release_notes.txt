@@ -1,1 +1,5 @@
-Exciting updates in our WooCommerce mobile app! Manage Google Ads campaigns with plugin version 2.7.7 or later. Enjoy consistent order status across various lists. Easily create paid campaigns with our new call to action in Google Campaign analytics. Plus, we've improved Blaze and Product Creation AI features for a smoother experience. Update now!
+- [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).
+- [*] Dynamic Dashboard: Display unavailable analytics view when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13440]
+- [*] Fix large text support in Bar Code Scanner. [https://github.com/woocommerce/woocommerce-ios/pull/13464]
+- [internal] Enable Blaze only if the store has Jetpack installed and connected. [https://github.com/woocommerce/woocommerce-ios/pull/13448]
+

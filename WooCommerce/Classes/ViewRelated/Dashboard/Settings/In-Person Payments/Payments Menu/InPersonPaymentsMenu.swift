@@ -224,7 +224,8 @@ struct InPersonPaymentsMenu: View {
                     }
                     .presentationDetents([.medium, .large])
                 }
-                .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+                
+                .navigationDestination(for: CollectPaymentNavigationDestination.self) { destination in
                     if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
                         PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
                                                     dismiss: {

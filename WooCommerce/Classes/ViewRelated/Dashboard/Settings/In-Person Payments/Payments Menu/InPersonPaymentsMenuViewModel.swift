@@ -31,8 +31,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
     /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
-    /// Whether the payment methods view is shown after creating an order.
-    @Published var presentPaymentMethods: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -272,12 +270,11 @@ private extension InPersonPaymentsMenuViewModel {
                             dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                     }
                 }
-            presentPaymentMethods = true
+            navigationPath.append(CollectPaymentNavigationDestination.paymentMethods)
         }
 
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
-        presentPaymentMethods = false
         navigationPathBeforePaymentCollection = navigationPath
         navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
     }
@@ -446,6 +443,10 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
 /// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
 enum InPersonPaymentsMenuNavigationDestination {
     case collectPayment
+}
+
+enum CollectPaymentNavigationDestination {
+    case paymentMethods
 }
 
 private enum Constants {

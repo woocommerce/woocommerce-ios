@@ -10,6 +10,9 @@ enum PointOfSaleAssets: CaseIterable {
     case getSupport
     case removeCartItem
     case dismissProductsBanner
+    case readerConnectionScanning
+    case readerConnectionDoYouWantToConnect
+    case readerConnectionConnecting
 
     var imageName: String {
         switch self {
@@ -31,18 +34,12 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-remove-cart-item"
         case .dismissProductsBanner:
             "pos-dismiss-products-banner"
+        case .readerConnectionScanning:
+            "pos-reader-connection-scanning"
+        case .readerConnectionDoYouWantToConnect:
+            "pos-reader-connection-do-you-want-to-connect"
+        case .readerConnectionConnecting:
+            "pos-reader-connection-connecting"
         }
-    }
-
-    static var readerConnectionScanningImageName: String {
-        "pos-reader-connection-scanning"
-    }
-
-    static var readerConnectionDoYouWantToConnectImageName: String {
-        "pos-reader-connection-do-you-want-to-connect"
-    }
-
-    static var readerConnectionConnectingImageName: String {
-        "pos-reader-connection-connecting"
     }
 }

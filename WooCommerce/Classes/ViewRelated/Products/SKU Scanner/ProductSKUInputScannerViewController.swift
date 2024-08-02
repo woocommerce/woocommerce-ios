@@ -59,8 +59,11 @@ private extension ProductSKUInputScannerViewController {
 
 private extension ProductSKUInputScannerViewController {
     enum Localization {
-        static let title = NSLocalizedString("Scan barcode to update SKU", comment: "Navigation bar title for scanning a barcode to use as a product's SKU.")
-        static let instructionText = NSLocalizedString("Scan product barcode",
+        static let title = NSLocalizedString("ProductSKUInputScanner.titleView",
+                                             value: "Scan barcode or QR Code to update SKU",
+                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as a product's SKU.")
+        static let instructionText = NSLocalizedString("ProductSKUInputScanner.instructionText",
+                                                       value: "Scan product barcode or QR Code",
                                                        comment: "The instruction text below the scan area in the barcode scanner for product SKU.")
     }
 }

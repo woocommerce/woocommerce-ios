@@ -2,6 +2,10 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
 
+19.9
+-----
+
+
 19.8
 -----
 - [*] Add support to background update the order list and the dashboard analytics cards(Performance & Top Performers).

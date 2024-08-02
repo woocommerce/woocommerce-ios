@@ -6074,18 +6074,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Morocco" = "Morocco";
 
-/* Button title to contact support to get help with deprecated stats module */
-"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "Still need help? Contact us";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"mostActiveCouponsCard.contentUnavailable.details" = "Make sure you are running the latest version of WooCommerce on your site and enabling Analytics in WooCommerce Settings.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "Done";
-
-/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
-"mostActiveCouponsCard.contentUnavailable.title" = "Unable to load coupon usage report";
-
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Coupons";
 
@@ -6094,6 +6082,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.hideCard" = "Hide Coupons";
+
+/* Title when the Most Active Coupons card is disabled because the analytics feature is unavailable */
+"mostActiveCouponsCard.unavailableAnalyticsView.title" = "Unable to display your store's coupon analytics";
 
 /* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
 "mostActiveCouponsCard.uses" = "Uses";
@@ -7391,6 +7382,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Payment cancelled on reader";
 
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Processing payment";
+
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Cancel";
 
@@ -7421,35 +7415,50 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Payment failed";
 
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.message" = "Please wait...";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Processing payment";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Payment successful!";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "Checking order";
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.message" = "Preparing card for payment";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.title" = "Preparing card reader";
+"pointOfSale.cardPresent.preparingForPayment.title" = "Getting ready";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "Insert card to pay";
+"pointOfSale.cardPresent.presentCard.insert" = "Insert card";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "Present card to pay";
+"pointOfSale.cardPresent.presentCard.present" = "Present card";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "Tap card to pay";
+"pointOfSale.cardPresent.presentCard.tap" = "Tap card";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "Tap or insert card to pay";
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tap or insert card";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tap, insert or swipe to pay";
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tap, swipe, or insert card";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Ready for payment";
+
+/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.button.title" = "Collect Payment";
+
+/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.title" = "Reader disconnected";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Checking order";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "Getting ready";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Dismiss";
@@ -7561,9 +7570,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "I understand";
-
-/* Label for a dismiss button when a software update has finished */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Dismiss";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% complete";
@@ -8217,23 +8223,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "One time shipping";
 
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"ProductSKUInputScanner.instructionText" = "Scan product barcode or QR Code";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
+"ProductSKUInputScanner.titleView" = "Scan barcode or QR Code to update SKU";
+
 /* Message on the secondary view of the products tab split view before any product is selected. */
 "productsTab.emptySecondaryView.message" = "No product selected";
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Products";
-
-/* Button title to contact support to get help with deprecated stats module */
-"productStockDashboardCard.contentUnavailable.buttonTitle" = "Still need help? Contact us";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"productStockDashboardCard.contentUnavailable.details" = "Make sure you are running the latest version of WooCommerce on your site and enabling Analytics in WooCommerce Settings.";
-
-/* Button to dismiss the support form from the Dashboard stock card error screen. */
-"productStockDashboardCard.contentUnavailable.dismissSupport" = "Done";
-
-/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
-"productStockDashboardCard.contentUnavailable.title" = "Unable to load stock report";
 
 /* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
 "productStockDashboardCard.emptyStateTitle" = "No item found with %1$@ status";
@@ -8258,6 +8258,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.stockLevels" = "Stock levels";
+
+/* Title when the Stock card is disabled because the analytics feature is unavailable */
+"productStockDashboardCard.unavailableAnalyticsView.title" = "Unable to display your store's stock analytics";
 
 /* Title of a stock type displayed on the Stock section on My Store screen */
 "productStockDashboardCardViewModel.stockType.lowStock" = "Low stock";
@@ -8836,17 +8839,11 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé and Príncipe";
 
-/* Navigation bar title for scanning a barcode to use as a product's SKU. */
-"Scan barcode to update SKU" = "Scan barcode to update SKU";
-
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan code like XXXX-XXXX-XXXX-XXXX" = "Scan code like XXXX-XXXX-XXXX-XXXX";
 
 /* Navigation bar title of the gift card code scanner. */
 "Scan gift card" = "Scan gift card";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"Scan product barcode" = "Scan product barcode";
 
 /* Scan Products */
 "Scan products" = "Scan products";
@@ -9336,6 +9333,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Singapore" = "Singapore";
 
+/* Site Address title on the support form */
+"Site Address" = "Site Address";
+
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
 "Site address" = "Site address";
 
@@ -9620,18 +9620,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "View all %1$d tasks";
 
-/* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "Still need help? Contact us";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "Make sure you are running the latest version of WooCommerce on your site and enabling Analytics in WooCommerce Settings.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"storePerformanceView.contentUnavailable.dismissSupport" = "Done";
-
-/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
-"storePerformanceView.contentUnavailable.title" = "We can’t display your store’s analytics";
-
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Conversion";
 
@@ -9649,6 +9637,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "Revenue";
+
+/* Title when the Performance card is disabled because the analytics feature is unavailable */
+"storePerformanceView.unavailableAnalyticsView.title" = "Unable to display your store's performance";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "View all store analytics";
@@ -10770,6 +10761,9 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Hide Top Performers";
 
+/* Title when the Top Performers card is disabled because the analytics feature is unavailable */
+"topPerformersDashboardView.unavailableAnalyticsView.title" = "Unable to display your store's top performers";
+
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "View all store analytics";
 
@@ -11158,6 +11152,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Unapproves the comment";
+
+/* Button title to contact support to get help with unavailable Analytics module */
+"unavailableAnalyticsView.buttonTitle" = "Still need help? Contact us";
+
+/* Text that explains how to get access to the Analytics module */
+"unavailableAnalyticsView.details" = "Make sure you are running the latest version of WooCommerce on your site and enabling Analytics in WooCommerce Settings.";
+
+/* Button to dismiss the support form. */
+"unavailableAnalyticsView.dismissSupport" = "Done";
 
 /* Accessibility label for underline button on formatting toolbar. */
 "Underline" = "Underline";

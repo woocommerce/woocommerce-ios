@@ -6,14 +6,20 @@ import Yosemite
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     typealias ResultData = ProductFormRemoteActionUseCase.ResultData
     private var storesManager: MockStoresManager!
+    private var storageManager: MockStorageManager!
+    private let siteID: Int64 = 123
+    private let pluginName = "WooCommerce"
 
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        storesManager.sessionManager.setStoreId(siteID)
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
         storesManager = nil
+        storageManager = nil
         super.tearDown()
     }
 
@@ -100,12 +106,50 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     }
 
     // MARK: - Editing a product (`addProduct`)
+    func test_editing_product_and_password_when_WooCommerce_version_is_below_8_1_returns_false() {
+        // Given
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              name: "WooCommerce",
+                                              version: "8.0.0",
+                                              active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
-    func test_editing_product_and_password_without_edits_does_not_trigger_actions_and_returns_success_result() {
+        let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
+
+        // When
+        let isEligible: Bool = sut.isEligibleForNewPasswordEndpoint()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+    
+    func test_editing_product_and_password_when_WooCommerce_version_is_above_8_1_returns_true() {
+        // Given
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              name: "WooCommerce",
+                                              version: "8.2.0",
+                                              active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+        let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
+
+        // When
+        let isEligible: Bool = sut.isEligibleForNewPasswordEndpoint()
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_editing_product_and_password_without_edits_in_Woo_8_1_and_above_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
-        let product = Product.fake()
-        let model = EditableProductModel(product: product)
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, 
+                                                    name: pluginName,
+                                                    version: "9.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
         let password = "wo0oo!"
+        let product = Product.fake().copy(password: password)
+        let model = EditableProductModel(product: product)
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
 
         // Action
@@ -121,19 +165,56 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
+        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
+        XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
+    }
+    
+    func test_editing_product_and_password_without_edits_in_Woo_below_8_1_does_not_trigger_actions_and_returns_success_result() {
+        // Arrange
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "8.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+        let password = "wo0oo!"
+        let product = Product.fake().copy(password: password)
+        let model = EditableProductModel(product: product)
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // Action
+        var result: Result<ResultData, ProductUpdateError>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: model,
+                                password: password,
+                                originalPassword: password) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
-    func test_editing_product_with_a_password_successfully_returns_success_result() {
+    func test_editing_product_with_a_password_in_Woo_8_1_and_above_successfully_returns_success_result() {
         // Arrange
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "9.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+        let password = "wo0oo!"
         let originalProduct = Product.fake()
         let product = originalProduct.copy(name: "PRODUCT")
         let originalModel = EditableProductModel(product: originalProduct)
-        let model = EditableProductModel(product: product)
+        let model = EditableProductModel(product: product.copy(password: password))
         let originalPassword: String? = nil
-        let password = "wo0oo!"
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
         mockUpdateProduct(result: .success(product))
         mockUpdatePassword(result: .success(password))
@@ -151,9 +232,56 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
+        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
-        XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
+        if case .success(let resultData) = result {
+                XCTAssertEqual(resultData.product, model)
+            XCTAssertEqual(resultData.password, password)
+            } else {
+                XCTFail("Expected success but got \(String(describing: result))")
+            }
+    }
+    
+    func test_editing_product_with_a_password_in_Woo_below_8_1_successfully_returns_success_result() {
+        // Arrange
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "8.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+        let password = "wo0oo!"
+        let originalProduct = Product.fake()
+        let product = originalProduct.copy(name: "PRODUCT")
+        let originalModel = EditableProductModel(product: originalProduct)
+        let model = EditableProductModel(product: product.copy(password: password))
+        let originalPassword: String? = nil
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        mockUpdateProduct(result: .success(product))
+        mockUpdatePassword(result: .success(password))
+
+        // Action
+        var result: Result<ResultData, ProductUpdateError>?
+        waitForExpectation { expectation in
+            useCase.editProduct(product: model,
+                                originalProduct: originalModel,
+                                password: password,
+                                originalPassword: originalPassword) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+        }
+
+        // Assert
+        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
+        if case .success(let resultData) = result {
+                XCTAssertEqual(resultData.product, model)
+            XCTAssertEqual(resultData.password, password)
+            } else {
+                XCTFail("Expected success but got \(String(describing: result))")
+            }
     }
 
     func test_editing_product_successfully_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {

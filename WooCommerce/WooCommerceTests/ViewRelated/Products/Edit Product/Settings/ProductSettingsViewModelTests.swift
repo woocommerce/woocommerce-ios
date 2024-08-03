@@ -8,7 +8,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private let siteID: Int64 = 123
     private let pluginName = "WooCommerce"
-    
+
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
@@ -21,7 +21,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         storageManager = nil
         super.tearDown()
     }
-    
+
     func testOnReloadClosure() {
 
         let product = Product.fake().copy(slug: "this-is-a-slug",
@@ -64,7 +64,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     version: "8.0",
                                                     active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
-        
+
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
@@ -80,7 +80,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
-    
+
     func test_hasUnsavedChanges_with_WC_above_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -125,7 +125,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
-    
+
     func test_hasUnsavedChanges_with_only_the_password_changed_with_WC_above_8_1() {
         // Given
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,

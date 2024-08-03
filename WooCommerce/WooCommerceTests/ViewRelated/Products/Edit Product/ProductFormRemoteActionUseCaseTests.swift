@@ -122,7 +122,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         // Then
         XCTAssertFalse(isEligible)
     }
-    
+
     func test_editing_product_and_password_when_WooCommerce_version_is_above_8_1_returns_true() {
         // Given
         let plugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -142,7 +142,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_and_password_without_edits_in_Woo_8_1_and_above_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
-        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, 
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
                                                     name: pluginName,
                                                     version: "9.0",
                                                     active: true)
@@ -170,7 +170,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
-    
+
     func test_editing_product_and_password_without_edits_in_Woo_below_8_1_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -242,7 +242,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
                 XCTFail("Expected success but got \(String(describing: result))")
             }
     }
-    
+
     func test_editing_product_with_a_password_in_Woo_below_8_1_successfully_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,

@@ -136,6 +136,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     version: "9.0",
                                                     active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)

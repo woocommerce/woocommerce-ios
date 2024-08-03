@@ -44,18 +44,17 @@ final class ProductSettingsViewModel {
 
             /// if store has WC 8.1 or above, we use the `password` field in Product model.
             if ProductPasswordEligibilityUseCase().isEligibleForNewPasswordEndpoint() {
-                print("print password", product.password)
                 guard let productPassword = product.password else {
                     return
                 }
-                print("enter here")
                 self.onPasswordRetrieved?(productPassword)
                 self.password = productPassword
                 self.productSettings.password = productPassword
                 self.sections = Self.configureSections(self.productSettings)
             }
-            /// If user is not on WC 8.1, and if the password is nil, and user is authenticated with WP.com, enter here, otherwise we skip this.
-            else if password == nil && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+            /// If user is not on WC 8.1, and if the password is empty/nil,
+            /// and user is authenticated with WP.com, enter here, otherwise we skip this.
+            else if (product.password == nil || product.password?.isEmpty == true) && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
                     guard let self = self else {
                         return

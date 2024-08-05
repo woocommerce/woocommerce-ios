@@ -71,10 +71,13 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertFalse(sut.isShowingCardReaderStatus)
     }
 
-    func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() {
+    func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() async throws {
         // Given
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+
+        let item = Self.makeItem()
+        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
 
         // Then
         XCTAssertTrue(sut.isShowingCardReaderStatus)

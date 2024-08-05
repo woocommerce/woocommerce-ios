@@ -171,7 +171,7 @@ extension TotalsViewModel {
             self.updateOrder(syncedOrder)
             isSyncingOrder = false
             await prepareConnectedReaderForPayment()
-            DDLogInfo("🟢 [POS] Synced order: \(order)")
+            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
         }

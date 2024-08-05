@@ -11,7 +11,6 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
-    @State private var hasViewAppeared: Bool = false
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
@@ -40,21 +39,12 @@ struct TotalsView: View {
                     }
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
-                .transaction { transaction in
-                    // Disable animations within the view while the view is appearing
-                    if !hasViewAppeared {
-                        transaction.animation = nil
-                    }
-                }
                 paymentsActionButtons
                     .padding()
                 Spacer()
             }
         }
         .background(backgroundColor)
-        .onAppear {
-            hasViewAppeared = true
-        }
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }

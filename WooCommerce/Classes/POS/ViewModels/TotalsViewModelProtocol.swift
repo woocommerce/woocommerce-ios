@@ -33,7 +33,7 @@ protocol TotalsViewModelProtocol {
     var order: Order? { get }
 
     func startNewTransaction()
-    func cardPaymentTapped()
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem])
+    func connectReaderTapped()
     func onTotalsViewDisappearance()
 }

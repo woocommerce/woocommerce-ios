@@ -77,6 +77,8 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let currencyFormatter: CurrencyFormatter
 
+    private var cancellables: Set<AnyCancellable> = []
+
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter,
@@ -123,9 +125,17 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         }
     }
 
-    func cardPaymentTapped() {
-        Task { @MainActor in
-            await collectPayment()
+    func connectReaderTapped() {
+        Task { @MainActor [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+            } catch {
+                DDLogError("🔴 POS reader connection error: \(error)")
+            }
         }
     }
 

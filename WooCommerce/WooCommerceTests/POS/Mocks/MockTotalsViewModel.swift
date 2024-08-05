@@ -64,7 +64,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         isSyncingOrder = true
     }
 
-    func cardPaymentTapped() {
+    func connectReaderTapped() {
         // Provide a mock implementation if needed
     }
 

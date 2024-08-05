@@ -17,8 +17,8 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .foregroundStyle(Color.posPrimaryTexti3)
             }
 
-            Button(action: viewModel.collectPaymentButtonViewModel.actionHandler) {
-                Text(viewModel.collectPaymentButtonViewModel.title)
+            Button(action: viewModel.connectReaderButtonViewModel.actionHandler) {
+                Text(viewModel.connectReaderButtonViewModel.title)
             }
             .buttonStyle(POSPrimaryButtonStyle())
         }
@@ -30,6 +30,6 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
 #Preview {
     PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
         viewModel: PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel(
-            collectPaymentAction: {})
+            connectReaderAction: {})
     )
 }

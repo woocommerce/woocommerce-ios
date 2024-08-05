@@ -7,6 +7,7 @@ final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 
     private let isSiteEligible: Bool
     private let isProductEligible: Bool
+    private(set) var isSiteEligibleInvoked: Bool = false
 
     init(isSiteEligible: Bool = false, isProductEligible: Bool = false) {
         self.isSiteEligible = isSiteEligible
@@ -14,6 +15,7 @@ final class MockBlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     }
 
     func isSiteEligible(_ site: Site) async -> Bool {
+        isSiteEligibleInvoked = true
         return isSiteEligible
     }
 

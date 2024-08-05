@@ -5,4 +5,5 @@ enum PointOfSaleCardPresentPaymentLayout {
     static let headerSpacing: CGFloat = 72
     static let textSpacing: CGFloat = 4
     static let errorElementSpacing: CGFloat = 40
+    static let errorIconSize: CGFloat = 64
 }

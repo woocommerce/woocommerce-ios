@@ -59,9 +59,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
-    private var isEligibleForBlaze: Bool = false
+    private var isEligibleForBlaze = false
 
-    private var hasActiveBlazeCampaign: Bool = false
+    private var hasActiveBlazeCampaign = false
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -785,13 +785,15 @@ private extension ProductFormViewModel {
             isEligibleForBlaze = false
             return
         }
-        let isEligible = blazeEligibilityChecker.isProductEligible(
-            site: site,
-            product: originalProduct,
-            isPasswordProtected: password?.isNotEmpty == true
-        )
-        isEligibleForBlaze = isEligible
-        updateActionsFactory()
+        Task { @MainActor in
+            let isEligible = await blazeEligibilityChecker.isProductEligible(
+                site: site,
+                product: originalProduct,
+                isPasswordProtected: password?.isNotEmpty == true
+            )
+            isEligibleForBlaze = isEligible
+            updateActionsFactory()
+        }
     }
 
     /// Performs initial fetch from storage and updates results.

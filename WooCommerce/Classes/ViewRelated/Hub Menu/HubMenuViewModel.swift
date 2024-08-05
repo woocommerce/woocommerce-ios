@@ -331,13 +331,15 @@ private extension HubMenuViewModel {
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
 
-        isSiteEligibleForBlaze = blazeEligibilityChecker.isSiteEligible(site)
-
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
             hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+        }
+
+        Task { @MainActor in
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
         }
     }
 

@@ -31,6 +31,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        blazeEligibilityUpdateSubject.eraseToAnyPublisher()
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
@@ -52,10 +57,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject = PassthroughSubject<EditableProductModel, Never>()
-    private let productNameSubject = PassthroughSubject<String, Never>()
-    private let isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
+    private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
+    private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
+    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligibilityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
@@ -793,6 +799,7 @@ private extension ProductFormViewModel {
             )
             isEligibleForBlaze = isEligible
             updateActionsFactory()
+            blazeEligibilityUpdateSubject.send()
         }
     }
 

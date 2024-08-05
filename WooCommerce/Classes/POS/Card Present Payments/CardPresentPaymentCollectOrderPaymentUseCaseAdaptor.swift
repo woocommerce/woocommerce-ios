@@ -111,7 +111,7 @@ enum CardPresentPaymentAdaptedCollectOrderPaymentResult {
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func onCancel(paymentEventDetails: CardPresentPaymentEventDetails, paymentOrchestrator: PaymentCaptureOrchestrating) {
         switch paymentEventDetails {
-        /// Before reader connection
+            /// Before reader connection
         case .selectSearchType:
             cancelReaderSearch()
         case .scanningForReaders(let endSearch),
@@ -135,8 +135,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         case .connectingToReader:
             // We can't cancel an in-progress connection, but we've invalidated the payment orchestrator
             return
-        /// Connection already completed, before attempting payment
-        case .validatingOrder:
+            /// Connection already completed, before attempting payment
+        case .validatingOrder, .connectionSuccess:
             // No need to cancel at this stage – having invalidated the payment orchestrator is enough
             return
         case .preparingForPayment(cancelPayment: let cancelPayment),
@@ -147,7 +147,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             cancelPayment()
         case .processing, /// if cancellation fails here, which is likely, we may need a new order. But we can disable going back to make it unlikely.
                 .displayReaderMessage,
-                /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
+            /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
                 .cancelledOnReader:
             cancelPayment(paymentOrchestrator: paymentOrchestrator)
         case .paymentSuccess(done: let done):

@@ -114,18 +114,35 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertTrue(sut.isShowingTotalsFields)
     }
 
-    func test_when_a_reader_connects_collect_payment_is_attempted() async {
+    func test_when_a_reader_connects_collectPayment_is_attempted() async {
         // Given
         orderService.orderToReturn = Order.fake().copy(items: [OrderItem.fake()])
         await sut.syncOrder(for: [], allItems: [])
 
-        // When
         waitFor { promise in
             self.cardPresentPaymentService.onCollectPaymentCalled = {
                 // Then
                 promise(())
             }
+            // When
             self.cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+        }
+    }
+
+    func test_if_a_reader_is_already_connected_collectPayment_is_attempted_immediately() async {
+        // Given
+        cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+        orderService.orderToReturn = Order.fake().copy(items: [OrderItem.fake()])
+        await sut.syncOrder(for: [], allItems: [])
+
+        waitFor { promise in
+            self.cardPresentPaymentService.onCollectPaymentCalled = {
+                // Then
+                promise(())
+            }
+            // When
+            self.sut.checkOutTapped(with: [], allItems: [])
         }
     }
 }

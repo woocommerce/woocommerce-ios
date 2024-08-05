@@ -77,8 +77,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let currencyFormatter: CurrencyFormatter
 
-    private var cancellables: Set<AnyCancellable> = []
-
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          currencyFormatter: CurrencyFormatter,
@@ -108,21 +106,21 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
+    private var startPaymentOnReaderConnection: AnyCancellable?
+
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        startSyncingOrder(with: cartItems, allItems: allItems)
+        Task { @MainActor in
+            await startSyncingOrder(with: cartItems, allItems: allItems)
+        }
     }
 
-    private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+    private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) async {
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
-            Task { @MainActor in
-                await prepareConnectedReaderForPayment()
-            }
+            await startPaymentWhenReaderConnected()
             return
         }
         // calculate totals and sync order if there was a change in the cart
-        Task { @MainActor in
-            await syncOrder(for: cartItems, allItems: allItems)
-        }
+        await syncOrder(for: cartItems, allItems: allItems)
     }
 
     func connectReaderTapped() {
@@ -148,6 +146,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @MainActor
     func onTotalsViewDisappearance() {
         cardPresentPaymentService.cancelPayment()
+        startPaymentOnReaderConnection?.cancel()
     }
 }
 
@@ -170,7 +169,7 @@ extension TotalsViewModel {
             let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
             self.updateOrder(syncedOrder)
             isSyncingOrder = false
-            await prepareConnectedReaderForPayment()
+            await startPaymentWhenReaderConnected()
             DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
@@ -222,14 +221,6 @@ private extension TotalsViewModel {
     func collectPayment(for order: Order) async throws {
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
     }
-
-    @MainActor
-    func prepareConnectedReaderForPayment() async {
-        guard connectionStatus == .connected else {
-            return
-        }
-        await collectPayment()
-    }
 }
 
 private extension TotalsViewModel {
@@ -239,15 +230,6 @@ private extension TotalsViewModel {
                 connectedReader == nil ? .disconnected: .connected
             }
             .assign(to: &$connectionStatus)
-
-        $connectionStatus.filter { $0 == .connected }
-            .removeDuplicates()
-            .sink { _ in
-                Task { @MainActor [weak self] in
-                    await self?.prepareConnectedReaderForPayment()
-                }
-            }
-            .store(in: &cancellables)
 
         Publishers.CombineLatest4($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage, $order)
             .map { connectionStatus, isSyncingOrder, message, order in
@@ -269,6 +251,19 @@ private extension TotalsViewModel {
                 }
             }
             .assign(to: &$isShowingCardReaderStatus)
+    }
+
+    func startPaymentWhenReaderConnected() async {
+        guard connectionStatus == .connected else {
+            return startPaymentOnReaderConnection = $connectionStatus.filter { $0 == .connected }
+                .removeDuplicates()
+                .sink { _ in
+                    Task { @MainActor [weak self] in
+                        await self?.collectPayment()
+                    }
+                }
+        }
+        await collectPayment()
     }
 
     func observeCardPresentPaymentEvents() {

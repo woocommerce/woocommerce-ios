@@ -5,6 +5,7 @@ import XCTest
 @testable import struct Yosemite.Order
 @testable import struct Yosemite.POSProduct
 @testable import protocol Yosemite.POSItem
+@testable import struct Yosemite.OrderItem
 
 final class TotalsViewModelTests: XCTestCase {
 
@@ -111,6 +112,21 @@ final class TotalsViewModelTests: XCTestCase {
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
 
         XCTAssertTrue(sut.isShowingTotalsFields)
+    }
+
+    func test_when_a_reader_connects_collect_payment_is_attempted() async {
+        // Given
+        orderService.orderToReturn = Order.fake().copy(items: [OrderItem.fake()])
+        await sut.syncOrder(for: [], allItems: [])
+
+        // When
+        waitFor { promise in
+            self.cardPresentPaymentService.onCollectPaymentCalled = {
+                // Then
+                promise(())
+            }
+            self.cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+        }
     }
 }
 

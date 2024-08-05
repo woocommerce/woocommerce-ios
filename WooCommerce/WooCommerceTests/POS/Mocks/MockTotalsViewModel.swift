@@ -31,10 +31,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         isSyncingOrder
     }
 
-    var isPriceFieldRedacted: Bool {
-        formattedOrderTotalTaxPrice == nil || isSyncingOrder
-    }
-
     var isSubtotalFieldRedacted: Bool {
         formattedCartTotalPrice == nil || isSyncingOrder
     }

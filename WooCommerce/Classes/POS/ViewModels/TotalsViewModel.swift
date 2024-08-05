@@ -9,8 +9,6 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
-    var isPriceFieldRedacted: Bool
-
     enum PaymentState {
         case idle
         case acceptingCard
@@ -89,7 +87,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.currencyFormatter = currencyFormatter
         self.paymentState = paymentState
         self.isSyncingOrder = isSyncingOrder
-        self.isPriceFieldRedacted = false
         self.formattedCartTotalPrice = nil
         self.formattedOrderTotalPrice = nil
         self.formattedOrderTotalTaxPrice = nil

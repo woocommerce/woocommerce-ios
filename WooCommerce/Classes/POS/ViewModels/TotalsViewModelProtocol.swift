@@ -25,7 +25,6 @@ protocol TotalsViewModelProtocol {
 
 
     var isShimmering: Bool { get }
-    var isPriceFieldRedacted: Bool { get }
     var isTotalPriceFieldRedacted: Bool { get }
     var isSubtotalFieldRedacted: Bool { get }
     var isTaxFieldRedacted: Bool { get }

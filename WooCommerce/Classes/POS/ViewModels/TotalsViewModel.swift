@@ -157,7 +157,6 @@ extension TotalsViewModel {
             isSyncingOrder = false
         }
         do {
-            isSyncingOrder = true
             let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
             self.updateOrder(syncedOrder)
             isSyncingOrder = false

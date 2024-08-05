@@ -230,17 +230,24 @@ private extension TotalsViewModel {
             }
             .assign(to: &$connectionStatus)
 
-        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
-            .map { connectionStatus, isSyncingOrder, message in
-                if isSyncingOrder {
+        Publishers.CombineLatest4($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage, $order)
+            .map { connectionStatus, isSyncingOrder, message, order in
+                guard order != nil,
+                        !isSyncingOrder
+                        else {
+                    // When the order's being created or synced, we only show the shimmering totals.
+                    // Before the order exists, we don’t want to show the card payment status, as it will
+                    // show for a second initially, then disappear the moment we start syncing the order.
                     return false
                 }
 
-                if connectionStatus == .connected {
+                switch connectionStatus {
+                case .connected:
                     return message != nil
+                case .disconnected:
+                    // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+                    return true
                 }
-
-                return true
             }
             .assign(to: &$isShowingCardReaderStatus)
     }

@@ -8,10 +8,7 @@ import struct Yosemite.Order
 
 class POSOrderPreviewService: POSOrderServiceProtocol {
     func syncOrder(cart: [POSCartItem], order: Order?, allProducts: [any POSItem]) async throws -> Order {
-        if let order {
-            return order
-        }
-        return OrderFactory.emptyNewOrder
+        OrderFactory.emptyNewOrder
     }
 }
 #endif

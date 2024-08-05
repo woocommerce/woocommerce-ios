@@ -10,12 +10,12 @@ final class TotalsViewModelTests: XCTestCase {
 
     private var sut: TotalsViewModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
-    private var orderService: POSOrderServiceProtocol!
+    private var orderService: MockPOSOrderService!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
-        orderService = POSOrderPreviewService()
+        orderService = MockPOSOrderService()
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
@@ -42,6 +42,8 @@ final class TotalsViewModelTests: XCTestCase {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
         let item = Self.makeItem()
+
+        orderService.orderToReturn = Order.fake()
 
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
@@ -73,6 +75,7 @@ final class TotalsViewModelTests: XCTestCase {
 
     func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() async throws {
         // Given
+        orderService.orderToReturn = Order.fake()
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
 

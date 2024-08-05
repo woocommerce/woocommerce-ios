@@ -19,19 +19,19 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     @Published var showsCardReaderSheet: Bool = false
-    @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
-    @Published var paymentState: PaymentState
+    @Published private(set) var paymentState: PaymentState
 
-    @Published var isSyncingOrder: Bool
+    @Published private(set) var isSyncingOrder: Bool
 
-    @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?

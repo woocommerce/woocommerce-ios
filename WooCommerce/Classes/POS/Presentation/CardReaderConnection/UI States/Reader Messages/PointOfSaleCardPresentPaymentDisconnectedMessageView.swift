@@ -21,8 +21,8 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                 Text(viewModel.collectPaymentButtonViewModel.title)
             }
             .buttonStyle(POSPrimaryButtonStyle())
-            .padding(.horizontal, 40)
         }
+        .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
         .multilineTextAlignment(.center)
     }
 }

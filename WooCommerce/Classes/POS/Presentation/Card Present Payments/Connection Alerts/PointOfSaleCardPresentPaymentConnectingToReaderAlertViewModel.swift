@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel {
     let title = Localization.title
-    let imageName = PointOfSaleAssets.readerConnectionConnectingImageName
+    let imageName = PointOfSaleAssets.readerConnectionConnecting.imageName
     let instruction = Localization.instruction
 }
 

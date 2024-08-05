@@ -23,7 +23,7 @@ final class TotalsViewModelTests: XCTestCase {
                               isSyncingOrder: false)
     }
     func test_isSyncingOrder() {}
-    func test_startSyncOrder() {}
+    func test_on_checkOutTapped_startSyncOrder() {}
     func test_stopSyncOrder() {}
     func test_order() {}
     func test_formattedPrice() {}

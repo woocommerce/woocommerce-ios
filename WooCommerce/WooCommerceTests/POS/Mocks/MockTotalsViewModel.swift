@@ -56,16 +56,12 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && isSyncingOrder == false
     }
 
-    func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
-        isSyncingOrder = true
-    }
-
     func startNewTransaction() {
         paymentState = .acceptingCard
     }
 
-    func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        // Provide a mock implementation if needed
+    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
+        isSyncingOrder = true
     }
 
     func cardPaymentTapped() {

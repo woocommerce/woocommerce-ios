@@ -106,11 +106,11 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
-    func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
+    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
         startSyncingOrder(with: cartItems, allItems: allItems)
     }
 
-    func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+    private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
             Task { @MainActor in
                 await prepareConnectedReaderForPayment()

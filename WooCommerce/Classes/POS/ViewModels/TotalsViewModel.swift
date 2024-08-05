@@ -240,6 +240,15 @@ private extension TotalsViewModel {
             }
             .assign(to: &$connectionStatus)
 
+        $connectionStatus.filter { $0 == .connected }
+            .removeDuplicates()
+            .sink { _ in
+                Task { @MainActor [weak self] in
+                    await self?.prepareConnectedReaderForPayment()
+                }
+            }
+            .store(in: &cancellables)
+
         Publishers.CombineLatest4($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage, $order)
             .map { connectionStatus, isSyncingOrder, message, order in
                 guard order != nil,

@@ -5,6 +5,7 @@
 19.9
 -----
 - [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
+- [Internal] Added missing events for custom range on the stats dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13506]
 
 19.8
 -----

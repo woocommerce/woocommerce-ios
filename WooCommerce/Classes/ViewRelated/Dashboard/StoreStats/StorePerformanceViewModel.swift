@@ -129,7 +129,6 @@ final class StorePerformanceViewModel: ObservableObject {
 
         shouldHighlightStats = false
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
-
     }
 
     func didSelectStatsInterval(at index: Int?) {
@@ -213,6 +212,7 @@ final class StorePerformanceViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
     }
 
+    /// To be triggered from the UI for custom range related events
     func trackCustomRangeEvent(_ event: WooAnalyticsEvent) {
         analytics.track(event: event)
     }

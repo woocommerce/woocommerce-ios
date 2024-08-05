@@ -69,6 +69,7 @@ struct TopPerformersDashboardView: View {
                              endDate: viewModel.endDateForCustomRange,
                              customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                              datesSelected: { start, end in
+                viewModel.trackCustomRangeEvent(.DashboardCustomRange.customRangeConfirmed(isEditing: viewModel.timeRange.isCustomTimeRange))
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
         }
@@ -116,6 +117,7 @@ private extension TopPerformersDashboardView {
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
                         viewModel.trackInteraction()
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -136,6 +138,11 @@ private extension TopPerformersDashboardView {
 
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
+                    if viewModel.timeRange.isCustomTimeRange {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
+                    } else {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.addButtonTapped())
+                    }
                 } else {
                     viewModel.didSelectTimeRange(newTimeRange)
                 }

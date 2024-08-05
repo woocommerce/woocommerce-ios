@@ -191,7 +191,7 @@ public enum FeatureFlag: Int {
     /// Code hidden while the background tasks feature is developed
     ///
     case backgroundTasks
-    
+
     /// Enables view/editing of custom fields (metadata) in both Products and Orders
     ///
     case viewEditCustomFieldsInProductsAndOrders

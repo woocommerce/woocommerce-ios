@@ -552,6 +552,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
         analytics.track(wooEvent, withError: error)
     }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
+        analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
+        
+        guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
+            return
+        }
+        let webView = SFSafariViewController(url: url)
+        navigationController.present(webView, animated: true)
+    }
 }
 
 // MARK: - Private helpers

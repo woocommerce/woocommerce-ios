@@ -3,6 +3,9 @@
 19.8
 -----
 
+19.7.1
+-----
+- [***] Prologue: Restored web view for `Starting a new store?` button [https://github.com/woocommerce/woocommerce-ios/pull/13518]
 
 19.7
 -----

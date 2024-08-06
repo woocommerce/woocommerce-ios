@@ -9,8 +9,6 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
-    var isPriceFieldRedacted: Bool
-
     enum PaymentState {
         case idle
         case acceptingCard
@@ -21,19 +19,19 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     @Published var showsCardReaderSheet: Bool = false
-    @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
-    @Published var paymentState: PaymentState
+    @Published private(set) var paymentState: PaymentState
 
-    @Published var isSyncingOrder: Bool
+    @Published private(set) var isSyncingOrder: Bool
 
-    @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?
@@ -89,7 +87,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.currencyFormatter = currencyFormatter
         self.paymentState = paymentState
         self.isSyncingOrder = isSyncingOrder
-        self.isPriceFieldRedacted = false
         self.formattedCartTotalPrice = nil
         self.formattedOrderTotalPrice = nil
         self.formattedOrderTotalTaxPrice = nil
@@ -160,7 +157,6 @@ extension TotalsViewModel {
             isSyncingOrder = false
         }
         do {
-            isSyncingOrder = true
             let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
             self.updateOrder(syncedOrder)
             isSyncingOrder = false
@@ -234,17 +230,24 @@ private extension TotalsViewModel {
             }
             .assign(to: &$connectionStatus)
 
-        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
-            .map { connectionStatus, isSyncingOrder, message in
-                if isSyncingOrder {
+        Publishers.CombineLatest4($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage, $order)
+            .map { connectionStatus, isSyncingOrder, message, order in
+                guard order != nil,
+                        !isSyncingOrder
+                        else {
+                    // When the order's being created or synced, we only show the shimmering totals.
+                    // Before the order exists, we don’t want to show the card payment status, as it will
+                    // show for a second initially, then disappear the moment we start syncing the order.
                     return false
                 }
 
-                if connectionStatus == .connected {
+                switch connectionStatus {
+                case .connected:
                     return message != nil
+                case .disconnected:
+                    // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+                    return true
                 }
-
-                return true
             }
             .assign(to: &$isShowingCardReaderStatus)
     }

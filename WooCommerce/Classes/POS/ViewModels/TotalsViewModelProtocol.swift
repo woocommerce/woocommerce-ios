@@ -3,12 +3,12 @@ import struct Yosemite.Order
 import protocol Yosemite.POSItem
 
 protocol TotalsViewModelProtocol {
-    var isSyncingOrder: Bool { get set }
-    var paymentState: TotalsViewModel.PaymentState { get set }
+    var isSyncingOrder: Bool { get }
+    var paymentState: TotalsViewModel.PaymentState { get }
     var showsCardReaderSheet: Bool { get set }
-    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
-    var cardPresentPaymentEvent: CardPresentPaymentEvent { get set }
-    var connectionStatus: CardReaderConnectionStatus { get set }
+    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get }
+    var cardPresentPaymentEvent: CardPresentPaymentEvent { get }
+    var connectionStatus: CardReaderConnectionStatus { get }
     var formattedCartTotalPrice: String? { get }
     var formattedOrderTotalPrice: String? { get }
     var formattedOrderTotalTaxPrice: String? { get }
@@ -25,7 +25,6 @@ protocol TotalsViewModelProtocol {
 
 
     var isShimmering: Bool { get }
-    var isPriceFieldRedacted: Bool { get }
     var isTotalPriceFieldRedacted: Bool { get }
     var isSubtotalFieldRedacted: Bool { get }
     var isTaxFieldRedacted: Bool { get }

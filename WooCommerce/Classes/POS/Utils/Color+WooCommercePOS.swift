@@ -92,7 +92,7 @@ extension Color {
         Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
     }
 
-    static var posCheckoutBackground: Color {
+    static var posPrimaryButtonBackground: Color {
         Color(uiColor: .wooCommercePurple(.shade50))
     }
 }

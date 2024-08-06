@@ -61,17 +61,23 @@ final class TotalsViewModelTests: XCTestCase {
 
     func test_isShowingCardReaderStatus_when_order_syncing_then_false() {
         // Given
-        sut.isSyncingOrder = true
+        sut = TotalsViewModel(orderService: orderService,
+                              cardPresentPaymentService: cardPresentPaymentService,
+                              currencyFormatter: .init(currencySettings: .init()),
+                              paymentState: .acceptingCard,
+                              isSyncingOrder: true)
 
         // Then
         XCTAssertFalse(sut.isShowingCardReaderStatus)
     }
 
-    func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() {
+    func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() async throws {
         // Given
-        sut.isSyncingOrder = false
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+
+        let item = Self.makeItem()
+        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
 
         // Then
         XCTAssertTrue(sut.isShowingCardReaderStatus)
@@ -79,7 +85,6 @@ final class TotalsViewModelTests: XCTestCase {
 
     func test_isShowingCardReaderStatus_when_connected_and_no_payment_message_then_false() {
         // Given
-        sut.isSyncingOrder = false
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         cardPresentPaymentService.paymentEvent = .idle
 

@@ -360,6 +360,7 @@ private extension OrderListViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+        tableView.allowsFocus = supportsFocus()
     }
 
     /// Registers all of the available table view cells and headers
@@ -570,10 +571,6 @@ private extension OrderListViewController {
     /// Removes the selected state otherwise.
     ///
     func highlightSelectedRowIfNeeded(shouldScrollIfNeeded: Bool = false) {
-        guard supportsHighlighting() else {
-            return
-        }
-
         guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             tableView.deselectSelectedRowWithAnimation(true)
             return
@@ -588,10 +585,10 @@ private extension OrderListViewController {
         }
     }
 
-    /// Highlighting crashes on iPad iOS 16 and iOS 16.1 versions
+    /// Focus code crashes on iPadOS 16 and 16.1 versions
     /// peaMlT-Ng-p2
     /// https://github.com/woocommerce/woocommerce-ios/issues/13485
-    private func supportsHighlighting() -> Bool {
+    private func supportsFocus() -> Bool {
         guard UIDevice.current.userInterfaceIdiom == .pad else {
             return true
         }

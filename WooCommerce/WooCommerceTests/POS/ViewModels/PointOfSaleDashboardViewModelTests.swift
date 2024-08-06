@@ -94,7 +94,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // When
         let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-        sut.totalsViewModel.startSyncingOrder(with: customCartItems, allItems: [])
+        sut.totalsViewModel.checkOutTapped(with: customCartItems, allItems: [])
 
         wait(for: [expectation], timeout: 1.0)
     }

@@ -59,8 +59,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         totalsViewModel.startNewTransaction()
     }
 
-    private func startSyncingOrder(cartItems: [CartItem]) {
-        totalsViewModel.startSyncingOrder(with: cartItems, allItems: itemListViewModel.items)
+    private func cartSubmitted(cartItems: [CartItem]) {
+        totalsViewModel.checkOutTapped(with: cartItems, allItems: itemListViewModel.items)
     }
 }
 
@@ -78,7 +78,7 @@ private extension PointOfSaleDashboardViewModel {
             .sink { [weak self] cartItems in
                 guard let self else { return }
                 self.orderStage = .finalizing
-                self.startSyncingOrder(cartItems: cartItems)
+                self.cartSubmitted(cartItems: cartItems)
             }
             .store(in: &cancellables)
     }

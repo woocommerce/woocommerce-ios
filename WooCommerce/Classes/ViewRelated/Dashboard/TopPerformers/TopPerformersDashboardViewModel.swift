@@ -38,6 +38,9 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         guard let self else { return }
 
         trackInteraction()
+        if timeRange.isCustomTimeRange {
+            trackCustomRangeEvent(.DashboardCustomRange.interacted())
+        }
         selectedItem = topPerformersItem
     }
 
@@ -145,6 +148,11 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func trackInteraction() {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
         usageTracksEventEmitter.interacted()
+    }
+
+    /// To be triggered from the UI for custom range related events
+    func trackCustomRangeEvent(_ event: WooAnalyticsEvent) {
+        analytics.track(event: event)
     }
 
     func onViewAppear() {

@@ -49,6 +49,8 @@ struct PointOfSaleCardPresentPaymentAlert: View {
             PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(viewModel: alertViewModel)
         case .connectingFailedUpdatePostalCode(let alertViewModel):
             PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView(viewModel: alertViewModel)
+        case .connectionSuccess(let alertViewModel):
+            PointOfSaleCardPresentPaymentConnectionSuccessAlertView(viewModel: alertViewModel)
         }
     }
 }

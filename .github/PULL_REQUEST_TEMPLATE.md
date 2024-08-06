@@ -17,5 +17,6 @@ Closes: #
 
 
 ---
+- [ ] I have considered adding unit tests for this change. If I decided not to add them, I have provided a brief explanation below (optional):
 - [ ] I have considered if this change warrants user-facing release notes and have added them to `RELEASE-NOTES.txt` if necessary.
 - [ ] This PR includes refactoring; smoke testing of the entire section is needed.

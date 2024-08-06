@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-30 12:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -5685,6 +5685,12 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "註冊費只需 %1$@";
 
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"ProductSKUInputScanner.instructionText" = "掃描商品條碼或 QR 碼";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
+"ProductSKUInputScanner.titleView" = "掃描條碼或 QR 碼以更新貨號";
+
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
@@ -6252,17 +6258,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title text on the Scan to Pay screen */
 "Scan QR and follow instructions" = "掃瞄 QR 碼並按照指示操作";
 
-/* Navigation bar title for scanning a barcode to use as a product's SKU. */
-"Scan barcode to update SKU" = "掃瞄條碼以更新貨號";
-
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan code like XXXX-XXXX-XXXX-XXXX" = "掃描序號格式：XXXX-XXXX-XXXX-XXXX";
 
 /* Navigation bar title of the gift card code scanner. */
 "Scan gift card" = "掃描禮物卡";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"Scan product barcode" = "掃瞄產品條碼";
 
 /* Scan Products */
 "Scan products" = "掃描產品";
@@ -6705,6 +6705,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Singapore" = "新加坡";
+
+/* Site Address title on the support form */
+"Site Address" = "網站位址";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "網站重新導向";
@@ -10794,18 +10797,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "月";
 
-/* Button title to contact support to get help with deprecated stats module */
-"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"mostActiveCouponsCard.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "完成";
-
-/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
-"mostActiveCouponsCard.contentUnavailable.title" = "無法載入優惠券使用報告";
-
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "折價券";
 
@@ -10814,6 +10805,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.hideCard" = "隱藏折價券";
+
+/* Title when the Most Active Coupons card is disabled because the analytics feature is unavailable */
+"mostActiveCouponsCard.unavailableAnalyticsView.title" = "無法顯示你的商店優惠券分析";
 
 /* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
 "mostActiveCouponsCard.uses" = "使用次數";
@@ -11122,6 +11116,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "讀卡機付款取消";
 
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "正在處理付款";
+
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "取消";
 
@@ -11152,35 +11149,50 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "付款失敗";
 
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.message" = "請稍候…";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "正在處理付款";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "付款成功！";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "正在替訂單結帳";
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.message" = "正在準備付款卡片";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.title" = "正在準備讀卡機";
+"pointOfSale.cardPresent.preparingForPayment.title" = "準備中";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "插入卡片以付款";
+"pointOfSale.cardPresent.presentCard.insert" = "插入卡片";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "出示卡片以付款";
+"pointOfSale.cardPresent.presentCard.present" = "出示卡片";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "感應卡片以付款";
+"pointOfSale.cardPresent.presentCard.tap" = "感應卡片";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "感應或插入卡片以付款";
+"pointOfSale.cardPresent.presentCard.tapInsert" = "感應或插入卡片";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "點選、插入或滑動以付款";
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "感應、滑動或插入卡片";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "準備付款";
+
+/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.button.title" = "收取款項";
+
+/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.title" = "讀卡機已中斷連結";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "正在替訂單結帳";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "準備中";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "關閉";
@@ -11292,9 +11304,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "我了解";
-
-/* Label for a dismiss button when a software update has finished */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "關閉";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% 已完成";
@@ -11683,18 +11692,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "一次性運費";
 
-/* Button title to contact support to get help with deprecated stats module */
-"productStockDashboardCard.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"productStockDashboardCard.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
-
-/* Button to dismiss the support form from the Dashboard stock card error screen. */
-"productStockDashboardCard.contentUnavailable.dismissSupport" = "完成";
-
-/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
-"productStockDashboardCard.contentUnavailable.title" = "無法載入庫存報告";
-
 /* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
 "productStockDashboardCard.emptyStateTitle" = "找不到「%1$@」狀態的商品";
 
@@ -11718,6 +11715,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.stockLevels" = "庫存量";
+
+/* Title when the Stock card is disabled because the analytics feature is unavailable */
+"productStockDashboardCard.unavailableAnalyticsView.title" = "無法顯示你的商店庫存分析";
 
 /* Title of a stock type displayed on the Stock section on My Store screen */
 "productStockDashboardCardViewModel.stockType.lowStock" = "庫存不足";
@@ -11849,18 +11849,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
 
-/* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"storePerformanceView.contentUnavailable.dismissSupport" = "完成";
-
-/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
-"storePerformanceView.contentUnavailable.title" = "我們無法顯示你的商店分析資料";
-
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "轉換";
 
@@ -11878,6 +11866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "收益";
+
+/* Title when the Performance card is disabled because the analytics feature is unavailable */
+"storePerformanceView.unavailableAnalyticsView.title" = "無法顯示你的商店績效";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "檢視所有商店分析資料";
@@ -12117,8 +12108,20 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
 
+/* Title when the Top Performers card is disabled because the analytics feature is unavailable */
+"topPerformersDashboardView.unavailableAnalyticsView.title" = "無法顯示你的商店成效最佳者";
+
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "檢視所有商店分析資料";
+
+/* Button title to contact support to get help with unavailable Analytics module */
+"unavailableAnalyticsView.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
+
+/* Text that explains how to get access to the Analytics module */
+"unavailableAnalyticsView.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+
+/* Button to dismiss the support form. */
+"unavailableAnalyticsView.dismissSupport" = "完成";
 
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";

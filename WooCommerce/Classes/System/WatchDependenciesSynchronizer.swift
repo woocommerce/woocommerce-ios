@@ -1,6 +1,6 @@
 import WatchConnectivity
 import Combine
-import enum Networking.Credentials
+import Networking
 import class WooFoundation.CurrencySettings
 
 /// Type that syncs the necessary dependencies to the watch session.

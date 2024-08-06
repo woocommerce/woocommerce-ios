@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-07-31 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-03 12:18:43+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -6252,17 +6252,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title text on the Scan to Pay screen */
 "Scan QR and follow instructions" = "Skanna QR-koden och följ instruktionerna";
 
-/* Navigation bar title for scanning a barcode to use as a product's SKU. */
-"Scan barcode to update SKU" = "Skanna streckkoden för att uppdatera SKU";
-
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan code like XXXX-XXXX-XXXX-XXXX" = "Skanna kod som XXXX-XXXX-XXXX-XXXX";
 
 /* Navigation bar title of the gift card code scanner. */
 "Scan gift card" = "Skanna presentkort";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"Scan product barcode" = "Skanna produktens streckkod";
 
 /* Scan Products */
 "Scan products" = "Skanna produkter";
@@ -6705,6 +6699,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
+
+/* Site Address title on the support form */
+"Site Address" = "Webbplatsadress";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Omdirigera webbplats";
@@ -10794,18 +10791,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "Månader";
 
-/* Button title to contact support to get help with deprecated stats module */
-"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"mostActiveCouponsCard.contentUnavailable.details" = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har Analytics aktiverat i WooCommerce-inställningarna.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "Klar";
-
-/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
-"mostActiveCouponsCard.contentUnavailable.title" = "Det går inte att hämta rapporten över användning av rabattkoder";
-
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Rabattkoder";
 
@@ -11122,6 +11107,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Betalning avbruten på läsare";
 
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Behandlar betalning";
+
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Avbryt";
 
@@ -11152,35 +11140,35 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betalning misslyckades";
 
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.message" = "Vänta …";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Betalning lyckades!";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "Kontrollerar beställning";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.title" = "Förbereder kortläsare";
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Sätt in kort";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "Sätt i kort för att betala";
+"pointOfSale.cardPresent.presentCard.tap" = "Tryck kort";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "Ange kort för att betala";
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Tryck eller sätt i kort";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "Tryck på kort för att betala";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "Tryck på eller sätt i kort för att betala";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tryck, infoga eller svep för att betala";
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Tryck, svep eller sätt i kort";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
+
+/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.title" = "Läsare frånkopplad";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Kontrollerar beställning";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Avfärda";
@@ -11292,9 +11280,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Jag förstår";
-
-/* Label for a dismiss button when a software update has finished */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "Avfärda";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "%.0f%% slutfört";
@@ -11683,18 +11668,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Engångsfrakt";
 
-/* Button title to contact support to get help with deprecated stats module */
-"productStockDashboardCard.contentUnavailable.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"productStockDashboardCard.contentUnavailable.details" = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har Analytics aktiverat i WooCommerce-inställningarna.";
-
-/* Button to dismiss the support form from the Dashboard stock card error screen. */
-"productStockDashboardCard.contentUnavailable.dismissSupport" = "Klar";
-
-/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
-"productStockDashboardCard.contentUnavailable.title" = "Det gick inte att läsa in lagerrapporten";
-
 /* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
 "productStockDashboardCard.emptyStateTitle" = "Inga varor hittades med statusen %1$@.";
 
@@ -11848,18 +11821,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Visa alla %1$d uppgifter";
-
-/* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har Analytics aktiverat i WooCommerce-inställningarna.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"storePerformanceView.contentUnavailable.dismissSupport" = "Klar";
-
-/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
-"storePerformanceView.contentUnavailable.title" = "Vi kan inte visa din butiks analys";
 
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Konvertering";
@@ -12119,6 +12080,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Visa alla butiksanalyser";
+
+/* Button title to contact support to get help with unavailable Analytics module */
+"unavailableAnalyticsView.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
+
+/* Button to dismiss the support form. */
+"unavailableAnalyticsView.dismissSupport" = "Klar";
 
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "okänt";

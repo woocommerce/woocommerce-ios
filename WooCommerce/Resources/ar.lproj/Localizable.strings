@@ -6252,17 +6252,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title text on the Scan to Pay screen */
 "Scan QR and follow instructions" = "مسح الاستجابة السريعة ضوئيًا واتباع التعليمات";
 
-/* Navigation bar title for scanning a barcode to use as a product's SKU. */
-"Scan barcode to update SKU" = "مسح الرمز الشريطي ضوئيًا لتحديث وحدة SKU";
-
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan code like XXXX-XXXX-XXXX-XXXX" = "مسح الكود، مثل: XXXX-XXXX-XXXX-XXXX، ضوئيًا";
 
 /* Navigation bar title of the gift card code scanner. */
 "Scan gift card" = "مسح بطاقة الهدايا ضوئيًا";
-
-/* The instruction text below the scan area in the barcode scanner for product SKU. */
-"Scan product barcode" = "مسح الرمز الشريطي للمنتج ضوئيًا";
 
 /* Scan Products */
 "Scan products" = "فحص المنتجات";
@@ -10794,18 +10788,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "أشهر";
 
-/* Button title to contact support to get help with deprecated stats module */
-"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "هل لا تزال تحتاج إلى مساعدة؟ اتصل بنا";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"mostActiveCouponsCard.contentUnavailable.details" = "تأكد من أنك تقوم بتشغيل أحدث إصدار من WooCommerce على موقعك وتمكين إعدادات WooCommerce.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "تم";
-
-/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
-"mostActiveCouponsCard.contentUnavailable.title" = "يتعذر تحميل تقرير استخدام القسائم";
-
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "القسائم";
 
@@ -11158,27 +11140,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "تمت عملية الدفع بنجاح!";
 
-/* Message shown on the Point of Sale checkout while the reader is being prepared and order being checked. */
-"pointOfSale.cardPresent.preparingCardReader.message" = "التحقق من الطلب";
-
-/* Title shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingCardReader.title" = "تجهيز قارئ البطاقات";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.insert" = "إدراج بطاقة للدفع";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.present" = "تقديم بطاقة للدفع";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tap" = "الضغط على البطاقة للدفع";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapInsert" = "الضغط على البطاقة أو إدراجها للدفع";
-
-/* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "الضغط أو الإدراج أو التمرير للدفع";
-
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "مستعد للدفع";
 
@@ -11292,9 +11253,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "فهمت";
-
-/* Label for a dismiss button when a software update has finished */
-"pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.button.dismiss.title" = "تجاهل";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "pointOfSale.cardPresentPayment.alert.readerUpdateCompletion.progress.format" = "مكتمل بنسبة %.0f%%";
@@ -11683,18 +11641,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "الشحن مرة واحدة";
 
-/* Button title to contact support to get help with deprecated stats module */
-"productStockDashboardCard.contentUnavailable.buttonTitle" = "هل لا تزال تحتاج إلى مساعدة؟ الاتصال بنا";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"productStockDashboardCard.contentUnavailable.details" = "تأكد من أنك تقوم بتشغيل أحدث إصدار من WooCommerce على موقعك وتمكين إعدادات WooCommerce.";
-
-/* Button to dismiss the support form from the Dashboard stock card error screen. */
-"productStockDashboardCard.contentUnavailable.dismissSupport" = "تم";
-
-/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
-"productStockDashboardCard.contentUnavailable.title" = "يتعذر تحميل تقرير المخزون";
-
 /* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
 "productStockDashboardCard.emptyStateTitle" = "لم يتم العثور على أي منتج يحمل حالة %1$@";
 
@@ -11848,18 +11794,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "مشاهدة ⁦%1$d⁩ من كل المهام";
-
-/* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "هل لا تزال تحتاج إلى مساعدة؟ اتصل بنا";
-
-/* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "تأكد من أنك تقوم بتشغيل أحدث إصدار من WooCommerce على موقعك وتمكين إعددات WooCommerce.";
-
-/* Button to dismiss the support form from the Dashboard stats error screen. */
-"storePerformanceView.contentUnavailable.dismissSupport" = "تم";
-
-/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
-"storePerformanceView.contentUnavailable.title" = "يتعذر علينا عرض تحليلات متجرك";
 
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "تحويل";

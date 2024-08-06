@@ -28,7 +28,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForNewPasswordEndpoint_when_WooCommerce_is_not_installed_return_false() {
         // When
-        let result = sut.isEligibleForNewPasswordEndpoint()
+        let result = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertFalse(result)
@@ -40,7 +40,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: inactivePlugin)
 
         // When
-        let result = sut.isEligibleForNewPasswordEndpoint()
+        let result = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertFalse(result)
@@ -52,7 +52,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: oldVersionPlugin)
 
         // When
-        let result = sut.isEligibleForNewPasswordEndpoint()
+        let result = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertFalse(result)
@@ -64,7 +64,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: validPlugin)
 
         // When
-        let result = sut.isEligibleForNewPasswordEndpoint()
+        let result = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertTrue(result)
@@ -76,7 +76,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: validPlugin)
 
         // When
-        let result = sut.isEligibleForNewPasswordEndpoint()
+        let result = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertTrue(result)

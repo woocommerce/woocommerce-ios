@@ -43,7 +43,7 @@ final class ProductSettingsViewModel {
             sections = Self.configureSections(productSettings)
 
             /// if store has WC 8.1 or above, we use the `password` field in Product model.
-            if ProductPasswordEligibilityUseCase().isEligibleForNewPasswordEndpoint() {
+            if ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint() {
                 guard let productPassword = product.password else {
                     return
                 }

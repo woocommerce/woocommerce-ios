@@ -254,7 +254,7 @@ private extension ProductFormRemoteActionUseCase {
         // 3) The store is not eligible for the new `password` field introduced in WC 8.1.
         // Otherwise, update the password locally in the Product model, introduced in WC 8.1.
         guard let updatedPassword = password,
-              stores.isAuthenticatedWithoutWPCom == false || !ProductPasswordEligibilityUseCase().isEligibleForNewPasswordEndpoint() else {
+              stores.isAuthenticatedWithoutWPCom == false || !ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint() else {
             onCompletion(.success(password))
             return
         }

@@ -15,10 +15,10 @@ final class ProductPasswordEligibilityUseCase {
         self.storageManager = storageManager
     }
 
-    /// In WooCommerce 8.1, the REST API now includes a new field in the products response for managing visibility passwords.
+    /// In WooCommerce 8.1, the REST API now includes a field in the products response for managing visibility passwords.
     /// This enables mobile apps to support this feature when accessing the site with Application Passwords.
     /// https://github.com/woocommerce/woocommerce/pull/39438
-    func isEligibleForNewPasswordEndpoint() -> Bool {
+    func isEligibleForWooProductPasswordEndpoint() -> Bool {
 
         guard let wcPlugin = getSystemPlugin(siteID: siteID) else {
             return false

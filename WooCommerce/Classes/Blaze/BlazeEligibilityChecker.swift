@@ -58,26 +58,11 @@ private extension BlazeEligibilityChecker {
             return true
         }
 
-        /// Prioritize checking from storage to avoid fetching from remote repeatedly.
-        let blazePlugin: SystemPlugin? = await {
-            if let storagePlugin = await retrieveBlazePluginFromStorage(siteID: site.siteID) {
-                return storagePlugin
-            } else if let remotePlugin = await fetchBlazePluginFromRemote(siteID: site.siteID) {
-                return remotePlugin
-            }
-            return nil
-        }()
-
-        return blazePlugin?.active == true
-    }
-
-    @MainActor
-    func retrieveBlazePluginFromStorage(siteID: Int64) async -> SystemPlugin? {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: Constants.pluginSlug) { plugin in
-                continuation.resume(returning: plugin)
-            })
+        if let blazePlugin = await fetchBlazePluginFromRemote(siteID: site.siteID) {
+            return blazePlugin.active
         }
+
+        return false
     }
 
     @MainActor

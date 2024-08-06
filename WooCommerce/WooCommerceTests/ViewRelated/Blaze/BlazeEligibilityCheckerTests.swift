@@ -105,7 +105,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
                             isJetpackThePluginInstalled: false,
                             isJetpackConnected: true)
         let checker = BlazeEligibilityChecker(stores: stores)
-        mockPluginFetch(storagePlugin: nil, remotePlugin: nil)
+        mockPluginFetch(remotePlugin: nil)
 
         // When
         let isEligible = await checker.isSiteEligible(site)
@@ -122,7 +122,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
                             isJetpackThePluginInstalled: false,
                             isJetpackConnected: true)
         let checker = BlazeEligibilityChecker(stores: stores)
-        mockPluginFetch(storagePlugin: nil, remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
 
         // When
         let isEligible = await checker.isSiteEligible(site)
@@ -140,7 +140,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let site = mockSite(isEligibleForBlaze: true)
         let checker = BlazeEligibilityChecker(stores: stores)
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
-        mockPluginFetch(storagePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
 
         // When
         let isEligible = await checker.isProductEligible(
@@ -248,12 +248,9 @@ private extension BlazeEligibilityCheckerTests {
                          isAdmin: isAdmin)
     }
 
-    func mockPluginFetch(storagePlugin: SystemPlugin? = nil,
-                         remotePlugin: SystemPlugin? = nil) {
+    func mockPluginFetch(remotePlugin: SystemPlugin? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case let .fetchSystemPluginWithPath(_, _, onCompletion):
-                onCompletion(storagePlugin)
             case let .synchronizeSystemInformation(_, onCompletion):
                 let info = SystemInformation.fake().copy(systemPlugins: [remotePlugin].compactMap({ $0 }))
                 onCompletion(.success(info))

@@ -69,7 +69,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
         // Syncs the dependencies to the paired counterpart when the session becomes available.
         Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
-            .sink { [watchSession] dependencies, isSessionActive, _ in
+            .sink { [watchSession] dependencies, isSessionActive, forceSync in
                 guard isSessionActive else { return }
                 do {
 
@@ -79,7 +79,13 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
                     }
 
                     let data = try JSONEncoder().encode(dependencies)
-                    if let jsonObject = try JSONSerialization.jsonObject(with: data, options: .topLevelDictionaryAssumed) as? [String: Any] {
+                    if var jsonObject = try JSONSerialization.jsonObject(with: data, options: .topLevelDictionaryAssumed) as? [String: Any] {
+
+                        /// Adds a random key to the json object to force the framework to send it the application context again.
+                        if forceSync {
+                            jsonObject[Self.forceKey] = Date.now.timeIntervalSince1970
+                        }
+
                         try watchSession.updateApplicationContext(jsonObject)
                     } else {
                         DDLogError("⛔️ Unable to encode watch dependencies for synchronization. Resulting object is not a dictionary")
@@ -125,11 +131,16 @@ extension WatchDependenciesSynchronizer {
 
 // MARK: Sync Delegate
 extension WatchDependenciesSynchronizer {
+
+    /// Key to force a force sync
+    ///
+    private static let forceKey = "force-sync"
+
     /// The `didReceiveMessage` only supports sync requests events for now.
     /// When one is identified we should try to re-sync credentials.
     ///
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        guard message[WooConstants.watchTracksKey] as? Bool == true else {
+        guard message[WooConstants.watchSyncKey] as? Bool == true else {
             return DDLogError("⛔️ Unsupported sync request message: \(message)")
         }
 

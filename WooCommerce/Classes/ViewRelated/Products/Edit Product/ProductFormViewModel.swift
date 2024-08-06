@@ -57,9 +57,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
-    private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
-    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
+    private let productSubject = PassthroughSubject<EditableProductModel, Never>()
+    private let productNameSubject = PassthroughSubject<String, Never>()
+    private let isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
     private let blazeEligibilityUpdateSubject = PassthroughSubject<Void, Never>()
 

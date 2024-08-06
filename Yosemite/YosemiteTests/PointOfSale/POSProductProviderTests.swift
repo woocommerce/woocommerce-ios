@@ -38,6 +38,7 @@ final class POSProductProviderTests: XCTestCase {
         let expectedProductID: Int64 = 208
         let expectedProductPrice = "216"
         let expectedFormattedPrice = "$216.00"
+        let expectedNumberOfEligibleProducts = 6
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
@@ -47,9 +48,30 @@ final class POSProductProviderTests: XCTestCase {
         guard let product = expectedItems.first else {
             return XCTFail("No eligible products")
         }
+        XCTAssertEqual(expectedItems.count, expectedNumberOfEligibleProducts)
         XCTAssertEqual(product.name, expectedProductName)
         XCTAssertEqual(product.productID, expectedProductID)
         XCTAssertEqual(product.price, expectedProductPrice)
         XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
+    }
+
+    func test_POSItemProvider_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
+        // Given
+        let expectedNumberOfItems = 2
+        let expectedItemNames = ["Dymo LabelWriter 4XL", "Private Hoodie"]
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
+
+        guard let firstEligibleItem = expectedItems.first,
+              let secondEligibleItem = expectedItems.last else {
+            return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
+        }
+        XCTAssertEqual(firstEligibleItem.name, expectedItemNames.first)
+        XCTAssertEqual(secondEligibleItem.name, expectedItemNames.last)
     }
 }

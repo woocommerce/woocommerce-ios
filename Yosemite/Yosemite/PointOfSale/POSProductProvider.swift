@@ -29,7 +29,16 @@ public final class POSProductProvider: POSItemProvider {
     public func providePointOfSaleItems() async throws -> [POSItem] {
         do {
             let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
-            return mapProductsToPOSItems(products: products)
+
+            let eligibilityCriteria: [(Product) -> Bool] = [
+                isPublishedOrPrivateStatus,
+                isNotVirtual,
+                isNotDownloadable,
+                hasPrice
+            ]
+            let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
+
+            return mapProductsToPOSItems(products: filteredProducts)
         } catch {
             // TODO:
             // - Handle case for empty product list, or not empty but no eligible products
@@ -66,4 +75,28 @@ public final class POSProductProvider: POSItemProvider {
 
     // TODO: Mechanism to reload/sync product data.
     // https://github.com/woocommerce/woocommerce-ios/issues/12837
+}
+
+private extension POSProductProvider {
+    func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
+        return products.filter { product in
+            criteria.allSatisfy { $0(product) }
+        }
+    }
+
+    func isPublishedOrPrivateStatus(product: Product) -> Bool {
+        product.productStatus == .published || product.productStatus == .privateStatus
+    }
+
+    func isNotVirtual(product: Product) -> Bool {
+        !product.virtual
+    }
+
+    func isNotDownloadable(product: Product) -> Bool {
+        !product.downloadable
+    }
+
+    func hasPrice(product: Product) -> Bool {
+        !product.price.isEmpty
+    }
 }

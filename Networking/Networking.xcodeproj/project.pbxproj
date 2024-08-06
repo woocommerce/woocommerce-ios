@@ -505,6 +505,7 @@
 		621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
+		68255E442C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json in Resources */ = {isa = PBXBuildFile; fileRef = 68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
 		6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6846B01A2A61B590008EB143 /* iap-transaction-handled.json */; };
 		684AB6D82AC2E93100106D7C /* order-with-special-character-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */; };
@@ -1642,6 +1643,7 @@
 		61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
+		68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-for-eligibility-criteria.json"; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
 		6846B01A2A61B590008EB143 /* iap-transaction-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-handled.json"; sourceTree = "<group>"; };
 		684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-special-character-currency.json"; sourceTree = "<group>"; };
@@ -3426,6 +3428,7 @@
 				CE070A2F2BBC527900017578 /* gift-card-stats.json */,
 				CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */,
 				68FBA53B2C290A5F0067B377 /* products-load-all-type-simple.json */,
+				68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */,
 				CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */,
 				CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */,
 			);
@@ -4471,6 +4474,7 @@
 				DEB387782C2A9ADC0025256E /* gla-connection-with-data-envelope.json in Resources */,
 				EE57C134297F985A00BC31E7 /* product-variations-bulk-update-without-data.json in Resources */,
 				CE865A9F2A41E42F0049B03C /* date-modified-gmt.json in Resources */,
+				68255E442C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json in Resources */,
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,

@@ -31,10 +31,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         isSyncingOrder
     }
 
-    var isPriceFieldRedacted: Bool {
-        formattedOrderTotalTaxPrice == nil || isSyncingOrder
-    }
-
     var isSubtotalFieldRedacted: Bool {
         formattedCartTotalPrice == nil || isSyncingOrder
     }
@@ -60,19 +56,15 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && isSyncingOrder == false
     }
 
-    func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
-        isSyncingOrder = true
-    }
-
     func startNewTransaction() {
         paymentState = .acceptingCard
     }
 
-    func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        // Provide a mock implementation if needed
+    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
+        isSyncingOrder = true
     }
 
-    func cardPaymentTapped() {
+    func connectReaderTapped() {
         // Provide a mock implementation if needed
     }
 

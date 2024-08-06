@@ -32,9 +32,8 @@ protocol TotalsViewModelProtocol {
     var showRecalculateButton: Bool { get }
     var order: Order? { get }
 
-    func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem])
     func startNewTransaction()
-    func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem])
-    func cardPaymentTapped()
+    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem])
+    func connectReaderTapped()
     func onTotalsViewDisappearance()
 }

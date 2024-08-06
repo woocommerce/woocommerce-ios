@@ -5,17 +5,18 @@ import XCTest
 @testable import struct Yosemite.Order
 @testable import struct Yosemite.POSProduct
 @testable import protocol Yosemite.POSItem
+@testable import struct Yosemite.OrderItem
 
 final class TotalsViewModelTests: XCTestCase {
 
     private var sut: TotalsViewModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
-    private var orderService: POSOrderServiceProtocol!
+    private var orderService: MockPOSOrderService!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
-        orderService = POSOrderPreviewService()
+        orderService = MockPOSOrderService()
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
@@ -23,7 +24,7 @@ final class TotalsViewModelTests: XCTestCase {
                               isSyncingOrder: false)
     }
     func test_isSyncingOrder() {}
-    func test_startSyncOrder() {}
+    func test_on_checkOutTapped_startSyncOrder() {}
     func test_stopSyncOrder() {}
     func test_order() {}
     func test_formattedPrice() {}
@@ -42,6 +43,8 @@ final class TotalsViewModelTests: XCTestCase {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
         let item = Self.makeItem()
+
+        orderService.orderToReturn = Order.fake()
 
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
@@ -73,6 +76,7 @@ final class TotalsViewModelTests: XCTestCase {
 
     func test_isShowingCardReaderStatus_when_connected_and_payment_message_exists_then_true() async throws {
         // Given
+        orderService.orderToReturn = Order.fake()
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
 
@@ -108,6 +112,38 @@ final class TotalsViewModelTests: XCTestCase {
         cardPresentPaymentService.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
 
         XCTAssertTrue(sut.isShowingTotalsFields)
+    }
+
+    func test_when_a_reader_connects_collectPayment_is_attempted() async {
+        // Given
+        orderService.orderToReturn = Order.fake().copy(items: [OrderItem.fake()])
+        await sut.syncOrder(for: [], allItems: [])
+
+        waitFor { promise in
+            self.cardPresentPaymentService.onCollectPaymentCalled = {
+                // Then
+                promise(())
+            }
+            // When
+            self.cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+        }
+    }
+
+    func test_if_a_reader_is_already_connected_collectPayment_is_attempted_immediately() async {
+        // Given
+        cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+        orderService.orderToReturn = Order.fake().copy(items: [OrderItem.fake()])
+        await sut.syncOrder(for: [], allItems: [])
+
+        waitFor { promise in
+            self.cardPresentPaymentService.onCollectPaymentCalled = {
+                // Then
+                promise(())
+            }
+            // When
+            self.sut.checkOutTapped(with: [], allItems: [])
+        }
     }
 }
 

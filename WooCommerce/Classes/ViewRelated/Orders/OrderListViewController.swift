@@ -570,6 +570,10 @@ private extension OrderListViewController {
     /// Removes the selected state otherwise.
     ///
     func highlightSelectedRowIfNeeded(shouldScrollIfNeeded: Bool = false) {
+        guard supportsHighlighting() else {
+            return
+        }
+
         guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
             tableView.deselectSelectedRowWithAnimation(true)
             return
@@ -582,6 +586,25 @@ private extension OrderListViewController {
                 tableView.scrollToRow(at: orderIndexPath, at: .none, animated: true)
             }
         }
+    }
+
+    /// Highlighting crashes on iPad iOS 16 and iOS 16.1 versions
+    /// peaMlT-Ng-p2
+    /// https://github.com/woocommerce/woocommerce-ios/issues/13485
+    private func supportsHighlighting() -> Bool {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return true
+        }
+
+        let systemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        let majorVersion = systemVersion.majorVersion
+        let minorVersion = systemVersion.minorVersion
+
+        if majorVersion == 16 && (minorVersion == 0 || minorVersion == 1) {
+            return false
+        }
+
+        return true
     }
 
     /// Checks to see if there is a selected order ID, and selects its order.

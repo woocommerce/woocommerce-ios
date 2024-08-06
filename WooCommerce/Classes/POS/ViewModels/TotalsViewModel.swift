@@ -124,11 +124,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     func connectReaderTapped() {
-        Task { @MainActor [weak self] in
-            guard let self else {
-                return
-            }
-
+        Task { @MainActor in
             do {
                 let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
             } catch {

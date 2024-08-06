@@ -29,7 +29,7 @@ public struct WatchDependencies: Codable, Equatable {
     let applicationPassword: ApplicationPassword?
 
     /// Uses the provided application password
-    /// 
+    ///
     public init(storeID: Int64,
                 storeName: String,
                 currencySettings: CurrencySettings,

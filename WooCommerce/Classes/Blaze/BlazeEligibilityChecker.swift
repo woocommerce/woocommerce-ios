@@ -3,7 +3,10 @@ import Yosemite
 
 /// Protocol for checking Blaze eligibility for easier unit testing.
 protocol BlazeEligibilityCheckerProtocol {
+    @MainActor
     func isSiteEligible(_ site: Site) async -> Bool
+
+    @MainActor
     func isProductEligible(site: Site, product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool
 }
 
@@ -34,6 +37,7 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 }
 
 private extension BlazeEligibilityChecker {
+    @MainActor
     func checkSiteEligibility(_ site: Site) async -> Bool {
         guard site.isAdmin && site.canBlaze else {
             return false
@@ -67,6 +71,7 @@ private extension BlazeEligibilityChecker {
         return blazePlugin?.active == true
     }
 
+    @MainActor
     func retrieveBlazePluginFromStorage(siteID: Int64) async -> SystemPlugin? {
         await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: Constants.pluginSlug) { plugin in

@@ -434,6 +434,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .reviews:
+                // TODO-13507: add tap handling.
+                return
+            case .customFields:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloadableFiles(_, let isEditable):

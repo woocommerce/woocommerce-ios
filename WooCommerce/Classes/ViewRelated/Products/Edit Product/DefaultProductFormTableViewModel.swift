@@ -102,6 +102,9 @@ private extension DefaultProductFormTableViewModel {
             switch action {
             case .priceSettings(let editable, _):
                 return .price(viewModel: priceSettingsRow(product: product, isEditable: editable), isEditable: editable)
+            case .customFields:
+                // showing "Reviews" row just as a test. TODO-13507: replace it with actual custom fields viewModel.
+                return .customFields(viewModel: reviewsRow(product: product))
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
             case .productType(let editable):

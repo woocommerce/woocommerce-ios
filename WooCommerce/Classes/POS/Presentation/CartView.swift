@@ -160,7 +160,7 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(uiImage: .posCartBackImage)
+                Image(PointOfSaleAssets.cartBack.imageName)
                     .resizable()
                     .frame(width: 32, height: 32)
             }
@@ -190,12 +190,11 @@ import Combine
                                           paymentState: .acceptingCard,
                                           isSyncingOrder: false)
     let cartViewModel = CartViewModel()
-    let dashboardViewModel = PointOfSaleDashboardViewModel(itemProvider: POSItemProviderPreview(),
-                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                           orderService: POSOrderPreviewService(),
-                                                           currencyFormatter: .init(currencySettings: .init()),
+    let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
+    let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,
-                                                           cartViewModel: cartViewModel)
+                                                           cartViewModel: cartViewModel,
+                                                           itemListViewModel: itemsListViewModel)
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

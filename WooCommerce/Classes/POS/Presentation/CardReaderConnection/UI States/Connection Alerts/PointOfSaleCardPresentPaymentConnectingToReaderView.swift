@@ -8,13 +8,14 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
 
-            viewModel.image
+            Image(viewModel.imageName)
 
             Text(viewModel.instruction)
         }
+        .multilineTextAlignment(.center)
     }
 }
 

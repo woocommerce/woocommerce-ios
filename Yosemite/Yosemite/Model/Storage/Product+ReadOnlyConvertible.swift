@@ -85,6 +85,7 @@ extension Storage.Product: ReadOnlyConvertible {
         bundleStockStatus = product.bundleStockStatus?.rawValue
         bundleMinSize = product.bundleMinSize as? NSDecimalNumber
         bundleMaxSize = product.bundleMaxSize as? NSDecimalNumber
+        password = product.password
         minAllowedQuantity = product.minAllowedQuantity
         maxAllowedQuantity = product.maxAllowedQuantity
         groupOfQuantity = product.groupOfQuantity
@@ -186,13 +187,13 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleMinSize: bundleMinSize?.decimalValue,
                        bundleMaxSize: bundleMaxSize?.decimalValue,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
+                       password: password,
                        compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
                        subscription: subscription?.toReadOnly(),
                        minAllowedQuantity: minAllowedQuantity,
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
-                       combineVariationQuantities: combineVariationQuantities?.boolValue,
-                       password: password)
+                       combineVariationQuantities: combineVariationQuantities?.boolValue)
     }
 
     // MARK: - Private Helpers

@@ -2,6 +2,8 @@ import Combine
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `TopPerformersDashboardView`
 ///
@@ -15,6 +17,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published var selectedItem: TopEarnerStatsItem?
     @Published private(set) var syncingError: Error?
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -45,8 +48,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     /// Returns the last updated timestamp for the current time range.
     ///
     var lastUpdatedTimestamp: String {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
-              let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
             return ""
         }
 
@@ -102,11 +104,9 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func reloadDataIfNeeded(forceRefresh: Bool = false) async {
 
         // Preemptively show any cached content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
-            // Stop if data is relatively new
-            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
-                return updateUIInLoadedState()
-            }
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
+            return updateUIInLoadedState()
         }
 
         syncingData = true
@@ -119,8 +119,15 @@ final class TopPerformersDashboardViewModel: ObservableObject {
             let useCase = TopPerformersCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
             try await useCase.sync()
 
+            analyticsEnabled = true
             syncingDidFinishPublisher.send(nil)
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
             syncingDidFinishPublisher.send(error)
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
@@ -235,9 +242,6 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
-            return periodViewModel.update(state: .loading(cached: []))
-        }
         let items = topEarnerStats?.items?.sorted(by: >) ?? []
         periodViewModel.update(state: .loading(cached: items))
     }

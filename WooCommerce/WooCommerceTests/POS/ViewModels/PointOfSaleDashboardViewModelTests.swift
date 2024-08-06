@@ -8,33 +8,31 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var sut: PointOfSaleDashboardViewModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var itemProvider: MockPOSItemProvider!
-    private var orderService: POSOrderServiceProtocol!
     private var mockCartViewModel: MockCartViewModel!
     private var mockTotalsViewModel: MockTotalsViewModel!
+    private var mockItemListViewModel: MockItemListViewModel!
+
     private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
         cardPresentPaymentService = MockCardPresentPaymentService()
         itemProvider = MockPOSItemProvider()
-        orderService = POSOrderPreviewService()
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
-        sut = PointOfSaleDashboardViewModel(itemProvider: itemProvider,
-                                            cardPresentPaymentService: cardPresentPaymentService,
-                                            orderService: orderService,
-                                            currencyFormatter: .init(currencySettings: .init()),
+        mockItemListViewModel = MockItemListViewModel()
+        sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
-                                            cartViewModel: mockCartViewModel)
+                                            cartViewModel: mockCartViewModel,
+                                            itemListViewModel: mockItemListViewModel)
         cancellables = []
     }
 
     override func tearDown() {
         cardPresentPaymentService = nil
-        itemProvider = nil
-        orderService = nil
         mockCartViewModel = nil
         mockTotalsViewModel = nil
+        mockItemListViewModel = nil
         sut = nil
         cancellables = []
         super.tearDown()
@@ -75,7 +73,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
 
         // When
-        sut.itemListViewModel.select(item)
+        mockCartViewModel.addItemToCart(item)
 
         // Then
         XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
@@ -295,6 +293,34 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(receivedOrderStage, .building)
+    }
+
+    func test_isInitialLoading_when_item_list_loading_and_empty_then_true() {
+        // Given
+        mockItemListViewModel.items = []
+        mockItemListViewModel.state = .loading
+
+        // Then
+        XCTAssertTrue(sut.isInitialLoading)
+    }
+
+    func test_isInitialLoading_when_item_list_empty_then_false() {
+        // Given
+        mockItemListViewModel.items = []
+        mockItemListViewModel.state = .empty(.init(title: "", subtitle: "", hint: "", buttonText: ""))
+
+        // Then
+        XCTAssertFalse(sut.isInitialLoading)
+    }
+
+    func test_isInitialLoading_when_item_list_loaded_and_then_false() {
+        // Given
+        let items = [Self.makeItem()]
+        mockItemListViewModel.items = items
+        mockItemListViewModel.state = .loaded(items)
+
+        // Then
+        XCTAssertFalse(sut.isInitialLoading)
     }
 }
 

@@ -2,7 +2,7 @@
 import WordPressShared
 #endif
 
-public struct ApplicationPassword: Decodable {
+public struct ApplicationPassword: Codable, Equatable {
     /// WordPress org username that the application password belongs to
     ///
     public let wpOrgUsername: String
@@ -24,7 +24,12 @@ public struct ApplicationPassword: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        guard let wpOrgUsername = decoder.userInfo[.wpOrgUsername] as? String else {
+        // Search for `wpOrgUsername` either in the decoder or in the user info
+        let wpOrgUsername: String? = {
+            return try? container.decodeIfPresent(String.self, forKey: .wpOrgUsername) ?? decoder.userInfo[.wpOrgUsername] as? String
+        }()
+
+        guard let wpOrgUsername else {
             throw ApplicationPasswordDecodingError.missingWpOrgUsername
         }
 
@@ -33,7 +38,15 @@ public struct ApplicationPassword: Decodable {
         self.init(wpOrgUsername: wpOrgUsername, password: Secret(password), uuid: uuid)
     }
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(wpOrgUsername, forKey: .wpOrgUsername)
+        try container.encodeIfPresent(password.secretValue, forKey: .password)
+        try container.encodeIfPresent(uuid, forKey: .uuid)
+    }
+
     enum CodingKeys: String, CodingKey {
+        case wpOrgUsername
         case password
         case uuid
     }
@@ -44,3 +57,6 @@ public struct ApplicationPassword: Decodable {
 enum ApplicationPasswordDecodingError: Error {
     case missingWpOrgUsername
 }
+
+// Add equatable conformance to Secret when possible
+extension Secret: Equatable where Self.RawValue: Equatable {}

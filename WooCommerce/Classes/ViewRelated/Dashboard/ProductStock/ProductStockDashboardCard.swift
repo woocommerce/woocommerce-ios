@@ -2,14 +2,12 @@ import Kingfisher
 import SwiftUI
 import struct Yosemite.ProductReport
 import struct Yosemite.DashboardCard
-import enum Networking.DotcomError
 
 /// View for displaying stock based on status on the dashboard.
 ///
 struct ProductStockDashboardCard: View {
     @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State private var showingSupportForm = false
     @State private var selectedItem: ProductReport?
 
     init(viewModel: ProductStockDashboardCardViewModel) {
@@ -28,19 +26,17 @@ struct ProductStockDashboardCard: View {
 
             Divider()
 
-            if let error = viewModel.syncingError {
-                if error as? DotcomError == .noRestRoute {
-                    contentUnavailableView
-                        .padding(.horizontal, Layout.padding)
-                } else {
-                    DashboardCardErrorView(onRetry: {
-                        ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .stock))
-                        Task {
-                            await viewModel.reloadData()
-                        }
-                    })
+            if !viewModel.analyticsEnabled {
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
-                }
+            } else if viewModel.syncingError != nil {
+                DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .stock))
+                    Task {
+                        await viewModel.reloadData()
+                    }
+                })
+                .padding(.horizontal, Layout.padding)
             }
 
             Group {
@@ -59,9 +55,6 @@ struct ProductStockDashboardCard: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
-        .sheet(isPresented: $showingSupportForm) {
-            supportForm
-        }
         .sheet(item: $selectedItem) { item in
             ViewControllerContainer(productDetailView(for: item))
         }
@@ -187,36 +180,6 @@ private extension ProductStockDashboardCard {
         .frame(maxWidth: .infinity)
     }
 
-    var contentUnavailableView: some View {
-        VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .noStoreImage)
-            Text(Localization.ContentUnavailable.title)
-                .headlineStyle()
-            Text(Localization.ContentUnavailable.details)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-            Button(Localization.ContentUnavailable.buttonTitle) {
-                showingSupportForm = true
-            }
-            .buttonStyle(SecondaryButtonStyle())
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    var supportForm: some View {
-        NavigationStack {
-            SupportForm(isPresented: $showingSupportForm,
-                        viewModel: SupportFormViewModel())
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.ContentUnavailable.done) {
-                        showingSupportForm = false
-                    }
-                }
-            }
-        }
-    }
-
     func productDetailView(for item: ProductReport) -> UIViewController {
         let model: ProductLoaderViewController.Model = {
             if let variationID = item.variationID {
@@ -285,29 +248,11 @@ private extension ProductStockDashboardCard {
             comment: "Text on the empty state of the Stock section on the My Store screen. " +
             "Reads as: No item found with Out of stock status"
         )
-        enum ContentUnavailable {
-            static let title = NSLocalizedString(
-                "productStockDashboardCard.contentUnavailable.title",
-                value: "Unable to load stock report",
-                comment: "Title when we can't load stock report because user is on a deprecated WooCommerce Version"
-            )
-            static let details = NSLocalizedString(
-                "productStockDashboardCard.contentUnavailable.details",
-                value: "Make sure you are running the latest version of WooCommerce on your site" +
-                " and enabling Analytics in WooCommerce Settings.",
-                comment: "Text that explains how to update WooCommerce to get the latest stats"
-            )
-            static let buttonTitle = NSLocalizedString(
-                "productStockDashboardCard.contentUnavailable.buttonTitle",
-                value: "Still need help? Contact us",
-                comment: "Button title to contact support to get help with deprecated stats module"
-            )
-            static let done = NSLocalizedString(
-                "productStockDashboardCard.contentUnavailable.dismissSupport",
-                value: "Done",
-                comment: "Button to dismiss the support form from the Dashboard stock card error screen."
-            )
-        }
+        static let unavailableAnalytics = NSLocalizedString(
+            "productStockDashboardCard.unavailableAnalyticsView.title",
+            value: "Unable to display your store's stock analytics",
+            comment: "Title when the Stock card is disabled because the analytics feature is unavailable"
+        )
     }
 }
 

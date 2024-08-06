@@ -77,6 +77,20 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldDisableAddParameterButton)
     }
 
+    func test_parameter_list_is_correct_when_there_are_parameters_in_base_url() {
+        // Given
+        let defaultParam = "product=bonsai-plant"
+        let sut =  BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL + "?" + defaultParam,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: sampleProductURL,
+            onSave: { _, _ in }
+        )
+
+        // Then
+        XCTAssertEqual(sut.parameters, [])
+    }
+
     func test_when_destination_changed_then_final_url_is_updated() {
         // Given
         let sut =  BlazeAdDestinationSettingViewModel(
@@ -94,6 +108,23 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
         let updatedURL = "\(sampleHomeURL)?\(threeParameters)"
         XCTAssertEqual(sut.selectedDestinationType, .home)
         XCTAssertTrue(sut.finalDestinationLabel.contains(updatedURL))
+    }
+
+    func test_final_url_is_correct_when_there_are_parameters_in_base_url() {
+        // Given
+        let productURL = sampleProductURL + "?product=bonsai-plant"
+        let sut =  BlazeAdDestinationSettingViewModel(
+            productURL: productURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: productURL,
+            onSave: { _, _ in }
+        )
+
+        // When
+        sut.addNewParameter(item: .init(key: "test", value: "123"))
+
+        // Then
+        XCTAssertTrue(sut.finalDestinationLabel.hasSuffix(productURL + "&test=123"))
     }
 
     func test_given_existing_parameters_then_remaining_characters_count_is_correct() {
@@ -124,6 +155,27 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.parameters.count, 2)
+    }
+
+    func test_remaining_character_count_is_correct_when_there_are_parameters_in_base_url() {
+        // Given
+        let defaultParam = "product=bonsai-plant"
+        let sut =  BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: sampleProductURL + "?" + defaultParam,
+            onSave: { _, _ in }
+        )
+
+        // Then
+        XCTAssertEqual(sut.calculateRemainingCharacters(), maxParameterLength - defaultParam.count)
+
+        // When
+        sut.addNewParameter(item: .init(key: "test", value: "123"))
+
+        // Then
+        XCTAssertEqual(sut.calculateRemainingCharacters(),
+                       maxParameterLength - defaultParam.count - "&test=123".count)
     }
 
     // MARK: Completion block

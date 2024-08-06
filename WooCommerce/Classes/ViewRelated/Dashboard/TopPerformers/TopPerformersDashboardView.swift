@@ -24,7 +24,10 @@ struct TopPerformersDashboardView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.syncingError != nil {
+            if !viewModel.analyticsEnabled {
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
+                    .padding(.horizontal, Layout.padding)
+            } else if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
                     Task {
@@ -202,6 +205,11 @@ private extension TopPerformersDashboardView {
             let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the top performers card was last updated")
             return String.localizedStringWithFormat(format, time)
         }
+        static let unavailableAnalytics = NSLocalizedString(
+            "topPerformersDashboardView.unavailableAnalyticsView.title",
+            value: "Unable to display your store's top performers",
+            comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
+        )
     }
 }
 

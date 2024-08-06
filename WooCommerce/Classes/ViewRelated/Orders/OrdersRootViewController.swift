@@ -432,11 +432,13 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     }
 
     private func updateTimeoutText() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
+        let syncTimestamp = OrderListSyncBackgroundTask.latestSyncDate
+
+        // Prevents an old date to be displayed when there isn't a sync timestamp.
+        guard syncTimestamp != .distantPast else {
             return
         }
 
-        let syncTimestamp = OrderListSyncBackgroundTask.latestSyncDate
         let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
     }

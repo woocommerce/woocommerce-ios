@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// Different display modes of site visit stats
 ///
@@ -33,7 +34,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
-    @Published private(set) var statsVersion: StatsVersion = .v4
+    @Published private(set) var analyticsEnabled = true
 
     @Published private(set) var loadingError: Error?
 
@@ -76,17 +77,13 @@ final class StorePerformanceViewModel: ObservableObject {
     /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
     ///
     var showRedactedState: Bool {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) else {
-            return syncingData
-        }
         return syncingData && periodViewModel?.noDataFound == true
     }
 
     /// Returns the last updated timestamp for the current time range.
     ///
     var lastUpdatedTimestamp: String {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks),
-              let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
             return ""
         }
 
@@ -161,13 +158,11 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadDataIfNeeded(forceRefresh: Bool = false) async {
 
         // Preemptively show any cached content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.backgroundTasks) {
-            periodViewModel?.loadCachedContent()
+        periodViewModel?.loadCachedContent()
 
-            // Stop if data is relatively new
-            if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
-                return
-            }
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
+            return
         }
 
         syncingData = true
@@ -180,7 +175,7 @@ final class StorePerformanceViewModel: ObservableObject {
             try await syncUseCase.sync()
 
             trackDashboardStatsSyncComplete()
-            statsVersion = .v4
+            analyticsEnabled = true
             switch timeRange {
             case .custom:
                 updateSiteVisitStatModeForCustomRange()
@@ -192,13 +187,15 @@ final class StorePerformanceViewModel: ObservableObject {
                 siteVisitStatMode = .default
             }
             syncingDidFinishPublisher.send(nil)
-        } catch DotcomError.noRestRoute {
-            statsVersion = .v3
-            syncingDidFinishPublisher.send(DotcomError.noRestRoute)
         } catch {
-            statsVersion = .v4
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+                handleSyncError(error: error)
+            }
             DDLogError("⛔️ Error loading store stats: \(error)")
-            handleSyncError(error: error)
             syncingDidFinishPublisher.send(error)
         }
         syncingData = false

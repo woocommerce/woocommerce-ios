@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSItem
 import struct Yosemite.Order
@@ -13,6 +14,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     enum PaymentState {
         case idle
         case acceptingCard
+        case validatingOrder
         case preparingReader
         case processingPayment
         case cardPaymentSuccessful
@@ -22,6 +24,8 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
+    @Published private(set) var isShowingCardReaderStatus: Bool = false
+    @Published private(set) var isShowingTotalsFields: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
@@ -229,6 +233,20 @@ private extension TotalsViewModel {
                 connectedReader == nil ? .disconnected: .connected
             }
             .assign(to: &$connectionStatus)
+
+        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
+            .map { connectionStatus, isSyncingOrder, message in
+                if isSyncingOrder {
+                    return false
+                }
+
+                if connectionStatus == .connected {
+                    return message != nil
+                }
+
+                return true
+            }
+            .assign(to: &$isShowingCardReaderStatus)
     }
 
     func observeCardPresentPaymentEvents() {
@@ -269,6 +287,12 @@ private extension TotalsViewModel {
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { PaymentState(from: $0) }
             .assign(to: &$paymentState)
+
+        paymentStatePublisher
+            .map {
+                $0 != .processingPayment && $0 != .cardPaymentSuccessful
+            }
+            .assign(to: &$isShowingTotalsFields)
     }
 }
 
@@ -278,10 +302,14 @@ private extension TotalsViewModel.PaymentState {
         case .idle:
             self = .idle
         case .show(.validatingOrder):
+            self = .validatingOrder
+        case .show(.preparingForPayment):
             self = .preparingReader
         case .show(.tapSwipeOrInsertCard):
             self = .acceptingCard
         case .show(.processing):
+            self = .processingPayment
+        case .show(.displayReaderMessage):
             self = .processingPayment
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful

@@ -5,7 +5,7 @@ struct POSProgressViewStyle: ProgressViewStyle {
     func makeBody(configuration: Configuration) -> some View {
         ProgressView(configuration)
             .progressViewStyle(IndefiniteCircularProgressViewStyle(
-                size: 112,
+                size: 108,
                 lineWidth: 48,
                 lineCap: .butt,
                 circleColor: Color(.wooCommercePurple(.shade10)),

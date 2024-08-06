@@ -103,8 +103,7 @@ private extension DefaultProductFormTableViewModel {
             case .priceSettings(let editable, _):
                 return .price(viewModel: priceSettingsRow(product: product, isEditable: editable), isEditable: editable)
             case .customFields:
-                // showing "Reviews" row just as a test. TODO-13507: replace it with actual custom fields viewModel.
-                return .customFields(viewModel: reviewsRow(product: product))
+                return .customFields(viewModel: customFieldsRow())
             case .reviews:
                 return .reviews(viewModel: reviewsRow(product: product), ratingCount: product.ratingCount, averageRating: product.averageRating)
             case .productType(let editable):
@@ -255,6 +254,14 @@ private extension DefaultProductFormTableViewModel {
                      tintColor: tintColor,
                      isActionable: priceViewModel.isActionable,
                      hideSeparator: hideSeparator)
+    }
+
+    func customFieldsRow() -> ProductFormSection.SettingsRow.ViewModel {
+        return ProductFormSection.SettingsRow.ViewModel(
+            icon: UIImage.customFieldsImage,
+            title: Localization.customFieldsTitle,
+            details: Localization.customFieldsDetails
+        )
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
@@ -781,6 +788,19 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                     comment: "Format of the sale period on the Price Settings row from a certain date")
         static let saleDateFormatTo = NSLocalizedString("Sale dates: Until %@",
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
+
+        // Custom fields
+        static let customFieldsTitle = NSLocalizedString(
+            "defaultProductFormTableViewModel.customFieldsDetails",
+            value: "Custom Fields",
+            comment: "Title for the Custom Fields row"
+        )
+
+        static let customFieldsDetails = NSLocalizedString(
+            "defaultProductFormTableViewModel.customFieldsDetails",
+            value: "View and edit the product's custom fields",
+            comment: "Details text for the Custom Fields row"
+        )
 
         // Reviews
         static let emptyReviews = NSLocalizedString("No (approved) reviews",

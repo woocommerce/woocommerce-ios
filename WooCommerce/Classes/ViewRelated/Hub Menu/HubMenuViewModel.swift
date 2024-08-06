@@ -159,6 +159,10 @@ final class HubMenuViewModel: ObservableObject {
         if !hasGoogleAdsCampaigns {
             refreshGoogleAdsCampaignCheck()
         }
+
+        if isSiteEligibleForBlaze {
+            refreshBlazeEligibilityCheck()
+        }
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -183,6 +187,15 @@ final class HubMenuViewModel: ObservableObject {
     func refreshGoogleAdsCampaignCheck() {
         Task { @MainActor in
             hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
+        }
+    }
+
+    func refreshBlazeEligibilityCheck() {
+        guard let site = currentSite else {
+            return
+        }
+        Task { @MainActor in
+            isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
         }
     }
 

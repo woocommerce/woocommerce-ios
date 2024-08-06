@@ -108,6 +108,11 @@ extension CardPresentPaymentEventDetails {
                     batteryLevel: batteryLevel,
                     cancelUpdateAction: cancelUpdate)))
 
+        case .connectionSuccess(let done):
+            return .alert(.connectionSuccess(
+                viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(
+                    doneAction: done)))
+
         /// Payment messages
         case .validatingOrder:
             return .message(.validatingOrder(

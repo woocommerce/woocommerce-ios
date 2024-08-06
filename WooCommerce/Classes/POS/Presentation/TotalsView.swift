@@ -11,7 +11,7 @@ struct TotalsView: View {
     /// It allows for a simultaneous transition from the shimmering effect to the text fields,
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
-    @State private var hasViewAppeared: Bool = false
+    @State private var isShowingTotalsFields: Bool
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
@@ -19,6 +19,7 @@ struct TotalsView: View {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
+        self.isShowingTotalsFields = totalsViewModel.isShowingTotalsFields
     }
 
     var body: some View {
@@ -33,31 +34,24 @@ struct TotalsView: View {
                             .transition(.opacity)
                     }
 
-                    if totalsViewModel.isShowingTotalsFields {
+                    if isShowingTotalsFields {
                         totalsFieldsView
                             .transition(.opacity)
                             .animation(.default, value: totalsViewModel.isShimmering)
+                            .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
                     }
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
-                .transaction { transaction in
-                    // Disable animations within the view while the view is appearing
-                    if !hasViewAppeared {
-                        transaction.animation = nil
-                    }
-                }
                 paymentsActionButtons
                     .padding()
                 Spacer()
             }
         }
         .background(backgroundColor)
-        .onAppear {
-            hasViewAppeared = true
-        }
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }
+        .onChange(of: totalsViewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
     }
 
     private var backgroundColor: Color {
@@ -156,6 +150,19 @@ private extension TotalsView {
             .shimmering(active: true)
             .cornerRadius(Constants.shimmeringCornerRadius)
     }
+
+    /// Hide totals fields with animation after a delay when starting to processing a payment
+    /// - Parameter isShowing
+    private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
+        guard !isShowing && totalsViewModel.paymentState == .processingPayment else {
+            self.isShowingTotalsFields = isShowing
+            return
+        }
+
+        withAnimation(.default.delay(Constants.totalsFieldsHideAnimationDelay)) {
+            self.isShowingTotalsFields = false
+        }
+    }
 }
 
 private extension TotalsView {
@@ -198,7 +205,7 @@ private extension TotalsView {
                 EmptyView()
             }
         case .disconnected:
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(collectPaymentAction: totalsViewModel.cardPaymentTapped))
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: totalsViewModel.connectReaderTapped))
         }
     }
 }
@@ -230,9 +237,11 @@ private extension TotalsView {
         static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
 
         /// Used for synchronizing animations of shimmeringLine and textField
-        static let matchedGeometrySubtotalId: String = UUID().uuidString
-        static let matchedGeometryTaxId: String = UUID().uuidString
-        static let matchedGeometryTotalId: String = UUID().uuidString
+        static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
+        static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
+        static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
+
+        static let totalsFieldsHideAnimationDelay: CGFloat = 0.8
     }
 
     enum Localization {

@@ -83,6 +83,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             .animation(.default, value: viewModel.orderStage)
+            .animation(.default, value: viewModel.isTotalsViewFullScreen)
         }
     }
 }

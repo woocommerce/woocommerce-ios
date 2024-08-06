@@ -88,6 +88,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundTasks:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .viewEditCustomFieldsInProductsAndOrders:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

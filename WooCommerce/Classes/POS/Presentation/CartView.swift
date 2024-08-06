@@ -110,7 +110,6 @@ private extension CartView {
         static let clearButtonBorderWidth: CGFloat = 2
         static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
         static let checkoutButtonPadding: CGFloat = 16
-        static let checkoutButtonHeight: CGFloat = 80
         static let itemHorizontalPadding: CGFloat = 8
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
@@ -141,14 +140,9 @@ private extension CartView {
         Button {
             cartViewModel.submitCart()
         } label: {
-            HStack {
-                Spacer()
-                Text("Check out")
-                Spacer()
-            }
-            .frame(minHeight: Constants.checkoutButtonHeight)
+            Text("Check out")
         }
-        .buttonStyle(POSCheckoutButtonStyle())
+        .buttonStyle(POSPrimaryButtonStyle())
     }
 
     @ViewBuilder
@@ -166,16 +160,6 @@ private extension CartView {
             }
 
         }
-    }
-}
-
-struct POSCheckoutButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 24, weight: .bold))
-            .background(Color.posCheckoutBackground)
-            .foregroundColor(Color.white)
-            .cornerRadius(8.0)
     }
 }
 

@@ -60,6 +60,7 @@ final class BlazeRemoteTests: XCTestCase {
                                            devices: nil,
                                            pageTopics: ["IAB3", "IAB4"])
         let budget = BlazeCampaignBudget(mode: .total, amount: 35, currency: "USD")
+        let isEvergreen = true
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        originVersion: "1.0.1",
                                                        paymentMethodID: "payment-method-id-123",
@@ -67,6 +68,7 @@ final class BlazeRemoteTests: XCTestCase {
                                                        endDate: endDate,
                                                        timeZone: "America/New_York",
                                                        budget: budget,
+                                                       isEvergreen: isEvergreen,
                                                        siteName: "Unleash Your Brain's Potential",
                                                        textSnippet: "Discover the power of computer neural networks in unlocking your brain's full potential.",
                                                        targetUrl: "https://example.com/2023/06/25/unlocking-the-secrets-of-computer-neural-networks/",
@@ -92,6 +94,7 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(requestedBudget["amount"] as? Double, budget.amount)
         XCTAssertEqual(requestedBudget["currency"] as? String, budget.currency)
         XCTAssertEqual(requestedBudget["mode"] as? String, budget.mode.rawValue)
+        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, isEvergreen)
 
         XCTAssertEqual(request.parameters?["site_name"] as? String, campaign.siteName)
         XCTAssertEqual(request.parameters?["text_snippet"] as? String, campaign.textSnippet)

@@ -593,15 +593,11 @@ private extension OrderListViewController {
             return true
         }
 
-        let systemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        let majorVersion = systemVersion.majorVersion
-        let minorVersion = systemVersion.minorVersion
-
-        if majorVersion == 16 && (minorVersion == 0 || minorVersion == 1) {
+        if #available(iOS 16.2, *) {
+            return true
+        } else {
             return false
         }
-
-        return true
     }
 
     /// Checks to see if there is a selected order ID, and selects its order.

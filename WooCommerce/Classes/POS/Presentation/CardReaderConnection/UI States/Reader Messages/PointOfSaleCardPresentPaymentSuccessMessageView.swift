@@ -33,10 +33,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
                 .foregroundColor(Color(uiColor: .systemBackground))
             Image(systemName: Constants.imageName)
-                .resizable()
-                .font(.largeTitle.bold())
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.checkmarkSize.width)
+                .font(.system(size: Constants.checkmarkSize, weight: .bold))
                 .foregroundColor(Color(.wooCommerceEmerald(.shade40)))
         }
     }
@@ -46,7 +43,7 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
     enum Constants {
         static let imageName: String = "checkmark"
         static let imageSize: CGSize = .init(width: 165, height: 165)
-        static let checkmarkSize: CGSize = .init(width: 56, height: 56)
+        static let checkmarkSize: CGFloat = 56
         static let shadowOpacity: CGFloat = 0.16
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)

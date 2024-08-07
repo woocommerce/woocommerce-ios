@@ -36,6 +36,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    // Whether the campaign should have no end date
+    private var isEvergreen = true
+
     // Budget details
     private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
@@ -61,6 +64,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
+                                    isEvergreen: isEvergreen,
                                     duration: duration,
                                     startDate: startDate,
                                     targetOptions: targetOptions) { [weak self] dailyBudget, duration, startDate in

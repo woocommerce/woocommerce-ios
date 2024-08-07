@@ -15,6 +15,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
+    // Whether the campaign should have no end date
+    @Published private(set) var isEvergreen: Bool
+
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
     /// Using Double because Slider doesn't work with Int
@@ -68,6 +71,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     init(siteID: Int64,
          dailyBudget: Double,
+         isEvergreen: Bool,
          duration: Int,
          startDate: Date,
          locale: Locale = .current,
@@ -78,6 +82,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
+        self.isEvergreen = isEvergreen
         self.dayCount = Double(duration)
         self.startDate = startDate
         self.locale = locale

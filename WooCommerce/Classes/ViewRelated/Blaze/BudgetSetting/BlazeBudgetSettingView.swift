@@ -334,6 +334,6 @@ private extension BlazeBudgetSettingView {
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
         let tomorrow = Date.now + 60 * 60 * 24 // Current date + 1 day
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: tomorrow) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, isEvergreen: true, duration: 7, startDate: tomorrow) { _, _, _ in })
     }
 }

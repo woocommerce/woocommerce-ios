@@ -293,8 +293,10 @@ public extension MediaRemote {
         static let fields: String     = "fields"
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"
+        static let postID: String   = "post_ID"
         static let contextKey: String = "context"
         static let wordPressMediaParentID = "parent_id"
+        static let wordPressMediaParent = "parent"
     }
 
     private enum ParameterValue {

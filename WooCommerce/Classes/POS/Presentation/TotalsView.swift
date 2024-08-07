@@ -11,6 +11,7 @@ struct TotalsView: View {
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
     @State private var isShowingTotalsFields: Bool
+    @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel,
@@ -46,6 +47,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
+        .animation(.default, value: totalsViewModel.paymentState)
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }
@@ -190,8 +192,17 @@ private extension TotalsView {
     @ViewBuilder
     private var paymentsActionButtons: some View {
         if totalsViewModel.paymentState == .cardPaymentSuccessful {
-            Spacer().frame(height: Constants.paymentsButtonsTopSpacing)
+            if isShowingPaymentsButtonSpacing {
+                Spacer().frame(height: Constants.paymentsButtonSpacing)
+            }
             newOrderButton
+                .onAppear {
+                    isShowingPaymentsButtonSpacing = false
+                    withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
+                        isShowingPaymentsButtonSpacing = true
+                    }
+                }
+            Spacer().frame(height: Constants.paymentsButtonSpacing)
         }
         else {
             EmptyView()
@@ -234,9 +245,10 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let paymentsButtonsTopSpacing: CGFloat = 52
+        static let paymentsButtonSpacing: CGFloat = 52
+        static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 20
+        static let newOrderButtonPadding: CGFloat = 22
         static let newOrderButtonFont: Font = Font.posBody.bold()
         static let newOrderImageName: String = "arrow.uturn.backward"
 

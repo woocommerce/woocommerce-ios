@@ -1,10 +1,13 @@
 import SwiftUI
+import struct Yosemite.Order
 
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
+    private let order: Order?
 
-    init(messageType: PointOfSaleCardPresentPaymentMessageType) {
+    init(messageType: PointOfSaleCardPresentPaymentMessageType, order: Order? = nil) {
         self.messageType = messageType
+        self.order = order
     }
 
     var body: some View {
@@ -25,7 +28,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
                 .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentSuccess(let viewModel):
-            PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel)
+            PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel.withOrder(order))
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):

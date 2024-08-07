@@ -1,11 +1,27 @@
 import Foundation
+import struct Yosemite.Order
+import class WooFoundation.CurrencyFormatter
 
 struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
-    let title = Localization.title
-    let message: String
+    let title: String = Localization.title
+    var message: String? = nil
 
-    init(total: String) {
-        message = String(format: Localization.message, total)
+    private var order: Order? = nil
+    private let currencyFormatter: CurrencyFormatter
+
+    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
+        self.currencyFormatter = currencyFormatter
+    }
+
+    func withOrder(_ order: Order?) -> PointOfSaleCardPresentPaymentSuccessMessageViewModel {
+        guard let order = order,
+              let total = currencyFormatter.formatAmount(order.total, with: order.currency) else {
+            return self
+        }
+
+        var viewModel  = self
+        viewModel.message = String(format: Localization.message, total)
+        return viewModel
     }
 }
 

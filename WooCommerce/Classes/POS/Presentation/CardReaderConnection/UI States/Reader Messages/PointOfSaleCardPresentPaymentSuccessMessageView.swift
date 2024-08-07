@@ -13,9 +13,11 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                         .font(.posTitle)
                         .foregroundStyle(Color.posPrimaryTexti3)
                         .bold()
-                    Text(viewModel.message)
-                        .font(.posBody)
-                        .foregroundStyle(Color.posPrimaryTexti3)
+                    if let message = viewModel.message {
+                        Text(message)
+                            .font(.posBody)
+                            .foregroundStyle(Color.posPrimaryTexti3)
+                    }
                 }
             }
             .multilineTextAlignment(.center)
@@ -54,6 +56,6 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
 
 #Preview {
     PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(total: "$54.20")
+        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()
     )
 }

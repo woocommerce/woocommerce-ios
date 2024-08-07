@@ -34,6 +34,11 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
     }
 
+    var weeklyAmountText: String {
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: 7)
+        return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
+    }
+
     var totalAmountText: String {
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
@@ -46,8 +51,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var formattedDateRange: String {
-        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
-        return dateFormatter.string(from: startDate, to: endDate)
+        if isEvergreen {
+            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
+            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
+        } else {
+            let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+            return dateFormatter.string(from: startDate, to: endDate)
+        }
     }
 
     private let dateFormatter: DateIntervalFormatter = {
@@ -235,6 +245,12 @@ extension BlazeBudgetSettingViewModel {
             value: "$%.0f USD",
             comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
             "Reads as $11 USD. Keep %.0f as is."
+        )
+        static let evergreenCampaignDate = NSLocalizedString(
+            "blazeBudgetSettingViewModel.evergreenCampaignDate",
+            value: "Starting from %1$@",
+            comment: "The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. " +
+            "Read as Starting from May 11."
         )
     }
 }

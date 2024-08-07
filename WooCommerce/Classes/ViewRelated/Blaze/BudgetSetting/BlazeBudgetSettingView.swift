@@ -68,11 +68,12 @@ private extension BlazeBudgetSettingView {
             }
 
             // Total budget amount details
+            // If the campaign is evergreen, display the weekly budget instead
             VStack {
-                Text(Localization.totalSpend)
+                Text(viewModel.isEvergreen ? Localization.weeklySpend : Localization.totalSpend)
                     .subheadlineStyle()
 
-                Text(viewModel.totalAmountText)
+                Text(viewModel.isEvergreen ? viewModel.weeklyAmountText : viewModel.totalAmountText)
                     .bold()
                     .largeTitleStyle()
 
@@ -80,6 +81,7 @@ private extension BlazeBudgetSettingView {
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
+                    .renderedIf(viewModel.isEvergreen == false)
             }
 
             // Daily amount slider and estimated impression
@@ -269,6 +271,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.totalSpend",
             value: "Total spend",
             comment: "Label for total spend on the Blaze budget setting screen"
+        )
+        static let weeklySpend = NSLocalizedString(
+            "blazeBudgetSettingView.weeklySpend",
+            value: "Weekly spend",
+            comment: "Label for weekly spend on the Blaze budget setting screen"
         )
         static let estimatedImpressions = NSLocalizedString(
             "blazeBudgetSettingView.estimatedImpressions",

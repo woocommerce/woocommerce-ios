@@ -216,7 +216,8 @@ extension Networking.BlazeForecastedImpressionsInput {
             endDate: .fake(),
             timeZone: .fake(),
             totalBudget: .fake(),
-            targeting: .fake()
+            targeting: .fake(),
+            isEvergreen: .fake()
         )
     }
 }
@@ -411,6 +412,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: .fake(),
             timeZone: .fake(),
             budget: .fake(),
+            isEvergreen: .fake(),
             siteName: .fake(),
             textSnippet: .fake(),
             targetUrl: .fake(),

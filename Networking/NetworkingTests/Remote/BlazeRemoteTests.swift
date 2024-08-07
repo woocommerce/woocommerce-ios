@@ -462,7 +462,8 @@ final class BlazeRemoteTests: XCTestCase {
                                                     endDate: endDate,
                                                     timeZone: "America/New_York",
                                                     totalBudget: 35.00,
-                                                    targeting: targeting)
+                                                    targeting: targeting,
+                                                    isEvergreen: true)
 
         // When
         _ = try await remote.fetchForecastedImpressions(for: sampleSiteID, with: input)
@@ -473,6 +474,7 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
         XCTAssertEqual(request.parameters?["time_zone"] as? String, input.timeZone)
         XCTAssertEqual(request.parameters?["total_budget"] as? Double, input.totalBudget)
+        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, true)
 
         let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
         XCTAssertNil(targetingDict["locations"])

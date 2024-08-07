@@ -234,6 +234,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             budget: BlazeCampaignBudget(mode: .total,
                                                         amount: dailyBudget * Double(duration),
                                                         currency: Constants.defaultCurrency),
+                            isEvergreen: isEvergreen,
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,

@@ -537,6 +537,7 @@ extension Networking.CreateBlazeCampaign {
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
         budget: CopiableProp<BlazeCampaignBudget> = .copy,
+        isEvergreen: CopiableProp<Bool> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -553,6 +554,7 @@ extension Networking.CreateBlazeCampaign {
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
         let budget = budget ?? self.budget
+        let isEvergreen = isEvergreen ?? self.isEvergreen
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -570,6 +572,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: endDate,
             timeZone: timeZone,
             budget: budget,
+            isEvergreen: isEvergreen,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,

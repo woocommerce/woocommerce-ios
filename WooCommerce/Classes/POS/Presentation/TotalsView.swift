@@ -47,7 +47,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: totalsViewModel.paymentState)
+        .animation(.default, value: totalsViewModel.isPaymentSuccessState)
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }

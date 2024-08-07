@@ -28,7 +28,7 @@
 		01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */; };
 		01664F9E2C50E685007CB5DD /* Font+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01664F9D2C50E685007CB5DD /* Font+WooCommercePOS.swift */; };
 		016BCAFF2C4F907F009D8367 /* CartViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016BCAFE2C4F907F009D8367 /* CartViewModelProtocol.swift */; };
-		019C5EB02C516F7B005B82D3 /* ItemListViewModelProtocool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocool.swift */; };
+		019C5EB02C516F7B005B82D3 /* ItemListViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocol.swift */; };
 		019C5EB22C5171E6005B82D3 /* MockItemListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019C5EB12C5171E6005B82D3 /* MockItemListViewModel.swift */; };
 		01BD77442C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */; };
 		01BD77462C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77452C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift */; };
@@ -3020,7 +3020,7 @@
 		01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProgressViewStyle.swift; sourceTree = "<group>"; };
 		01664F9D2C50E685007CB5DD /* Font+WooCommercePOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+WooCommercePOS.swift"; sourceTree = "<group>"; };
 		016BCAFE2C4F907F009D8367 /* CartViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewModelProtocol.swift; sourceTree = "<group>"; };
-		019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListViewModelProtocool.swift; sourceTree = "<group>"; };
+		019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListViewModelProtocol.swift; sourceTree = "<group>"; };
 		019C5EB12C5171E6005B82D3 /* MockItemListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockItemListViewModel.swift; sourceTree = "<group>"; };
 		01BD77432C58CED400147191 /* PointOfSaleCardPresentPaymentProcessingMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentProcessingMessageView.swift; sourceTree = "<group>"; };
 		01BD77452C58D0D000147191 /* PointOfSaleCardPresentPaymentSuccessMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentSuccessMessageView.swift; sourceTree = "<group>"; };
@@ -6582,7 +6582,7 @@
 			isa = PBXGroup;
 			children = (
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
-				019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocool.swift */,
+				019C5EAF2C516F7B005B82D3 /* ItemListViewModelProtocol.swift */,
 				683763152C2E44B800AD51D0 /* ItemListViewModel.swift */,
 				C7F746C82C4868670023ADD0 /* TotalsViewModelProtocol.swift */,
 				6885E2CB2C32B14B004C8D70 /* TotalsViewModel.swift */,
@@ -14510,7 +14510,7 @@
 				02B2829027C352DA004A332A /* RefreshableScrollView.swift in Sources */,
 				DE6D84A92C3D07850014FBFF /* WooAnalyticsEvent+GoogleAds.swift in Sources */,
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
-				019C5EB02C516F7B005B82D3 /* ItemListViewModelProtocool.swift in Sources */,
+				019C5EB02C516F7B005B82D3 /* ItemListViewModelProtocol.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				B991F5382B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,

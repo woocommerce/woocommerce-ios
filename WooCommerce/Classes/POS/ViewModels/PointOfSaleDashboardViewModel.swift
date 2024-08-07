@@ -143,7 +143,10 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        cartViewModel.bind(to: $orderStage.eraseToAnyPublisher())
+        $orderStage.sink { [weak self] stage in
+            self?.cartViewModel.canDeleteItemsFromCart = stage == .building
+        }
+        .store(in: &cancellables)
     }
 }
 

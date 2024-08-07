@@ -1,16 +1,26 @@
 import Foundation
 
 struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
-    let imageName = PointOfSaleAssets.paymentSuccessful.imageName
-    let title = Localization.paymentSuccessful
+    let title = Localization.title
+    let message: String
+
+    init(total: String) {
+        message = String(format: Localization.message, total)
+    }
 }
 
 private extension PointOfSaleCardPresentPaymentSuccessMessageViewModel {
     enum Localization {
-        static let paymentSuccessful = NSLocalizedString(
+        static let title = NSLocalizedString(
             "pointOfSale.cardPresent.paymentSuccessful.title",
             value: "Payment successful!",
-            comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
+            comment: "Title shown to users when payment is made successfully."
+        )
+
+        static let message = NSLocalizedString(
+            "pointOfSale.cardPresent.paymentSuccessful.message",
+            value: "A payment of %1$@ was successfully made",
+            comment: "Message shown to users when payment is made. %1$@ indicates a total sum, e.g $10.5"
         )
     }
 }

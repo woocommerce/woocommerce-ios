@@ -127,7 +127,7 @@ extension CardPresentPaymentEventDetails {
                     inputMethods: inputMethods)))
 
         case .paymentSuccess:
-            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
+            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(total: "$54.40")))
 
         case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: _):
             return .message(.paymentError(

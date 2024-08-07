@@ -52,11 +52,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemListState()
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewTransaction()
+        totalsViewModel.startNewOrder()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {

@@ -39,7 +39,7 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNil(sut.order)
     }
     func test_setOrder() {}
-    func test_startNewTransaction_after_collecting_payment() async throws {
+    func test_startNewOrder_after_collecting_payment() async throws {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
         let item = Self.makeItem()
@@ -54,7 +54,7 @@ final class TotalsViewModelTests: XCTestCase {
             return XCTFail("Expected order. Got nothing")
         }
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
         XCTAssertEqual(sut.paymentState, paymentState)

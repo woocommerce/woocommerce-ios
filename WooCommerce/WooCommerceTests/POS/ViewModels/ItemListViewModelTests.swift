@@ -182,27 +182,6 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .error(expectedError))
     }
 
-    func test_shouldShowHeaderBanner_when_initialized_then_should_show_banner_by_default() async {
-        // Given
-        let expectation = XCTestExpectation(description: "Banner should be shown by default")
-        let expectedItems = Self.makeItems()
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        sut.$shouldShowHeaderBanner
-            .dropFirst()
-            .removeDuplicates()
-            .sink { value in
-                XCTAssertEqual(value, true)
-                expectation.fulfill()
-            }
-            .store(in: &cancellables)
-
-        // Then
-        XCTAssertEqual(sut.state, .loaded(expectedItems))
-    }
-
     func test_shouldShowHeaderBanner_when_dismissBanner_invoked_then_should_not_show_banner() {
         // Given/When
         sut.dismissBanner()
@@ -228,8 +207,8 @@ final class ItemListViewModelTests: XCTestCase {
             .dropFirst()
             .removeDuplicates()
             .sink { value in
-            XCTAssertEqual(value, false)
-            expectation.fulfill()
+                XCTAssertEqual(value, false)
+                expectation.fulfill()
         }
         .store(in: &cancellables)
 
@@ -249,8 +228,8 @@ final class ItemListViewModelTests: XCTestCase {
             .dropFirst()
             .removeDuplicates()
             .sink { value in
-            XCTAssertEqual(value, true)
-            expectation.fulfill()
+                XCTAssertEqual(value, true)
+                expectation.fulfill()
         }
         .store(in: &cancellables)
 

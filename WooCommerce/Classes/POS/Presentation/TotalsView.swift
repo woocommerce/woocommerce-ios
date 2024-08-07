@@ -42,7 +42,6 @@ struct TotalsView: View {
                 }
                 .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
                 paymentsActionButtons
-                    .padding()
                 Spacer()
             }
         }
@@ -167,19 +166,20 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    private var newTransactionButton: some View {
+    private var newOrderButton: some View {
         Button(action: {
-            viewModel.startNewTransaction()
+            viewModel.startNewOrder()
         }, label: {
-            HStack(spacing: Constants.newTransactionButtonSpacing) {
-                Spacer()
-                Image(PointOfSaleAssets.newTransaction.imageName)
-                Text(Localization.newTransaction)
-                    .font(Constants.newTransactionButtonFont)
-                Spacer()
+            HStack(spacing: Constants.newOrderButtonSpacing) {
+                Image(systemName: Constants.newOrderImageName)
+                    .font(.body.bold())
+                    .aspectRatio(contentMode: .fit)
+                Text(Localization.newOrder)
+                    .font(Constants.newOrderButtonFont)
             }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.newTransactionButtonPadding)
+        .padding(Constants.newOrderButtonPadding)
         .foregroundColor(Color.primaryText)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
@@ -190,7 +190,8 @@ private extension TotalsView {
     @ViewBuilder
     private var paymentsActionButtons: some View {
         if totalsViewModel.paymentState == .cardPaymentSuccessful {
-            newTransactionButton
+            Spacer().frame(height: Constants.paymentsButtonsTopSpacing)
+            newOrderButton
         }
         else {
             EmptyView()
@@ -233,9 +234,11 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let newTransactionButtonSpacing: CGFloat = 20
-        static let newTransactionButtonPadding: CGFloat = 16
-        static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
+        static let paymentsButtonsTopSpacing: CGFloat = 52
+        static let newOrderButtonSpacing: CGFloat = 12
+        static let newOrderButtonPadding: CGFloat = 20
+        static let newOrderButtonFont: Font = Font.posBody.bold()
+        static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -258,10 +261,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let newTransaction = NSLocalizedString(
-            "pos.totalsView.newTransaction",
-            value: "New transaction",
-            comment: "Button title for new transaction button")
+        static let newOrder = NSLocalizedString(
+            "pos.totalsView.newOrder",
+            value: "New order",
+            comment: "Button title for new order button")
         static let calculateAmounts = NSLocalizedString(
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",

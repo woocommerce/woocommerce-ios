@@ -182,25 +182,37 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .error(expectedError))
     }
 
-    func test_isHeaderBannerDismissed_when_dismissBanner_is_called_then_returns_true() {
+    func test_shouldShowHeaderBanner_when_initialized_then_should_show_banner_by_default() async {
         // Given
-        XCTAssertEqual(sut.isHeaderBannerDismissed, false)
+        let expectation = XCTestExpectation(description: "Banner should be shown by default")
+        let expectedItems = Self.makeItems()
 
         // When
+        await sut.populatePointOfSaleItems()
+
+        sut.$shouldShowHeaderBanner
+            .dropFirst()
+            .sink { value in
+                XCTAssertEqual(value, true)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // Then
+        XCTAssertEqual(sut.state, .loaded(expectedItems))
+    }
+
+    func test_shouldShowHeaderBanner_when_dismissBanner_invoked_then_should_not_show_banner() {
+        // Given/When
         sut.dismissBanner()
 
         // Then
-        XCTAssertEqual(sut.isHeaderBannerDismissed, true)
-    }
-
-    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loading_then_returns_false() {
-        // Given/When/Then
-        XCTAssertEqual(sut.state, .loading)
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
     func test_shouldShowHeaderBanner_when_itemListViewModel_throws_error_then_returns_false() async {
         // Given
+        let expectation = XCTestExpectation(description: "Banner should be hidden if error loading products")
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldThrowError = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
@@ -211,21 +223,36 @@ final class ItemListViewModelTests: XCTestCase {
         // When
         await sut.populatePointOfSaleItems()
 
+        sut.$shouldShowHeaderBanner
+            .dropFirst()
+            .sink { value in
+            XCTAssertEqual(value, false)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
         // Then
         XCTAssertEqual(sut.state, .error(expectedError))
-        XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
     func test_shouldShowHeaderBanner_when_itemListViewModel_loaded_then_returns_true() async {
         // Given
+        let expectation = XCTestExpectation(description: "Banner should be shown once products are loaded")
         let expectedItems = Self.makeItems()
 
         // When
         await sut.populatePointOfSaleItems()
 
+        sut.$shouldShowHeaderBanner
+            .dropFirst()
+            .sink { value in
+            XCTAssertEqual(value, true)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
         // Then
         XCTAssertEqual(sut.state, .loaded(expectedItems))
-        XCTAssertEqual(sut.shouldShowHeaderBanner, true)
     }
 
     func test_isEmptyOrError_when_itemListViewModel_loaded_normally_then_returns_false() async {

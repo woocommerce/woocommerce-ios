@@ -345,6 +345,17 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
     }
+
+    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
+        // Given
+        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
+    }
 }
 
 private extension PointOfSaleDashboardViewModelTests {

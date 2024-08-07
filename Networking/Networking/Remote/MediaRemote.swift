@@ -6,12 +6,14 @@ public protocol MediaRemoteProtocol {
                    mediaID: Int64,
                    completion: @escaping (Result<WordPressMedia, Error>) -> Void)
     func loadMediaLibrary(for siteID: Int64,
+                          productID: Int64?,
                           imagesOnly: Bool,
                           pageNumber: Int,
                           pageSize: Int,
                           context: String?,
                           completion: @escaping (Result<[Media], Error>) -> Void)
     func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           productID: Int64?,
                                            imagesOnly: Bool,
                                            pageNumber: Int,
                                            pageSize: Int,
@@ -72,12 +74,14 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - productID: Loads media attached to a specific product ID. Loads all media if nil.
     ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadMediaLibrary(for siteID: Int64,
+                                 productID: Int64? = nil,
                                  imagesOnly: Bool,
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
@@ -88,7 +92,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type,file",
-            ParameterKey.mimeType: imagesOnly ? "image" : nil
+            ParameterKey.mimeType: imagesOnly ? "image" : nil,
+            ParameterKey.postID: productID
         ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
@@ -106,11 +111,13 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
+    ///   - productID: Loads media attached to a specific product ID. Loads all media if nil.
     ///   - imagesOnly: Whether only images should be loaded.
     ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     public func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                                  productID: Int64? = nil,
                                                   imagesOnly: Bool,
                                                   pageNumber: Int = Default.pageNumber,
                                                   pageSize: Int = 25,
@@ -119,7 +126,8 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-            ParameterKey.mimeType: imagesOnly ? "image" : nil
+            ParameterKey.mimeType: imagesOnly ? "image" : nil,
+            ParameterKey.wordPressMediaParent: productID
         ].compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"

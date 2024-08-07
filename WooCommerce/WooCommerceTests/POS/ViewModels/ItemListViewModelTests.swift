@@ -192,6 +192,7 @@ final class ItemListViewModelTests: XCTestCase {
 
         sut.$shouldShowHeaderBanner
             .dropFirst()
+            .removeDuplicates()
             .sink { value in
                 XCTAssertEqual(value, true)
                 expectation.fulfill()
@@ -225,6 +226,7 @@ final class ItemListViewModelTests: XCTestCase {
 
         sut.$shouldShowHeaderBanner
             .dropFirst()
+            .removeDuplicates()
             .sink { value in
             XCTAssertEqual(value, false)
             expectation.fulfill()
@@ -245,6 +247,7 @@ final class ItemListViewModelTests: XCTestCase {
 
         sut.$shouldShowHeaderBanner
             .dropFirst()
+            .removeDuplicates()
             .sink { value in
             XCTAssertEqual(value, true)
             expectation.fulfill()

@@ -79,6 +79,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             .map { state, bannerDismissed in
                 return state.isLoaded && !bannerDismissed
             }
+            .removeDuplicates()
             .assign(to: &$shouldShowHeaderBanner)
     }
 }

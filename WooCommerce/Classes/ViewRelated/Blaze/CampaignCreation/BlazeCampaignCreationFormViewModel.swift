@@ -68,9 +68,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                     isEvergreen: isEvergreen,
                                     duration: duration,
                                     startDate: startDate,
-                                    targetOptions: targetOptions) { [weak self] dailyBudget, duration, startDate in
+                                    targetOptions: targetOptions) { [weak self] dailyBudget, isEvegreen, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
+            self.isEvergreen = isEvegreen
             self.duration = duration
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
@@ -406,13 +407,18 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
-        let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
-        let date = dateFormatter.string(for: startDate) ?? ""
-        budgetDetailText = String.pluralize(
-            duration,
-            singular: String(format: Localization.budgetSingleDay, amount, duration, date),
-            plural: String(format: Localization.budgetMultipleDays, amount, duration, date)
-        )
+        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+        if isEvergreen {
+            let weeklyAmount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(7))
+            budgetDetailText = String(format: Localization.evergreenCampaignWeeklyBudget, weeklyAmount, formattedStartDate)
+        } else {
+            let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
+            budgetDetailText = String.pluralize(
+                duration,
+                singular: String(format: Localization.budgetSingleDay, amount, duration, formattedStartDate),
+                plural: String(format: Localization.budgetMultipleDays, amount, duration, formattedStartDate)
+            )
+        }
     }
 
     func updateTargetLanguagesText() {
@@ -499,6 +505,12 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d days from %3$@",
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
+        )
+        static let evergreenCampaignWeeklyBudget = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget",
+            value: "%1$@ weekly starting from %2$@",
+            comment: "The formatted weekly budget for an evergreen Blaze campaign with a starting date. " +
+            "Reads as $11 USD weekly starting from May 11 2024."
         )
         static let totalBudget = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.totalBudget",

@@ -74,7 +74,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
+    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ isEvergreen: Bool, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
 
     private var settingSubscription: AnyCancellable?
@@ -122,7 +122,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
                                                           totalBudget: totalBudget))
-        completionHandler(dailyAmount, days, startDate)
+        completionHandler(dailyAmount, isEvergreen, days, startDate)
     }
 
     @MainActor

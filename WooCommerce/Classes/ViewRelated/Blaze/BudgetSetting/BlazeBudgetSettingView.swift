@@ -358,6 +358,6 @@ struct BlazeBudgetSettingView_Previews: PreviewProvider {
                                                                       dailyBudget: 5,
                                                                       isEvergreen: true,
                                                                       duration: 7,
-                                                                      startDate: tomorrow) { _, _, _ in })
+                                                                      startDate: tomorrow) { _, _, _, _ in })
     }
 }

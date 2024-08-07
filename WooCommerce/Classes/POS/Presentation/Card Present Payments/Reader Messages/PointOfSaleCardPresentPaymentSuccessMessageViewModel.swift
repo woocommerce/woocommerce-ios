@@ -31,7 +31,7 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.cardPresent.paymentSuccessful.title",
-            value: "Payment successful!",
+            value: "Payment successful",
             comment: "Title shown to users when payment is made successfully."
         )
 

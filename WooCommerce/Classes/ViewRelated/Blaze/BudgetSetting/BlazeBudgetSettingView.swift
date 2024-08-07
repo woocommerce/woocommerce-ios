@@ -188,6 +188,12 @@ private extension BlazeBudgetSettingView {
     var durationSettingView: some View {
         NavigationView {
             ScrollView {
+
+                Toggle(Localization.evergreenCampaign, isOn: $viewModel.isEvergreen)
+                    .toggleStyle(.switch)
+                    .padding(Layout.contentPadding)
+                    .padding(.top, Layout.sectionSpacing)
+
                 // Duration slider
                 VStack(spacing: Layout.sectionContentSpacing) {
                     Text(viewModel.formatDayCount(duration))
@@ -199,7 +205,7 @@ private extension BlazeBudgetSettingView {
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
                 .padding(Layout.contentPadding)
-                .padding(.top, Layout.sectionSpacing)
+                .renderedIf(viewModel.isEvergreen == false)
 
                 // Start date picker
                 VStack {
@@ -335,12 +341,21 @@ private extension BlazeBudgetSettingView {
             value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
+        static let evergreenCampaign = NSLocalizedString(
+            "blazeBudgetSettingView.evergreenCampaign",
+            value: "Run until I stop it",
+            comment: "Switch to toggle evergreen mode on or off for a Blaze campaign."
+        )
     }
 }
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
         let tomorrow = Date.now + 60 * 60 * 24 // Current date + 1 day
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, isEvergreen: true, duration: 7, startDate: tomorrow) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123,
+                                                                      dailyBudget: 5,
+                                                                      isEvergreen: true,
+                                                                      duration: 7,
+                                                                      startDate: tomorrow) { _, _, _ in })
     }
 }

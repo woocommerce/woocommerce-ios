@@ -16,7 +16,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
     // Whether the campaign should have no end date
-    @Published private(set) var isEvergreen: Bool
+    @Published var isEvergreen: Bool
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 

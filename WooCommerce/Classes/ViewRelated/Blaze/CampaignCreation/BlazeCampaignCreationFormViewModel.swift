@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -37,7 +38,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     // Whether the campaign should have no end date
-    private var isEvergreen = true
+    private var isEvergreen: Bool
 
     // Budget details
     private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
@@ -252,6 +253,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -261,6 +263,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
+
+        // sets isEvergreen = true by default if evergreen campaigns are supported
+        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
         updateBudgetDetails()
         updateTargetLanguagesText()

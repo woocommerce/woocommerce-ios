@@ -189,10 +189,12 @@ private extension BlazeBudgetSettingView {
         NavigationView {
             ScrollView {
 
+                Spacer().frame(height: Layout.sectionSpacing)
+
                 Toggle(Localization.evergreenCampaign, isOn: $viewModel.isEvergreen)
                     .toggleStyle(.switch)
                     .padding(Layout.contentPadding)
-                    .padding(.top, Layout.sectionSpacing)
+                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
 
                 // Duration slider
                 VStack(spacing: Layout.sectionContentSpacing) {

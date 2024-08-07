@@ -46,7 +46,7 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet, fixedHeight: false, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
@@ -58,6 +58,37 @@ struct PointOfSaleDashboardView: View {
                     Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
+        })
+        .posModal(isPresented: $viewModel.showExitPOSModal, fixedWidth: false, fixedHeight: false, content: {
+            VStack(spacing: 0 ) {
+                HStack {
+                    Spacer()
+                    Button {
+                        viewModel.showExitPOSModal = false
+                    } label: {
+                        Image(PointOfSaleAssets.xClose.imageName)
+                            .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
+                            .foregroundColor(Color.posTertiaryTexti3)
+                    }
+                }
+                Text("Exit Point of Sale mode?")
+                    .font(.posModalTitle)
+                    .padding(.bottom)
+                Text("Any orders in progress will be lost.")
+                    .font(.posModalBody)
+                    .padding(.bottom)
+                    .padding(.bottom)
+                    .padding(.bottom)
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Text("Exit")
+                }
+                .buttonStyle(POSPrimaryButtonStyle())
+            }
+            .padding()
+            .padding()
+            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         })
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
@@ -107,6 +138,8 @@ private extension PointOfSaleDashboardView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
+        static let closeIconSize: CGFloat = 40.0
+        static let exitPOSSheetMaxWidth: CGFloat = 900.0
     }
 }
 

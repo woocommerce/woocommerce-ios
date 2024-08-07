@@ -18,13 +18,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case finalizing
     }
 
-    @Published private(set) var orderStage: OrderStage = .building {
-        didSet {
-            orderStageSubject.send(orderStage)
-        }
-    }
-
-    private let orderStageSubject = PassthroughSubject<OrderStage, Never>()
+    @Published private(set) var orderStage: OrderStage = .building
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
@@ -149,7 +143,7 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+        cartViewModel.bind(to: $orderStage.eraseToAnyPublisher())
     }
 }
 

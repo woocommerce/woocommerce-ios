@@ -7,15 +7,17 @@ struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
     var message: String? = nil
 
     private var order: Order? = nil
-    private let currencyFormatter: CurrencyFormatter
 
-    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
-        self.currencyFormatter = currencyFormatter
+    typealias FormatAmount = (_ amount: String, _ currency: String?, _ locale: Locale) -> String?
+    private let formatAmount: FormatAmount
+
+    init(formatAmount: @escaping FormatAmount = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings).formatAmount) {
+        self.formatAmount = formatAmount
     }
 
     func withOrder(_ order: Order?) -> PointOfSaleCardPresentPaymentSuccessMessageViewModel {
         guard let order = order,
-              let total = currencyFormatter.formatAmount(order.total, with: order.currency) else {
+              let total = formatAmount(order.total, order.currency, .current) else {
             return self
         }
 

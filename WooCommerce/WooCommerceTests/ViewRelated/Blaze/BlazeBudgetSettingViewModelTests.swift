@@ -18,6 +18,25 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_totalAmountText_is_updated_correctly_depending_on_isEvergreen() {
+        // Given
+        let initialStartDate = Date(timeIntervalSinceNow: 0)
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 11,
+                                                    isEvergreen: false,
+                                                    duration: 3,
+                                                    startDate: initialStartDate) { _, _, _, _ in }
+
+        // Then
+        XCTAssertEqual(viewModel.totalAmountText, "$33 USD") // total spend for 3 days
+
+        // When
+        viewModel.isEvergreen = true
+
+        // Then
+        XCTAssertEqual(viewModel.totalAmountText, "$77 USD") // weekly spend
+    }
+
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {
         // Given
         let initialStartDate = Date(timeIntervalSinceNow: 0)

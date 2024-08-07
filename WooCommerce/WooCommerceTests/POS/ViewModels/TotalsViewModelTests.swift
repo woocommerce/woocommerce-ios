@@ -6,12 +6,14 @@ import XCTest
 @testable import struct Yosemite.POSProduct
 @testable import protocol Yosemite.POSItem
 @testable import struct Yosemite.OrderItem
+import Combine
 
 final class TotalsViewModelTests: XCTestCase {
 
     private var sut: TotalsViewModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var orderService: MockPOSOrderService!
+    private var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
@@ -22,8 +24,37 @@ final class TotalsViewModelTests: XCTestCase {
                               currencyFormatter: .init(currencySettings: .init()),
                               paymentState: .acceptingCard,
                               isSyncingOrder: false)
+        cancellables = []
     }
-    func test_isSyncingOrder() {}
+    override func tearDown() {
+        cancellables.forEach {
+            $0.cancel()
+        }
+        cancellables.removeAll()
+
+        super.tearDown()
+    }
+    func test_isSyncingOrder() async throws {
+        // Given
+        let item = Self.makeItem()
+        let expectation = XCTestExpectation(description: "Expect isSyncingOrder to be true after syncOrder is called")
+        var expectedSyncing = false
+        XCTAssertEqual(sut.isSyncingOrder, expectedSyncing)
+
+        sut.$isSyncingOrder
+            .dropFirst()
+            .sink { value in
+                XCTAssertEqual(value, expectedSyncing)
+                expectation.fulfill()
+                expectedSyncing = !value
+            }
+            .store(in: &cancellables)
+
+        // When/Then
+        expectedSyncing = true
+        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
+        await fulfillment(of: [expectation], timeout: 2.0)
+    }
     func test_on_checkOutTapped_startSyncOrder() {}
     func test_stopSyncOrder() {}
     func test_order() {}

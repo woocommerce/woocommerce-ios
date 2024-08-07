@@ -34,13 +34,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
     }
 
-    var weeklyAmountText: String {
-        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: 7)
-        return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
+    var totalAmountTitle: String {
+        isEvergreen ? Localization.weeklySpend : Localization.totalSpend
     }
 
     var totalAmountText: String {
-        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
+        let duration = isEvergreen ? 7 : dayCount
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
@@ -251,6 +251,16 @@ extension BlazeBudgetSettingViewModel {
             value: "Starting from %1$@",
             comment: "The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. " +
             "Read as Starting from May 11."
+        )
+        static let totalSpend = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalSpend",
+            value: "Total spend",
+            comment: "Label for total spend on the Blaze budget setting screen"
+        )
+        static let weeklySpend = NSLocalizedString(
+            "blazeBudgetSettingViewModel.weeklySpend",
+            value: "Weekly spend",
+            comment: "Label for weekly spend on the Blaze budget setting screen"
         )
     }
 }

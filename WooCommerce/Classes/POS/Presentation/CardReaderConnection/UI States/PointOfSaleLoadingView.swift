@@ -9,7 +9,7 @@ struct PointOfSaleEmptyView: View {
     }
 }
 
-struct PoinfOfSaleErrorView: View {
+struct PointOfSaleErrorView: View {
 
     private var viewModel: any ItemListViewModelProtocol
 

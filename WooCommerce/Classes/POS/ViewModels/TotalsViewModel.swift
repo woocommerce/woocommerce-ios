@@ -282,22 +282,7 @@ private extension TotalsViewModel {
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard let self,
-                      case let .show(eventDetails) = event,
-                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
-                    return nil
-                }
-
-                switch messageType {
-                case .paymentSuccess(var viewModel):
-                    guard let formattedOrderTotalPrice else {
-                        return messageType
-                    }
-                    viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
-                    return .paymentSuccess(viewModel: viewModel)
-                default:
-                    return messageType
-                }
+                self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
@@ -331,6 +316,29 @@ private extension TotalsViewModel {
             }
             .removeDuplicates()
             .assign(to: &$isPaymentSuccessState)
+    }
+}
+
+private extension TotalsViewModel {
+    /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary
+    /// - Parameter event: CardPresentPaymentEvent
+    /// - Returns: PointOfSaleCardPresentPaymentMessageType
+    func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
+        guard case let .show(eventDetails) = event,
+              case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
+            return nil
+        }
+
+        switch messageType {
+        case .paymentSuccess(var viewModel):
+            guard let formattedOrderTotalPrice else {
+                return messageType
+            }
+            viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
+            return .paymentSuccess(viewModel: viewModel)
+        default:
+            return messageType
+        }
     }
 }
 

@@ -455,6 +455,23 @@ platform :ios do
       release_branch: "release/#{hotfix_version}",
       labels: ['Releases']
     )
+
+    begin
+      close_milestone(
+        repository: GITHUB_REPO,
+        milestone: hotfix_version
+      )
+    rescue StandardError => e
+      error_message = <<-MESSAGE
+        Error closing milestone `#{hotfix_version}`: #{e.message}
+        - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
+        - If this is the first run of the lane, please investigate the error.
+      MESSAGE
+
+      UI.error(error_message)
+
+      buildkite_annotate(style: 'warning', context: 'finalize-hotfix-error-closing-milestone', message: error_message) if is_ci
+    end
   end
 
   #####################################################################################
@@ -494,8 +511,25 @@ platform :ios do
     commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
 
-    # Wrap up
+    # Start the build
+    UI.important('Pushing changes to remote and triggering the release build')
+    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
+      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
+    end
+
+    push_to_git_remote(tags: false)
+
     version = release_version_current
+
+    trigger_release_build(branch_to_build: "release/#{version}")
+
+    create_release_backmerge_pull_request(
+      repository: GITHUB_REPO,
+      release_branch: Fastlane::Helper::GitHelper.current_git_branch,
+      labels: ['Releases']
+    )
+
+    # Close milestone
     begin
       remove_branch_protection(
         repository: GITHUB_REPO,
@@ -512,7 +546,7 @@ platform :ios do
       )
     rescue StandardError => e
       error_message = <<-MESSAGE
-        Error removing branch protection or finalization of milestone `#{version}`: #{e.message}
+        Error removing branch protection or finalizing milestone `#{version}`: #{e.message}
         - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
           Just ensure the branch protection for `release/#{version}` is no more and that the milestone `#{version}` is indeed closed.
         - If this is the first run of the lane, please investigate the error.
@@ -521,22 +555,6 @@ platform :ios do
       UI.error(error_message)
       buildkite_annotate(style: 'warning', context: 'finalize-release-error-milestone', message: error_message) if is_ci
     end
-
-    # Start the build
-    UI.important('Pushing changes to remote and triggering the release build')
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
-
-    push_to_git_remote(tags: false)
-
-    trigger_release_build(branch_to_build: "release/#{version}")
-
-    create_release_backmerge_pull_request(
-      repository: GITHUB_REPO,
-      release_branch: Fastlane::Helper::GitHelper.current_git_branch,
-      labels: ['Releases']
-    )
   end
 
   lane :check_translation_progress_all do

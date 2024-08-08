@@ -6,19 +6,8 @@ struct SimpleProductsOnlyInformation: View {
     var body: some View {
         VStack(spacing: Constants.contentBlockSpacing) {
             VStack(spacing: Constants.textSpacing) {
-                HStack {
-                    Spacer()
-                    Text(Localization.modalTitle)
-                        .font(.posModalTitle)
-                    Spacer()
-                    Button(action: {
-                        isPresented = false
-                    }) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(Color.gray)
-                            .frame(width: 32, height: 32)
-                    }
-                }
+                Text(Localization.modalTitle)
+                    .font(.posModalTitle)
 
                 Group {
                     Text(Localization.simpleProductsOnlyIssueMessage)

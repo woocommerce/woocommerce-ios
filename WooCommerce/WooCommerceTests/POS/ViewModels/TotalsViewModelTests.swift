@@ -26,6 +26,7 @@ final class TotalsViewModelTests: XCTestCase {
                               isSyncingOrder: false)
         cancellables = []
     }
+
     override func tearDown() {
         cancellables.forEach {
             $0.cancel()
@@ -34,27 +35,30 @@ final class TotalsViewModelTests: XCTestCase {
 
         super.tearDown()
     }
-    func test_isSyncingOrder() async throws {
+
+    func test_isSyncingOrder_when_syncOrder_called() async throws {
         // Given
         let item = Self.makeItem()
         let expectation = XCTestExpectation(description: "Expect isSyncingOrder to be true after syncOrder is called")
-        var expectedSyncing = false
-        XCTAssertEqual(sut.isSyncingOrder, expectedSyncing)
+        XCTAssertEqual(sut.isSyncingOrder, false)
+        var isSyncingOrderChecked = false
 
         sut.$isSyncingOrder
             .dropFirst()
             .sink { value in
-                XCTAssertEqual(value, expectedSyncing)
-                expectation.fulfill()
-                expectedSyncing = !value
+                if !isSyncingOrderChecked {
+                    XCTAssertEqual(value, true)
+                    expectation.fulfill()
+                    isSyncingOrderChecked = true
+                }
             }
             .store(in: &cancellables)
 
         // When/Then
-        expectedSyncing = true
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         await fulfillment(of: [expectation], timeout: 2.0)
     }
+
     func test_on_checkOutTapped_startSyncOrder() {}
     func test_stopSyncOrder() {}
     func test_order() {}

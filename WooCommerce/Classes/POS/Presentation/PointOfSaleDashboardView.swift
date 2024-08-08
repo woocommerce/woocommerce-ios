@@ -46,7 +46,7 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet, fixedHeight: false, content: {
+        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
@@ -58,8 +58,8 @@ struct PointOfSaleDashboardView: View {
                     Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
-        })
-        .posModal(isPresented: $viewModel.showExitPOSModal, fixedWidth: false, fixedHeight: false, content: {
+        }
+        .posModal(isPresented: $viewModel.showExitPOSModal) {
             VStack(spacing: 0 ) {
                 HStack {
                     Spacer()
@@ -89,7 +89,7 @@ struct PointOfSaleDashboardView: View {
             .padding()
             .padding()
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
-        })
+        }
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
         }

@@ -25,12 +25,10 @@ struct PointOfSaleExitPosAlertView: View {
             }
             Text(Localization.exitTitle)
                 .font(.posModalTitle)
-                .padding(.bottom)
+                .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
                 .font(.posModalBody)
-                .padding(.bottom)
-                .padding(.bottom)
-                .padding(.bottom)
+                .padding(.bottom, Constants.bodyBottomPadding)
             Button {
                 dismiss()
             } label: {
@@ -38,13 +36,15 @@ struct PointOfSaleExitPosAlertView: View {
             }
             .buttonStyle(POSPrimaryButtonStyle())
         }
-        .padding()
-        .padding()
+        .padding(Constants.padding)
     }
 }
 
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
+        static let titleBottomPadding: CGFloat = 20.0
+        static let bodyBottomPadding: CGFloat = 60.0
+        static let padding: CGFloat = 40.0
         static let closeIconSize: CGFloat = 30.0
         static let closeButtonSize: CGFloat = 40.0
     }

@@ -3,12 +3,12 @@ import Foundation
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
     let title = Localization.title
     let instruction = Localization.instruction
-    let collectPaymentButtonViewModel: CardPresentPaymentsModalButtonViewModel
+    let connectReaderButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    init(collectPaymentAction: @escaping () -> Void) {
-        self.collectPaymentButtonViewModel = CardPresentPaymentsModalButtonViewModel(
+    init(connectReaderAction: @escaping () -> Void) {
+        self.connectReaderButtonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.collectPayment,
-            actionHandler: collectPaymentAction)
+            actionHandler: connectReaderAction)
     }
 }
 

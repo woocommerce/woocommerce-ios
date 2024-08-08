@@ -82,7 +82,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         }
 
         let safeDependencies = try? JSONDecoder().decode(WatchDependencies.self, from: dependenciesData)
-        return safeDependencies?.updatingSecret(secret: secret) // Inject stored secret
+        return safeDependencies?.updatingSecret(secret: secret, applicationPassword: nil) // Inject stored secret
     }
 
     /// Store dependencies from the app context
@@ -112,25 +112,39 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         userDefaults[.watchDependencies] = try? JSONEncoder().encode(safeDependencies)
         keychain[WooConstants.authToken] = secret
 
+        // Make sure to store the provided application password in the keychain as it is needed for the networking request classes.
+        updateApplicationPasswordStorage(dependencies: dependencies)
+
         tracksProvider?.sendTracksEvent(.watchStoreDataSynced)
+    }
+
+    /// Stores or removes the application password.
+    ///
+    private func updateApplicationPasswordStorage(dependencies: WatchDependencies?) {
+        if let appPassword = dependencies?.applicationPassword {
+            ApplicationPasswordStorage().saveApplicationPassword(appPassword)
+        } else {
+            ApplicationPasswordStorage().removeApplicationPassword()
+        }
     }
 }
 
 
 private extension WatchDependencies {
-    /// Removes the secret/auth token from the credential type.
+    /// Removes the secret/auth token from the credential type and the application password.
     ///
     func removingSecret() -> WatchDependencies {
-        updatingSecret(secret: "")
+        updatingSecret(secret: "", applicationPassword: nil)
     }
 
-    /// Replaces the secret/auth token with the provided value.
+    /// Replaces the secret/auth token with the provided value and the application password
     ///
-    func updatingSecret(secret: String) -> WatchDependencies {
+    func updatingSecret(secret: String, applicationPassword: ApplicationPassword?) -> WatchDependencies {
         return WatchDependencies(storeID: storeID,
                                  storeName: storeName,
                                  currencySettings: currencySettings,
-                                 credentials: credentials.replacingSecret(secret))
+                                 credentials: credentials.replacingSecret(secret),
+                                 applicationPassword: applicationPassword)
     }
 }
 

@@ -360,6 +360,7 @@ private extension OrderListViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+        tableView.allowsFocus = supportsFocus()
     }
 
     /// Registers all of the available table view cells and headers
@@ -581,6 +582,21 @@ private extension OrderListViewController {
             if shouldScrollIfNeeded {
                 tableView.scrollToRow(at: orderIndexPath, at: .none, animated: true)
             }
+        }
+    }
+
+    /// Focus code crashes on iPadOS 16 and 16.1 versions
+    /// peaMlT-Ng-p2
+    /// https://github.com/woocommerce/woocommerce-ios/issues/13485
+    private func supportsFocus() -> Bool {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return true
+        }
+
+        if #available(iOS 16.2, *) {
+            return true
+        } else {
+            return false
         }
     }
 

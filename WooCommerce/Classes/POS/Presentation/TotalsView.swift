@@ -3,7 +3,6 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -14,11 +13,9 @@ struct TotalsView: View {
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     init(viewModel: PointOfSaleDashboardViewModel,
-         totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel) {
+         totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
-        self.cartViewModel = cartViewModel
         self.isShowingTotalsFields = totalsViewModel.isShowingTotalsFields
     }
 
@@ -170,6 +167,7 @@ private extension TotalsView {
 private extension TotalsView {
     private var newOrderButton: some View {
         Button(action: {
+            // TODO: This is the only place we use PointOfSaleDashboardViewModel in TotalsView – let's break that link.
             viewModel.startNewOrder()
         }, label: {
             HStack(spacing: Constants.newOrderButtonSpacing) {
@@ -295,8 +293,8 @@ private extension TotalsView {
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
-                                              cartViewModel: cartViewModel,
+                                              cartViewModel: CartViewModel(),
                                               itemListViewModel: itemsListViewModel)
-    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartViewModel)
+    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM)
 }
 #endif

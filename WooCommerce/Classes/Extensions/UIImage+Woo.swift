@@ -981,6 +981,12 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Custom Fields Icon
+    ///
+    static var customFieldsImage: UIImage {
+        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24))
+    }
+
     /// Print Icon
     ///
     static var print: UIImage {

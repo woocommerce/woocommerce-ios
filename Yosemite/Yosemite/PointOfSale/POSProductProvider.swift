@@ -31,7 +31,6 @@ public final class POSProductProvider: POSItemProvider {
             let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
 
             let eligibilityCriteria: [(Product) -> Bool] = [
-                isPublishedOrPrivateStatus,
                 isNotVirtual,
                 isNotDownloadable,
                 hasPrice
@@ -82,10 +81,6 @@ private extension POSProductProvider {
         return products.filter { product in
             criteria.allSatisfy { $0(product) }
         }
-    }
-
-    func isPublishedOrPrivateStatus(product: Product) -> Bool {
-        product.productStatus == .published || product.productStatus == .privateStatus
     }
 
     func isNotVirtual(product: Product) -> Bool {

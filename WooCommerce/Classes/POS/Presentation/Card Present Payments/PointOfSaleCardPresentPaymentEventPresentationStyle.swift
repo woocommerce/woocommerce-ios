@@ -5,6 +5,8 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case alert(PointOfSaleCardPresentPaymentAlertType)
 }
 
+/// View Models are created here, but can be "annotated" where they are used if the `CardPresentPaymentEventDetails` is
+/// not enough to fully populate the view model. See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
 extension CardPresentPaymentEventDetails {
     var pointOfSalePresentationStyle: PointOfSaleCardPresentPaymentEventPresentationStyle? {
         switch self {

@@ -281,12 +281,23 @@ private extension TotalsViewModel {
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard case let .show(eventDetails) = event,
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
+                guard let self,
+                      case let .show(eventDetails) = event,
                       case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                return messageType
+
+                switch messageType {
+                case .paymentSuccess(var viewModel):
+                    guard let formattedOrderTotalPrice else {
+                        return messageType
+                    }
+                    viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
+                    return .paymentSuccess(viewModel: viewModel)
+                default:
+                    return messageType
+                }
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in

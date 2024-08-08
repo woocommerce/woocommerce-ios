@@ -173,6 +173,7 @@ extension TotalsViewModel {
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
 
+            // Consider removing error or handle specific errors with our own formatting and localization
             orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
                 Task {
                     await self?.syncOrder(for: cartProducts, allItems: allItems)

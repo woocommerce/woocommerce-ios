@@ -151,8 +151,7 @@ private extension PointOfSaleDashboardView {
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel,
-                   totalsViewModel: totalsViewModel,
-                   cartViewModel: cartViewModel)
+                   totalsViewModel: totalsViewModel)
     }
 
     var productListView: some View {

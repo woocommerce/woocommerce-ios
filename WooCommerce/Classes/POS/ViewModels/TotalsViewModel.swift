@@ -24,6 +24,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false
+    @Published private(set) var isPaymentSuccessState: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
@@ -133,14 +134,20 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         }
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         paymentState = .acceptingCard
         clearOrder()
         cardPresentPaymentInlineMessage = nil
     }
 
-    @MainActor
     func onTotalsViewDisappearance() {
+        // This is a backup – it's not called until transitions are complete when using the back button.
+        // The delay can lead to race conditions with tapping a card.
+        // It's likely that the payment will already have been cancelled due to the change of orderStage.
+        cancelReaderPreparation()
+    }
+
+    func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         startPaymentOnReaderConnection?.cancel()
     }
@@ -274,12 +281,8 @@ private extension TotalsViewModel {
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard case let .show(eventDetails) = event,
-                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
-                    return nil
-                }
-                return messageType
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
+                self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
@@ -306,6 +309,36 @@ private extension TotalsViewModel {
                 $0 != .processingPayment && $0 != .cardPaymentSuccessful
             }
             .assign(to: &$isShowingTotalsFields)
+
+        paymentStatePublisher
+            .map {
+                $0 == .cardPaymentSuccessful
+            }
+            .removeDuplicates()
+            .assign(to: &$isPaymentSuccessState)
+    }
+}
+
+private extension TotalsViewModel {
+    /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary
+    /// - Parameter event: CardPresentPaymentEvent
+    /// - Returns: PointOfSaleCardPresentPaymentMessageType
+    func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
+        guard case let .show(eventDetails) = event,
+              case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
+            return nil
+        }
+
+        switch messageType {
+        case .paymentSuccess(var viewModel):
+            guard let formattedOrderTotalPrice else {
+                return messageType
+            }
+            viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
+            return .paymentSuccess(viewModel: viewModel)
+        default:
+            return messageType
+        }
     }
 }
 

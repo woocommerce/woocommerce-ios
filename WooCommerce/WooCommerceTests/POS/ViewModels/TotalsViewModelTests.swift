@@ -39,7 +39,7 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNil(sut.order)
     }
     func test_setOrder() {}
-    func test_startNewTransaction_after_collecting_payment() async throws {
+    func test_startNewOrder_after_collecting_payment() async throws {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
         let item = Self.makeItem()
@@ -54,7 +54,7 @@ final class TotalsViewModelTests: XCTestCase {
             return XCTFail("Expected order. Got nothing")
         }
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
         XCTAssertEqual(sut.paymentState, paymentState)
@@ -143,6 +143,25 @@ final class TotalsViewModelTests: XCTestCase {
             }
             // When
             self.sut.checkOutTapped(with: [], allItems: [])
+        }
+    }
+
+    func test_cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async {
+        // Given
+        orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+        await sut.syncOrder(for: [], allItems: [])
+
+        // When
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: { }))
+        let message = sut.cardPresentPaymentInlineMessage
+
+        // Then
+        let expectedViewModel = PointOfSaleCardPresentPaymentSuccessMessageViewModel(message: "A payment of $52.30 was successfully made")
+        if case .paymentSuccess(let viewModel) = message {
+            XCTAssertEqual(viewModel.title, expectedViewModel.title)
+            XCTAssertEqual(viewModel.message, expectedViewModel.message)
+        } else {
+            XCTFail("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
         }
     }
 }

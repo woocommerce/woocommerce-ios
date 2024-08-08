@@ -18,8 +18,6 @@ class MockCartViewModel: CartViewModelProtocol {
     var itemsInCartLabel: String? = nil
     var cartLabelColor: Color = .clear
 
-    func bind(to orderStagePublisher: AnyPublisher<WooCommerce.PointOfSaleDashboardViewModel.OrderStage, Never>) {}
-
     func addItemToCart(_ item: any Yosemite.POSItem) {
         addItemToCartCalled = true
     }

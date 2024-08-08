@@ -139,8 +139,14 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         cardPresentPaymentInlineMessage = nil
     }
 
-    @MainActor
     func onTotalsViewDisappearance() {
+        // This is a backup – it's not called until transitions are complete when using the back button.
+        // The delay can lead to race conditions with tapping a card.
+        // It's likely that the payment will already have been cancelled due to the change of orderStage.
+        cancelReaderPreparation()
+    }
+
+    func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         startPaymentOnReaderConnection?.cancel()
     }

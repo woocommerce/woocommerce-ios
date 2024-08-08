@@ -57,7 +57,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
 
         // When
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)

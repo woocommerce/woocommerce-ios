@@ -26,6 +26,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
                 .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentSuccess(let viewModel):
             PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel)
+                .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):

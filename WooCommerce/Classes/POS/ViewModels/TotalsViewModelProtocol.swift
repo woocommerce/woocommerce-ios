@@ -32,7 +32,7 @@ protocol TotalsViewModelProtocol {
     var showRecalculateButton: Bool { get }
     var order: Order? { get }
 
-    func startNewTransaction()
+    func startNewOrder()
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem])
     func connectReaderTapped()
     func cancelReaderPreparation()

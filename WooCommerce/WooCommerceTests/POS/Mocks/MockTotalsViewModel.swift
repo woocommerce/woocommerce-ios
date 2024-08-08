@@ -56,7 +56,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && isSyncingOrder == false
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         paymentState = .acceptingCard
     }
 

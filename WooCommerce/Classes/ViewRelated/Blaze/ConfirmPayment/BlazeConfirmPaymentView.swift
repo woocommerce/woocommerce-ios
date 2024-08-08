@@ -160,7 +160,7 @@ private extension BlazeConfirmPaymentView {
 
                 Spacer()
 
-                Text(String.localizedStringWithFormat(Localization.totalAmount, viewModel.totalAmount))
+                Text(viewModel.totalAmountWithCurrency)
                     .bold()
             }
             .bodyStyle()
@@ -284,12 +284,6 @@ private extension BlazeConfirmPaymentView {
             "blazeConfirmPaymentView.total",
             value: "Total",
             comment: "Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow"
-        )
-        static let totalAmount = NSLocalizedString(
-            "blazeConfirmPaymentView.totalAmount",
-            value: "%1$@ USD",
-            comment: "The formatted total amount for a Blaze campaign, fixed in USD. " +
-            "Reads as $11 USD."
         )
         static let addPaymentMethod = NSLocalizedString(
             "blazeConfirmPaymentView.addPaymentMethod",

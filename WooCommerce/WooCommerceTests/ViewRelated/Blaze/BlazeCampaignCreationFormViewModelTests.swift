@@ -61,8 +61,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Initial values
-    @MainActor
-    func test_image_is_empty_initially() async throws {
+    func test_image_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -76,8 +75,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.image)
     }
 
-    @MainActor
-    func test_tagline_is_empty_initially() async throws {
+    func test_tagline_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -91,8 +89,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tagline, "")
     }
 
-    @MainActor
-    func test_description_is_empty_initially() async throws {
+    func test_description_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -106,8 +103,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, "")
     }
 
-    @MainActor
-    func test_ad_destination_product_url_is_updated_correctly_if_empty() async throws {
+    func test_ad_destination_product_url_is_updated_correctly_if_empty() throws {
         // Given
         insertProduct(sampleProduct.copy(permalink: ""))
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -119,6 +115,38 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
+    }
+
+    func test_isEvergreen_is_false_when_feature_flag_is_disabled() {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertFalse(viewModel.budgetSettingViewModel.isEvergreen)
+    }
+
+    func test_isEvergreen_is_true_when_feature_flag_is_enabled() {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertTrue(viewModel.budgetSettingViewModel.isEvergreen)
     }
 
     // MARK: On load

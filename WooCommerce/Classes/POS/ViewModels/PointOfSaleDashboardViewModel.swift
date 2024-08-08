@@ -18,13 +18,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case finalizing
     }
 
-    @Published private(set) var orderStage: OrderStage = .building {
-        didSet {
-            orderStageSubject.send(orderStage)
-        }
-    }
-
-    private let orderStageSubject = PassthroughSubject<OrderStage, Never>()
+    @Published private(set) var orderStage: OrderStage = .building
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
@@ -52,11 +46,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemListState()
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewTransaction()
+        totalsViewModel.startNewOrder()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {
@@ -149,7 +143,15 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+        $orderStage.sink { [weak self] stage in
+            guard let self else { return }
+            cartViewModel.canDeleteItemsFromCart = stage == .building
+
+            if stage == .building {
+                totalsViewModel.cancelReaderPreparation()
+            }
+        }
+        .store(in: &cancellables)
     }
 }
 

@@ -60,7 +60,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && isSyncingOrder == false
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         paymentState = .acceptingCard
     }
 
@@ -74,5 +74,10 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     func onTotalsViewDisappearance() {
         // Provide a mock implementation if needed
+    }
+
+    var spyCancelReaderPreparationCalled = false
+    func cancelReaderPreparation() {
+        spyCancelReaderPreparationCalled = true
     }
 }

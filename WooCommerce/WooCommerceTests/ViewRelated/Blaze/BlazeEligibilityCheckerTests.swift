@@ -4,6 +4,7 @@ import Yosemite
 
 final class BlazeEligibilityCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
+    private static let pluginSlug = "blaze-ads/blaze-ads.php"
 
     override func setUp() {
         super.setUp()
@@ -18,20 +19,22 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
 
     // MARK: - `isSiteEligible` for site
 
-    func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() {
+    @MainActor
+    func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: true)
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = checker.isSiteEligible(site)
+        let isEligible = await checker.isSiteEligible(site)
 
         // Then
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligible_is_false_when_authenticated_without_wpcom() {
+    @MainActor
+    func test_isEligible_is_false_when_authenticated_without_wpcom() async {
         // Given
         let site = mockSite(isEligibleForBlaze: true)
         let nonWPCOMCredentialsValues: [Credentials] = [
@@ -44,79 +47,103 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let checker = BlazeEligibilityChecker(stores: stores)
 
             // When
-            let isEligible = checker.isSiteEligible(site)
+            let isEligible = await checker.isSiteEligible(site)
 
             // Then
             XCTAssertFalse(isEligible)
         }
     }
 
-    func test_isEligible_is_false_when_blaze_is_not_approved() {
+    @MainActor
+    func test_isEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: false)
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = checker.isSiteEligible(site)
+        let isEligible = await checker.isSiteEligible(site)
 
         // Then
         XCTAssertFalse(isEligible)
     }
 
-    func test_isEligible_is_false_when_site_user_is_not_admin() {
+    @MainActor
+    func test_isEligible_is_false_when_site_user_is_not_admin() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: true, isAdmin: false)
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = checker.isSiteEligible(site)
+        let isEligible = await checker.isSiteEligible(site)
 
         // Then
         XCTAssertFalse(isEligible)
     }
 
-    func test_isEligible_is_false_when_jetpack_not_installed() {
+    @MainActor
+    func test_isEligible_is_false_when_jetpack_not_connected() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: true,
-                            isJetpackThePluginInstalled: false)
-        let checker = BlazeEligibilityChecker(stores: stores)
-
-        // When
-        let isEligible = checker.isSiteEligible(site)
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_isEligible_is_false_when_jetpack_installed_but_not_connected() {
-        // Given
-        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
-        let site = mockSite(isEligibleForBlaze: true,
-                            isJetpackThePluginInstalled: true,
                             isJetpackConnected: false)
         let checker = BlazeEligibilityChecker(stores: stores)
 
         // When
-        let isEligible = checker.isSiteEligible(site)
+        let isEligible = await checker.isSiteEligible(site)
 
         // Then
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
+    func test_isEligible_is_false_for_jcp_site_without_blaze_plugin() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: false,
+                            isJetpackConnected: true)
+        let checker = BlazeEligibilityChecker(stores: stores)
+        mockPluginFetch(remotePlugin: nil)
+
+        // When
+        let isEligible = await checker.isSiteEligible(site)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    @MainActor
+    func test_isEligible_is_true_for_jcp_site_with_blaze_plugin() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: false,
+                            isJetpackConnected: true)
+        let checker = BlazeEligibilityChecker(stores: stores)
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
+
+        // When
+        let isEligible = await checker.isSiteEligible(site)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
     // MARK: - `isProductEligible`
 
-    func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() {
+    @MainActor
+    func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: true)
         let checker = BlazeEligibilityChecker(stores: stores)
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
 
         // When
-        let isEligible = checker.isProductEligible(
+        let isEligible = await checker.isProductEligible(
             site: site,
             product: EditableProductModel(product: product),
             isPasswordProtected: false
@@ -126,7 +153,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_isProductEligible_is_false_when_product_is_not_public() {
+    @MainActor
+    func test_isProductEligible_is_false_when_product_is_not_public() async {
         // Given
         let nonPublicStatuses: [ProductStatus] = [.draft, .pending, .privateStatus, .autoDraft, .custom("status")]
         let checker = BlazeEligibilityChecker(stores: stores)
@@ -135,7 +163,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let product = Product.fake().copy(statusKey: nonPublicStatus.rawValue)
 
             // When
-            let isEligible = checker.isProductEligible(
+            let isEligible = await checker.isProductEligible(
                 site: mockSite(isEligibleForBlaze: true),
                 product: EditableProductModel(product: product),
                 isPasswordProtected: false
@@ -146,13 +174,14 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         }
     }
 
-    func test_isProductEligible_is_false_when_product_is_password_protected() {
+    @MainActor
+    func test_isProductEligible_is_false_when_product_is_password_protected() async {
         // Given
         let checker = BlazeEligibilityChecker(stores: stores)
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = checker.isProductEligible(
+        let isEligible = await checker.isProductEligible(
             site: mockSite(isEligibleForBlaze: true),
             product: EditableProductModel(product: product),
             isPasswordProtected: true
@@ -162,7 +191,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_isProductEligible_is_false_when_authenticated_without_wpcom() {
+    @MainActor
+    func test_isProductEligible_is_false_when_authenticated_without_wpcom() async {
         // Given
         let nonWPCOMCredentialsValues: [Credentials] = [
             .applicationPassword(username: "", password: "", siteAddress: ""),
@@ -175,7 +205,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
             let checker = BlazeEligibilityChecker(stores: stores)
 
             // When
-            let isEligible = checker.isProductEligible(
+            let isEligible = await checker.isProductEligible(
                 site: mockSite(isEligibleForBlaze: false),
                 product: EditableProductModel(product: product),
                 isPasswordProtected: false
@@ -186,7 +216,8 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         }
     }
 
-    func test_isProductEligible_is_false_when_blaze_is_not_approved() {
+    @MainActor
+    func test_isProductEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: false)
@@ -194,7 +225,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
 
         // When
-        let isEligible = checker.isProductEligible(
+        let isEligible = await checker.isProductEligible(
             site: site,
             product: EditableProductModel(product: product),
             isPasswordProtected: false
@@ -215,5 +246,17 @@ private extension BlazeEligibilityCheckerTests {
                          isJetpackConnected: isJetpackConnected,
                          canBlaze: isEligibleForBlaze,
                          isAdmin: isAdmin)
+    }
+
+    func mockPluginFetch(remotePlugin: SystemPlugin? = nil) {
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .synchronizeSystemInformation(_, onCompletion):
+                let info = SystemInformation.fake().copy(systemPlugins: [remotePlugin].compactMap({ $0 }))
+                onCompletion(.success(info))
+            default:
+                break
+            }
+        }
     }
 }

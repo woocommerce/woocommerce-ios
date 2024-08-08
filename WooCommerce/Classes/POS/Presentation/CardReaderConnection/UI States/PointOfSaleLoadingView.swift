@@ -1,5 +1,14 @@
 import SwiftUI
 
+struct PointOfSaleEmptyView: View {
+    var body: some View {
+        VStack {
+            Image(uiImage: .searchImage)
+            Text("No supported products found")
+        }
+    }
+}
+
 struct PoinfOfSaleErrorView: View {
 
     private var viewModel: any ItemListViewModelProtocol

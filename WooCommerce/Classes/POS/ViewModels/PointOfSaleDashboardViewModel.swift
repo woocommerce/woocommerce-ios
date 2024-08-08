@@ -32,6 +32,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isTotalsViewFullScreen: Bool = false
     @Published var isInitialLoading: Bool = false
     @Published var isError: Bool = false
+    @Published var isEmpty: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -165,8 +166,11 @@ private extension PointOfSaleDashboardViewModel {
                 switch state {
                 case .error:
                     self.isError = true
+                case .empty:
+                    self.isEmpty = true
                 default:
                     self.isError = false
+                    self.isEmpty = false
                 }
             }
             .store(in: &cancellables)

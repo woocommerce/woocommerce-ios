@@ -273,8 +273,7 @@ private extension TotalsView {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
-                                    paymentState: .acceptingCard,
-                                   isSyncingOrder: false)
+                                    paymentState: .acceptingCard)
     let cartViewModel = CartViewModel()
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),

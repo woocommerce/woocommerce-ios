@@ -3,7 +3,6 @@ import struct Yosemite.Order
 import protocol Yosemite.POSItem
 
 protocol TotalsViewModelProtocol {
-    var isSyncingOrder: Bool { get }
     var paymentState: TotalsViewModel.PaymentState { get }
     var showsCardReaderSheet: Bool { get set }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get }
@@ -13,7 +12,7 @@ protocol TotalsViewModelProtocol {
     var formattedOrderTotalPrice: String? { get }
     var formattedOrderTotalTaxPrice: String? { get }
 
-    var isSyncingOrderPublisher: Published<Bool>.Publisher { get }
+    var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
     var showsCardReaderSheetPublisher: Published<Bool>.Publisher { get }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { get }

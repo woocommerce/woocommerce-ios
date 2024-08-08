@@ -20,8 +20,7 @@ final class TotalsViewModelTests: XCTestCase {
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
-                              paymentState: .acceptingCard,
-                              isSyncingOrder: false)
+                              paymentState: .acceptingCard)
     }
     func test_isSyncingOrder() {}
     func test_on_checkOutTapped_startSyncOrder() {}
@@ -62,13 +61,15 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNil(sut.cardPresentPaymentInlineMessage)
     }
 
-    func test_isShowingCardReaderStatus_when_order_syncing_then_false() {
+    func test_isShowingCardReaderStatus_when_order_not_loaded_then_false() async {
         // Given
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
-                              paymentState: .acceptingCard,
-                              isSyncingOrder: true)
+                              paymentState: .acceptingCard)
+        orderService.orderToReturn = nil
+
+        await sut.syncOrder(for: [], allItems: [])
 
         // Then
         XCTAssertFalse(sut.isShowingCardReaderStatus)

@@ -7,7 +7,7 @@ import struct Yosemite.Order
 final class MockTotalsViewModel: TotalsViewModelProtocol {
     var order: Yosemite.Order?
 
-    @Published var isSyncingOrder: Bool = false
+    @Published var orderState: TotalsViewModel.OrderState = .loaded
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
     @Published var showsCardReaderSheet: Bool = false
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
@@ -17,7 +17,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
 
-    var isSyncingOrderPublisher: Published<Bool>.Publisher { $isSyncingOrder }
+    var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
     var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
@@ -28,7 +28,11 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     var isShimmering: Bool {
-        isSyncingOrder
+        orderState.isSyncing
+    }
+
+    var isSyncingOrder: Bool {
+        return orderState.isSyncing
     }
 
     var isSubtotalFieldRedacted: Bool {
@@ -61,7 +65,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     }
 
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        isSyncingOrder = true
+        orderState = .syncing
     }
 
     func connectReaderTapped() {

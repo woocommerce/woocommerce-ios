@@ -145,8 +145,7 @@ fileprivate extension CardPresentPaymentEvent {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
-                                   paymentState: .acceptingCard,
-                                   isSyncingOrder: false)
+                                   paymentState: .acceptingCard)
     let cartVM = CartViewModel()
     let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),

@@ -409,7 +409,7 @@ private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
         let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
         if isEvergreen {
-            let weeklyAmount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(7))
+            let weeklyAmount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(Constants.dayCountInWeek))
             budgetDetailText = String(format: Localization.evergreenCampaignWeeklyBudget, weeklyAmount, formattedStartDate)
         } else {
             let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
@@ -492,6 +492,7 @@ private extension BlazeCampaignCreationFormViewModel {
         static let oneDayInSeconds: Double = 86400
         static let targetUrnFormat = "urn:wpcom:post:%d:%d"
         static let defaultCurrency = "USD"
+        static let dayCountInWeek = 7
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

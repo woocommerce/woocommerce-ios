@@ -39,7 +39,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var totalAmountText: String {
-        let duration = isEvergreen ? 7 : dayCount
+        let duration = isEvergreen ? Double(Constants.dayCountInWeek) : dayCount
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
@@ -201,6 +201,7 @@ extension BlazeBudgetSettingViewModel {
         static let minimumDayCount = 1
         static let maximumDayCount = 28
         static let defaultDayCount = 7
+        static let dayCountInWeek = 7
         static let dayCountSliderStep = 1
     }
 

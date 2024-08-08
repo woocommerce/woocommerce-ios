@@ -2381,6 +2381,7 @@
 		D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9697264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift */; };
 		D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
+		DA013F512C65125100D9A391 /* PointOfSaleExitPosAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA013F502C65125100D9A391 /* PointOfSaleExitPosAlertView.swift */; };
 		DA0DBE2F2C4FC61D00DF14C0 /* POSFloatingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */; };
 		DA1D68C22C36F0980097859A /* PointOfSaleAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
@@ -5363,6 +5364,7 @@
 		D8F3A97E258865BD0085859B /* PasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordScreen.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
+		DA013F502C65125100D9A391 /* PointOfSaleExitPosAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleExitPosAlertView.swift; sourceTree = "<group>"; };
 		DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFloatingControlView.swift; sourceTree = "<group>"; };
 		DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssets.swift; sourceTree = "<group>"; };
@@ -6623,6 +6625,7 @@
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
+				DA013F502C65125100D9A391 /* PointOfSaleExitPosAlertView.swift */,
 				DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */,
 				68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
@@ -15160,6 +15163,7 @@
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
+				DA013F512C65125100D9A391 /* PointOfSaleExitPosAlertView.swift in Sources */,
 				B945F8862B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift in Sources */,
 				E1E125B226EB8EE80068A9B0 /* UpdateProgressImage.swift in Sources */,
 				01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */,

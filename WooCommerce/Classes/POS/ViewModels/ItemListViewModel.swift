@@ -7,7 +7,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
-    @Published private(set) var shouldShowHeaderBanner: Bool
+    @Published private(set) var isHeaderBannerDismissed: Bool = false
 
     var isEmptyOrError: Bool {
         switch state {
@@ -18,6 +18,14 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         }
     }
 
+    var shouldShowHeaderBanner: Bool {
+        // The banner it's shown as long as it hasn't already been dismissed once:
+        if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
+            return false
+        }
+        return !isHeaderBannerDismissed && state.isLoaded
+    }
+
     private let itemProvider: POSItemProvider
     private let selectedItemSubject: PassthroughSubject<POSItem, Never> = .init()
 
@@ -25,15 +33,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
+    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { $isHeaderBannerDismissed }
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
         selectedItemPublisher = selectedItemSubject.eraseToAnyPublisher()
-
-        // The banner is shown as long as it hasn't already been dismissed once:
-        let isBannerDismissed = UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
-        shouldShowHeaderBanner = !isBannerDismissed
-        observeBannerDismissal()
     }
 
     func select(_ item: POSItem) {
@@ -69,18 +73,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     func dismissBanner() {
-        UserDefaults.standard.set(true, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    }
-
-    private func observeBannerDismissal() {
-        let bannerDismissPublisher = UserDefaults.standard.publisher(for: BannerState.isSimpleProductsOnlyBannerDismissedKey)
-
-        Publishers.CombineLatest(statePublisher, bannerDismissPublisher)
-            .map { state, bannerDismissed in
-                return state.isLoaded && !bannerDismissed
-            }
-            .removeDuplicates()
-            .assign(to: &$shouldShowHeaderBanner)
+        isHeaderBannerDismissed = true
+        UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
     }
 }
 
@@ -180,17 +174,5 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
-    }
-}
-
-// Emits values whenever UserDefaults changes, and it maps the notification to the specific key's value.
-// This is needed for simpler keypath handling, as allows us to use the string key directly
-extension UserDefaults {
-    func publisher(for key: String) -> AnyPublisher<Bool, Never> {
-        NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification, object: self)
-            .map { _ in
-                return self.bool(forKey: key)
-            }
-            .eraseToAnyPublisher()
     }
 }

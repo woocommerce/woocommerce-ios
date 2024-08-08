@@ -66,10 +66,13 @@ struct PointOfSaleDashboardView: View {
                     Button {
                         viewModel.showExitPOSModal = false
                     } label: {
-                        Image(PointOfSaleAssets.xClose.imageName)
+                        Image(systemName: "xmark")
+                            .resizable()
+                            .scaledToFit()
                             .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
                             .foregroundColor(Color.posTertiaryTexti3)
                     }
+                    .frame(width: Constants.closeButtonSize, height: Constants.closeButtonSize)
                 }
                 Text("Exit Point of Sale mode?")
                     .font(.posModalTitle)
@@ -138,7 +141,8 @@ private extension PointOfSaleDashboardView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
-        static let closeIconSize: CGFloat = 40.0
+        static let closeIconSize: CGFloat = 30.0
+        static let closeButtonSize: CGFloat = 40.0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
     }
 }

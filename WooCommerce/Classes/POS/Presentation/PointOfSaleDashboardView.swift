@@ -59,6 +59,9 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         }
+        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
+        }
         .posModal(isPresented: $viewModel.showExitPOSModal) {
             VStack(spacing: 0 ) {
                 HStack {

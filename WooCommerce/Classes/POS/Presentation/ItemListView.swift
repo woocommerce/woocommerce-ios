@@ -44,7 +44,7 @@ private extension ItemListView {
                 if !viewModel.shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
-                        openInfoBanner()
+                        viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
                             .resizable()
@@ -59,11 +59,6 @@ private extension ItemListView {
                     .padding(.vertical, 16)
             }
         }
-    }
-
-    private func openInfoBanner() {
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/13357
     }
 
     var bannerCardView: some View {
@@ -107,7 +102,7 @@ private extension ItemListView {
         .cornerRadius(Constants.bannerCornerRadius)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .onTapGesture {
-            openInfoBanner()
+            viewModel.simpleProductsInfoButtonTapped()
         }
     }
 

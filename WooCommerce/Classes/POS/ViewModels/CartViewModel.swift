@@ -14,13 +14,9 @@ final class CartViewModel: CartViewModelProtocol {
     @Published private(set) var itemsInCart: [CartItem] = []
     var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
 
-    // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
-    @Published private var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
     private var cancellables = Set<AnyCancellable>()
 
-    var canDeleteItemsFromCart: Bool {
-        orderStage != .finalizing
-    }
+    @Published var canDeleteItemsFromCart: Bool = true
 
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
@@ -29,12 +25,6 @@ final class CartViewModel: CartViewModelProtocol {
     init() {
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
-    }
-
-    func bind(to orderStagePublisher: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
-        orderStagePublisher
-            .assign(to: \.orderStage, on: self)
-            .store(in: &cancellables)
     }
 
     func addItemToCart(_ item: POSItem) {

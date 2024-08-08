@@ -41,6 +41,34 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_totalAmount_and_totalAmountWithCurrency_are_correct_for_evergreen_campaign() {
+        // Given
+        let campaignInfo = CreateBlazeCampaign.fake().copy(budget: .init(mode: .daily, amount: 11, currency: "USD"), isEvergreen: true)
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: campaignInfo,
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+
+        // Then
+        XCTAssertEqual(viewModel.totalAmount, "$77 weekly")
+        XCTAssertEqual(viewModel.totalAmountWithCurrency, "$77 USD weekly")
+    }
+
+    func test_totalAmount_and_totalAmountWithCurrency_are_correct_for_non_evergreen_campaign() {
+        // Given
+        let campaignInfo = CreateBlazeCampaign.fake().copy(budget: .init(mode: .total, amount: 35, currency: "USD"), isEvergreen: false)
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: campaignInfo,
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+
+        // Then
+        XCTAssertEqual(viewModel.totalAmount, "$35")
+        XCTAssertEqual(viewModel.totalAmountWithCurrency, "$35 USD")
+    }
+
     func test_isFetchingPaymentInfo_is_updated_correctly_when_fetching_payment_info() async {
         // Given
         let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,

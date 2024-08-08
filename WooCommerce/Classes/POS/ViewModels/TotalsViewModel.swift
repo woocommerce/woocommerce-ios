@@ -18,13 +18,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
-    enum OrderState {
-        case idle
-        case syncing
-        case loaded
-        case error(String)
-    }
-
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
@@ -179,7 +172,12 @@ extension TotalsViewModel {
             DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
-            orderState = .error(error.localizedDescription)
+
+            orderState = .error(.init(message: error.localizedDescription, handler: { [weak self] in
+                Task {
+                    await self?.syncOrder(for: cartProducts, allItems: allItems)
+                }
+            }))
         }
     }
 
@@ -369,22 +367,31 @@ private extension TotalsViewModel.PaymentState {
     }
 }
 
-extension TotalsViewModel.OrderState {
-    var isSyncing: Bool {
-        switch self {
-        case .syncing:
-            return true
-        default:
-            return false
-        }
-    }
+// MARK: - Order State
 
-    var isLoaded: Bool {
-        switch self {
-        case .loaded:
-            return true
-        default:
-            return false
+extension TotalsViewModel {
+    enum OrderState {
+        case idle
+        case syncing
+        case loaded
+        case error(PointOfSaleOrderSyncErrorMessageViewModel)
+
+        var isSyncing: Bool {
+            switch self {
+            case .syncing:
+                return true
+            default:
+                return false
+            }
+        }
+
+        var isLoaded: Bool {
+            switch self {
+            case .loaded:
+                return true
+            default:
+                return false
+            }
         }
     }
 }

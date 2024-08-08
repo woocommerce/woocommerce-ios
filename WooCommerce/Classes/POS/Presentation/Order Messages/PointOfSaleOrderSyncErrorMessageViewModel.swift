@@ -14,9 +14,9 @@ final class PointOfSaleOrderSyncErrorMessageViewModel: ObservableObject {
     let message: String
     let actionModel: ActionModel
 
-    init(message: String, actionModel: ActionModel) {
+    init(message: String, handler: @escaping () -> Void) {
         self.message = message
-        self.actionModel = actionModel
+        self.actionModel = .init(handler: handler)
     }
 }
 

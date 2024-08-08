@@ -21,26 +21,31 @@ struct TotalsView: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .center) {
-                Spacer()
-                VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                    if totalsViewModel.isShowingCardReaderStatus {
-                        cardReaderView
-                            .font(.title)
-                            .padding()
-                            .transition(.opacity)
-                    }
+            switch totalsViewModel.orderState {
+            case .idle, .syncing, .loaded:
+                VStack(alignment: .center) {
+                    Spacer()
+                    VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                        if totalsViewModel.isShowingCardReaderStatus {
+                            cardReaderView
+                                .font(.title)
+                                .padding()
+                                .transition(.opacity)
+                        }
 
-                    if isShowingTotalsFields {
-                        totalsFieldsView
-                            .transition(.opacity)
-                            .animation(.default, value: totalsViewModel.isShimmering)
-                            .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
+                        if isShowingTotalsFields {
+                            totalsFieldsView
+                                .transition(.opacity)
+                                .animation(.default, value: totalsViewModel.isShimmering)
+                                .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
+                        }
                     }
+                    .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
+                    paymentsActionButtons
+                    Spacer()
                 }
-                .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
-                paymentsActionButtons
-                Spacer()
+            case .error(let viewModel):
+                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
             }
         }
         .background(backgroundColor)

@@ -371,11 +371,23 @@ private extension TotalsViewModel.PaymentState {
 // MARK: - Order State
 
 extension TotalsViewModel {
-    enum OrderState {
+    enum OrderState: Equatable {
         case idle
         case syncing
         case loaded
         case error(PointOfSaleOrderSyncErrorMessageViewModel)
+
+        static func == (lhs: OrderState, rhs: OrderState) -> Bool {
+            switch (lhs, rhs) {
+            case (.idle, .idle),
+                (.syncing, .syncing),
+                (.loaded, .loaded),
+                (.error, .error):
+                return true
+            default:
+                return false
+            }
+        }
 
         var isSyncing: Bool {
             switch self {

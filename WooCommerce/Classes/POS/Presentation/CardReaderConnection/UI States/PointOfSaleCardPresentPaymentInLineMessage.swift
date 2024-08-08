@@ -1,13 +1,10 @@
 import SwiftUI
-import struct Yosemite.Order
 
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
-    private let order: Order?
 
-    init(messageType: PointOfSaleCardPresentPaymentMessageType, order: Order? = nil) {
+    init(messageType: PointOfSaleCardPresentPaymentMessageType) {
         self.messageType = messageType
-        self.order = order
     }
 
     var body: some View {

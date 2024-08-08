@@ -211,7 +211,7 @@ private extension TotalsView {
         switch totalsViewModel.connectionStatus {
         case .connected:
             if let inlinePaymentMessage = totalsViewModel.cardPresentPaymentInlineMessage {
-                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage, order: totalsViewModel.order)
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
                 EmptyView()
             }

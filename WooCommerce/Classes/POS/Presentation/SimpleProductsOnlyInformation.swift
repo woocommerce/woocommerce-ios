@@ -47,15 +47,8 @@ struct SimpleProductsOnlyInformation: View {
                 isPresented = false
             }) {
                 Text("OK")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.purple)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.purple, lineWidth: 2)
-                    )
             }
+            .buttonStyle(POSSecondaryButtonStyle())
         }
         .padding(Constants.modalContentPadding)
         .frame(width: Constants.modalFrameWidth)

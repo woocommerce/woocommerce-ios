@@ -1,5 +1,29 @@
 import SwiftUI
 
+struct PoinfOfSaleErrorView: View {
+
+    private var viewModel: any ItemListViewModelProtocol
+
+    init(viewModel: any ItemListViewModelProtocol) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        VStack {
+            POSErrorExclamationMark()
+            Text("Error loading products")
+            Text("Give it another go")
+            Button(action: {
+                Task {
+                    await viewModel.reload()
+                }
+            }, label: {
+                Text("Retry")
+            })
+        }
+    }
+}
+
 struct PointOfSaleLoadingView: View {
     var body: some View {
         HStack(alignment: .center) {

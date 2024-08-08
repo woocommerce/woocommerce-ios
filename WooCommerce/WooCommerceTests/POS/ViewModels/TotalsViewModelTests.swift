@@ -145,6 +145,25 @@ final class TotalsViewModelTests: XCTestCase {
             self.sut.checkOutTapped(with: [], allItems: [])
         }
     }
+
+    func test_cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async {
+        // Given
+        orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+        await sut.syncOrder(for: [], allItems: [])
+
+        // When
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: { }))
+        let message = sut.cardPresentPaymentInlineMessage
+
+        // Mesage
+        let expectedViewModel = PointOfSaleCardPresentPaymentSuccessMessageViewModel(message: "A payment of $52.30 was successfully made")
+        if case .paymentSuccess(let viewModel) = message {
+            XCTAssertEqual(viewModel.title, expectedViewModel.title)
+            XCTAssertEqual(viewModel.message, expectedViewModel.message)
+        } else {
+            XCTFail("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
+        }
+    }
 }
 
 private extension TotalsViewModelTests {

@@ -1,1 +1,6 @@
-Experience seamless updates with our latest release! Now enjoy background updates for your order list and dashboard analytics cards. We've enhanced the dynamic dashboard to display unavailable analytics views when not logged into WPCom. Plus, we've fixed large text support in the Barcode Scanner for better accessibility. Update now for a smoother experience!
+- [*] Enabled Blaze for JCP sites with Blaze plugin [https://github.com/woocommerce/woocommerce-ios/pull/13500]
+- [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
+- [Internal] Added missing events for custom range on the stats dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13506]
+- [**] Disable focus for order rows on iPadOS 16 and 16.1 to avoid crashes. [https://github.com/woocommerce/woocommerce-ios/pull/13512]
+- [*] Added Universal Link to Create Order: /mobile/orders/create. [https://github.com/woocommerce/woocommerce-ios/pull/13541]
+

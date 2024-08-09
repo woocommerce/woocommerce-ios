@@ -97,8 +97,8 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.isSyncingOrderPublisher)
-            .map { paymentState, isSyncingOrder in
+        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.orderStatePublisher)
+            .map { paymentState, orderState in
                 switch paymentState {
                 case .processingPayment,
                         .cardPaymentSuccessful:
@@ -107,7 +107,7 @@ private extension PointOfSaleDashboardViewModel {
                         .acceptingCard,
                         .validatingOrder,
                         .preparingReader:
-                    return isSyncingOrder
+                    return orderState.isSyncing
                 }
             }
             .assign(to: &$isAddMoreDisabled)

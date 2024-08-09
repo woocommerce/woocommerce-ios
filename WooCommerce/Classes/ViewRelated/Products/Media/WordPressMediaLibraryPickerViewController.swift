@@ -21,7 +21,9 @@ final class WordPressMediaLibraryPickerViewController: UIViewController {
         return options
     }()
 
-    private lazy var mediaLibraryDataSource: WordPressMediaLibraryPickerDataSource = .init(siteID: siteID, imagesOnly: imagesOnly)
+    private lazy var mediaLibraryDataSource = WordPressMediaLibraryPickerDataSource(siteID: siteID,
+                                                                                    productID: productID,
+                                                                                    imagesOnly: imagesOnly)
 
     private var mediaPickerNavigationController: WPNavigationMediaPickerViewController!
 

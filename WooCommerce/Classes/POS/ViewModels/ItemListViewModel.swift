@@ -50,11 +50,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             state = .loading
             items = try await itemProvider.providePointOfSaleItems()
             if items.count == 0 {
-                let itemListEmpty = EmptyModel(title: Constants.emptyProductsTitle,
-                                                  subtitle: Constants.emptyProductsSubtitle,
-                                                  hint: Constants.emptyProductsHint,
-                                                  buttonText: Constants.emptyProductsButtonTitle)
-                state = .empty(itemListEmpty)
+                state = .empty
             } else {
                 state = .loaded(items)
             }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-07 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -5686,7 +5686,7 @@ which should be translated separately and considered part of this sentence. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "pendaftaran %1$@";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
-"ProductSKUInputScanner.instructionText" = "Pindai barcode produk atau Kode QR";
+"ProductSKUInputScanner.instructionText" = "Pindai barcode atau Kode QR produk";
 
 /* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
 "ProductSKUInputScanner.titleView" = "Pindai barcode atau Kode QR untuk memperbarui SKU";

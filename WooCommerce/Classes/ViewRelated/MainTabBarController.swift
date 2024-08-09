@@ -436,19 +436,6 @@ extension MainTabBarController {
         })
     }
 
-    static func presentOrderCreationFlow() {
-        switchToOrdersTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let ordersContainerController = tabBar?.ordersContainerController
-
-            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
-                return
-            }
-
-            ordersSplitViewWrapperController.presentOrderCreationFlow()
-        }
-    }
-
     static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController
@@ -517,8 +504,18 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        navigateTo(.hubMenu) { [weak self] in
-            self?.hubMenuTabCoordinator?.navigate(to: destination)
+        switch destination {
+        case is HubMenuDestination,
+            is PaymentsMenuDestination:
+            navigateTo(.hubMenu) { [weak self] in
+                self?.hubMenuTabCoordinator?.navigate(to: destination)
+            }
+        case is OrdersDestination:
+            navigateTo(.orders) {
+                Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
+            }
+        default:
+            return
         }
     }
 }

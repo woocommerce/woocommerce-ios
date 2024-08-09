@@ -234,9 +234,9 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         var receivedIsSyncingOrder: Bool = false
 
         // Attach sink to observe changes to isSyncingOrder
-        mockTotalsViewModel.isSyncingOrderPublisher
-            .sink { isSyncingOrder in
-                receivedIsSyncingOrder = isSyncingOrder
+        mockTotalsViewModel.orderStatePublisher
+            .sink { orderState in
+                receivedIsSyncingOrder = orderState.isSyncing
                 expectation.fulfill()
             }
             .store(in: &cancellables)

@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
-    @Environment(\.presentationMode) var presentationMode
-
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
@@ -46,7 +44,7 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
-        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet, content: {
+        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
@@ -58,7 +56,14 @@ struct PointOfSaleDashboardView: View {
                     Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
-        })
+        }
+        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
+        }
+        .posModal(isPresented: $viewModel.showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        }
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
@@ -107,6 +112,7 @@ private extension PointOfSaleDashboardView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
+        static let exitPOSSheetMaxWidth: CGFloat = 900.0
     }
 }
 
@@ -144,8 +150,7 @@ fileprivate extension CardPresentPaymentEvent {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
-                                   paymentState: .acceptingCard,
-                                   isSyncingOrder: false)
+                                   paymentState: .acceptingCard)
     let cartVM = CartViewModel()
     let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),

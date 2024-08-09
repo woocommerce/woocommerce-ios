@@ -77,6 +77,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
         case .price,
+             .customFields,
              .productType,
              .inventory,
              .shipping,
@@ -112,6 +113,7 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
     private var cellType: UITableViewCell.Type {
         switch self {
         case .price,
+             .customFields,
              .productType,
              .inventory,
              .shipping,

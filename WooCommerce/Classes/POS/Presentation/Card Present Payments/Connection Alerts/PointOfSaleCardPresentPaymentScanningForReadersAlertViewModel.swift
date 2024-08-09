@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel {
     let title: String = Localization.title
     let instruction: String = Localization.instruction
-    let imageName = PointOfSaleAssets.readerConnectionScanningImageName
+    let imageName = PointOfSaleAssets.readerConnectionScanning.imageName
     let buttonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(endSearchAction: @escaping () -> Void) {

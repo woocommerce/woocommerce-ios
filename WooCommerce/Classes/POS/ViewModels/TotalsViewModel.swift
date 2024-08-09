@@ -9,8 +9,6 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
-    var isPriceFieldRedacted: Bool
-
     enum PaymentState {
         case idle
         case acceptingCard
@@ -21,19 +19,20 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     }
 
     @Published var showsCardReaderSheet: Bool = false
-    @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false
+    @Published private(set) var isPaymentSuccessState: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
-    @Published var paymentState: PaymentState
+    @Published private(set) var paymentState: PaymentState
 
-    @Published var isSyncingOrder: Bool
+    @Published private(set) var isSyncingOrder: Bool
 
-    @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?
@@ -89,7 +88,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         self.currencyFormatter = currencyFormatter
         self.paymentState = paymentState
         self.isSyncingOrder = isSyncingOrder
-        self.isPriceFieldRedacted = false
         self.formattedCartTotalPrice = nil
         self.formattedOrderTotalPrice = nil
         self.formattedOrderTotalTaxPrice = nil
@@ -109,38 +107,49 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
-    func calculateAmountsTapped(with cartItems: [CartItem], allItems: [POSItem]) {
-        startSyncingOrder(with: cartItems, allItems: allItems)
+    private var startPaymentOnReaderConnection: AnyCancellable?
+
+    func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
+        Task { @MainActor in
+            await startSyncingOrder(with: cartItems, allItems: allItems)
+        }
     }
 
-    func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) {
+    private func startSyncingOrder(with cartItems: [CartItem], allItems: [POSItem]) async {
         guard CartItem.areOrderAndCartDifferent(order: order, cartItems: cartItems) else {
-            Task { @MainActor in
-                await prepareConnectedReaderForPayment()
-            }
+            await startPaymentWhenReaderConnected()
             return
         }
         // calculate totals and sync order if there was a change in the cart
+        await syncOrder(for: cartItems, allItems: allItems)
+    }
+
+    func connectReaderTapped() {
         Task { @MainActor in
-            await syncOrder(for: cartItems, allItems: allItems)
+            do {
+                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+            } catch {
+                DDLogError("🔴 POS reader connection error: \(error)")
+            }
         }
     }
 
-    func cardPaymentTapped() {
-        Task { @MainActor in
-            await collectPayment()
-        }
-    }
-
-    func startNewTransaction() {
+    func startNewOrder() {
         paymentState = .acceptingCard
         clearOrder()
         cardPresentPaymentInlineMessage = nil
     }
 
-    @MainActor
     func onTotalsViewDisappearance() {
+        // This is a backup – it's not called until transitions are complete when using the back button.
+        // The delay can lead to race conditions with tapping a card.
+        // It's likely that the payment will already have been cancelled due to the change of orderStage.
+        cancelReaderPreparation()
+    }
+
+    func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
+        startPaymentOnReaderConnection?.cancel()
     }
 }
 
@@ -160,12 +169,11 @@ extension TotalsViewModel {
             isSyncingOrder = false
         }
         do {
-            isSyncingOrder = true
             let syncedOrder = try await orderService.syncOrder(cart: cart, order: order, allProducts: allItems)
             self.updateOrder(syncedOrder)
             isSyncingOrder = false
-            await prepareConnectedReaderForPayment()
-            DDLogInfo("🟢 [POS] Synced order: \(order)")
+            await startPaymentWhenReaderConnected()
+            DDLogInfo("🟢 [POS] Synced order: \(syncedOrder)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")
         }
@@ -216,14 +224,6 @@ private extension TotalsViewModel {
     func collectPayment(for order: Order) async throws {
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
     }
-
-    @MainActor
-    func prepareConnectedReaderForPayment() async {
-        guard connectionStatus == .connected else {
-            return
-        }
-        await collectPayment()
-    }
 }
 
 private extension TotalsViewModel {
@@ -234,19 +234,39 @@ private extension TotalsViewModel {
             }
             .assign(to: &$connectionStatus)
 
-        Publishers.CombineLatest3($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage)
-            .map { connectionStatus, isSyncingOrder, message in
-                if isSyncingOrder {
+        Publishers.CombineLatest4($connectionStatus, $isSyncingOrder, $cardPresentPaymentInlineMessage, $order)
+            .map { connectionStatus, isSyncingOrder, message, order in
+                guard order != nil,
+                        !isSyncingOrder
+                        else {
+                    // When the order's being created or synced, we only show the shimmering totals.
+                    // Before the order exists, we don’t want to show the card payment status, as it will
+                    // show for a second initially, then disappear the moment we start syncing the order.
                     return false
                 }
 
-                if connectionStatus == .connected {
+                switch connectionStatus {
+                case .connected:
                     return message != nil
+                case .disconnected:
+                    // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
+                    return true
                 }
-
-                return true
             }
             .assign(to: &$isShowingCardReaderStatus)
+    }
+
+    func startPaymentWhenReaderConnected() async {
+        guard connectionStatus == .connected else {
+            return startPaymentOnReaderConnection = $connectionStatus.filter { $0 == .connected }
+                .removeDuplicates()
+                .sink { _ in
+                    Task { @MainActor [weak self] in
+                        await self?.collectPayment()
+                    }
+                }
+        }
+        await collectPayment()
     }
 
     func observeCardPresentPaymentEvents() {
@@ -261,12 +281,8 @@ private extension TotalsViewModel {
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard case let .show(eventDetails) = event,
-                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
-                    return nil
-                }
-                return messageType
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
+                self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
@@ -293,6 +309,36 @@ private extension TotalsViewModel {
                 $0 != .processingPayment && $0 != .cardPaymentSuccessful
             }
             .assign(to: &$isShowingTotalsFields)
+
+        paymentStatePublisher
+            .map {
+                $0 == .cardPaymentSuccessful
+            }
+            .removeDuplicates()
+            .assign(to: &$isPaymentSuccessState)
+    }
+}
+
+private extension TotalsViewModel {
+    /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary
+    /// - Parameter event: CardPresentPaymentEvent
+    /// - Returns: PointOfSaleCardPresentPaymentMessageType
+    func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
+        guard case let .show(eventDetails) = event,
+              case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
+            return nil
+        }
+
+        switch messageType {
+        case .paymentSuccess(var viewModel):
+            guard let formattedOrderTotalPrice else {
+                return messageType
+            }
+            viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
+            return .paymentSuccess(viewModel: viewModel)
+        default:
+            return messageType
+        }
     }
 }
 

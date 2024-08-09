@@ -57,7 +57,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
 
         // When
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
@@ -94,7 +94,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // When
         let customCartItems = [CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)]
-        sut.totalsViewModel.startSyncingOrder(with: customCartItems, allItems: [])
+        sut.totalsViewModel.checkOutTapped(with: customCartItems, allItems: [])
 
         wait(for: [expectation], timeout: 1.0)
     }
@@ -321,6 +321,40 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)
+    }
+
+    func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {
+        // Given
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+
+        // Then
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_sets_cartViewModel_canDeleteItems_true() {
+        // Given
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
+        // Given
+        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
     }
 }
 

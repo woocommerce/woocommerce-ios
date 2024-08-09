@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentFoundReaderAlertViewModel {
     let title: String
-    let imageName = PointOfSaleAssets.readerConnectionDoYouWantToConnectImageName
+    let imageName = PointOfSaleAssets.readerConnectionDoYouWantToConnect.imageName
     let connectButton: CardPresentPaymentsModalButtonViewModel
     let continueSearchButton: CardPresentPaymentsModalButtonViewModel
     let cancelSearchButton: CardPresentPaymentsModalButtonViewModel

@@ -18,19 +18,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case finalizing
     }
 
-    @Published private(set) var orderStage: OrderStage = .building {
-        didSet {
-            orderStageSubject.send(orderStage)
-        }
-    }
-
-    private let orderStageSubject = PassthroughSubject<OrderStage, Never>()
+    @Published private(set) var orderStage: OrderStage = .building
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
     @Published var isInitialLoading: Bool = false
+    @Published var showExitPOSModal: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -52,15 +47,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemListState()
     }
 
-    func startNewTransaction() {
+    func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewTransaction()
+        totalsViewModel.startNewOrder()
     }
 
-    private func startSyncingOrder(cartItems: [CartItem]) {
-        totalsViewModel.startSyncingOrder(with: cartItems, allItems: itemListViewModel.items)
+    private func cartSubmitted(cartItems: [CartItem]) {
+        totalsViewModel.checkOutTapped(with: cartItems, allItems: itemListViewModel.items)
     }
 }
 
@@ -78,7 +73,7 @@ private extension PointOfSaleDashboardViewModel {
             .sink { [weak self] cartItems in
                 guard let self else { return }
                 self.orderStage = .finalizing
-                self.startSyncingOrder(cartItems: cartItems)
+                self.cartSubmitted(cartItems: cartItems)
             }
             .store(in: &cancellables)
     }
@@ -149,7 +144,15 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+        $orderStage.sink { [weak self] stage in
+            guard let self else { return }
+            cartViewModel.canDeleteItemsFromCart = stage == .building
+
+            if stage == .building {
+                totalsViewModel.cancelReaderPreparation()
+            }
+        }
+        .store(in: &cancellables)
     }
 }
 

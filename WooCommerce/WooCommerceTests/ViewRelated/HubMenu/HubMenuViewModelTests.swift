@@ -172,6 +172,9 @@ final class HubMenuViewModelTests: XCTestCase {
                                          blazeEligibilityChecker: blazeEligibilityChecker)
 
         viewModel.setupMenuElements()
+        waitUntil {
+            blazeEligibilityChecker.isSiteEligibleInvoked
+        }
 
         // Then
         let blazeIndex = try XCTUnwrap(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))

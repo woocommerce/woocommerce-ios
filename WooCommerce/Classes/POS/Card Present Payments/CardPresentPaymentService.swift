@@ -66,7 +66,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
                                                                batteryLevel: cardReader.batteryLevel)
-            paymentEventSubject.send(.idle)
+            paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
+                self?.paymentEventSubject.send(.idle)
+            })))
             return .connected(connectedReader)
         case .canceled:
             paymentEventSubject.send(.idle)

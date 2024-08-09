@@ -13,7 +13,7 @@ struct POSFloatingControlView: View {
         HStack {
             Menu {
                 Button {
-                    presentationMode.wrappedValue.dismiss()
+                    viewModel.showExitPOSModal = true
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         Image(PointOfSaleAssets.exit.imageName)

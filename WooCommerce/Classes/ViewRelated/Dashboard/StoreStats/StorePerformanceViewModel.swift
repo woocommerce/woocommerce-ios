@@ -212,6 +212,11 @@ final class StorePerformanceViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
     }
 
+    /// To be triggered from the UI for custom range related events
+    func trackCustomRangeEvent(_ event: WooAnalyticsEvent) {
+        analytics.track(event: event)
+    }
+
     func onViewAppear() {
         /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()

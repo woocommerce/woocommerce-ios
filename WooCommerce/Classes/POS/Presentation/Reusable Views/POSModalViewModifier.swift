@@ -3,6 +3,8 @@ import SwiftUI
 struct POSModalViewModifier<ModalContent: View>: ViewModifier {
     @Binding var isPresented: Bool
     let modalContent: () -> ModalContent
+    let fixedWidth: Bool
+    let fixedHeight: Bool
 
     @Environment(\.sizeCategory) var sizeCategory
 
@@ -18,8 +20,8 @@ struct POSModalViewModifier<ModalContent: View>: ViewModifier {
 
                 modalContent()
                     .frame(
-                        width: min(frameWidth, windowBounds.width),
-                        height: min(frameHeight, windowBounds.height))
+                        width: fixedWidth ? min(frameWidth, windowBounds.width) : nil,
+                        height: fixedHeight ? min(frameHeight, windowBounds.height) : nil)
                     .background(Color(.systemBackground))
                     .cornerRadius(16)
                     .shadow(radius: 10)
@@ -82,8 +84,14 @@ struct POSModalViewModifier<ModalContent: View>: ViewModifier {
 }
 
 extension View {
-    func posModal<ModalContent: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> ModalContent) -> some View {
+    func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      fixedWidth: Bool = true,
+                                      fixedHeight: Bool = true,
+                                      @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifier(isPresented: isPresented, modalContent: content))
+            POSModalViewModifier(isPresented: isPresented,
+                                 modalContent: content,
+                                 fixedWidth: fixedWidth,
+                                 fixedHeight: fixedHeight))
     }
 }

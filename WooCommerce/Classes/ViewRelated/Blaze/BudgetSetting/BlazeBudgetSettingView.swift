@@ -69,17 +69,19 @@ private extension BlazeBudgetSettingView {
 
             // Total budget amount details
             VStack {
-                Text(Localization.totalSpend)
+                Text(viewModel.totalAmountTitle)
                     .subheadlineStyle()
 
                 Text(viewModel.totalAmountText)
                     .bold()
                     .largeTitleStyle()
 
+                // Hide the duration if the campaign is evergreen
                 Text(viewModel.formattedTotalDuration)
                     .foregroundColor(Color.secondary)
                     .bold()
                     .largeTitleStyle()
+                    .renderedIf(viewModel.isEvergreen == false)
             }
 
             // Daily amount slider and estimated impression
@@ -186,7 +188,16 @@ private extension BlazeBudgetSettingView {
     var durationSettingView: some View {
         NavigationView {
             ScrollView {
-                // Duration slider
+
+                Spacer().frame(height: Layout.sectionSpacing)
+
+                // Toggle to switch between evergreen and not. Hidden under a feature flag.
+                Toggle(Localization.evergreenCampaign, isOn: $viewModel.isEvergreen)
+                    .toggleStyle(.switch)
+                    .padding(Layout.contentPadding)
+                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
+
+                // Duration slider - available only if the campaign is not evergreen
                 VStack(spacing: Layout.sectionContentSpacing) {
                     Text(viewModel.formatDayCount(duration))
                         .fontWeight(.semibold)
@@ -197,7 +208,7 @@ private extension BlazeBudgetSettingView {
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
                 .padding(Layout.contentPadding)
-                .padding(.top, Layout.sectionSpacing)
+                .renderedIf(viewModel.isEvergreen == false)
 
                 // Start date picker
                 VStack {
@@ -265,11 +276,6 @@ private extension BlazeBudgetSettingView {
             value: "How much would you like to spend on your product promotion campaign?",
             comment: "Subtitle of the Blaze budget setting screen"
         )
-        static let totalSpend = NSLocalizedString(
-            "blazeBudgetSettingView.totalSpend",
-            value: "Total spend",
-            comment: "Label for total spend on the Blaze budget setting screen"
-        )
         static let estimatedImpressions = NSLocalizedString(
             "blazeBudgetSettingView.estimatedImpressions",
             value: "Estimated people reached per day",
@@ -328,12 +334,21 @@ private extension BlazeBudgetSettingView {
             value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
+        static let evergreenCampaign = NSLocalizedString(
+            "blazeBudgetSettingView.evergreenCampaign",
+            value: "Run until I stop it",
+            comment: "Switch to toggle evergreen mode on or off for a Blaze campaign."
+        )
     }
 }
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
         let tomorrow = Date.now + 60 * 60 * 24 // Current date + 1 day
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: tomorrow) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123,
+                                                                      dailyBudget: 5,
+                                                                      isEvergreen: true,
+                                                                      duration: 7,
+                                                                      startDate: tomorrow) { _, _, _, _ in })
     }
 }

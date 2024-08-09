@@ -28,8 +28,6 @@ struct POSModalViewModifier<ModalContent: View>: ViewModifier {
 
 extension View {
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
-                                      fixedWidth: Bool = true,
-                                      fixedHeight: Bool = true,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(isPresented: isPresented,

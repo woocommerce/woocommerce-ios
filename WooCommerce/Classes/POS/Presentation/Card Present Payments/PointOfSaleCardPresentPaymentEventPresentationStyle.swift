@@ -127,9 +127,10 @@ extension CardPresentPaymentEventDetails {
             return .message(.tapSwipeOrInsertCard(
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
-
         case .paymentSuccess:
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
+        case .paymentError(error: CollectOrderPaymentUseCaseError.couldNotRefreshOrder(let error), let tryAgain, _):
+            return .message(.validatingOrderError(viewModel: .init(error: error, tryAgainButtonAction: tryAgain)))
         case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: _):
             return .message(.paymentError(
                 viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(

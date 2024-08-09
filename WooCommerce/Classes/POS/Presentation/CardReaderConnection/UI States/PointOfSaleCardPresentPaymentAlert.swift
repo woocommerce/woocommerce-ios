@@ -9,6 +9,7 @@ struct PointOfSaleCardPresentPaymentAlert: View {
 
     var body: some View {
         alertContent
+            .frame(width: frameWidth, height: frameHeight)
             .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
     }
 
@@ -52,5 +53,57 @@ struct PointOfSaleCardPresentPaymentAlert: View {
         case .connectionSuccess(let alertViewModel):
             PointOfSaleCardPresentPaymentConnectionSuccessAlertView(viewModel: alertViewModel)
         }
+    }
+
+    @Environment(\.sizeCategory) private var sizeCategory
+
+    private var frameWidth: CGFloat {
+        switch sizeCategory {
+        case .extraSmall, .small, .medium:
+            return 496
+        case .large, .extraLarge:
+            return 560
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            return 624
+        case .accessibilityMedium,
+                .accessibilityLarge,
+                .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge,
+                .accessibilityExtraExtraExtraLarge:
+            return windowBounds.width
+        @unknown default:
+            return 624
+        }
+    }
+
+    private var frameHeight: CGFloat {
+        switch sizeCategory {
+        case .extraSmall, .small, .medium:
+            return 528
+        case .large, .extraLarge:
+            return 592
+        case .extraExtraLarge, .extraExtraExtraLarge:
+            return 640
+        case .accessibilityMedium,
+                .accessibilityLarge,
+                .accessibilityExtraLarge,
+                .accessibilityExtraExtraLarge,
+                .accessibilityExtraExtraExtraLarge:
+            return windowBounds.height
+        @unknown default:
+            return 640
+        }
+    }
+
+    private var windowBounds: CGRect {
+        window?.bounds ?? UIScreen.main.bounds
+    }
+
+    private var window: UIWindow? {
+        UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .last
     }
 }

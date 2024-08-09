@@ -62,7 +62,7 @@ private extension MediaSourceActionSheet {
         )
         static let productMedia = NSLocalizedString(
             "mediaSourceActionSheet.productMedia",
-            value: "Choose from product media",
+            value: "Choose an existing product photo",
             comment: "Menu option for selecting media attached to the given product ID."
         )
         static let siteMediaLibrary = NSLocalizedString(

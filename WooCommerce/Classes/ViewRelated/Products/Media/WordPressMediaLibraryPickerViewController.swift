@@ -26,14 +26,24 @@ final class WordPressMediaLibraryPickerViewController: UIViewController {
     private var mediaPickerNavigationController: WPNavigationMediaPickerViewController!
 
     private let siteID: Int64
+    private let productID: Int64?
     private let imagesOnly: Bool
     private let allowsMultipleSelections: Bool
 
+    /// Initializer
+    /// - Parameters:
+    ///   - siteID: site to fetch media from
+    ///   - productID: If non-nil loads only media attached to this product ID
+    ///   - imagesOnly: load only images if `true`
+    ///   - allowsMultipleSelections: Allows selecting more than one Media if `true`
+    ///   - onCompletion: Called upon finishing media selection
     init(siteID: Int64,
+         productID: Int64? = nil,
          imagesOnly: Bool,
          allowsMultipleSelections: Bool,
          onCompletion: @escaping Completion) {
         self.siteID = siteID
+        self.productID = productID
         self.imagesOnly = imagesOnly
         self.allowsMultipleSelections = allowsMultipleSelections
         self.onCompletion = onCompletion

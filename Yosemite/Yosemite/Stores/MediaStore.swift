@@ -55,8 +55,9 @@ public final class MediaStore: Store {
                             let mediaID,
                             let onCompletion):
             retrieveMedia(siteID: siteID, mediaID: mediaID, onCompletion: onCompletion)
-        case let .retrieveMediaLibrary(siteID, imagesOnly, pageNumber, pageSize, onCompletion):
+        case let .retrieveMediaLibrary(siteID, productID, imagesOnly, pageNumber, pageSize, onCompletion):
             retrieveMediaLibrary(siteID: siteID,
+                                 productID: productID,
                                  imagesOnly: imagesOnly,
                                  pageNumber: pageNumber,
                                  pageSize: pageSize,
@@ -95,12 +96,14 @@ private extension MediaStore {
     }
 
     func retrieveMediaLibrary(siteID: Int64,
+                              productID: Int64? = nil,
                               imagesOnly: Bool,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (Result<[Media], Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.loadMediaLibraryFromWordPressSite(siteID: siteID,
+                                                     productID: productID,
                                                      imagesOnly: imagesOnly,
                                                      pageNumber: pageNumber,
                                                      pageSize: pageSize) { result in
@@ -108,6 +111,7 @@ private extension MediaStore {
             }
         } else {
             remote.loadMediaLibrary(for: siteID,
+                                    productID: productID,
                                     imagesOnly: imagesOnly,
                                     pageNumber: pageNumber,
                                     pageSize: pageSize,

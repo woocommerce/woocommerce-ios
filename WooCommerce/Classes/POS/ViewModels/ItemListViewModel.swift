@@ -20,10 +20,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     var shouldShowHeaderBanner: Bool {
-        // The banner it's only shown when:
-        // - Loading the item list
-        // - Hasn't been already been previously dismissed
-        !isHeaderBannerDismissed && state.isLoaded
+        // The banner it's shown as long as it hasn't already been dismissed once:
+        if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
+            return false
+        }
+        return !isHeaderBannerDismissed && state.isLoaded
     }
 
     private let itemProvider: POSItemProvider
@@ -74,6 +75,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     func dismissBanner() {
         isHeaderBannerDismissed = true
+        UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
     }
 
     func simpleProductsInfoButtonTapped() {
@@ -133,6 +135,10 @@ extension ItemListViewModel {
         let subtitle: String
         let hint: String
         let buttonText: String
+    }
+
+    struct BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 }
 

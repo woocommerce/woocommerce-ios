@@ -20,6 +20,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDisplayPointOfSaleToggleEnabled: Bool
     private let isProductCreationAIv2M1Enabled: Bool
     private let googleAdsCampaignCreationOnWebView: Bool
+    private let blazeEvergreenCampaigns: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -38,7 +39,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isDisplayPointOfSaleToggleEnabled: Bool = false,
          isProductCreationAIv2M1Enabled: Bool = false,
-         googleAdsCampaignCreationOnWebView: Bool = false) {
+         googleAdsCampaignCreationOnWebView: Bool = false,
+         blazeEvergreenCampaigns: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -57,6 +59,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
         self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
+        self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -97,6 +100,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isProductCreationAIv2M1Enabled
         case .googleAdsCampaignCreationOnWebView:
             return googleAdsCampaignCreationOnWebView
+        case .blazeEvergreenCampaigns:
+            return blazeEvergreenCampaigns
         default:
             return false
         }

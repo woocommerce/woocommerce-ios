@@ -1,15 +1,13 @@
 import Foundation
 
 enum PointOfSaleAssets: CaseIterable {
-    case newTransaction
-    case paymentSuccessful
     case processingPayment
     case readyForPayment
     case cartBack
     case exit
     case getSupport
     case removeCartItem
-    case xClose
+    case dismissProductsBanner
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
@@ -17,10 +15,6 @@ enum PointOfSaleAssets: CaseIterable {
 
     var imageName: String {
         switch self {
-        case .newTransaction:
-            "pos-new-transaction-icon"
-        case .paymentSuccessful:
-            "pos-payment-successful"
         case .processingPayment:
             "pos-processing-payment"
         case .readyForPayment:
@@ -33,8 +27,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-get-support"
         case .removeCartItem:
             "pos-remove-cart-item"
-        case .xClose:
-            "pos-x-close"
+        case .dismissProductsBanner:
+            "pos-dismiss-products-banner"
         case .readerConnectionScanning:
             "pos-reader-connection-scanning"
         case .readerConnectionDoYouWantToConnect:

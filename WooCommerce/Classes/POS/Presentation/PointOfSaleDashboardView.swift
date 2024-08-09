@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
-    @Environment(\.presentationMode) var presentationMode
-
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
@@ -63,34 +61,7 @@ struct PointOfSaleDashboardView: View {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
         }
         .posModal(isPresented: $viewModel.showExitPOSModal) {
-            VStack(spacing: 0 ) {
-                HStack {
-                    Spacer()
-                    Button {
-                        viewModel.showExitPOSModal = false
-                    } label: {
-                        Image(PointOfSaleAssets.xClose.imageName)
-                            .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
-                            .foregroundColor(Color.posTertiaryTexti3)
-                    }
-                }
-                Text("Exit Point of Sale mode?")
-                    .font(.posModalTitle)
-                    .padding(.bottom)
-                Text("Any orders in progress will be lost.")
-                    .font(.posModalBody)
-                    .padding(.bottom)
-                    .padding(.bottom)
-                    .padding(.bottom)
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Text("Exit")
-                }
-                .buttonStyle(POSPrimaryButtonStyle())
-            }
-            .padding()
-            .padding()
+            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .task {
@@ -141,7 +112,6 @@ private extension PointOfSaleDashboardView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
-        static let closeIconSize: CGFloat = 40.0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
     }
 }
@@ -154,8 +124,7 @@ private extension PointOfSaleDashboardView {
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel,
-                   totalsViewModel: totalsViewModel,
-                   cartViewModel: cartViewModel)
+                   totalsViewModel: totalsViewModel)
     }
 
     var productListView: some View {

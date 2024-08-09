@@ -152,12 +152,14 @@ private extension MediaPickingCoordinator {
 private extension MediaPickingSource {
     var analyticsValue: String {
         switch self {
-            case .camera:
-                return "camera"
-            case .photoLibrary:
-                return "device"
-            case .siteMediaLibrary:
-                return "wpmedia"
+        case .camera:
+            return "camera"
+        case .photoLibrary:
+            return "device"
+        case .siteMediaLibrary:
+            return "wpmedia"
+        case .productMedia:
+            return "product_media"
         }
     }
 }

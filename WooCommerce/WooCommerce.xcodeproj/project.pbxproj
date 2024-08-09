@@ -2780,6 +2780,7 @@
 		EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB0D2B29BF2800518DAF /* ThemeInstaller.swift */; };
 		EE66BB102B29D24600518DAF /* DefaultThemeInstallerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */; };
 		EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */; };
+		EE6C6B6E2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */; };
 		EE7707C52ABB3F55009FD564 /* AIToneVoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7707C42ABB3F55009FD564 /* AIToneVoiceView.swift */; };
 		EE7707C82ABBF4BB009FD564 /* AIToneVoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7707C72ABBF4BB009FD564 /* AIToneVoiceViewModel.swift */; };
 		EE7707CB2ABC4C8E009FD564 /* AIToneVoiceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7707CA2ABC4C8E009FD564 /* AIToneVoiceViewModelTests.swift */; };
@@ -5760,6 +5761,7 @@
 		EE66BB0D2B29BF2800518DAF /* ThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeInstaller.swift; sourceTree = "<group>"; };
 		EE66BB0F2B29D24600518DAF /* DefaultThemeInstallerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultThemeInstallerTests.swift; sourceTree = "<group>"; };
 		EE66BB112B29D65400518DAF /* MockThemeInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockThemeInstaller.swift; sourceTree = "<group>"; };
+		EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMediaLibraryPickerDataSourceTests.swift; sourceTree = "<group>"; };
 		EE7707C42ABB3F55009FD564 /* AIToneVoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToneVoiceView.swift; sourceTree = "<group>"; };
 		EE7707C72ABBF4BB009FD564 /* AIToneVoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToneVoiceViewModel.swift; sourceTree = "<group>"; };
 		EE7707CA2ABC4C8E009FD564 /* AIToneVoiceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIToneVoiceViewModelTests.swift; sourceTree = "<group>"; };
@@ -6778,6 +6780,7 @@
 				EE81B1372865BB0B0032E0D4 /* ProductImagesProductIDUpdaterTests.swift */,
 				DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */,
 				02F3A6852A619270004CD2E8 /* WordPressMediaLibraryImagePickerCoordinatorTests.swift */,
+				EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -16576,6 +16579,7 @@
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,
+				EE6C6B6E2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift in Sources */,
 				20BCF6F02B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift in Sources */,
 				261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */,
 				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,

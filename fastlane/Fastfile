@@ -277,9 +277,7 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
-    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
-
     ensure_git_branch_is_release_branch
 
     UI.important("Completing code freeze for: #{release_version_current}")
@@ -341,9 +339,7 @@ platform :ios do
   #####################################################################################
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
-    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
-
     ensure_git_branch_is_release_branch
 
     UI.important <<-MESSAGE
@@ -585,34 +581,30 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # trigger_beta_build
-  # -----------------------------------------------------------------------------------
-  # This lane triggers a beta build on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane trigger_beta_build [branch_to_build:<branch_name>]
+  # This lane triggers a beta build on CI.
   #
-  #####################################################################################
-  lane :trigger_beta_build do |options|
+  # @param [String] branch_to_build The git branch the CI build should run on.
+  #
+  # @example Running the lane
+  #          bundle exec fastlane trigger_beta_build branch_to_build:main
+  #
+  lane :trigger_beta_build do |branch_to_build|
     trigger_buildkite_release_build(
-      branch: options[:branch_to_build],
+      branch: branch_to_build,
       beta: true
     )
   end
 
-  #####################################################################################
-  # trigger_release_build
-  # -----------------------------------------------------------------------------------
-  # This lane triggers a stable release build on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane trigger_release_build [branch_to_build:<branch_name>]
+  # This lane triggers a stable release build on CI.
   #
-  #####################################################################################
-  lane :trigger_release_build do |options|
+  # @param [String] branch_to_build The git branch the CI build should run on.
+  #
+  # @example Running the lane
+  #          bundle exec fastlane trigger_release_build branch_to_build:main
+  #
+  lane :trigger_release_build do |branch_to_build|
     trigger_buildkite_release_build(
-      branch: options[:branch_to_build],
+      branch: branch_to_build,
       beta: false
     )
   end
@@ -1332,13 +1324,16 @@ end
 # Kicks off a Buildkite build
 # -----------------------------------------------------------------------------------
 def trigger_buildkite_release_build(branch:, beta:)
-  buildkite_trigger_build(
+  build_url = buildkite_trigger_build(
     buildkite_organization: 'automattic',
     buildkite_pipeline: 'woocommerce-ios',
     branch: branch,
     environment: { BUILDKITE_BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
   )
+
+  message = "This build triggered a build on <code>#{branch}</code>:<br>- #{build_url}"
+  buildkite_annotate(style: 'info', context: 'trigger-release-build', message: message) if is_ci
 end
 
 def inject_buildkite_analytics_environment(xctestrun_path:)

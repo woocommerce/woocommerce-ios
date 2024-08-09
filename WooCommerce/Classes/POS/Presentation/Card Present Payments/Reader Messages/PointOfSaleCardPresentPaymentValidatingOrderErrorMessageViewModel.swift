@@ -1,4 +1,5 @@
 import Foundation
+import enum Networking.DotcomError
 
 struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel {
     let title: String = Localization.title
@@ -14,7 +15,11 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel {
     }
 
     private static func message(for error: Error) -> String {
-        return error.localizedDescription
+        if let error = error as? DotcomError {
+            return error.description
+        } else {
+            return error.localizedDescription
+        }
     }
 }
 

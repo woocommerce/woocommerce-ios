@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-01 10:54:05+0000 */
+/* Translation-Revision-Date: 2024-08-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -5685,6 +5685,12 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
 "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ de taxa de inscrição";
 
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"ProductSKUInputScanner.instructionText" = "Ler código de barras ou código QR do produto";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as a product's SKU. */
+"ProductSKUInputScanner.titleView" = "Digitalizar código de barras ou código QR para atualizar a SKU";
+
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
@@ -6699,6 +6705,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Singapore" = "Singapura";
+
+/* Site Address title on the support form */
+"Site Address" = "Endereço do site";
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Redirecionamento de site";
@@ -10797,6 +10806,9 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.hideCard" = "Ocultar cupons";
 
+/* Title when the Most Active Coupons card is disabled because the analytics feature is unavailable */
+"mostActiveCouponsCard.unavailableAnalyticsView.title" = "Não foi possível exibir a análise do cupom da sua loja";
+
 /* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
 "mostActiveCouponsCard.uses" = "Usos";
 
@@ -11104,6 +11116,9 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Pagamento cancelado no leitor";
 
+/* Message shown on the Point of Sale checkout while the reader payment is being processed. */
+"pointOfSale.cardPresent.displayReaderMessage.message" = "Processando pagamento";
+
 /* Label for a cancel button */
 "pointOfSale.cardPresent.modalScanningForReader.cancelButton" = "Cancelar";
 
@@ -11134,14 +11149,50 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Falha no pagamento";
 
+/* Indicates to wait while payment is processing. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.paymentProcessing.message" = "Aguarde...";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Processando pagamento";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Pagamento realizado com êxito!";
 
+/* Message shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.message" = "Preparando cartão para pagamento";
+
+/* Title shown on the Point of Sale checkout while the reader is being prepared. */
+"pointOfSale.cardPresent.preparingForPayment.title" = "Quase pronto";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.insert" = "Inserir cartão";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.present" = "Apresentar cartão";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tap" = "Passar cartão";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapInsert" = "Passe ou insira cartão";
+
+/* Label asking users to present a card. Presented to users when a payment is going to be collected */
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Passe, insira ou aproxime o cartão";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Pronto para o pagamento";
+
+/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.button.title" = "Receber pagamento";
+
+/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerDisconnected.title" = "Leitor desconectado";
+
+/* Message shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.message" = "Verificando pedido";
+
+/* Title shown on the Point of Sale checkout while the order is being validated. */
+"pointOfSale.cardPresent.validatingOrder.title" = "Quase pronto";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Ignorar";
@@ -11665,6 +11716,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.stockLevels" = "Níveis de estoque";
 
+/* Title when the Stock card is disabled because the analytics feature is unavailable */
+"productStockDashboardCard.unavailableAnalyticsView.title" = "Não foi possível exibir a análise do estoque da sua loja";
+
 /* Title of a stock type displayed on the Stock section on My Store screen */
 "productStockDashboardCardViewModel.stockType.lowStock" = "Estoque baixo";
 
@@ -11812,6 +11866,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "Receita";
+
+/* Title when the Performance card is disabled because the analytics feature is unavailable */
+"storePerformanceView.unavailableAnalyticsView.title" = "Não foi possível exibir o desempenho da sua loja";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "Ver todos os dados analíticos da loja";
@@ -12051,8 +12108,20 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Ocultar melhores desempenhos";
 
+/* Title when the Top Performers card is disabled because the analytics feature is unavailable */
+"topPerformersDashboardView.unavailableAnalyticsView.title" = "Não foi possível exibir os melhores desempenhos da sua loja";
+
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Ver todos os dados analíticos da loja";
+
+/* Button title to contact support to get help with unavailable Analytics module */
+"unavailableAnalyticsView.buttonTitle" = "Ainda precisa de ajuda? Fale conosco";
+
+/* Text that explains how to get access to the Analytics module */
+"unavailableAnalyticsView.details" = "Use a versão mais recente do WooCommerce no seu site e ative o Analytics nas configurações do WooCommerce.";
+
+/* Button to dismiss the support form. */
+"unavailableAnalyticsView.dismissSupport" = "Concluído";
 
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "desconhecida";

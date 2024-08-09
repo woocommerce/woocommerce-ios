@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-07 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -11177,7 +11177,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapInsert" = "Appuyer ou insérer la carte";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Appuyez, glissez ou insérez une carte";
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Appuyer, glisser ou insérer la carte";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Prêt pour le paiement";

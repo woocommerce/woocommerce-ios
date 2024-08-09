@@ -171,8 +171,7 @@ import Combine
     let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                           currencyFormatter: .init(currencySettings: .init()),
-                                          paymentState: .acceptingCard,
-                                          isSyncingOrder: false)
+                                          paymentState: .acceptingCard)
     let cartViewModel = CartViewModel()
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),

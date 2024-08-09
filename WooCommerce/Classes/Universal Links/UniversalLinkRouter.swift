@@ -23,20 +23,21 @@ struct UniversalLinkRouter {
     }
 
     static func defaultUniversalLinkRouter(tabBarController: MainTabBarController) -> UniversalLinkRouter {
-        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes(tabBarController: tabBarController))
+        UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes(navigator: tabBarController))
     }
 
     /// Add your route here if you want it to be considered when matching for an incoming universal link.
     /// As we only perform one action to avoid conflicts, order matters (only the first matched route will be called to perform its action)
     /// If `tabBarController: nil` is passed, some routes will not work, e.g. Payments related routes, which require the tab bar for navigation.
     ///
-    static func defaultRoutes(tabBarController: MainTabBarController?) -> [Route] {
+    static func defaultRoutes(navigator: DeepLinkNavigator?) -> [Route] {
         let routes: [Route] = [OrderDetailsRoute(), MyStoreRoute()]
-        guard let tabBarController = tabBarController else {
+        guard let navigator = navigator else {
             DDLogWarn("⛔️ Unable to create tab bar dependent Universal Link routes, some links will not be handled")
             return routes
         }
-        return routes + [PaymentsRoute(deepLinkNavigator: tabBarController)]
+        return routes + [PaymentsRoute(deepLinkNavigator: navigator),
+                         OrdersRoute(deepLinkNavigator: navigator)]
     }
 
     func handle(url: URL) {

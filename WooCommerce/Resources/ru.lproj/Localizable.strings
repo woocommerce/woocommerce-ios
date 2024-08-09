@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-06 19:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -11177,7 +11177,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.presentCard.tapInsert" = "Приложите или вставьте карту";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
-"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Проведите пальцем, коснитесь экрана или вставьте карту.";
+"pointOfSale.cardPresent.presentCard.tapSwipeInsert" = "Проведите пальцем, приложите или вставьте карту";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Готово к оплате";
@@ -11186,7 +11186,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.readerDisconnected.button.title" = "Получить платёж";
 
 /* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Устройство чтения карт отключено";
+"pointOfSale.cardPresent.readerDisconnected.title" = "Платёжный терминал отключён";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Проверка заказа";

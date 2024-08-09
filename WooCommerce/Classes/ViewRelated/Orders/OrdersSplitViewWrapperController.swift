@@ -184,6 +184,20 @@ private extension OrdersSplitViewWrapperController {
     }
 }
 
+extension OrdersSplitViewWrapperController: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        guard let ordersDestination = destination as? OrdersDestination else {
+            return
+        }
+        switch ordersDestination {
+        case .createOrder:
+            presentOrderCreationFlow()
+        case .orderList:
+            return
+        }
+    }
+}
+
 extension OrdersSplitViewWrapperController {
     private enum Localization {
         static let ordersTabTitle = NSLocalizedString("Orders", comment: "The title of the Orders tab.")

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-06 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -11159,7 +11159,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "付款成功！";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "准备付款卡";
+"pointOfSale.cardPresent.preparingForPayment.message" = "正在准备付款卡";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "正在准备";

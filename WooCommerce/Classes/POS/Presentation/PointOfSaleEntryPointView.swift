@@ -21,8 +21,7 @@ struct PointOfSaleEntryPointView: View {
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
                                               currencyFormatter: currencyFormatter,
-                                              paymentState: .acceptingCard,
-                                              isSyncingOrder: false)
+                                              paymentState: .acceptingCard)
         let cartViewModel = CartViewModel()
         let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
 

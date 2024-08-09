@@ -91,4 +91,12 @@ extension Color {
     static var posPrimaryButtonBackground: Color {
         Color(uiColor: .wooCommercePurple(.shade50))
     }
+
+    static var posSecondaryButtonTint: Color {
+        Color(uiColor: .wooCommercePurple(.shade50))
+    }
+
+    static var posSecondaryButtonBackground: Color {
+        Color(uiColor: .systemBackground)
+    }
 }

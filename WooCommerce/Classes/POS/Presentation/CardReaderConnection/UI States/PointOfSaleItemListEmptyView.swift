@@ -2,23 +2,23 @@ import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Text("Products")
+        VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            Text(Localization.productTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-                .font(.system(size: 40, weight: .bold, design: .default))
+                .padding(.vertical, Constants.headerPadding)
+                .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
             Image(uiImage: .searchImage)
-            Text(Constants.emptyProductsTitle)
+            Text(Localization.emptyProductsTitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posTitle)
                 .bold()
-            Text(Constants.emptyProductsSubtitle)
+            Text(Localization.emptyProductsSubtitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)
                 .padding([.leading, .trailing])
-            Text(Constants.emptyProductsHint)
+            Text(Localization.emptyProductsHint)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)
                 .padding([.leading, .trailing])
@@ -29,6 +29,16 @@ struct PointOfSaleItemListEmptyView: View {
 
 private extension PointOfSaleItemListEmptyView {
     enum Constants {
+        static let headerPadding: CGFloat = 8
+        static let headerSpacing: CGFloat = 16
+        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
+    }
+    enum Localization {
+        static let productTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.productTitle",
+            value: "Products",
+            comment: "Title for the Point of Sale screen"
+        )
         static let emptyProductsTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyProductsTitle",
             value: "No supported products found",

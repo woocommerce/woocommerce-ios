@@ -17,11 +17,11 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Text("Products")
+        VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            Text(Localization.productTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-                .font(.system(size: 40, weight: .bold, design: .default))
+                .padding(.vertical, Constants.headerPadding)
+                .font(Constants.titleFont)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
             POSErrorExclamationMark()
@@ -30,7 +30,7 @@ struct PointOfSaleItemListErrorView: View {
                 .font(.posTitle)
                 .bold()
             Divider()
-                .padding([.leading, .trailing], 240)
+                .padding([.leading, .trailing], Constants.buttonPadding)
             Text(errorContents.subtitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)
@@ -43,8 +43,24 @@ struct PointOfSaleItemListErrorView: View {
                 Text(errorContents.buttonText)
             })
             .buttonStyle(POSPrimaryButtonStyle())
-            .padding([.leading, .trailing], 240)
+            .padding([.leading, .trailing], Constants.buttonPadding)
             Spacer()
         }
+    }
+}
+
+private extension PointOfSaleItemListErrorView {
+    enum Localization {
+        static let productTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListErrorView.productTitle",
+            value: "Products",
+            comment: "Title for the Point of Sale screen"
+        )
+    }
+    enum Constants {
+        static let headerPadding: CGFloat = 8
+        static let headerSpacing: CGFloat = 16
+        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
+        static let buttonPadding: CGFloat = 240
     }
 }

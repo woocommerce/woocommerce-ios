@@ -10,7 +10,7 @@ struct CreateOrderAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        MainTabBarController.presentOrderCreationFlow()
+        AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
         ServiceLocator.analytics.track(event: .AppIntents.shortcutWasOpened(with: .createOrder))
 
         return .result()

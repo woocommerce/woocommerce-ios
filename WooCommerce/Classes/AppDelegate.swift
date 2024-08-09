@@ -192,7 +192,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type),
+            let tabBarController else {
             completionHandler(false)
             return
         }
@@ -201,13 +202,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MainTabBarController.presentAddProductFlow()
             completionHandler(true)
         case QuickAction.addOrder:
-            MainTabBarController.presentOrderCreationFlow()
+            tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         case QuickAction.openOrders:
-            MainTabBarController.switchToOrdersTab()
+            tabBarController.navigate(to: OrdersDestination.orderList)
             completionHandler(true)
         case QuickAction.collectPayment:
-            MainTabBarController.presentCollectPayment()
+            tabBarController.navigate(to: PaymentsMenuDestination.collectPayment)
             completionHandler(true)
         }
     }

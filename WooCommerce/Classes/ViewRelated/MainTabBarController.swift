@@ -436,19 +436,6 @@ extension MainTabBarController {
         })
     }
 
-    static func presentOrderCreationFlow() {
-        switchToOrdersTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let ordersContainerController = tabBar?.ordersContainerController
-
-            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
-                return
-            }
-
-            ordersSplitViewWrapperController.presentOrderCreationFlow()
-        }
-    }
-
     static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController

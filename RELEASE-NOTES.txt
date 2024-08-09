@@ -1,9 +1,6 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
-20.0
------
-- [*] Added Universal Link to Create Order: /mobile/orders/create. [https://github.com/woocommerce/woocommerce-ios/pull/13541]
 
 19.9
 -----
@@ -11,6 +8,7 @@
 - [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
 - [Internal] Added missing events for custom range on the stats dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13506]
 - [**] Disable focus for order rows on iPadOS 16 and 16.1 to avoid crashes. [https://github.com/woocommerce/woocommerce-ios/pull/13512]
+- [*] Added Universal Link to Create Order: /mobile/orders/create. [https://github.com/woocommerce/woocommerce-ios/pull/13541]
 
 19.8
 -----

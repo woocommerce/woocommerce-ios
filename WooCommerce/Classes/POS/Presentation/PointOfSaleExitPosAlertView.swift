@@ -2,10 +2,10 @@ import SwiftUI
 
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @Binding private var isPresented: Bool
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+    init(isPresented: Binding<Bool>) {
+        self._isPresented = isPresented
     }
 
     var body: some View {
@@ -13,7 +13,7 @@ struct PointOfSaleExitPosAlertView: View {
             HStack {
                 Spacer()
                 Button {
-                    viewModel.showExitPOSModal = false
+                    isPresented = false
                 } label: {
                     Image(systemName: "xmark")
                         .resizable()

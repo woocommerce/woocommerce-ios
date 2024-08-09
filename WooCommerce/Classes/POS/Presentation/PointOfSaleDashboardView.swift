@@ -58,7 +58,7 @@ struct PointOfSaleDashboardView: View {
             }
         })
         .posModal(isPresented: $viewModel.showExitPOSModal, fixedWidth: false, fixedHeight: false, content: {
-            PointOfSaleExitPosAlertView(viewModel: viewModel)
+            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         })
         .task {

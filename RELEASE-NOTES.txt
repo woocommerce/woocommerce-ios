@@ -3,7 +3,7 @@
 
 20.0
 -----
-- [internal] A way to pick media attached to given product ID. [https://github.com/woocommerce/woocommerce-ios/pull/13539]
+- [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
 
 19.9
 -----

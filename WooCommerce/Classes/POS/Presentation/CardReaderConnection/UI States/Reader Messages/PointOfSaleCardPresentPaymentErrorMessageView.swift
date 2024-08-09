@@ -5,28 +5,24 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center) {
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.title)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .font(.posBody)
+        VStack(alignment: .center) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Text(viewModel.title)
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .font(.posBody)
 
-                    Text(viewModel.message)
-                        .font(.posTitle)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .bold()
-                }
-
-                HStack {
-                    Button(viewModel.tryAgainButtonViewModel.title, action: viewModel.tryAgainButtonViewModel.actionHandler)
-                }
-                .padding()
+                Text(viewModel.message)
+                    .font(.posTitle)
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .bold()
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+
+            HStack {
+                Button(viewModel.tryAgainButtonViewModel.title, action: viewModel.tryAgainButtonViewModel.actionHandler)
+            }
+            .padding()
         }
+        .multilineTextAlignment(.center)
     }
 }
 

@@ -97,6 +97,9 @@ final class MediaPickingCoordinator {
             showDeviceMediaLibraryPicker(origin: origin)
         case .siteMediaLibrary:
             showSiteMediaPicker(origin: origin)
+        case .productMedia(let productID):
+            showSiteMediaPicker(origin: origin,
+                                productID: productID)
         }
     }
 }
@@ -144,8 +147,10 @@ private extension MediaPickingCoordinator {
         deviceMediaLibraryPicker.presentPicker(origin: origin)
     }
 
-    func showSiteMediaPicker(origin: UIViewController) {
-        wpMediaLibraryPicker.start(from: origin)
+    func showSiteMediaPicker(origin: UIViewController,
+                             productID: Int64? = nil) {
+        wpMediaLibraryPicker.start(from: origin,
+                                   productID: productID)
     }
 }
 

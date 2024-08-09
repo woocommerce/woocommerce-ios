@@ -203,7 +203,9 @@ extension Networking.BlazeCampaignListItem {
             spentBudget: .fake(),
             budgetMode: .fake(),
             budgetAmount: .fake(),
-            budgetCurrency: .fake()
+            budgetCurrency: .fake(),
+            isEvergreen: .fake(),
+            durationDays: .fake()
         )
     }
 }

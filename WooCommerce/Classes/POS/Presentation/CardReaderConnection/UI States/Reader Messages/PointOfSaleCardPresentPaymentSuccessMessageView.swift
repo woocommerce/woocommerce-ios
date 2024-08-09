@@ -10,7 +10,6 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                 Text(viewModel.title)
                     .font(.posTitle)
                     .foregroundStyle(Color.posPrimaryTexti3)
-                    .bold()
                 if let message = viewModel.message {
                     Text(message)
                         .font(.posBody)

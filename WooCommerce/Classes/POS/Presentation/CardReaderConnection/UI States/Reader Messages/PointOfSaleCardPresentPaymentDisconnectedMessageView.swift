@@ -11,7 +11,6 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                 Text(viewModel.title)
                     .font(.posTitle)
                     .foregroundStyle(Color.posPrimaryTexti3)
-                    .bold()
                 Text(viewModel.instruction)
                     .font(.posBody)
                     .foregroundStyle(Color.posPrimaryTexti3)

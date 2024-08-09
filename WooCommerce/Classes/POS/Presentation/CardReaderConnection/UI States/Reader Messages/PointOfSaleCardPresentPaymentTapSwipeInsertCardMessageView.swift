@@ -18,7 +18,6 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                 Text(viewModel.message)
                     .font(.posTitle)
                     .foregroundStyle(Color.posPrimaryTexti3)
-                    .bold()
             }
         }
         .multilineTextAlignment(.center)

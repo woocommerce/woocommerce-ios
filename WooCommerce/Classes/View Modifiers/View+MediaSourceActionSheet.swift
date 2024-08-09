@@ -17,18 +17,27 @@ struct MediaSourceActionSheet: ViewModifier {
     func body(content: Content) -> some View {
         content
             .confirmationDialog(Text(Localization.title), isPresented: showsActionSheet, actions: {
-                if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    Button(Localization.camera) {
-                        selectMedia(.camera)
+                ForEach(sourceOptions) { source in
+                    switch source {
+                    case .camera:
+                        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                            Button(Localization.camera) {
+                                selectMedia(.camera)
+                            }
+                        }
+                    case .photoLibrary:
+                        Button(Localization.photoLibrary) {
+                            selectMedia(.photoLibrary)
+                        }
+                    case .siteMediaLibrary:
+                        Button(Localization.siteMediaLibrary) {
+                            selectMedia(.siteMediaLibrary)
+                        }
+                    case .productMedia(let productID):
+                        Button(Localization.productMedia) {
+                            selectMedia(.productMedia(productID: productID))
+                        }
                     }
-                }
-
-                Button(Localization.photoLibrary) {
-                    selectMedia(.photoLibrary)
-                }
-
-                Button(Localization.siteMediaLibrary) {
-                    selectMedia(.siteMediaLibrary)
                 }
             })
     }

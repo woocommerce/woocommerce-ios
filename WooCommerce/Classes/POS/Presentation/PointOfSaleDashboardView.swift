@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
-    @Environment(\.presentationMode) var presentationMode
-
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
     @ObservedObject private var cartViewModel: CartViewModel
@@ -59,6 +57,10 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         })
+        .posModal(isPresented: $viewModel.showExitPOSModal, fixedWidth: false, fixedHeight: false, content: {
+            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        })
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
@@ -107,6 +109,7 @@ private extension PointOfSaleDashboardView {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
+        static let exitPOSSheetMaxWidth: CGFloat = 900.0
     }
 }
 

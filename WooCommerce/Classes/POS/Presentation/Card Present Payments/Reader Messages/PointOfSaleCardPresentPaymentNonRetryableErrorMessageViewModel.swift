@@ -4,9 +4,13 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel {
     let title = Localization.title
     let message: String
+    let startAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(error: Error) {
         self.message = Self.message(for: error)
+        self.startAgainButtonViewModel = CardPresentPaymentsModalButtonViewModel(
+            title: Localization.startAgain,
+            actionHandler: { })
     }
 
     private static func message(for error: Error) -> String {
@@ -25,5 +29,11 @@ private extension PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
             value: "Payment failed",
             comment: "Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout"
         )
+
+        static let startAgain = NSLocalizedString(
+            "pointOfSale.cardPresent.paymentErrorNonRetryable.startAgain.button.title",
+            value: "Start again",
+            comment: "Title of the button used on a non-retryable card payment error from the Point of Sale Checkout " +
+            "to go back and start the order from scratch.")
     }
 }

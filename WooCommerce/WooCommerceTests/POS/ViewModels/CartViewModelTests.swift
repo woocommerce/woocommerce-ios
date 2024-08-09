@@ -7,37 +7,16 @@ import SwiftUI
 
 final class CartViewModelTests: XCTestCase {
 
-    private var orderStageSubject: PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>!
     private var sut: CartViewModel!
 
     override func setUp() {
         super.setUp()
-        orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
         sut = CartViewModel()
-        sut.bind(to: orderStageSubject.eraseToAnyPublisher())
     }
 
     override func tearDown() {
-        orderStageSubject = nil
         sut = nil
         super.tearDown()
-    }
-
-    func test_canDeleteItemsFromCart_when_orderStage_is_building_then_returns_true() {
-        // Given/When
-        XCTAssertEqual(sut.canDeleteItemsFromCart, true, "Initial state")
-        orderStageSubject.send(.finalizing)
-
-        // Then
-        XCTAssertEqual(sut.canDeleteItemsFromCart, false)
-    }
-
-    func test_canDeleteItemsFromCart_when_orderStage_is_finalizing_then_returns_false() {
-        // Given/When
-        orderStageSubject.send(.finalizing)
-
-        // Then
-        XCTAssertEqual(sut.canDeleteItemsFromCart, false)
     }
 
     func test_cart_when_submitCart_is_invoked_then_cartSubmissionPublisher_emits_cart_items() {

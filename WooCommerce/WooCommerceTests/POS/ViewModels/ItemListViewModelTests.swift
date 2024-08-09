@@ -216,18 +216,6 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
-    func test_shouldShowHeaderBanner_when_itemListViewModel_loaded_then_returns_true() async {
-        // Given
-        let expectedItems = Self.makeItems()
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.state, .loaded(expectedItems))
-        XCTAssertEqual(sut.shouldShowHeaderBanner, true)
-    }
-
     func test_isEmptyOrError_when_itemListViewModel_loaded_normally_then_returns_false() async {
         // Given/When
         await sut.populatePointOfSaleItems()

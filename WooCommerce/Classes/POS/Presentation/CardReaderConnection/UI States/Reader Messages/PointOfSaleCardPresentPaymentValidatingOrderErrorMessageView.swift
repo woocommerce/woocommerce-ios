@@ -6,8 +6,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
 
     var body: some View {
         HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
                 POSErrorExclamationMark()
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
@@ -18,25 +17,22 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
                     Text(viewModel.message)
                         .foregroundStyle(Color.posPrimaryTexti3)
                         .font(.posBody)
-                        .padding([.leading, .trailing])
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Button(viewModel.tryAgainButtonViewModel.title, action: viewModel.tryAgainButtonViewModel.actionHandler)
                     .buttonStyle(POSPrimaryButtonStyle())
-                    .padding([.leading, .trailing, .bottom], Constants.buttonPadding)
-                .padding()
             }
+            .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
             .multilineTextAlignment(.center)
-            Spacer()
         }
     }
 }
 
 private extension PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView {
     enum Constants {
-        static let headerSpacing: CGFloat = 24
         static let textSpacing: CGFloat = 16
-        static let buttonPadding: CGFloat = 40
     }
 }
 

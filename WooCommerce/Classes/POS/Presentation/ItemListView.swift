@@ -14,15 +14,15 @@ struct ItemListView: View {
         VStack {
             headerView
             switch viewModel.state {
-            case .empty(let emptyModel):
-                emptyView(emptyModel)
+            case .empty, .error:
+                // These cases are handled directly in the dashboard, we do not render
+                // a specific view within the ItemListView to handle them
+                EmptyView()
             case .loading:
                 /// TODO: handle pull to refresh
                 listView(viewModel.items)
             case .loaded(let items):
                 listView(items)
-            case .error(let errorModel):
-                errorView(errorModel)
             }
         }
         .refreshable {
@@ -120,24 +120,6 @@ private extension ItemListView {
     }
 
     @ViewBuilder
-    func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Text(content.subtitle)
-            Button(action: {
-                // TODO:
-                // Redirect the merchant to the app in order to create a new product
-                // https://github.com/woocommerce/woocommerce-ios/issues/13297
-            }, label: {
-                Text(content.buttonText)}
-            )
-            Text(content.hint)
-            Spacer()
-        }
-    }
-
-    @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
@@ -150,22 +132,6 @@ private extension ItemListView {
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
-        }
-    }
-
-    @ViewBuilder
-    func errorView(_ content: ItemListViewModel.ErrorModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Button(action: {
-                Task {
-                    await viewModel.populatePointOfSaleItems()
-                }
-            }, label: {
-                Text(content.buttonText)
-            })
-            Spacer()
         }
     }
 }

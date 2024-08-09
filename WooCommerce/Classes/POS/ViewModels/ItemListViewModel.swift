@@ -80,7 +80,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
 extension ItemListViewModel {
     enum ItemListState: Equatable {
-        case empty(EmptyModel)
+        case empty
         // TODO:
         // Differentiate between loading on entering POS mode and reloading, as the
         // screens will be different:
@@ -110,8 +110,8 @@ extension ItemListViewModel {
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
             switch (lhs, rhs) {
-            case (.empty(let lhsItems), .empty(let rhsItems)):
-                return lhsItems == rhsItems
+            case (.empty, .empty):
+                return true
             case (.loading, .loading):
                 return true
             case (.loaded(let lhsItems), .loaded(let rhsItems)):
@@ -130,17 +130,6 @@ extension ItemListViewModel {
         let buttonText: String
     }
 
-    struct EmptyModel: Equatable {
-        // TODO:
-        // Differentiate between empty with no products vs empty with no eligible products
-        // https://github.com/woocommerce/woocommerce-ios/issues/12815
-        // https://github.com/woocommerce/woocommerce-ios/issues/12816
-        let title: String
-        let subtitle: String
-        let hint: String
-        let buttonText: String
-    }
-
     struct BannerState {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
@@ -148,26 +137,6 @@ extension ItemListViewModel {
 
 private extension ItemListViewModel {
     enum Constants {
-        static let emptyProductsTitle = NSLocalizedString(
-            "pos.itemList.emptyProductsTitle",
-            value: "No products",
-            comment: "Text appearing on the item list screen when there are no products to load."
-        )
-        static let emptyProductsSubtitle = NSLocalizedString(
-            "pos.itemList.emptyProductsSubtitle",
-            value: "Your store doesn't have any products",
-            comment: "Text appearing as subtitle on the item list screen when there are no products to load."
-        )
-        static let emptyProductsHint = NSLocalizedString(
-            "pos.itemList.emptyProductsHint",
-            value: "POS currently only supports simple products",
-            comment: "Text appearing on the item list screen as hint when there are no products to load."
-        )
-        static let emptyProductsButtonTitle = NSLocalizedString(
-            "pos.itemList.emptyProductsButtonTitle",
-            value: "Create a simple product",
-            comment: "Text for the button appearing on the item list screen when there are no products to load."
-        )
         static let failedToLoadTitle = NSLocalizedString(
             "pos.itemList.failedToLoadTitle",
             value: "Error loading products",

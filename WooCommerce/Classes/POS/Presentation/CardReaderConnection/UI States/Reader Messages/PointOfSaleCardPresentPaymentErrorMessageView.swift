@@ -5,24 +5,32 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel
 
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+            POSErrorExclamationMark()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryTexti3)
-                    .font(.posBody)
+                    .foregroundStyle(Color.primaryText)
+                    .font(.posTitle)
 
                 Text(viewModel.message)
-                    .font(.posTitle)
-                    .foregroundStyle(Color.posPrimaryTexti3)
-                    .bold()
+                    .font(.posBody)
+                    .foregroundStyle(Color.primaryText)
             }
 
-            HStack {
-                Button(viewModel.tryAgainButtonViewModel.title, action: viewModel.tryAgainButtonViewModel.actionHandler)
+            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+                Button(viewModel.tryAgainButtonViewModel.title,
+                       action: viewModel.tryAgainButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
+
+                if let exitButtonViewModel = viewModel.exitButtonViewModel {
+                    Button(exitButtonViewModel.title,
+                           action: exitButtonViewModel.actionHandler)
+                    .buttonStyle(POSSecondaryButtonStyle())
+                }
             }
-            .padding()
         }
         .multilineTextAlignment(.center)
+        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
     }
 }
 

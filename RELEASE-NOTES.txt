@@ -2,6 +2,10 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
 
+20.0
+-----
+
+
 19.9
 -----
 - [*] Enabled Blaze for JCP sites with Blaze plugin [https://github.com/woocommerce/woocommerce-ios/pull/13500]

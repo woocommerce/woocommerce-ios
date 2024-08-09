@@ -31,8 +31,10 @@ struct PointOfSaleDashboardView: View {
                     .transition(.opacity)
             } else if viewModel.isError {
                 PointOfSaleItemListErrorView(viewModel: viewModel.itemListViewModel)
+                POSFloatingControlView(viewModel: viewModel)
             } else if viewModel.isEmpty {
                 PointOfSaleItemListEmptyView()
+                POSFloatingControlView(viewModel: viewModel)
             } else {
                 contentView
                     .transition(.push(from: .top))

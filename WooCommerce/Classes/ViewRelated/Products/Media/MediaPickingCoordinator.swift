@@ -2,7 +2,11 @@ import UIKit
 import protocol WooFoundation.Analytics
 
 /// The source of the media to pick from.
-enum MediaPickingSource {
+enum MediaPickingSource: Hashable, Identifiable {
+    var id: Self {
+        return self
+    }
+
     /// Device camera.
     case camera
     /// Device photo library.

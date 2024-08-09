@@ -19,7 +19,9 @@ struct SimpleProductsOnlyInformation: View {
                     Text(Localization.modalHint)
                         .font(.posDetail)
 
-                    Button { } label: {
+                    Button {
+                        
+                    } label: {
                         Label(Localization.modalAction, systemImage: "plus")
                             .font(.posDetail)
                     }

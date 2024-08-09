@@ -3,11 +3,14 @@ import SwiftUI
 /// Shows an action sheet to pick a media source from the content view.
 struct MediaSourceActionSheet: ViewModifier {
     private let showsActionSheet: Binding<Bool>
+    private let sourceOptions: [MediaPickingSource]
     private let selectMedia: (MediaPickingSource) -> Void
 
     init(showsActionSheet: Binding<Bool>,
+         sourceOptions: [MediaPickingSource],
          selectMedia: @escaping (MediaPickingSource) -> Void) {
         self.showsActionSheet = showsActionSheet
+        self.sourceOptions = sourceOptions
         self.selectMedia = selectMedia
     }
 
@@ -65,11 +68,14 @@ extension View {
     /// Shows an action sheet to pick a media source from the content view.
     /// - Parameters:
     ///   - showsActionSheet: Whether the action sheet is shown.
+    ///   - sourceOptions: Sources to pick Media from.
     ///   - selectMedia: Invoked when the user selects a media source.
     /// - Returns: The view of the action sheet.
     func mediaSourceActionSheet(showsActionSheet: Binding<Bool>,
+                                sourceOptions: [MediaPickingSource] = [.camera, .photoLibrary, .siteMediaLibrary],
                                 selectMedia: @escaping (MediaPickingSource) -> Void) -> some View {
         self.modifier(MediaSourceActionSheet(showsActionSheet: showsActionSheet,
+                                             sourceOptions: sourceOptions,
                                              selectMedia: selectMedia))
     }
 }

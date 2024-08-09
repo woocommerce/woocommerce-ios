@@ -19,6 +19,10 @@
 - [*] Fix large text support in Bar Code Scanner. [https://github.com/woocommerce/woocommerce-ios/pull/13464]
 - [internal] Enable Blaze only if the store has Jetpack installed and connected. [https://github.com/woocommerce/woocommerce-ios/pull/13448]
 
+19.7.1
+-----
+- [***] Prologue: Restored web view for `Starting a new store?` button [https://github.com/woocommerce/woocommerce-ios/pull/13518]
+
 19.7
 -----
 - [*] Order status is consistent across the order list/dashboard card/filter list/search list. [https://github.com/woocommerce/woocommerce-ios/pull/13408]

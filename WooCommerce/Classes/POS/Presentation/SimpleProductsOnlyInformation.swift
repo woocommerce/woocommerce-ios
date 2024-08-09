@@ -35,7 +35,7 @@ struct SimpleProductsOnlyInformation: View {
             Button(action: {
                 isPresented = false
             }) {
-                Text("OK")
+                Text(Localization.okButtonTitle)
             }
             .buttonStyle(POSSecondaryButtonStyle())
         }

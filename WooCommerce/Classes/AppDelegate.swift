@@ -278,6 +278,7 @@ extension AppDelegate {
             return
         }
         tabBarController.tabBar.isHidden = hidden
+        tabBarController.selectedViewController?.view.layoutIfNeeded()
     }
 }
 

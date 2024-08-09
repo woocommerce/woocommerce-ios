@@ -13,6 +13,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         switch messageType {
         case .validatingOrder(let viewModel):
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message)
+        case .validatingOrderError(let viewModel):
+            PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView(viewModel: viewModel)
         case .preparingForPayment(let viewModel):
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message)
         case .tapSwipeOrInsertCard(let viewModel):

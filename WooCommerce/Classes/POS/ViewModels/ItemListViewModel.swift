@@ -98,6 +98,15 @@ extension ItemListViewModel {
             }
         }
 
+        var hasError: ErrorModel? {
+            switch self {
+            case .error(let errorModel):
+                return errorModel
+            default:
+                return nil
+            }
+        }
+
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
             switch (lhs, rhs) {

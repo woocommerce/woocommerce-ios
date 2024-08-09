@@ -9,6 +9,8 @@ enum MediaPickingSource {
     case photoLibrary
     /// Site's media library.
     case siteMediaLibrary
+    /// Media attached to given product.
+    case productMedia(productID: Int64)
 }
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.

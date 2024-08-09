@@ -2,6 +2,13 @@ import SwiftUI
 
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
+    let deepLinkNavigator: DeepLinkNavigator?
+
+    init(isPresented: Binding<Bool>,
+         deepLinkNavigator: DeepLinkNavigator? = AppDelegate.shared.tabBarController) {
+        self._isPresented = isPresented
+        self.deepLinkNavigator = deepLinkNavigator
+    }
 
     var body: some View {
         VStack(spacing: Constants.contentBlockSpacing) {
@@ -19,7 +26,9 @@ struct SimpleProductsOnlyInformation: View {
                     Text(Localization.modalHint)
                         .font(.posDetail)
 
-                    Button { } label: {
+                    Button {
+                        deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
+                    } label: {
                         Label(Localization.modalAction, systemImage: "plus")
                             .font(.posDetail)
                     }
@@ -91,5 +100,6 @@ private extension SimpleProductsOnlyInformation {
 }
 
 #Preview {
-    SimpleProductsOnlyInformation(isPresented: .constant(true))
+    SimpleProductsOnlyInformation(isPresented: .constant(true),
+                                  deepLinkNavigator: nil)
 }

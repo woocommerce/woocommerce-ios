@@ -9,6 +9,7 @@ enum ProductFormEditAction: Equatable {
     case description(editable: Bool)
     case promoteWithBlaze
     case priceSettings(editable: Bool, hideSeparator: Bool)
+    case customFields
     case reviews
     case productType(editable: Bool)
     case inventorySettings(editable: Bool)
@@ -73,6 +74,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
+    private let isCustomFieldsEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -83,6 +85,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
+         isCustomFieldsEnabled: Bool =
+         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
          variationsPrice: VariationsPrice = .unknown,
          stores: StoresManager = ServiceLocator.stores) {
         self.product = product
@@ -95,6 +99,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
+        self.isCustomFieldsEnabled = isCustomFieldsEnabled
         self.stores = stores
     }
 
@@ -176,6 +181,7 @@ private extension ProductFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
+            isCustomFieldsEnabled ? .customFields: nil,
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -401,6 +407,9 @@ private extension ProductFormActionsFactory {
         switch action {
         case .priceSettings:
             // The price settings action is always visible in the settings section.
+            return true
+        case .customFields:
+            // The custom fields action is always visible in the settings section.
             return true
         case .subscriptionFreeTrial:
             // The Free trial row is always visible in the settings section for a subscription product.

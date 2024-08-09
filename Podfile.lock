@@ -62,6 +62,7 @@ DEPENDENCIES:
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
+  - Sentry (~> 8.26.0)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
@@ -141,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: 4141cf67ffcfd52e6c6c1fa01fbeb5fb66095c57
+PODFILE CHECKSUM: efac12de2a1846dac2bbe6d5b83d2fddae670274
 
 COCOAPODS: 1.15.2

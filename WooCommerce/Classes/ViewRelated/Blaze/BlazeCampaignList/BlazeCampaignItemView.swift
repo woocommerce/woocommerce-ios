@@ -151,7 +151,9 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        spentBudget: 4,
                                                        budgetMode: .total,
                                                        budgetAmount: 0,
-                                                       budgetCurrency: "USD")
+                                                       budgetCurrency: "USD",
+                                                       isEvergreen: false,
+                                                       durationDays: 5)
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
     }

@@ -5,12 +5,17 @@
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
 
+20.0
+-----
+
+
 19.9
 -----
 - [*] Enabled Blaze for JCP sites with Blaze plugin [https://github.com/woocommerce/woocommerce-ios/pull/13500]
 - [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
 - [Internal] Added missing events for custom range on the stats dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13506]
 - [**] Disable focus for order rows on iPadOS 16 and 16.1 to avoid crashes. [https://github.com/woocommerce/woocommerce-ios/pull/13512]
+- [*] Added Universal Link to Create Order: /mobile/orders/create. [https://github.com/woocommerce/woocommerce-ios/pull/13541]
 
 19.8
 -----
@@ -18,6 +23,10 @@
 - [*] Dynamic Dashboard: Display unavailable analytics view when logged in without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13440]
 - [*] Fix large text support in Bar Code Scanner. [https://github.com/woocommerce/woocommerce-ios/pull/13464]
 - [internal] Enable Blaze only if the store has Jetpack installed and connected. [https://github.com/woocommerce/woocommerce-ios/pull/13448]
+
+19.7.1
+-----
+- [***] Prologue: Restored web view for `Starting a new store?` button [https://github.com/woocommerce/woocommerce-ios/pull/13518]
 
 19.7
 -----

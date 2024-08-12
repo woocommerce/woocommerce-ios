@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
-            POSErrorExclamationMark()
+            POSErrorXMark()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)

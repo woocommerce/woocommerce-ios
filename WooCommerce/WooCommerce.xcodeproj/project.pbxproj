@@ -814,6 +814,7 @@
 		20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		20A3AFE32B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */; };
 		20A3AFE52B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */; };
+		20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */; };
 		20AE33C52B0510BF00527B60 /* PaymentsMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */; };
 		20AE33C72B0510D200527B60 /* HubMenuDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20AE33C62B0510D200527B60 /* HubMenuDestination.swift */; };
 		20B0D65E2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */; };
@@ -3825,6 +3826,7 @@
 		20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsFlowPresentingView.swift; sourceTree = "<group>"; };
 		20A3AFE42B10EF970033AF2D /* TapToPaySettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPaySettingsFlowPresentingView.swift; sourceTree = "<group>"; };
+		20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSErrorXMark.swift; sourceTree = "<group>"; };
 		20AE33C42B0510BF00527B60 /* PaymentsMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsMenuDestination.swift; sourceTree = "<group>"; };
 		20AE33C62B0510D200527B60 /* HubMenuDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubMenuDestination.swift; sourceTree = "<group>"; };
 		20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayContactlessLimitViewModelTests.swift; sourceTree = "<group>"; };
@@ -6016,6 +6018,7 @@
 				20D3D42E2C64F175004CE6E3 /* POSSecondaryButtonStyle.swift */,
 				20D3D4302C64F202004CE6E3 /* POSButtonStyleConstants.swift */,
 				207823E82C5D3A1700025A59 /* POSErrorExclamationMark.swift */,
+				20ADE9402C6A02B700C91265 /* POSErrorXMark.swift */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -14567,6 +14570,7 @@
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
 				DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */,
 				DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */,
+				20ADE9412C6A02B700C91265 /* POSErrorXMark.swift in Sources */,
 				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,

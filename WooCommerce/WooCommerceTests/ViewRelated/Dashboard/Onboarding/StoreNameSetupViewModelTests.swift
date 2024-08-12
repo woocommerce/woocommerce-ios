@@ -2,7 +2,6 @@ import XCTest
 @testable import Yosemite
 @testable import WooCommerce
 
-@MainActor
 final class StoreNameSetupViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
@@ -49,7 +48,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
         // Given
         let viewModel = StoreNameSetupViewModel(siteID: 123, name: "Test", stores: stores, onNameSaved: {})
         XCTAssertFalse(viewModel.isSavingInProgress)
-        mockStoreNameUpdate(result: .success(Site.fake()))
+        mockStoreNameUpdate(result: .success(Void()))
 
         // When
         viewModel.name = "Miffy"
@@ -59,13 +58,14 @@ final class StoreNameSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isSavingInProgress)
     }
 
+    @MainActor
     func test_onNameSaved_is_triggered_upon_saving_store_name_success() async {
         // Given
         var onNameSavedTriggered = false
         let viewModel = StoreNameSetupViewModel(siteID: 123, name: "Test", stores: stores, onNameSaved: {
             onNameSavedTriggered = true
         })
-        mockStoreNameUpdate(result: .success(Site.fake()))
+        mockStoreNameUpdate(result: .success(Void()))
 
         // When
         viewModel.name = "Miffy"
@@ -75,6 +75,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
         XCTAssertTrue(onNameSavedTriggered)
     }
 
+    @MainActor
     func test_errorMessage_is_updated_upon_saving_store_name_failure() async {
         // Given
         let viewModel = StoreNameSetupViewModel(siteID: 123, name: "Test", stores: stores, onNameSaved: {})
@@ -89,12 +90,13 @@ final class StoreNameSetupViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorMessage)
     }
 
+    @MainActor
     func test_default_store_name_is_updated_upon_saving_store_name_completes() async {
         // Given
         let originalSite = Site.fake().copy(siteID: 123, name: "Test")
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: originalSite))
         let viewModel = StoreNameSetupViewModel(siteID: originalSite.siteID, name: originalSite.name, stores: stores, onNameSaved: {})
-        mockStoreNameUpdate(result: .success(Site.fake().copy(siteID: 123, name: "Miffy")))
+        mockStoreNameUpdate(result: .success(Void()))
 
         // When
         viewModel.name = "Miffy"
@@ -106,7 +108,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
 }
 
 private extension StoreNameSetupViewModelTests {
-    func mockStoreNameUpdate(result: Result<Site, Error>) {
+    func mockStoreNameUpdate(result: Result<Void, Error>) {
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             switch action {
             case let .updateSiteTitle(_, _, completion):

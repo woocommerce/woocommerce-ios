@@ -17,10 +17,10 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: Constants.headerSpacing) {
+        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
             Text(Localization.productTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, Constants.headerPadding)
+                .padding(.vertical, PointOfSaleItemListErrorLayout.headerPadding)
                 .font(Font.posTitle)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
@@ -41,7 +41,7 @@ struct PointOfSaleItemListErrorView: View {
                 Text(errorContents.buttonText)
             })
             .buttonStyle(POSPrimaryButtonStyle())
-            .frame(width: Constants.buttonWidth)
+            .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
             Spacer()
         }
     }
@@ -54,10 +54,5 @@ private extension PointOfSaleItemListErrorView {
             value: "Products",
             comment: "Title for the Point of Sale screen"
         )
-    }
-    enum Constants {
-        static let headerPadding: CGFloat = 8
-        static let headerSpacing: CGFloat = 16
-        static let buttonWidth: CGFloat = 600
     }
 }

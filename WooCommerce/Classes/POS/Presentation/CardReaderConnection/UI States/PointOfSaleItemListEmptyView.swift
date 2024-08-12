@@ -2,11 +2,11 @@ import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: Constants.headerSpacing) {
+        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
             Text(Localization.productTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, Constants.headerPadding)
-                .font(Constants.titleFont)
+                .padding(.vertical, PointOfSaleItemListErrorLayout.headerPadding)
+                .font(.posTitle)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
             Image(uiImage: .searchImage)
@@ -28,11 +28,6 @@ struct PointOfSaleItemListEmptyView: View {
 }
 
 private extension PointOfSaleItemListEmptyView {
-    enum Constants {
-        static let headerPadding: CGFloat = 8
-        static let headerSpacing: CGFloat = 16
-        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
-    }
     enum Localization {
         static let productTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.productTitle",

@@ -13,7 +13,7 @@ public extension SystemStatus {
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.pageName = try container.decodeIfPresent(String.self, forKey: .pageName) ?? ""
-            /// `page_id` is sent as an `Int` in wporg login case
+            /// `page_id` is sent as a number for some JSON objects in wporg login case
             self.pageID = container.failsafeDecodeIfPresent(targetType: String.self,
                                                             forKey: .pageID,
                                                             alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""

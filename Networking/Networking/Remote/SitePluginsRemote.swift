@@ -52,7 +52,7 @@ public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
                               slug: String,
                               completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = Constants.sitePluginsPath
-        let request = JetpackRequest(wooApiVersion: .none, 
+        let request = JetpackRequest(wooApiVersion: .none,
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
@@ -93,7 +93,7 @@ public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
                                  pluginName: String,
                                  completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = String(format: "%@/%@", Constants.sitePluginsPath, pluginName)
-        let request = JetpackRequest(wooApiVersion: .none, 
+        let request = JetpackRequest(wooApiVersion: .none,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,

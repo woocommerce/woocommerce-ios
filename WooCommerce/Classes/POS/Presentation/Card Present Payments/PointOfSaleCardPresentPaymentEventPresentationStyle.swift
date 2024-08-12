@@ -129,19 +129,27 @@ extension CardPresentPaymentEventDetails {
                     inputMethods: inputMethods)))
         case .paymentSuccess:
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
-        case .paymentError(error: CollectOrderPaymentUseCaseError.couldNotRefreshOrder(let error), let tryAgain, _):
-            return .message(.validatingOrderError(viewModel: .init(error: error, tryAgainButtonAction: tryAgain)))
         case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: _):
-            return .message(.paymentError(
-                viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
-                    error: error,
-                    tryAgainButtonAction: tryAgain)))
-
+            switch error {
+            case CollectOrderPaymentUseCaseError.couldNotRefreshOrder:
+                return .message(.validatingOrderError(viewModel: .init(error: error, tryAgainButtonAction: tryAgain)))
+            default:
+                return .message(.paymentError(
+                    viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                        error: error,
+                        tryAgainButtonAction: tryAgain)))
+            }
         case .paymentErrorNonRetryable(error: let error, cancelPayment: _):
-            return .message(.paymentErrorNonRetryable(
-                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
-                    error: error)))
-
+            switch error {
+                case CollectOrderPaymentUseCaseError.orderTotalChanged,
+                CollectOrderPaymentUseCaseNotValidAmountError.belowMinimumAmount,
+                CollectOrderPaymentUseCaseNotValidAmountError.other:
+                return .message(.validatingOrderError(viewModel: .init(error: error)))
+            default:
+                return .message(.paymentErrorNonRetryable(
+                    viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
+                        error: error)))
+            }
         case .paymentCaptureError(let cancelPayment):
             return .message(.paymentCaptureError(
                 viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(cancelButtonAction: cancelPayment)))

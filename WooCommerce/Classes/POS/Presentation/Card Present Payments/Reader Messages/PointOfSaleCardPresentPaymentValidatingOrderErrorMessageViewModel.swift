@@ -4,19 +4,23 @@ import enum Networking.DotcomError
 struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel {
     let title: String = Localization.title
     let message: String
-    let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel
+    let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel?
 
     init(error: Error,
-         tryAgainButtonAction: @escaping () -> Void) {
+         tryAgainButtonAction: ( () -> Void)? = nil) {
         self.message = Self.message(for: error)
-        self.tryAgainButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.retry,
-            actionHandler: tryAgainButtonAction)
+        if let tryAgainButtonAction = tryAgainButtonAction {
+            self.tryAgainButtonViewModel = CardPresentPaymentsModalButtonViewModel(
+                title: Localization.retry,
+                actionHandler: tryAgainButtonAction)
+        } else {
+            self.tryAgainButtonViewModel = nil
+        }
     }
 
     private static func message(for error: Error) -> String {
-        if let error = error as? DotcomError {
-            return error.description
+        if let error = error as? LocalizedError {
+            return error.errorDescription ?? error.localizedDescription
         } else {
             return error.localizedDescription
         }

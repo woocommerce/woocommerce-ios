@@ -4,6 +4,7 @@
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [*] Help & Support: Systems Status Report option now only shown on logged-in state. [https://github.com/woocommerce/woocommerce-ios/pull/13568]
 
 20.0
 -----

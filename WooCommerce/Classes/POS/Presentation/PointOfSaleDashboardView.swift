@@ -31,19 +31,17 @@ struct PointOfSaleDashboardView: View {
                     .transition(.opacity)
             } else if viewModel.isError {
                 PointOfSaleItemListErrorView(viewModel: viewModel.itemListViewModel)
-                POSFloatingControlView(viewModel: viewModel)
             } else if viewModel.isEmpty {
                 PointOfSaleItemListEmptyView()
-                POSFloatingControlView(viewModel: viewModel)
             } else {
                 contentView
                     .transition(.push(from: .top))
-
-                POSFloatingControlView(viewModel: viewModel)
-                    .shadow(color: Color.black.opacity(0.08), radius: 4)
-                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                    .trackSize(size: $floatingSize)
             }
+            POSFloatingControlView(viewModel: viewModel)
+                .shadow(color: Color.black.opacity(0.08), radius: 4)
+                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                .trackSize(size: $floatingSize)
+                .renderedIf(!viewModel.isInitialLoading)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,

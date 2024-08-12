@@ -141,7 +141,7 @@ extension CardPresentPaymentEventDetails {
             }
         case .paymentErrorNonRetryable(error: let error, cancelPayment: _):
             switch error {
-                case CollectOrderPaymentUseCaseError.orderTotalChanged,
+            case CollectOrderPaymentUseCaseError.orderTotalChanged,
                 CollectOrderPaymentUseCaseNotValidAmountError.belowMinimumAmount,
                 CollectOrderPaymentUseCaseNotValidAmountError.other:
                 return .message(.validatingOrderError(viewModel: .init(error: error)))

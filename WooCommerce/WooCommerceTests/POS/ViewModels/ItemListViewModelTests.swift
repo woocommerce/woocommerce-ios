@@ -120,10 +120,6 @@ final class ItemListViewModelTests: XCTestCase {
         let itemProvider = MockPOSItemProvider()
         itemProvider.shouldReturnZeroItems = true
         let sut = ItemListViewModel(itemProvider: itemProvider)
-        let expectedResult = ItemListViewModel.EmptyModel(title: "No products",
-                                                          subtitle: "Your store doesn't have any products",
-                                                          hint: "POS currently only supports simple products",
-                                                          buttonText: "Create a simple product")
 
         XCTAssertEqual(sut.state, .loading)
 
@@ -131,7 +127,7 @@ final class ItemListViewModelTests: XCTestCase {
         await sut.populatePointOfSaleItems()
 
         // Then
-        XCTAssertEqual(sut.state, .empty(expectedResult))
+        XCTAssertEqual(sut.state, .empty)
     }
 
     func test_itemListViewModel_when_populatePointOfSaleItems_throws_error_then_state_is_error() async {

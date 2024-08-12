@@ -4,6 +4,7 @@
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [internal] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
 
 20.0
 -----

@@ -167,8 +167,12 @@ private extension HelpAndSupportViewController {
         var rows: [Row] = [.helpCenter, .contactSupport]
 
         rows.append(contentsOf: [.contactEmail,
-                                 .applicationLog,
-                                 .systemStatusReport])
+                                 .applicationLog])
+
+        if ServiceLocator.stores.isAuthenticated {
+            rows.append(contentsOf: [.systemStatusReport])
+        }
+
         return rows
     }
 

@@ -57,7 +57,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
 }
 
 private extension CardPresentPaymentsTransactionAlertsProvider {
-    func retryApproach(for error: any Error, 
+    func retryApproach(for error: any Error,
                        retryAction: @escaping () -> Void) -> CardPresentPaymentRetryApproach {
         guard let serviceError = error as? CardReaderServiceError else {
             return .tryAgain(retryAction: retryAction)

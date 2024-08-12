@@ -94,12 +94,14 @@ extension ItemListViewModel {
             }
         }
 
-        var hasError: ErrorModel? {
+        var hasError: ErrorModel {
             switch self {
             case .error(let errorModel):
                 return errorModel
             default:
-                return nil
+                return ItemListViewModel.ErrorModel(title: "Unknown error",
+                                                    subtitle: "Unknown error",
+                                                    buttonText: "Retry")
             }
         }
 

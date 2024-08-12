@@ -30,7 +30,12 @@ struct PointOfSaleDashboardView: View {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
             } else if viewModel.isError {
-                PointOfSaleItemListErrorView(viewModel: viewModel.itemListViewModel)
+                let errorContents = viewModel.itemListViewModel.state.hasError
+                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                    Task {
+                        await viewModel.itemListViewModel.reload()
+                    }
+                })
             } else if viewModel.isEmpty {
                 PointOfSaleItemListEmptyView()
             } else {

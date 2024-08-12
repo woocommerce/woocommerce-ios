@@ -1,19 +1,12 @@
 import SwiftUI
 
 struct PointOfSaleItemListErrorView: View {
-    private var viewModel: any ItemListViewModelProtocol
+    private var error: ItemListViewModel.ErrorModel
+    private var onRetry: (() -> Void)? = nil
 
-    init(viewModel: any ItemListViewModelProtocol) {
-        self.viewModel = viewModel
-    }
-
-    var errorContents: ItemListViewModel.ErrorModel {
-        guard let errorContents = viewModel.state.hasError else {
-            return ItemListViewModel.ErrorModel(title: "Unknown error",
-                                                subtitle: "Unknown error",
-                                                buttonText: "Retry")
-        }
-        return errorContents
+    init(error: ItemListViewModel.ErrorModel, onRetry: (() -> Void)? = nil) {
+        self.error = error
+        self.onRetry = onRetry
     }
 
     var body: some View {
@@ -25,20 +18,18 @@ struct PointOfSaleItemListErrorView: View {
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
             POSErrorExclamationMark()
-            Text(errorContents.title)
+            Text(error.title)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posTitle)
                 .bold()
-            Text(errorContents.subtitle)
+            Text(error.subtitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)
                 .padding([.leading, .trailing])
             Button(action: {
-                Task {
-                    await viewModel.reload()
-                }
+                onRetry?()
             }, label: {
-                Text(errorContents.buttonText)
+                Text(error.buttonText)
             })
             .buttonStyle(POSPrimaryButtonStyle())
             .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)

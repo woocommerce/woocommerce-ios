@@ -164,10 +164,7 @@ private extension HelpAndSupportViewController {
     }
 
     private func calculateRows() -> [Row] {
-        var rows: [Row] = [.helpCenter, .contactSupport]
-
-        rows.append(contentsOf: [.contactEmail,
-                                 .applicationLog])
+        var rows: [Row] = [.helpCenter, .contactSupport, .contactEmail, .applicationLog]
 
         if ServiceLocator.stores.isAuthenticated {
             rows.append(contentsOf: [.systemStatusReport])

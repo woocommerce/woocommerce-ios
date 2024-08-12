@@ -8,19 +8,10 @@ final class SubscriptionsHostingController: UIHostingController<SubscriptionsVie
     init(siteID: Int64) {
         let viewModel = SubscriptionsViewModel()
         super.init(rootView: .init(viewModel: viewModel))
-
-        rootView.onReportIssueTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
-        supportController.show(from: self)
     }
 }
 
@@ -35,6 +26,8 @@ struct SubscriptionsView: View {
     /// Closure to be invoked when the "Report Issue" button is tapped.
     ///
     var onReportIssueTapped: (() -> ())?
+
+    @State private var isShowingSupport = false
 
     var body: some View {
         List {
@@ -57,7 +50,7 @@ struct SubscriptionsView: View {
 
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
-                    onReportIssueTapped?()
+                    isShowingSupport = true
                 }
                 .linkStyle()
             }
@@ -71,6 +64,26 @@ struct SubscriptionsView: View {
         .task {
             viewModel.loadPlan()
         }
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
+        }
+    }
+}
+
+private extension SubscriptionsView {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel())
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        isShowingSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 }
 
@@ -94,6 +107,12 @@ private extension SubscriptionsView {
             let format = NSLocalizedString("Current: %@", comment: "Reads like: Current: Free Trial")
             return .localizedStringWithFormat(format, plan)
         }
+
+        static let done = NSLocalizedString(
+            "subscriptionView.dismissSupport",
+            value: "Done",
+            comment: "Button to dismiss the support form."
+        )
     }
 }
 

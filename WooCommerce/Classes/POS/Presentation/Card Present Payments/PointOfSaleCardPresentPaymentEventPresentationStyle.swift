@@ -133,12 +133,16 @@ extension CardPresentPaymentEventDetails {
 
         case .paymentError(error: let error, retryApproach: let retryApproach, cancelPayment: _):
             switch retryApproach {
-            case .tryAnotherPaymentMethod(let retryAction),
-                    .tryAgain(let retryAction):
+            case .tryAnotherPaymentMethod(let retryAction):
                 return .message(.paymentError(
                     viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                         error: error,
-                        tryAgainButtonAction: retryAction)))
+                        tryAnotherPaymentMethodButtonAction: retryAction)))
+            case .tryAgain(let retryAction):
+                return .message(.paymentError(
+                    viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                        error: error,
+                        tryPaymentAgainButtonAction: retryAction)))
             case .dontRetry:
                 return .message(.paymentErrorNonRetryable(
                     viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(

@@ -34,10 +34,18 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     }
 }
 
-#Preview {
+#Preview("Generic retry") {
     PointOfSaleCardPresentPaymentErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
                 underlyingError: .paymentDeclinedByCardReader),
-            tryAgainButtonAction: {}))
+            tryPaymentAgainButtonAction: {}))
+}
+
+#Preview("Retry with another payment method") {
+    PointOfSaleCardPresentPaymentErrorMessageView(
+        viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+            error: CardReaderServiceError.paymentCapture(
+                underlyingError: .paymentDeclinedByCardReader),
+            tryAnotherPaymentMethodButtonAction: {}))
 }

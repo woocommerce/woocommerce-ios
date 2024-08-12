@@ -3,8 +3,6 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
-    @ObservedObject private var cartViewModel: CartViewModel
-    @Environment(\.posBackgroundAppearance) var backgroundAppearance
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -12,42 +10,46 @@ struct TotalsView: View {
     /// and movement from the center of the VStack to their respective positions.
     @Namespace private var totalsFieldAnimation
     @State private var isShowingTotalsFields: Bool
+    @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     init(viewModel: PointOfSaleDashboardViewModel,
-         totalsViewModel: TotalsViewModel,
-         cartViewModel: CartViewModel) {
+         totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
         self.totalsViewModel = totalsViewModel
-        self.cartViewModel = cartViewModel
         self.isShowingTotalsFields = totalsViewModel.isShowingTotalsFields
     }
 
     var body: some View {
         HStack {
-            VStack(alignment: .center) {
-                Spacer()
-                VStack(alignment: .center, spacing: Constants.verticalSpacing) {
-                    if totalsViewModel.isShowingCardReaderStatus {
-                        cardReaderView
-                            .font(.title)
-                            .padding()
-                            .transition(.opacity)
-                    }
+            switch totalsViewModel.orderState {
+            case .idle, .syncing, .loaded:
+                VStack(alignment: .center) {
+                    Spacer()
+                    VStack(alignment: .center, spacing: Constants.verticalSpacing) {
+                        if totalsViewModel.isShowingCardReaderStatus {
+                            cardReaderView
+                                .font(.title)
+                                .padding()
+                                .transition(.opacity)
+                        }
 
-                    if isShowingTotalsFields {
-                        totalsFieldsView
-                            .transition(.opacity)
-                            .animation(.default, value: totalsViewModel.isShimmering)
-                            .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
+                        if isShowingTotalsFields {
+                            totalsFieldsView
+                                .transition(.opacity)
+                                .animation(.default, value: totalsViewModel.isShimmering)
+                                .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
+                        }
                     }
+                    .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
+                    paymentsActionButtons
+                    Spacer()
                 }
-                .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
-                paymentsActionButtons
-                    .padding()
-                Spacer()
+            case .error(let viewModel):
+                PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
             }
         }
         .background(backgroundColor)
+        .animation(.default, value: totalsViewModel.isPaymentSuccessState)
         .onDisappear {
             totalsViewModel.onTotalsViewDisappearance()
         }
@@ -55,11 +57,13 @@ struct TotalsView: View {
     }
 
     private var backgroundColor: Color {
-        switch backgroundAppearance {
-        case .primary:
-            .clear
-        case .secondary:
+        switch totalsViewModel.paymentState {
+        case .cardPaymentSuccessful:
+            Color(.wooCommerceEmerald(.shade20))
+        case .processingPayment:
             Color(.wooCommercePurple(.shade70))
+        default:
+            .clear
         }
     }
 }
@@ -166,19 +170,21 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
-    private var newTransactionButton: some View {
+    private var newOrderButton: some View {
         Button(action: {
-            viewModel.startNewTransaction()
+            // TODO: This is the only place we use PointOfSaleDashboardViewModel in TotalsView – let's break that link.
+            viewModel.startNewOrder()
         }, label: {
-            HStack(spacing: Constants.newTransactionButtonSpacing) {
-                Spacer()
-                Image(PointOfSaleAssets.newTransaction.imageName)
-                Text(Localization.newTransaction)
-                    .font(Constants.newTransactionButtonFont)
-                Spacer()
+            HStack(spacing: Constants.newOrderButtonSpacing) {
+                Image(systemName: Constants.newOrderImageName)
+                    .font(.body.bold())
+                    .aspectRatio(contentMode: .fit)
+                Text(Localization.newOrder)
+                    .font(Constants.newOrderButtonFont)
             }
+            .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
-        .padding(Constants.newTransactionButtonPadding)
+        .padding(Constants.newOrderButtonPadding)
         .foregroundColor(Color.primaryText)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
@@ -189,7 +195,17 @@ private extension TotalsView {
     @ViewBuilder
     private var paymentsActionButtons: some View {
         if totalsViewModel.paymentState == .cardPaymentSuccessful {
-            newTransactionButton
+            if isShowingPaymentsButtonSpacing {
+                Spacer().frame(height: Constants.paymentsButtonSpacing)
+            }
+            newOrderButton
+                .onAppear {
+                    isShowingPaymentsButtonSpacing = false
+                    withAnimation(.default.delay(Constants.paymentsButtonButtonSpacingAnimationDelay)) {
+                        isShowingPaymentsButtonSpacing = true
+                    }
+                }
+            Spacer().frame(height: Constants.paymentsButtonSpacing)
         }
         else {
             EmptyView()
@@ -232,9 +248,12 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let newTransactionButtonSpacing: CGFloat = 20
-        static let newTransactionButtonPadding: CGFloat = 16
-        static let newTransactionButtonFont: Font = Font.system(size: 32, weight: .medium)
+        static let paymentsButtonSpacing: CGFloat = 52
+        static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
+        static let newOrderButtonSpacing: CGFloat = 12
+        static let newOrderButtonPadding: CGFloat = 22
+        static let newOrderButtonFont: Font = Font.posBody.bold()
+        static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"
@@ -257,10 +276,10 @@ private extension TotalsView {
             "pos.totalsView.taxes",
             value: "Taxes",
             comment: "Title for taxes amount field")
-        static let newTransaction = NSLocalizedString(
-            "pos.totalsView.newTransaction",
-            value: "New transaction",
-            comment: "Button title for new transaction button")
+        static let newOrder = NSLocalizedString(
+            "pos.totalsView.newOrder",
+            value: "New order",
+            comment: "Button title for new order button")
         static let calculateAmounts = NSLocalizedString(
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
@@ -273,14 +292,13 @@ private extension TotalsView {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
-                                    paymentState: .acceptingCard,
-                                   isSyncingOrder: false)
+                                    paymentState: .acceptingCard)
     let cartViewModel = CartViewModel()
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
-                                              cartViewModel: cartViewModel,
+                                              cartViewModel: CartViewModel(),
                                               itemListViewModel: itemsListViewModel)
-    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM, cartViewModel: cartViewModel)
+    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM)
 }
 #endif

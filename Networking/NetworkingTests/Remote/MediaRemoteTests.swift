@@ -412,4 +412,66 @@ final class MediaRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - Loading media for specific product ID
+
+    func test_loadMediaLibrary_sends_postID_filter_if_productID_is_not_nil() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID,
+                                productID: 32,
+                                imagesOnly: true,
+                                completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let postIDValue = try XCTUnwrap(request.parameters?["post_ID"] as? Int64)
+        XCTAssertEqual(postIDValue, 32)
+    }
+
+    func test_loadMediaLibrary_does_not_send_postID_filter_if_productID_is_nil() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibrary(for: self.sampleSiteID,
+                                imagesOnly: true,
+                                completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(request.parameters?["post_ID"])
+    }
+
+    func test_loadMediaLibraryFromWordPressSite_sends_parent_filter_if_productID_is_not_nil() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID,
+                                                 productID: 32,
+                                                 imagesOnly: true,
+                                                 completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let postIDValue = try XCTUnwrap(request.parameters?["parent"] as? Int64)
+        XCTAssertEqual(postIDValue, 32)
+    }
+
+    func test_loadMediaLibraryFromWordPressSite_does_not_send_parent_filter_if_productID_is_nil() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+
+        // When
+        remote.loadMediaLibraryFromWordPressSite(siteID: self.sampleSiteID,
+                                                 imagesOnly: true,
+                                                 completion: { _ in })
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        XCTAssertNil(request.parameters?["parent"])
+    }
 }

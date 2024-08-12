@@ -57,7 +57,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
 
         // When
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
@@ -234,9 +234,9 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         var receivedIsSyncingOrder: Bool = false
 
         // Attach sink to observe changes to isSyncingOrder
-        mockTotalsViewModel.isSyncingOrderPublisher
-            .sink { isSyncingOrder in
-                receivedIsSyncingOrder = isSyncingOrder
+        mockTotalsViewModel.orderStatePublisher
+            .sink { orderState in
+                receivedIsSyncingOrder = orderState.isSyncing
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -321,6 +321,40 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)
+    }
+
+    func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {
+        // Given
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+
+        // Then
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_sets_cartViewModel_canDeleteItems_true() {
+        // Given
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
+        // Given
+        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
     }
 }
 

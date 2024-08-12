@@ -27,7 +27,7 @@ struct CardReaderConnectionStatusView: View {
             switch connectionViewModel.connectionStatus {
             case .connected:
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                    circleIcon(with: Color.wooEmeraldShade40)
+                    circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
                     Text("Reader Connected")
                         .foregroundColor(connectedFontColor)
                 }

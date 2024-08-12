@@ -28,10 +28,6 @@ extension Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
 
-    static var wooEmeraldShade40: Color {
-        Color(red: 3.0 / 255.0, green: 212.0 / 255.0, blue: 121.0 / 255.0)
-    }
-
     static var wooAmberShade40: Color {
         Color(red: 255.0 / 255.0, green: 166.0 / 255.0, blue: 14.0 / 255.0)
     }
@@ -94,5 +90,13 @@ extension Color {
 
     static var posPrimaryButtonBackground: Color {
         Color(uiColor: .wooCommercePurple(.shade50))
+    }
+
+    static var posSecondaryButtonTint: Color {
+        Color(uiColor: .wooCommercePurple(.shade50))
+    }
+
+    static var posSecondaryButtonBackground: Color {
+        Color(uiColor: .systemBackground)
     }
 }

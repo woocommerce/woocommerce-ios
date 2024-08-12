@@ -8,6 +8,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
+    @Published var showSimpleProductsModal: Bool = false
 
     var isEmptyOrError: Bool {
         switch state {
@@ -71,6 +72,10 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func dismissBanner() {
         isHeaderBannerDismissed = true
         UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    }
+
+    func simpleProductsInfoButtonTapped() {
+        showSimpleProductsModal = true
     }
 }
 

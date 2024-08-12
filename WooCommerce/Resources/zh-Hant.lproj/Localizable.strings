@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-07 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -11159,7 +11159,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "付款成功！";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
-"pointOfSale.cardPresent.preparingForPayment.message" = "正在準備付款卡片";
+"pointOfSale.cardPresent.preparingForPayment.message" = "正在準備卡片付款程序";
 
 /* Title shown on the Point of Sale checkout while the reader is being prepared. */
 "pointOfSale.cardPresent.preparingForPayment.title" = "準備中";
@@ -12109,7 +12109,7 @@ which should be translated separately and considered part of this sentence. */
 "topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
-"topPerformersDashboardView.unavailableAnalyticsView.title" = "無法顯示你的商店成效最佳者";
+"topPerformersDashboardView.unavailableAnalyticsView.title" = "無法顯示商店的熱門商品";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "檢視所有商店分析資料";

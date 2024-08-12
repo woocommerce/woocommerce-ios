@@ -83,6 +83,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                      tagline: tagline,
                                      description: description)
         return BlazeEditAdViewModel(siteID: siteID,
+                                    productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
                                     onSave: { [weak self] adData in

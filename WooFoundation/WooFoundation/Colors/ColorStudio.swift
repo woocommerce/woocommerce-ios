@@ -12,6 +12,8 @@ public enum ColorStudioName: String, CustomStringConvertible {
     case red
     case yellow
     case wooCommercePurple
+    case wooCommerceEmerald
+    case wooCommerceAmber
 
     public var description: String {
         // can't use .capitalized because it lowercases the C and P in "wooCommercePurple"
@@ -65,6 +67,8 @@ public struct ColorStudio {
     // MARK: - Muriel's semantic colors
     public static let pink = ColorStudio(name: .pink)
     public static let wooCommercePurple = ColorStudio(name: .wooCommercePurple)
+    public static let wooCommerceEmerald = ColorStudio(name: .wooCommerceEmerald)
+    public static let wooCommerceAmber = ColorStudio(name: .wooCommerceAmber)
     public static let brand = ColorStudio(name: .wooCommercePurple, shade: .shade60)
     public static let red = ColorStudio(name: .red)
     public static let gray = ColorStudio(name: .gray)

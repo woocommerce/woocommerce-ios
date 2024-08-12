@@ -91,6 +91,7 @@ extension MockMediaRemote: MediaRemoteProtocol {
     }
 
     func loadMediaLibrary(for siteID: Int64,
+                          productID: Int64?,
                           imagesOnly: Bool,
                           pageNumber: Int,
                           pageSize: Int,
@@ -105,6 +106,7 @@ extension MockMediaRemote: MediaRemoteProtocol {
     }
 
     func loadMediaLibraryFromWordPressSite(siteID: Int64,
+                                           productID: Int64?,
                                            imagesOnly: Bool,
                                            pageNumber: Int,
                                            pageSize: Int,

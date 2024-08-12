@@ -9,17 +9,22 @@ struct PointOfSaleItemListEmptyView: View {
                 .font(.posTitle)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
-            Image(uiImage: .searchImage)
+            Image(systemName: Constants.iconSystemName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.iconSize, height: Constants.iconSize)
+                .foregroundColor(.posIconGrayi3)
+                .scaleEffect(x: -1, y: 1)
             Text(Localization.emptyProductsTitle)
-                .foregroundStyle(Color.posPrimaryTexti3)
+                .foregroundStyle(Color.posIconGrayi3)
                 .font(.posTitle)
                 .bold()
             Text(Localization.emptyProductsSubtitle)
-                .foregroundStyle(Color.posPrimaryTexti3)
+                .foregroundStyle(Color.posIconGrayi3)
                 .font(.posBody)
                 .padding([.leading, .trailing])
             Text(Localization.emptyProductsHint)
-                .foregroundStyle(Color.posPrimaryTexti3)
+                .foregroundStyle(Color.posIconGrayi3)
                 .font(.posBody)
                 .padding([.leading, .trailing])
             Spacer()
@@ -28,6 +33,10 @@ struct PointOfSaleItemListEmptyView: View {
 }
 
 private extension PointOfSaleItemListEmptyView {
+    enum Constants {
+        static let iconSystemName: String = "plus.magnifyingglass"
+        static let iconSize: CGFloat = 100
+    }
     enum Localization {
         static let productTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.productTitle",

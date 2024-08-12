@@ -109,7 +109,7 @@ private extension SubscriptionsView {
         }
 
         static let done = NSLocalizedString(
-            "subscriptionView.dismissSupport",
+            "subscriptionsView.dismissSupport",
             value: "Done",
             comment: "Button to dismiss the support form."
         )

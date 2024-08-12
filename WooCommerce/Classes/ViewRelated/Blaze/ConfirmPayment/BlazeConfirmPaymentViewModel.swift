@@ -250,19 +250,20 @@ private extension BlazeConfirmPaymentViewModel {
         static let totalWeeklyAmount = NSLocalizedString(
             "blazeConfirmPaymentViewModel.totalWeeklyAmount",
             value: "%1$@ weekly",
-            comment: "Total weekly amount of an unlimited Blaze campaign. " +
+            comment: "Total weekly amount of a Blaze campaign without an end date. " +
             "Reads as: $11 weekly"
         )
         static let totalWeeklyAmountWithCurrency = NSLocalizedString(
             "blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency",
             value: "%1$@ %2$@ weekly",
-            comment: "Total weekly amount of an unlimited Blaze campaign. Placeholders are formatted amount and currency. " +
+            comment: "Total weekly amount of a Blaze campaign without an end date. " +
+            "Placeholders are formatted amount and currency. " +
             "Reads as: $11 USD weekly"
         )
         static let totalAmountWithCurrency = NSLocalizedString(
             "blazeConfirmPaymentViewModel.totalAmountWithCurrency",
             value: "%1$@ %2$@",
-            comment: "Total amount of an unlimited Blaze campaign. Placeholders are formatted amount and currency. " +
+            comment: "Total amount of a Blaze campaign. Placeholders are formatted amount and currency. " +
             "Reads as: $11 USD"
         )
     }

@@ -142,7 +142,6 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         case .preparingForPayment(cancelPayment: let cancelPayment),
                 .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment),
                 .paymentError(_, _, cancelPayment: let cancelPayment),
-                .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment),
                 .paymentCaptureError(cancelPayment: let cancelPayment):
             cancelPayment()
         case .processing, /// if cancellation fails here, which is likely, we may need a new order. But we can disable going back to make it unlikely.

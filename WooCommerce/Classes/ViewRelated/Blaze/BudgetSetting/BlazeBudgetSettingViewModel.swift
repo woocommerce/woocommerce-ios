@@ -139,7 +139,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     endDate: endDate,
                                                     timeZone: timeZone.identifier,
                                                     totalBudget: totalBudget,
-                                                    targeting: targetOptions)
+                                                    targeting: targetOptions,
+                                                    isEvergreen: isEvergreen)
         do {
             let result = try await fetchForecastedImpressions(input: input)
             let formattedImpressions = String(format: "%d - %d",

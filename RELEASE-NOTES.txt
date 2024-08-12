@@ -6,10 +6,6 @@
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
 - [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 
-20.0
------
-
-
 19.9
 -----
 - [*] Enabled Blaze for JCP sites with Blaze plugin [https://github.com/woocommerce/woocommerce-ios/pull/13500]

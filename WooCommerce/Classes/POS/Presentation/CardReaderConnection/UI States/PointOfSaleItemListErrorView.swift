@@ -41,7 +41,7 @@ struct PointOfSaleItemListErrorView: View {
                 Text(errorContents.buttonText)
             })
             .buttonStyle(POSPrimaryButtonStyle())
-            .padding([.leading, .trailing], Constants.buttonPadding)
+            .frame(width: Constants.buttonWidth)
             Spacer()
         }
     }
@@ -58,6 +58,6 @@ private extension PointOfSaleItemListErrorView {
     enum Constants {
         static let headerPadding: CGFloat = 8
         static let headerSpacing: CGFloat = 16
-        static let buttonPadding: CGFloat = 240
+        static let buttonWidth: CGFloat = 600
     }
 }

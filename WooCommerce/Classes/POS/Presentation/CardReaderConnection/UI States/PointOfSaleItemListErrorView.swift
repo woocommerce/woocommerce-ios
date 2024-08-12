@@ -29,8 +29,6 @@ struct PointOfSaleItemListErrorView: View {
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posTitle)
                 .bold()
-            Divider()
-                .padding([.leading, .trailing], Constants.buttonPadding)
             Text(errorContents.subtitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)

@@ -2,6 +2,7 @@ import WatchKit
 import UserNotifications
 import CocoaLumberjack
 import struct NetworkingWatchOS.Note
+import Sentry
 
 
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
@@ -15,6 +16,13 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// This type should be replaced from the main WooApp file.
     ///
     var appBindings: AppBindings = AppBindings()
+
+    /// Handles and configures the crash logging system.
+    ///
+    let crashLoggingStack = WatchCrashLoggingStack()
+
+
+    var crashy: Int!
 
     /// Setup code after the app finishes launching
     ///
@@ -30,6 +38,15 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     ///
     func applicationWillEnterForeground() {
         appBindings.refreshData.send()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            if Int.random(in: 1...3) == 2 {
+                DDLogInfo("I'm about to crash for accessing crashy variable")
+                os_log("I'm about to crash for accessing crashy variable")
+                self.crashy = self.crashy + 1
+            }
+//            SentrySDK.capture(error: NSError(domain: "Test WatchOS Crash", code: 103))
+        }
     }
 
     /// Sets up CocoaLumberjack logging.

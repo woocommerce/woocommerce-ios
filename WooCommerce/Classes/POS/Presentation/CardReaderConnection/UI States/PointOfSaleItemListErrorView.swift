@@ -21,7 +21,7 @@ struct PointOfSaleItemListErrorView: View {
             Text(Localization.productTitle)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, Constants.headerPadding)
-                .font(Constants.titleFont)
+                .font(Font.posTitle)
                 .foregroundColor(Color.posPrimaryTexti3)
             Spacer()
             POSErrorExclamationMark()
@@ -58,7 +58,6 @@ private extension PointOfSaleItemListErrorView {
     enum Constants {
         static let headerPadding: CGFloat = 8
         static let headerSpacing: CGFloat = 16
-        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let buttonPadding: CGFloat = 240
     }
 }

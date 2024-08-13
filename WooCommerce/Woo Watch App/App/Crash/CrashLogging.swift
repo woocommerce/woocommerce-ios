@@ -98,8 +98,6 @@ public class CrashLogging {
             DDLogDebug("📜 Events will not be sent because user has opted-out.")
         }
 
-        os_log("I'm about to send a crash event")
-
         /// If we shouldn't send the event we have nothing else to do here
         guard let event = event, shouldSendEvent else {
             return nil

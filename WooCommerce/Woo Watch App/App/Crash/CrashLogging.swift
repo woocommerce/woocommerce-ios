@@ -88,8 +88,7 @@ public class CrashLogging {
     func beforeSend(event: Sentry.Event?) -> Sentry.Event? {
 
         #if DEBUG
-        //let shouldSendEvent = UserDefaults.standard.bool(forKey: Self.forceCrashLoggingKey) && !dataProvider.userHasOptedOut
-        let shouldSendEvent = true
+        let shouldSendEvent = UserDefaults.standard.bool(forKey: Self.forceCrashLoggingKey) && !dataProvider.userHasOptedOut
         #else
         let shouldSendEvent = !dataProvider.userHasOptedOut
         #endif
@@ -109,8 +108,9 @@ public class CrashLogging {
 
         event.tags?["locale"] = NSLocale.current.language.languageCode?.identifier
 
+        // TODO: Apple watchOS does not exposes app state like iOS from UIApplication. This has to me implemented when required.
         /// Always provide a value in order to determine how often we're unable to retrieve application state
-        event.tags?["app.state"] = "unknown" // TODO: Track application states somehow
+        event.tags?["app.state"] = "unknown"
 
         /// Read the current user from the Data Provider (though the Data Provider can decide not to provide it for functional or privacy reasons)
         event.user = dataProvider.currentUser?.sentryUser

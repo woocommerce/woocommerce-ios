@@ -168,7 +168,7 @@ private extension AddProductCoordinator {
     /// Returns `true` when the number of non-sample products is fewer than 3.
     ///
     var isTemplateOptionsEligible: Bool {
-        productsResultsController.fetchedObjects.filter { $0.isSampleItem == false }.count < 3
+        false // Template data is no longer available from remote: https://github.com/woocommerce/woocommerce-ios/issues/12338
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.

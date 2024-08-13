@@ -4,6 +4,7 @@
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [*] Better experience for embedded web view with loading indicator. [https://github.com/woocommerce/woocommerce-ios/pull/13587]
 - [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 
 19.9

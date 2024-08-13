@@ -5,6 +5,8 @@
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
 - [*] Payments: fixed issue where site credential login couldn't be used to install plugins, e.g. WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/13582]
+- [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
+- [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 
 19.9
 -----

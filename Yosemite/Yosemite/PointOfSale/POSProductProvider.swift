@@ -40,11 +40,11 @@ public final class POSProductProvider: POSItemProvider {
             return mapProductsToPOSItems(products: filteredProducts)
         } catch {
             DDLogError("Failed to retrieve products. Error: \(error)")
-            throw POSError.requestFailed
+            throw POSProductProviderError.requestFailed
         }
     }
 
-    enum POSError: Error {
+    enum POSProductProviderError: Error {
         case requestFailed
     }
 

@@ -26,7 +26,7 @@ final class POSProductProviderTests: XCTestCase {
 
     func test_POSItemProvider_when_fails_request_then_throws_error() async throws {
         // Given
-        let expectedError = POSProductProvider.POSError.requestFailed
+        let expectedError = POSProductProvider.POSProductProviderError.requestFailed
         network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
@@ -35,7 +35,7 @@ final class POSProductProviderTests: XCTestCase {
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
-            XCTAssertEqual(error as? POSProductProvider.POSError, expectedError)
+            XCTAssertEqual(error as? POSProductProvider.POSProductProviderError, expectedError)
         }
     }
 

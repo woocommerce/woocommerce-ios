@@ -15,7 +15,6 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                     Text(viewModel.title)
                         .foregroundStyle(Color.posPrimaryTexti3)
                         .font(.posTitle)
-                        .bold()
 
                     Text(viewModel.message)
                         .foregroundStyle(Color.posPrimaryTexti3)

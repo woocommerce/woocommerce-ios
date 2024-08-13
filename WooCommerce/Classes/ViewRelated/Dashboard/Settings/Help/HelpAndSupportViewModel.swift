@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class HelpAndSupportViewModel {
+struct HelpAndSupportViewModel {
     private let isAuthenticated: Bool
     private let isZendeskEnabled: Bool
     private let isMacCatalyst: Bool

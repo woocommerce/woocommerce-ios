@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
-class HelpAndSupportViewModelTests: XCTestCase {
+final class HelpAndSupportViewModelTests: XCTestCase {
     func test_mac_catalyst_environment_shows_only_help_center() {
         let viewModel = HelpAndSupportViewModel(isAuthenticated: true, isZendeskEnabled: true, isMacCatalyst: true)
         let rows = viewModel.getRows()

@@ -50,7 +50,7 @@ private extension PointOfSaleCardPresentPaymentErrorMessageViewModel {
         )
 
         static let tryPaymentAgain =  NSLocalizedString(
-            "pointOfSale.cardPresent.paymentError.tryAgain.button.title",
+            "pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title",
             value: "Try payment again",
             comment: "Button to try to collect a payment again. Presented to users after collecting a " +
             "payment fails on the Point of Sale Checkout"

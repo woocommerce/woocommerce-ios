@@ -44,10 +44,8 @@ enum CardPresentPaymentEventDetails {
                               cancelPayment: () -> Void)
     case paymentSuccess(done: () -> Void)
     case paymentError(error: any Error,
-                      tryAgain: () -> Void,
+                      retryApproach: CardPresentPaymentRetryApproach,
                       cancelPayment: () -> Void)
-    case paymentErrorNonRetryable(error: any Error,
-                                  cancelPayment: () -> Void)
     case paymentCaptureError(cancelPayment: () -> Void)
     case processing
     case displayReaderMessage(message: String)

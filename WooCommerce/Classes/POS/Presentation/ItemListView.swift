@@ -28,7 +28,6 @@ struct ItemListView: View {
         .refreshable {
             await viewModel.reload()
         }
-        .padding(.horizontal, Constants.itemListPadding)
         .background(Color.posBackgroundGreyi3)
     }
 }
@@ -119,6 +118,7 @@ private extension ItemListView {
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
+            .padding(.horizontal, Constants.itemListPadding)
         }
     }
 }

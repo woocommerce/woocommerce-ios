@@ -10,7 +10,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .creationForm(isForTemplates: false),
+            source: .creationForm,
             subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
         ) { _ in }
 
@@ -32,7 +32,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .creationForm(isForTemplates: false),
+            source: .creationForm,
             subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
         ) { _ in }
 

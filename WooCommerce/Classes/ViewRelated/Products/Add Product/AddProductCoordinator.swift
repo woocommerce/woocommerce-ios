@@ -114,24 +114,19 @@ final class AddProductCoordinator: Coordinator {
     func start() {
         switch source {
         case .productsTab:
-            analytics.track(event: .ProductsOnboarding
-                .productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible,
-                                                   horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         default:
             break
         }
 
-        analytics.track(event: .ProductCreation.addProductStarted(source: source,
-                                                                                 storeHasProducts: storeHasProducts))
+        analytics.track(event: .ProductCreation.addProductStarted(source: source, storeHasProducts: storeHasProducts))
 
         if shouldSkipBottomSheet {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldShowAIActionSheet {
             presentActionSheetWithAI()
-        } else if shouldPresentProductCreationBottomSheet {
-            presentProductCreationTypeBottomSheet()
         } else {
-            presentProductTypeBottomSheet(creationType: .manual)
+            presentProductTypeBottomSheet()
         }
     }
 }
@@ -143,13 +138,6 @@ private extension AddProductCoordinator {
     ///
     var shouldShowAIActionSheet: Bool {
         addProductWithAIEligibilityChecker.isEligible
-    }
-
-    /// Defines if the product creation bottom sheet should be presented.
-    /// Currently returns `true` when the store is eligible for displaying template options.
-    ///
-    var shouldPresentProductCreationBottomSheet: Bool {
-        isTemplateOptionsEligible
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.
@@ -165,53 +153,21 @@ private extension AddProductCoordinator {
         storeHasProducts
     }
 
-    /// Returns `true` when the number of non-sample products is fewer than 3.
-    ///
-    var isTemplateOptionsEligible: Bool {
-        false // Template data is no longer available from remote: https://github.com/woocommerce/woocommerce-ios/issues/12338
-    }
-
-    /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
-    ///
-    func presentProductCreationTypeBottomSheet() {
-        let title = NSLocalizedString("Add a product",
-                                      comment: "Message title of bottom sheet for selecting a template or manual product")
-        let subtitle = NSLocalizedString("How do you want to start?",
-                                         comment: "Message subtitle of bottom sheet for selecting a template or manual product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
-        let command = ProductCreationTypeSelectorCommand { selectedCreationType in
-            self.trackProductCreationType(selectedCreationType)
-            self.presentProductTypeBottomSheet(creationType: selectedCreationType)
-        }
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
-    }
-
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
-    func presentProductTypeBottomSheet(creationType: ProductCreationType) {
-        let title: String? = {
-            guard creationType == .template else { return nil }
-            return NSLocalizedString("Choose a template", comment: "Message title of bottom sheet for selecting a template or manual product")
-        }()
+    func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
-        let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
+        let viewProperties = BottomSheetListSelectorViewProperties(subtitle: subtitle)
         let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .creationForm(isForTemplates: creationType == .template),
+            source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation
-                .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
-                                        creationType: creationType))
+                .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType))
             self.navigationController.dismiss(animated: true) {
-                switch creationType {
-                case .manual:
-                    self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
-                case .template:
-                    self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
-                }
+                self.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
             }
         }
 
@@ -222,46 +178,6 @@ private extension AddProductCoordinator {
                                        sourceView: sourceView,
                                        sourceBarButtonItem: sourceBarButtonItem,
                                        arrowDirections: .any)
-    }
-
-    /// Creates & Fetches a template product.
-    /// If success: Navigates to the product.
-    /// If failure: Shows an error notice
-    ///
-    func createAndPresentTemplate(productType: BottomSheetProductType) {
-        guard let template = Self.templateType(from: productType) else {
-            DDLogError("⛔️ Product Type: \(productType) not supported as a template.")
-            return presentErrorNotice()
-        }
-
-        // Loading ViewController while the product is being created
-        let loadingTitle = NSLocalizedString("Creating Template Product...", comment: "Loading text while creating a product from a template")
-        let viewProperties = InProgressViewProperties(title: loadingTitle, message: "")
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        let action = ProductAction.createTemplateProduct(siteID: siteID, template: template) { result in
-
-            // Dismiss the loader
-            inProgressViewController.dismiss(animated: true)
-
-            switch result {
-            case .success(let product):
-                // Transforms the auto-draft product into a new product ready to be used.
-                let newProduct = ProductFactory().newProduct(from: product)
-                self.presentProduct(newProduct) // We need to strongly capture `self` because no one is retaining `AddProductCoordinator`.
-
-            case .failure(let error):
-                // Log error and inform the user
-                DDLogError("⛔️ There was an error creating the template product: \(error)")
-                self.presentErrorNotice()
-            }
-        }
-
-        ServiceLocator.stores.dispatch(action)
-
-        // Present loader right after the creation action is dispatched.
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
-        self.navigationController.tabBarController?.present(inProgressViewController, animated: true, completion: nil)
     }
 
     /// Presents a new product based on the provided bottom sheet type.
@@ -300,10 +216,7 @@ private extension AddProductCoordinator {
             },
             onProductTypeOption: { [weak self] selectedBottomSheetProductType in
                 self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                    self?.analytics.track(event: .ProductCreation
-                        .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
-                                                creationType: .manual))
-
+                    self?.analytics.track(event: .ProductCreation.addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType))
                     self?.addProductWithAIBottomSheetPresenter = nil
                     self?.presentProductForm(bottomSheetProductType: selectedBottomSheetProductType)
                 }
@@ -394,50 +307,6 @@ private extension AddProductCoordinator {
 
         productCreationAISurveyPresenter.present(controller, from: navigationController)
         useCase.didSuggestProductCreationAISurvey()
-    }
-
-    /// Converts a `BottomSheetProductType` type to a `ProductsRemote.TemplateType` template type.
-    /// Returns `nil` if the `BottomSheetProductType` is not supported or does not exist.
-    ///
-    static func templateType(from productType: BottomSheetProductType) -> ProductsRemote.TemplateType? {
-        switch productType {
-        case .simple(let isVirtual):
-            if isVirtual {
-                return .digital
-            } else {
-                return .physical
-            }
-        case .variable:
-            return .variable
-        case .affiliate:
-            return .external
-        case .grouped:
-            return .grouped
-        default:
-            return nil
-        }
-    }
-
-    /// Presents an general error notice using the system notice presenter.
-    ///
-    func presentErrorNotice() {
-        let notice = Notice(title: NSLocalizedString("There was a problem creating the template product.",
-                                                     comment: "Title for the error notice when creating a template product"))
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Tracks the selected product creation type.
-    ///
-    func trackProductCreationType(_ type: ProductCreationType) {
-        let analyticsType: WooAnalyticsEvent.ProductsOnboarding.CreationType = {
-            switch type {
-            case .template:
-                return .template
-            case .manual:
-                return .manual
-            }
-        }()
-        analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 
     /// Presents the celebratory view for the first created product.

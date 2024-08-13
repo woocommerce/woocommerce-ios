@@ -28,15 +28,15 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
         DDLogWarn("logError not supported")
     }
 
-    func logMessage(_ message: String, properties: [String : Any]?, level: SeverityLevel) {
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
         DDLogWarn("logMessage not supported")
     }
 
-    func logError(_ error: Error, userInfo: [String : Any]?, level: SeverityLevel) {
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         DDLogWarn("logError not supported")
     }
 
-    func logFatalErrorAndExit(_ error: Error, userInfo: [String : Any]?) -> Never {
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
         DDLogWarn("logFatalErrorAndExit not supported")
         fatalError(error.localizedDescription)
     }

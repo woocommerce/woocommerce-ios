@@ -23,7 +23,7 @@ public protocol CrashLoggingDataProvider {
 public extension CrashLoggingDataProvider {
 
     var additionalUserData: [String: Any] {
-        return [ : ]
+        return [:]
     }
 
     var shouldEnableAutomaticSessionTracking: Bool {

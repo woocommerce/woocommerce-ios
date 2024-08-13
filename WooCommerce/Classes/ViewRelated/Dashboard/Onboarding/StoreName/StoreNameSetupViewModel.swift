@@ -35,9 +35,12 @@ final class StoreNameSetupViewModel: ObservableObject {
         errorMessage = nil
         isSavingInProgress = true
         do {
-            let updatedSite = try await updateStoreName(name)
+            try await updateStoreName(name)
             // saves default store info to display the new store name on the My Store screen immediately.
-            stores.updateDefaultStore(updatedSite)
+            if let site = stores.sessionManager.defaultSite {
+                let updatedSite = site.copy(name: name)
+                stores.updateDefaultStore(updatedSite)
+            }
             onNameSaved()
         } catch {
             errorMessage = error.localizedDescription
@@ -49,15 +52,10 @@ final class StoreNameSetupViewModel: ObservableObject {
 
 private extension StoreNameSetupViewModel {
     @MainActor
-    func updateStoreName(_ name: String) async throws -> Site {
+    func updateStoreName(_ name: String) async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SiteAction.updateSiteTitle(siteID: siteID, title: name, completion: { result in
-                switch result {
-                case .success(let site):
-                    continuation.resume(returning: site)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             }))
         }
     }

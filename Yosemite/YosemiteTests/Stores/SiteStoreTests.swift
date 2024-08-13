@@ -2,8 +2,10 @@ import XCTest
 import enum Networking.DotcomError
 import enum Networking.SiteCreationError
 import enum Networking.WordPressApiError
+import struct Networking.Site
 @testable import class Networking.MockNetwork
 @testable import Yosemite
+@testable import Storage
 
 final class SiteStoreTests: XCTestCase {
     /// Mock Dispatcher.
@@ -11,6 +13,18 @@ final class SiteStoreTests: XCTestCase {
 
     /// Mock Storage: InMemory.
     private var storageManager: MockStorageManager!
+
+    /// Storage
+    ///
+    private var storage: StorageType! {
+        storageManager.viewStorage
+    }
+
+    /// Convenience: returns the StorageType associated with the main thread
+    ///
+    private var viewStorage: StorageType {
+        return storageManager.viewStorage
+    }
 
     /// Mock Network: Allows us to inject predefined responses.
     private var network: Networking.MockNetwork!
@@ -238,7 +252,7 @@ final class SiteStoreTests: XCTestCase {
         // Given
         let siteID: Int64 = 123
         remote.whenUpdatingSiteTitle(thenReturn: .success(()))
-        remote.whenLoadingSite(thenReturn: .success(Site.fake().copy(siteID: siteID)))
+        storeSite(Site.fake().copy(siteID: siteID, name: "Miffy"))
 
         // When
         let result = waitFor { promise in
@@ -249,6 +263,8 @@ final class SiteStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+        let site = viewStorage.loadSite(siteID: siteID)
+        XCTAssertEqual(site?.name, "Test")
     }
 
     func test_updateSiteTitle_returns_error_on_failure() throws {
@@ -306,5 +322,14 @@ final class SiteStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+    }
+}
+
+private extension SiteStoreTests {
+    @discardableResult
+    func storeSite(_ site: Networking.Site) -> Storage.Site {
+        let storedSite = storage.insertNewObject(ofType: StorageSite.self)
+        storedSite.update(with: site)
+        return storedSite
     }
 }

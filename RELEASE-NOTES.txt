@@ -9,6 +9,7 @@
 20.0
 -----
 
+- [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 
 19.9
 -----

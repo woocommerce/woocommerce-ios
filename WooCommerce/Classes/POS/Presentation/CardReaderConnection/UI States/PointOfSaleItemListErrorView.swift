@@ -11,11 +11,7 @@ struct PointOfSaleItemListErrorView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            Text(Localization.productTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, PointOfSaleItemListErrorLayout.headerPadding)
-                .font(Font.posTitle)
-                .foregroundColor(Color.posPrimaryTexti3)
+            POSHeaderTitleView()
             Spacer()
             POSErrorExclamationMark()
             Text(error.title)
@@ -35,15 +31,5 @@ struct PointOfSaleItemListErrorView: View {
             .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
             Spacer()
         }
-    }
-}
-
-private extension PointOfSaleItemListErrorView {
-    enum Localization {
-        static let productTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListErrorView.productTitle",
-            value: "Products",
-            comment: "Title for the Point of Sale screen"
-        )
     }
 }

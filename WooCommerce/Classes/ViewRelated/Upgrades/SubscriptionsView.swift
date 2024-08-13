@@ -72,7 +72,7 @@ struct SubscriptionsView: View {
 
 private extension SubscriptionsView {
     var supportForm: some View {
-        NavigationView {
+        NavigationStack {
             SupportForm(isPresented: $isShowingSupport,
                         viewModel: SupportFormViewModel())
             .toolbar {
@@ -83,7 +83,6 @@ private extension SubscriptionsView {
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 }
 

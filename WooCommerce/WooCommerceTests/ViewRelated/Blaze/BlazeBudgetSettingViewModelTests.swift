@@ -70,6 +70,37 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_updateImpressions_sends_the_correct_isEvergreen_value() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 15,
+                                                    isEvergreen: true,
+                                                    duration: 3,
+                                                    startDate: .now,
+                                                    locale: Locale(identifier: "en_US"),
+                                                    stores: stores,
+                                                    onCompletion: { _, _, _, _ in })
+
+        // When
+        var isEvergreenValue: Bool?
+        let expectedImpression = BlazeImpressions(totalImpressionsMin: 1000, totalImpressionsMax: 5000)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .fetchForecastedImpressions(_, input, onCompletion):
+                isEvergreenValue = input.isEvergreen
+                onCompletion(.success(expectedImpression))
+            default:
+                break
+            }
+        }
+        await viewModel.updateImpressions(startDate: .now, dayCount: 3, dailyBudget: 15)
+
+        // Then
+        XCTAssertEqual(isEvergreenValue, true)
+    }
+
+    @MainActor
     func test_updateImpressions_updates_forecastedImpressionState_correctly_when_fetching_impression_succeeds() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

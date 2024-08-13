@@ -10,7 +10,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posPrimaryTexti3)
                     .font(.posBody)

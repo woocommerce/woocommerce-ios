@@ -298,17 +298,21 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
     public let totalBudget: Double
     // Target options for the campaign. Optional.
     public let targeting: BlazeTargetOptions?
+    // Whether the campaign time is unlimited
+    public let isEvergreen: Bool
 
     public init(startDate: Date,
                 endDate: Date,
                 timeZone: String,
                 totalBudget: Double,
-                targeting: BlazeTargetOptions? = nil) {
+                targeting: BlazeTargetOptions? = nil,
+                isEvergreen: Bool) {
         self.startDate = startDate
         self.endDate = endDate
         self.timeZone = timeZone
         self.totalBudget = totalBudget
         self.targeting = targeting
+        self.isEvergreen = isEvergreen
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -317,6 +321,7 @@ public struct BlazeForecastedImpressionsInput: Encodable, GeneratedFakeable {
         case timeZone
         case totalBudget
         case targeting
+        case isEvergreen
     }
 }
 

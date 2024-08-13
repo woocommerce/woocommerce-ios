@@ -46,6 +46,8 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
                               spentBudget: spentBudget,
                               budgetMode: BlazeCampaignBudget.Mode(rawValue: budgetMode) ?? .total,
                               budgetAmount: budgetAmount,
-                              budgetCurrency: budgetCurrency)
+                              budgetCurrency: budgetCurrency,
+                              isEvergreen: false, // TODO-13537: update from storage
+                              durationDays: 0) // TODO-13537: update from storage
     }
 }

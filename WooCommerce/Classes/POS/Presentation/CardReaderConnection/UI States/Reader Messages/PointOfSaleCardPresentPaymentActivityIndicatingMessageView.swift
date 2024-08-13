@@ -10,7 +10,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(title)
                     .foregroundStyle(Color(.neutral(.shade40)))
                     .font(.posBody)

@@ -1,6 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.0
+-----
+- [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [*] Payments: fixed issue where site credential login couldn't be used to install plugins, e.g. WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/13582]
+- [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
+- [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
+- [*] Help & Support: Systems Status Report option now only shown on logged-in state. [https://github.com/woocommerce/woocommerce-ios/pull/13568]
 
 19.9
 -----

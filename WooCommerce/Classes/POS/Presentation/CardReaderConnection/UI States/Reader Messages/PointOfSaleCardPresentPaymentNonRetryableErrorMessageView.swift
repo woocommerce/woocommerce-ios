@@ -6,19 +6,22 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
-            POSErrorExclamationMark()
+            POSErrorXMark()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)
                     .font(.posTitle)
 
-                Text(viewModel.message)
-                    .font(.posBody)
-                    .foregroundStyle(Color.primaryText)
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                    Text(viewModel.message)
+                    Text(viewModel.nextStep)
+                }
+                .font(.posBody)
+                .foregroundStyle(Color.primaryText)
             }
 
-            Button(viewModel.startAgainButtonViewModel.title,
-                   action: viewModel.startAgainButtonViewModel.actionHandler)
+            Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
+                   action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
             .buttonStyle(POSPrimaryButtonStyle())
         }
         .multilineTextAlignment(.center)

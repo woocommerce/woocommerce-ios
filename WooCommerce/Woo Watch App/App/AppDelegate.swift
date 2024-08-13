@@ -50,7 +50,7 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// Perform the necessary updates when dependencies are updated.
     ///
     func onUpdateDependencies(dependencies: WatchDependencies?) {
-        crashLoggingStack.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true)
+        crashLoggingStack.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true, account: dependencies?.account)
     }
 }
 

@@ -1,4 +1,5 @@
 import WooFoundationWatchOS
+import NetworkingWatchOS
 
 /// Minimal version of `WCCrashLoggingStack` for the watch app.
 ///
@@ -45,7 +46,15 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
         crashLogging.setNeedsDataRefresh()
     }
 
-    func updateUserData(enablesCrashReports: Bool) {
+    func updateUserData(enablesCrashReports: Bool, account: Account?) {
+        let user: TracksUser? = {
+            guard let account = account else {
+                return nil
+            }
+            return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
+        }()
+
+        crashLoggingDataProvider.currentUser = user
         crashLoggingDataProvider.userHasOptedOut = !enablesCrashReports
         setNeedsDataRefresh()
     }
@@ -71,7 +80,5 @@ class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
 #endif
     }
 
-    var currentUser: TracksUser? {
-        nil // TODO: Sync account data
-    }
+    var currentUser: TracksUser?
 }

@@ -323,6 +323,7 @@
 		269014D22BEA9309006056E0 /* DotcomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0E20975E07005962F4 /* DotcomRequest.swift */; };
 		269014D32BEA9309006056E0 /* AuthenticatedDotcomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57A295D7793003583BE /* AuthenticatedDotcomRequest.swift */; };
 		269014D42BEA9335006056E0 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
+		26AE25F52C6C0A110032A600 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		26B15E442A269F79000C35E4 /* ip-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B15E432A269F79000C35E4 /* ip-location.json */; };
 		26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
@@ -4715,6 +4716,7 @@
 				26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */,
 				263A6DB22BEAA3EC00C292B2 /* CodingUserInfoKey+Woo.swift in Sources */,
 				263A6DB12BEAA33900C292B2 /* WCAnalyticsStats.swift in Sources */,
+				26AE25F52C6C0A110032A600 /* Account.swift in Sources */,
 				263A6DAD2BEAA32800C292B2 /* OrderStatsV4Mapper.swift in Sources */,
 				263A6DAE2BEAA32800C292B2 /* OrderStatsV4.swift in Sources */,
 				26373E132BFCEDCD008E6735 /* OrderTaxLine.swift in Sources */,

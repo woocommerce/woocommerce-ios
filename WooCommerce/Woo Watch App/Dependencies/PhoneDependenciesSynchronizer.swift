@@ -145,7 +145,8 @@ private extension WatchDependencies {
                                  currencySettings: currencySettings,
                                  credentials: credentials.replacingSecret(secret),
                                  applicationPassword: applicationPassword,
-                                 enablesCrashReports: enablesCrashReports)
+                                 enablesCrashReports: enablesCrashReports,
+                                 account: account)
     }
 }
 

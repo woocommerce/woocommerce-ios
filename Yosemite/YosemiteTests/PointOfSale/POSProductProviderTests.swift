@@ -24,8 +24,24 @@ final class POSProductProviderTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_POSItemProvider_when_fails_request_then_throws_error() async throws {
+        // Given
+        let expectedError = POSProductProvider.POSError.requestFailed
+        network.simulateError(requestUrlSuffix: "products", error: expectedError)
+
+        // When
+        do {
+            _ = try await itemProvider.providePointOfSaleItems()
+            XCTFail("Expected an error, but got success.")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? POSProductProvider.POSError, expectedError)
+        }
+    }
+
     func test_POSItemProvider_provides_no_items_when_store_has_no_products() async throws {
         // Given/When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
         let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then

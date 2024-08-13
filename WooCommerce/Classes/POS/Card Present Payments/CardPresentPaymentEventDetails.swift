@@ -52,9 +52,3 @@ enum CardPresentPaymentEventDetails {
     case cancelledOnReader
     case validatingOrder(cancelPayment: () -> Void)
 }
-
-enum CardPresentPaymentRetryApproach {
-    case dontRetry
-    case tryAgain(retryAction: () -> Void)
-    case tryAnotherPaymentMethod(retryAction: () -> Void)
-}

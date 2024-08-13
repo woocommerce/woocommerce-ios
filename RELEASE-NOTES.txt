@@ -9,6 +9,7 @@
 - [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
 - [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 - [*] Help & Support: Systems Status Report option now only shown on logged-in state. [https://github.com/woocommerce/woocommerce-ios/pull/13568]
+- [Internal] Products: Removed template option for product creation. [https://github.com/woocommerce/woocommerce-ios/pull/13594]
 
 19.9
 -----

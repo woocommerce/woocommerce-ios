@@ -9,10 +9,6 @@ extension WooAnalyticsEvent {
             static let creationType = "creation_type"
         }
 
-        enum CreationType: String {
-            case manual
-        }
-
         /// Tracked when the user taps to start adding a product.
         /// - Parameters:
         ///   - source: Entry point to product creation.
@@ -30,8 +26,7 @@ extension WooAnalyticsEvent {
         static func addProductTypeSelected(bottomSheetProductType: BottomSheetProductType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductTypeSelected,
                               properties: [Key.productType: bottomSheetProductType.productType.rawValue,
-                                           Key.isVirtual: bottomSheetProductType.isVirtual,
-                                           Key.creationType: CreationType.manual.rawValue])
+                                           Key.isVirtual: bottomSheetProductType.isVirtual])
         }
     }
 }

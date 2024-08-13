@@ -4,6 +4,7 @@
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [*] Better experience for embedded web view with loading indicator. [https://github.com/woocommerce/woocommerce-ios/pull/13587]
 - [*] Fix: "Report Subscription Issue" button in Subscriptions screen now works consistently. [https://github.com/woocommerce/woocommerce-ios/pull/13577]
 - [*] Payments: fixed issue where site credential login couldn't be used to install plugins, e.g. WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/13582]
 - [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]

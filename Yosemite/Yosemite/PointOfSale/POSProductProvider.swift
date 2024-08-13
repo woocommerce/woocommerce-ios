@@ -39,15 +39,13 @@ public final class POSProductProvider: POSItemProvider {
 
             return mapProductsToPOSItems(products: filteredProducts)
         } catch {
-            // TODO:
-            // - Handle case for empty product list, or not empty but no eligible products
-            // https://github.com/woocommerce/woocommerce-ios/issues/12815
-            // https://github.com/woocommerce/woocommerce-ios/issues/12816
-            // - Handle case for error when fetching products
-            // https://github.com/woocommerce/woocommerce-ios/issues/12846
-            DDLogError("No POS items")
-            return []
+            DDLogError("Failed to retrieve products. Error: \(error)")
+            throw POSProductProviderError.requestFailed
         }
+    }
+
+    enum POSProductProviderError: Error {
+        case requestFailed
     }
 
     // Maps result to POSProduct, and populate the output with:

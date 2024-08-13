@@ -7,9 +7,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
         HStack(alignment: .center) {
             Spacer()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
-                Image(viewModel.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+                SVGAnimationView(svgName: "card-animation")
                     .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                            height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {

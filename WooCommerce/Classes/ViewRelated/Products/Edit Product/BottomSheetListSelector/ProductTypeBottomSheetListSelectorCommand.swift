@@ -7,7 +7,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
     enum Source {
-        case creationForm(isForTemplates: Bool)
+        case creationForm
         case editForm(selected: BottomSheetProductType)
     }
 
@@ -23,12 +23,8 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
         ].compactMap { $0 }
 
         switch source {
-        case .creationForm(let isForTemplates):
-            if isForTemplates {
-                return [.simple(isVirtual: false), .simple(isVirtual: true), .variable]
-            } else {
-                return defaultOptions
-            }
+        case .creationForm:
+            return defaultOptions
         case .editForm(let selected):
             return defaultOptions.filter { $0 != selected }
         }

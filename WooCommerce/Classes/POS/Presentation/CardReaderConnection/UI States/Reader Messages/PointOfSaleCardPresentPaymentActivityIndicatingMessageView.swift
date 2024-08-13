@@ -5,27 +5,22 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     let message: String
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
-                ProgressView()
-                    .progressViewStyle(POSProgressViewStyle())
-                    .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                           height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(title)
-                        .foregroundStyle(Color(.neutral(.shade40)))
-                        .font(.posBody)
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
+            ProgressView()
+                .progressViewStyle(POSProgressViewStyle())
+                .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
+                       height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                Text(title)
+                    .foregroundStyle(Color(.neutral(.shade40)))
+                    .font(.posBody)
 
-                    Text(message)
-                        .font(.posTitle)
-                        .foregroundStyle(Color(.neutral(.shade60)))
-                        .bold()
-                }
+                Text(message)
+                    .font(.posTitle)
+                    .foregroundStyle(Color(.neutral(.shade60)))
             }
-            .multilineTextAlignment(.center)
-            Spacer()
         }
+        .multilineTextAlignment(.center)
     }
 }
 

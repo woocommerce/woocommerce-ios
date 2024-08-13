@@ -15,6 +15,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case validatingOrder
         case preparingReader
         case processingPayment
+        case paymentError
         case cardPaymentSuccessful
     }
 
@@ -308,8 +309,18 @@ private extension TotalsViewModel {
             .assign(to: &$paymentState)
 
         paymentStatePublisher
-            .map {
-                $0 != .processingPayment && $0 != .cardPaymentSuccessful
+            .map { paymentState in
+                switch paymentState {
+                case .idle,
+                        .acceptingCard,
+                        .validatingOrder,
+                        .preparingReader:
+                    return true
+                case .processingPayment,
+                        .paymentError,
+                        .cardPaymentSuccessful:
+                    return false
+                }
             }
             .assign(to: &$isShowingTotalsFields)
 
@@ -356,10 +367,12 @@ private extension TotalsViewModel.PaymentState {
             self = .preparingReader
         case .show(.tapSwipeOrInsertCard):
             self = .acceptingCard
-        case .show(.processing):
+        case .show(.processing),
+                .show(.displayReaderMessage):
             self = .processingPayment
-        case .show(.displayReaderMessage):
-            self = .processingPayment
+        case .show(.paymentError),
+                .show(.paymentErrorNonRetryable):
+            self = .paymentError
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful
         default:

@@ -1,13 +1,13 @@
 import SwiftUI
+import Lottie
 
 struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
-            Image(viewModel.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            LottieView(animation: .named("card-animation"))
+                .playing(loopMode: .loop)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
 

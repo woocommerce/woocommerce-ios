@@ -1,13 +1,13 @@
 import SwiftUI
+import Lottie
 
 struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.headerSpacing) {
-            Image(viewModel.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            LottieView(animation: .named("card-animation"))
+                .playing(loopMode: .loop)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {

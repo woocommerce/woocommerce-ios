@@ -85,11 +85,11 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         guard let _ = URL(string: viewModel.receiptURLString) else {
             return
         }
-        let printController = UIPrintInteractionController.shared
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName
         printInfo.orientation = .portrait
+        configurePrintController()
         printController.printInfo = printInfo
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in

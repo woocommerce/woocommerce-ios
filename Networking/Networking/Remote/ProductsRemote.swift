@@ -47,7 +47,6 @@ public protocol ProductsRemoteProtocol {
                         pageSize: Int,
                         productStatus: ProductStatus?,
                         completion: @escaping (Result<[Int64], Error>) -> Void)
-    func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
     func loadStock(for siteID: Int64,
@@ -437,19 +436,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Creates a product using the provided template.
-    /// Finishes with a completion block with the product ID.
-    /// The created product has an `auto-draft` status.
-    ///
-    public func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
-        let parameters = [ParameterKey.templateName: template.rawValue]
-        let path = Path.templateProducts
-        let request = JetpackRequest(wooApiVersion: .wcAdmin, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = EntityIDMapper()
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
     public func loadNumberOfProducts(siteID: Int64) async throws -> Int64 {
         let path = Path.productsTotal
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
@@ -562,16 +548,6 @@ public extension ProductsRemote {
         case descending
     }
 
-    /// Supported types for creating a template product.
-    ///
-    enum TemplateType: String {
-        case physical
-        case digital
-        case variable
-        case external
-        case grouped
-    }
-
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = Remote.Default.firstPageNumber
@@ -580,7 +556,6 @@ public extension ProductsRemote {
 
     private enum Path {
         static let products   = "products"
-        static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
         static let productReports = "reports/products"
@@ -605,7 +580,6 @@ public extension ProductsRemote {
         static let fields: String     = "_fields"
         static let images: String = "images"
         static let id: String         = "id"
-        static let templateName: String = "template_name"
         static let type = "type"
         static let products = "products"
         static let variations = "variations"

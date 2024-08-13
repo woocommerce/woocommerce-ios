@@ -116,10 +116,6 @@ public enum ProductAction: Action {
                                  status: ProductStatus? = nil,
                                  onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Creates a product using the provided template type.
-    ///
-    case createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: (Result<Product, Error>) -> Void)
-
     /// Identifies the language from the given string
     ///
     case identifyLanguage(siteID: Int64,

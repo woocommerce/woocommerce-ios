@@ -24,6 +24,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
             .grouped,
             .affiliate
         ]
+        assertEqual(expectedTypes, command.data)
     }
 
     func test_data_does_not_contain_subscription_types_if_ineligible_for_creation_form() {
@@ -44,6 +45,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
             .grouped,
             .affiliate
         ]
+        assertEqual(expectedTypes, command.data)
     }
 
     func test_data_contains_subscription_types_if_eligible_for_edit_form() {
@@ -65,6 +67,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
             .grouped,
             .affiliate
         ]
+        assertEqual(expectedTypes, command.data)
     }
 
     func test_data_does_not_contain_subscription_types_if_ineligible_for_edit_form() {
@@ -84,6 +87,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
             .grouped,
             .affiliate
         ]
+        assertEqual(expectedTypes, command.data)
     }
 
     func test_callback_is_called_on_selection() {

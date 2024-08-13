@@ -54,6 +54,10 @@ struct Woo_Watch_AppApp: App {
                 // Tracks
                 tracksProvider.sendTracksEvent(.watchAppOpened)
             }
+            .onChange(of: phoneDependencySynchronizer.dependencies, perform: { newDependencies in
+                // Make sure the app delegate performs any update needed when we find new dependencies.
+                delegate.onUpdateDependencies(dependencies: newDependencies)
+            })
         }
     }
 }

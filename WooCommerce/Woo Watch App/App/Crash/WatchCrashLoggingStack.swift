@@ -44,6 +44,11 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
     func setNeedsDataRefresh() {
         crashLogging.setNeedsDataRefresh()
     }
+
+    func updateUserData(enablesCrashReports: Bool) {
+        crashLoggingDataProvider.userHasOptedOut = !enablesCrashReports
+        setNeedsDataRefresh()
+    }
 }
 
 /// Minimal version of `WCCrashLoggingDataProvider` for the watch app.
@@ -54,9 +59,7 @@ class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
         ApiCredentials.sentryDSN
     }
 
-    var userHasOptedOut: Bool {
-        false // TODO: Read from user defaults
-    }
+    var userHasOptedOut: Bool = false
 
     var buildType: String {
 #if DEBUG

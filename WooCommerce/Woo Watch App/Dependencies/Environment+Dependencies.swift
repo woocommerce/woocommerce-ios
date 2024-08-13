@@ -22,6 +22,6 @@ extension WatchDependencies {
     /// Fake object, useful as a default value and for previews.
     ///
     static func fake() -> Self {
-        .init(storeID: .zero, storeName: "", currencySettings: CurrencySettings(), credentials: .init(authToken: ""))
+        .init(storeID: .zero, storeName: "", currencySettings: CurrencySettings(), credentials: .init(authToken: ""), enablesCrashReports: true)
     }
 }

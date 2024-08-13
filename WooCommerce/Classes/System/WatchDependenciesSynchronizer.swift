@@ -26,6 +26,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published var credentials: Credentials?
 
+    /// Update this value to sync the crash report opt in value with the paired counterpart.
+    ///
+    @Published var enablesCrashReports: Bool = true
+
     /// Tracks if the current watch session is active or not
     ///
     @Published private var isSessionActive: Bool = false
@@ -42,6 +46,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         self.storeName = storedDependencies?.storeName
         self.credentials = storedDependencies?.credentials
 
+        if let storedDependencies {
+            self.enablesCrashReports = storedDependencies.enablesCrashReports
+        }
+
         bindAndSyncDependencies()
 
         if WCSession.isSupported() {
@@ -57,12 +65,23 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         // Convert all inputs into a dependencies type.
         // Additionally filter any duplicates and debounce signal by 0.5s
         // TODO: currencySettings should be treated as a new input but unfortunately there is no way to access it yet other than the ServiceLocator
-        let watchDependencies = Publishers.CombineLatest4($storeID, $storeName, $credentials, Just(ServiceLocator.currencySettings))
-            .map { storeID, storeName, credentials, currencySettings -> WatchDependencies? in
+
+        let requiredDependencies = Publishers.CombineLatest4($storeID, $storeName, $credentials, Just(ServiceLocator.currencySettings))
+        let configurationDependencies = $enablesCrashReports
+
+        let watchDependencies = Publishers.CombineLatest(requiredDependencies, configurationDependencies)
+            .map { (required, enablesCrashReports) -> WatchDependencies? in
+
+                let (storeID, storeName, credentials, currencySettings) = required
                 guard let storeID, let storeName, let credentials else {
                     return nil
                 }
-                return .init(storeID: storeID, storeName: storeName, currencySettings: currencySettings, credentials: credentials)
+
+                return .init(storeID: storeID,
+                             storeName: storeName,
+                             currencySettings: currencySettings,
+                             credentials: credentials,
+                             enablesCrashReports: enablesCrashReports)
             }
             .removeDuplicates()
             .debounce(for: 0.5, scheduler: DispatchQueue.main)

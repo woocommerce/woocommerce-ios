@@ -46,6 +46,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
         DDLog.add(DDOSLogger.sharedInstance)
         DDLog.add(fileLogger)
     }
+
+    /// Perform the necessary updates when dependencies are updated.
+    ///
+    func onUpdateDependencies(dependencies: WatchDependencies?) {
+        crashLoggingStack.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true)
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {

@@ -4,30 +4,25 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: Layout.headerSpacing) {
-                Image(viewModel.imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                           height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+        VStack(alignment: .center, spacing: Layout.headerSpacing) {
+            Image(viewModel.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
+                       height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
 
-                VStack(alignment: .center, spacing: Layout.textSpacing) {
-                    Text(viewModel.title)
-                        .foregroundStyle(.white)
-                        .font(.posBody)
+            VStack(alignment: .center, spacing: Layout.textSpacing) {
+                Text(viewModel.title)
+                    .foregroundStyle(.white)
+                    .font(.posBody)
 
-                    Text(viewModel.message)
-                        .font(.posTitle)
-                        .foregroundStyle(.white)
-                        .bold()
-                }
+                Text(viewModel.message)
+                    .font(.posTitle)
+                    .foregroundStyle(.white)
             }
-            .padding(.bottom)
-            .multilineTextAlignment(.center)
-            Spacer()
         }
+        .padding(.bottom)
+        .multilineTextAlignment(.center)
     }
 }
 

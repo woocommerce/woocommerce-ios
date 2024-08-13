@@ -14,7 +14,6 @@ struct PointOfSaleLoadingView: View {
                 Spacer().frame(height: Layout.textSpacing)
                 Text(Localization.subtitle)
                     .font(.posTitle)
-                    .bold()
                 Spacer()
             }
             .multilineTextAlignment(.center)

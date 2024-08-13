@@ -68,7 +68,7 @@ struct UpgradesView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 VStack {
                     // TODO: Once we remove iOS 15 support, we can do this with .toolbar instead.
@@ -145,9 +145,6 @@ struct UpgradesView: View {
             .navigationBarHidden(true)
             .background(Color(.systemGroupedBackground))
         }
-        // TODO: when we remove iOS 15 support, use NavigationStack instead.
-        // This is required to avoid a column layout on iPad, which looks strange.
-        .navigationViewStyle(.stack)
         .onDisappear {
             upgradesViewModel.onDisappear()
         }

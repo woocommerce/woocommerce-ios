@@ -22,7 +22,11 @@ final class CartViewModel: CartViewModelProtocol {
         return itemsInCart.isEmpty
     }
 
-    init() {
+    private var analytics: PointOfSaleAnalytics?
+
+    init(analytics: PointOfSaleAnalytics? = nil) {
+        self.analytics = analytics
+
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }
@@ -30,11 +34,14 @@ final class CartViewModel: CartViewModelProtocol {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
-        
-        let posAnalyticsProvider = PointOfSaleTracksProvider()
-        let posAnalytics = PointOfSaleAnalytics(analyticsProvider: posAnalyticsProvider)
-        
-        posAnalytics.track("test_item_added_to_cart", properties: [:], error: nil)
+
+        guard let analytics = analytics else {
+            return
+        }
+        // TODO:
+        // - Update analytics property to not be Optional
+        // - Move events to a pos-wide enum
+        analytics.track("test_item_added_to_cart", properties: [:], error: nil)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {

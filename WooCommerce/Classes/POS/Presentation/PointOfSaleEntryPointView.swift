@@ -18,11 +18,13 @@ struct PointOfSaleEntryPointView: View {
          currencyFormatter: CurrencyFormatter) {
         self.hideAppTabBar = hideAppTabBar
 
+        let analytics = PointOfSaleAnalytics(analyticsProvider: PointOfSaleTracksProvider())
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
                                               currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
-        let cartViewModel = CartViewModel()
+
+        let cartViewModel = CartViewModel(analytics: analytics)
         let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(

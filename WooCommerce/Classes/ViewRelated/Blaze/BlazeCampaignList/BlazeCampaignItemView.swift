@@ -85,9 +85,9 @@ struct BlazeCampaignItemView: View {
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.budget)
+                    Text(campaign.budgetTitle)
                         .subheadlineStyle()
-                    Text(String(format: "%.0f", campaign.totalBudget))
+                    Text(campaign.budgetToDisplay)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
@@ -132,7 +132,6 @@ private extension BlazeCampaignItemView {
     enum Localization {
         static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
         static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
-        static let budget = NSLocalizedString("Budget", comment: "Title label for the total budget of a Blaze campaign")
     }
 }
 

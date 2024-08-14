@@ -14,6 +14,7 @@
 - [Internal] Products: Removed template option for product creation. [https://github.com/woocommerce/woocommerce-ios/pull/13594]
 - [Internal] Orders: Fixed "Receipt print button unresponsive after first tap". [https://github.com/woocommerce/woocommerce-ios/pull/13598]
 - [*] Payments: Fixed contact support link from some In Person Payments onboarding screens [https://github.com/woocommerce/woocommerce-ios/pull/13601]
+- [*] Orders: Fixes an issue where tooltips in the order form were not displayed correctly. [https://github.com/woocommerce/woocommerce-ios/pull/13616]
 
 19.9
 -----

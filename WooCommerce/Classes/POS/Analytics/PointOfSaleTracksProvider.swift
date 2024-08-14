@@ -4,7 +4,7 @@ import protocol WooFoundation.AnalyticsProvider
 
 public class PointOfSaleTracksProvider: NSObject, AnalyticsProvider {
     private static let contextManager: TracksContextManager = TracksContextManager()
-    
+
     private static let tracksService: TracksService = {
         guard let tracksService = TracksService(contextManager: contextManager) else {
             fatalError("Failed to create TracksService instance", file: #file, line: #line)

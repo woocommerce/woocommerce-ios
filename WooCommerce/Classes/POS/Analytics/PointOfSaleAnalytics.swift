@@ -5,7 +5,7 @@ import protocol WooFoundation.AnalyticsProvider
 final class PointOfSaleAnalytics: Analytics {
     var userHasOptedIn: Bool {
         get {
-            guard let _ : Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics) else {
+            guard let _: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics) else {
                 return false
             }
             return true
@@ -29,19 +29,19 @@ final class PointOfSaleAnalytics: Analytics {
         }
         analyticsProvider.track(eventName, withProperties: properties)
     }
-    
+
     func initialize() {
         refreshUserData()
         // TODO: Observe notifications and app state
     }
-    
+
     func refreshUserData() {
         guard userHasOptedIn else {
             return
         }
         // TODO: Handle isAuthenticatedWithoutWPCom
     }
-    
+
     func setUserHasOptedOut(_ optedOut: Bool) {
         // TODO: Not implemented
         switch userHasOptedIn {

@@ -352,8 +352,18 @@ private extension TotalsViewModel {
             }
             viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
             return .paymentSuccess(viewModel: viewModel)
+        case .paymentErrorNonRetryable(var viewModel):
+            viewModel.updateTryAnotherPaymentMethodAction(cancelThenCollectPayment)
+            return .paymentErrorNonRetryable(viewModel: viewModel)
         default:
             return messageType
+        }
+    }
+
+    func cancelThenCollectPayment() {
+        cardPresentPaymentService.cancelPayment()
+        Task { [weak self] in
+            await self?.collectPayment()
         }
     }
 }

@@ -5,13 +5,13 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel {
     let title = Localization.title
     let message: String
     let nextStep: String = Localization.nextStep
-    let tryAnotherPaymentMethodButtonViewModel: CardPresentPaymentsModalButtonViewModel
+    private(set) var tryAnotherPaymentMethodButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
-    init(error: Error) {
+    init(error: Error, tryAnotherPaymentMethodAction: @escaping () -> Void) {
         self.message = Self.message(for: error)
         self.tryAnotherPaymentMethodButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.startAgain,
-            actionHandler: { })
+            title: Localization.tryAnotherPaymentMethod,
+            actionHandler: tryAnotherPaymentMethodAction)
     }
 
     private static func message(for error: Error) -> String {
@@ -20,6 +20,12 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel {
         } else {
             return error.localizedDescription
         }
+    }
+
+    mutating func updateTryAnotherPaymentMethodAction(_ newAction: @escaping () -> Void) {
+        self.tryAnotherPaymentMethodButtonViewModel = CardPresentPaymentsModalButtonViewModel(
+            title: Localization.tryAnotherPaymentMethod,
+            actionHandler: newAction)
     }
 }
 
@@ -31,7 +37,7 @@ private extension PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
             comment: "Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout"
         )
 
-        static let startAgain = NSLocalizedString(
+        static let tryAnotherPaymentMethod = NSLocalizedString(
             "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title",
             value: "Try another payment method",
             comment: "Title of the button used on a card payment error from the Point of Sale Checkout " +

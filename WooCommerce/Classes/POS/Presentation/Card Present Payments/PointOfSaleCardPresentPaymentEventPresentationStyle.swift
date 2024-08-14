@@ -7,6 +7,8 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
 
 /// View Models are created here, but can be "annotated" where they are used if the `CardPresentPaymentEventDetails` is
 /// not enough to fully populate the view model. See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
+///
+// TODO: We could make this a struct with a function and the required dependencies to produce full viewModels first time
 extension CardPresentPaymentEventDetails {
     var pointOfSalePresentationStyle: PointOfSaleCardPresentPaymentEventPresentationStyle? {
         switch self {
@@ -129,7 +131,7 @@ extension CardPresentPaymentEventDetails {
                     inputMethods: inputMethods)))
         case .paymentSuccess:
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
-        case .paymentError(error: let error, retryApproach: let retryApproach, cancelPayment: _):
+        case .paymentError(error: let error, retryApproach: let retryApproach, cancelPayment: let cancelPayment):
             switch error {
             case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,
                 CollectOrderPaymentUseCaseError.orderTotalChanged,
@@ -151,7 +153,8 @@ extension CardPresentPaymentEventDetails {
                 case .dontRetry:
                     return .message(.paymentErrorNonRetryable(
                         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
-                            error: error)))
+                            error: error,
+                            tryAnotherPaymentMethodAction: cancelPayment)))
                 }
             }
         case .paymentCaptureError(let cancelPayment):

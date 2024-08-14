@@ -11,8 +11,6 @@ final class PointOfSaleAnalytics: Analytics {
             return true
         }
         set {
-            // Q: Do we want to use the same value as the WooCommerce app for now?
-            // or should we store it separately?
             UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
         }
     }

@@ -102,10 +102,10 @@ struct CartView: View {
 
 private extension CartView {
     enum Constants {
-        static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let secondaryFont: Font = .system(size: 24, weight: .regular, design: .default)
-        static let itemsFont: Font = .system(size: 16, weight: .medium, design: .default)
-        static let clearButtonFont: Font = .system(size: 16, weight: .semibold, design: .default)
+        static let primaryFont: POSFontStyle = .posTitleEmphasized
+        static let secondaryFont: POSFontStyle = .posBodyRegular
+        static let itemsFont: POSFontStyle = .posDetailRegular
+        static let clearButtonFont: POSFontStyle = .posDetailEmphasized
         static let clearButtonCornerRadius: CGFloat = 4
         static let clearButtonBorderWidth: CGFloat = 2
         static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)

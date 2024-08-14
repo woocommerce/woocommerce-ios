@@ -88,7 +88,8 @@ public class CrashLogging {
     func beforeSend(event: Sentry.Event?) -> Sentry.Event? {
 
         #if DEBUG
-        let shouldSendEvent = UserDefaults.standard.bool(forKey: Self.forceCrashLoggingKey) && !dataProvider.userHasOptedOut
+        //let shouldSendEvent = UserDefaults.standard.bool(forKey: Self.forceCrashLoggingKey) && !dataProvider.userHasOptedOut
+        let shouldSendEvent = !dataProvider.userHasOptedOut
         #else
         let shouldSendEvent = !dataProvider.userHasOptedOut
         #endif

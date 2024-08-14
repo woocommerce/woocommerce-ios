@@ -7,8 +7,11 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
     private let crashLogging: CrashLogging
     private let crashLoggingDataProvider = WatchCrashLoggingDataProvider()
 
-    init() {
+    init(account: Account?) {
+        crashLoggingDataProvider.currentUser = Self.tracksUserFrom(account)
         self.crashLogging = CrashLogging(dataProvider: crashLoggingDataProvider)
+        self.crashLogging.setNeedsDataRefresh()
+
         do {
             _ = try crashLogging.start()
         } catch {
@@ -47,16 +50,16 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
     }
 
     func updateUserData(enablesCrashReports: Bool, account: Account?) {
-        let user: TracksUser? = {
-            guard let account = account else {
-                return nil
-            }
-            return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
-        }()
-
-        crashLoggingDataProvider.currentUser = user
+        crashLoggingDataProvider.currentUser = Self.tracksUserFrom(account)
         crashLoggingDataProvider.userHasOptedOut = !enablesCrashReports
         setNeedsDataRefresh()
+    }
+
+    static func tracksUserFrom(_ account: Account?) -> TracksUser? {
+        guard let account = account else {
+            return nil
+        }
+        return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
     }
 }
 

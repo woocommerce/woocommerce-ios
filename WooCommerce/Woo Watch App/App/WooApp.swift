@@ -43,6 +43,9 @@ struct Woo_Watch_AppApp: App {
             }
             .environmentObject(tracksProvider)
             .task {
+                // Create the crash logging stack with the known account to properly identify crashes
+                delegate.crashLoggingStack = WatchCrashLoggingStack(account: phoneDependencySynchronizer.dependencies?.account)
+
                 // For some reason I can't use the bindings directly from our AppDelegate.
                 // We need to store them in this type assign them to the delegate for further modification.
                 delegate.appBindings = appBindings

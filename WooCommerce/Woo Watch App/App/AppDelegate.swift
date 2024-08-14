@@ -18,8 +18,9 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     var appBindings: AppBindings = AppBindings()
 
     /// Handles and configures the crash logging system.
+    /// This type should be assigned from the main WooApp file.
     ///
-    let crashLoggingStack = WatchCrashLoggingStack()
+    var crashLoggingStack: WatchCrashLoggingStack?
 
     /// Setup code after the app finishes launching
     ///
@@ -50,7 +51,7 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// Perform the necessary updates when dependencies are updated.
     ///
     func onUpdateDependencies(dependencies: WatchDependencies?) {
-        crashLoggingStack.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true, account: dependencies?.account)
+        crashLoggingStack?.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true, account: dependencies?.account)
     }
 }
 

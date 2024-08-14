@@ -543,7 +543,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func accountStatusAllowedForCardPresentPayments(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .complete ||
         account.wcpayStatus == .enabled ||
-        account.wcpayStatus == .restrictedSoon
+        account.wcpayStatus == .restrictedSoon ||
+        account.wcpayStatus == .pendingVerification
     }
 
     func isNetworkError(_ error: Error) -> Bool {

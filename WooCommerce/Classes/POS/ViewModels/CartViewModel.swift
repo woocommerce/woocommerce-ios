@@ -32,8 +32,7 @@ final class CartViewModel: CartViewModelProtocol {
         itemsInCart.append(cartItem)
         
         let posAnalyticsProvider = PointOfSaleTracksProvider()
-        let posAnalytics = PointOfSaleAnalytics(userHasOptedIn: true,
-                                                analyticsProvider: posAnalyticsProvider)
+        let posAnalytics = PointOfSaleAnalytics(analyticsProvider: posAnalyticsProvider)
         
         posAnalytics.track("test_item_added_to_cart", properties: [:], error: nil)
     }

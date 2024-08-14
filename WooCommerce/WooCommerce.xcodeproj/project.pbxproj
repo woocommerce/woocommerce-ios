@@ -2573,6 +2573,7 @@
 		DE7E5E8F2B4FD8D2002E28D2 /* BlazeTargetTopicPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E8E2B4FD8D2002E28D2 /* BlazeTargetTopicPickerView.swift */; };
 		DE7E5E912B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E902B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift */; };
 		DE7E5E932B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */; };
+		DE8311C02C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */; };
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
@@ -5573,6 +5574,7 @@
 		DE7E5E8E2B4FD8D2002E28D2 /* BlazeTargetTopicPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerView.swift; sourceTree = "<group>"; };
 		DE7E5E902B4FD8F0002E28D2 /* BlazeTargetTopicPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerViewModel.swift; sourceTree = "<group>"; };
 		DE7E5E922B4FECCA002E28D2 /* BlazeTargetTopicPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeTargetTopicPickerViewModelTests.swift; sourceTree = "<group>"; };
+		DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListItemCustomizationsTests.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -10193,6 +10195,7 @@
 				026D4653295D79230037F59A /* CountryCode+FlagEmojiTests.swift */,
 				EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */,
 				EE8A30462B74F3A8001D7C66 /* OrderAttributionInfo+OriginTests.swift */,
+				DE8311BF2C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -16624,6 +16627,7 @@
 				B9DC770529F2BE200013B191 /* TopProductsFromCachedOrdersProviderTests.swift in Sources */,
 				45A0E4D32566BF2A00D4E8C3 /* LinkedProductsViewModelTests.swift in Sources */,
 				D802547D26551EF2001B2CC1 /* CardPresentModalSuccessTests.swift in Sources */,
+				DE8311C02C6C8D3800A88709 /* BlazeCampaignListItemCustomizationsTests.swift in Sources */,
 				02ECD1E124FF496200735BE5 /* PaginationTrackerTests.swift in Sources */,
 				45E9A6EB24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift in Sources */,
 				268EC46426D3F9C100716F5C /* EditCustomerNoteViewModelTests.swift in Sources */,

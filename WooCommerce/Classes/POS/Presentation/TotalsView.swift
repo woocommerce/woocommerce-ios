@@ -256,7 +256,7 @@ private extension TotalsView {
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
         static let newOrderButtonPadding: CGFloat = 22
-        static let newOrderButtonFont: Font = Font.posBody.bold()
+        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
         static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField

@@ -59,11 +59,11 @@ final class SessionManager: SessionManagerProtocol {
             guard let storeID = self.defaultStoreID, let credentials = self.loadCredentials() else {
                 return nil
             }
-            return WatchDependencies(storeID: storeID, 
+            return WatchDependencies(storeID: storeID,
                                      storeName: defaultSite?.name ?? "",
                                      currencySettings: ServiceLocator.currencySettings,
                                      credentials: credentials,
-                                     enablesCrashReports: defaults[.userOptedInCrashLogging] ?? true, 
+                                     enablesCrashReports: defaults[.userOptedInCrashLogging] ?? true,
                                      account: defaultAccount)
         }()
 

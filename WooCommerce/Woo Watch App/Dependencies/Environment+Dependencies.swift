@@ -23,7 +23,7 @@ extension WatchDependencies {
     ///
     static func fake() -> Self {
         .init(storeID: .zero,
-              storeName: "", 
+              storeName: "",
               currencySettings: CurrencySettings(),
               credentials: .init(authToken: ""),
               enablesCrashReports: true,

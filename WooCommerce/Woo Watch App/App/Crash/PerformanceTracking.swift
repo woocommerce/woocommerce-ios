@@ -12,7 +12,7 @@ public enum PerformanceTracking {
 
     /// Describe the configuration of the performance tracking functionality.
     ///
-    /// – SeeAlso: 
+    /// – SeeAlso:
     /// The [Sentry docs](https://docs.sentry.io/platforms/apple/guides/ios/performance/instrumentation/automatic-instrumentation/#uiviewcontroller-tracking).
     public struct Configuration {
         /// This parameter allows clients to change the sample rate at runtime.

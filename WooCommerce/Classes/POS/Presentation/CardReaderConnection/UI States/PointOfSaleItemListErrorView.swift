@@ -21,7 +21,7 @@ struct PointOfSaleItemListErrorView: View {
             Text(error.subtitle)
                 .foregroundStyle(Color.posPrimaryTexti3)
                 .font(.posBody)
-                .padding([.leading, .trailing])
+                .padding([.leading, .trailing, .bottom])
             Button(action: {
                 onRetry?()
             }, label: {

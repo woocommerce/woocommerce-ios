@@ -273,11 +273,9 @@ private struct CollapsibleProductRowCard: View {
                         .foregroundColor(Color(.error))
                     }
                     .frame(minHeight: Layout.rowMinHeight)
-                    .overlay {
-                        TooltipView(toolTipTitle: Localization.discountTooltipTitle,
-                                    toolTipDescription: Localization.discountTooltipDescription, offset: nil)
-                        .renderedIf(shouldShowInfoTooltip)
-                    }
+                    .tooltip(isPresented: $shouldShowInfoTooltip,
+                             toolTipTitle: Localization.discountTooltipTitle,
+                             toolTipDescription: Localization.discountTooltipDescription)
                 }
             }
         })

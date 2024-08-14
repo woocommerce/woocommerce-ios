@@ -76,7 +76,11 @@ private extension AddOrderComponentsSection {
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")
-        .modifier(CouponTooltip(isPresented: $shouldShowCouponsInfoTooltip))
+        .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
+                 toolTipTitle: Localization.couponsTooltipTitle,
+                 toolTipDescription: Localization.couponsTooltipDescription,
+                 offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                 safeAreaInsets: EdgeInsets())
         .sheet(isPresented: $shouldShowAddCouponLineDetails) {
             NavigationView {
                 CouponListView(siteID: viewModel.siteID,
@@ -106,47 +110,6 @@ private extension AddOrderComponentsSection {
                     }),
                           secondaryButton: .cancel())
                 })
-            }
-        }
-    }
-
-    /// Modifier to display the coupon tooltip as a popover or overlay, depending on the available support.
-    ///
-    struct CouponTooltip: ViewModifier {
-        /// Indicates if the coupon tooltip should be shown or not.
-        ///
-        @Binding var isPresented: Bool
-
-        @ScaledMetric private var scale: CGFloat = 1.0
-
-        func body(content: Content) -> some View {
-            if #available(iOS 16.4, *) {
-                content
-                    .popover(isPresented: $isPresented) {
-                        VStack(alignment: .leading) {
-                            Text(Localization.couponsTooltipTitle)
-                                .font(.body)
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                            Text(Localization.couponsTooltipDescription)
-                                .font(.body)
-                                .multilineTextAlignment(.leading)
-                                .lineLimit(nil)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(.gray)
-                        }
-                        .padding()
-                        .presentationCompactAdaptation(.popover)
-                    }
-            } else {
-                content
-                    .overlay {
-                        TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
-                                    toolTipDescription: Localization.couponsTooltipDescription,
-                                    offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
-                                    safeAreaInsets: EdgeInsets())
-                        .padding()
-                    }
             }
         }
     }

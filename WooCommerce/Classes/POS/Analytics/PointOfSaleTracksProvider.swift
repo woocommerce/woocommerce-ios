@@ -6,7 +6,9 @@ public class PointOfSaleTracksProvider: NSObject, AnalyticsProvider {
     private static let contextManager: TracksContextManager = TracksContextManager()
     
     private static let tracksService: TracksService = {
-        let tracksService = TracksService(contextManager: contextManager)!
+        guard let tracksService = TracksService(contextManager: contextManager) else {
+            fatalError("Failed to create TracksService instance", file: #file, line: #line)
+        }
         tracksService.eventNamePrefix = "woocommerceios_pos"
         return tracksService
     }()
@@ -14,7 +16,9 @@ public class PointOfSaleTracksProvider: NSObject, AnalyticsProvider {
 
 public extension PointOfSaleTracksProvider {
     func refreshUserData() {
-        // Not implemented
+        // Not implemented.
+        // We need to track merchant switches between opted in and opted out as anonymous users
+        // also other metadata based on specific stores might be necessary
     }
 
     func track(_ eventName: String) {
@@ -22,16 +26,16 @@ public extension PointOfSaleTracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        // Properties not implemented
+        // TODO: Properties not implemented
         Self.tracksService.trackEventName(eventName)
         DDLogInfo("🔵 Tracked \(eventName)")
     }
 
     func clearEvents() {
-        // Not implemented
+        Self.tracksService.clearQueuedEvents()
     }
 
     func clearUsers() {
-        // Not implemented
+        // TODO: Not implemented
     }
 }

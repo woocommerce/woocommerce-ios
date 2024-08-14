@@ -141,6 +141,7 @@ public extension BlazeCampaignListItem {
         case rejected
         case canceled
         case finished
+        case suspended
         case unknown
     }
 

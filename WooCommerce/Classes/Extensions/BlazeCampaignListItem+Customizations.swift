@@ -17,6 +17,8 @@ extension BlazeCampaignListItem.Status {
             return Localization.canceled
         case .finished:
             return Localization.completed
+        case .suspended:
+            return Localization.suspended
         case .unknown:
             return Localization.unknown
         }
@@ -28,7 +30,7 @@ extension BlazeCampaignListItem.Status {
             return .withColorStudio(name: .green, shade: .shade60)
         case .scheduled, .finished:
             return .withColorStudio(name: .blue, shade: .shade80)
-        case .canceled, .rejected:
+        case .canceled, .rejected, .suspended:
             return .withColorStudio(name: .red, shade: .shade60)
         case .pending:
             return .withColorStudio(name: .yellow, shade: .shade70)
@@ -43,7 +45,7 @@ extension BlazeCampaignListItem.Status {
             return .withColorStudio(name: .green, shade: .shade5)
         case .scheduled, .finished:
             return .withColorStudio(name: .blue, shade: .shade5)
-        case .canceled, .rejected:
+        case .canceled, .rejected, .suspended:
             return .withColorStudio(name: .red, shade: .shade5)
         case .pending:
             return .withColorStudio(name: .yellow, shade: .shade5)
@@ -76,6 +78,10 @@ extension BlazeCampaignListItem.Status {
         static let completed = NSLocalizedString("blazeCampaignListItem.status.completed",
                                                  value: "Completed",
                                                  comment: "Status name of a completed Blaze campaign"
+        )
+        static let suspended = NSLocalizedString("blazeCampaignListItem.status.suspended",
+                                                 value: "Suspended",
+                                                 comment: "Status name of a suspended Blaze campaign"
         )
         static let unknown = NSLocalizedString("blazeCampaignListItem.status.unknown",
                                                value: "Unknown",

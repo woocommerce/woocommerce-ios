@@ -273,9 +273,6 @@ private struct CollapsibleProductRowCard: View {
                         .foregroundColor(Color(.error))
                     }
                     .frame(minHeight: Layout.rowMinHeight)
-                    .tooltip(isPresented: $shouldShowInfoTooltip,
-                             toolTipTitle: Localization.discountTooltipTitle,
-                             toolTipDescription: Localization.discountTooltipDescription)
                 }
             }
         })
@@ -379,6 +376,9 @@ private extension CollapsibleProductRowCard {
                     Image(systemName: "questionmark.circle")
                         .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 }
+                .tooltip(isPresented: $shouldShowInfoTooltip,
+                         toolTipTitle: Localization.discountTooltipTitle,
+                         toolTipDescription: Localization.discountTooltipDescription)
             }
             .renderedIf(shouldDisallowDiscounts)
         }

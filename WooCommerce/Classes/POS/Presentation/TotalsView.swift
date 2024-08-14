@@ -24,13 +24,22 @@ struct TotalsView: View {
             switch totalsViewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    Spacer()
+                    ZStack {
+                        Spacer()
+                    }
+                    .background(cardReaderViewLayout.backgroundColor)
+                    .if(cardReaderViewLayout.topPadding != nil) {
+                        $0.frame(height: cardReaderViewLayout.topPadding)
+                    }
+
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if totalsViewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding()
+                                .padding([.top, .leading, .trailing])
+                                .padding(.bottom, cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
+                                .background(cardReaderViewLayout.backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -65,6 +74,22 @@ struct TotalsView: View {
         default:
             .clear
         }
+    }
+
+    private var cardReaderViewLayout: CardReaderViewLayout {
+        guard totalsViewModel.isShowingCardReaderStatus else {
+            return .primary
+        }
+
+        if totalsViewModel.paymentState == .validatingOrderError {
+            return .dark
+        }
+
+        if totalsViewModel.connectionStatus == .disconnected {
+            return .dark
+        }
+
+        return .primary
     }
 }
 
@@ -288,6 +313,26 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
+    }
+}
+
+private extension TotalsView {
+    struct CardReaderViewLayout {
+        let backgroundColor: Color
+        let topPadding: CGFloat?
+        let bottomPadding: CGFloat?
+
+        static let primary = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: nil,
+            bottomPadding: 8
+        )
+
+        static let dark = CardReaderViewLayout(
+            backgroundColor: Color(.quaternarySystemFill),
+            topPadding: 40,
+            bottomPadding: 40
+        )
     }
 }
 

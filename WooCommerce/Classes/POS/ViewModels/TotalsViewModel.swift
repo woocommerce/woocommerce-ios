@@ -355,6 +355,12 @@ private extension TotalsViewModel {
         case .paymentErrorNonRetryable(var viewModel):
             viewModel.updateTryAnotherPaymentMethodAction(cancelThenCollectPayment)
             return .paymentErrorNonRetryable(viewModel: viewModel)
+        case .paymentError(var viewModel):
+            guard let _ = viewModel.backToCheckoutButtonViewModel else {
+                return messageType
+            }
+            viewModel.updateBackToCheckoutAction(cancelThenCollectPayment)
+            return .paymentError(viewModel: viewModel)
         default:
             return messageType
         }

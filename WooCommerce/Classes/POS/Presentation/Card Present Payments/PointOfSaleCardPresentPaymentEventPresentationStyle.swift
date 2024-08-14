@@ -149,7 +149,8 @@ extension CardPresentPaymentEventDetails {
                     return .message(.paymentError(
                         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                             error: error,
-                            tryPaymentAgainButtonAction: retryAction)))
+                            tryPaymentAgainButtonAction: retryAction,
+                            backToCheckoutButtonAction: cancelPayment)))
                 case .dontRetry:
                     return .message(.paymentErrorNonRetryable(
                         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(

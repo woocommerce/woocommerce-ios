@@ -5,14 +5,18 @@ struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
     let title = Localization.title
     let message: String
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel
-    let exitButtonViewModel: CardPresentPaymentsModalButtonViewModel?
+    private(set) var backToCheckoutButtonViewModel: CardPresentPaymentsModalButtonViewModel?
 
     init(error: Error,
-         tryPaymentAgainButtonAction: @escaping () -> Void) {
+         tryPaymentAgainButtonAction: @escaping () -> Void,
+         backToCheckoutButtonAction: @escaping () -> Void) {
         self.init(error: error,
                   tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel(
-            title: Localization.tryPaymentAgain,
-            actionHandler: tryPaymentAgainButtonAction))
+                    title: Localization.tryPaymentAgain,
+                    actionHandler: tryPaymentAgainButtonAction),
+                  backToCheckoutButtonViewModel: CardPresentPaymentsModalButtonViewModel(
+                    title: Localization.backToCheckout,
+                    actionHandler: backToCheckoutButtonAction))
     }
 
     init(error: Error,
@@ -20,16 +24,16 @@ struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
         self.init(error: error,
                   tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel(
                     title: Localization.tryAnotherPaymentMethod,
-                    actionHandler: tryAnotherPaymentMethodButtonAction))
+                    actionHandler: tryAnotherPaymentMethodButtonAction),
+                  backToCheckoutButtonViewModel: nil)
     }
 
     private init(error: Error,
-                 tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel) {
+                 tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel,
+                 backToCheckoutButtonViewModel: CardPresentPaymentsModalButtonViewModel?) {
         self.message = Self.message(for: error)
         self.tryAgainButtonViewModel = tryAgainButtonViewModel
-        self.exitButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.exitOrder,
-            actionHandler: { })
+        self.backToCheckoutButtonViewModel = backToCheckoutButtonViewModel
     }
 
     private static func message(for error: Error) -> String {
@@ -38,6 +42,12 @@ struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
         } else {
             return error.localizedDescription
         }
+    }
+
+    mutating func updateBackToCheckoutAction(_ newAction: @escaping () -> Void) {
+        backToCheckoutButtonViewModel = CardPresentPaymentsModalButtonViewModel(
+            title: Localization.backToCheckout,
+            actionHandler: newAction)
     }
 }
 
@@ -63,9 +73,9 @@ private extension PointOfSaleCardPresentPaymentErrorMessageViewModel {
             "payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work."
         )
 
-        static let exitOrder =  NSLocalizedString(
-            "pointOfSale.cardPresent.paymentError.exitOrder.button.title",
-            value: "Exit order",
+        static let backToCheckout =  NSLocalizedString(
+            "pointOfSale.cardPresent.paymentError.backToCheckout.button.title",
+            value: "Go back to checkout",
             comment: "Button to leave the order when a card payment fails. Presented to users after " +
             "collecting a payment fails on the Point of Sale Checkout"
         )

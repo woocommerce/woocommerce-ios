@@ -30,6 +30,12 @@ final class CartViewModel: CartViewModelProtocol {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
+        
+        let posAnalyticsProvider = PointOfSaleTracksProvider()
+        let posAnalytics = PointOfSaleAnalytics(userHasOptedIn: true,
+                                                analyticsProvider: posAnalyticsProvider)
+        
+        posAnalytics.track("test_item_added_to_cart", properties: [:], error: nil)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {

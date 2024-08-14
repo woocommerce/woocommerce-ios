@@ -3,11 +3,7 @@ import SwiftUI
 struct PointOfSaleItemListEmptyView: View {
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            Text(Localization.productTitle)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, PointOfSaleItemListErrorLayout.headerPadding)
-                .font(.posTitle)
-                .foregroundColor(Color.posPrimaryTexti3)
+            POSHeaderTitleView(foregroundColor: .posIconGrayi3)
             Spacer()
             Image(systemName: Constants.iconSystemName)
                 .resizable()
@@ -38,11 +34,6 @@ private extension PointOfSaleItemListEmptyView {
         static let iconSize: CGFloat = 100
     }
     enum Localization {
-        static let productTitle = NSLocalizedString(
-            "pos.pointOfSaleItemListEmptyView.productTitle",
-            value: "Products",
-            comment: "Title for the Point of Sale screen"
-        )
         static let emptyProductsTitle = NSLocalizedString(
             "pos.pointOfSaleItemListEmptyView.emptyProductsTitle",
             value: "No supported products found",

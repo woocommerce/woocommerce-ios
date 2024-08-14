@@ -14,21 +14,20 @@ struct ItemListView: View {
         VStack {
             headerView
             switch viewModel.state {
-            case .empty(let emptyModel):
-                emptyView(emptyModel)
+            case .empty, .error:
+                // These cases are handled directly in the dashboard, we do not render
+                // a specific view within the ItemListView to handle them
+                EmptyView()
             case .loading:
                 /// TODO: handle pull to refresh
                 listView(viewModel.items)
             case .loaded(let items):
                 listView(items)
-            case .error(let errorModel):
-                errorView(errorModel)
             }
         }
         .refreshable {
             await viewModel.reload()
         }
-        .padding(.horizontal, Constants.itemListPadding)
         .background(Color.posBackgroundGreyi3)
     }
 }
@@ -40,7 +39,7 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                headerTextView
+                POSHeaderTitleView()
                 if !viewModel.shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
@@ -106,32 +105,6 @@ private extension ItemListView {
         }
     }
 
-    var headerTextView: some View {
-        Text(Localization.productSelectorTitle)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Constants.headerPadding)
-            .font(Constants.titleFont)
-            .foregroundColor(Color.posPrimaryTexti3)
-    }
-
-    @ViewBuilder
-    func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Text(content.subtitle)
-            Button(action: {
-                // TODO:
-                // Redirect the merchant to the app in order to create a new product
-                // https://github.com/woocommerce/woocommerce-ios/issues/13297
-            }, label: {
-                Text(content.buttonText)}
-            )
-            Text(content.hint)
-            Spacer()
-        }
-    }
-
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
@@ -145,22 +118,7 @@ private extension ItemListView {
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
-        }
-    }
-
-    @ViewBuilder
-    func errorView(_ content: ItemListViewModel.ErrorModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Button(action: {
-                Task {
-                    await viewModel.populatePointOfSaleItems()
-                }
-            }, label: {
-                Text(content.buttonText)
-            })
-            Spacer()
+            .padding(.horizontal, Constants.itemListPadding)
         }
     }
 }
@@ -169,7 +127,6 @@ private extension ItemListView {
 ///
 private extension ItemListView {
     enum Constants {
-        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
         static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
         static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
         static let bannerHeight: CGFloat = 164
@@ -180,16 +137,10 @@ private extension ItemListView {
         static let bannerInfoIconSize: CGFloat = 44
         static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 26
-        static let headerPadding: CGFloat = 8
         static let itemListPadding: CGFloat = 16
     }
 
     enum Localization {
-        static let productSelectorTitle = NSLocalizedString(
-            "pos.itemlistview.productSelectorTitle",
-            value: "Products",
-            comment: "Title of the Point of Sale product selector"
-        )
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBannerTitle",
             value: "Showing simple products only",

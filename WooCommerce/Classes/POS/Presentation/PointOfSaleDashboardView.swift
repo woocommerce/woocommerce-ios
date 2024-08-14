@@ -27,15 +27,24 @@ struct PointOfSaleDashboardView: View {
             if viewModel.isInitialLoading {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
+            } else if viewModel.isError {
+                let errorContents = viewModel.itemListViewModel.state.hasError
+                PointOfSaleItemListErrorView(error: errorContents, onRetry: {
+                    Task {
+                        await viewModel.itemListViewModel.reload()
+                    }
+                })
+            } else if viewModel.isEmpty {
+                PointOfSaleItemListEmptyView()
             } else {
                 contentView
                     .transition(.push(from: .top))
-
-                POSFloatingControlView(viewModel: viewModel)
-                    .shadow(color: Color.black.opacity(0.08), radius: 4)
-                    .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                    .trackSize(size: $floatingSize)
             }
+            POSFloatingControlView(viewModel: viewModel)
+                .shadow(color: Color.black.opacity(0.08), radius: 4)
+                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                .trackSize(size: $floatingSize)
+                .renderedIf(!viewModel.isInitialLoading)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,

@@ -307,7 +307,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     func test_isInitialLoading_when_item_list_empty_then_false() {
         // Given
         mockItemListViewModel.items = []
-        mockItemListViewModel.state = .empty(.init(title: "", subtitle: "", hint: "", buttonText: ""))
+        mockItemListViewModel.state = .empty
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)

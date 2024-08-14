@@ -43,8 +43,10 @@ extension WordPressMediaLibraryPickerDataSource {
 ///
 final class WordPressMediaLibraryPickerDataSource: NSObject {
     private let siteID: Int64
+    private let productID: Int64?
     private let imagesOnly: Bool
     private let syncingCoordinator: SyncingCoordinator
+    private let stores: StoresManager
 
     /// Called when the media data have changed from outside of `loadData` calls. For example, this is called when the media data for the next page return.
     private var onDataChange: WPMediaChangesBlock?
@@ -53,9 +55,19 @@ final class WordPressMediaLibraryPickerDataSource: NSObject {
 
     private lazy var mediaGroup: WPMediaGroup = MediaGroup(mediaItems: mediaItems)
 
-    init(siteID: Int64, imagesOnly: Bool) {
+    /// Initializer
+    /// - Parameters:
+    ///   - siteID: site to fetch media from
+    ///   - productID: If non-nil loads only media attached to this product ID
+    ///   - imagesOnly: load only images if `true`
+    init(siteID: Int64,
+         productID: Int64? = nil,
+         imagesOnly: Bool,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
+        self.productID = productID
         self.imagesOnly = imagesOnly
+        self.stores = stores
         mediaItems = []
         syncingCoordinator = SyncingCoordinator(pageSize: Constants.numberOfItemsPerPage)
         super.init()
@@ -165,6 +177,7 @@ extension WordPressMediaLibraryPickerDataSource: SyncingCoordinatorDelegate {
 private extension WordPressMediaLibraryPickerDataSource {
     func retrieveMedia(pageNumber: Int, pageSize: Int, completion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
         let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                      productID: productID,
                                                       imagesOnly: imagesOnly,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize) { result in
@@ -175,7 +188,7 @@ private extension WordPressMediaLibraryPickerDataSource {
                 completion([], error)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Appends the new media items to the existing media items.

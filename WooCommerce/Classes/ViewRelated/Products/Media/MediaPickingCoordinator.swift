@@ -2,13 +2,19 @@ import UIKit
 import protocol WooFoundation.Analytics
 
 /// The source of the media to pick from.
-enum MediaPickingSource {
+enum MediaPickingSource: Hashable, Identifiable {
+    var id: Self {
+        return self
+    }
+
     /// Device camera.
     case camera
     /// Device photo library.
     case photoLibrary
     /// Site's media library.
     case siteMediaLibrary
+    /// Media attached to given product.
+    case productMedia(productID: Int64)
 }
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.
@@ -91,6 +97,9 @@ final class MediaPickingCoordinator {
             showDeviceMediaLibraryPicker(origin: origin)
         case .siteMediaLibrary:
             showSiteMediaPicker(origin: origin)
+        case .productMedia(let productID):
+            showSiteMediaPicker(origin: origin,
+                                productID: productID)
         }
     }
 }
@@ -138,20 +147,24 @@ private extension MediaPickingCoordinator {
         deviceMediaLibraryPicker.presentPicker(origin: origin)
     }
 
-    func showSiteMediaPicker(origin: UIViewController) {
-        wpMediaLibraryPicker.start(from: origin)
+    func showSiteMediaPicker(origin: UIViewController,
+                             productID: Int64? = nil) {
+        wpMediaLibraryPicker.start(from: origin,
+                                   productID: productID)
     }
 }
 
 private extension MediaPickingSource {
     var analyticsValue: String {
         switch self {
-            case .camera:
-                return "camera"
-            case .photoLibrary:
-                return "device"
-            case .siteMediaLibrary:
-                return "wpmedia"
+        case .camera:
+            return "camera"
+        case .photoLibrary:
+            return "device"
+        case .siteMediaLibrary:
+            return "wpmedia"
+        case .productMedia:
+            return "product_media"
         }
     }
 }

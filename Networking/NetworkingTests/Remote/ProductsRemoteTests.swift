@@ -688,23 +688,6 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertFalse(queryParameters.contains(emptyParam), "Unexpected empty query param: \(emptyParam)")
     }
 
-    func test_create_template_product_returns_product_id() throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
-
-        // When
-        let result = waitFor { promise in
-            remote.createTemplateProduct(for: self.sampleSiteID, template: .physical) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let productID = try XCTUnwrap(result.get())
-        XCTAssertEqual(productID, 3946)
-    }
-
     // MARK: - `loadNumberOfProducts`
 
     func test_loadNumberOfProducts_returns_sum_of_all_product_types() async throws {

@@ -208,7 +208,9 @@ extension Networking.BlazeCampaignListItem {
         spentBudget: CopiableProp<Double> = .copy,
         budgetMode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
         budgetAmount: CopiableProp<Double> = .copy,
-        budgetCurrency: CopiableProp<String> = .copy
+        budgetCurrency: CopiableProp<String> = .copy,
+        isEvergreen: CopiableProp<Bool> = .copy,
+        durationDays: CopiableProp<Int64> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -225,6 +227,8 @@ extension Networking.BlazeCampaignListItem {
         let budgetMode = budgetMode ?? self.budgetMode
         let budgetAmount = budgetAmount ?? self.budgetAmount
         let budgetCurrency = budgetCurrency ?? self.budgetCurrency
+        let isEvergreen = isEvergreen ?? self.isEvergreen
+        let durationDays = durationDays ?? self.durationDays
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -241,7 +245,9 @@ extension Networking.BlazeCampaignListItem {
             spentBudget: spentBudget,
             budgetMode: budgetMode,
             budgetAmount: budgetAmount,
-            budgetCurrency: budgetCurrency
+            budgetCurrency: budgetCurrency,
+            isEvergreen: isEvergreen,
+            durationDays: durationDays
         )
     }
 }
@@ -537,6 +543,7 @@ extension Networking.CreateBlazeCampaign {
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
         budget: CopiableProp<BlazeCampaignBudget> = .copy,
+        isEvergreen: CopiableProp<Bool> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -553,6 +560,7 @@ extension Networking.CreateBlazeCampaign {
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
         let budget = budget ?? self.budget
+        let isEvergreen = isEvergreen ?? self.isEvergreen
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -570,6 +578,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: endDate,
             timeZone: timeZone,
             budget: budget,
+            isEvergreen: isEvergreen,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,

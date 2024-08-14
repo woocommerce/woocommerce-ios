@@ -25,6 +25,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
     @Published var isInitialLoading: Bool = false
+    @Published var isError: Bool = false
+    @Published var isEmpty: Bool = false
     @Published var showExitPOSModal: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
@@ -101,6 +103,7 @@ private extension PointOfSaleDashboardViewModel {
             .map { paymentState, orderState in
                 switch paymentState {
                 case .processingPayment,
+                        .paymentError,
                         .cardPaymentSuccessful:
                     return true
                 case .idle,
@@ -121,6 +124,7 @@ private extension PointOfSaleDashboardViewModel {
                         .acceptingCard,
                         .validatingOrder,
                         .preparingReader,
+                        .paymentError,
                         .cardPaymentSuccessful:
                     return false
                 }
@@ -131,6 +135,7 @@ private extension PointOfSaleDashboardViewModel {
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,
+                        .paymentError,
                         .cardPaymentSuccessful:
                     return true
                 case .idle,
@@ -159,10 +164,22 @@ private extension PointOfSaleDashboardViewModel {
 private extension PointOfSaleDashboardViewModel {
     func observeItemListState() {
         Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
-            .map { state, items -> Bool in
-                return state == .loading && items.isEmpty
+            .sink { [weak self] state, items in
+                guard let self = self else { return }
+
+                self.isInitialLoading = (state == .loading && items.isEmpty)
+
+                switch state {
+                case .error:
+                    self.isError = true
+                case .empty:
+                    self.isEmpty = true
+                default:
+                    self.isError = false
+                    self.isEmpty = false
+                }
             }
-            .assign(to: &$isInitialLoading)
+            .store(in: &cancellables)
     }
 }
 

@@ -7,12 +7,12 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel {
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel?
 
     init(error: Error,
-         tryAgainButtonAction: ( () -> Void)? = nil) {
+         retryApproach: CardPresentPaymentRetryApproach) {
         self.message = Self.message(for: error)
-        if let tryAgainButtonAction = tryAgainButtonAction {
+        if case .tryAgain(let retryAction) = retryApproach {
             self.tryAgainButtonViewModel = CardPresentPaymentsModalButtonViewModel(
                 title: Localization.retry,
-                actionHandler: tryAgainButtonAction)
+                actionHandler: retryAction)
         } else {
             self.tryAgainButtonViewModel = nil
         }

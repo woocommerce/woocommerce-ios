@@ -4,25 +4,20 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center, spacing: Constants.headerSpacing) {
-                successIcon
-                VStack(alignment: .center, spacing: Constants.textSpacing) {
-                    Text(viewModel.title)
-                        .font(.posTitle)
+        VStack(alignment: .center, spacing: Constants.headerSpacing) {
+            successIcon
+            VStack(alignment: .center, spacing: Constants.textSpacing) {
+                Text(viewModel.title)
+                    .font(.posTitle)
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                if let message = viewModel.message {
+                    Text(message)
+                        .font(.posBody)
                         .foregroundStyle(Color.posPrimaryTexti3)
-                        .bold()
-                    if let message = viewModel.message {
-                        Text(message)
-                            .font(.posBody)
-                            .foregroundStyle(Color.posPrimaryTexti3)
-                    }
                 }
             }
-            .multilineTextAlignment(.center)
-            Spacer()
         }
+        .multilineTextAlignment(.center)
     }
 
     private var successIcon: some View {

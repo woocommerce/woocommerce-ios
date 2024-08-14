@@ -8,7 +8,6 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     }
 
     var body: some View {
-
         // TODO: replace temporary inline message UI based on design
         switch messageType {
         case .validatingOrder(let viewModel):

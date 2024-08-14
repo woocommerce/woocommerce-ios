@@ -45,14 +45,11 @@ struct SimplePaymentsSummary: View {
             .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
-
-            // Navigation To Payment Methods
-            LazyNavigationLink(destination: PaymentMethodsView(dismiss: dismiss,
-                                                               rootViewController: rootViewController,
-                                                               viewModel: viewModel.createMethodsViewModel()),
-                               isActive: $viewModel.navigateToPaymentMethods) {
-                EmptyView()
-            }
+        }
+        .navigationDestination(isPresented: $viewModel.navigateToPaymentMethods) {
+            PaymentMethodsView(dismiss: dismiss,
+                               rootViewController: rootViewController,
+                               viewModel: viewModel.createMethodsViewModel())
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)

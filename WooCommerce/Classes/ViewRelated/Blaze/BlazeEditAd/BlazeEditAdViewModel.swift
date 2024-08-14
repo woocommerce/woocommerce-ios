@@ -7,6 +7,7 @@ final class BlazeEditAdViewModel: ObservableObject {
     typealias ImageState = EditableImageViewState
 
     let siteID: Int64
+    let productID: Int64
     private let adData: BlazeEditAdData
 
     // Image selection
@@ -111,11 +112,13 @@ final class BlazeEditAdViewModel: ObservableObject {
     private let analytics: Analytics
 
     init(siteID: Int64,
+         productID: Int64,
          adData: BlazeEditAdData,
          suggestions: [BlazeAISuggestion],
          analytics: Analytics = ServiceLocator.analytics,
          onSave: @escaping (BlazeEditAdData) -> Void) {
         self.siteID = siteID
+        self.productID = productID
 
         self.adData = adData
         self.suggestions = suggestions

@@ -56,7 +56,7 @@ struct InPersonPaymentsMenu: View {
                                 await viewModel.onAppear()
                             }
                         }) {
-                            NavigationView {
+                            NavigationStack {
                                 TapToPaySettingsFlowPresentingView(
                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                     siteID: viewModel.siteID,
@@ -175,15 +175,14 @@ struct InPersonPaymentsMenu: View {
             .navigationDestination(isPresented: $viewModel.shouldShowOnboarding) {
                 CardPresentPaymentsOnboardingView(viewModel: viewModel.onboardingViewModel)
             }
+            .navigationDestination(isPresented: $viewModel.presentSupport) {
+                SupportForm(isPresented: $viewModel.presentSupport,
+                            viewModel: .init())
+            }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
                     .transition(.opacity.animation(.easeInOut))
-                LazyNavigationLink(destination: SupportForm(isPresented: $viewModel.presentSupport,
-                                                            viewModel: .init()),
-                                   isActive: $viewModel.presentSupport) {
-                    EmptyView()
-                }
             }
         }
         .background {

@@ -83,6 +83,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                      tagline: tagline,
                                      description: description)
         return BlazeEditAdViewModel(siteID: siteID,
+                                    productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
                                     onSave: { [weak self] adData in
@@ -224,6 +225,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     private let targetUrn: String
 
+    private var campaignBudgetInfo: BlazeCampaignBudget {
+        // send daily budget for evergreen mode.
+        BlazeCampaignBudget(mode: isEvergreen ? .daily : .total,
+                            amount: isEvergreen ? dailyBudget : dailyBudget * Double(duration),
+                            currency: Constants.defaultCurrency)
+    }
+
     private var campaignInfo: CreateBlazeCampaign {
         CreateBlazeCampaign(origin: Constants.campaignOrigin,
                             originVersion: UserAgent.bundleShortVersion,
@@ -231,9 +239,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             startDate: startDate,
                             endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
                             timeZone: TimeZone.current.identifier,
-                            budget: BlazeCampaignBudget(mode: .total,
-                                                        amount: dailyBudget * Double(duration),
-                                                        currency: Constants.defaultCurrency),
+                            budget: campaignBudgetInfo,
+                            isEvergreen: isEvergreen,
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,

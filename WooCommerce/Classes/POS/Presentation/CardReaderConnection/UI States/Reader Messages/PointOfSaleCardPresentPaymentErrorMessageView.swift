@@ -5,35 +5,47 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            VStack(alignment: .center) {
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.title)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .font(.posBody)
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+            POSErrorXMark()
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+                Text(viewModel.title)
+                    .foregroundStyle(Color.primaryText)
+                    .font(.posTitle)
 
-                    Text(viewModel.message)
-                        .font(.posTitle)
-                        .foregroundStyle(Color.posPrimaryTexti3)
-                        .bold()
-                }
-
-                HStack {
-                    Button(viewModel.tryAgainButtonViewModel.title, action: viewModel.tryAgainButtonViewModel.actionHandler)
-                }
-                .padding()
+                Text(viewModel.message)
+                    .font(.posBody)
+                    .foregroundStyle(Color.primaryText)
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+
+            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+                Button(viewModel.tryAgainButtonViewModel.title,
+                       action: viewModel.tryAgainButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
+
+                if let exitButtonViewModel = viewModel.exitButtonViewModel {
+                    Button(exitButtonViewModel.title,
+                           action: exitButtonViewModel.actionHandler)
+                    .buttonStyle(POSSecondaryButtonStyle())
+                }
+            }
         }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
     }
 }
 
-#Preview {
+#Preview("Generic retry") {
     PointOfSaleCardPresentPaymentErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
                 underlyingError: .paymentDeclinedByCardReader),
-            tryAgainButtonAction: {}))
+            tryPaymentAgainButtonAction: {}))
+}
+
+#Preview("Retry with another payment method") {
+    PointOfSaleCardPresentPaymentErrorMessageView(
+        viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+            error: CardReaderServiceError.paymentCapture(
+                underlyingError: .paymentDeclinedByCardReader),
+            tryAnotherPaymentMethodButtonAction: {}))
 }

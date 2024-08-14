@@ -11,7 +11,7 @@ struct PointOfSaleItemListErrorView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            POSHeaderTitleView()
+            POSHeaderTitleView(foregroundColor: .posIconGrayi3)
             Spacer()
             POSErrorExclamationMark()
             Text(error.title)

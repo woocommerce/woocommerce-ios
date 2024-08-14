@@ -9,8 +9,6 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
 
-    @Environment(\.sizeCategory) var sizeCategory
-
     private let hideAppTabBar: ((Bool) -> Void)
 
     init(itemProvider: POSItemProvider,

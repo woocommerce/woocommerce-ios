@@ -15,7 +15,7 @@ struct TooltipView: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 16.4, *) {
             content
-                .popover(isPresented: $isPresented) {
+                .popover(isPresented: $isPresented, attachmentAnchor: .point(.trailing)) {
                     TooltipPopover(toolTipTitle: toolTipTitle, toolTipDescription: toolTipDescription)
                         .padding()
                 }

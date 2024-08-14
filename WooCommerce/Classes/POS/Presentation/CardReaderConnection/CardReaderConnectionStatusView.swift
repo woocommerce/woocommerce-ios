@@ -38,7 +38,7 @@ struct CardReaderConnectionStatusView: View {
                     connectionViewModel.connectReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color.wooAmberShade60)
+                        circleIcon(with: Color(.wooCommerceAmber(.shade60)))
                         Text("Connect your reader")
                             .foregroundColor(disconnectedFontColor)
                     }

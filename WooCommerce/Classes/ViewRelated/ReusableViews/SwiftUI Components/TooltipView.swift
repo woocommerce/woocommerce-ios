@@ -68,7 +68,7 @@ private struct TooltipPopover: View {
                 .foregroundColor(.gray)
         }
         .padding()
-        .presentationBackground(.black)
+        .presentationBackground(Color(.systemGray5.color(for: UITraitCollection(userInterfaceStyle: .dark))))
         .presentationCompactAdaptation(.popover)
     }
 }

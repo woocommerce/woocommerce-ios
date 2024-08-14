@@ -5,7 +5,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
     let title = Localization.title
     let message: String
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel
-    private(set) var backToCheckoutButtonViewModel: CardPresentPaymentsModalButtonViewModel?
+    let backToCheckoutButtonViewModel: CardPresentPaymentsModalButtonViewModel?
 
     init(error: Error,
          tryPaymentAgainButtonAction: @escaping () -> Void,
@@ -42,12 +42,6 @@ struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
         } else {
             return error.localizedDescription
         }
-    }
-
-    mutating func updateBackToCheckoutAction(_ newAction: @escaping () -> Void) {
-        backToCheckoutButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.backToCheckout,
-            actionHandler: newAction)
     }
 }
 

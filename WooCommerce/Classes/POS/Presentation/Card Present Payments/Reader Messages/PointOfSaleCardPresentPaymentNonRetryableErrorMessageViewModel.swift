@@ -5,7 +5,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel {
     let title = Localization.title
     let message: String
     let nextStep: String = Localization.nextStep
-    private(set) var tryAnotherPaymentMethodButtonViewModel: CardPresentPaymentsModalButtonViewModel
+    let tryAnotherPaymentMethodButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(error: Error, tryAnotherPaymentMethodAction: @escaping () -> Void) {
         self.message = Self.message(for: error)
@@ -20,12 +20,6 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel {
         } else {
             return error.localizedDescription
         }
-    }
-
-    mutating func updateTryAnotherPaymentMethodAction(_ newAction: @escaping () -> Void) {
-        self.tryAnotherPaymentMethodButtonViewModel = CardPresentPaymentsModalButtonViewModel(
-            title: Localization.tryAnotherPaymentMethod,
-            actionHandler: newAction)
     }
 }
 

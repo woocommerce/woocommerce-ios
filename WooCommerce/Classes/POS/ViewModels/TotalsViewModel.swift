@@ -79,6 +79,12 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     private let orderService: POSOrderServiceProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let currencyFormatter: CurrencyFormatter
+    private var paymentEventPresentationStyleDeterminer: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer {
+        PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer(
+            cancelThenCollectPaymentAction: cancelThenCollectPayment,
+            formattedOrderTotalPrice: formattedOrderTotalPrice
+        )
+    }
 
     init(orderService: POSOrderServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
@@ -277,9 +283,10 @@ private extension TotalsViewModel {
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event -> PointOfSaleCardPresentPaymentAlertType? in
+            .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard case let .show(eventDetails) = event,
-                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
+                      case let .alert(alertType) = self?.paymentEventPresentationStyleDeterminer.pointOfSalePresentationStyle(for: eventDetails)
+                else {
                     return nil
                 }
                 return alertType
@@ -290,12 +297,12 @@ private extension TotalsViewModel {
                 self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
-        cardPresentPaymentService.paymentEventPublisher.map { event in
+        cardPresentPaymentService.paymentEventPublisher.map { [weak self] event in
             switch event {
             case .idle:
                 return false
             case .show(let eventDetails):
-                switch eventDetails.pointOfSalePresentationStyle {
+                switch self?.paymentEventPresentationStyleDeterminer.pointOfSalePresentationStyle(for: eventDetails) {
                 case .alert:
                     return true
                 case .message, .none:
@@ -306,7 +313,9 @@ private extension TotalsViewModel {
             }
         }.assign(to: &$showsCardReaderSheet)
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { PaymentState(from: $0) }
+            .compactMap { [weak self] paymentEvent in
+                guard let self else { return nil }
+                return PaymentState(from: paymentEvent, using: paymentEventPresentationStyleDeterminer) }
             .assign(to: &$paymentState)
 
         paymentStatePublisher
@@ -341,29 +350,11 @@ private extension TotalsViewModel {
     /// - Returns: PointOfSaleCardPresentPaymentMessageType
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
         guard case let .show(eventDetails) = event,
-              case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
+              case let .message(messageType) = paymentEventPresentationStyleDeterminer.pointOfSalePresentationStyle(for: eventDetails) else {
             return nil
         }
 
-        switch messageType {
-        case .paymentSuccess(var viewModel):
-            guard let formattedOrderTotalPrice else {
-                return messageType
-            }
-            viewModel.updateMessage(formattedOrderTotal: formattedOrderTotalPrice)
-            return .paymentSuccess(viewModel: viewModel)
-        case .paymentErrorNonRetryable(var viewModel):
-            viewModel.updateTryAnotherPaymentMethodAction(cancelThenCollectPayment)
-            return .paymentErrorNonRetryable(viewModel: viewModel)
-        case .paymentError(var viewModel):
-            guard let _ = viewModel.backToCheckoutButtonViewModel else {
-                return messageType
-            }
-            viewModel.updateBackToCheckoutAction(cancelThenCollectPayment)
-            return .paymentError(viewModel: viewModel)
-        default:
-            return messageType
-        }
+        return messageType
     }
 
     func cancelThenCollectPayment() {
@@ -375,7 +366,8 @@ private extension TotalsViewModel {
 }
 
 private extension TotalsViewModel.PaymentState {
-    init?(from cardPaymentEvent: CardPresentPaymentEvent) {
+    init?(from cardPaymentEvent: CardPresentPaymentEvent,
+          using paymentEventPresentationStyleDeterminer: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer) {
         switch cardPaymentEvent {
         case .idle:
             self = .idle
@@ -390,7 +382,7 @@ private extension TotalsViewModel.PaymentState {
             self = .processingPayment
         case .show(.paymentError):
             if case let .show(eventDetails) = cardPaymentEvent,
-               case let .message(messageType) = eventDetails.pointOfSalePresentationStyle,
+               case let .message(messageType) = paymentEventPresentationStyleDeterminer.pointOfSalePresentationStyle(for: eventDetails),
                case .validatingOrderError = messageType {
                 self = .validatingOrderError
             } else {

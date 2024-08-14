@@ -5,13 +5,14 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case alert(PointOfSaleCardPresentPaymentAlertType)
 }
 
-/// View Models are created here, but can be "annotated" where they are used if the `CardPresentPaymentEventDetails` is
-/// not enough to fully populate the view model. See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
-///
-// TODO: We could make this a struct with a function and the required dependencies to produce full viewModels first time
-extension CardPresentPaymentEventDetails {
-    var pointOfSalePresentationStyle: PointOfSaleCardPresentPaymentEventPresentationStyle? {
-        switch self {
+/// View Models are created in this short-lived factory, so we can provide information beyond what's available from  `CardPresentPaymentEventDetails`
+/// See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
+struct PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer {
+    let cancelThenCollectPaymentAction: () -> Void
+    let formattedOrderTotalPrice: String?
+
+    func pointOfSalePresentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
+        switch eventDetails {
         /// Connection alerts
         case .scanningForReaders(let endSearch):
             return .alert(.scanningForReaders(
@@ -130,8 +131,8 @@ extension CardPresentPaymentEventDetails {
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
         case .paymentSuccess:
-            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
-        case .paymentError(error: let error, retryApproach: let retryApproach, cancelPayment: let cancelPayment):
+            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: formattedOrderTotalPrice)))
+        case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {
             case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,
                 CollectOrderPaymentUseCaseError.orderTotalChanged,
@@ -150,12 +151,12 @@ extension CardPresentPaymentEventDetails {
                         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                             error: error,
                             tryPaymentAgainButtonAction: retryAction,
-                            backToCheckoutButtonAction: cancelPayment)))
+                            backToCheckoutButtonAction: cancelThenCollectPaymentAction)))
                 case .dontRetry:
                     return .message(.paymentErrorNonRetryable(
                         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
                             error: error,
-                            tryAnotherPaymentMethodAction: cancelPayment)))
+                            tryAnotherPaymentMethodAction: cancelThenCollectPaymentAction)))
                 }
             }
         case .paymentCaptureError(let cancelPayment):

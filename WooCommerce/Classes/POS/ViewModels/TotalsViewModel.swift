@@ -404,6 +404,8 @@ private extension TotalsViewModel.PaymentState {
             } else {
                 self = .paymentError
             }
+        case .show(.paymentCaptureError):
+            self = .paymentError
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful
         default:

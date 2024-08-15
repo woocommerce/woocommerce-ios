@@ -361,9 +361,10 @@ private extension TotalsViewModel {
     }
 
     var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies {
-        .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
-                     nonRetryableErrorExitAction: cancelThenCollectPayment,
-                     formattedOrderTotalPrice: formattedOrderTotalPrice)
+        PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+            tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
+            nonRetryableErrorExitAction: cancelThenCollectPayment,
+            formattedOrderTotalPrice: formattedOrderTotalPrice)
     }
 
     func cancelThenCollectPayment() {

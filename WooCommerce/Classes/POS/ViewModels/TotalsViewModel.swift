@@ -280,11 +280,7 @@ private extension TotalsViewModel {
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }
                 guard case let .show(eventDetails) = event,
-                      case let .alert(alertType) = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
-                        for: eventDetails,
-                        dependencies: .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
-                                            nonRetryableErrorExitAction: cancelThenCollectPayment,
-                                            formattedOrderTotalPrice: formattedOrderTotalPrice))
+                      case let .alert(alertType) = presentationStyle(for: eventDetails)
                 else {
                     return nil
                 }
@@ -302,11 +298,7 @@ private extension TotalsViewModel {
             case .idle:
                 return false
             case .show(let eventDetails):
-                let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
-                    for: eventDetails,
-                    dependencies: .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
-                                        nonRetryableErrorExitAction: cancelThenCollectPayment,
-                                        formattedOrderTotalPrice: formattedOrderTotalPrice))
+                let presentationStyle = presentationStyle(for: eventDetails)
                 switch presentationStyle {
                 case .alert:
                     return true
@@ -321,9 +313,7 @@ private extension TotalsViewModel {
             .compactMap { [weak self] paymentEvent in
                 guard let self else { return .none }
                 return PaymentState(from: paymentEvent,
-                                    using: .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
-                                                 nonRetryableErrorExitAction: cancelThenCollectPayment,
-                                                 formattedOrderTotalPrice: formattedOrderTotalPrice)) }
+                                    using: presentationStyleDeterminerDependencies) }
             .assign(to: &$paymentState)
 
         paymentStatePublisher
@@ -358,15 +348,23 @@ private extension TotalsViewModel {
     /// - Returns: PointOfSaleCardPresentPaymentMessageType
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
         guard case let .show(eventDetails) = event,
-              case let .message(messageType) = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
-                for: eventDetails,
-                dependencies: .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
-                                    nonRetryableErrorExitAction: cancelThenCollectPayment,
-                                    formattedOrderTotalPrice: formattedOrderTotalPrice)) else {
+              case let .message(messageType) = presentationStyle(for: eventDetails) else {
             return nil
         }
 
         return messageType
+    }
+
+    func presentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
+        PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+            for: eventDetails,
+            dependencies: presentationStyleDeterminerDependencies)
+    }
+
+    var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies {
+        .init(tryPaymentAgainBackToCheckoutAction: cancelThenCollectPayment,
+                     nonRetryableErrorExitAction: cancelThenCollectPayment,
+                     formattedOrderTotalPrice: formattedOrderTotalPrice)
     }
 
     func cancelThenCollectPayment() {

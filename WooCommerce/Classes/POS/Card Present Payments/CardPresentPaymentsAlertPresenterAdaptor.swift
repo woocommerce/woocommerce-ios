@@ -16,31 +16,20 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
         switch eventDetails {
-        case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _),
-                .paymentErrorNonRetryable(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _):
+        case .paymentError(error: CollectOrderPaymentUseCaseError.orderAlreadyPaid, _, _):
             paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
-        case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment),
-            .paymentErrorNonRetryable(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), let cancelPayment):
+        case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in
                     cancelPayment()
                     self?.paymentEventSubject.send(.idle)
                 })
             ))
-        case .paymentError(let error, let tryAgain, let cancelPayment):
+        case .paymentError(let error, let retryApproach, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentError(
                     error: error,
-                    tryAgain: tryAgain,
-                    cancelPayment: { [weak self] in
-                        // TODO: this should also call CardPresentPaymentFacade.cancelPayment
-                        cancelPayment()
-                        self?.paymentEventSubject.send(.idle)
-                    })))
-        case .paymentErrorNonRetryable(let error, let cancelPayment):
-            paymentEventSubject.send(.show(
-                eventDetails: .paymentErrorNonRetryable(
-                    error: error,
+                    retryApproach: retryApproach,
                     cancelPayment: { [weak self] in
                         // TODO: this should also call CardPresentPaymentFacade.cancelPayment
                         cancelPayment()

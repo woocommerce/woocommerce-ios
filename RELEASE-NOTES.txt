@@ -4,12 +4,18 @@
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
+- [*] Better experience for embedded web view with loading indicator. [https://github.com/woocommerce/woocommerce-ios/pull/13587]
 - [*] Fix: "Report Subscription Issue" button in Subscriptions screen now works consistently. [https://github.com/woocommerce/woocommerce-ios/pull/13577]
 - [*] Payments: fixed issue where site credential login couldn't be used to install plugins, e.g. WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/13582]
 - [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
 - [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 - [*] Help & Support: Systems Status Report option now only shown on logged-in state. [https://github.com/woocommerce/woocommerce-ios/pull/13568]
 - [*] System status report: restored the missing title. [https://github.com/woocommerce/woocommerce-ios/pull/13593]
+- [*] Payments: fixed issue preventing the Try out Tap to Pay on iPhone flow from working [https://github.com/woocommerce/woocommerce-ios/pull/13600]
+- [Internal] Products: Removed template option for product creation. [https://github.com/woocommerce/woocommerce-ios/pull/13594]
+- [Internal] Orders: Fixed "Receipt print button unresponsive after first tap". [https://github.com/woocommerce/woocommerce-ios/pull/13598]
+- [*] Payments: Fixed contact support link from some In Person Payments onboarding screens [https://github.com/woocommerce/woocommerce-ios/pull/13601]
+- [*] Payments: Fixed issue where new WooPayments accounts couldn't be used for In Person Payments while they were pending verification [https://github.com/woocommerce/woocommerce-ios/pull/13610]
 
 19.9
 -----

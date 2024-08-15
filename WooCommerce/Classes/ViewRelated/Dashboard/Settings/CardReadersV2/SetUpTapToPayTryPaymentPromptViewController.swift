@@ -96,21 +96,18 @@ struct SetUpTapToPayPaymentPromptView: View {
                 viewModel.skipTapped()
             })
             .buttonStyle(SecondaryButtonStyle())
+        }
+        .navigationDestination(isPresented: $viewModel.summaryActive) {
             if let summaryViewModel = viewModel.summaryViewModel {
-                LazyNavigationLink(destination: paymentFlow(summaryViewModel: summaryViewModel),
-                                   isActive: $viewModel.summaryActive) {
-                    EmptyView()
-                }
-
-                LazyNavigationLink(destination: ProgressView(),
-                                   isActive: $viewModel.refundInProgress) {
-                    EmptyView()
-                }
-
-                LazyNavigationLink(destination: completedOrder(summaryViewModel: summaryViewModel),
-                                   isActive: $viewModel.shouldShowTrialOrderDetails) {
-                    EmptyView()
-                }
+                paymentFlow(summaryViewModel: summaryViewModel)
+            }
+        }
+        .navigationDestination(isPresented: $viewModel.refundInProgress) {
+            ProgressView()
+        }
+        .navigationDestination(isPresented: $viewModel.shouldShowTrialOrderDetails) {
+            if let summaryViewModel = viewModel.summaryViewModel {
+                completedOrder(summaryViewModel: summaryViewModel)
             }
         }
         .padding()

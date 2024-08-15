@@ -2886,6 +2886,41 @@ final class MigrationTests: XCTestCase {
         let password = try XCTUnwrap(migratedProductEntity.value(forKey: "password") as? String)
         XCTAssertEqual(password, "test", "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_113_to_114_adds_new_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 113")
+        let sourceContext = sourceContainer.viewContext
+
+        let blazeCampaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["isEvergreen"],
+                     "Precondition. Property isEvergreen does not exist.")
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["durationDays"],
+                     "Precondition. Property durationDays does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 114")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCampaignEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool, false, "Confirm property isEvergreen exists and is false by default.")
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "durationDays") as? Int64, 0, "Confirm property durationDays exists and is 0 by default.")
+
+        migratedCampaignEntity.setValue(true, forKey: "isEvergreen")
+        migratedCampaignEntity.setValue(7, forKey: "durationDays")
+        try targetContext.save()
+
+        let isEvergreen = try XCTUnwrap(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool)
+        let durationDays = try XCTUnwrap(migratedCampaignEntity.value(forKey: "durationDays") as? Int64)
+        XCTAssertEqual(isEvergreen, true)
+        XCTAssertEqual(durationDays, 7)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

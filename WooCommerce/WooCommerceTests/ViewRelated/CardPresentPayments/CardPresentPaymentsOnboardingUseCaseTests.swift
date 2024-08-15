@@ -907,6 +907,24 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
+    func test_onboarding_returns_complete_when_account_status_is_pending_verification_using_wcpay_plugin() {
+        // Given
+        let accountStatus: WCPayAccountStatusEnum = .pendingVerification
+
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: accountStatus)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
     func test_onboarding_returns_complete_when_account_status_is_enabled_using_stripe_plugin() {
         // Given
         let accountStatus: WCPayAccountStatusEnum = .enabled

@@ -13,6 +13,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case idle
         case acceptingCard
         case validatingOrder
+        case validatingOrderError
         case preparingReader
         case processingPayment
         case paymentError
@@ -314,6 +315,7 @@ private extension TotalsViewModel {
                 case .idle,
                         .acceptingCard,
                         .validatingOrder,
+                        .validatingOrderError,
                         .preparingReader:
                     return true
                 case .processingPayment,
@@ -370,9 +372,14 @@ private extension TotalsViewModel.PaymentState {
         case .show(.processing),
                 .show(.displayReaderMessage):
             self = .processingPayment
-        case .show(.paymentError),
-                .show(.paymentErrorNonRetryable):
-            self = .paymentError
+        case .show(.paymentError):
+            if case let .show(eventDetails) = cardPaymentEvent,
+               case let .message(messageType) = eventDetails.pointOfSalePresentationStyle,
+               case .validatingOrderError = messageType {
+                self = .validatingOrderError
+            } else {
+                self = .paymentError
+            }
         case .show(.paymentSuccess):
             self = .cardPaymentSuccessful
         default:

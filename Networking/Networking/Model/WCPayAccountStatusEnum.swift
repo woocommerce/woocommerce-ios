@@ -12,6 +12,8 @@ public enum WCPayAccountStatusEnum: Decodable, Hashable, GeneratedFakeable {
     /// though additional information might be required if another payment volume threshold is reached.
     case enabled
 
+    case pendingVerification
+
     /// This state occurs when there is required business information missing from the account.
     /// If `hasOverdueRequirements` is also true, then the deadline for providing that information HAS PASSED and
     /// the merchant will probably NOT be able to collect card present payments.
@@ -65,6 +67,8 @@ extension WCPayAccountStatusEnum: RawRepresentable {
             self = .complete
         case Keys.enabled:
             self = .enabled
+        case Keys.pendingVerification:
+            self = .pendingVerification
         case Keys.restricted:
             self = .restricted
         case Keys.restrictedSoon:
@@ -90,6 +94,7 @@ extension WCPayAccountStatusEnum: RawRepresentable {
         switch self {
         case .complete:               return Keys.complete
         case .enabled:                return Keys.enabled
+        case .pendingVerification:    return Keys.pendingVerification
         case .restricted:             return Keys.restricted
         case .restrictedSoon:         return Keys.restrictedSoon
         case .rejectedFraud:          return Keys.rejectedFraud
@@ -110,6 +115,7 @@ private enum Keys {
     /// The WCPay account has provided enough information to process payments and receive payouts temporarily
     /// but more information will be eventually required to continue processing payments
     static let enabled                = "enabled"
+    static let pendingVerification    = "pending_verification"
     /// The WCPay account is restricted - it is under review or has pending or overdue requirements.
     static let restricted             = "restricted"
     /// The WCPay account has required information missing but it's not restricted yet.

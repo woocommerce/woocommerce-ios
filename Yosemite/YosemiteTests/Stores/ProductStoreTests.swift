@@ -1871,25 +1871,6 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(hasPublishedProducts)
     }
 
-    func test_create_template_product_invokes_correct_network_calls() {
-        // Given
-        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
-        network.simulateResponse(requestUrlSuffix: "products/3946", filename: "product")
-
-        // When
-        let result: Result<Networking.Product, Error> = waitFor { promise in
-            let action = ProductAction.createTemplateProduct(siteID: self.sampleSiteID, template: .physical) { result in
-                promise(result)
-            }
-            productStore.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertNotNil(try? result.get())
-    }
-
     // MARK: - ProductAction.generateProductDescription
 
     func test_generateProductDescription_returns_text_on_success() throws {

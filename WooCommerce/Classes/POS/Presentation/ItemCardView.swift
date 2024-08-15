@@ -57,8 +57,8 @@ private extension ItemCardView {
         static let nilOutline: CGFloat = 0
         static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 32
-        static let itemNameFont: Font = .system(size: 24, weight: .bold, design: .default)
-        static let itemPriceFont: Font = .system(size: 24, weight: .regular, design: .default)
+        static let itemNameFont: POSFontStyle = .posBodyEmphasized
+        static let itemPriceFont: POSFontStyle = .posBodyRegular
     }
 }
 

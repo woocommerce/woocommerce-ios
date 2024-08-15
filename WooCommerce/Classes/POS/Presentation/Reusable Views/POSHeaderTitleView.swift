@@ -7,7 +7,7 @@ struct POSHeaderTitleView: View {
         Text(Localization.productSelectorTitle)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Constants.padding)
-            .font(.posHeaderTitle)
+            .font(.posTitleEmphasized)
             .foregroundColor(foregroundColor)
     }
 }

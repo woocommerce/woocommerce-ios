@@ -35,7 +35,10 @@ tracks_checker.check_tracks_changes(
 
 view_changes_checker.check
 
-pr_size_checker.check_diff_size(max_size: 500)
+pr_size_checker.check_diff_size(
+  max_size: 300,
+  file_selector: ->(path) { !path.include?('Tests/') }
+)
 
 # skip remaining checks if the PR is still a Draft
 if github.pr_draft?

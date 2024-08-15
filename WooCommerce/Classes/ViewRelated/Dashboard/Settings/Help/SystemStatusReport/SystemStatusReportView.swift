@@ -7,9 +7,6 @@ final class SystemStatusReportHostingController: UIHostingController<SystemStatu
     init(siteID: Int64) {
         let viewModel = SystemStatusReportViewModel(siteID: siteID)
         super.init(rootView: SystemStatusReportView(viewModel: viewModel))
-        // The navigation title is set here instead of the SwiftUI view's `navigationTitle`
-        // to avoid the blinking of the title label when pushed from UIKit view.
-        title = NSLocalizedString("System Status Report", comment: "Navigation title of system status report screen")
 
         // Set presenting view controller to show the notice presenter here
         rootView.noticePresenter.presentingViewController = self
@@ -56,6 +53,7 @@ struct SystemStatusReportView: View {
                 }
             }
         }
+        .navigationTitle(Localization.title)
         .alert(isPresented: $showingErrorAlert) {
             Alert(title: Text(Localization.errorTitle),
                   message: Text(Localization.errorMessage),
@@ -86,6 +84,11 @@ struct SystemStatusReportView: View {
 
 private extension SystemStatusReportView {
     enum Localization {
+        static let title = NSLocalizedString(
+            "systemStatusReportView.title",
+            value: "System Status Report",
+            comment: "Navigation title of system status report screen"
+        )
         static let errorTitle = NSLocalizedString(
             "Error fetching report",
             comment: "Title for the error alert when fetching system status report fails"

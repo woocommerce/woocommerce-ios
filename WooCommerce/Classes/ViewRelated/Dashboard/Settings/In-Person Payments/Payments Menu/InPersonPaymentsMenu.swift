@@ -56,7 +56,7 @@ struct InPersonPaymentsMenu: View {
                                 await viewModel.onAppear()
                             }
                         }) {
-                            NavigationView {
+                            NavigationStack {
                                 TapToPaySettingsFlowPresentingView(
                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                     siteID: viewModel.siteID,

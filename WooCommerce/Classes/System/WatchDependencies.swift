@@ -1,13 +1,9 @@
 import Foundation
 
 #if canImport(Networking)
-import enum Networking.Credentials
-import struct Networking.ApplicationPasswordStorage
-import struct Networking.ApplicationPassword
+import Networking
 #elseif canImport(NetworkingWatchOS)
-import enum NetworkingWatchOS.Credentials
-import struct NetworkingWatchOS.ApplicationPasswordStorage
-import struct NetworkingWatchOS.ApplicationPassword
+import NetworkingWatchOS
 #endif
 
 #if canImport(WooFoundation)
@@ -27,6 +23,8 @@ public struct WatchDependencies: Codable, Equatable {
     let currencySettings: CurrencySettings
     let credentials: Credentials
     let applicationPassword: ApplicationPassword?
+    let enablesCrashReports: Bool
+    let account: Account?
 
     /// Uses the provided application password
     ///
@@ -34,26 +32,36 @@ public struct WatchDependencies: Codable, Equatable {
                 storeName: String,
                 currencySettings: CurrencySettings,
                 credentials: Credentials,
-                applicationPassword: ApplicationPassword?) {
+                applicationPassword: ApplicationPassword?,
+                enablesCrashReports: Bool,
+                account: Account?) {
         self.storeID = storeID
         self.storeName = storeName
         self.currencySettings = currencySettings
         self.credentials = credentials
         self.applicationPassword = applicationPassword
+        self.enablesCrashReports = enablesCrashReports
+        self.account = account
 
     }
 
     /// Uses the stored application password
     ///
-    public init(storeID: Int64, storeName: String, currencySettings: CurrencySettings, credentials: Credentials) {
+    public init(storeID: Int64,
+                storeName: String,
+                currencySettings: CurrencySettings,
+                credentials: Credentials,
+                enablesCrashReports: Bool,
+                account: Account?) {
         self.storeID = storeID
         self.storeName = storeName
         self.currencySettings = currencySettings
         self.credentials = credentials
+        self.enablesCrashReports = enablesCrashReports
+        self.account = account
 
         // Always get the stored application password as the application networking classes rely on it.
         // Ideally this should be refactored to live in the credentials object.
         self.applicationPassword = ApplicationPasswordStorage().applicationPassword
-
     }
 }

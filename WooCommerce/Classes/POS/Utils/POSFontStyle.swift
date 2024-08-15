@@ -34,8 +34,8 @@ enum POSFontStyle {
 // MARK: - Helpers
 
 private struct POSScaledFont: ViewModifier {
-    // Declaring sizeCategory ensures it's automatically observed
-    @Environment(\.sizeCategory) var sizeCategory
+    // Declaring dynamicTypeSize ensures it's automatically observed
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     var style: POSFontStyle
 
     func body(content: Content) -> some View {

@@ -159,10 +159,9 @@ final class TotalsViewModelTests: XCTestCase {
         let message = sut.cardPresentPaymentInlineMessage
 
         // Then
-        let expectedViewModel = PointOfSaleCardPresentPaymentSuccessMessageViewModel(message: "A payment of $52.30 was successfully made")
         if case .paymentSuccess(let viewModel) = message {
-            XCTAssertEqual(viewModel.title, expectedViewModel.title)
-            XCTAssertEqual(viewModel.message, expectedViewModel.message)
+            XCTAssertEqual(viewModel.title, "Payment successful")
+            XCTAssertEqual(viewModel.message, "A payment of $52.30 was successfully made")
         } else {
             XCTFail("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
         }

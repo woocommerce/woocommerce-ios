@@ -3,10 +3,16 @@ import struct Yosemite.BlazeCampaignListItem
 
 /// Helpers for displaying campaign details
 extension BlazeCampaignListItem {
+    var isActive: Bool {
+        status == .pending || status == .scheduled || status == .active
+    }
+
     var budgetToDisplay: String {
         guard isEvergreen else {
-            /// For non-evergreen campaigns, display total budget by default
-            return String(format: "$%.0f", totalBudget)
+            /// For non-evergreen campaigns, display remaining budget for active campaigns
+            /// and total budget otherwise.
+            let budget = isActive ? totalBudget - spentBudget : totalBudget
+            return String(format: "$%.0f", budget)
         }
 
         /// For evergreen campaigns, calculate the weekly amount to display.
@@ -15,7 +21,13 @@ extension BlazeCampaignListItem {
     }
 
     var budgetTitle: String {
-        isEvergreen ? Localization.weeklyBudget : Localization.totalBudget
+        if isEvergreen {
+            Localization.weeklyBudget
+        } else if isActive {
+            Localization.remainingBudget
+        } else {
+            Localization.totalBudget
+        }
     }
 
     private enum Localization {
@@ -28,6 +40,11 @@ extension BlazeCampaignListItem {
             "blazeCampaignListItem.totalBudget",
             value: "Total budget",
             comment: "Title of the total budget field of a Blaze campaign with an end date."
+        )
+        static let remainingBudget = NSLocalizedString(
+            "blazeCampaignListItem.remainingBudget",
+            value: "Remaining budget",
+            comment: "Title of the remaining budget field of a Blaze campaign with an end date."
         )
     }
 }

@@ -293,10 +293,10 @@ private extension TotalsView {
         static let subtotalsVerticalSpacing: CGFloat = 8
         static let totalVerticalSpacing: CGFloat = 16
         static let totalsHorizontalSpacing: CGFloat = 24
-        static let subtotalTitleFont: Font = Font.system(size: 24)
-        static let subtotalAmountFont: Font = Font.system(size: 24)
-        static let totalTitleFont: Font = Font.system(.largeTitle, design: .default, weight: .medium)
-        static let totalAmountFont: Font = Font.system(.largeTitle, design: .default, weight: .bold)
+        static let subtotalTitleFont: POSFontStyle = .posBodyRegular
+        static let subtotalAmountFont: POSFontStyle = .posBodyRegular
+        static let totalTitleFont: POSFontStyle = .posTitleRegular
+        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334
@@ -307,7 +307,7 @@ private extension TotalsView {
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
         static let newOrderButtonPadding: CGFloat = 22
-        static let newOrderButtonFont: Font = Font.posBody.bold()
+        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
         static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField

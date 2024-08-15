@@ -127,8 +127,8 @@ private extension ItemListView {
 ///
 private extension ItemListView {
     enum Constants {
-        static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
-        static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
+        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
+        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26

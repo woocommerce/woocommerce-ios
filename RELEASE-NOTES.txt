@@ -16,6 +16,7 @@
 - [Internal] Orders: Fixed "Receipt print button unresponsive after first tap". [https://github.com/woocommerce/woocommerce-ios/pull/13598]
 - [*] Payments: Fixed contact support link from some In Person Payments onboarding screens [https://github.com/woocommerce/woocommerce-ios/pull/13601]
 - [*] Payments: Fixed issue where new WooPayments accounts couldn't be used for In Person Payments while they were pending verification [https://github.com/woocommerce/woocommerce-ios/pull/13610]
+- [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
 
 19.9
 -----

@@ -24,13 +24,17 @@ struct TotalsView: View {
             switch totalsViewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    Spacer()
+                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
+                                 height: cardReaderViewLayout.topPadding)
+
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if totalsViewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding()
+                                .padding([.top, .leading, .trailing])
+                                .padding(.bottom, cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
+                                .background(cardReaderViewLayout.backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -227,6 +231,53 @@ private extension TotalsView {
         case .disconnected:
             PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(viewModel: .init(connectReaderAction: totalsViewModel.connectReaderTapped))
         }
+    }
+}
+
+private extension TotalsView {
+    struct CardReaderViewLayout {
+        let backgroundColor: Color
+        let topPadding: CGFloat?
+        let bottomPadding: CGFloat?
+
+        static let primary = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: nil,
+            bottomPadding: 8
+        )
+
+        static let dark = CardReaderViewLayout(
+            backgroundColor: Color(.quaternarySystemFill),
+            topPadding: 40,
+            bottomPadding: 40
+        )
+    }
+
+    /// Creates a Spacer with backgroundColor and optional fixed height
+    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
+        return ZStack {
+            Spacer()
+        }
+        .background(backgroundColor)
+        .if(height != nil) {
+            $0.frame(height: height)
+        }
+    }
+
+    private var cardReaderViewLayout: CardReaderViewLayout {
+        guard totalsViewModel.isShowingCardReaderStatus else {
+            return .primary
+        }
+
+        if totalsViewModel.paymentState == .validatingOrderError {
+            return .dark
+        }
+
+        if totalsViewModel.connectionStatus == .disconnected {
+            return .dark
+        }
+
+        return .primary
     }
 }
 

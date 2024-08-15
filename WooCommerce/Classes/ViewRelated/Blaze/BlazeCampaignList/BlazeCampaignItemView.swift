@@ -43,8 +43,8 @@ struct BlazeCampaignItemView: View {
                     Text(campaign.name)
                         .font(.subheadline)
                         .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .fixedSize(horizontal: false, vertical: false)
 
                 Spacer()
 

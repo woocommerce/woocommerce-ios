@@ -1003,6 +1003,12 @@
 		26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D62BFBA536002E9620 /* OrdersListView.swift */; };
 		26A280D62B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */; };
 		26A280D72B46027A00ACEE87 /* OrderNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA2BC52AAA1773003B16C2 /* OrderNotificationView.swift */; };
+		26A52EEA2C69AE6B000B1CFB /* CrashLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A52EE92C69AE6B000B1CFB /* CrashLogging.swift */; };
+		26A52EEC2C69B480000B1CFB /* CrashLoggingDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A52EEB2C69B480000B1CFB /* CrashLoggingDataProvider.swift */; };
+		26A52EEE2C69B51D000B1CFB /* PerformanceTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A52EED2C69B51D000B1CFB /* PerformanceTracking.swift */; };
+		26A52EF02C69B8F5000B1CFB /* WatchCrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A52EEF2C69B8F5000B1CFB /* WatchCrashLoggingStack.swift */; };
+		26A52EF12C69B947000B1CFB /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
+		26A52EF22C69BD14000B1CFB /* CrashLoggingStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */; };
 		26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */; };
 		26A630F3253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */; };
 		26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */; };
@@ -4000,6 +4006,10 @@
 		26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoFormatter.swift; sourceTree = "<group>"; };
 		26A0B2D62BFBA536002E9620 /* OrdersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersListView.swift; sourceTree = "<group>"; };
 		26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNotificationViewModelTests.swift; sourceTree = "<group>"; };
+		26A52EE92C69AE6B000B1CFB /* CrashLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLogging.swift; sourceTree = "<group>"; };
+		26A52EEB2C69B480000B1CFB /* CrashLoggingDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashLoggingDataProvider.swift; sourceTree = "<group>"; };
+		26A52EED2C69B51D000B1CFB /* PerformanceTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceTracking.swift; sourceTree = "<group>"; };
+		26A52EEF2C69B8F5000B1CFB /* WatchCrashLoggingStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCrashLoggingStack.swift; sourceTree = "<group>"; };
 		26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCase.swift; sourceTree = "<group>"; };
 		26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCaseTests.swift; sourceTree = "<group>"; };
 		26A630FD253F63C300CBC3B1 /* RefundableOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundableOrderItem.swift; sourceTree = "<group>"; };
@@ -8057,6 +8067,17 @@
 			path = Orders;
 			sourceTree = "<group>";
 		};
+		26A52EE82C69AE1C000B1CFB /* Crash */ = {
+			isa = PBXGroup;
+			children = (
+				26A52EEF2C69B8F5000B1CFB /* WatchCrashLoggingStack.swift */,
+				26A52EEB2C69B480000B1CFB /* CrashLoggingDataProvider.swift */,
+				26A52EED2C69B51D000B1CFB /* PerformanceTracking.swift */,
+				26A52EE92C69AE6B000B1CFB /* CrashLogging.swift */,
+			);
+			path = Crash;
+			sourceTree = "<group>";
+		};
 		26A630F8253F62AD00CBC3B1 /* UseCases */ = {
 			isa = PBXGroup;
 			children = (
@@ -8180,6 +8201,7 @@
 				26CFDED92C029322005ABC31 /* AppDelegate.swift */,
 				26CFDEDB2C02932C005ABC31 /* AppBindings.swift */,
 				261C21542C08D8E20051AF19 /* WatchTracksProvider.swift */,
+				26A52EE82C69AE1C000B1CFB /* Crash */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -14277,6 +14299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26A52EF22C69BD14000B1CFB /* CrashLoggingStack.swift in Sources */,
 				26CFDEE22C029A5A005ABC31 /* PushNotification.swift in Sources */,
 				26CA47222BFD82B900E54348 /* TimeZone+Woo.swift in Sources */,
 				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
@@ -14284,16 +14307,20 @@
 				26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */,
 				26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */,
 				26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */,
+				26A52EF12C69B947000B1CFB /* ApiCredentials.swift in Sources */,
 				262619F12C03AB9600BD733B /* OrderDetailLoader.swift in Sources */,
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
+				26A52EF02C69B8F5000B1CFB /* WatchCrashLoggingStack.swift in Sources */,
 				268631CF2C07D38C00521364 /* WooAnalyticsStat.swift in Sources */,
 				26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */,
 				26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,
+				26A52EEE2C69B51D000B1CFB /* PerformanceTracking.swift in Sources */,
 				26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */,
 				26DD32D42BEBCDFB00F2C69C /* WooConstants.swift in Sources */,
 				269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */,
+				26A52EEA2C69AE6B000B1CFB /* CrashLogging.swift in Sources */,
 				26CA47202BFD823200E54348 /* Date+Woo.swift in Sources */,
 				26B984D62BEECF260052658C /* ConnectView.swift in Sources */,
 				26DD32D62BEBCE3900F2C69C /* UserDefaults+Woo.swift in Sources */,
@@ -14302,6 +14329,7 @@
 				269FFA482BF516BA004E6B86 /* Logging.swift in Sources */,
 				26F81B182BE433A2009EC58E /* WooApp.swift in Sources */,
 				26CA47212BFD82AE00E54348 /* DateFormatter+Helpers.swift in Sources */,
+				26A52EEC2C69B480000B1CFB /* CrashLoggingDataProvider.swift in Sources */,
 				26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
 				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,

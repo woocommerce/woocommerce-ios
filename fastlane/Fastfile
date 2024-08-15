@@ -234,20 +234,27 @@ platform :ios do
       from_branch: DEFAULT_BRANCH,
       to_branch: "release/#{new_version}"
     )
-    # Add ❄️ marker to milestone title to indicate we entered code-freeze
-    set_milestone_frozen_marker(
-      repository: GITHUB_REPO,
-      milestone: new_version
-    )
 
-    # Move PRs to next milestone
-    moved_prs = update_assigned_milestone(
-      repository: GITHUB_REPO,
-      from_milestone: new_version,
-      to_milestone: release_version_next,
-      comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
-    )
-    UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
+    begin
+      # Add ❄️ marker to milestone title to indicate we entered code-freeze
+      set_milestone_frozen_marker(
+        repository: GITHUB_REPO,
+        milestone: new_version
+      )
+
+      # Move PRs to next milestone
+      moved_prs = update_assigned_milestone(
+        repository: GITHUB_REPO,
+        from_milestone: new_version,
+        to_milestone: release_version_next,
+        comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
+      )
+      UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
+    rescue StandardError => e
+      moved_prs = []
+
+      report_milestone_error(error_title: "Error freezing milestone `#{new_version}`: #{e.message}")
+    end
 
     # Annotate the build with the moved PRs
     moved_prs_info = if moved_prs.empty?
@@ -469,15 +476,7 @@ platform :ios do
         milestone: hotfix_version
       )
     rescue StandardError => e
-      error_message = <<-MESSAGE
-        Error closing milestone `#{hotfix_version}`: #{e.message}
-        - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
-        - If this is the first run of the lane, please investigate the error.
-      MESSAGE
-
-      UI.error(error_message)
-
-      buildkite_annotate(style: 'warning', context: 'finalize-hotfix-error-closing-milestone', message: error_message) if is_ci
+      report_milestone_error(error_title: "Error closing milestone `#{hotfix_version}`: #{e.message}")
     end
   end
 
@@ -532,12 +531,13 @@ platform :ios do
 
     create_backmerge_pr(version: version)
 
+    remove_branch_protection(
+      repository: GITHUB_REPO,
+      branch: "release/#{version}"
+    )
+
     # Close milestone
     begin
-      remove_branch_protection(
-        repository: GITHUB_REPO,
-        branch: "release/#{version}"
-      )
       set_milestone_frozen_marker(
         repository: GITHUB_REPO,
         milestone: version,
@@ -548,15 +548,7 @@ platform :ios do
         milestone: version
       )
     rescue StandardError => e
-      error_message = <<-MESSAGE
-        Error removing branch protection or finalizing milestone `#{version}`: #{e.message}
-        - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
-          Just ensure the branch protection for `release/#{version}` is no more and that the milestone `#{version}` is indeed closed.
-        - If this is the first run of the lane, please investigate the error.
-      MESSAGE
-
-      UI.error(error_message)
-      buildkite_annotate(style: 'warning', context: 'finalize-release-error-milestone', message: error_message) if is_ci
+      report_milestone_error(error_title: "Error closing milestone `#{version}`: #{e.message}")
     end
   end
 
@@ -1474,11 +1466,33 @@ def create_backmerge_pr(version:)
     labels: ['Releases'],
     milestone_title: version
   )
+rescue StandardError => e
+  error_message = <<-MESSAGE
+      Error creating backmerge pull request: #{e.message}
+      - If this is a retry of the lane, the backmerge PR for the version `#{version}` might have already been previously created.
+      Please close any previous backmerge PR for `#{version}`, also deleting the merge branch, and then run again the release task.
+  MESSAGE
+
+  UI.user_error!(error_message)
+
+  buildkite_annotate(style: 'error', context: 'error-creating-backmerge', message: error_message) if is_ci
 end
 
 def ensure_git_branch_is_release_branch
   # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
   ensure_git_branch(branch: '^release/')
+end
+
+def report_milestone_error(error_title:)
+  error_message = <<-MESSAGE
+    #{error_title}
+    - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
+    - If this is the first run of the lane, please investigate the error.
+  MESSAGE
+
+  UI.error(error_message)
+
+  buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
 end
 
 def check_pods_references

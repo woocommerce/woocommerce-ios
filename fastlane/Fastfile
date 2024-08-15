@@ -163,25 +163,22 @@ platform :ios do
   ########################################################################
   # Release Lanes
   ########################################################################
-  #####################################################################################
-  # start_code_freeze
-  # -----------------------------------------------------------------------------------
-  # This lane executes the steps planned on code freeze
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane start_code_freeze [skip_confirm:<skip confirm>]
+
+  # This lane executes the steps planned on code freeze, creating a new release branch from the current trunk
   #
-  # Example:
-  # bundle exec fastlane start_code_freeze
-  # bundle exec fastlane start_code_freeze skip_confirm:true
-  #####################################################################################
-  desc 'Creates a new release branch from the current trunk'
-  lane :start_code_freeze do |options|
-    # Verify that there's nothing in progress in the working copy
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane start_code_freeze skip_confirm:true
+  #
+  lane :start_code_freeze do |skip_confirm: false|
     ensure_git_status_clean
 
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
+
+    # Checks if internal dependencies are on a stable version
+    check_pods_references
 
     UI.important <<-MESSAGE
 
@@ -191,13 +188,14 @@ platform :ios do
       • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
 
     MESSAGE
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Create the release branch
+    new_release_branch = "release/#{release_version_next}"
+    ensure_branch_does_not_exist(new_release_branch)
+
     UI.message('Creating release branch...')
-    Fastlane::Helper::GitHelper.create_branch("release/#{release_version_next}", from: DEFAULT_BRANCH)
+    Fastlane::Helper::GitHelper.create_branch(new_release_branch, from: DEFAULT_BRANCH)
     UI.success("Done! New release branch is: #{git_branch}")
 
     # Bump the release version and build code and write it to the `xcconfig` file
@@ -222,9 +220,7 @@ platform :ios do
     )
 
     UI.important('Pushing changes to remote and configuring the release on GitHub')
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     push_to_git_remote(tags: false)
 
@@ -249,12 +245,13 @@ platform :ios do
         to_milestone: release_version_next,
         comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
       )
-      UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
     rescue StandardError => e
       moved_prs = []
 
       report_milestone_error(error_title: "Error freezing milestone `#{new_version}`: #{e.message}")
     end
+
+    UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
 
     # Annotate the build with the moved PRs
     moved_prs_info = if moved_prs.empty?
@@ -265,9 +262,6 @@ platform :ios do
                      end
 
     buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze-wcios', message: moved_prs_info) if is_ci
-
-    # Checks if internal dependencies are on a stable version
-    check_pods_references
   end
 
   #####################################################################################
@@ -1481,6 +1475,16 @@ end
 def ensure_git_branch_is_release_branch
   # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
   ensure_git_branch(branch: '^release/')
+end
+
+def ensure_branch_does_not_exist(branch_name)
+  return unless Fastlane::Helper::GitHelper.branch_exists_on_remote?(branch_name: branch_name)
+
+  error_message = "The branch `#{branch_name}` already exists. Please check first if there is an existing Pull Request that needs to be merged or closed first, " \
+                  'or delete the branch to then run again the release task.'
+
+  UI.user_error!(error_message)
+  buildkite_annotate(style: 'error', context: 'error-checking-branch', message: error_message) if is_ci
 end
 
 def report_milestone_error(error_title:)

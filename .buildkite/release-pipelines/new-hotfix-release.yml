@@ -13,3 +13,6 @@ steps:
 
       echo '--- :fire: Start New Hotfix Release'
       bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true
+    retry:
+      manual:
+        allowed: false

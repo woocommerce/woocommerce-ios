@@ -16,3 +16,6 @@ steps:
 
       echo '--- :shipit: Finalize Release'
       bundle exec fastlane finalize_release skip_confirm:true
+    retry:
+      manual:
+        allowed: false

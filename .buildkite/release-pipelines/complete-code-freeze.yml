@@ -16,3 +16,6 @@ steps:
 
       echo '--- :snowflake: Complete Code Freeze'
       bundle exec fastlane complete_code_freeze skip_confirm:true
+    retry:
+      manual:
+        allowed: false

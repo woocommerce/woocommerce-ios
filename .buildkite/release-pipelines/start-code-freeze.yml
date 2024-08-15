@@ -16,3 +16,6 @@ steps:
 
       echo '--- :cocoapods: Check for Outdated Pods'
       .buildkite/commands/log-outdated-pods.sh
+    retry:
+      manual:
+        allowed: false

@@ -16,3 +16,6 @@ steps:
 
       echo '--- :shipit: Update Release Notes and Other App Store Metadata'
       bundle exec fastlane update_metadata_on_app_store_connect skip_confirm:true
+    retry:
+      manual:
+        allowed: false

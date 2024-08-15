@@ -16,3 +16,6 @@ steps:
 
       echo '--- :fire: Finalize Hotfix Release'
       bundle exec fastlane finalize_hotfix_release skip_confirm:true
+    retry:
+      manual:
+        allowed: false

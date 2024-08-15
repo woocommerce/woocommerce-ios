@@ -19,3 +19,6 @@ steps:
     plugins: *common_plugins
     notify:
     - slack: "#build-and-ship"
+    retry:
+      manual:
+        allowed: false

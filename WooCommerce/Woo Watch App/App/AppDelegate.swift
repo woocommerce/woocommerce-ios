@@ -2,6 +2,7 @@ import WatchKit
 import UserNotifications
 import CocoaLumberjack
 import struct NetworkingWatchOS.Note
+import Sentry
 
 
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
@@ -15,6 +16,11 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// This type should be replaced from the main WooApp file.
     ///
     var appBindings: AppBindings = AppBindings()
+
+    /// Handles and configures the crash logging system.
+    /// This type should be assigned from the main WooApp file.
+    ///
+    var crashLoggingStack: WatchCrashLoggingStack?
 
     /// Setup code after the app finishes launching
     ///
@@ -40,6 +46,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(DDOSLogger.sharedInstance)
         DDLog.add(fileLogger)
+    }
+
+    /// Perform the necessary updates when dependencies are updated.
+    ///
+    func onUpdateDependencies(dependencies: WatchDependencies?) {
+        crashLoggingStack?.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true, account: dependencies?.account)
     }
 }
 

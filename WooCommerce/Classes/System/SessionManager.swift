@@ -56,10 +56,15 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private lazy var watchDependenciesSynchronizer = {
         let storedDependencies: WatchDependencies? = {
-            guard let storeID = self.defaultStoreID, let storeName = self.defaultSite?.name, let credentials = self.loadCredentials() else {
+            guard let storeID = self.defaultStoreID, let credentials = self.loadCredentials() else {
                 return nil
             }
-            return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: ServiceLocator.currencySettings, credentials: credentials)
+            return WatchDependencies(storeID: storeID,
+                                     storeName: defaultSite?.name ?? "",
+                                     currencySettings: ServiceLocator.currencySettings,
+                                     credentials: credentials,
+                                     enablesCrashReports: defaults[.userOptedInCrashLogging] ?? true,
+                                     account: defaultAccount)
         }()
 
         return WatchDependenciesSynchronizer(storedDependencies: storedDependencies)
@@ -92,6 +97,7 @@ final class SessionManager: SessionManagerProtocol {
         didSet {
             defaults[.defaultAccountID] = defaultAccount?.userID
             NotificationCenter.default.post(name: .defaultAccountWasUpdated, object: defaultAccount)
+            watchDependenciesSynchronizer.account = defaultAccount
         }
     }
 

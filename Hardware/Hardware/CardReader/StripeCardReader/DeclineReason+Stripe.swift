@@ -69,6 +69,9 @@ extension DeclineReason {
                     "offline_pin_required",
                     "online_or_offline_pin_required",
                 ],
+                .incorrectPin: [
+                    "incorrect_pin"
+                ],
                 .tooManyPinTries: [
                     "pin_try_exceeded",
                 ],

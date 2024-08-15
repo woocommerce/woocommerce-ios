@@ -21,6 +21,7 @@
 		03CF78D527C92FF900523706 /* ReaderDisplayMessage+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D427C92FF900523706 /* ReaderDisplayMessage+Localization.swift */; };
 		03CF78D727DF9BE600523706 /* RefundParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D627DF9BE500523706 /* RefundParameters.swift */; };
 		03CF78D927DF9D0500523706 /* RefundParameters+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */; };
+		205F52482C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */; };
 		311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */; };
 		317975C0274EB1F9004357B1 /* DeclineReason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975BF274EB1F9004357B1 /* DeclineReason.swift */; };
 		317975C2274EBC1F004357B1 /* DeclineReason+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317975C1274EBC1F004357B1 /* DeclineReason+Stripe.swift */; };
@@ -173,6 +174,7 @@
 		03CF78D827DF9D0500523706 /* RefundParameters+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RefundParameters+Stripe.swift"; sourceTree = "<group>"; };
 		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
+		205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnderlyingError+StripeTests.swift"; sourceTree = "<group>"; };
 		2AFA997D6786C67B0A061854 /* Pods_SampleReceiptPrinter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SampleReceiptPrinter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311889EA2653286B0080AEA2 /* PaymentIntentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentMetadataTests.swift; sourceTree = "<group>"; };
 		317975BF274EB1F9004357B1 /* DeclineReason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeclineReason.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 				D845BE02262DDBF500A3E40F /* CardBrandTests.swift */,
 				317975C3274ED591004357B1 /* DeclineReasonTests.swift */,
 				B96B536E281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift */,
+				205F52472C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift */,
 			);
 			path = HardwareTests;
 			sourceTree = "<group>";
@@ -922,6 +925,7 @@
 				D845BE03262DDBF500A3E40F /* CardBrandTests.swift in Sources */,
 				311889EB2653286B0080AEA2 /* PaymentIntentMetadataTests.swift in Sources */,
 				317975C4274ED591004357B1 /* DeclineReasonTests.swift in Sources */,
+				205F52482C6C8EAC006FCC13 /* UnderlyingError+StripeTests.swift in Sources */,
 				B96B536F281AE0FA00F753E6 /* ShouldRetryStripeRefundAfterFailureDeterminerTests.swift in Sources */,
 				D845BDFB262DD97E00A3E40F /* MockStripeReceiptDetails.swift in Sources */,
 				D845BDF5262DD67E00A3E40F /* MockStripeCardPresentDetails.swift in Sources */,

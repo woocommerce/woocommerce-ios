@@ -43,9 +43,9 @@ public enum SignInError: Error {
 class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
     private enum ScreenMode {
-        /// For signing in using .org site credentials
+        /// For signing in using site address
         ///
-        case signInUsingSiteCredentials
+        case signInUsingSiteAddress
 
         /// For signing in using WPCOM credentials or social accounts
         case signInUsingWordPressComOrSocialAccounts
@@ -94,7 +94,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
               loginFields.siteAddress.isEmpty == false else {
             return .signInUsingWordPressComOrSocialAccounts
         }
-        return .signInUsingSiteCredentials
+        return .signInUsingSiteAddress
     }
 
     // Submit button displayed in the table footer.
@@ -145,8 +145,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         setupTableFooterView()
         configureDivider()
 
-        if screenMode == .signInUsingSiteCredentials {
-            configureButtonViewControllerForSiteCredentialsMode()
+        if screenMode == .signInUsingSiteAddress {
+            configureButtonViewControllerForSiteAddressMode()
         } else if configuration.enableSocialLogin == false {
             configureButtonViewControllerWithoutSocialLogin()
         } else {
@@ -462,7 +462,7 @@ private extension GetStartedViewController {
     func configureAnalyticsTracker() {
         // Configure tracker flow based on screen mode.
         switch screenMode {
-        case .signInUsingSiteCredentials:
+        case .signInUsingSiteAddress:
             tracker.set(flow: .loginWithSiteAddress)
         case .signInUsingWordPressComOrSocialAccounts:
             tracker.set(flow: .wpCom)
@@ -803,7 +803,7 @@ private extension GetStartedViewController {
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
     }
 
-    func configureButtonViewControllerForSiteCredentialsMode() {
+    func configureButtonViewControllerForSiteAddressMode() {
         guard let buttonViewController = buttonViewController else {
             return
         }

@@ -30,8 +30,10 @@ extension BlazeCampaignListItem.Status {
             return .withColorStudio(name: .green, shade: .shade60)
         case .scheduled, .finished:
             return .withColorStudio(name: .blue, shade: .shade80)
-        case .canceled, .rejected, .suspended:
+        case .canceled, .rejected:
             return .withColorStudio(name: .red, shade: .shade60)
+        case .suspended:
+            return .white
         case .pending:
             return .withColorStudio(name: .yellow, shade: .shade70)
         case .unknown:
@@ -45,8 +47,10 @@ extension BlazeCampaignListItem.Status {
             return .withColorStudio(name: .green, shade: .shade5)
         case .scheduled, .finished:
             return .withColorStudio(name: .blue, shade: .shade5)
-        case .canceled, .rejected, .suspended:
+        case .canceled, .rejected:
             return .withColorStudio(name: .red, shade: .shade5)
+        case .suspended:
+            return .withColorStudio(name: .red, shade: .shade60)
         case .pending:
             return .withColorStudio(name: .yellow, shade: .shade5)
         case .unknown:

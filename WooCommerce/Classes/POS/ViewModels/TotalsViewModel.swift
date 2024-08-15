@@ -298,8 +298,7 @@ private extension TotalsViewModel {
             case .idle:
                 return false
             case .show(let eventDetails):
-                let presentationStyle = presentationStyle(for: eventDetails)
-                switch presentationStyle {
+                switch presentationStyle(for: eventDetails) {
                 case .alert:
                     return true
                 case .message, .none:

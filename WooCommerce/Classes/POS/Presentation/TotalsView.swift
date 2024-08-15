@@ -235,6 +235,24 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
+    struct CardReaderViewLayout {
+        let backgroundColor: Color
+        let topPadding: CGFloat?
+        let bottomPadding: CGFloat?
+
+        static let primary = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: nil,
+            bottomPadding: 8
+        )
+
+        static let dark = CardReaderViewLayout(
+            backgroundColor: Color(.quaternarySystemFill),
+            topPadding: 40,
+            bottomPadding: 40
+        )
+    }
+
     /// Creates a Spacer with backgroundColor and optional fixed height
     private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
         return ZStack {
@@ -321,26 +339,6 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
-    }
-}
-
-private extension TotalsView {
-    struct CardReaderViewLayout {
-        let backgroundColor: Color
-        let topPadding: CGFloat?
-        let bottomPadding: CGFloat?
-
-        static let primary = CardReaderViewLayout(
-            backgroundColor: .clear,
-            topPadding: nil,
-            bottomPadding: 8
-        )
-
-        static let dark = CardReaderViewLayout(
-            backgroundColor: Color(.quaternarySystemFill),
-            topPadding: 40,
-            bottomPadding: 40
-        )
     }
 }
 

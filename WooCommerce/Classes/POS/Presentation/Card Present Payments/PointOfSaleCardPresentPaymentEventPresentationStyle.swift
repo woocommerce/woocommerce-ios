@@ -5,13 +5,18 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case alert(PointOfSaleCardPresentPaymentAlertType)
 }
 
-/// View Models are created in this short-lived factory, so we can provide information beyond what's available from  `CardPresentPaymentEventDetails`
+/// A factory for payment alert/message view models, so we can provide information beyond what's available from  `CardPresentPaymentEventDetails`
+/// To avoid keeping the additional information up to date as it changes, we pass it to every call to `presentationStyle`
 /// See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
 struct PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer {
-    let cancelThenCollectPaymentAction: () -> Void
-    let formattedOrderTotalPrice: String?
+    struct Dependencies {
+        let tryPaymentAgainBackToCheckoutAction: () -> Void
+        let nonRetryableErrorExitAction: () -> Void
+        let formattedOrderTotalPrice: String?
+    }
 
-    func pointOfSalePresentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
+    static func presentationStyle(for eventDetails: CardPresentPaymentEventDetails,
+                                  dependencies: Dependencies) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
         switch eventDetails {
         /// Connection alerts
         case .scanningForReaders(let endSearch):
@@ -131,7 +136,8 @@ struct PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer {
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
         case .paymentSuccess:
-            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: formattedOrderTotalPrice)))
+            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(
+                formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
         case .paymentError(error: let error, retryApproach: let retryApproach, _):
             switch error {
             case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,
@@ -151,12 +157,12 @@ struct PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer {
                         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
                             error: error,
                             tryPaymentAgainButtonAction: retryAction,
-                            backToCheckoutButtonAction: cancelThenCollectPaymentAction)))
+                            backToCheckoutButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction)))
                 case .dontRetry:
                     return .message(.paymentErrorNonRetryable(
                         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
                             error: error,
-                            tryAnotherPaymentMethodAction: cancelThenCollectPaymentAction)))
+                            tryAnotherPaymentMethodAction: dependencies.nonRetryableErrorExitAction)))
                 }
             }
         case .paymentCaptureError(let cancelPayment):

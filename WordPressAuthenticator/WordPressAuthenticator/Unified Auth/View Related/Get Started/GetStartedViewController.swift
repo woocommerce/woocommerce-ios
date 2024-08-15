@@ -45,7 +45,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     private enum ScreenMode {
         /// For signing in using site address
         ///
-        case signInUsingSiteAddress
+        case signInUsingSiteAddress(isWPComSite: Bool)
 
         /// For signing in using WPCOM credentials or social accounts
         case signInUsingWordPressComOrSocialAccounts
@@ -87,6 +87,9 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
 
     private var passwordCoordinator: PasswordCoordinator?
 
+    // This is internal so it can be set from SiteAddressViewController.
+    var wpcomSiteAddressDetected = false
+
     /// Sign in with site credentials button will be displayed based on the `screenMode`
     ///
     private var screenMode: ScreenMode {
@@ -94,7 +97,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
               loginFields.siteAddress.isEmpty == false else {
             return .signInUsingWordPressComOrSocialAccounts
         }
-        return .signInUsingSiteAddress
+        return .signInUsingSiteAddress(isWPComSite: wpcomSiteAddressDetected)
     }
 
     // Submit button displayed in the table footer.
@@ -145,8 +148,8 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
         setupTableFooterView()
         configureDivider()
 
-        if screenMode == .signInUsingSiteAddress {
-            configureButtonViewControllerForSiteAddressMode()
+        if case .signInUsingSiteAddress(let isWPComSite) = screenMode {
+            configureButtonViewControllerForSiteAddressMode(isWPComSite: isWPComSite)
         } else if configuration.enableSocialLogin == false {
             configureButtonViewControllerWithoutSocialLogin()
         } else {
@@ -803,7 +806,7 @@ private extension GetStartedViewController {
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
     }
 
-    func configureButtonViewControllerForSiteAddressMode() {
+    func configureButtonViewControllerForSiteAddressMode(isWPComSite: Bool) {
         guard let buttonViewController = buttonViewController else {
             return
         }
@@ -813,11 +816,13 @@ private extension GetStartedViewController {
         if configuration.enableSocialLogin {
             configureSocialButtons()
 
-            // Setup Sign in with site credentials button
-            buttonViewController.setupTertiaryButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
-                                                   isPrimary: false,
-                                                   accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
-                self?.handleSiteCredentialsButtonTapped()
+            if isWPComSite == false {
+                // Setup Sign in with site credentials button
+                buttonViewController.setupTertiaryButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                                         isPrimary: false,
+                                                         accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
+                    self?.handleSiteCredentialsButtonTapped()
+                }
             }
         } else {
             // Add a "Continue" button here as the `continueButton` at the top will be hidden
@@ -830,11 +835,13 @@ private extension GetStartedViewController {
                 }
             }
 
-            // Setup Sign in with site credentials button
-            buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
-                                                   isPrimary: false,
-                                                   accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
-                self?.handleSiteCredentialsButtonTapped()
+            if isWPComSite == false {
+                // Setup Sign in with site credentials button
+                buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                                       isPrimary: false,
+                                                       accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
+                    self?.handleSiteCredentialsButtonTapped()
+                }
             }
         }
     }

@@ -584,7 +584,7 @@ private extension SiteAddressViewController {
         }
 
         guard siteInfo?.isWPCom == false else {
-            showGetStarted()
+            showGetStarted(forWPComSite: true)
             return
         }
 
@@ -600,7 +600,7 @@ private extension SiteAddressViewController {
 
                 self.showWPUsernamePassword()
             case .presentEmailController:
-                self.showGetStarted()
+                self.showGetStarted(forWPComSite: false)
             case let .injectViewController(customUI):
                 self.pushCustomUI(customUI)
             }
@@ -651,16 +651,16 @@ private extension SiteAddressViewController {
 
     /// If the site is WordPressDotCom, redirect to WP login.
     ///
-    func showGetStarted() {
+    func showGetStarted(forWPComSite: Bool) {
         guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
             WPAuthenticatorLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
             return
         }
         vc.source = .wpComSiteAddress
-
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
         vc.errorToPresent = errorToPresent
+        vc.wpcomSiteAddressDetected = forWPComSite
 
         navigationController?.pushViewController(vc, animated: true)
     }

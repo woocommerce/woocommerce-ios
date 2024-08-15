@@ -4,7 +4,7 @@ import StripeTerminal
 
 final class UnderlyingError_StripeTests: XCTestCase {
 
-    func test_stripe_offlineDeclineCode_used_to_determine_decline_reason() {
+    func test_stripe_stripeAPIDeclineCode_used_to_determine_decline_reason() {
         // Given
         let fakeStripeDeclineError = NSError(domain: ErrorDomain,
                                              code: ErrorCode.declinedByStripeAPI.rawValue,

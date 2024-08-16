@@ -115,6 +115,8 @@ private extension CartView {
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
+        static let backButtonSymbol: String = "chevron.backward"
+        static let backButtonSize: CGFloat = 36
     }
 
     enum Localization {
@@ -130,6 +132,10 @@ private extension CartView {
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
             comment: "Hint to add products to the Cart when this is empty.")
+        static let checkoutButtonTitle = NSLocalizedString(
+            "pos.cartView.checkoutButtonTitle",
+            value: "Check out",
+            comment: "Title for the 'Checkout' button to process the Order.")
     }
 }
 
@@ -140,7 +146,7 @@ private extension CartView {
         Button {
             cartViewModel.submitCart()
         } label: {
-            Text("Check out")
+            Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSPrimaryButtonStyle())
     }
@@ -154,9 +160,10 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(systemName: "chevron.backward")
-                    .frame(width: 32, height: 32)
+                Image(systemName: Constants.backButtonSymbol)
+                    .frame(width: Constants.backButtonSize, height: Constants.backButtonSize)
                     .font(Font.posTitle)
+                    .foregroundColor(.primary)
             }
         }
     }

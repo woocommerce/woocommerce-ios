@@ -117,7 +117,7 @@ private extension CartView {
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
         static let backButtonSymbol: String = "chevron.backward"
-        static let backButtonSize: CGFloat = 36
+        static let backButtonSize: CGFloat = 24
     }
 
     enum Localization {
@@ -163,7 +163,7 @@ private extension CartView {
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
                     .frame(width: Constants.backButtonSize, height: Constants.backButtonSize)
-                    .font(Font.posTitle)
+                    .font(.posBodyEmphasized)
                     .foregroundColor(.primary)
             }
         }

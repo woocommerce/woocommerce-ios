@@ -26,6 +26,7 @@ struct ShouldRetryStripeRefundAfterFailureDeterminer {
                 .generic,
                 .insufficientFunds,
                 .pinRequired,
+                .incorrectPin,
                 .tooManyPinTries,
                 .testCard,
                 .testModeLiveCard,

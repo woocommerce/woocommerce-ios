@@ -24,13 +24,17 @@ struct TotalsView: View {
             switch totalsViewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    Spacer()
+                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
+                                 height: cardReaderViewLayout.topPadding)
+
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if totalsViewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding()
+                                .padding([.top, .leading, .trailing])
+                                .padding(.bottom, cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
+                                .background(cardReaderViewLayout.backgroundColor)
                         }
 
                         if isShowingTotalsFields {
@@ -231,6 +235,53 @@ private extension TotalsView {
 }
 
 private extension TotalsView {
+    struct CardReaderViewLayout {
+        let backgroundColor: Color
+        let topPadding: CGFloat?
+        let bottomPadding: CGFloat?
+
+        static let primary = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: nil,
+            bottomPadding: 8
+        )
+
+        static let dark = CardReaderViewLayout(
+            backgroundColor: Color(.quaternarySystemFill),
+            topPadding: 40,
+            bottomPadding: 40
+        )
+    }
+
+    /// Creates a Spacer with backgroundColor and optional fixed height
+    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
+        return ZStack {
+            Spacer()
+        }
+        .background(backgroundColor)
+        .if(height != nil) {
+            $0.frame(height: height)
+        }
+    }
+
+    private var cardReaderViewLayout: CardReaderViewLayout {
+        guard totalsViewModel.isShowingCardReaderStatus else {
+            return .primary
+        }
+
+        if totalsViewModel.paymentState == .validatingOrderError {
+            return .dark
+        }
+
+        if totalsViewModel.connectionStatus == .disconnected {
+            return .dark
+        }
+
+        return .primary
+    }
+}
+
+private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
         static let defaultBorderLineWidth: CGFloat = 1
@@ -242,10 +293,10 @@ private extension TotalsView {
         static let subtotalsVerticalSpacing: CGFloat = 8
         static let totalVerticalSpacing: CGFloat = 16
         static let totalsHorizontalSpacing: CGFloat = 24
-        static let subtotalTitleFont: Font = Font.system(size: 24)
-        static let subtotalAmountFont: Font = Font.system(size: 24)
-        static let totalTitleFont: Font = Font.system(.largeTitle, design: .default, weight: .medium)
-        static let totalAmountFont: Font = Font.system(.largeTitle, design: .default, weight: .bold)
+        static let subtotalTitleFont: POSFontStyle = .posBodyRegular
+        static let subtotalAmountFont: POSFontStyle = .posBodyRegular
+        static let totalTitleFont: POSFontStyle = .posTitleRegular
+        static let totalAmountFont: POSFontStyle = .posTitleEmphasized
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334
@@ -256,7 +307,7 @@ private extension TotalsView {
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
         static let newOrderButtonPadding: CGFloat = 22
-        static let newOrderButtonFont: Font = Font.posBody.bold()
+        static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
         static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField

@@ -18,8 +18,10 @@ struct BlazeCampaignItemView: View {
     }
 
     var body: some View {
-        VStack(spacing: Layout.contentSpacing) {
-            AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.contentSpacing) {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .center,
+                          spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -55,7 +57,9 @@ struct BlazeCampaignItemView: View {
             }
 
             // campaign stats
-            AdaptiveStack {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .firstTextBaseline,
+                          spacing: Layout.contentSpacing) {
                 Spacer()
                     .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
 
@@ -69,7 +73,6 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -81,7 +84,6 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -93,10 +95,10 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity, alignment: .leading)
                 .renderedIf(showBudget)
 
                 Spacer()
+
             }
         }
         .fixedSize(horizontal: false, vertical: true)

@@ -96,14 +96,38 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertEqual(viewModel.message, "A payment of $200.50 was successfully made")
     }
 
+    func test_presentationStyle_for_paymentCaptureError_is_message_paymentCaptureError_with_correctActions() {
+        // Given
+        let eventDetails = CardPresentPaymentEventDetails.paymentCaptureError(cancelPayment: {})
+        var spyPaymentCaptureErrorTryAgainCalled = false
+        let dependencies = createPresentationStyleDependencies(paymentCaptureErrorTryAgainAction: {
+            spyPaymentCaptureErrorTryAgainCalled = true
+        })
+
+        // When
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: dependencies)
+
+        // Then
+        guard case .message(.paymentCaptureError(let viewModel)) = presentationStyle else {
+            return XCTFail("Expected payment capture error message not found")
+        }
+
+        viewModel.tryAgainButtonViewModel.actionHandler()
+        XCTAssertTrue(spyPaymentCaptureErrorTryAgainCalled)
+    }
+
     func createPresentationStyleDependencies(
         tryPaymentAgainBackToCheckoutAction: @escaping () -> Void = {},
         nonRetryableErrorExitAction: @escaping () -> Void = {},
-        formattedOrderTotalPrice: String? = nil) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        formattedOrderTotalPrice: String? = nil,
+        paymentCaptureErrorTryAgainAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
             PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
                 tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
                 nonRetryableErrorExitAction: nonRetryableErrorExitAction,
-                formattedOrderTotalPrice: formattedOrderTotalPrice)
+                formattedOrderTotalPrice: formattedOrderTotalPrice,
+                paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction)
         }
 
 }

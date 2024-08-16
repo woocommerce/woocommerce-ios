@@ -361,14 +361,15 @@ private extension TotalsViewModel {
     }
 
     var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
-        PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: { [weak self] in
-                self?.cancelThenCollectPayment()
-            },
-            nonRetryableErrorExitAction: { [weak self] in
-                self?.cancelThenCollectPayment()
-            },
-            formattedOrderTotalPrice: formattedOrderTotalPrice)
+        let cancelThenCollectPaymentWithWeakSelf: () -> Void = { [weak self] in
+            self?.cancelThenCollectPayment()
+        }
+
+        return PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
+            tryPaymentAgainBackToCheckoutAction: cancelThenCollectPaymentWithWeakSelf,
+            nonRetryableErrorExitAction: cancelThenCollectPaymentWithWeakSelf,
+            formattedOrderTotalPrice: formattedOrderTotalPrice,
+            paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf)
     }
 
     func cancelThenCollectPayment() {

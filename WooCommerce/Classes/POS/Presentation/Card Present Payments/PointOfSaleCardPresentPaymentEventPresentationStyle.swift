@@ -8,6 +8,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
         let tryPaymentAgainBackToCheckoutAction: () -> Void
         let nonRetryableErrorExitAction: () -> Void
         let formattedOrderTotalPrice: String?
+        let paymentCaptureErrorTryAgainAction: () -> Void
     }
 
     /// Determines the appropriate payment alert/message type and creates its view model.
@@ -170,10 +171,11 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                             tryAnotherPaymentMethodAction: dependencies.nonRetryableErrorExitAction)))
                 }
             }
+
         case .paymentCaptureError(let cancelPayment):
             self = .message(.paymentCaptureError(
                 viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
-                    tryAgainButtonAction: cancelPayment,
+                    tryAgainButtonAction: dependencies.paymentCaptureErrorTryAgainAction,
                     newOrderButtonAction: cancelPayment)))
 
         case .processing:

@@ -60,8 +60,6 @@ struct BlazeCampaignItemView: View {
             AdaptiveStack(horizontalAlignment: .leading,
                           verticalAlignment: .firstTextBaseline,
                           spacing: Layout.contentSpacing) {
-                Spacer()
-                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
 
                 // campaign total impressions
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -73,6 +71,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
+                .padding(.leading, Layout.imageSize * scale + Layout.contentSpacing)
 
                 // campaign total clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {

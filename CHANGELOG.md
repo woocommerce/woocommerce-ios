@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.0
+Enhance your WooCommerce management with our latest update! Creating Blaze ads is now smoother with media selection streamlined for current products. Plus, we've ironed out kinks everywhere from creating orders to contacting support, ensuring a more reliable experience. Enjoy a more cohesive app environment with various fixes and improvements.
+
 ## 19.9
 Experience smoother operations in the WooCommerce app! For iPad users, we've squashed a bug to ensure seamless payment collection, plus we've eliminated crashes linked to the order list on iPadOS 16 & 16.1. Stores with the Blaze plugin can also manage and create campaigns right from the app. Upgrade for an improved, stable user experience!
 

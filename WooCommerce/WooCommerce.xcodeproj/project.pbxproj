@@ -9136,7 +9136,6 @@
 				26C6E8E126E2D85300C7BB0F /* Addresses */,
 				025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */,
 				578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */,
-				CC5BA5F4287EDC900072F307 /* CustomFieldsViewModelTests.swift */,
 			);
 			path = "Order Details";
 			sourceTree = "<group>";
@@ -9613,6 +9612,14 @@
 				8625C5122BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift */,
 			);
 			path = Reviews;
+			sourceTree = "<group>";
+		};
+		864059FE2C6F67A000DA04DC /* Custom Fields */ = {
+			isa = PBXGroup;
+			children = (
+				CC5BA5F4287EDC900072F307 /* CustomFieldsViewModelTests.swift */,
+			);
+			path = "Custom Fields";
 			sourceTree = "<group>";
 		};
 		8646A9B82B46C79A001F606C /* AdDestination */ = {
@@ -12002,6 +12009,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				864059FE2C6F67A000DA04DC /* Custom Fields */,
 				86023FAB2B16D80E00A28F07 /* Themes */,
 				EE45E2C02A42C9C70085F227 /* Feature Highlight */,
 				024D4E952A2EC6790090E0E6 /* Blaze */,

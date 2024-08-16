@@ -40,6 +40,11 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
 
+    private let startNewOrderActionSubject = PassthroughSubject<Void, Never>()
+    var startNewOrderActionPublisher: AnyPublisher<Void, Never> {
+        startNewOrderActionSubject.eraseToAnyPublisher()
+    }
+
     var computedFormattedCartTotalPrice: String? {
         formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
     }
@@ -138,6 +143,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         paymentState = .acceptingCard
         clearOrder()
         cardPresentPaymentInlineMessage = nil
+        startNewOrderActionSubject.send(())
     }
 
     func onTotalsViewDisappearance() {

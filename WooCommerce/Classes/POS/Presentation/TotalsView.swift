@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct TotalsView: View {
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var totalsViewModel: TotalsViewModel
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
@@ -12,9 +11,7 @@ struct TotalsView: View {
     @State private var isShowingTotalsFields: Bool
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
-    init(viewModel: PointOfSaleDashboardViewModel,
-         totalsViewModel: TotalsViewModel) {
-        self.viewModel = viewModel
+    init(totalsViewModel: TotalsViewModel) {
         self.totalsViewModel = totalsViewModel
         self.isShowingTotalsFields = totalsViewModel.isShowingTotalsFields
     }
@@ -172,8 +169,7 @@ private extension TotalsView {
 private extension TotalsView {
     private var newOrderButton: some View {
         Button(action: {
-            // TODO: This is the only place we use PointOfSaleDashboardViewModel in TotalsView – let's break that link.
-            viewModel.startNewOrder()
+            totalsViewModel.startNewOrder()
         }, label: {
             HStack(spacing: Constants.newOrderButtonSpacing) {
                 Image(systemName: Constants.newOrderImageName)
@@ -297,12 +293,6 @@ private extension TotalsView {
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                     paymentState: .acceptingCard)
-    let cartViewModel = CartViewModel()
-    let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
-    let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                              totalsViewModel: totalsVM,
-                                              cartViewModel: CartViewModel(),
-                                              itemListViewModel: itemsListViewModel)
-    return TotalsView(viewModel: posVM, totalsViewModel: totalsVM)
+    return TotalsView(totalsViewModel: totalsVM)
 }
 #endif

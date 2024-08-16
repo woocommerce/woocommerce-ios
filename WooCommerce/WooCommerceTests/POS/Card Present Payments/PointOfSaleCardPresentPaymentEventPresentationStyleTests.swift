@@ -10,13 +10,13 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             error: NSError(domain: "test", code: 1),
             retryApproach: .tryAnotherPaymentMethod(retryAction: { spyRetryCalled = true }),
             cancelPayment: {})
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
             tryPaymentAgainBackToCheckoutAction: {},
             nonRetryableErrorExitAction: {},
             formattedOrderTotalPrice: nil)
 
         // When
-        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: dependencies)
 
@@ -39,13 +39,13 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             retryApproach: .tryAgain(retryAction: { spyRetryCalled = true }),
             cancelPayment: {})
         var spyBackToCheckoutCalled = false
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
             tryPaymentAgainBackToCheckoutAction: { spyBackToCheckoutCalled = true },
             nonRetryableErrorExitAction: {},
             formattedOrderTotalPrice: nil)
 
         // When
-        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: dependencies)
 
@@ -68,13 +68,13 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             retryApproach: .dontRetry,
             cancelPayment: {})
         var spyTryAnotherPaymentMethod = false
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
             tryPaymentAgainBackToCheckoutAction: {},
             nonRetryableErrorExitAction: { spyTryAnotherPaymentMethod = true },
             formattedOrderTotalPrice: nil)
 
         // When
-        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: dependencies)
 
@@ -90,13 +90,13 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
     func test_presentationStyle_for_paymentSuccess_is_message_paymentSuccess_with_order_total() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentSuccess(done: {})
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
             tryPaymentAgainBackToCheckoutAction: {},
             nonRetryableErrorExitAction: {},
             formattedOrderTotalPrice: "$200.50")
 
         // When
-        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: dependencies)
 

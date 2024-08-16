@@ -355,13 +355,13 @@ private extension TotalsViewModel {
     }
 
     func presentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
-        PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+        PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: presentationStyleDeterminerDependencies)
     }
 
-    var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies {
-        PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies(
+    var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
             tryPaymentAgainBackToCheckoutAction: { [weak self] in
                 self?.cancelThenCollectPayment()
             },
@@ -381,7 +381,7 @@ private extension TotalsViewModel {
 
 private extension TotalsViewModel.PaymentState {
     init?(from cardPaymentEvent: CardPresentPaymentEvent,
-          using paymentEventPresentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.Dependencies) {
+          using paymentEventPresentationStyleDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies) {
         switch cardPaymentEvent {
         case .idle:
             self = .idle
@@ -396,9 +396,9 @@ private extension TotalsViewModel.PaymentState {
             self = .processingPayment
         case .show(.paymentError):
             if case let .show(eventDetails) = cardPaymentEvent,
-               case let .message(messageType) = PointOfSaleCardPresentPaymentEventPresentationStyleDeterminer.presentationStyle(
+               case let .message(messageType) = PointOfSaleCardPresentPaymentEventPresentationStyle(
                 for: eventDetails,
-                dependencies: paymentEventPresentationStyleDeterminerDependencies),
+                dependencies: paymentEventPresentationStyleDependencies),
                case .validatingOrderError = messageType {
                 self = .validatingOrderError
             } else {

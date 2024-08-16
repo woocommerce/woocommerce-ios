@@ -45,7 +45,7 @@ import protocol Storage.StorageManagerType
 
 
     private var isStatusEligibleForCardPayment: Bool {
-        (status == .pending || status == .onHold || status == .processing)
+        (status == .pending || status == .onHold || status == .processing || status == .failed)
     }
 
     private var isPaymentMethodEligibleForCardPayment: Bool {

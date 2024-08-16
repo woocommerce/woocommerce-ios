@@ -3,7 +3,6 @@ import Foundation
 enum PointOfSaleAssets: CaseIterable {
     case processingPayment
     case readyForPayment
-    case cartBack
     case exit
     case getSupport
     case removeCartItem
@@ -19,8 +18,6 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-processing-payment"
         case .readyForPayment:
             "pos-ready-for-payment"
-        case .cartBack:
-            "pos-cart-back"
         case .exit:
             "pos-exit"
         case .getSupport:

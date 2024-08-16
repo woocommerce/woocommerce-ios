@@ -102,7 +102,7 @@ struct CartView: View {
 
 private extension CartView {
     enum Constants {
-        static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
+        static let primaryFont: Font = Font.posTitle
         static let secondaryFont: Font = .system(size: 24, weight: .regular, design: .default)
         static let itemsFont: Font = .system(size: 16, weight: .medium, design: .default)
         static let clearButtonFont: Font = .system(size: 16, weight: .semibold, design: .default)
@@ -154,11 +154,10 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(PointOfSaleAssets.cartBack.imageName)
-                    .resizable()
+                Image(systemName: "chevron.backward")
                     .frame(width: 32, height: 32)
+                    .font(Font.posTitle)
             }
-
         }
     }
 }

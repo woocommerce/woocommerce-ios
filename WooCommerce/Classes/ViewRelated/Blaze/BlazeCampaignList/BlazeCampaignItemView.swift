@@ -19,9 +19,9 @@ struct BlazeCampaignItemView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            AdaptiveStack(horizontalAlignment: .leading,
-                          verticalAlignment: .center,
-                          spacing: Layout.contentSpacing) {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .center,
+                              spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -57,9 +57,12 @@ struct BlazeCampaignItemView: View {
             }
 
             // campaign stats
-            AdaptiveStack(horizontalAlignment: .leading,
-                          verticalAlignment: .firstTextBaseline,
-                          spacing: Layout.contentSpacing) {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .firstTextBaseline,
+                              spacing: Layout.contentSpacing) {
+
+                Spacer()
+                    .frame(width: Layout.imageSize * scale)
 
                 // campaign total impressions
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -71,7 +74,6 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .padding(.leading, Layout.imageSize * scale + Layout.contentSpacing)
 
                 // campaign total clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {

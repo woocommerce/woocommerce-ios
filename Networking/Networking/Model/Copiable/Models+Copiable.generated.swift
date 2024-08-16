@@ -1290,7 +1290,7 @@ extension Networking.Order {
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
-        customFields: CopiableProp<[OrderMetaData]> = .copy,
+        customFields: CopiableProp<[MetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
         attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy

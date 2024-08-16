@@ -24,10 +24,10 @@ struct PointOfSaleExitPosAlertView: View {
                 .frame(width: Constants.closeButtonSize, height: Constants.closeButtonSize)
             }
             Text(Localization.exitTitle)
-                .font(.posModalTitle)
+                .font(.posTitleEmphasized)
                 .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
-                .font(.posModalBody)
+                .font(.posBodyRegular)
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
                 dismiss()

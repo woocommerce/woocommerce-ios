@@ -12,9 +12,9 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (8.26.0):
-    - Sentry/Core (= 8.26.0)
-  - Sentry/Core (8.26.0)
+  - Sentry (8.33.0):
+    - Sentry/Core (= 8.33.0)
+  - Sentry/Core (8.33.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (3.3.1)
@@ -24,14 +24,14 @@ PODS:
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
     - WordPress-Aztec-iOS (= 1.19.10)
-  - WordPressAuthenticator (9.0.7):
+  - WordPressAuthenticator (9.0.9):
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
-    - WordPressKit (~> 16.0)
+    - WordPressKit (~> 17.0)
     - WordPressShared (~> 2.1-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (16.0.0):
+  - WordPressKit (17.2.0):
     - NSObject-SafeExpectations (~> 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
     - WordPressShared (~> 2.0-beta)
@@ -62,11 +62,12 @@ DEPENDENCIES:
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
+  - Sentry (~> 8.33.0)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
   - WordPress-Editor-iOS (~> 1.19)
-  - WordPressAuthenticator (~> 9.0.7)
+  - WordPressAuthenticator (~> 9.0.9)
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
@@ -75,6 +76,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
     - WordPressKit
   trunk:
     - Alamofire
@@ -94,7 +96,6 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
-    - WordPressAuthenticator
     - WordPressShared
     - WordPressUI
     - Wormholy
@@ -117,7 +118,7 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 74a073c71c998117edb08f56f443c83570a31bed
+  Sentry: 8560050221424aef0bebc8e31eedf00af80f90a6
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 369ef0cf0b90d838f42be1a0b371475986f4b79f
@@ -126,8 +127,8 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
-  WordPressAuthenticator: 81dc761a9e309bf80e9c302eb36fcacc66660e91
-  WordPressKit: fbdbd5445e38a2401d4f4f9f50ca33f980151069
+  WordPressAuthenticator: e0c88dd994799595a4a4fafb801589f650af822c
+  WordPressKit: de44094b3be8998504a3a57700bc3e96e3b46f57
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
@@ -141,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: 4141cf67ffcfd52e6c6c1fa01fbeb5fb66095c57
+PODFILE CHECKSUM: 60414588e43bf7bc146dc0c04130e78fdb3f2ece
 
 COCOAPODS: 1.15.2

@@ -36,7 +36,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
 
     func test_isEligibleForCardPresentPayment_when_status_is_not_valid_then_is_not_eligible() {
         // Given
-        let notEligibleStatuses: [OrderStatusEnum] = [.autoDraft, .completed, .cancelled, .refunded, .failed, .custom("test")]
+        let notEligibleStatuses: [OrderStatusEnum] = [.autoDraft, .completed, .cancelled, .refunded, .custom("test")]
 
         for notEligibleStatus in notEligibleStatuses {
             let order = eligibleOrder.copy(status: notEligibleStatus)

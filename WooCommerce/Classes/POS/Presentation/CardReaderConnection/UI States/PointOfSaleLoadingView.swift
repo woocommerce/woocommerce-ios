@@ -10,10 +10,10 @@ struct PointOfSaleLoadingView: View {
                     .progressViewStyle(POSProgressViewStyle())
                 Spacer().frame(height: Layout.progressViewSpacing)
                 Text(Localization.title)
-                    .font(.posBody)
+                    .font(.posBodyRegular)
                 Spacer().frame(height: Layout.textSpacing)
                 Text(Localization.subtitle)
-                    .font(.posTitle)
+                    .font(.posTitleEmphasized)
                 Spacer()
             }
             .multilineTextAlignment(.center)

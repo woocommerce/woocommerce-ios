@@ -1917,13 +1917,13 @@ private extension OrderStoreTests {
          Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 
-    func sampleCustomFields() -> [Networking.OrderMetaData] {
-        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
+    func sampleCustomFields() -> [Networking.MetaData] {
+        return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
     }
 
-    func sampleCustomFieldsMutated() -> [Networking.OrderMetaData] {
-        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
-                Networking.OrderMetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
+    func sampleCustomFieldsMutated() -> [Networking.MetaData] {
+        return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
+                Networking.MetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
     }
 
     func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {

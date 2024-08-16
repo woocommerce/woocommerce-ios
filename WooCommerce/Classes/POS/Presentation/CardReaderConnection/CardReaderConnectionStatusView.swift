@@ -79,7 +79,7 @@ private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
-        static let font = Font.system(size: 16.0, weight: .semibold)
+        static let font = POSFontStyle.posDetailEmphasized
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
         static let overlayRadius: CGFloat = 4

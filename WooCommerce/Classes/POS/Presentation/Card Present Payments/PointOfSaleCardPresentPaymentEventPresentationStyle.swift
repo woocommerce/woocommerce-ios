@@ -173,7 +173,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 }
             }
 
-        case .paymentCaptureError(let cancelPayment):
+        case .paymentCaptureError:
             self = .message(.paymentCaptureError(
                 viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
                     tryAgainButtonAction: dependencies.paymentCaptureErrorTryAgainAction,

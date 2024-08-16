@@ -2580,7 +2580,6 @@
 		DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */; };
 		DE8AA0B32BBE55E40084D2CC /* DashboardViewHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */; };
 		DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */; };
-		DE8BA5D72C6F0D2600AD83C6 /* CollapsibleHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BA5D62C6F0D2600AD83C6 /* CollapsibleHStack.swift */; };
 		DE8BEB8A2AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */; };
 		DE8BEB8C2AB840DD00F5E56C /* ProductNameGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */; };
 		DE8BEB8E2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */; };
@@ -5583,7 +5582,6 @@
 		DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewHostingController.swift; sourceTree = "<group>"; };
 		DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerContainer.swift; sourceTree = "<group>"; };
-		DE8BA5D62C6F0D2600AD83C6 /* CollapsibleHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleHStack.swift; sourceTree = "<group>"; };
 		DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationView.swift; sourceTree = "<group>"; };
 		DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModelTests.swift; sourceTree = "<group>"; };
@@ -8863,7 +8861,6 @@
 				26C6E8E926E8FD3900C7BB0F /* LazyView.swift */,
 				26C6E8EB26E8FF4800C7BB0F /* LazyNavigationLink.swift */,
 				AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */,
-				DE8BA5D62C6F0D2600AD83C6 /* CollapsibleHStack.swift */,
 				26B3EC632745916F0075EAE6 /* BindableTextField.swift */,
 				AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */,
 				CCF87BBD279047BC00461C43 /* InfiniteScrollList.swift */,
@@ -14746,7 +14743,6 @@
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */,
 				318477E527A33C650058C7E9 /* CardPresentModalConnectingFailedChargeReader.swift in Sources */,
-				DE8BA5D72C6F0D2600AD83C6 /* CollapsibleHStack.swift in Sources */,
 				CEEF742A2B9A02EB00B03948 /* OrdersReportCardViewModel.swift in Sources */,
 				DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */,
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,

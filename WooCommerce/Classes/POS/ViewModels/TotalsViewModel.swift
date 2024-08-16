@@ -375,7 +375,10 @@ private extension TotalsViewModel {
             tryPaymentAgainBackToCheckoutAction: cancelThenCollectPaymentWithWeakSelf,
             nonRetryableErrorExitAction: cancelThenCollectPaymentWithWeakSelf,
             formattedOrderTotalPrice: formattedOrderTotalPrice,
-            paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf)
+            paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
+            paymentCaptureErrorNewOrderAction: { [weak self] in
+                self?.startNewOrder()
+            })
     }
 
     func cancelThenCollectPayment() {

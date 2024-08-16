@@ -100,9 +100,15 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentCaptureError(cancelPayment: {})
         var spyPaymentCaptureErrorTryAgainCalled = false
-        let dependencies = createPresentationStyleDependencies(paymentCaptureErrorTryAgainAction: {
-            spyPaymentCaptureErrorTryAgainCalled = true
-        })
+        var spyPaymentCaptureErrorNewOrderCalled = false
+        let dependencies = createPresentationStyleDependencies(
+            paymentCaptureErrorTryAgainAction: {
+                spyPaymentCaptureErrorTryAgainCalled = true
+            },
+            paymentCaptureErrorNewOrderAction: {
+                spyPaymentCaptureErrorNewOrderCalled = true
+            }
+        )
 
         // When
         let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
@@ -115,19 +121,24 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         }
 
         viewModel.tryAgainButtonViewModel.actionHandler()
+        viewModel.newOrderButtonViewModel.actionHandler()
         XCTAssertTrue(spyPaymentCaptureErrorTryAgainCalled)
+        XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
     }
 
     func createPresentationStyleDependencies(
         tryPaymentAgainBackToCheckoutAction: @escaping () -> Void = {},
         nonRetryableErrorExitAction: @escaping () -> Void = {},
         formattedOrderTotalPrice: String? = nil,
-        paymentCaptureErrorTryAgainAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        paymentCaptureErrorTryAgainAction: @escaping () -> Void = {},
+        paymentCaptureErrorNewOrderAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
             PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
                 tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
                 nonRetryableErrorExitAction: nonRetryableErrorExitAction,
                 formattedOrderTotalPrice: formattedOrderTotalPrice,
-                paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction)
+                paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction,
+                paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction
+            )
         }
 
 }

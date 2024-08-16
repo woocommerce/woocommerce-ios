@@ -17,6 +17,7 @@
 - [*] Payments: Fixed contact support link from some In Person Payments onboarding screens [https://github.com/woocommerce/woocommerce-ios/pull/13601]
 - [*] Payments: Fixed display of card decline reasons for In-Person Payment failures [https://github.com/woocommerce/woocommerce-ios/pull/13606]
 - [*] Payments: Fixed issue where new WooPayments accounts couldn't be used for In Person Payments while they were pending verification [https://github.com/woocommerce/woocommerce-ios/pull/13610]
+- [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
 
 19.9
 -----

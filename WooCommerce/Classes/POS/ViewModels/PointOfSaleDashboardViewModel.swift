@@ -104,12 +104,11 @@ private extension PointOfSaleDashboardViewModel {
                 switch paymentState {
                 case .processingPayment,
                         .paymentError,
-                        .cardPaymentSuccessful:
-                    return true
-                case .idle,
-                        .acceptingCard,
+                        .cardPaymentSuccessful,
                         .validatingOrder,
                         .preparingReader:
+                    return true
+                case .idle, .acceptingCard:
                     return orderState.isSyncing
                 }
             }

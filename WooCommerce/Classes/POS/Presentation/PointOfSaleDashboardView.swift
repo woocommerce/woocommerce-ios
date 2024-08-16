@@ -132,7 +132,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var totalsView: some View {
-        TotalsView(totalsViewModel: totalsViewModel)
+        TotalsView(viewModel: totalsViewModel)
     }
 
     var productListView: some View {

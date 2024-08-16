@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 114 (Release 20.0.0.0)
+- @itsmeichigo 2024-08-13
+    - Added `isEvergreen` and `durationDays` attributes to `BlazeCampaignListItem` entity.
+
 ## Model 113 (Release 19.7.0.0)
 - @pmusolino 2024-07-25
     - Added `password` attribute to `Product` entity.

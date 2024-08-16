@@ -69,6 +69,11 @@ public enum DeclineReason {
     ///
     case pinRequired
 
+    /// The PIN was entered incorrectly
+    /// Tell the user this and ask them to try again.
+    ///
+    case incorrectPin
+
     /// The card presented has had an incorrect PIN entered too many times.
     /// Tell the user this and ask them to try another payment method.
     ///
@@ -131,6 +136,9 @@ extension DeclineReason {
         case .pinRequired:
             return NSLocalizedString("This card requires a PIN code and thus cannot be processed. Try another means of payment",
                                      comment: "Message when a card requires a PIN code and we have no means of entering such a code.")
+        case .incorrectPin:
+            return NSLocalizedString("An incorrect PIN has been entered. Try again, or use another means of payment",
+                                     comment: "Message when an incorrect PIN has been entered.")
         case .tooManyPinTries:
             return NSLocalizedString("An incorrect PIN has been entered too many times. Try another means of payment",
                                      comment: "Message when an incorrect PIN has been entered too many times.")

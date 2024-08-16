@@ -201,7 +201,7 @@ public class OrdersRemote: Remote {
                 }
 
                 // Set source type to mark the order as created from mobile
-                params[Order.CodingKeys.metadata.rawValue] = try [OrderMetaData(metadataID: 0,
+                params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
                                                                                 key: OrderAttributionInfo.Keys.sourceType.rawValue,
                                                                                 value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
 

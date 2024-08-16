@@ -8,17 +8,15 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
             Spacer()
             VStack(alignment: .center, spacing: Constants.headerSpacing) {
                 Spacer()
-                Image(systemName: "exclamationmark.circle.fill")
-                    .foregroundStyle(Color(.wooCommerceAmber(.shade60)))
-                    .font(.system(size: 64))
+                POSErrorExclamationMark()
                 VStack(alignment: .center, spacing: Constants.textSpacing) {
                     Text(viewModel.title)
                         .foregroundStyle(Color.posPrimaryTexti3)
-                        .font(.posTitle)
+                        .font(.posTitleEmphasized)
 
                     Text(viewModel.message)
                         .foregroundStyle(Color.posPrimaryTexti3)
-                        .font(.posBody)
+                        .font(.posBodyRegular)
                         .padding([.leading, .trailing])
                 }
                 Spacer()

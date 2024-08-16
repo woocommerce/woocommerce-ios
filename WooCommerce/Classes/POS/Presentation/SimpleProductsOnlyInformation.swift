@@ -14,23 +14,23 @@ struct SimpleProductsOnlyInformation: View {
         VStack(spacing: Constants.contentBlockSpacing) {
             VStack(spacing: Constants.textSpacing) {
                 Text(Localization.modalTitle)
-                    .font(.posModalTitle)
+                    .font(.posTitleEmphasized)
 
                 Group {
                     Text(Localization.simpleProductsOnlyIssueMessage)
                     Text(Localization.simpleProductsOnlyFutureMessage)
                 }
-                .font(.posBody)
+                .font(.posBodyRegular)
 
                 VStack(spacing: Constants.textSpacing) {
                     Text(Localization.modalHint)
-                        .font(.posDetail)
+                        .font(.posDetailLight)
 
                     Button {
                         deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
                     } label: {
                         Label(Localization.modalAction, systemImage: "plus")
-                            .font(.posDetail)
+                            .font(.posDetailLight)
                     }
                 }
                 .frame(maxWidth: .infinity)

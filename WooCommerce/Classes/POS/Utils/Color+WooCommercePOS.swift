@@ -28,18 +28,6 @@ extension Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
 
-    static var wooAmberShade40: Color {
-        Color(red: 255.0 / 255.0, green: 166.0 / 255.0, blue: 14.0 / 255.0)
-    }
-
-    static var wooAmberShade60: Color {
-        Color(red: 241.0 / 255.0, green: 102.0 / 255.0, blue: 24.0 / 255.0)
-    }
-
-    static var wooAmberShade80: Color {
-        Color(red: 123.0 / 255.0, green: 7.0 / 255.0, blue: 0.0 / 255.0)
-    }
-
     /// Colors from hi-fi m: p91TBi-bot-p2
     ///
     static var posPrimaryTexti3: Color {

@@ -10,10 +10,10 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)
-                    .font(.posTitle)
+                    .font(.posTitleEmphasized)
 
                 Text(viewModel.message)
-                    .font(.posBody)
+                    .font(.posBodyRegular)
                     .foregroundStyle(Color.primaryText)
             }
 
@@ -34,10 +34,18 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     }
 }
 
-#Preview {
+#Preview("Generic retry") {
     PointOfSaleCardPresentPaymentErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
                 underlyingError: .paymentDeclinedByCardReader),
-            tryAgainButtonAction: {}))
+            tryPaymentAgainButtonAction: {}))
+}
+
+#Preview("Retry with another payment method") {
+    PointOfSaleCardPresentPaymentErrorMessageView(
+        viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+            error: CardReaderServiceError.paymentCapture(
+                underlyingError: .paymentDeclinedByCardReader),
+            tryAnotherPaymentMethodButtonAction: {}))
 }

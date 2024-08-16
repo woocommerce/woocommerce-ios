@@ -8,7 +8,7 @@ struct POSPrimaryButtonStyle: ButtonStyle {
             Spacer()
         }
         .frame(minHeight: POSButtonStyleConstants.framedButtonMinHeight)
-        .font(.system(.title2, weight: .bold))
+        .font(.posBodyEmphasized)
         .background(Color.posPrimaryButtonBackground)
         .foregroundColor(Color.white)
         .cornerRadius(POSButtonStyleConstants.framedButtonCornerRadius)

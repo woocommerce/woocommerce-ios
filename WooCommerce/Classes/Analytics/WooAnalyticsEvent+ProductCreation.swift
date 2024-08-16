@@ -23,11 +23,10 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - bottomSheetProductType: User selected product type from the bottom sheet.
         ///   - creationType: Product creation type.
-        static func addProductTypeSelected(bottomSheetProductType: BottomSheetProductType, creationType: ProductCreationType) -> WooAnalyticsEvent {
+        static func addProductTypeSelected(bottomSheetProductType: BottomSheetProductType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductTypeSelected,
                               properties: [Key.productType: bottomSheetProductType.productType.rawValue,
-                                           Key.isVirtual: bottomSheetProductType.isVirtual,
-                                           Key.creationType: creationType.analyticsType.rawValue])
+                                           Key.isVirtual: bottomSheetProductType.isVirtual])
         }
     }
 }
@@ -43,17 +42,6 @@ extension AddProductCoordinator.Source {
                 return "product_description_ai_announcement"
             case .blazeCampaignCreation:
                 return "blaze_campaign_creation"
-        }
-    }
-}
-
-private extension ProductCreationType {
-    var analyticsType: WooAnalyticsEvent.ProductsOnboarding.CreationType {
-        switch self {
-        case .template:
-            return .template
-        case .manual:
-            return .manual
         }
     }
 }

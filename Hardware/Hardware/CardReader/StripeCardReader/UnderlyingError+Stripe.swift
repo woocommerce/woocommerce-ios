@@ -73,7 +73,7 @@ extension UnderlyingError {
             self = .unexpectedSDKError
         case ErrorCode.Code.declinedByStripeAPI.rawValue:
             // https://stripe.dev/stripe-terminal-ios/docs/Errors.html#/c:@SCPErrorKeyStripeAPIDeclineCode
-            let declineCode = error.userInfo["stripeAPIDeclineCode"] as? String
+            let declineCode = error.userInfo[ErrorKey.stripeAPIDeclineCode.rawValue] as? String
             let declineReason = DeclineReason(with: declineCode ?? "")
             self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
         case ErrorCode.Code.declinedByReader.rawValue:

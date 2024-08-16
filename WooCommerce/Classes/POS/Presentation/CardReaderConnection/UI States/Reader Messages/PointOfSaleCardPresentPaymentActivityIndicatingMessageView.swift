@@ -13,10 +13,10 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(title)
                     .foregroundStyle(Color(.neutral(.shade40)))
-                    .font(.posBody)
+                    .font(.posBodyRegular)
 
                 Text(message)
-                    .font(.posTitle)
+                    .font(.posTitleEmphasized)
                     .foregroundStyle(Color(.neutral(.shade60)))
             }
         }

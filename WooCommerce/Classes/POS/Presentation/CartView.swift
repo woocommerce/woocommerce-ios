@@ -16,6 +16,7 @@ struct CartView: View {
             HStack {
                 backAddMoreButton
                     .disabled(viewModel.isAddMoreDisabled)
+                    .shimmering(active: viewModel.isAddMoreDisabled)
                 Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
                     .foregroundColor(cartViewModel.cartLabelColor)

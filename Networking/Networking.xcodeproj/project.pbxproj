@@ -215,7 +215,7 @@
 		26373E112BFCEDAE008E6735 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		26373E122BFCEDB7008E6735 /* OrderFeeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */; };
 		26373E132BFCEDCD008E6735 /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
-		26373E142BFCEDDA008E6735 /* OrderMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */; };
+		26373E142BFCEDDA008E6735 /* MetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* MetaData.swift */; };
 		26373E152BFCEDE9008E6735 /* OrderGiftCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */; };
 		26373E162BFCEDFD008E6735 /* OrderAttributionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A302F2B72A3C8001D7C66 /* OrderAttributionInfo.swift */; };
 		26373E172BFCEF5D008E6735 /* Order+Fallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265EFBDB285257950033BD33 /* Order+Fallbacks.swift */; };
@@ -733,7 +733,7 @@
 		CC0786C9267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */; };
 		CC33754E29C884000006A538 /* ProductCompositeComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC33754D29C884000006A538 /* ProductCompositeComponent.swift */; };
 		CC33755029C88B920006A538 /* product-composite.json in Resources */ = {isa = PBXBuildFile; fileRef = CC33754F29C88B920006A538 /* product-composite.json */; };
-		CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */; };
+		CC6A1FF5270E042200F6AF4A /* MetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A1FF4270E042200F6AF4A /* MetaData.swift */; };
 		CC75108729EFEB140035FBA4 /* SubscriptionsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75108629EFEB140035FBA4 /* SubscriptionsRemote.swift */; };
 		CC75108929EFEEF20035FBA4 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75108829EFEEF20035FBA4 /* Subscription.swift */; };
 		CC75108B29EFF1A90035FBA4 /* SubscriptionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */; };
@@ -1881,7 +1881,7 @@
 		CC0786C8267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatusMapperTests.swift; sourceTree = "<group>"; };
 		CC33754D29C884000006A538 /* ProductCompositeComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCompositeComponent.swift; sourceTree = "<group>"; };
 		CC33754F29C88B920006A538 /* product-composite.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-composite.json"; sourceTree = "<group>"; };
-		CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMetaData.swift; sourceTree = "<group>"; };
+		CC6A1FF4270E042200F6AF4A /* MetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaData.swift; sourceTree = "<group>"; };
 		CC75108629EFEB140035FBA4 /* SubscriptionsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsRemote.swift; sourceTree = "<group>"; };
 		CC75108829EFEEF20035FBA4 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		CC75108A29EFF1A90035FBA4 /* SubscriptionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStatus.swift; sourceTree = "<group>"; };
@@ -2926,7 +2926,7 @@
 				024124852AC93E470035A247 /* OrderItemBundleItem.swift */,
 				02EBCB3D2AA03D520019085B /* OrderItemProductAddOn.swift */,
 				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
-				CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */,
+				CC6A1FF4270E042200F6AF4A /* MetaData.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
 				CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */,
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
@@ -4767,7 +4767,7 @@
 				269014CA2BEA924B006056E0 /* NetworkError.swift in Sources */,
 				26373E092BFCEA90008E6735 /* OrderItemProductAddOn.swift in Sources */,
 				26373E162BFCEDFD008E6735 /* OrderAttributionInfo.swift in Sources */,
-				26373E142BFCEDDA008E6735 /* OrderMetaData.swift in Sources */,
+				26373E142BFCEDDA008E6735 /* MetaData.swift in Sources */,
 				26373E0E2BFCEB0B008E6735 /* ShippingLine.swift in Sources */,
 				263A6DA92BEAA0DE00C292B2 /* String+Helpers.swift in Sources */,
 				269014C52BEA914B006056E0 /* DotcomError.swift in Sources */,
@@ -5003,7 +5003,7 @@
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				D8EDFE2625EE8A60003D2213 /* ReaderConnectionTokenMapper.swift in Sources */,
-				CC6A1FF5270E042200F6AF4A /* OrderMetaData.swift in Sources */,
+				CC6A1FF5270E042200F6AF4A /* MetaData.swift in Sources */,
 				DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */,
 				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
 				0313651928AE559D00EEE571 /* PaymentGatewayMapper.swift in Sources */,

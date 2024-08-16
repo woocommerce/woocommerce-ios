@@ -480,10 +480,10 @@ extension OrderDetailsViewModel {
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
             let customFields = order.customFields.map {
-                OrderCustomFieldsViewModel(metadata: $0)
+                CustomFieldsViewModel(metadata: $0)
             }
             let customFieldsView = UIHostingController(
-                rootView: OrderCustomFieldsDetails(
+                rootView: CustomFieldsDetails(
                     viewEditCustomFieldsInProductsAndOrdersEnabled: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
                     customFields: customFields))
             viewController.present(customFieldsView, animated: true)

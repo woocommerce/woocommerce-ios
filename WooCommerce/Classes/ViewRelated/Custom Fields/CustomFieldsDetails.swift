@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct OrderCustomFieldsDetails: View {
+struct CustomFieldsDetails: View {
     @Environment(\.presentationMode) var presentationMode
 
     let viewEditCustomFieldsInProductsAndOrdersEnabled: Bool
-    let customFields: [OrderCustomFieldsViewModel]
+    let customFields: [CustomFieldsViewModel]
 
     var body: some View {
         NavigationView {
@@ -167,7 +167,7 @@ private struct EditableCustomFieldRow: View {
 
 // MARK: - Constants
 //
-extension OrderCustomFieldsDetails {
+extension CustomFieldsDetails {
     enum Localization {
         static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
     }
@@ -196,11 +196,11 @@ private extension EditableCustomFieldRow {
 
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
-        OrderCustomFieldsDetails(
+        CustomFieldsDetails(
             viewEditCustomFieldsInProductsAndOrdersEnabled: false,
             customFields: [
-            OrderCustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
-            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+            CustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
+            CustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
         ])
     }
 }

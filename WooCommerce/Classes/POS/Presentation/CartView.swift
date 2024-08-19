@@ -15,31 +15,38 @@ struct CartView: View {
     var body: some View {
         VStack {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
-                backAddMoreButton
-                    .disabled(viewModel.isAddMoreDisabled)
-                Text(Localization.cartTitle)
-                    .font(Constants.primaryFont)
-                    .foregroundColor(cartViewModel.cartLabelColor)
+                HStack {
+                    backAddMoreButton
+                        .disabled(viewModel.isAddMoreDisabled)
+                    Text(Localization.cartTitle)
+                        .font(Constants.primaryFont)
+                        .foregroundColor(cartViewModel.cartLabelColor)
+                }
+
                 Spacer()
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                 if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
-                    Text(itemsInCartLabel)
-                        .font(Constants.itemsFont)
-                        .foregroundColor(Color.posSecondaryTexti3)
-                    Button {
-                        cartViewModel.removeAllItemsFromCart()
-                    } label: {
-                        Text(Localization.clearButtonTitle)
-                            .font(Constants.clearButtonFont)
-                            .padding(Constants.clearButtonTextPadding)
-                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                            )
+                    HStack {
+                        Text(itemsInCartLabel)
+                            .font(Constants.itemsFont)
+                            .foregroundColor(Color.posSecondaryTexti3)
+                        Spacer()
+                            .renderedIf(dynamicTypeSize.isAccessibilitySize)
+                        Button {
+                            cartViewModel.removeAllItemsFromCart()
+                        } label: {
+                            Text(Localization.clearButtonTitle)
+                                .font(Constants.clearButtonFont)
+                                .padding(Constants.clearButtonTextPadding)
+                                .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
+                                        .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
+                                )
+                        }
+                        .padding(.horizontal, Constants.itemHorizontalPadding)
+                        .renderedIf(cartViewModel.canDeleteItemsFromCart)
                     }
-                    .padding(.horizontal, Constants.itemHorizontalPadding)
-                    .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

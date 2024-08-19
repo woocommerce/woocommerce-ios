@@ -91,6 +91,7 @@ struct CartView: View {
                 } else {
                     checkoutButton
                         .padding(Constants.checkoutButtonPadding)
+                        .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
                 EmptyView()

@@ -169,8 +169,7 @@ private extension InboxViewModel {
     }
 
     func configureFirstPageLoad() {
-        // Listens only to the first emitted event.
-        onLoadTrigger.first()
+        onLoadTrigger
             .sink { [weak self] in
                 guard let self = self else { return }
                 self.syncFirstPage()

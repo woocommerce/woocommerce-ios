@@ -88,6 +88,8 @@ final class HubMenuViewModel: ObservableObject {
                                   credentials: credentials)
     }()
 
+    private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
+
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false

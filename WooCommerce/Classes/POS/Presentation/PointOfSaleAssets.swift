@@ -6,7 +6,6 @@ enum PointOfSaleAssets: CaseIterable {
     case cartBack
     case exit
     case getSupport
-    case removeCartItem
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
@@ -24,8 +23,6 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-exit"
         case .getSupport:
             "pos-get-support"
-        case .removeCartItem:
-            "pos-remove-cart-item"
         case .readerConnectionScanning:
             "pos-reader-connection-scanning"
         case .readerConnectionDoYouWantToConnect:

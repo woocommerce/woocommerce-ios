@@ -98,6 +98,7 @@ struct CartView: View {
         }
         .frame(maxWidth: .infinity)
         .background(cartViewModel.isCartEmpty ? Color.posBackgroundEmptyWhitei3.ignoresSafeArea(edges: .all) : Color.posBackgroundWhitei3.ignoresSafeArea(.all))
+        .accessibilityElement(children: .contain)
     }
 }
 

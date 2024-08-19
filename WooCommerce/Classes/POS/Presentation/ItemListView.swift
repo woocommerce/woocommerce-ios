@@ -29,6 +29,7 @@ struct ItemListView: View {
             await viewModel.reload()
         }
         .background(Color.posBackgroundGreyi3)
+        .accessibilityElement(children: .contain)
     }
 }
 

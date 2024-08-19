@@ -3,7 +3,7 @@
 
 20.1
 -----
-
+- [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
 
 20.0
 -----

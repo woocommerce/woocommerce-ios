@@ -12,6 +12,8 @@ struct TotalsView: View {
     @State private var isShowingTotalsFields: Bool
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
     init(viewModel: PointOfSaleDashboardViewModel,
          totalsViewModel: TotalsViewModel) {
         self.viewModel = viewModel
@@ -31,10 +33,17 @@ struct TotalsView: View {
                         if totalsViewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing])
-                                .padding(.bottom, cardReaderViewLayout.bottomPadding)
+                                .padding([.top, .leading, .trailing],
+                                         dynamicTypeSize.isAccessibilitySize ? nil :
+                                            cardReaderViewLayout.sidePadding)
+                                .padding(.bottom,
+                                         dynamicTypeSize.isAccessibilitySize ? nil :
+                                            cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
+                                .accessibilityShowsLargeContentViewer()
+                                .minimumScaleFactor(0.1)
+                                .layoutPriority(1)
                         }
 
                         if isShowingTotalsFields {
@@ -42,6 +51,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .animation(.default, value: totalsViewModel.isShimmering)
                                 .opacity(totalsViewModel.isShowingTotalsFields ? 1 : 0)
+                                .layoutPriority(2)
                         }
                     }
                     .animation(.default, value: totalsViewModel.isShowingCardReaderStatus)
@@ -239,6 +249,7 @@ private extension TotalsView {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
+        let sidePadding: CGFloat = 8
 
         static let primary = CardReaderViewLayout(
             backgroundColor: .clear,

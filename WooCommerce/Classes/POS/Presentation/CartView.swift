@@ -5,6 +5,7 @@ struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -13,13 +14,14 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            HStack {
+            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 backAddMoreButton
                     .disabled(viewModel.isAddMoreDisabled)
                 Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
                     .foregroundColor(cartViewModel.cartLabelColor)
                 Spacer()
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                 if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(itemsInCartLabel)
                         .font(Constants.itemsFont)
@@ -115,6 +117,7 @@ private extension CartView {
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
+        static let cartHeaderSpacing: CGFloat = 8
     }
 
     enum Localization {

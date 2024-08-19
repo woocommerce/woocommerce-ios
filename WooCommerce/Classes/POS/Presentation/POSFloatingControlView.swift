@@ -31,7 +31,7 @@ struct POSFloatingControlView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.posBodyEmphasized)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
                     .foregroundStyle(fontColor)
                     .frame(width: Constants.size, height: Constants.size)
             }

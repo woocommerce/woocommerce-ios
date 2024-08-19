@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     var body: some View {
         VStack {
             Text(Localization.title)
+                .accessibilityAddTraits(.isHeader)
 
             Image(uiImage: .paymentErrorImage)
 

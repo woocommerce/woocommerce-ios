@@ -11,6 +11,7 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)
                     .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.message)
                     .font(.posBodyRegular)

@@ -12,6 +12,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
         HStack {
             VStack {
                 Text(viewModel.title)
+                    .accessibilityAddTraits(.isHeader)
                 Text(viewModel.message)
             }
 

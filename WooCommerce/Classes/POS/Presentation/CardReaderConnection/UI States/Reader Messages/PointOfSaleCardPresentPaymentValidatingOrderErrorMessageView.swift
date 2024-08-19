@@ -11,6 +11,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posPrimaryTexti3)
                     .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.message)
                     .foregroundStyle(Color.posPrimaryTexti3)

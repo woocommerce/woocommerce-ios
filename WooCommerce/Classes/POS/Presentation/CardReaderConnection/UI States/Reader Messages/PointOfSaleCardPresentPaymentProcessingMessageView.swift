@@ -19,6 +19,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                 Text(viewModel.message)
                     .font(.posTitleEmphasized)
                     .foregroundStyle(Color.posQuaternaryTextInverted)
+                    .accessibilityAddTraits(.isHeader)
             }
         }
         .padding(.bottom)

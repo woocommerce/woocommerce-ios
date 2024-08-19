@@ -4,7 +4,7 @@ import SwiftUI
 ///
 struct FormattableAmountTextField: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State var focusAmountInput: Bool = true
+    @FocusState private var focusAmountInput: Bool
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
 
@@ -15,19 +15,24 @@ struct FormattableAmountTextField: View {
     var body: some View {
         ZStack(alignment: .center) {
             // Hidden input text field
-            BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
+            TextField("", text: $viewModel.textFieldInput)
+                .onChange(of: viewModel.textFieldInput, perform: viewModel.updateAmount)
+                .focused($focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
 
-            // Visible & formatted label
             Text(viewModel.formattedAmount)
                 .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
                     focusAmountInput = true
                 }
+        }
+        .onAppear {
+            focusAmountInput = true
         }
         .fixedSize(horizontal: false, vertical: true)
     }

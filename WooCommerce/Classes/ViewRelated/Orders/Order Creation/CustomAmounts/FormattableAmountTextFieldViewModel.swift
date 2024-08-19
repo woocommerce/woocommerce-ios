@@ -7,21 +7,14 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     private let priceFieldFormatter: PriceFieldFormatter
 
-    /// Stores the amount entered by the merchant.
+
+    /// Stores the formatted amount entered by the merchant.
     ///
-    @Published var amount: String = "" {
-        didSet {
-            guard amount != oldValue else { return }
+    @Published private(set) var amount: String = ""
 
-            if resetAmountWithNewValue,
-                let newInput = amount.last {
-                amount = String(newInput)
-                resetAmountWithNewValue = false
-            }
-
-            amount = priceFieldFormatter.formatAmount(amount)
-        }
-    }
+    /// Stores the input entered by the merchant.
+    ///
+    @Published var textFieldInput: String = ""
 
     /// When true, the amount will be reset with the new input instead of appending.
     /// This is useful when we want to edit the amount with a new one from a source different than the view,
@@ -64,6 +57,8 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: allowNegativeNumber)
         amountTextSize = size
         self.allowNegativeNumber = allowNegativeNumber
+
+        $amount.assign(to: &$textFieldInput)
     }
 
     func reset() {
@@ -72,8 +67,21 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
     func presetAmount(_ newAmount: String) {
         resetAmountWithNewValue = false
-        amount = newAmount
+        updateAmount(newAmount)
         resetAmountWithNewValue = true
+    }
+
+    func updateAmount(_ newAmount: String) {
+        guard amount != newAmount else { return }
+
+        if resetAmountWithNewValue,
+            let newInput = newAmount.last {
+            amount = priceFieldFormatter.formatAmount(String(newInput))
+            resetAmountWithNewValue = false
+            return
+        }
+
+        amount = priceFieldFormatter.formatAmount(newAmount)
     }
 }
 

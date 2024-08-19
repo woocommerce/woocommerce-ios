@@ -5,6 +5,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
             viewModel.image
 

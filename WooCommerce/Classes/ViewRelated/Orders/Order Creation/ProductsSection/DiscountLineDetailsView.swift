@@ -15,7 +15,8 @@ struct DiscountLineDetailsView: View {
                     Text(Localization.fixedPriceDiscountLabel)
                 }, content: {
                     InputField(placeholder: Localization.fixedPriceDiscountInputPlaceholder,
-                               text: $viewModel.amount)
+                               text: $viewModel.amountTextInput,
+                               onChangeText: viewModel.updateAmount)
                     discountTypeButtonToggle
                         .padding()
                 })
@@ -24,7 +25,8 @@ struct DiscountLineDetailsView: View {
                     Text(Localization.percentagePriceDiscountLabel)
                 }, content: {
                     InputField(placeholder: Localization.percentagePriceDiscountInputPlaceholder,
-                               text: $viewModel.percentage)
+                               text: $viewModel.percentageTextInput,
+                               onChangeText: viewModel.updatePercentage)
                     discountTypeButtonToggle
                         .padding()
                 })
@@ -52,21 +54,26 @@ private extension DiscountLineDetailsView {
     struct InputField: View {
         let placeholder: String
         @Binding var text: String
+        let onChangeText: (String) -> (Void)
+        @FocusState var focused: Bool
 
         var body: some View {
-            BindableTextfield(placeholder,
-                              text: $text,
-                              focus: .constant(true))
-            .keyboardType(.numbersAndPunctuation)
-            .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
-            .padding([.leading, .trailing], Layout.padding)
-            .overlay {
-                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                    .inset(by: Layout.inputFieldOverlayInset)
-                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
-            }
-            .cornerRadius(Layout.frameCornerRadius)
-            .padding()
+            TextField(placeholder, text: $text)
+                .onChange(of: text, perform: onChangeText)
+                .focused($focused)
+                .keyboardType(.numbersAndPunctuation)
+                .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
+                .padding([.leading, .trailing], Layout.padding)
+                .overlay {
+                    RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                        .inset(by: Layout.inputFieldOverlayInset)
+                        .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
+                }
+                .cornerRadius(Layout.frameCornerRadius)
+                .padding()
+                .onAppear {
+                    focused = true
+                }
         }
     }
 }

@@ -104,32 +104,22 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Stores the fixed amount entered by the merchant.
     ///
-    @Published var amount: String = "" {
-        didSet {
-            guard amount != oldValue else { return }
-            amount = priceFieldFormatter.formatAmount(amount)
-        }
-    }
+    @Published var amountTextInput: String = ""
 
     /// Stores the percentage entered by the merchant.
     ///
-    @Published var percentage: String = "" {
-        didSet {
-            guard percentage != oldValue else { return }
-            percentage = sanitizePercentageAmount(percentage)
-        }
-    }
+    @Published var percentageTextInput: String = ""
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
     var hasInputAmount: Bool {
-        amount.isNotEmpty || percentage.isNotEmpty
+        amountTextInput.isNotEmpty || percentageTextInput.isNotEmpty
     }
 
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
-        let inputString = feeOrDiscountType == .fixed ? amount : percentage
+        let inputString = feeOrDiscountType == .fixed ? amountTextInput : percentageTextInput
         guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
             return .zero
         }
@@ -253,8 +243,8 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
-            self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
-            self.percentage = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
+            self.amountTextInput = priceFieldFormatter.formatAmount(formattedInputAmount)
+            self.percentageTextInput = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
         }
 
         self.didSelectSave = didSelectSave
@@ -282,33 +272,36 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     }
 }
 
-private extension FeeOrDiscountLineDetailsViewModel {
-
+extension FeeOrDiscountLineDetailsViewModel {
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
-    func sanitizePercentageAmount(_ amount: String) -> String {
+    func updatePercentage(_ percentageInput: String) {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
-        let negativePrefix = amount.hasPrefix(minusSign) ? minusSign : ""
+        let negativePrefix = percentageInput.hasPrefix(minusSign) ? minusSign : ""
 
-        let sanitized = amount
+        let sanitized = percentageInput
             .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
 
         // Trim to two decimals & remove any extra "."
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            return negativePrefix + components[0] + deviceDecimalSeparator
+            self.percentageTextInput = negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            return negativePrefix + components[0]
+            self.percentageTextInput = negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            return negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
+            self.percentageTextInput = negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+
+    func updateAmount(_ amountInput: String) {
+        self.amountTextInput = priceFieldFormatter.formatAmount(amountInput)
     }
 }

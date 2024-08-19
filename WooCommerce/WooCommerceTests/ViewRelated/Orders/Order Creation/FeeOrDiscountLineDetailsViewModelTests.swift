@@ -21,10 +21,10 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.amount = "hi:11.3005.02-"
+        viewModel.updateAmount("hi:11.3005.02-")
 
         // Then
-        XCTAssertEqual(viewModel.amount, "11.30")
+        XCTAssertEqual(viewModel.amountTextInput, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
     }
@@ -40,11 +40,11 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.amount = "-hi:11.3005.02-"
+        viewModel.updateAmount("-hi:11.3005.02-")
 
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.amount, "-11.30")
+        XCTAssertEqual(viewModel.amountTextInput, "-11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
     }
@@ -66,11 +66,11 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.amount = "12.203"
+        viewModel.updateAmount("12.203")
 
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.amount, "12.203")
+        XCTAssertEqual(viewModel.amountTextInput, "12.203")
         XCTAssertEqual(viewModel.currencySymbol, "£")
         XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
     }
@@ -87,11 +87,11 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.feeOrDiscountType = .percentage
-        viewModel.percentage = "hi:11.3005.02-"
+        viewModel.updatePercentage("hi:11.3005.02-")
 
         // Then
         XCTAssertTrue(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.percentage, "11.30")
+        XCTAssertEqual(viewModel.percentageTextInput, "11.30")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
@@ -107,10 +107,10 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.feeOrDiscountType = .percentage
-        viewModel.percentage = "-hi:11.3005.02-"
+        viewModel.updatePercentage("-hi:11.3005.02-")
 
         // Then
-        XCTAssertEqual(viewModel.percentage, "-11.30")
+        XCTAssertEqual(viewModel.percentageTextInput, "-11.30")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
@@ -128,8 +128,8 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
-        XCTAssertEqual(viewModel.amount, "10.00")
-        XCTAssertEqual(viewModel.percentage, "5")
+        XCTAssertEqual(viewModel.amountTextInput, "10.00")
+        XCTAssertEqual(viewModel.percentageTextInput, "5")
     }
 
     func test_view_model_prefills_negative_input_data_correctly() {
@@ -146,8 +146,8 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
-        XCTAssertEqual(viewModel.amount, "-10.00")
-        XCTAssertEqual(viewModel.percentage, "-5")
+        XCTAssertEqual(viewModel.amountTextInput, "-10.00")
+        XCTAssertEqual(viewModel.percentageTextInput, "-5")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
@@ -163,25 +163,25 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When & Then
         // $11.30
-        viewModel.amount = "11.30"
+        viewModel.updateAmount("11.30")
         viewModel.feeOrDiscountType = .fixed
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // 0%
-        viewModel.percentage = ""
+        viewModel.updatePercentage("")
         viewModel.feeOrDiscountType = .percentage
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // 10%
-        viewModel.percentage = "10"
+        viewModel.updatePercentage("10")
         viewModel.feeOrDiscountType = .percentage
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // $0
-        viewModel.amount = ""
+        viewModel.updateAmount("")
         viewModel.feeOrDiscountType = .fixed
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
@@ -198,11 +198,11 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When & Then
-        viewModel.amount = "11.50"
+        viewModel.updateAmount("11.50")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
-        viewModel.amount = "11.30"
+        viewModel.updateAmount("11.30")
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When & Then
@@ -224,12 +224,12 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When & Then
         // Change fee to $5
-        viewModel.amount = "5"
+        viewModel.updateAmount("5")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // Change fee to 5%
-        viewModel.amount = "5"
+        viewModel.updateAmount("5")
         viewModel.feeOrDiscountType = .percentage
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
@@ -248,7 +248,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.amount = "$11.30"
+        viewModel.updateAmount("$11.30")
 
         // Then
         viewModel.saveData()
@@ -270,7 +270,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.feeOrDiscountType = .percentage
-        viewModel.percentage = "10"
+        viewModel.updatePercentage("10")
 
         // Then
         viewModel.saveData()
@@ -291,7 +291,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.amount = "-$11.30"
+        viewModel.updateAmount("-$11.30")
 
         // Then
         viewModel.saveData()
@@ -340,7 +340,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.amount = "$11.30"
+        viewModel.updateAmount("$11.30")
         viewModel.feeOrDiscountType = .fixed
         viewModel.saveData()
 
@@ -362,7 +362,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.percentage = "10"
+        viewModel.updatePercentage("10")
         viewModel.feeOrDiscountType = .percentage
         viewModel.saveData()
 

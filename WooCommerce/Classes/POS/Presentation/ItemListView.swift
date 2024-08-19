@@ -46,11 +46,10 @@ private extension ItemListView {
                         viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                            .font(.system(size: UIFontMetrics.default.scaledValue(for: Constants.infoIconSize),
+                                          weight: .medium))
                     })
+                    .foregroundColor(.posPrimaryTexti3)
                 }
             }
             if viewModel.shouldShowHeaderBanner {

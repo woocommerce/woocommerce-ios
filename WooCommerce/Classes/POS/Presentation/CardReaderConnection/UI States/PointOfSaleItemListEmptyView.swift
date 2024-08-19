@@ -11,6 +11,7 @@ struct PointOfSaleItemListEmptyView: View {
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
                 .foregroundColor(.posIconGrayi3)
                 .scaleEffect(x: -1, y: 1)
+                .accessibilityHidden(true)
             Text(Localization.emptyProductsTitle)
                 .foregroundStyle(Color.posIconGrayi3)
                 .font(.posTitleEmphasized)

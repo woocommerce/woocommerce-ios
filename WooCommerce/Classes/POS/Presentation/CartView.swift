@@ -49,7 +49,7 @@ struct CartView: View {
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
                     Spacer()
-                    Image(uiImage: .shoppingBagsImage)
+                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize)
                         .aspectRatio(contentMode: .fit)
@@ -160,7 +160,6 @@ private extension CartView {
                     .resizable()
                     .frame(width: 32, height: 32)
             }
-
         }
     }
 }

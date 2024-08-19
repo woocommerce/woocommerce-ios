@@ -49,6 +49,6 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
 
 #Preview {
     PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()
+        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
     )
 }

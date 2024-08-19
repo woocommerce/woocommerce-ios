@@ -799,6 +799,7 @@
 		205E794D2C2057B9001BA266 /* PointOfSaleCardPresentPaymentErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E794C2C2057B9001BA266 /* PointOfSaleCardPresentPaymentErrorMessageView.swift */; };
 		205E794F2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */; };
 		205E79512C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */; };
+		20600F8B2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20600F8A2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift */; };
 		20762BA12C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */; };
 		20762BA32C18A6A300758305 /* CardPresentPaymentEventDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */; };
 		20762BA52C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */; };
@@ -3824,6 +3825,7 @@
 		205E794C2C2057B9001BA266 /* PointOfSaleCardPresentPaymentErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentErrorMessageView.swift; sourceTree = "<group>"; };
 		205E794E2C207D38001BA266 /* PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentNonRetryableErrorMessageView.swift; sourceTree = "<group>"; };
 		205E79502C207FAE001BA266 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView.swift; sourceTree = "<group>"; };
+		20600F8A2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift; sourceTree = "<group>"; };
 		20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
 		20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentEventDetails.swift; sourceTree = "<group>"; };
 		20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
@@ -7703,6 +7705,7 @@
 			isa = PBXGroup;
 			children = (
 				20ADE9452C6B364900C91265 /* CardPresentPaymentRetryApproachTests.swift */,
+				20600F8A2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift */,
 			);
 			path = "Card Present Payments";
 			sourceTree = "<group>";
@@ -16667,6 +16670,7 @@
 				DE4D23B429B58C5A003A4B5D /* MockWordPressComAccountService.swift in Sources */,
 				57A5D8D92534FEBB00AA54D6 /* TotalRefundedCalculationUseCaseTests.swift in Sources */,
 				EE5366A52B0673760008E61E /* SubscriptionExpiryViewModelTests.swift in Sources */,
+				20600F8B2C6E3CCE00950D2A /* PointOfSaleCardPresentPaymentEventPresentationStyleTests.swift in Sources */,
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,
 				EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */,
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,

@@ -4,10 +4,6 @@ enum PointOfSaleAssets: CaseIterable {
     case processingPayment
     case readyForPayment
     case cartBack
-    case exit
-    case getSupport
-    case removeCartItem
-    case dismissProductsBanner
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
@@ -21,14 +17,6 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-ready-for-payment"
         case .cartBack:
             "pos-cart-back"
-        case .exit:
-            "pos-exit"
-        case .getSupport:
-            "pos-get-support"
-        case .removeCartItem:
-            "pos-remove-cart-item"
-        case .dismissProductsBanner:
-            "pos-dismiss-products-banner"
         case .readerConnectionScanning:
             "pos-reader-connection-scanning"
         case .readerConnectionDoYouWantToConnect:

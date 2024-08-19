@@ -14,9 +14,9 @@ enum POSFontStyle {
     func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
         case .posTitleRegular:
-            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory), weight: .medium)
+            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .medium)
         case .posTitleEmphasized:
-            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory), weight: .bold)
+            Font.system(size: scaledValue(36, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)
         case .posBodyRegular:
             Font.system(size: scaledValue(24, maximumContentSizeCategory: maximumContentSizeCategory), weight: .regular)
         case .posBodyEmphasized:

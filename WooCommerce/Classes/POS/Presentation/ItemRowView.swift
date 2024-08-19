@@ -31,15 +31,10 @@ struct ItemRowView: View {
                 Button(action: {
                     onItemRemoveTapped()
                 }, label: {
-                    HStack {
-                        Spacer()
-                        Image(PointOfSaleAssets.removeCartItem.imageName)
-                        Spacer()
-                    }
+                    Image(systemName: "xmark.circle")
+                        .font(.posBodyRegular)
                 })
-                .frame(width: Constants.buttonWidth,
-                       height: Constants.buttonWidth,
-                       alignment: .trailing)
+                .padding()
                 .foregroundColor(Color.posIconGrayi3)
             }
         }
@@ -90,7 +85,6 @@ private extension ItemRowView {
         static let horizontalPadding: CGFloat = 16
         static let horizontalCardSpacing: CGFloat = 0
         static let horizontalElementSpacing: CGFloat = 16
-        static let buttonWidth: CGFloat = 56
         static let itemNameAndPriceSpacing: CGFloat = 8
         static let itemNameFont: POSFontStyle = .posDetailEmphasized
         static let itemPriceFont: POSFontStyle = .posDetailLight

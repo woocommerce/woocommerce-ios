@@ -25,7 +25,7 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
         let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
 
         // Then
         XCTAssertFalse(viewModel.tenderButtonIsEnabled)
@@ -39,8 +39,8 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
         // When
         // Formattable input amount needs to be entered one digit at a time.
-        viewModel.formattableAmountViewModel.amount = "1"
-        viewModel.formattableAmountViewModel.amount = "15"
+        viewModel.formattableAmountViewModel.updateAmount("1")
+        viewModel.formattableAmountViewModel.updateAmount("15")
 
         // Then
         XCTAssertTrue(viewModel.tenderButtonIsEnabled)
@@ -57,9 +57,9 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
         // When
         // Formattable input amount needs to be entered one digit at a time.
-        viewModel.formattableAmountViewModel.amount = "5"
-        viewModel.formattableAmountViewModel.amount = "5."
-        viewModel.formattableAmountViewModel.amount = "5.5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
+        viewModel.formattableAmountViewModel.updateAmount("5.")
+        viewModel.formattableAmountViewModel.updateAmount("5.5")
         viewModel.addNote = true
         viewModel.onMarkOrderAsCompleteButtonTapped()
 
@@ -76,7 +76,7 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
         let viewModel = CashPaymentTenderViewModel(formattedTotal: "$1.00", onOrderPaid: { _ in }, storeCurrencySettings: usStoreSettings, analytics: analytics)
 
         // When
-        viewModel.formattableAmountViewModel.amount = "5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
         viewModel.addNote = true
         viewModel.onMarkOrderAsCompleteButtonTapped()
 

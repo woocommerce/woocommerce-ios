@@ -19,6 +19,7 @@ struct CartView: View {
                 Text(Localization.cartTitle)
                     .font(Constants.primaryFont)
                     .foregroundColor(cartViewModel.cartLabelColor)
+                    .accessibilityAddTraits(.isHeader)
                 Spacer()
                 if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
                     Text(itemsInCartLabel)

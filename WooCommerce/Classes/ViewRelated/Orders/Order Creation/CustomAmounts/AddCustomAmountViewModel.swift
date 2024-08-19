@@ -173,7 +173,7 @@ private extension AddCustomAmountViewModel {
             analytics.track(.addCustomAmountNameAdded)
         }
 
-        if percentageViewModel?.percentage.isNotEmpty ?? false {
+        if percentageViewModel?.percentageTextFieldInput.isNotEmpty ?? false {
             analytics.track(.addCustomAmountPercentageAdded)
         }
 

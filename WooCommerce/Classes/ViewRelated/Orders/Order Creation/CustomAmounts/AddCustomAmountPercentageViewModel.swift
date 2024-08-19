@@ -7,7 +7,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let baseAmountForPercentage: Decimal
 
-    @Published var percentageCalculatedAmount: String = ""
+    @Published private(set) var percentageCalculatedAmount: String = ""
     var baseAmountForPercentageString: String {
         guard let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
             return ""
@@ -16,13 +16,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
         return formattedAmount
     }
 
-    @Published var percentage = "" {
-        didSet {
-            guard oldValue != percentage else { return }
-
-            updateAmountBasedOnPercentage(percentage)
-        }
-    }
+    @Published var percentageTextFieldInput = ""
 
     init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
         self.baseAmountForPercentage = baseAmountForPercentage
@@ -35,13 +29,13 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
             return
         }
 
-        percentage = currencyFormatter.localize(((totalDecimal as Decimal / baseAmountForPercentage) * 100)) ?? "0"
+        percentageTextFieldInput = currencyFormatter.localize(((totalDecimal as Decimal / baseAmountForPercentage) * 100)) ?? "0"
         percentageCalculatedAmount = fee.total
     }
 }
 
 extension AddCustomAmountPercentageViewModel {
-    func updateAmountBasedOnPercentage(_ percentage: String) {
+    func updatePercentageCalculatedAmount(_ percentage: String) {
         guard percentage.isNotEmpty,
               let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
             percentageCalculatedAmount = "0"

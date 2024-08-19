@@ -4,6 +4,8 @@
 20.1
 -----
 
+- [*] Order Creation: Fix an occasional issue where text fields wouldn't automatically focus and accept input. [https://github.com/woocommerce/woocommerce-ios/pull/13650]
+
 
 20.0
 -----

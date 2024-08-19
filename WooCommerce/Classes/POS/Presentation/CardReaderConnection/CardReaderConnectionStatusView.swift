@@ -20,6 +20,7 @@ struct CardReaderConnectionStatusView: View {
             .resizable()
             .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
             .foregroundColor(color)
+            .accessibilityHidden(true)
     }
 
     var body: some View {
@@ -28,7 +29,7 @@ struct CardReaderConnectionStatusView: View {
             case .connected:
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
                     circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
-                    Text("Reader Connected")
+                    Text(Localization.readerConnected)
                         .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
@@ -39,7 +40,7 @@ struct CardReaderConnectionStatusView: View {
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color(.wooCommerceAmber(.shade60)))
-                        Text("Connect your reader")
+                        Text(Localization.connectYourReader)
                             .foregroundColor(disconnectedFontColor)
                     }
                 }
@@ -85,6 +86,20 @@ private extension CardReaderConnectionStatusView {
         static let overlayRadius: CGFloat = 4
         static let overlayLineWidth: CGFloat = 2
         static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
+    }
+
+    enum Localization {
+        static let readerConnected = NSLocalizedString(
+            "pointOfSale.cardReader.connectionStatus.connected.title",
+            value: "Reader connected",
+            comment: "The title of the card reader connection view, when connected. " +
+            "Shown as an overlay on Point of Sale.")
+
+        static let connectYourReader = NSLocalizedString(
+            "pointOfSale.cardReader.connectionStatus.connectYourReader.title",
+            value: "Connect your reader",
+            comment: "The title of the card reader connection view, when disconnected. " +
+            "Shown as an overlay on Point of Sale.")
     }
 }
 

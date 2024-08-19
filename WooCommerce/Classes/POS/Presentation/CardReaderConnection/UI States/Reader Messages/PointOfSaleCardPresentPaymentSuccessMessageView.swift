@@ -32,6 +32,7 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
             Image(systemName: Constants.imageName)
                 .font(.system(size: Constants.checkmarkSize, weight: .bold))
                 .foregroundColor(Color(.wooCommerceEmerald(.shade40)))
+                .accessibilityHidden(true)
         }
     }
 }

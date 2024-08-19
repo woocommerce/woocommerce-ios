@@ -8,7 +8,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             Text(viewModel.title)
                 .accessibilityAddTraits(.isHeader)
 
-            Image(viewModel.imageName)
+            Image(decorative: viewModel.imageName)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,

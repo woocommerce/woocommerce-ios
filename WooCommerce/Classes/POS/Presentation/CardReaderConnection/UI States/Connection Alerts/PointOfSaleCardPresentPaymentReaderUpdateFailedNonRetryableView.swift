@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Text(viewModel.batteryLevelInfo)
 

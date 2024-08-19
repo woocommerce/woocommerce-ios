@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             if let errorDetails = viewModel.errorDetails {
                 Text(errorDetails)

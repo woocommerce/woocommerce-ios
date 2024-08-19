@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.retryButtonViewModel.title,

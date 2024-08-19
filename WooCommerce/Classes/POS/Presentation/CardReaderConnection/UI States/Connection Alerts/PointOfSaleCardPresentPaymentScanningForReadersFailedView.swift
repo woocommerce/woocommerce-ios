@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Text(viewModel.errorDetails)
 

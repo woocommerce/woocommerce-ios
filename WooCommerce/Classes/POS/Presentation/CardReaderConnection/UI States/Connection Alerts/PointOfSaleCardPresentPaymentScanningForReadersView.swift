@@ -12,7 +12,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
             Text(viewModel.title)
                 .accessibilityAddTraits(.isHeader)
 
-            Image(viewModel.imageName)
+            Image(decorative: viewModel.imageName)
 
             Text(viewModel.instruction)
 

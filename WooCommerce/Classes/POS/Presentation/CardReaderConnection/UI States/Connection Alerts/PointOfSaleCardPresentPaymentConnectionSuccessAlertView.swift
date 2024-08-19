@@ -12,7 +12,7 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
             Text(viewModel.title)
                 .accessibilityAddTraits(.isHeader)
 
-            Image(viewModel.imageName)
+            Image(decorative: viewModel.imageName)
 
             Button(viewModel.buttonViewModel.title,
                    action: viewModel.buttonViewModel.actionHandler)

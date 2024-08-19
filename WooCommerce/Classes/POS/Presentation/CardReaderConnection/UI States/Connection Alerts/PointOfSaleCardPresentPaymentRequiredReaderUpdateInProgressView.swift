@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Text(viewModel.progressTitle)
             Text(viewModel.progressSubtitle)

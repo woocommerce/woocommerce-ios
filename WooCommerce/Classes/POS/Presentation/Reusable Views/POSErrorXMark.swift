@@ -5,6 +5,7 @@ struct POSErrorXMark: View {
         Image(systemName: "xmark.circle.fill")
             .font(.system(size: PointOfSaleCardPresentPaymentLayout.largeErrorIconSize))
             .foregroundStyle(Color(.wooCommerceAmber(.shade60)))
+            .accessibilityHidden(true)
     }
 }
 

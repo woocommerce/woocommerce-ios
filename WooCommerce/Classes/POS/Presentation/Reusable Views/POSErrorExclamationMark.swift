@@ -5,6 +5,7 @@ struct POSErrorExclamationMark: View {
         Image(systemName: "exclamationmark.circle.fill")
             .font(.system(size: PointOfSaleCardPresentPaymentLayout.errorIconSize))
             .foregroundStyle(Color(.wooCommerceAmber(.shade60)))
+            .accessibilityHidden(true)
     }
 }
 

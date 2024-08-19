@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

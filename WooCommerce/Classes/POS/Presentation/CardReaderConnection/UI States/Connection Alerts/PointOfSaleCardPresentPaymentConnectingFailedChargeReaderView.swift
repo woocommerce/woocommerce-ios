@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

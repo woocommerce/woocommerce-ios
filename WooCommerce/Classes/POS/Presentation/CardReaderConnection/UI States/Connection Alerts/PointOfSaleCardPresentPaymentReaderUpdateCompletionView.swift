@@ -18,6 +18,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
             Text(viewModel.progressTitle)
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

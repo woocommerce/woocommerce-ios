@@ -30,6 +30,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

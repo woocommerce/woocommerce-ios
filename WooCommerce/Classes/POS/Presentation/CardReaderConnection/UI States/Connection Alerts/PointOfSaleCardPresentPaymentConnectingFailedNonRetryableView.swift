@@ -17,6 +17,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
                    action: viewModel.cancelButtonViewModel.actionHandler)
             .buttonStyle(SecondaryButtonStyle())
         }
+        .accessibilityElement(children: .contain)
     }
 }
 

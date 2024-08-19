@@ -22,6 +22,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
             .buttonStyle(SecondaryButtonStyle())
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

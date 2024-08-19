@@ -28,6 +28,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

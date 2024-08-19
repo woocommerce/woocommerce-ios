@@ -23,6 +23,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
                               completion: viewModel.settingsWebViewWasDismissed)

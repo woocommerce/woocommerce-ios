@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

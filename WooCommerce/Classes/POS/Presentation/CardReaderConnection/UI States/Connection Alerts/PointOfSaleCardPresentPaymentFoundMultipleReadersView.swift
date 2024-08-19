@@ -40,6 +40,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
+        .accessibilityElement(children: .contain)
     }
 }
 

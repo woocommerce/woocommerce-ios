@@ -17,6 +17,7 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
             Text(viewModel.instruction)
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

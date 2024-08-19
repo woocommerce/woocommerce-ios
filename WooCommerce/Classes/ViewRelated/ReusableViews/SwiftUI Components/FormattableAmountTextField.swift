@@ -17,6 +17,7 @@ struct FormattableAmountTextField: View {
             // Hidden input text field
             TextField("", text: $viewModel.textFieldInput)
                 .onChange(of: viewModel.textFieldInput, perform: viewModel.updateAmount)
+                .focused()
                 .focused($focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
@@ -30,9 +31,6 @@ struct FormattableAmountTextField: View {
                 .onTapGesture {
                     focusAmountInput = true
                 }
-        }
-        .onAppear {
-            focusAmountInput = true
         }
         .fixedSize(horizontal: false, vertical: true)
     }

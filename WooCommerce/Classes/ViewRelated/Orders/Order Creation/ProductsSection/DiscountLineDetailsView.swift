@@ -55,12 +55,11 @@ private extension DiscountLineDetailsView {
         let placeholder: String
         @Binding var text: String
         let onChangeText: (String) -> (Void)
-        @FocusState var focused: Bool
 
         var body: some View {
             TextField(placeholder, text: $text)
                 .onChange(of: text, perform: onChangeText)
-                .focused($focused)
+                .focused()
                 .keyboardType(.numbersAndPunctuation)
                 .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
                 .padding([.leading, .trailing], Layout.padding)
@@ -71,9 +70,6 @@ private extension DiscountLineDetailsView {
                 }
                 .cornerRadius(Layout.frameCornerRadius)
                 .padding()
-                .onAppear {
-                    focused = true
-                }
         }
     }
 }

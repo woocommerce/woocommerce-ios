@@ -104,4 +104,3 @@ extension UIViewController: UIGestureRecognizerDelegate {
         navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }
-

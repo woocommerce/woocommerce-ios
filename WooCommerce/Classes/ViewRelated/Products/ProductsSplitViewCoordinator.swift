@@ -228,12 +228,15 @@ private extension ProductsSplitViewCoordinator {
 }
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, willShow: viewController) {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
             contentTypes = []
             secondaryNavigationController.viewControllers = []
             return
         }
+    }
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+
 
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
@@ -262,7 +265,7 @@ private extension ProductsSplitViewCoordinator {
     /// - The current content types state is still non-empty, i.e. some secondary content is currently shown
     /// - The view controller to show in the primary navigation stack is the product list
     func willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
-                                                                                    willShow viewController: UIViewController) -> Bool {
+                                                                                    didShow viewController: UIViewController) -> Bool {
         let isNavigatingToProductList = viewController == productsViewController ||
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return splitViewController.isCollapsed && navigationController == primaryNavigationController

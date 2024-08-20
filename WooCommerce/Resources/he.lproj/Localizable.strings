@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "יש להוסיף מחיר לסוג כדי שהוא יופיע בחנות שלך";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "להוסיף מוצר";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "להוסיף תמונה למוצר";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "להוסיף מוצר באופן ידני.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "להוסיף הערת רכישה...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "יש להוסיף מאפיינים מרכזיים, יתרונות או פרטים שיעזרו למחפשים למצוא את המוצר שלך באינטרנט.";
-
-/* Title for the option to create product manually */
-"Add manually" = "להוסיף ידנית";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "יש לבחור סיסמה";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "יש לבחור תבנית";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "הפעולה יוצרת סוגים עבור כל השילובים של המאפיינים שציינת.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "יוצר את תבנית המוצר...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "יוצר סוגים...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "איך נוכל לשפר את השירות שלנו?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "איך היית רוצה להתחיל?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "איך זה עובד";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "לבחור הכול";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "לבחור מקור מדיה";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "לבחור קטגוריית אם";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "אפשר להתחיל למכור היום על ידי הוספה של המוצר הראשון לחנות שלך.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "להתחיל עם תבנית";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "סוריה";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "דוח מצב המערכת";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "הייתה בעיה בתקשורת עם האתר הזה.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "אירעה בעיה ביצירת התבנית של המוצר.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "להשתמש במפתח אבטחה";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "ניתן להשתמש בתבנית כדי ליצור מוצרים פיזיים, וירטואליים ומוצרים עם סוגים שונים. אפשר לערוך את הפרטים בכל שלב בתהליך.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "יש להשתמש בכתובת אימייל פעילה כדי לקבל את ההודעות שלנו.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "ספריית המדיה של WordPress";
 
@@ -9739,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "סכום כולל";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ ‏$";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "יש לנסות שוב";
@@ -11159,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "התשלום נכשל";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "יש לנסות שוב";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "התשלום נכשל";
 
@@ -11408,18 +11372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "האם לצאת ממצב 'נקודת מכירה'?";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "ליצור מוצר פשוט";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "האפשרות POS נתמכת כרגע במוצרים פשוטים בלבד";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "אין בחנות שלך מוצרים";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "אין מוצרים";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "לנסות שוב";
 
@@ -11443,9 +11395,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "מתחילים כאן";
-
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "מוצרים";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "ליצור הזמנה בניהול החנות";

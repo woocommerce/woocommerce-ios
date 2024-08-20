@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "為款式新增價格以顯示於商店中";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "新增商品";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "請新增產品圖片";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "手動新增產品。";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "新增購買備註...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "新增關鍵功能、好處或詳細資料，有助於在網路上更容易找到你的產品。";
-
-/* Title for the option to create product manually */
-"Add manually" = "手動新增";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "選擇密碼";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "選擇範本";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "從裝置中選擇";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "為屬性的所有組合建立款式。";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "正在建立範本商品...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "正在建立款式...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我們可以如何改進？";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "你想如何開始？";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "瞭解使用方式";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "全部選取";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "選取媒體來源";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "選取上層類別";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "為商店新增第一個產品，立即開始銷售。";
 
-/* Title for the option to create a template product */
-"Start with a template" = "從範本開始著手";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "敘利亞";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "系統狀態報告";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "與網站通訊時發生問題。";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "建立範本商品時發生問題。";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "使用安全性金鑰";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "使用範本建立實體、虛擬和不同款式的商品。 你可以隨時隨地編輯。";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "請使用有效的電子郵件地址，以確保你能收到我們的訊息。";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒體庫";
 
@@ -9739,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "總計";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ 美元";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "再試一次";
@@ -11159,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "付款失敗";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "再試一次";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "付款失敗";
 
@@ -11408,18 +11372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "要結束銷售時點情報系統模式嗎？";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "建立簡單商品";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS 目前僅支援簡單商品";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "你的商店沒有任何商品";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "沒有商品";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "重試";
 
@@ -11443,9 +11395,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "開始";
-
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "商品";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "在商店管理建立訂單";

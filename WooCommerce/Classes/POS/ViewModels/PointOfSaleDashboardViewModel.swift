@@ -28,6 +28,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var isEmpty: Bool = false
     @Published var showExitPOSModal: Bool = false
+    @Published var showSupport: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -47,13 +48,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
         observeItemListState()
+        observeTotalsStartNewOrderAction()
     }
 
-    func startNewOrder() {
+    private func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewOrder()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {
@@ -104,13 +105,11 @@ private extension PointOfSaleDashboardViewModel {
                 switch paymentState {
                 case .processingPayment,
                         .paymentError,
-                        .cardPaymentSuccessful:
-                    return true
-                case .idle,
-                        .acceptingCard,
+                        .cardPaymentSuccessful,
                         .validatingOrder,
-                        .validatingOrderError,
                         .preparingReader:
+                    return true
+                case .idle, .validatingOrderError, .acceptingCard:
                     return orderState.isSyncing
                 }
             }
@@ -162,9 +161,7 @@ private extension PointOfSaleDashboardViewModel {
         }
         .store(in: &cancellables)
     }
-}
 
-private extension PointOfSaleDashboardViewModel {
     func observeItemListState() {
         Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
             .sink { [weak self] state, items in
@@ -181,6 +178,15 @@ private extension PointOfSaleDashboardViewModel {
                     self.isError = false
                     self.isEmpty = false
                 }
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeTotalsStartNewOrderAction() {
+        totalsViewModel.startNewOrderActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.startNewOrder()
             }
             .store(in: &cancellables)
     }

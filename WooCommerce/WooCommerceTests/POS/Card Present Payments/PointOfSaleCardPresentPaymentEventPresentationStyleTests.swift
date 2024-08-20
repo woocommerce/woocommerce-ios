@@ -10,10 +10,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             error: NSError(domain: "test", code: 1),
             retryApproach: .tryAnotherPaymentMethod(retryAction: { spyRetryCalled = true }),
             cancelPayment: {})
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: {},
-            nonRetryableErrorExitAction: {},
-            formattedOrderTotalPrice: nil)
+        let dependencies = createPresentationStyleDependencies()
 
         // When
         let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
@@ -39,10 +36,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             retryApproach: .tryAgain(retryAction: { spyRetryCalled = true }),
             cancelPayment: {})
         var spyBackToCheckoutCalled = false
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: { spyBackToCheckoutCalled = true },
-            nonRetryableErrorExitAction: {},
-            formattedOrderTotalPrice: nil)
+        let dependencies = createPresentationStyleDependencies(tryPaymentAgainBackToCheckoutAction: { spyBackToCheckoutCalled = true })
 
         // When
         let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
@@ -68,10 +62,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
             retryApproach: .dontRetry,
             cancelPayment: {})
         var spyTryAnotherPaymentMethod = false
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: {},
-            nonRetryableErrorExitAction: { spyTryAnotherPaymentMethod = true },
-            formattedOrderTotalPrice: nil)
+        let dependencies = createPresentationStyleDependencies(nonRetryableErrorExitAction: { spyTryAnotherPaymentMethod = true })
 
         // When
         let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
@@ -90,10 +81,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
     func test_presentationStyle_for_paymentSuccess_is_message_paymentSuccess_with_order_total() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.paymentSuccess(done: {})
-        let dependencies = PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: {},
-            nonRetryableErrorExitAction: {},
-            formattedOrderTotalPrice: "$200.50")
+        let dependencies = createPresentationStyleDependencies(formattedOrderTotalPrice: "$200.50")
 
         // When
         let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
@@ -107,5 +95,50 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
 
         XCTAssertEqual(viewModel.message, "A payment of $200.50 was successfully made")
     }
+
+    func test_presentationStyle_for_paymentCaptureError_is_message_paymentCaptureError_with_correctActions() {
+        // Given
+        let eventDetails = CardPresentPaymentEventDetails.paymentCaptureError(cancelPayment: {})
+        var spyPaymentCaptureErrorTryAgainCalled = false
+        var spyPaymentCaptureErrorNewOrderCalled = false
+        let dependencies = createPresentationStyleDependencies(
+            paymentCaptureErrorTryAgainAction: {
+                spyPaymentCaptureErrorTryAgainCalled = true
+            },
+            paymentCaptureErrorNewOrderAction: {
+                spyPaymentCaptureErrorNewOrderCalled = true
+            }
+        )
+
+        // When
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: dependencies)
+
+        // Then
+        guard case .message(.paymentCaptureError(let viewModel)) = presentationStyle else {
+            return XCTFail("Expected payment capture error message not found")
+        }
+
+        viewModel.tryAgainButtonViewModel.actionHandler()
+        viewModel.newOrderButtonViewModel.actionHandler()
+        XCTAssertTrue(spyPaymentCaptureErrorTryAgainCalled)
+        XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
+    }
+
+    func createPresentationStyleDependencies(
+        tryPaymentAgainBackToCheckoutAction: @escaping () -> Void = {},
+        nonRetryableErrorExitAction: @escaping () -> Void = {},
+        formattedOrderTotalPrice: String? = nil,
+        paymentCaptureErrorTryAgainAction: @escaping () -> Void = {},
+        paymentCaptureErrorNewOrderAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+            PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
+                tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
+                nonRetryableErrorExitAction: nonRetryableErrorExitAction,
+                formattedOrderTotalPrice: formattedOrderTotalPrice,
+                paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction,
+                paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction
+            )
+        }
 
 }

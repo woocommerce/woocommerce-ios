@@ -67,25 +67,25 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.clickthroughs)
                         .subheadlineStyle()
+                        .lineLimit(1)
 
                     (Text("\(campaign.impressions) ").font(.title2).fontWeight(.semibold) +
                      Text(Image(systemName: "arrow.forward")) +
                      Text(" \(campaign.clicks)").font(.title2).fontWeight(.semibold))
                         .foregroundStyle(Color(.text))
                 }
-                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(campaign.budgetTitle)
                         .subheadlineStyle()
+                        .lineLimit(1)
                     Text(campaign.budgetToDisplay)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
-                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .renderedIf(showBudget)
 

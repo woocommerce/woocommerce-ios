@@ -50,20 +50,18 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
     }
 
-    func test_start_new_transaction() {
+    func test_start_new_order() {
         // Given
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
         let itemsAdded = false
-        let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
 
         // When
-        sut.startNewOrder()
+        mockTotalsViewModel.startNewOrderAction = ()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
         XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertEqual(sut.totalsViewModel.paymentState, expectedPaymentState)
-        XCTAssertNil(sut.totalsViewModel.order)
+        XCTAssertTrue(mockCartViewModel.removeAllItemsFromCartCalled)
     }
 
     func test_items_added_to_cart() {

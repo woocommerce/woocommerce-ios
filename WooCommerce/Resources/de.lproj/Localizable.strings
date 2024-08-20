@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Füge einen Preis zu deiner Variante hinzu, um sie in deinem Shop anzuzeigen";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Produkt hinzufügen";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Produktbild hinzufügen";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Füge ein Produkt manuell hinzu.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Kaufbestätigung hinzufügen …";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Füge wichtige Funktionen, Vorteile oder Details hinzu, damit dein Produkt online besser gefunden wird.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Manuell hinzufügen";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Passwort wählen";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Wähle ein Template";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Von Gerät auswählen";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Erstellt Varianten für alle Kombinationen deiner Attribute.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Template-Produkt wird erstellt …";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Varianten werden erstellt …";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Wie können wir uns verbessern?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Wie möchtest du beginnen?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "So funktioniert es";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Alle auswählen";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Medienquelle auswählen";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Übergeordnete Kategorie auswählen";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Füge dein erstes Produkt zum Store hinzu, um jetzt mit dem Verkauf zu beginnen.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Mit einem Template beginnen";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Syrien";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Bericht zum Systemstatus";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Bei dem Versuch, mit der Website zu kommunizieren, ist ein Problem aufgetreten.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Es gab ein Problem beim Erstellen des Template-Produkts.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Es gab ein Problem die Blockierung dieser spezifischen Website zu entfernen.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Sicherheitsschlüssel verwenden";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Verwende ein Template, um physische, digitale und variable Produkte hinzuzufügen. Du kannst es nebenher bearbeiten.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Verwende eine gültige E-Mail-Adresse, damit du unsere Nachrichten erhalten kannst.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress-CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress-Mediathek";
 
@@ -9739,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Gesamt";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Erneut versuchen";
@@ -11159,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Bezahlen fehlgeschlagen";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Erneut versuchen";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Bezahlen fehlgeschlagen";
 
@@ -11408,18 +11372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Modus „Verkaufsort“ (POS) beenden?";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Einfaches Produkt erstellen";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS unterstützt derzeit nur einfache Produkte";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Dein Shop hat keine Produkte";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Keine Produkte";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Erneut versuchen";
 
@@ -11443,9 +11395,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Wird geladen";
-
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Produkte";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Eine Bestellung im Shop-Management erstellen";

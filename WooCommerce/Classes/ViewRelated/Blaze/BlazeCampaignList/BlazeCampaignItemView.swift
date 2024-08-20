@@ -19,9 +19,9 @@ struct BlazeCampaignItemView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            CollapsibleHStack(horizontalAlignment: .leading,
-                              verticalAlignment: .center,
-                              spacing: Layout.contentSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .center,
+                          spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -57,45 +57,36 @@ struct BlazeCampaignItemView: View {
             }
 
             // campaign stats
-            CollapsibleHStack(horizontalAlignment: .leading,
-                              verticalAlignment: .firstTextBaseline,
-                              spacing: Layout.contentSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .firstTextBaseline) {
 
                 Spacer()
-                    .frame(width: Layout.imageSize * scale)
+                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
 
-                // campaign total impressions
+                // campaign total impressions -> clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.impressions)
+                    Text(Localization.clickthroughs)
                         .subheadlineStyle()
-                    Text("\(campaign.impressions)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
-                }
-                .fixedSize()
+                        .lineLimit(1)
 
-                // campaign total clicks
-                VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.clicks)
-                        .subheadlineStyle()
-                    Text("\(campaign.clicks)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
+                    (Text("\(campaign.impressions) ").font(.title2).fontWeight(.semibold) +
+                     Text(Image(systemName: "arrow.forward")) +
+                     Text(" \(campaign.clicks)").font(.title2).fontWeight(.semibold))
+                        .foregroundStyle(Color(.text))
                 }
-                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(campaign.budgetTitle)
                         .subheadlineStyle()
+                        .lineLimit(1)
                     Text(campaign.budgetToDisplay)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
-                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .renderedIf(showBudget)
 
                 Spacer()
@@ -133,8 +124,11 @@ private extension BlazeCampaignItemView {
     }
 
     enum Localization {
-        static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
-        static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
+        static let clickthroughs = NSLocalizedString(
+            "blazeCampaignItemView.clickthroughs",
+            value: "Click-throughs",
+            comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
+        )
     }
 }
 
@@ -144,7 +138,7 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        productID: 33,
                                                        name: "Fluffy bunny pouch",
                                                        textSnippet: "Buy now!",
-                                                       uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
+                                                       uiStatus: BlazeCampaignListItem.Status.suspended.rawValue,
                                                        imageURL: nil,
                                                        targetUrl: nil,
                                                        impressions: 112,

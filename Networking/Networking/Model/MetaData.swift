@@ -4,12 +4,12 @@ import Codegen
 /// Represents the metadata within an Order
 /// Currently only handles `String` metadata values
 ///
-public struct OrderMetaData: Codable, Equatable, Sendable {
+public struct MetaData: Codable, Equatable, Sendable {
     public let metadataID: Int64
     public let key: String
     public let value: String
 
-    /// OrderMetaData struct initializer.
+    /// MetaData struct initializer.
     ///
     public init(metadataID: Int64, key: String, value: String) {
         self.metadataID = metadataID
@@ -17,7 +17,7 @@ public struct OrderMetaData: Codable, Equatable, Sendable {
         self.value = value
     }
 
-    /// The public initializer for OrderMetaData.
+    /// The public initializer for MetaData.
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -29,9 +29,9 @@ public struct OrderMetaData: Codable, Equatable, Sendable {
     }
 }
 
-/// Defines all of the OrderMetaData's CodingKeys.
+/// Defines all of the MetaData's CodingKeys.
 ///
-private extension OrderMetaData {
+private extension MetaData {
     enum CodingKeys: String, CodingKey {
         case metadataID = "id"
         case key

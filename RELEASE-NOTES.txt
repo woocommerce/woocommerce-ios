@@ -1,18 +1,30 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.1
+-----
+- [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
+- [*] Blaze: Updated campaign item's displayed budget. [https://github.com/woocommerce/woocommerce-ios/pull/13605]
+
 20.0
 -----
 - [*] Blaze: Now you can select media attached to the current product while creating Blaze ads. You don't have to scroll through all media in your store. [https://github.com/woocommerce/woocommerce-ios/pull/13540]
-- [*] Blaze: Updated campaign item's displayed budget. [https://github.com/woocommerce/woocommerce-ios/pull/13605]
 - [*] Better experience for embedded web view with loading indicator. [https://github.com/woocommerce/woocommerce-ios/pull/13587]
 - [*] Fix: "Report Subscription Issue" button in Subscriptions screen now works consistently. [https://github.com/woocommerce/woocommerce-ios/pull/13577]
 - [*] Payments: fixed issue where site credential login couldn't be used to install plugins, e.g. WooPayments [https://github.com/woocommerce/woocommerce-ios/pull/13582]
 - [*] Fix SSR parsing error for WPORG login. [https://github.com/woocommerce/woocommerce-ios/pull/13579]
 - [*] Settings: Fixed error updating site name when authenticated without WPCom. [https://github.com/woocommerce/woocommerce-ios/pull/13567]
 - [*] Help & Support: Systems Status Report option now only shown on logged-in state. [https://github.com/woocommerce/woocommerce-ios/pull/13568]
+- [*] System status report: restored the missing title. [https://github.com/woocommerce/woocommerce-ios/pull/13593]
+- [*] Payments: fixed issue preventing the Try out Tap to Pay on iPhone flow from working [https://github.com/woocommerce/woocommerce-ios/pull/13600]
 - [Internal] Products: Removed template option for product creation. [https://github.com/woocommerce/woocommerce-ios/pull/13594]
 - [Internal] Orders: Fixed "Receipt print button unresponsive after first tap". [https://github.com/woocommerce/woocommerce-ios/pull/13598]
+- [*] Payments: Fixed contact support link from some In Person Payments onboarding screens [https://github.com/woocommerce/woocommerce-ios/pull/13601]
+- [*] Orders: Fixes an issue where tooltips in the order form were not displayed correctly. [https://github.com/woocommerce/woocommerce-ios/pull/13616]
+- [*] Payments: Fixed display of card decline reasons for In-Person Payment failures [https://github.com/woocommerce/woocommerce-ios/pull/13606]
+- [*] Payments: Fixed issue where new WooPayments accounts couldn't be used for In Person Payments while they were pending verification [https://github.com/woocommerce/woocommerce-ios/pull/13610]
+- [Internal] Custom Fields: Started effort to rename OrderMetaData to MetaData to share it with Products, starting with Networking layer. [https://github.com/woocommerce/woocommerce-ios/pull/13620]
+- [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
 
 19.9
 -----

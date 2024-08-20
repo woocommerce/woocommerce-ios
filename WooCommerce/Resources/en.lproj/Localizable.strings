@@ -430,15 +430,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Add a price to your variation to make it visible on your store";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Add a product";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Add a product image";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Add a product manually.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Add a purchase note...";
@@ -513,9 +509,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Add key features, benefits, or details to help your product get found online.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Add manually";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -853,6 +846,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "An incorrect PIN has been entered too many times. Try another means of payment";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment" = "An incorrect PIN has been entered. Try again, or use another means of payment";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "An optional note to send the customer after purchase";
@@ -1664,11 +1660,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Total";
 
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
-
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Try Again";
+
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "%1$@ weekly";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "%1$@ %2$@ weekly";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Your ads on millions of sites within the WordPress.com and Tumblr networks.";
@@ -2418,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label states of a country selector screen */
 "Choose a State" = "Choose a State";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Choose a template";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Choose from device";
 
@@ -3097,9 +3096,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Creates variations for all combinations of your attributes.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Creating Template Product...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Creating Variations...";
@@ -4958,9 +4954,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "How can we improve?";
 
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "How do you want to start?";
-
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "How it works";
 
@@ -5903,6 +5896,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media doesn't have an associated file to upload.";
+
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "Take a photo";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "Choose from device";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "Choose an existing product photo";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "WordPress Media Library";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "Select Media Source";
 
 /* Title of the Menu tab */
 "Menu" = "Menu";
@@ -7422,14 +7430,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "Payment status unknown";
 
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Exit order";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Payment failed";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Try another payment method";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Try Again";
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Try payment again";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "If you’d like to continue processing this transaction, please retry the payment.";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Payment failed";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Try another payment method";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Please wait...";
@@ -7481,6 +7501,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Getting ready";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "Retry";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Error checking order";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Dismiss";
@@ -7684,17 +7710,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Exit Point of Sale mode?";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Create a simple product";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS currently only supports simple products";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Your store doesn't have any products";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "No products";
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Products";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Retry";
@@ -7720,8 +7737,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Starting up";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Products";
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "To add one, exit POS and go to Products";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS currently only supports simple products.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "No supported products found";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Create an order in store management";
@@ -9038,9 +9061,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Select items";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Select Media Source";
-
 /* Instruction to select scanned text for product detail generation on the add product from image form. */
 "Select one or more scans to generate product details" = "Select one or more scans to generate product details";
 
@@ -9611,9 +9631,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the action button on the test order screen */
 "Start Test order" = "Start Test order";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Start with a template";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -9813,6 +9830,9 @@ which should be translated separately and considered part of this sentence. */
    Title of one of the hub menu options */
 "Subscriptions" = "Subscriptions";
 
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "Done";
+
 /* Title of the button to save subscription's free trial info. */
 "subscriptionTrialView.done" = "Done";
 
@@ -9951,8 +9971,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Syria";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "System Status Report";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -9960,6 +9979,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when attempting to pay for a live transaction with a test card. */
 "System test cards are not permitted for payment. Try another means of payment" = "System test cards are not permitted for payment. Try another means of payment";
+
+/* Navigation title of system status report screen */
+"systemStatusReportView.title" = "System Status Report";
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
@@ -10547,9 +10569,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "There was a problem communicating with the site.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "There was a problem creating the template product.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "There was a problem removing the block for specified site.";
@@ -11453,9 +11472,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Use a security key";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Use a template to create physical, virtual, and variable products. You can edit it as you go.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Use a working email address, so you can receive our messages.";
 
@@ -12006,8 +12022,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress Media Library";
 

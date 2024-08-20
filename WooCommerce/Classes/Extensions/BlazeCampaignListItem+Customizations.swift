@@ -21,12 +21,12 @@ extension BlazeCampaignListItem {
     private enum Localization {
         static let weeklyBudget = NSLocalizedString(
             "blazeCampaignListItem.weeklyBudget",
-            value: "Weekly budget",
+            value: "Weekly",
             comment: "Title of the budget field of a Blaze campaign without an end date."
         )
         static let totalBudget = NSLocalizedString(
             "blazeCampaignListItem.totalBudget",
-            value: "Total budget",
+            value: "Total",
             comment: "Title of the total budget field of a Blaze campaign with an end date."
         )
     }

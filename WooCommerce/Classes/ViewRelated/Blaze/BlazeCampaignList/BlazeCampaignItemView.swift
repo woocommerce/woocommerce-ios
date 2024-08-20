@@ -58,33 +58,23 @@ struct BlazeCampaignItemView: View {
 
             // campaign stats
             AdaptiveStack(horizontalAlignment: .leading,
-                          verticalAlignment: .firstTextBaseline,
-                          spacing: Layout.contentSpacing) {
+                          verticalAlignment: .firstTextBaseline) {
 
                 Spacer()
-                    .frame(width: Layout.imageSize * scale)
+                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
 
-                // campaign total impressions
+                // campaign total impressions -> clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.impressions)
+                    Text(Localization.clickthroughs)
                         .subheadlineStyle()
-                    Text("\(campaign.impressions)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
+
+                    (Text("\(campaign.impressions) ").font(.title2).fontWeight(.semibold) +
+                     Text(Image(systemName: "arrow.forward")) +
+                     Text(" \(campaign.clicks)").font(.title2).fontWeight(.semibold))
+                        .foregroundStyle(Color(.text))
                 }
                 .fixedSize()
-
-                // campaign total clicks
-                VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.clicks)
-                        .subheadlineStyle()
-                    Text("\(campaign.clicks)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
-                }
-                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -96,6 +86,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .renderedIf(showBudget)
 
                 Spacer()
@@ -133,8 +124,11 @@ private extension BlazeCampaignItemView {
     }
 
     enum Localization {
-        static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
-        static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
+        static let clickthroughs = NSLocalizedString(
+            "blazeCampaignItemView.clickthroughs",
+            value: "Click-throughs",
+            comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
+        )
     }
 }
 

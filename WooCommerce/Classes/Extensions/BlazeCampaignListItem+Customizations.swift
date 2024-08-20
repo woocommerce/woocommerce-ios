@@ -43,7 +43,7 @@ extension BlazeCampaignListItem {
         )
         static let remainingBudget = NSLocalizedString(
             "blazeCampaignListItem.remainingBudget",
-            value: "Remaining budget",
+            value: "Remaining",
             comment: "Title of the remaining budget field of a Blaze campaign with an end date."
         )
     }

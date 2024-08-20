@@ -115,6 +115,49 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
     }
 
+    func test_createCampaign_sends_correctly_formatted_dates_regardless_of_locale() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
+
+        let startDateString = "2024-08-19"
+        let endDateString = "2024-08-26"
+
+        let startDate = try XCTUnwrap(Date(timeIntervalSince1970: 1724025600)) // 2024-08-19
+        let endDate = try XCTUnwrap(Date(timeIntervalSince1970: 1724630400)) // 2024-08-26
+
+        // Create dates with Arabic locale
+        let arabicFormatter = DateFormatter()
+        arabicFormatter.locale = Locale(identifier: "ar_SA")
+        arabicFormatter.dateFormat = "yyyy-MM-dd"
+        let arabicStartDateString = arabicFormatter.string(from: startDate)
+        let arabicEndDateString = arabicFormatter.string(from: endDate)
+
+        let campaign = CreateBlazeCampaign.fake().copy(
+            startDate: arabicFormatter.date(from: arabicStartDateString),
+            endDate: arabicFormatter.date(from: arabicEndDateString)
+        )
+
+        // When
+        _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
+
+        // Then
+        
+        // Assert that the arabic numbering system and strings were used as input,
+        // to mimic a device's locale setting when the language is set to Arabic.
+        XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
+        XCTAssertEqual(arabicStartDateString, "١٤٤٦-٠٢-١٥")
+        XCTAssertEqual(arabicEndDateString, "١٤٤٦-٠٢-٢٢")
+
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        // Assert that the date parameters are now formatted in Western Arabic numerals
+        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
+        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
+    }
+
     func test_createCampaign_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)

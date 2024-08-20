@@ -63,7 +63,6 @@ private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
         @Binding var text: String
-        @FocusState var focused: Bool?
         var onChangeText: (String) -> (Void)
 
         var body: some View {
@@ -73,16 +72,11 @@ private extension AddCustomAmountPercentageView {
                           prompt: Text("0").foregroundColor(Color(.textSubtle))
                 )
                 .onChange(of: text, perform: onChangeText)
-                .focused($focused, equals: true)
+                .focused()
                 .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                 .keyboardType(.decimalPad)
                 .frame(maxWidth: Layout.textFieldMaxWidth)
                 .fixedSize()
-                .onAppear {
-                  DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                    self.focused = true
-                  }
-                }
 
                 Text("%")
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))

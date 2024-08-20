@@ -65,8 +65,9 @@ extension UINavigationController: UINavigationBarDelegate {
         return vc.shouldPopOnBackButton()
     }
 
-    // This delegate method is not called on the simulator or device running iOS 13.4 from Xcode.
-    // You need to use a release build.
+    // While working on https://github.com/woocommerce/woocommerce-ios/pull/13647:
+    // - Noticed that this was not being called
+    // - Added extension of WooNavigationController with overriding this method and calling checkIfNavigationBarShouldPop(:)
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         return checkIfNavigationBarShouldPop(item: item)
     }

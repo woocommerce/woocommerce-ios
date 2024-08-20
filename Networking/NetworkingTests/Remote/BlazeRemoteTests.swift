@@ -144,7 +144,7 @@ final class BlazeRemoteTests: XCTestCase {
         _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
 
         // Then
-        
+
         // Assert that the arabic numbering system and strings were used as input,
         // to mimic a device's locale setting when the language is set to Arabic.
         XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")

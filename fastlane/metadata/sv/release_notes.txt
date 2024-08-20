@@ -1,1 +1,0 @@
-Upplev smidigare hantering i WooCommerce-appen. För iPad-användare har vi åtgärdat en bugg för att säkerställa sömlös betalningsmottagning samt eliminerat krascher kopplade till beställningslistan på iPadOS 16 och 16.1. Butiker med Blaze-tillägget kan också hantera och skapa kampanjer direkt från appen. Uppgradera för en förbättrad, stabil användarupplevelse.

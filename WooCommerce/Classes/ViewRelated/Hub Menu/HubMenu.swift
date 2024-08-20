@@ -159,7 +159,7 @@ private extension HubMenu {
                         title: HubMenuViewModel.Localization.viewStore,
                         shouldAuthenticate: false)
             case HubMenuViewModel.Inbox.id:
-                Inbox(viewModel: .init(siteID: viewModel.siteID))
+                Inbox(viewModel: viewModel.inboxViewModel)
             case HubMenuViewModel.Reviews.id:
                 ReviewsView(siteID: viewModel.siteID)
             case HubMenuViewModel.Coupons.id:

@@ -65,7 +65,7 @@ final class InboxViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(stateAfterTheFirstOnLoadTrigger, .syncingFirstPage)
         XCTAssertEqual(stateAfterTheSecondOnLoadTrigger, .syncingFirstPage)
-        XCTAssertEqual(invocationCountOfLoadInboxNotes, 1)
+        XCTAssertEqual(invocationCountOfLoadInboxNotes, 2)
     }
 
     func test_state_is_results_after_onLoadTrigger_with_nonempty_results() {

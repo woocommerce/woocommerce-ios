@@ -16,7 +16,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
         return formattedAmount
     }
 
-    @Published var percentageTextFieldInput = ""
+    @Published var perecentage = ""
 
     init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
         self.baseAmountForPercentage = baseAmountForPercentage
@@ -29,7 +29,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
             return
         }
 
-        percentageTextFieldInput = currencyFormatter.localize(((totalDecimal as Decimal / baseAmountForPercentage) * 100)) ?? "0"
+        perecentage = currencyFormatter.localize(((totalDecimal as Decimal / baseAmountForPercentage) * 100)) ?? "0"
         percentageCalculatedAmount = fee.total
     }
 }

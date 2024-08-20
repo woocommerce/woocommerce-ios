@@ -15,7 +15,7 @@ struct DiscountLineDetailsView: View {
                     Text(Localization.fixedPriceDiscountLabel)
                 }, content: {
                     InputField(placeholder: Localization.fixedPriceDiscountInputPlaceholder,
-                               text: $viewModel.amountTextInput,
+                               text: $viewModel.amount,
                                onChangeText: viewModel.updateAmount)
                     discountTypeButtonToggle
                         .padding()
@@ -25,7 +25,7 @@ struct DiscountLineDetailsView: View {
                     Text(Localization.percentagePriceDiscountLabel)
                 }, content: {
                     InputField(placeholder: Localization.percentagePriceDiscountInputPlaceholder,
-                               text: $viewModel.percentageTextInput,
+                               text: $viewModel.percentage,
                                onChangeText: viewModel.updatePercentage)
                     discountTypeButtonToggle
                         .padding()

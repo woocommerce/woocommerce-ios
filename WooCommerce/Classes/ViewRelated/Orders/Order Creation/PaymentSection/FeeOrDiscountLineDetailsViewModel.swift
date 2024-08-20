@@ -104,22 +104,22 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Stores the fixed amount entered by the merchant.
     ///
-    @Published var amountTextInput: String = ""
+    @Published var amount: String = ""
 
     /// Stores the percentage entered by the merchant.
     ///
-    @Published var percentageTextInput: String = ""
+    @Published var percentage: String = ""
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
     var hasInputAmount: Bool {
-        amountTextInput.isNotEmpty || percentageTextInput.isNotEmpty
+        amount.isNotEmpty || percentage.isNotEmpty
     }
 
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
-        let inputString = feeOrDiscountType == .fixed ? amountTextInput : percentageTextInput
+        let inputString = feeOrDiscountType == .fixed ? amount : percentage
         guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
             return .zero
         }
@@ -243,8 +243,8 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
-            self.amountTextInput = priceFieldFormatter.formatAmount(formattedInputAmount)
-            self.percentageTextInput = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
+            self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
+            self.percentage = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
         }
 
         self.didSelectSave = didSelectSave
@@ -288,20 +288,20 @@ extension FeeOrDiscountLineDetailsViewModel {
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            self.percentageTextInput = negativePrefix + components[0] + deviceDecimalSeparator
+            self.percentage = negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            self.percentageTextInput = negativePrefix + components[0]
+            self.percentage = negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            self.percentageTextInput = negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
+            self.percentage = negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
     }
 
     func updateAmount(_ amountInput: String) {
-        self.amountTextInput = priceFieldFormatter.formatAmount(amountInput)
+        self.amount = priceFieldFormatter.formatAmount(amountInput)
     }
 }

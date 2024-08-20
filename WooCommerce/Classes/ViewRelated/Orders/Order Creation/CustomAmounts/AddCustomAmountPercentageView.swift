@@ -17,7 +17,7 @@ struct AddCustomAmountPercentageView: View {
                     .foregroundColor(Color(.textSubtle))
             }
 
-            PercentageInputField(text: $viewModel.percentageTextFieldInput, onChangeText: viewModel.updatePercentageCalculatedAmount)
+            PercentageInputField(text: $viewModel.perecentage, onChangeText: viewModel.updatePercentageCalculatedAmount)
 
             Divider()
                 .padding(.bottom, Layout.mainVerticalSpacing)

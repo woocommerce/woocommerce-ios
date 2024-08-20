@@ -24,7 +24,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         viewModel.updateAmount("hi:11.3005.02-")
 
         // Then
-        XCTAssertEqual(viewModel.amountTextInput, "11.30")
+        XCTAssertEqual(viewModel.amount, "11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
     }
@@ -44,7 +44,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.amountTextInput, "-11.30")
+        XCTAssertEqual(viewModel.amount, "-11.30")
         XCTAssertEqual(viewModel.currencySymbol, "$")
         XCTAssertEqual(viewModel.currencyPosition, .left)
     }
@@ -70,7 +70,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.amountTextInput, "12.203")
+        XCTAssertEqual(viewModel.amount, "12.203")
         XCTAssertEqual(viewModel.currencySymbol, "£")
         XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
     }
@@ -91,7 +91,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isPercentageOptionAvailable)
-        XCTAssertEqual(viewModel.percentageTextInput, "11.30")
+        XCTAssertEqual(viewModel.percentage, "11.30")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
@@ -110,7 +110,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         viewModel.updatePercentage("-hi:11.3005.02-")
 
         // Then
-        XCTAssertEqual(viewModel.percentageTextInput, "-11.30")
+        XCTAssertEqual(viewModel.percentage, "-11.30")
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
     }
 
@@ -128,8 +128,8 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
-        XCTAssertEqual(viewModel.amountTextInput, "10.00")
-        XCTAssertEqual(viewModel.percentageTextInput, "5")
+        XCTAssertEqual(viewModel.amount, "10.00")
+        XCTAssertEqual(viewModel.percentage, "5")
     }
 
     func test_view_model_prefills_negative_input_data_correctly() {
@@ -146,8 +146,8 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
-        XCTAssertEqual(viewModel.amountTextInput, "-10.00")
-        XCTAssertEqual(viewModel.percentageTextInput, "-5")
+        XCTAssertEqual(viewModel.amount, "-10.00")
+        XCTAssertEqual(viewModel.percentage, "-5")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {

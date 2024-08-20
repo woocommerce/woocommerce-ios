@@ -21,8 +21,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    presentationMode.wrappedValue.dismiss()
-                    // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
+                    viewModel.showSupport = true
                 } label: {
                     Label(
                         title: { Text(Localization.getSupport) },

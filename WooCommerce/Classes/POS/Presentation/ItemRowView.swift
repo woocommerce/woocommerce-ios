@@ -54,7 +54,7 @@ struct ItemRowView: View {
     private var productImage: some View {
         if dynamicTypeSize >= .accessibility3 {
             EmptyView()
-        } else if let imageSource = cartItem.item.productImageSource  {
+        } else if let imageSource = cartItem.item.productImageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: Constants.productCardSize,
                                   scale: scale,

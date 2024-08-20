@@ -257,7 +257,7 @@ private extension TotalsView {
             bottomPadding: 8
         )
 
-        static let dark = CardReaderViewLayout(
+        static let outlined = CardReaderViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
             topPadding: 40,
             bottomPadding: 40
@@ -281,11 +281,11 @@ private extension TotalsView {
         }
 
         if totalsViewModel.paymentState == .validatingOrderError {
-            return .dark
+            return .outlined
         }
 
         if totalsViewModel.connectionStatus == .disconnected {
-            return .dark
+            return .outlined
         }
 
         return .primary

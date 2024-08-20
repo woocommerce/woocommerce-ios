@@ -196,9 +196,6 @@ private extension FilterListViewController {
 
         let clearAllButtonTitle = NSLocalizedString("Clear all", comment: "Button title for clearing all filters for the list.")
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))
-
-        // Disables interactive dismiss action so that we can prompt the discard changes alert.
-        isModalInPresentation = true
     }
 
     func configureMainView() {
@@ -338,6 +335,9 @@ private extension FilterListViewController {
     func updateUI(numberOfActiveFilters: Int) {
         updateListSelectorNavigationTitle(numberOfActiveFilters: numberOfActiveFilters)
         updateClearAllActionVisibility(numberOfActiveFilters: numberOfActiveFilters)
+
+        // Disables interactive dismiss action if there are changes so we can prompt the discard changes alert.
+        isModalInPresentation = hasFilterChanges()
     }
 
     func updateListSelectorNavigationTitle(numberOfActiveFilters: Int) {

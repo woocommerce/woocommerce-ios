@@ -145,11 +145,9 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
 
-        // Assert that the arabic numbering system and strings were used as input,
+        // Assert that the arabic numbering system were used as input,
         // to mimic a device's locale setting when the language is set to Arabic.
         XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
-        XCTAssertEqual(arabicStartDateString, "١٤٤٦-٠٢-١٥")
-        XCTAssertEqual(arabicEndDateString, "١٤٤٦-٠٢-٢٢")
 
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
 

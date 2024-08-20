@@ -35,7 +35,7 @@ class WooNavigationController: UINavigationController {
         if let vc = topViewController {
             return vc.shouldPopOnBackButton()
         }
-        return shouldPopOnBackButton()
+        return super.shouldPopOnBackButton()
     }
 }
 

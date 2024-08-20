@@ -18,11 +18,8 @@ struct ItemListView: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading:
-                /// TODO: handle pull to refresh
+            case .loading, .loaded:
                 listView(viewModel.items)
-            case .loaded(let items):
-                listView(items)
             }
         }
         .refreshable {

@@ -28,6 +28,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isError: Bool = false
     @Published var isEmpty: Bool = false
     @Published var showExitPOSModal: Bool = false
+    @Published var showSupport: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 

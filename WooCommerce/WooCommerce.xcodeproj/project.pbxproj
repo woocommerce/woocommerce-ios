@@ -40,6 +40,7 @@
 		01BD774A2C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */; };
 		01BD774C2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
+		01FB19582C6E901800A44FF0 /* DynamicHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FB19572C6E901800A44FF0 /* DynamicHStack.swift */; };
 		0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */; };
 		0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */; };
 		0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */; };
@@ -3064,6 +3065,7 @@
 		01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageView.swift; sourceTree = "<group>"; };
 		01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
+		01FB19572C6E901800A44FF0 /* DynamicHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicHStack.swift; sourceTree = "<group>"; };
 		0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+ProductVariation.swift"; sourceTree = "<group>"; };
 		0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooTab+Tag.swift"; sourceTree = "<group>"; };
 		0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Order.swift"; sourceTree = "<group>"; };
@@ -6675,6 +6677,7 @@
 				68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */,
 				DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */,
 				01664F9D2C50E685007CB5DD /* POSFontStyle.swift */,
+				01FB19572C6E901800A44FF0 /* DynamicHStack.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -15459,6 +15462,7 @@
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */,
+				01FB19582C6E901800A44FF0 /* DynamicHStack.swift in Sources */,
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				D8752EF7265E60F4008ACC80 /* PaymentCaptureCelebration.swift in Sources */,
 				B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */,

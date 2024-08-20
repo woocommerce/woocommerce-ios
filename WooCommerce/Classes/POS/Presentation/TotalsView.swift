@@ -11,6 +11,8 @@ struct TotalsView: View {
     @State private var isShowingTotalsFields: Bool
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
         self.isShowingTotalsFields = viewModel.isShowingTotalsFields
@@ -28,10 +30,17 @@ struct TotalsView: View {
                         if viewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing])
-                                .padding(.bottom, cardReaderViewLayout.bottomPadding)
+                                .padding([.top, .leading, .trailing],
+                                         dynamicTypeSize.isAccessibilitySize ? nil :
+                                            cardReaderViewLayout.sidePadding)
+                                .padding(.bottom,
+                                         dynamicTypeSize.isAccessibilitySize ? nil :
+                                            cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
+                                .accessibilityShowsLargeContentViewer()
+                                .minimumScaleFactor(0.1)
+                                .layoutPriority(1)
                         }
 
                         if isShowingTotalsFields {
@@ -39,6 +48,7 @@ struct TotalsView: View {
                                 .transition(.opacity)
                                 .animation(.default, value: viewModel.isShimmering)
                                 .opacity(viewModel.isShowingTotalsFields ? 1 : 0)
+                                .layoutPriority(2)
                         }
                     }
                     .animation(.default, value: viewModel.isShowingCardReaderStatus)
@@ -235,6 +245,7 @@ private extension TotalsView {
         let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
+        let sidePadding: CGFloat = 8
 
         static let primary = CardReaderViewLayout(
             backgroundColor: .clear,
@@ -242,7 +253,7 @@ private extension TotalsView {
             bottomPadding: 8
         )
 
-        static let dark = CardReaderViewLayout(
+        static let outlined = CardReaderViewLayout(
             backgroundColor: Color(.quaternarySystemFill),
             topPadding: 40,
             bottomPadding: 40
@@ -266,11 +277,11 @@ private extension TotalsView {
         }
 
         if viewModel.paymentState == .validatingOrderError {
-            return .dark
+            return .outlined
         }
 
         if viewModel.connectionStatus == .disconnected {
-            return .dark
+            return .outlined
         }
 
         return .primary

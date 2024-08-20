@@ -30,6 +30,19 @@ class WooNavigationController: UINavigationController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return StyleManager.statusBarLight
     }
+
+    override func shouldPopOnBackButton() -> Bool {
+        if let vc = topViewController {
+            return vc.shouldPopOnBackButton()
+        }
+        return super.shouldPopOnBackButton()
+    }
+}
+
+extension WooNavigationController {
+    public override func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
+        checkIfNavigationBarShouldPop(item: item)
+    }
 }
 
 /// Class that listens and forwards events from `UINavigationControllerDelegate`

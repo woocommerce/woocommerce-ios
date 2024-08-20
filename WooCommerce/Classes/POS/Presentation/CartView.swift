@@ -5,6 +5,7 @@ struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -13,32 +14,40 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                backAddMoreButton
-                    .disabled(viewModel.isAddMoreDisabled)
-                    .shimmering(active: viewModel.isAddMoreDisabled)
-                Text(Localization.cartTitle)
-                    .font(Constants.primaryFont)
-                    .foregroundColor(cartViewModel.cartLabelColor)
+            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
+                HStack {
+                    backAddMoreButton
+                        .disabled(viewModel.isAddMoreDisabled)
+                        .shimmering(active: viewModel.isAddMoreDisabled)
+                    Text(Localization.cartTitle)
+                        .font(Constants.primaryFont)
+                        .foregroundColor(cartViewModel.cartLabelColor)
+                }
+
                 Spacer()
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                 if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
-                    Text(itemsInCartLabel)
-                        .font(Constants.itemsFont)
-                        .foregroundColor(Color.posSecondaryTexti3)
-                    Button {
-                        cartViewModel.removeAllItemsFromCart()
-                    } label: {
-                        Text(Localization.clearButtonTitle)
-                            .font(Constants.clearButtonFont)
-                            .padding(Constants.clearButtonTextPadding)
-                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                            )
+                    HStack {
+                        Text(itemsInCartLabel)
+                            .font(Constants.itemsFont)
+                            .foregroundColor(Color.posSecondaryTexti3)
+                        Spacer()
+                            .renderedIf(dynamicTypeSize.isAccessibilitySize)
+                        Button {
+                            cartViewModel.removeAllItemsFromCart()
+                        } label: {
+                            Text(Localization.clearButtonTitle)
+                                .font(Constants.clearButtonFont)
+                                .padding(Constants.clearButtonTextPadding)
+                                .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
+                                        .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
+                                )
+                        }
+                        .padding(.horizontal, Constants.itemHorizontalPadding)
+                        .renderedIf(cartViewModel.canDeleteItemsFromCart)
                     }
-                    .padding(.horizontal, Constants.itemHorizontalPadding)
-                    .renderedIf(cartViewModel.canDeleteItemsFromCart)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -116,8 +125,8 @@ private extension CartView {
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
+        static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
-        static let backButtonSize: CGFloat = 24
     }
 
     enum Localization {
@@ -162,8 +171,7 @@ private extension CartView {
                 cartViewModel.addMoreToCart()
             } label: {
                 Image(systemName: Constants.backButtonSymbol)
-                    .frame(width: Constants.backButtonSize, height: Constants.backButtonSize)
-                    .font(.posBodyEmphasized)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
                     .foregroundColor(.primary)
             }
         }

@@ -8,13 +8,13 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     private let priceFieldFormatter: PriceFieldFormatter
 
 
-    /// Stores the formatted amount entered by the merchant.
+    /// Stores the formatted amount.
     ///
     @Published private(set) var amount: String = ""
 
-    /// Stores the input entered by the merchant.
+    /// Stores the value entered by the merchant and presented on the text field.
     ///
-    @Published var textFieldInput: String = ""
+    @Published var textFieldAmountText: String = ""
 
     /// When true, the amount will be reset with the new input instead of appending.
     /// This is useful when we want to edit the amount with a new one from a source different than the view,
@@ -58,7 +58,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         amountTextSize = size
         self.allowNegativeNumber = allowNegativeNumber
 
-        $amount.assign(to: &$textFieldInput)
+        $amount.assign(to: &$textFieldAmountText)
     }
 
     func reset() {

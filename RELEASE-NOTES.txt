@@ -4,6 +4,7 @@
 20.1
 -----
 - [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
+- [*] Blaze: Campaign creation on devices using language with non-Western Arabic numbering system now should work correctly. [https://github.com/woocommerce/woocommerce-ios/pull/13658]
 
 20.0
 -----

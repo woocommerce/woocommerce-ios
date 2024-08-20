@@ -3,7 +3,6 @@ import Foundation
 enum PointOfSaleAssets: CaseIterable {
     case processingPayment
     case readyForPayment
-    case cartBack
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
@@ -15,8 +14,6 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-processing-payment"
         case .readyForPayment:
             "pos-ready-for-payment"
-        case .cartBack:
-            "pos-cart-back"
         case .readerConnectionScanning:
             "pos-reader-connection-scanning"
         case .readerConnectionDoYouWantToConnect:

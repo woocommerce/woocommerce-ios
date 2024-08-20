@@ -18,6 +18,7 @@ struct CartView: View {
                 HStack {
                     backAddMoreButton
                         .disabled(viewModel.isAddMoreDisabled)
+                        .shimmering(active: viewModel.isAddMoreDisabled)
                     Text(Localization.cartTitle)
                         .font(Constants.primaryFont)
                         .foregroundColor(cartViewModel.cartLabelColor)
@@ -125,6 +126,7 @@ private extension CartView {
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
         static let cartHeaderSpacing: CGFloat = 8
+        static let backButtonSymbol: String = "chevron.backward"
     }
 
     enum Localization {
@@ -140,6 +142,10 @@ private extension CartView {
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
             comment: "Hint to add products to the Cart when this is empty.")
+        static let checkoutButtonTitle = NSLocalizedString(
+            "pos.cartView.checkoutButtonTitle",
+            value: "Check out",
+            comment: "Title for the 'Checkout' button to process the Order.")
     }
 }
 
@@ -150,7 +156,7 @@ private extension CartView {
         Button {
             cartViewModel.submitCart()
         } label: {
-            Text("Check out")
+            Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSPrimaryButtonStyle())
     }
@@ -164,11 +170,10 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(PointOfSaleAssets.cartBack.imageName)
-                    .resizable()
-                    .frame(width: 32, height: 32)
+                Image(systemName: Constants.backButtonSymbol)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.primary)
             }
-
         }
     }
 }

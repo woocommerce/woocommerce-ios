@@ -50,6 +50,12 @@ final class TotalsViewModelTests: XCTestCase {
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
 
+        var startNewOrderEventWasPublished = false
+        sut.startNewOrderActionPublisher.sink { _ in
+            startNewOrderEventWasPublished = true
+        }.store(in: &cancellables)
+        XCTAssertFalse(startNewOrderEventWasPublished)
+
         // When
         guard let order = sut.order else {
             return XCTFail("Expected order. Got nothing")
@@ -58,6 +64,7 @@ final class TotalsViewModelTests: XCTestCase {
         sut.startNewOrder()
 
         // Then
+        XCTAssertTrue(startNewOrderEventWasPublished)
         XCTAssertEqual(sut.paymentState, paymentState)
         XCTAssertNil(sut.order)
         XCTAssertNil(sut.cardPresentPaymentInlineMessage)

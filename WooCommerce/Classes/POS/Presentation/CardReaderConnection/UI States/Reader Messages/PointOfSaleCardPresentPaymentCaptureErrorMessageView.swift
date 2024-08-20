@@ -9,20 +9,36 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 
     var body: some View {
-        HStack {
-            VStack {
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+            POSErrorXMark()
+            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                Text(viewModel.message)
+                    .foregroundStyle(Color.primaryText)
+                    .font(.posTitle)
+
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                    Text(viewModel.message)
+                    Text(viewModel.nextStep)
+                }
+                .font(.posBody)
+                .foregroundStyle(Color.primaryText)
             }
 
-            Button(viewModel.moreInfoButtonViewModel.title,
-                   action: viewModel.moreInfoButtonViewModel.actionHandler)
+            VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
+                Button(viewModel.tryAgainButtonViewModel.title,
+                       action: viewModel.tryAgainButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
 
-            Button(viewModel.cancelButtonViewModel.title,
-                   action: viewModel.cancelButtonViewModel.actionHandler)
+                Button(action: viewModel.newOrderButtonViewModel.actionHandler) {
+                    Label(viewModel.newOrderButtonViewModel.title, systemImage: "arrow.uturn.backward")
+                }
+                .buttonStyle(POSSecondaryButtonStyle())
+            }
         }
-        .sheet(isPresented: $viewModel.showsInfoSheet) {
-            PointOfSaleCardPresentPaymentCaptureFailedView()
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
+        .posModal(isPresented: $viewModel.showsInfoSheet) {
+            PointOfSaleCardPresentPaymentCaptureFailedView(isPresented: $viewModel.showsInfoSheet)
         }
         .onAppear {
             viewModel.onAppear()
@@ -33,5 +49,6 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
 #Preview {
     PointOfSaleCardPresentPaymentCaptureErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
-            cancelButtonAction: {}))
+            tryAgainButtonAction: {},
+            newOrderButtonAction: {}))
 }

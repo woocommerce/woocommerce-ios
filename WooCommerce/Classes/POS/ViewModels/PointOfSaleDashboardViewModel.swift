@@ -47,13 +47,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
         observeItemListState()
+        observeTotalsStartNewOrderAction()
     }
 
-    func startNewOrder() {
+    private func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewOrder()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {
@@ -160,9 +160,7 @@ private extension PointOfSaleDashboardViewModel {
         }
         .store(in: &cancellables)
     }
-}
 
-private extension PointOfSaleDashboardViewModel {
     func observeItemListState() {
         Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
             .sink { [weak self] state, items in
@@ -179,6 +177,15 @@ private extension PointOfSaleDashboardViewModel {
                     self.isError = false
                     self.isEmpty = false
                 }
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeTotalsStartNewOrderAction() {
+        totalsViewModel.startNewOrderActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.startNewOrder()
             }
             .store(in: &cancellables)
     }

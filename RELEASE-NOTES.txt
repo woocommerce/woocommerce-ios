@@ -24,6 +24,8 @@
 - [*] Payments: Fixed issue where new WooPayments accounts couldn't be used for In Person Payments while they were pending verification [https://github.com/woocommerce/woocommerce-ios/pull/13610]
 - [Internal] Custom Fields: Started effort to rename OrderMetaData to MetaData to share it with Products, starting with Networking layer. [https://github.com/woocommerce/woocommerce-ios/pull/13620]
 - [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
+- [Internal] Beta fix: Fixed unreliable states of the Inbox screen when navigated from the Hub Menu. [https://github.com/woocommerce/woocommerce-ios/pull/13645]
+- [Internal] Beta fix: Fixed navigation to variations in stock card for some stores. [https://github.com/woocommerce/woocommerce-ios/pull/13648]
 
 19.9
 -----

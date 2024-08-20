@@ -3,10 +3,14 @@
 
 20.1
 -----
+
+- [*] Order Creation: Fix an occasional issue where text fields wouldn't automatically focus and accept input. [https://github.com/woocommerce/woocommerce-ios/pull/13650]
+
 - [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
 - [*] Orders: Fixed the discard confirmation prompt during order creation, so you will be prompted to discard changes if you exit the order form after making changes to a new order. [https://github.com/woocommerce/woocommerce-ios/pull/13654]
 - [*] Orders: Fixed an issue where the last item in an order couldn't be removed. [https://github.com/woocommerce/woocommerce-ios/pull/13665]
 
+- [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
 
 20.0
 -----

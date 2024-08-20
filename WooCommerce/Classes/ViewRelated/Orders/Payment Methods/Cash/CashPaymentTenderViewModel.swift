@@ -46,7 +46,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     }
 
     func onCustomerPaidAmountTapped() {
-        formattableAmountViewModel.amount = ""
+        formattableAmountViewModel.reset()
     }
 
     func onMarkOrderAsCompleteButtonTapped() {

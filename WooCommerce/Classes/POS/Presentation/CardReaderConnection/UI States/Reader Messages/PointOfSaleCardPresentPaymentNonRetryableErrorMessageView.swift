@@ -33,5 +33,5 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
-                underlyingError: .paymentDeclinedByCardReader)))
+                underlyingError: .paymentDeclinedByCardReader), tryAnotherPaymentMethodAction: {}))
 }

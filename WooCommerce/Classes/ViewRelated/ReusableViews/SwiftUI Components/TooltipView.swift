@@ -1,6 +1,81 @@
 import SwiftUI
 
-struct TooltipView: View {
+/// Modifier to display a tooltip as a popover or overlay, depending on the available support.
+///
+struct TooltipView: ViewModifier {
+    /// Indicates if the tooltip should be shown or not.
+    ///
+    @Binding var isPresented: Bool
+
+    let toolTipTitle: String
+    let toolTipDescription: String
+    let offset: CGSize?
+    let safeAreaInsets: EdgeInsets
+
+    func body(content: Content) -> some View {
+        if #available(iOS 16.4, *) {
+            content
+                .popover(isPresented: $isPresented, attachmentAnchor: .point(.trailing)) {
+                    TooltipPopover(toolTipTitle: toolTipTitle, toolTipDescription: toolTipDescription)
+                        .padding()
+                }
+        } else {
+            content
+                .overlay {
+                    TooltipOverlay(toolTipTitle: toolTipTitle,
+                                   toolTipDescription: toolTipDescription,
+                                   offset: offset,
+                                   safeAreaInsets: safeAreaInsets)
+                    .padding()
+                    .renderedIf(isPresented)
+                }
+        }
+    }
+}
+
+extension View {
+    /// Displays a tooltip when `isPresented` is `true`.
+    func tooltip(isPresented: Binding<Bool>,
+                 toolTipTitle: String,
+                 toolTipDescription: String,
+                 offset: CGSize? = nil,
+                 safeAreaInsets: EdgeInsets = .zero) -> some View {
+        self.modifier(TooltipView(isPresented: isPresented,
+                                  toolTipTitle: toolTipTitle,
+                                  toolTipDescription: toolTipDescription,
+                                  offset: offset,
+                                  safeAreaInsets: safeAreaInsets))
+    }
+}
+
+/// Tooltip view that can be displayed as a popover
+@available(iOS 16.4, *)
+private struct TooltipPopover: View {
+    let toolTipTitle: String
+    let toolTipDescription: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(toolTipTitle)
+                .font(.body)
+                .foregroundColor(.white)
+                .fontWeight(.bold)
+            Text(toolTipDescription)
+                .font(.body)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .foregroundColor(.gray)
+        }
+        .padding()
+        .presentationBackground(Color(.systemGray5.color(for: UITraitCollection(userInterfaceStyle: .dark))))
+        .presentationCompactAdaptation(.popover)
+    }
+}
+
+/// Tooltip view that can be used as an overlay.
+/// Can be used in iOS <16.4 for tooltips.
+private struct TooltipOverlay: View {
 
     private let toolTipTitle: String
     private let toolTipDescription: String

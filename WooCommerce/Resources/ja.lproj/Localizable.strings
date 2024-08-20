@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-07 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-14 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9454,6 +9454,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "1日あたりの推定リーチ数";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "止めるまで実行します";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "インプレッションを推定できませんでした。 再試行しますか ?";
 
@@ -9475,14 +9478,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "予算を設定する";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "総支出";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "更新";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "毎日%1$@";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "%1$@に開始";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d日間";
@@ -9498,6 +9501,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d日間";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "総支出";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "週の支出";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "キャンセル";
@@ -9637,6 +9646,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@、%3$@から%2$d日";
+
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "毎週%1$@が%2$@に開始";
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "すべての場所";
@@ -10401,6 +10413,10 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "日";
 
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "カスタムフィールド";
+
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "有効期限";
 
@@ -11155,7 +11171,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "支払いを処理しています";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "%1$@の支払いが正常に行われました";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "支払いに成功しました。";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11201,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "支払い準備完了";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "支払いを受け取る";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Reader に接続する";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Reader 切断済み";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "この支払いを処理するには、Reader を接続してください。";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Reader が接続されていません";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "注文を確認中";
@@ -11259,6 +11281,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "リーダーに接続しています";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "完了";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Reader 接続済み";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "キャンセル";
@@ -11356,6 +11384,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "リーダーに接続できませんでした";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "再試行";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "合計を読み込めませんでした";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "商品をタップして\n お買い物カゴに追加します";
 
@@ -11364,6 +11398,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "消去";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "進行中の注文はすべて失われます。";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "終了";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "販売時点管理モードを終了しますか ?";
 
 /* Text for the button appearing on the item list screen when there are no products to load. */
 "pos.itemList.emptyProductsButtonTitle" = "シンプルな商品を作成";
@@ -11404,11 +11447,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "商品";
 
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "ストア管理で注文を作成";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "シンプルな商品以外の支払いを受け取るには、POS を終了して注文タブから新しい注文を作成します。";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "バリエーションや仮想などの他の商品タイプは、今後のアップデートで利用可能になります。";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "現在、POS で使用できるのはシンプルな物理的商品のみです。";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "OK";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "商品が表示されないのはなぜですか ?";
+
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "金額を算出";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "新規トランザクション";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "新しい注文";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "小計";

@@ -44,7 +44,7 @@ final class BlazeCampaignListItemCustomizationsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(budgetToDisplay, "$70")
-        XCTAssertEqual(budgetTitle, "Remaining budget")
+        XCTAssertEqual(budgetTitle, "Remaining")
     }
 
     func test_budgetToDisplay_is_weekly_budget_for_evergreen_campaign() {

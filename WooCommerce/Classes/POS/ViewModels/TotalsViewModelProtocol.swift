@@ -21,7 +21,7 @@ protocol TotalsViewModelProtocol {
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { get }
-
+    var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var isShimmering: Bool { get }
     var isTotalPriceFieldRedacted: Bool { get }

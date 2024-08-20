@@ -236,8 +236,6 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         }
     }
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-
-
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }

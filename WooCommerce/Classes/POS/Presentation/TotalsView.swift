@@ -261,15 +261,15 @@ private extension TotalsView {
     }
 
     private var cardReaderViewLayout: CardReaderViewLayout {
-        guard totalsViewModel.isShowingCardReaderStatus else {
+        guard viewModel.isShowingCardReaderStatus else {
             return .primary
         }
 
-        if totalsViewModel.paymentState == .validatingOrderError {
+        if viewModel.paymentState == .validatingOrderError {
             return .dark
         }
 
-        if totalsViewModel.connectionStatus == .disconnected {
+        if viewModel.connectionStatus == .disconnected {
             return .dark
         }
 

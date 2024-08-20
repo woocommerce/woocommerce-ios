@@ -14,13 +14,13 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)
-                    .font(.posTitle)
+                    .font(.posTitleEmphasized)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
-                .font(.posBody)
+                .font(.posBodyRegular)
                 .foregroundStyle(Color.primaryText)
             }
 

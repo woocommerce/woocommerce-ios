@@ -144,7 +144,7 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        productID: 33,
                                                        name: "Fluffy bunny pouch",
                                                        textSnippet: "Buy now!",
-                                                       uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
+                                                       uiStatus: BlazeCampaignListItem.Status.suspended.rawValue,
                                                        imageURL: nil,
                                                        targetUrl: nil,
                                                        impressions: 112,

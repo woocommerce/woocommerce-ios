@@ -28,7 +28,6 @@ struct ItemListView: View {
         .refreshable {
             await viewModel.reload()
         }
-        .padding(.horizontal, Constants.itemListPadding)
         .background(Color.posBackgroundGreyi3)
     }
 }
@@ -40,18 +39,17 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                headerTextView
+                POSHeaderTitleView()
                 if !viewModel.shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
                         viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                            .font(.system(size: UIFontMetrics.default.scaledValue(for: Constants.infoIconSize),
+                                          weight: .medium))
                     })
+                    .foregroundColor(.posPrimaryTexti3)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
@@ -88,8 +86,8 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(PointOfSaleAssets.dismissProductsBanner.imageName)
-                        .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
+                    Image(systemName: "xmark")
+                        .font(.posBodyRegular)
                         .foregroundColor(Color.posTertiaryTexti3)
                 })
                 .padding(Constants.iconPadding)
@@ -106,14 +104,6 @@ private extension ItemListView {
         }
     }
 
-    var headerTextView: some View {
-        Text(Localization.productSelectorTitle)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Constants.headerPadding)
-            .font(Constants.titleFont)
-            .foregroundColor(Color.posPrimaryTexti3)
-    }
-
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
@@ -127,6 +117,7 @@ private extension ItemListView {
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
+            .padding(.horizontal, Constants.itemListPadding)
         }
     }
 }
@@ -135,27 +126,19 @@ private extension ItemListView {
 ///
 private extension ItemListView {
     enum Constants {
-        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
-        static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
+        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
+        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTitleBottomPadding: CGFloat = 16
         static let infoIconSize: CGFloat = 36
         static let bannerInfoIconSize: CGFloat = 44
-        static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 26
-        static let headerPadding: CGFloat = 8
         static let itemListPadding: CGFloat = 16
     }
 
     enum Localization {
-        static let productSelectorTitle = NSLocalizedString(
-            "pos.itemlistview.productSelectorTitle",
-            value: "Products",
-            comment: "Title of the Point of Sale product selector"
-        )
         static let headerBannerTitle = NSLocalizedString(
             "pos.itemlistview.headerBannerTitle",
             value: "Showing simple products only",

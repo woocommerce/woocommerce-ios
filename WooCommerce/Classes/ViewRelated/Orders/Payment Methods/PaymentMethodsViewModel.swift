@@ -167,6 +167,7 @@ final class PaymentMethodsViewModel: ObservableObject {
 
         bindStoreCPPState()
         updateCardPaymentVisibility()
+        logOrderAndStoreCurrencyMismatch()
     }
 
     @MainActor
@@ -499,6 +500,25 @@ private extension PaymentMethodsViewModel {
                                                                                     try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
                                                                                   country: cardPresentPaymentsConfiguration.countryCode,
                                                                                   currency: currencySettings.currencyCode.rawValue))
+    }
+}
+
+private extension PaymentMethodsViewModel {
+    /// If the store supports multi-currency
+    /// and an account has a different default currency set in store's settings
+    /// then some payment methods may be unavailable
+    ///
+    /// Logging this case for easier debugging
+    /// #13580
+    private func logOrderAndStoreCurrencyMismatch() {
+        guard let order = ordersResultController.fetchedObjects.first else {
+            return
+        }
+
+        if order.currency != currencySettings.currencyCode.rawValue {
+            // swiftlint:disable:next line_length
+            DDLogWarn("⚠️ Order currency \(order.currency) differs from store's currency \(currencySettings.currencyCode.rawValue) which can lead to payment methods being unavailable")
+        }
     }
 }
 

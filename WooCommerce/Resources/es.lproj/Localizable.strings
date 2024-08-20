@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-08 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-15 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -9454,6 +9454,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "Estimación diaria del número de personas a la que has llegado";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "Ejecutar hasta que yo lo detenga";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "No se han podido estimar las impresiones. ¿Reintentar?";
 
@@ -9475,14 +9478,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Fija tu presupuesto";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "Gasto total";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "Actualizar";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ diariamente";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "A partir del %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d días";
@@ -9498,6 +9501,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "durante %1$d día";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "Gasto total";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "Gasto semanal";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Cancelar";
@@ -9637,6 +9646,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d día desde el %3$@";
+
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%1$@ a la semana a partir del %2$@";
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Todas";
@@ -10401,6 +10413,10 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "días";
 
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "Campos personalizados";
+
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Caduca después de";
 
@@ -11155,7 +11171,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Procesando pago";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "Se ha efectuado correctamente un pago de %1$@";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "¡Pago correcto!";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11201,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Listo para el pago";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "Cobrar pago";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Conectar con el lector";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Lector desconectado";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "Para procesar este pago, conecta tu lector.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Lector no conectado";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Comprobando pedido";
@@ -11259,6 +11281,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Conectando con el lector";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Hecho";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Lector conectado";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Cancelar";
@@ -11356,6 +11384,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "La conexión del lector ha fallado";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "Reintentar";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "No se han podido cargar los totales";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
 
@@ -11364,6 +11398,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Borrar";
+
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Se perderán los pedidos en curso.";
+
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Salir";
+
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "¿Salir del modo de punto de venta?";
 
 /* Text for the button appearing on the item list screen when there are no products to load. */
 "pos.itemList.emptyProductsButtonTitle" = "Crear un producto simple";
@@ -11404,11 +11447,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale product selector */
 "pos.itemlistview.productSelectorTitle" = "Productos";
 
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Crear un pedido en la gestión de la tienda";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "Para aceptar el pago de un producto no sencillo, sal de TPV y crea un nuevo pedido desde la pestaña de pedidos.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "Otros tipos de productos, como los variables y los virtuales, estarán disponibles en futuras actualizaciones.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "En estos momentos, solo se pueden utilizar productos físicos sencillos con TPV.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "Aceptar";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "¿Por qué no puedo ver mis productos?";
+
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Calcular importes";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "Nueva transacción";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "Nuevo pedido";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";

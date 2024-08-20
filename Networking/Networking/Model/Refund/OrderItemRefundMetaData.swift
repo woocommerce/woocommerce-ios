@@ -1,4 +1,4 @@
 
 import Foundation
 
-typealias OrderItemRefundMetaData = OrderMetaData
+typealias OrderItemRefundMetaData = MetaData

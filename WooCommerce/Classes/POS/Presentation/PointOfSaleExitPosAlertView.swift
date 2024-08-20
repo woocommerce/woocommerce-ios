@@ -16,18 +16,16 @@ struct PointOfSaleExitPosAlertView: View {
                     isPresented = false
                 } label: {
                     Image(systemName: "xmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                        .font(.system(size: UIFontMetrics.default.scaledValue(for: Constants.closeIconSize),
+                                      weight: .medium))
                 }
-                .frame(width: Constants.closeButtonSize, height: Constants.closeButtonSize)
+                .foregroundColor(Color.posTertiaryTexti3)
             }
             Text(Localization.exitTitle)
-                .font(.posModalTitle)
+                .font(.posTitleEmphasized)
                 .padding(.bottom, Constants.titleBottomPadding)
             Text(Localization.exitBody)
-                .font(.posModalBody)
+                .font(.posBodyRegular)
                 .padding(.bottom, Constants.bodyBottomPadding)
             Button {
                 dismiss()
@@ -45,8 +43,7 @@ private extension PointOfSaleExitPosAlertView {
         static let titleBottomPadding: CGFloat = 20.0
         static let bodyBottomPadding: CGFloat = 60.0
         static let padding: CGFloat = 40.0
-        static let closeIconSize: CGFloat = 30.0
-        static let closeButtonSize: CGFloat = 40.0
+        static let closeIconSize: CGFloat = 32.0
     }
 
     enum Localization {

@@ -25,7 +25,7 @@ public struct OrderAttributionInfo: Equatable, Sendable, GeneratedFakeable, Gene
         self.sessionPageViews = sessionPageViews
     }
 
-    public init(metaData: [OrderMetaData]) {
+    public init(metaData: [MetaData]) {
         var sourceType: String?
         var campaign: String?
         var source: String?

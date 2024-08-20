@@ -8,11 +8,11 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
             successIcon
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
-                    .font(.posTitle)
+                    .font(.posTitleEmphasized)
                     .foregroundStyle(Color.posPrimaryTexti3)
                 if let message = viewModel.message {
                     Text(message)
-                        .font(.posBody)
+                        .font(.posBodyRegular)
                         .foregroundStyle(Color.posPrimaryTexti3)
                 }
             }
@@ -49,6 +49,6 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
 
 #Preview {
     PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()
+        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
     )
 }

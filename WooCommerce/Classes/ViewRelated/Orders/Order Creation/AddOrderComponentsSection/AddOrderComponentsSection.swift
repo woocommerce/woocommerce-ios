@@ -76,17 +76,11 @@ private extension AddOrderComponentsSection {
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")
-        .overlay {
-            TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
-                        toolTipDescription: Localization.couponsTooltipDescription,
-                        offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
-                        safeAreaInsets: EdgeInsets())
-            .padding()
-            .renderedIf(shouldShowCouponsInfoTooltip)
-        }
-        // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
-        // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
-        .zIndex(1)
+        .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
+                 toolTipTitle: Localization.couponsTooltipTitle,
+                 toolTipDescription: Localization.couponsTooltipDescription,
+                 offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                 safeAreaInsets: EdgeInsets())
         .sheet(isPresented: $shouldShowAddCouponLineDetails) {
             NavigationView {
                 CouponListView(siteID: viewModel.siteID,

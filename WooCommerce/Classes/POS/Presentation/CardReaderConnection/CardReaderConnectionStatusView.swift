@@ -40,7 +40,7 @@ struct CardReaderConnectionStatusView: View {
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color(.wooCommerceAmber(.shade60)))
-                        Text(Localization.connectYourReader)
+                        Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
                 }
@@ -52,7 +52,7 @@ struct CardReaderConnectionStatusView: View {
                 }
             }
         }
-        .font(Constants.font)
+        .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
     }
 }
 
@@ -87,19 +87,21 @@ private extension CardReaderConnectionStatusView {
         static let overlayLineWidth: CGFloat = 2
         static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
     }
+}
 
+private extension CardReaderConnectionStatusView {
     enum Localization {
         static let readerConnected = NSLocalizedString(
-            "pointOfSale.cardReader.connectionStatus.connected.title",
-            value: "Reader connected",
-            comment: "The title of the card reader connection view, when connected. " +
-            "Shown as an overlay on Point of Sale.")
+            "pointOfSale.floatingButtons.readerConnected.title",
+            value: "Reader Connected",
+            comment: "The title of the floating button to indicate that reader is connected."
+        )
 
-        static let connectYourReader = NSLocalizedString(
-            "pointOfSale.cardReader.connectionStatus.connectYourReader.title",
+        static let readerDisconnected = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerDisconnected.title",
             value: "Connect your reader",
-            comment: "The title of the card reader connection view, when disconnected. " +
-            "Shown as an overlay on Point of Sale.")
+            comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
+        )
     }
 }
 

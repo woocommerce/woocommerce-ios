@@ -75,6 +75,9 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .sheet(isPresented: $viewModel.showSupport) {
+            supportForm
+        }
         .task {
             await viewModel.itemListViewModel.populatePointOfSaleItems()
         }
@@ -107,6 +110,23 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+private extension PointOfSaleDashboardView {
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $viewModel.showSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.supportDone) {
+                        viewModel.showSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}
+
 struct FloatingControlAreaSizeKey: EnvironmentKey {
     static let defaultValue = CGSize.zero
 }
@@ -127,6 +147,15 @@ private extension PointOfSaleDashboardView {
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
+        static let supportTag = "origin:point-of-sale"
+    }
+
+    enum Localization {
+        static let supportDone = NSLocalizedString(
+            "pointOfSaleDashboard.support.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the POS dashboard."
+        )
     }
 }
 
@@ -137,8 +166,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var totalsView: some View {
-        TotalsView(viewModel: viewModel,
-                   totalsViewModel: totalsViewModel)
+        TotalsView(viewModel: totalsViewModel)
     }
 
     var productListView: some View {

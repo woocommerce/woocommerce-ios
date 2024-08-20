@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "변형이 스토어에 표시되도록 가격 추가";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "제품 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "수동으로 상품을 추가합니다.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "구매 메모 추가...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "온라인에서 상품이 쉽게 검색되도록 주요 기능, 이점 또는 상세 정보를 추가하세요.";
-
-/* Title for the option to create product manually */
-"Add manually" = "수동으로 추가";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "비밀번호 선택";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "템플릿 선택";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "속성의 모든 조합에 대한 변형을 생성합니다.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "템플릿 상품 생성 중...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "변형 생성 중...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "어떻게 개선할 수 있을까요?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "어떻게 시작하시겠어요?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "작동 방식";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "모두 선택";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "미디어 소스 선택";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "상위 카테고리 선택";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "스토어에 첫 번째 제품을 추가하고 지금 바로 판매하세요.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "템플릿 시작";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "시리아";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "시스템 상태 보고서";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "사이트와 통신하는 중 문제가 발생했습니다.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "템플릿 상품 생성 중 문제가 발생했습니다.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "지정된 사이트의 차단을 제거하는 중 문제가 발생했습니다.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "보안 키 사용";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "템플릿을 사용하여 실물 상품, 가상 상품 및 변형 상품을 생성하세요. 언제든지 편집할 수 있습니다.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "메시지를 받을 수 있도록 사용 중인 이메일 주소를 사용하세요.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "워드프레스 CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "워드프레스 미디어 라이브러리";
 
@@ -9739,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "합계";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "다시 시도";
@@ -11159,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "결제 실패";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "다시 시도";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "결제 실패";
 
@@ -11408,18 +11372,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "판매 지점 모드를 종료할까요?";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "단순 상품 생성";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "현재 POS에서는 단순 상품만 지원합니다.";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "스토어에 상품 없음";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "제품 없음";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "다시 시도";
 
@@ -11443,9 +11395,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "시작하기";
-
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "상품";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "스토어 관리에서 주문 생성";

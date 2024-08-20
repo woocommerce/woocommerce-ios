@@ -16,8 +16,6 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
                 Text(viewModel.message)
                     .foregroundStyle(Color.posPrimaryTexti3)
                     .font(.posBodyRegular)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
             }
 
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {

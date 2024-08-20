@@ -24,6 +24,12 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
+            guard viewModel.canBeDismissed else {
+                self?.presentDiscardChangesActionSheet {
+                    self?.discardOrderAndDismiss()
+                }
+                return
+            }
             self?.dismiss(animated: true)
         }
     }

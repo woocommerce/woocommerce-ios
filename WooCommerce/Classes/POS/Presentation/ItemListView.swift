@@ -18,11 +18,8 @@ struct ItemListView: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading:
-                /// TODO: handle pull to refresh
+            case .loading, .loaded:
                 listView(viewModel.items)
-            case .loaded(let items):
-                listView(items)
             }
         }
         .refreshable {
@@ -47,8 +44,7 @@ private extension ItemListView {
                         viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
-                            .font(.system(size: UIFontMetrics.default.scaledValue(for: Constants.infoIconSize),
-                                          weight: .medium))
+                            .font(.posTitleRegular)
                     })
                     .foregroundColor(.posPrimaryTexti3)
                 }

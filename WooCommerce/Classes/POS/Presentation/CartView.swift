@@ -5,6 +5,7 @@ struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -13,44 +14,55 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                backAddMoreButton
-                    .disabled(viewModel.isAddMoreDisabled)
+            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
+                HStack {
+                    backAddMoreButton
+                        .disabled(viewModel.isAddMoreDisabled)
+                        .shimmering(active: viewModel.isAddMoreDisabled)
+
+                    HStack {
+                        Text(Localization.cartTitle)
+                            .font(Constants.primaryFont)
+                            .foregroundColor(cartViewModel.cartLabelColor)
+                            .accessibilityAddTraits(.isHeader)
+
+                        Spacer()
+
+                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                            Text(itemsInCartLabel)
+                                .font(Constants.itemsFont)
+                                .foregroundColor(Color.posSecondaryTexti3)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
 
                 HStack {
-                    Text(Localization.cartTitle)
-                        .font(Constants.primaryFont)
-                        .foregroundColor(cartViewModel.cartLabelColor)
-                        .accessibilityAddTraits(.isHeader)
                     Spacer()
-                    if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
-                        Text(itemsInCartLabel)
-                            .font(Constants.itemsFont)
-                            .foregroundColor(Color.posSecondaryTexti3)
-                    }
-                }
-                .accessibilityElement(children: .combine)
+                        .renderedIf(dynamicTypeSize.isAccessibilitySize)
 
-                Button {
-                    cartViewModel.removeAllItemsFromCart()
-                } label: {
-                    Text(Localization.clearButtonTitle)
-                        .font(Constants.clearButtonFont)
-                        .padding(Constants.clearButtonTextPadding)
-                        .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                        )
+                    Button {
+                        cartViewModel.removeAllItemsFromCart()
+                    } label: {
+                        Text(Localization.clearButtonTitle)
+                            .font(Constants.clearButtonFont)
+                            .padding(Constants.clearButtonTextPadding)
+                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
+                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
+                            )
+                    }
+                    .padding(.horizontal, Constants.itemHorizontalPadding)
+                    .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
-                .padding(.horizontal, Constants.itemHorizontalPadding)
-                .renderedIf(cartViewModel.shouldShowClearCartButton)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
+
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
                     Spacer()
@@ -123,6 +135,8 @@ private extension CartView {
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
+        static let cartHeaderSpacing: CGFloat = 8
+        static let backButtonSymbol: String = "chevron.backward"
     }
 
     enum Localization {
@@ -138,6 +152,10 @@ private extension CartView {
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
             comment: "Hint to add products to the Cart when this is empty.")
+        static let checkoutButtonTitle = NSLocalizedString(
+            "pos.cartView.checkoutButtonTitle",
+            value: "Check out",
+            comment: "Title for the 'Checkout' button to process the Order.")
     }
 }
 
@@ -148,7 +166,7 @@ private extension CartView {
         Button {
             cartViewModel.submitCart()
         } label: {
-            Text("Check out")
+            Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSPrimaryButtonStyle())
     }
@@ -162,9 +180,9 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(PointOfSaleAssets.cartBack.imageName)
-                    .resizable()
-                    .frame(width: 32, height: 32)
+                Image(systemName: Constants.backButtonSymbol)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.primary)
             }
         }
     }

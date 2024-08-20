@@ -57,20 +57,18 @@ extension UIViewController: UINavigationBarBackButtonHandler {
 }
 
 extension UINavigationController: UINavigationBarDelegate {
-    public func checkIfNavigationBarShouldPop() -> Bool {
-        var shouldPop = true
-
-        if let vc = topViewController {
-            shouldPop = vc.shouldPopOnBackButton()
+    public func checkIfNavigationBarShouldPop(item: UINavigationItem) -> Bool {
+        guard let vc = topViewController, vc.navigationItem == item else {
+            return true
         }
 
-        return shouldPop
+        return vc.shouldPopOnBackButton()
     }
 
     // This delegate method is not called on the simulator or device running iOS 13.4 from Xcode.
     // You need to use a release build.
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
-        return checkIfNavigationBarShouldPop()
+        return checkIfNavigationBarShouldPop(item: item)
     }
 }
 

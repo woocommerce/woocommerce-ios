@@ -41,7 +41,7 @@ class WooNavigationController: UINavigationController {
 
 extension WooNavigationController {
     public override func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
-        checkIfNavigationBarShouldPop()
+        checkIfNavigationBarShouldPop(item: item)
     }
 }
 

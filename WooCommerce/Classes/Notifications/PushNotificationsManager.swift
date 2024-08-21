@@ -10,13 +10,13 @@ import protocol WooFoundation.Analytics
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
 final class PushNotificationsManager: PushNotesManager {
-    
+
     private var inAppNotices: Bool = true
-    
+
     func disableInAppNotifications() {
         inAppNotices = false
     }
-    
+
     func enableInAppNotifications() {
         inAppNotices = true
     }

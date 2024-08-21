@@ -10,7 +10,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
         // When
-        viewModel.formattableAmountTextFieldViewModel?.amount = "$0"
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("$0")
 
         // Then
         XCTAssertFalse(viewModel.shouldEnableDoneButton)
@@ -21,7 +21,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
         // When
-        viewModel.formattableAmountTextFieldViewModel?.amount = ""
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount("")
 
         // Then
         XCTAssertFalse(viewModel.shouldEnableDoneButton)
@@ -71,7 +71,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
             passedIsTaxable = isTaxable
         })
 
-        viewModel.formattableAmountTextFieldViewModel?.amount = amount
+        viewModel.formattableAmountTextFieldViewModel?.updateAmount(amount)
         viewModel.name = name
         viewModel.isTaxable = isTaxable
 
@@ -154,7 +154,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: Decimal(baseAmountForPercentage)),
                                                  storeCurrencySettings: usStoreSettings,
                                                  onCustomAmountEntered: {_, _, _, _ in })
-        viewModel.percentageViewModel?.percentage = "\(percentage)"
+        viewModel.percentageViewModel?.updatePercentageCalculatedAmount("\(percentage)")
 
         // Then
         XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))

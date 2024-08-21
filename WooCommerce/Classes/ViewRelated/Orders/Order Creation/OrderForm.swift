@@ -618,6 +618,9 @@ private struct ProductsSection: View {
     ///
     @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
 
+    /// Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
             return OrderForm.Layout.verticalSpacing
@@ -804,6 +807,9 @@ private extension ProductsSection {
             } else {
                 HStack() {
                     Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: Layout.scanImageSize * scale)
                     Text(Localization.scanProductRowTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -827,6 +833,9 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: Layout.scanImageSize * scale)
             }
         })
         .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
@@ -985,6 +994,7 @@ private extension ProductSelectorView.Configuration {
 private extension ProductsSection {
     enum Layout {
         static let rowHeight: CGFloat = 56.0
+        static let scanImageSize: CGFloat = 24
     }
 
     enum Localization {

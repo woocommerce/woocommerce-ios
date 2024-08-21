@@ -155,8 +155,8 @@ final class BlazeRemoteTests: XCTestCase {
         let paramStartDate = request.parameters?["start_date"] as? String ?? ""
         let paramEndDate = request.parameters?["start_date"] as? String ?? ""
 
-        XCTAssertTrue(usesWesternArabicNumberingSystem(paramStartDate))
-        XCTAssertTrue(usesWesternArabicNumberingSystem(paramEndDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramStartDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramEndDate))
     }
 
     func test_createCampaign_properly_relays_networking_errors() async {
@@ -664,13 +664,8 @@ final class BlazeRemoteTests: XCTestCase {
 
 /// Helpers
 private extension BlazeRemoteTests {
-    func usesWesternArabicNumberingSystem(_ dateString: String) -> Bool {
-        let numerals = CharacterSet.decimalDigits
-        guard let firstNumeral = dateString.unicodeScalars.first(where: { numerals.contains($0) }) else {
-            return false
-        }
-
-        let latinNumerals = CharacterSet(charactersIn: "0123456789")
-        return latinNumerals.contains(firstNumeral)
+    func isValidWesternArabicFormattedDateString(_ dateString: String) -> Bool {
+        // to match yyyy-MM-dd, where each number needs to be between 0-9
+        return dateString.range(of: #"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"#, options: .regularExpression) != nil
     }
 }

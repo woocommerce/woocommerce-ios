@@ -1519,6 +1519,10 @@ private extension EditableOrderViewModel {
         // otherwise may ignore the subsequent values that are sent
         let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+
+        guard (addedItemsToSync + removedItemsToSync).isNotEmpty else {
+            return
+        }
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
 
         let productCount = addedItemsToSync.count - removedItemsToSync.count

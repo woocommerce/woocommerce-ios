@@ -104,21 +104,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Stores the fixed amount entered by the merchant.
     ///
-    @Published var amount: String = "" {
-        didSet {
-            guard amount != oldValue else { return }
-            amount = priceFieldFormatter.formatAmount(amount)
-        }
-    }
+    @Published var amount: String = ""
 
     /// Stores the percentage entered by the merchant.
     ///
-    @Published var percentage: String = "" {
-        didSet {
-            guard percentage != oldValue else { return }
-            percentage = sanitizePercentageAmount(percentage)
-        }
-    }
+    @Published var percentage: String = ""
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
@@ -282,33 +272,36 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     }
 }
 
-private extension FeeOrDiscountLineDetailsViewModel {
-
+extension FeeOrDiscountLineDetailsViewModel {
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
-    func sanitizePercentageAmount(_ amount: String) -> String {
+    func updatePercentage(_ percentageInput: String) {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
-        let negativePrefix = amount.hasPrefix(minusSign) ? minusSign : ""
+        let negativePrefix = percentageInput.hasPrefix(minusSign) ? minusSign : ""
 
-        let sanitized = amount
+        let sanitized = percentageInput
             .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
 
         // Trim to two decimals & remove any extra "."
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            return negativePrefix + components[0] + deviceDecimalSeparator
+            self.percentage = negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            return negativePrefix + components[0]
+            self.percentage = negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            return negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
+            self.percentage = negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+
+    func updateAmount(_ amountInput: String) {
+        self.amount = priceFieldFormatter.formatAmount(amountInput)
     }
 }

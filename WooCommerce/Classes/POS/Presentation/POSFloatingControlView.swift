@@ -21,8 +21,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    presentationMode.wrappedValue.dismiss()
-                    // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
+                    viewModel.showSupport = true
                 } label: {
                     Label(
                         title: { Text(Localization.getSupport) },
@@ -31,7 +30,7 @@ struct POSFloatingControlView: View {
                 }
             } label: {
                 Image(systemName: "ellipsis")
-                    .font(.posBodyEmphasized)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
                     .foregroundStyle(fontColor)
                     .frame(width: Constants.size, height: Constants.size)
             }

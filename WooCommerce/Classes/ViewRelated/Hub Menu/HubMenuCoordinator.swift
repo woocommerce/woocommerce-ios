@@ -66,7 +66,8 @@ final class HubMenuCoordinator {
                                                   navigationController: navigationController,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController = hubMenuController {
-            navigationController.viewControllers = [hubMenuController]
+            let navigationController = UINavigationController(rootViewController: hubMenuController)
+            tabContainerController.wrappedController = navigationController
         }
 
         if notificationsSubscription == nil {

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel {
     let title: String = Localization.title
+    private let progress: Float
     let image: Image
     let progressTitle: String
     let progressSubtitle: String = Localization.messageRequired
@@ -11,10 +12,30 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
 
     init(progress: Float, cancel: (() -> Void)?) {
         self.image = Image(uiImage: .softwareUpdateProgress(progress: CGFloat(progress)))
+        self.progress = progress
         self.progressTitle = String(format: Localization.percentCompleteFormat, 100 * progress)
 
         self.cancelButtonTitle = Localization.cancelRequiredButtonText
         self.cancelReaderUpdate = cancel
+    }
+}
+
+extension PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel: Hashable {
+    static func == (lhs: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel,
+                    rhs: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.progress == rhs.progress &&
+        lhs.progressTitle == rhs.progressTitle &&
+        lhs.progressSubtitle == rhs.progressSubtitle &&
+        lhs.cancelButtonTitle == rhs.cancelButtonTitle
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(progress)
+        hasher.combine(progressTitle)
+        hasher.combine(progressSubtitle)
+        hasher.combine(cancelButtonTitle)
     }
 }
 

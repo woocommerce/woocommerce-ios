@@ -59,6 +59,7 @@ struct PointOfSaleDashboardView: View {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
                 PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                    .id(alertType)
             } else {
                 switch totalsViewModel.cardPresentPaymentEvent {
                 case .idle,

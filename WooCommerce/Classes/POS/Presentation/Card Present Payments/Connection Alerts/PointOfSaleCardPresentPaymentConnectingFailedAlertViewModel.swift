@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
-struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel: Hashable {
     let title = Localization.title
     let imageName = PointOfSaleAssets.paymentsError.imageName
     let errorDetails: String?

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel: Hashable {
     let title = Localization.title
     let imageName = PointOfSaleAssets.readerConnectionConnecting.imageName
     let instruction = Localization.instruction

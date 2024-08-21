@@ -120,7 +120,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
 // MARK: - Utils
 private extension HubMenuCoordinatorTests {
     func makeHubMenuCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> HubMenuCoordinator {
-        HubMenuCoordinator(navigationController: UINavigationController(),
+        HubMenuCoordinator(tabContainerController: TabContainerController(),
                            pushNotificationsManager: pushNotificationsManager,
                            storesManager: storesManager,
                            noticePresenter: noticePresenter,

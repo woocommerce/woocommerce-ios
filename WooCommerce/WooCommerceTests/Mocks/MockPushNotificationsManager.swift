@@ -5,6 +5,13 @@ import UIKit
 import Yosemite
 
 final class MockPushNotificationsManager: PushNotesManager {
+    func disableInAppNotifications() {
+
+    }
+
+    func enableInAppNotifications() {
+
+    }
 
     var foregroundNotifications: AnyPublisher<PushNotification, Never> {
         foregroundNotificationsSubject.eraseToAnyPublisher()

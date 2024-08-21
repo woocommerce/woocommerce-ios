@@ -3,7 +3,7 @@ import Codegen
 
 /// Objective for a Blaze ads campaign.
 ///
-public struct BlazeCampaignObjective: Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaignObjective: Decodable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     
     /// ID of the objective
     public let id: String
@@ -37,10 +37,10 @@ public struct BlazeCampaignObjective: Equatable, Sendable, GeneratedFakeable, Ge
         self.suitableForDescription = try container.decode(String.self, forKey: .suitableForDescription)
     }
 
-    private enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: CodingKey {
         case id
         case title
         case description
-        case suitableForDescription = "suitable_for_description"
+        case suitableForDescription
     }
 }

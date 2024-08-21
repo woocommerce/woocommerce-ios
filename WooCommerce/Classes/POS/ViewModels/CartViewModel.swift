@@ -30,6 +30,8 @@ final class CartViewModel: CartViewModelProtocol {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
+
+        ServiceLocator.analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {

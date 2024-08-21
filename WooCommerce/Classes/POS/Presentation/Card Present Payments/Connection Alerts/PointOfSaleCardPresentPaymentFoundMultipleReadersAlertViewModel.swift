@@ -15,3 +15,14 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel {
         }
     }
 }
+
+extension PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel: Hashable {
+    static func == (lhs: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel,
+                    rhs: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel) -> Bool {
+        return lhs.readerIDs == rhs.readerIDs
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(readerIDs)
+    }
+}

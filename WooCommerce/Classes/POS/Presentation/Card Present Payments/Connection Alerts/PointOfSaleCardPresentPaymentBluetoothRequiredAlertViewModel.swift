@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel {
+struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel: Hashable {
     let title = Localization.bluetoothRequired
     let imageName = PointOfSaleAssets.paymentsError.imageName
     let openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel

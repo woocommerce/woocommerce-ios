@@ -51,6 +51,31 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     }
 }
 
+extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: Hashable {
+    static func == (lhs: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel,
+                    rhs: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.imageName == rhs.imageName &&
+        lhs.settingsAdminUrl == rhs.settingsAdminUrl &&
+        lhs.shouldShowSettingsWebView == rhs.shouldShowSettingsWebView &&
+        lhs.primaryButtonViewModel == rhs.primaryButtonViewModel &&
+        lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
+        lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
+        lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(imageName)
+        hasher.combine(settingsAdminUrl)
+        hasher.combine(shouldShowSettingsWebView)
+        hasher.combine(primaryButtonViewModel)
+        hasher.combine(cancelButtonViewModel)
+        hasher.combine(retryButtonViewModel)
+        hasher.combine(showsInAuthenticatedWebView)
+    }
+}
+
 private extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(

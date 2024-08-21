@@ -9,14 +9,14 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
 
-    private let hideAppTabBar: ((Bool) -> Void)
+    private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
     init(itemProvider: POSItemProvider,
-         hideAppTabBar: @escaping ((Bool) -> Void),
+         onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter) {
-        self.hideAppTabBar = hideAppTabBar
+        self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
@@ -42,10 +42,10 @@ struct PointOfSaleEntryPointView: View {
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
             .onAppear {
-                hideAppTabBar(true)
+                onPointOfSaleModeActiveStateChange(true)
             }
             .onDisappear {
-                hideAppTabBar(false)
+                onPointOfSaleModeActiveStateChange(false)
             }
     }
 }
@@ -53,7 +53,7 @@ struct PointOfSaleEntryPointView: View {
 #if DEBUG
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
-                              hideAppTabBar: { _ in },
+                              onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderService: POSOrderPreviewService(),
                               currencyFormatter: .init(currencySettings: .init()))

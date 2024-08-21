@@ -8,7 +8,7 @@ public final class MockAnalyticsPreview: Analytics {
         //
     }
 
-    public func track(_ eventName: String, properties: [AnyHashable : Any]?, error: Error?) {
+    public func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
         //
     }
 

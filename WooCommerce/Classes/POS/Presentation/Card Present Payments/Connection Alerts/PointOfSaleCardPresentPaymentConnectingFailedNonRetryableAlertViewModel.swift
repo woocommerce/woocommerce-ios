@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
     let title = Localization.title
     let errorDetails: String
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(error: Error,

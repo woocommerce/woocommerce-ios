@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentScanningFailedAlertViewModel {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let buttonViewModel: CardPresentPaymentsModalButtonViewModel
     let errorDetails: String
 

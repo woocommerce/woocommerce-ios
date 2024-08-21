@@ -3,7 +3,7 @@ import SwiftUI
 
 final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let settingsAdminUrl: URL
 
     @Published var shouldShowSettingsWebView: Bool = false

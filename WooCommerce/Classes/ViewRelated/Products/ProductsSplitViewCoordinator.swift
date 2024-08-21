@@ -234,11 +234,6 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
             secondaryNavigationController.viewControllers = []
             return
         }
-    }
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if let tabNavigationController = navigationController as? WooTabNavigationController {
-            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
-        }
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
         // so that the secondary content types state can be updated accordingly.
@@ -249,6 +244,11 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         }
         if navigationController.viewControllers.count < contentTypes.count {
             contentTypes.removeLast()
+        }
+    }
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let tabNavigationController = navigationController as? WooTabNavigationController {
+            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
     }
 }

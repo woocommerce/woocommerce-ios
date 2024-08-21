@@ -616,4 +616,58 @@ final class BlazeRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
     }
+
+    // MARK: - Fetch campaign objectives
+
+    func test_fetchCampaignObjectives_returns_parsed_objectives() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-objectives")
+
+        // When
+        let results = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+        // Then
+        XCTAssertEqual(results.count, 4)
+        let firstItem = try XCTUnwrap(results.first)
+        XCTAssertEqual(firstItem.id, "traffic")
+        XCTAssertEqual(firstItem.title, "Traffic")
+        XCTAssertEqual(firstItem.description, "Aims to drive more visitors and increase page views.")
+        XCTAssertEqual(firstItem.suitableForDescription, "E-commerce sites, content-driven websites, startups.")
+        XCTAssertEqual(firstItem.locale, "vi")
+    }
+
+    func test_fetchCampaignObjectives_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-objectives")
+
+        // When
+        _ = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "vi")
+    }
+
+    func test_fetchCampaignObjectives_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
 }

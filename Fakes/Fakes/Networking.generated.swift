@@ -209,6 +209,19 @@ extension Networking.BlazeCampaignListItem {
         )
     }
 }
+extension Networking.BlazeCampaignObjective {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignObjective {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            description: .fake(),
+            suitableForDescription: .fake(),
+            locale: .fake()
+        )
+    }
+}
 extension Networking.BlazeForecastedImpressionsInput {
     /// Returns a "ready to use" type filled with fake values.
     ///

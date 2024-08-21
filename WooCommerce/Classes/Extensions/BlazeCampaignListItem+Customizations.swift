@@ -1,6 +1,37 @@
 import SwiftUI
 import struct Yosemite.BlazeCampaignListItem
 
+/// Helpers for displaying campaign details
+extension BlazeCampaignListItem {
+    var budgetToDisplay: String {
+        guard isEvergreen else {
+            /// For non-evergreen campaigns, display total budget by default
+            return String(format: "$%.0f", totalBudget)
+        }
+
+        /// For evergreen campaigns, calculate the weekly amount to display.
+        let weeklyBudget = totalBudget / Double(durationDays) * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        return String(format: "$%.0f", weeklyBudget)
+    }
+
+    var budgetTitle: String {
+        isEvergreen ? Localization.weeklyBudget : Localization.totalBudget
+    }
+
+    private enum Localization {
+        static let weeklyBudget = NSLocalizedString(
+            "blazeCampaignListItem.weeklyBudget",
+            value: "Weekly",
+            comment: "Title of the budget field of a Blaze campaign without an end date."
+        )
+        static let totalBudget = NSLocalizedString(
+            "blazeCampaignListItem.totalBudget",
+            value: "Total",
+            comment: "Title of the total budget field of a Blaze campaign with an end date."
+        )
+    }
+}
+
 /// Customizations for campaign status
 extension BlazeCampaignListItem.Status {
     var displayText: String {

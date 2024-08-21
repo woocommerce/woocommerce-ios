@@ -1152,7 +1152,7 @@ extension UIImage {
     /// Scan Icon
     ///
     static var scanImage: UIImage {
-        return UIImage(named: "icon-scan")!
+        return UIImage(systemName: "barcode.viewfinder")!
     }
 
     /// WordPress Logo Icon

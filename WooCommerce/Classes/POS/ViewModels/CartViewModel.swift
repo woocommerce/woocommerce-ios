@@ -23,9 +23,9 @@ final class CartViewModel: CartViewModelProtocol {
         return itemsInCart.isEmpty
     }
 
-    private var analytics: Analytics?
+    private var analytics: Analytics
 
-    init(analytics: Analytics? = nil) {
+    init(analytics: Analytics) {
         self.analytics = analytics
 
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
@@ -36,9 +36,6 @@ final class CartViewModel: CartViewModelProtocol {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
 
-        guard let analytics else {
-            return
-        }
         analytics.track(.pointOfSaleAddItemToCart)
     }
 

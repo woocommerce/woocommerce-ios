@@ -53,11 +53,16 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
                               hideAppTabBar: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderService: POSOrderPreviewService(),
-                              currencyFormatter: .init(currencySettings: .init()), analytics: ServiceLocator.analytics)
+                              currencyFormatter: .init(currencySettings: .init()),
+                              analytics: MockAnalyticsPreview(userHasOptedIn: true,
+                                                              analyticsProvider: MockAnalyticsProviderPreview()))
 }
 #endif

@@ -4,7 +4,7 @@ import Codegen
 /// Objective for a Blaze ads campaign.
 ///
 public struct BlazeCampaignObjective: Decodable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
-    
+
     /// ID of the objective
     public let id: String
 

@@ -837,8 +837,7 @@ private extension ProductFormViewModel {
     func hasBlazeCampaign() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
         return campaigns.contains(where: {
-            ($0.productID == product.productID) &&
-            ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
+            $0.productID == product.productID && $0.isActive
         })
     }
 }

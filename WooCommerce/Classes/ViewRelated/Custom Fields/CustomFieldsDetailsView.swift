@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CustomFieldsDetails: View {
+struct CustomFieldsDetailsView: View {
     @Environment(\.presentationMode) var presentationMode
 
     let viewEditCustomFieldsInProductsAndOrdersEnabled: Bool
@@ -167,7 +167,7 @@ private struct EditableCustomFieldRow: View {
 
 // MARK: - Constants
 //
-extension CustomFieldsDetails {
+extension CustomFieldsDetailsView {
     enum Localization {
         static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
     }
@@ -196,7 +196,7 @@ private extension EditableCustomFieldRow {
 
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CustomFieldsDetails(
+        CustomFieldsDetailsView(
             viewEditCustomFieldsInProductsAndOrdersEnabled: false,
             customFields: [
             CustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),

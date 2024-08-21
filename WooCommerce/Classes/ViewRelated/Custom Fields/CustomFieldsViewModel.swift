@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// ViewModel for `CustomFieldsDetails`
+/// ViewModel for `CustomFieldsDetailsView`
 struct CustomFieldsViewModel: Identifiable {
     /// Unique identifier, required by `SwiftUI`
     ///

@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import protocol Yosemite.POSItem
+import protocol WooFoundation.Analytics
 
 final class CartViewModel: CartViewModelProtocol {
     /// Emits cart items when the CTA is tapped to submit the cart.
@@ -21,8 +22,12 @@ final class CartViewModel: CartViewModelProtocol {
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
     }
+    
+    private var analytics: Analytics
 
-    init() {
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
+
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
     }
@@ -31,7 +36,7 @@ final class CartViewModel: CartViewModelProtocol {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
 
-        ServiceLocator.analytics.track(.pointOfSaleAddItemToCart)
+        analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {

@@ -45,7 +45,6 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let coordinator = makeHubMenuCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
         let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
@@ -67,7 +66,6 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let coordinator = makeHubMenuCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
         // When
@@ -87,7 +85,6 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let coordinator = makeHubMenuCoordinator()
         let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
         assertEmpty(noticePresenter.queuedNotices)

@@ -149,6 +149,42 @@ final class CartViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.isCartEmpty)
     }
+
+    func test_shouldShowClearCartButton_before_addItemToCart_and_deletion_allowed_false() {
+        // Given
+        sut.canDeleteItemsFromCart = true
+
+        // When/Then
+        XCTAssertFalse(sut.shouldShowClearCartButton)
+    }
+
+    func test_shouldShowClearCartButton_when_addItemToCart_and_deletion_allowed_true() {
+        XCTAssertFalse(sut.shouldShowClearCartButton, "Initial state")
+
+        // Given
+        sut.canDeleteItemsFromCart = true
+        let anItem = Self.makeItem()
+
+        // When/Then
+        sut.addItemToCart(anItem)
+
+        // Then
+        XCTAssertTrue(sut.shouldShowClearCartButton)
+    }
+
+    func test_shouldShowClearCartButton_when_addItemToCart_and_deletion_disallowed_false() {
+        XCTAssertFalse(sut.shouldShowClearCartButton, "Initial state")
+
+        // Given
+        sut.canDeleteItemsFromCart = false
+        let anItem = Self.makeItem()
+
+        // When/Then
+        sut.addItemToCart(anItem)
+
+        // Then
+        XCTAssertFalse(sut.shouldShowClearCartButton)
+    }
 }
 
 private extension CartViewModelTests {

@@ -10,8 +10,9 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
-            Image(viewModel.imageName)
+            Image(decorative: viewModel.imageName)
 
             Text(viewModel.instruction)
 
@@ -20,6 +21,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
             .buttonStyle(SecondaryButtonStyle())
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

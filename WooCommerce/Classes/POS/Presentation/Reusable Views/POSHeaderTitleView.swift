@@ -9,6 +9,7 @@ struct POSHeaderTitleView: View {
             .padding(Constants.padding)
             .font(.posTitleEmphasized)
             .foregroundColor(foregroundColor)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 

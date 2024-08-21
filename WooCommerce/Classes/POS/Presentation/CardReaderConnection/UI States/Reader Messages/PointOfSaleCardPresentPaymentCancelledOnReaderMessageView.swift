@@ -8,6 +8,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
             Text(viewModel.title)
                 .font(.posTitleEmphasized)
                 .foregroundStyle(Color.posPrimaryTexti3)
+                .accessibilityAddTraits(.isHeader)
         }
         .multilineTextAlignment(.center)
     }

@@ -38,12 +38,14 @@ struct PointOfSaleDashboardView: View {
                 PointOfSaleItemListEmptyView()
             } else {
                 contentView
+                    .accessibilitySortPriority(2)
                     .transition(.push(from: .top))
             }
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.08), radius: 4)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
+                .accessibilitySortPriority(1)
                 .renderedIf(!viewModel.isInitialLoading)
         }
         .environment(\.floatingControlAreaSize,
@@ -86,16 +88,19 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 if viewModel.orderStage == .building {
                     productListView
+                        .accessibilitySortPriority(2)
                         .transition(.move(edge: .leading))
                 }
 
                 if !viewModel.isTotalsViewFullScreen {
                     cartView
+                        .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
                 }
 
                 if viewModel.orderStage == .finalizing {
                     totalsView
+                        .accessibilitySortPriority(2)
                         .transition(.move(edge: .trailing))
                 }
             }

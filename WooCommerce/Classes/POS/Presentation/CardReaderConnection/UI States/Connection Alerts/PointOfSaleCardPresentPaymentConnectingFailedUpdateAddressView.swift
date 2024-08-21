@@ -5,8 +5,10 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
@@ -21,6 +23,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
                               completion: viewModel.settingsWebViewWasDismissed)

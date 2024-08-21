@@ -10,8 +10,10 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Text(viewModel.errorDetails)
 
@@ -26,6 +28,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

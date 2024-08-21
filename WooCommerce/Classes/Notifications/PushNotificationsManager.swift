@@ -10,6 +10,16 @@ import protocol WooFoundation.Analytics
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
 final class PushNotificationsManager: PushNotesManager {
+    
+    private var inAppNotices: Bool = true
+    
+    func disableInAppNotifications() {
+        inAppNotices = false
+    }
+    
+    func enableInAppNotifications() {
+        inAppNotices = true
+    }
 
     /// PushNotifications Configuration
     ///
@@ -269,7 +279,12 @@ extension PushNotificationsManager {
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
-            foregroundNotificationsSubject.send(foregroundNotification)
+            if inAppNotices {
+                debugPrint("🍉 POS disabled. Sending in-app notice.")
+                foregroundNotificationsSubject.send(foregroundNotification)
+            } else {
+                debugPrint("🍉 POS enabled. Not sending notices.")
+            }
         }
 
         _ = await synchronizeNotifications()

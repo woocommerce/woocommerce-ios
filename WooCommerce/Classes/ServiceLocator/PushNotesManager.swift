@@ -105,4 +105,8 @@ protocol PushNotesManager {
 
     /// Cancels all local notifications that were previously scheduled.
     func cancelAllNotifications() async
+    
+    ///
+    func disableInAppNotifications()
+    func enableInAppNotifications()
 }

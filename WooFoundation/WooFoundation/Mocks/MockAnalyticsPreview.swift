@@ -1,3 +1,5 @@
+import Foundation
+
 public final class MockAnalyticsPreview: Analytics {
     public init(userHasOptedIn: Bool, analyticsProvider: AnalyticsProvider) {
         self.userHasOptedIn = userHasOptedIn

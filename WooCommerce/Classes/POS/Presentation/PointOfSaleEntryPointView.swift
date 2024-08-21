@@ -9,14 +9,14 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
 
-    private let isPointOfSaleModeEnabled: ((Bool) -> Void)
+    private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
     init(itemProvider: POSItemProvider,
-         isPointOfSaleModeEnabled: @escaping ((Bool) -> Void),
+         onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
          currencyFormatter: CurrencyFormatter) {
-        self.isPointOfSaleModeEnabled = isPointOfSaleModeEnabled
+        self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
@@ -42,10 +42,10 @@ struct PointOfSaleEntryPointView: View {
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
             .onAppear {
-                isPointOfSaleModeEnabled(true)
+                onPointOfSaleModeActiveStateChange(true)
             }
             .onDisappear {
-                isPointOfSaleModeEnabled(false)
+                onPointOfSaleModeActiveStateChange(false)
             }
     }
 }
@@ -53,7 +53,7 @@ struct PointOfSaleEntryPointView: View {
 #if DEBUG
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
-                              isPointOfSaleModeEnabled: { _ in },
+                              onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderService: POSOrderPreviewService(),
                               currencyFormatter: .init(currencySettings: .init()))

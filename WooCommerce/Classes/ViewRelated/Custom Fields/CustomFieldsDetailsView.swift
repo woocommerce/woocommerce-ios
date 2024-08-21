@@ -3,7 +3,7 @@ import SwiftUI
 struct CustomFieldsDetailsView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    let viewEditCustomFieldsInProductsAndOrdersEnabled: Bool
+    let isEditable: Bool
     let customFields: [CustomFieldsViewModel]
 
     var body: some View {
@@ -13,7 +13,7 @@ struct CustomFieldsDetailsView: View {
                     VStack(alignment: .leading) {
                         ForEach(customFields) { customField in
 
-                            if viewEditCustomFieldsInProductsAndOrdersEnabled {
+                            if isEditable {
                                 EditableCustomFieldRow(title: customField.title,
                                                content: customField.content,
                                                contentURL: customField.contentURL)
@@ -197,7 +197,7 @@ private extension EditableCustomFieldRow {
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         CustomFieldsDetailsView(
-            viewEditCustomFieldsInProductsAndOrdersEnabled: false,
+            isEditable: false,
             customFields: [
             CustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
             CustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))

@@ -48,7 +48,8 @@ final class HubMenuCoordinatorTests: XCTestCase {
         coordinator.start()
         coordinator.activate(siteID: siteID)
 
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -57,8 +58,8 @@ final class HubMenuCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // Only the HubMenu is shown
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 
     func test_when_receiving_a_notification_while_in_foreground_then_it_will_not_do_anything() throws {
@@ -75,9 +76,10 @@ final class HubMenuCoordinatorTests: XCTestCase {
         // Then
         assertEmpty(storesManager.receivedActions)
 
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
         // Only the HubMenu is shown
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 
     func test_when_failing_to_retrieve_ProductReview_details_then_it_will_present_a_notice() throws {
@@ -111,9 +113,10 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         XCTAssertEqual(notice.title, HubMenuCoordinator.Localization.failedToRetrieveReviewNotificationDetails)
 
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
         // Only the HubMenu should still be visible
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 }
 

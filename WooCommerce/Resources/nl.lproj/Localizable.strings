@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Voeg een prijs aan je variaties toe om deze zichtbaar te maken op je winkel";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Een product toevoegen";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Voeg een productafbeelding toe";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Voeg handmatig een productafbeelding toe.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Een aankoopnotitie toevoegen...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Voeg belangrijke functies, voordelen of details toe om je product beter online vindbaar te laten worden.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Handmatig toevoegen";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Kies een wachtwoord";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Kies een sjabloon";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Kiezen op apparaat";
 
@@ -2053,9 +2043,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Maakt variaties aan voor alle combinaties van je eigenschappen.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Sjabloonproduct aanmaken...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Variaties worden aangemaakt...";
@@ -3507,9 +3494,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Hoe kunnen we verbeteren?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Hoe wil je beginnen?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "Zo werkt het";
@@ -6353,9 +6337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Alles selecteren";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Mediabron selecteren";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Bovenliggende categorie selecteren";
 
@@ -6899,9 +6880,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Begin vandaag te verkopen door het eerste product aan de winkel toe te voegen.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Begin met een sjabloon";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7052,8 +7030,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Syrië";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Systeemstatusrapport";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7567,9 +7544,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Er is een probleem opgetreden bij het communiceren met de site.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Er is een probleem opgetreden bij het aanmaken van het sjabloonproduct.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Er is een probleem opgetreden bij het opheffen van de blokkering voor opgegeven site.";
@@ -8422,9 +8396,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Gebruik een beveiligingssleutel";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Gebruik een sjabloon om fysieke, digitale en variabele producten te maken. Je kan deze gaandeweg bijwerken.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Gebruik een werkend e-mailadres zodat je onze berichten kunt ontvangen.";
 
@@ -8888,8 +8859,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress-mediabibliotheek";
 
@@ -9736,9 +9706,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Totaal";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Probeer opnieuw";
@@ -11156,9 +11123,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Betaling mislukt";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Probeer opnieuw";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betaling mislukt";
 
@@ -11402,18 +11366,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Een simpel product aanmaken";
-
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS ondersteunt momenteel alleen simpele producten";
-
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Je winkel heeft geen producten";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Geen producten";
-
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Opnieuw proberen";
 
@@ -11437,9 +11389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Aan de slag";
-
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Producten";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Maak een bestelling aan in het winkelbeheer";

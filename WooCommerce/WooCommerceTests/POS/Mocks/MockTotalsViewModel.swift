@@ -5,6 +5,7 @@ import protocol Yosemite.POSItem
 import struct Yosemite.Order
 
 final class MockTotalsViewModel: TotalsViewModelProtocol {
+
     var order: Yosemite.Order?
 
     @Published var orderState: TotalsViewModel.OrderState = .loaded
@@ -16,6 +17,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
+    @Published var startNewOrderAction: Void = ()
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
@@ -26,6 +28,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
+    var startNewOrderActionPublisher: AnyPublisher<Void, Never> { $startNewOrderAction.eraseToAnyPublisher() }
 
     var isShimmering: Bool {
         orderState.isSyncing

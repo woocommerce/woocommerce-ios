@@ -22,10 +22,10 @@ final class CartViewModel: CartViewModelProtocol {
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
     }
-    
-    private var analytics: Analytics
 
-    init(analytics: Analytics = ServiceLocator.analytics) {
+    private var analytics: Analytics?
+
+    init(analytics: Analytics? = nil) {
         self.analytics = analytics
 
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
@@ -36,6 +36,9 @@ final class CartViewModel: CartViewModelProtocol {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
 
+        guard let analytics else {
+            return
+        }
         analytics.track(.pointOfSaleAddItemToCart)
     }
 

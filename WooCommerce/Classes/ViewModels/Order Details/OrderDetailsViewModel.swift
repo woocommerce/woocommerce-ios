@@ -483,8 +483,8 @@ extension OrderDetailsViewModel {
                 CustomFieldsViewModel(metadata: $0)
             }
             let customFieldsView = UIHostingController(
-                rootView: CustomFieldsDetails(
-                    viewEditCustomFieldsInProductsAndOrdersEnabled: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
+                rootView: CustomFieldsDetailsView(
+                    isEditable: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
                     customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:

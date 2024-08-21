@@ -274,16 +274,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - Helper method for WooCommerce POS
 //
 extension AppDelegate {
-    func setShouldHideTabBar(_ isPointOfSaleEnabled: Bool) {
-        // App's tab bars
+    func updateSharedConfiguration(_ isPointOfSaleEnabled: Bool) {
+        // Show/hide app's tab bars
         guard let tabBarController = AppDelegate.shared.tabBarController else {
             return
         }
         tabBarController.tabBar.isHidden = isPointOfSaleEnabled
         tabBarController.selectedViewController?.view.layoutIfNeeded()
 
-        // Foreground in-app notifications
-        debugPrint("🍉 POS enabled? \(isPointOfSaleEnabled)")
+        // Enable/disable foreground in-app notifications
         if isPointOfSaleEnabled {
             ServiceLocator.pushNotesManager.disableInAppNotifications()
         } else {

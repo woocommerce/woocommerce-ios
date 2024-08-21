@@ -105,8 +105,12 @@ protocol PushNotesManager {
 
     /// Cancels all local notifications that were previously scheduled.
     func cancelAllNotifications() async
-    
-    ///
+
+    /// Disables remote notifications from appearing as in-app notices.
+    /// This is the default state for the Point of Sale mode
     func disableInAppNotifications()
+
+    /// Enables remote notifications to appear as in-app notices when needed.
+    /// This is the app's default state
     func enableInAppNotifications()
 }

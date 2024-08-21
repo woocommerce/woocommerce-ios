@@ -177,7 +177,7 @@ private extension HubMenu {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
                         isPointOfSaleModeEnabled: { isEnabled in
-                            AppDelegate.shared.setShouldHideTabBar(isEnabled)
+                            AppDelegate.shared.updateSharedConfiguration(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
                         orderService: orderService,

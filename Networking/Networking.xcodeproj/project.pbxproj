@@ -2129,6 +2129,7 @@
 		DE42F96E296BC9A700D514C2 /* countries-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "countries-without-data.json"; sourceTree = "<group>"; };
 		DE4C081A2C75DEC7008BC773 /* BlazeCampaignObjective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignObjective.swift; sourceTree = "<group>"; };
 		DE4C081C2C75E1C9008BC773 /* BlazeCampaignObjectiveListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignObjectiveListMapper.swift; sourceTree = "<group>"; };
+		DE4C081E2C75E2A0008BC773 /* blaze-campaign-objectives.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "blaze-campaign-objectives.json"; sourceTree = "<group>"; };
 		DE4D23B529B5EC99003A4B5D /* close-account.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "close-account.json"; sourceTree = "<group>"; };
 		DE4D23B729B5F909003A4B5D /* Announcement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcement.swift; sourceTree = "<group>"; };
 		DE4D23B929B5FB3E003A4B5D /* AnnouncementsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsRemote.swift; sourceTree = "<group>"; };
@@ -3014,6 +3015,7 @@
 				EE1CB9152B4BCFA800AD24D5 /* blaze-ai-suggestions.json */,
 				8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */,
 				DE02ABB22B563E61008E0AC4 /* blaze-payment-info.json */,
+				DE4C081E2C75E2A0008BC773 /* blaze-campaign-objectives.json */,
 				DEA493702B3997ED00EED015 /* blaze-target-devices.json */,
 				DEA4936E2B3997ED00EED015 /* blaze-target-languages.json */,
 				DEA493712B3997ED00EED015 /* blaze-target-locations.json */,

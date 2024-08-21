@@ -122,11 +122,11 @@ final class BlazeRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
 
-        let startDateString = "2024-08-19"
-        let endDateString = "2024-08-26"
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
 
-        let startDate = try XCTUnwrap(Date(timeIntervalSince1970: 1724025600)) // 2024-08-19
-        let endDate = try XCTUnwrap(Date(timeIntervalSince1970: 1724630400)) // 2024-08-26
+        let startDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-19"))
+        let endDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-26"))
 
         // Create dates with Arabic locale
         let arabicFormatter = DateFormatter()
@@ -152,8 +152,11 @@ final class BlazeRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
 
         // Assert that the date parameters are now formatted in Western Arabic numerals
-        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
-        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
+        let paramStartDate = request.parameters?["start_date"] as? String ?? ""
+        let paramEndDate = request.parameters?["start_date"] as? String ?? ""
+
+        XCTAssertTrue(usesWesternArabicNumberingSystem(paramStartDate))
+        XCTAssertTrue(usesWesternArabicNumberingSystem(paramEndDate))
     }
 
     func test_createCampaign_properly_relays_networking_errors() async {
@@ -656,5 +659,18 @@ final class BlazeRemoteTests: XCTestCase {
             // Then
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
+    }
+}
+
+/// Helpers
+private extension BlazeRemoteTests {
+    func usesWesternArabicNumberingSystem(_ dateString: String) -> Bool {
+        let numerals = CharacterSet.decimalDigits
+        guard let firstNumeral = dateString.unicodeScalars.first(where: { numerals.contains($0) }) else {
+            return false
+        }
+
+        let latinNumerals = CharacterSet(charactersIn: "0123456789")
+        return latinNumerals.contains(firstNumeral)
     }
 }

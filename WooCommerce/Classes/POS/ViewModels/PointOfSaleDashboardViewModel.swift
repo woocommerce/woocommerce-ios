@@ -12,6 +12,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: any ItemListViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
+    private let connectivityObserver: ConnectivityObserver
 
     enum OrderStage {
         case building
@@ -29,17 +30,20 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var isEmpty: Bool = false
     @Published var showExitPOSModal: Bool = false
     @Published var showSupport: Bool = false
+    @Published var showsConnectivityError: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
-         itemListViewModel: any ItemListViewModelProtocol) {
+         itemListViewModel: any ItemListViewModelProtocol,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
+        self.connectivityObserver = connectivityObserver
 
         observeOrderStage()
         observeSelectedItemToAddToCart()
@@ -49,6 +53,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observePaymentStateForButtonDisabledProperties()
         observeItemListState()
         observeTotalsStartNewOrderAction()
+        observeConnectivity()
     }
 
     private func startNewOrder() {
@@ -189,6 +194,17 @@ private extension PointOfSaleDashboardViewModel {
                 self.startNewOrder()
             }
             .store(in: &cancellables)
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeConnectivity() {
+        connectivityObserver.statusPublisher
+            .removeDuplicates()
+            .map { connectivityStatus in
+                return connectivityStatus == .notReachable
+            }
+            .assign(to: &$showsConnectivityError)
     }
 }
 

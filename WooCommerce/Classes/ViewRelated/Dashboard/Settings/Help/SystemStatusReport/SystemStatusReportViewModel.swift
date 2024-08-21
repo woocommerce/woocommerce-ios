@@ -51,7 +51,7 @@ private extension SystemStatusReportViewModel {
         if let environment = systemStatus.environment {
             lines.append(contentsOf: [
                 "\n### WordPress Environment ###\n",
-                "WordPress addresss (URL): \(environment.homeURL)",
+                "WordPress address (URL): \(environment.homeURL)",
                 "Site address (URL): \(environment.siteURL)",
                 "WC Version: \(environment.version)",
                 "Log Directory Writable: \(environment.logDirectoryWritable.stringRepresentable)",

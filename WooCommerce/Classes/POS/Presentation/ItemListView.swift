@@ -18,11 +18,8 @@ struct ItemListView: View {
                 // These cases are handled directly in the dashboard, we do not render
                 // a specific view within the ItemListView to handle them
                 EmptyView()
-            case .loading:
-                /// TODO: handle pull to refresh
+            case .loading, .loaded:
                 listView(viewModel.items)
-            case .loaded(let items):
-                listView(items)
             }
         }
         .refreshable {
@@ -46,11 +43,9 @@ private extension ItemListView {
                         viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                            .font(.posTitleRegular)
                     })
+                    .foregroundColor(.posPrimaryTexti3)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
@@ -87,8 +82,8 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(PointOfSaleAssets.dismissProductsBanner.imageName)
-                        .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
+                    Image(systemName: "xmark")
+                        .font(.posBodyRegular)
                         .foregroundColor(Color.posTertiaryTexti3)
                 })
                 .padding(Constants.iconPadding)
@@ -133,9 +128,7 @@ private extension ItemListView {
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTitleBottomPadding: CGFloat = 16
-        static let infoIconSize: CGFloat = 36
         static let bannerInfoIconSize: CGFloat = 44
-        static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
     }

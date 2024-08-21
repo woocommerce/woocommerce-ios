@@ -32,7 +32,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "hi:11.3005.02-"
+        viewModel.formattableAmountViewModel.updateAmount("hi:11.3005.02-")
 
         // Then
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "11.30")
@@ -49,7 +49,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "-hi:11.3005.02-"
+        viewModel.formattableAmountViewModel.updateAmount("-hi:11.3005.02-")
 
         // Then
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "-11.30")
@@ -72,7 +72,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "12.203"
+        viewModel.formattableAmountViewModel.updateAmount("12.203")
 
         // Then
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "12,203")
@@ -144,13 +144,13 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
-        viewModel.formattableAmountViewModel.amount = "11.30"
+        viewModel.formattableAmountViewModel.updateAmount("11.30")
 
         // Then
         XCTAssertTrue(viewModel.enableDoneButton)
 
         // When
-        viewModel.formattableAmountViewModel.amount = ""
+        viewModel.formattableAmountViewModel.updateAmount("")
 
         // Then
         XCTAssertFalse(viewModel.enableDoneButton)
@@ -168,13 +168,13 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
-        viewModel.formattableAmountViewModel.amount = "11.50"
+        viewModel.formattableAmountViewModel.updateAmount("11.50")
 
         // Then
         XCTAssertTrue(viewModel.enableDoneButton)
 
         // When
-        viewModel.formattableAmountViewModel.amount = "11.30"
+        viewModel.formattableAmountViewModel.updateAmount("11.30")
 
         // Then
         XCTAssertFalse(viewModel.enableDoneButton)
@@ -247,7 +247,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "$11.30"
+        viewModel.formattableAmountViewModel.updateAmount("$11.30")
         viewModel.methodTitle = "Flat Rate"
         viewModel.selectedMethod = shippingMethod
         viewModel.saveData()
@@ -271,7 +271,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "-11.30"
+        viewModel.formattableAmountViewModel.updateAmount("-11.30")
         viewModel.methodTitle = "Flat Rate"
         viewModel.saveData()
 
@@ -293,7 +293,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "0"
+        viewModel.formattableAmountViewModel.updateAmount("0")
         viewModel.saveData()
 
         // Then
@@ -314,7 +314,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               didSelectRemove: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "$11.30"
+        viewModel.formattableAmountViewModel.updateAmount("$11.30")
         viewModel.methodTitle = ""
 
         // Then

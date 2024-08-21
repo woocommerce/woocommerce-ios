@@ -15,27 +15,24 @@ struct POSFloatingControlView: View {
                 Button {
                     viewModel.showExitPOSModal = true
                 } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(PointOfSaleAssets.exit.imageName)
-                        Text("Exit POS")
-                    }
+                    Label(
+                        title: { Text(Localization.exitPointOfSale) },
+                        icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+                    )
                 }
                 Button {
-                    presentationMode.wrappedValue.dismiss()
-                    // TODO: implement Get Support https://github.com/woocommerce/woocommerce-ios/issues/13401
+                    viewModel.showSupport = true
                 } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        Image(PointOfSaleAssets.getSupport.imageName)
-                        Text("Get Support")
-                    }
+                    Label(
+                        title: { Text(Localization.getSupport) },
+                        icon: { Image(systemName: "questionmark.circle") }
+                    )
                 }
             } label: {
-                HStack {
-                    Text("⋯")
-                        .font(Constants.ellipsisFont)
-                        .foregroundStyle(fontColor)
-                }
-                .frame(width: Constants.size, height: Constants.size)
+                Image(systemName: "ellipsis")
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundStyle(fontColor)
+                    .frame(width: Constants.size, height: Constants.size)
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
@@ -75,10 +72,23 @@ private extension POSFloatingControlView {
 
 private extension POSFloatingControlView {
     enum Constants {
-        static let buttonImageAndTextSpacing: CGFloat = 12
         static let cardStatusPadding: CGFloat = 8
         static let size: CGFloat = 56
         static let cornerRadius: CGFloat = 8
-        static let ellipsisFont = Font.system(size: 24.0, weight: .semibold)
+    }
+
+    enum Localization {
+        static let exitPointOfSale = NSLocalizedString(
+            "pointOfSale.floatingButtons.exit.button.title",
+            value: "Exit POS",
+            comment: "The title of the floating button to exit Point of Sale, shown in a popover menu." +
+            "The action is confirmed in a modal."
+        )
+
+        static let getSupport = NSLocalizedString(
+            "pointOfSale.floatingButtons.getSupport.button.title",
+            value: "Get Support",
+            comment: "The title of the floating button to get support for Point of Sale, shown in a popover menu."
+        )
     }
 }

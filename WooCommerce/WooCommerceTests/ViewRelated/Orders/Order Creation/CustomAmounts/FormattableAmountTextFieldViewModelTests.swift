@@ -14,7 +14,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "12"
+        viewModel.updateAmount("12")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$12")
@@ -30,7 +30,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: customSettings)
 
         // When
-        viewModel.amount = "12.203"
+        viewModel.updateAmount("12.203")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "12.203 £")
@@ -41,7 +41,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "hi:11.30-"
+        viewModel.updateAmount("hi:11.30-")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$11.30")
@@ -52,7 +52,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "$67.321432432"
+        viewModel.updateAmount("$67.321432432")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$67.32")
@@ -63,7 +63,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "$6.7.3"
+        viewModel.updateAmount("$6.7.3")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$6.7")
@@ -74,7 +74,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "$6..."
+        viewModel.updateAmount("$6...")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$6.")
@@ -86,7 +86,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: comaSeparatorLocale, storeCurrencySettings: usStoreSettings)
 
         // When
-        viewModel.amount = "10,25"
+        viewModel.updateAmount("10,25")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "$10.25")
@@ -98,7 +98,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: storeSettings)
 
         // When
-        viewModel.amount = "10.25"
+        viewModel.updateAmount("10.25")
 
         // Then
         XCTAssertEqual(viewModel.formattedAmount, "€10.25")
@@ -124,7 +124,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         // When
         viewModel.presetAmount("12.23")
         // Simulates the input on the text field that appends the new input to the old
-        viewModel.amount = oldAmount + newInput
+        viewModel.updateAmount(oldAmount + newInput)
 
         XCTAssertEqual(viewModel.formattedAmount, "€\(newInput)")
 

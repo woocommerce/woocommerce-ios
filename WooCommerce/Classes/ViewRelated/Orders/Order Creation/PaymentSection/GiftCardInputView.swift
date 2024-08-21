@@ -5,6 +5,9 @@ struct GiftCardInputView: View {
     @StateObject private var viewModel: GiftCardInputViewModel
     @State private var showsScanner: Bool = false
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(viewModel: GiftCardInputViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
     }
@@ -26,6 +29,9 @@ struct GiftCardInputView: View {
                                 showsScanner = true
                             } label: {
                                 Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxHeight: Constants.scanImageSize * scale)
                                     .foregroundColor(Color(.accent))
                             }
                             .sheet(isPresented: $showsScanner) {
@@ -96,6 +102,7 @@ private extension GiftCardInputView {
     enum Constants {
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let verticalSpacing: CGFloat = 8
+        static let scanImageSize: CGFloat = 24
     }
 }
 

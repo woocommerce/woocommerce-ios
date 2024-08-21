@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "为您的变体添加价格，以在商店中显示";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "添加产品";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "添加产品图片";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "手动添加产品。";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "添加购买备注...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "添加关键功能、优势或详情，提高产品在网上的曝光率。";
-
-/* Title for the option to create product manually */
-"Add manually" = "手动添加";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "选择密码";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "选择模板";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "从设备中选择";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "为属性的所有组合创建变体。";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "正在创建模板产品...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "正在创建变体…";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我们应该如何改善？";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "您想如何开始？";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "工作原理";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "全选";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "选择媒体来源";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "选择父级目录";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "通过在您的商店中添加第一款商品，立即开始销售。";
 
-/* Title for the option to create a template product */
-"Start with a template" = "从模板开始";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "叙利亚";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "系统状态报告";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "与站点通信时出现问题。";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "创建模板产品时遇到问题。";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "删除指定站点的阻碍时出现问题。";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "使用安全密钥";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "使用模板创建实体、虚拟和变体产品。 您可以随时进行编辑。";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "请使用有效的电子邮箱地址，以便您可以收到我们的邮件。";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒体库";
 
@@ -9454,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "每天的预计受众人数";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "在手动停止前保持运行";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "预估展示次数失败。 重试？";
 
@@ -9475,14 +9448,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "设置您的预算";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "总支出";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "更新";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "每天 %1$@";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "从 %1$@ 起";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d 天";
@@ -9498,6 +9471,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "共计 %1$d 天";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "总支出";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "每周支出";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "取消";
@@ -9638,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@，从 %3$@ 起 %2$d 天";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "从 %2$@ 起每周 %1$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "任何地方";
 
@@ -9727,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "总计";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ 美元";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "重试";
@@ -10400,6 +10379,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "天";
+
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "自定义字段";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "过期时间";
@@ -11143,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "付款失败";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "重试";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "付款失败";
 
@@ -11155,7 +11135,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "正在处理付款";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "%1$@ 的付款已成功支付";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "付款成功！";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11165,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "付款准备就绪";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "收款";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "连接读卡器";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "读卡器已断开连接";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "要处理这笔付款，请连接您的读卡器。";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "读卡器未连接";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "正在检查订单";
@@ -11259,6 +11245,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "正在连接读卡器";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "完成";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "读卡器已连接";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "取消";
@@ -11356,6 +11348,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "连接读卡器失败";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "重试";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "无法加载总计";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "点击产品以 \n 将其添加到购物车";
 
@@ -11365,17 +11363,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "清除";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "创建简单产品";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "任何进行中的订单都将丢失。";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS 目前仅支持简单产品";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "退出";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "您的商店没有任何产品";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "无任何产品";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "退出销售点模式？";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "重试";
@@ -11401,14 +11396,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "开始";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "产品";
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "在商店管理中创建订单";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "要接受非简单产品的付款，请退出 POS，然后在订单选项卡中创建新订单。";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "其他产品类型（如可变产品和虚拟产品）将在今后的更新中得到支持。";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "POS 目前仅可用于简单实体产品。";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "确定";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "为何看不到我的产品？";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "计算金额";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "新交易";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "新订单";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "小计";

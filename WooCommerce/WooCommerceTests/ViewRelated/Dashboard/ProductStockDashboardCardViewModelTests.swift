@@ -74,6 +74,43 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_reloadData_updates_missing_parent_ids_for_variation_reports() async {
+        // Given
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
+
+        let variation = ProductStock.fake().copy(siteID: siteID, productID: 44, parentID: 40)
+
+        let thumbnailURL = "https://example.com/image.jpg"
+        let variationReport = ProductReport.fake().copy(productID: 0, // missing product ID happens to some stores
+                                                        variationID: variation.productID,
+                                                        name: "Pizza - Large, Seafood, Spicy",
+                                                        imageURL: nil,
+                                                        itemsSold: 8,
+                                                        stockQuantity: 3)
+        XCTAssertTrue(viewModel.reports.isEmpty)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .fetchStockReport(_, _, _, _, _, completion):
+                completion(.success([variation]))
+            case let .fetchVariationReports(_, productIDs, variationIDs, _, _, _, _, _, _, _, completion):
+                XCTAssertEqual(productIDs, [variation.parentID])
+                XCTAssertEqual(variationIDs, [variation.productID])
+                completion(.success([variationReport]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertEqual(viewModel.reports, [variationReport.copy(productID: variation.parentID)])
+    }
+
+    @MainActor
     func test_reloadData_relays_error_when_one_of_the_requests_fail() async {
         // Given
         let siteID: Int64 = 123

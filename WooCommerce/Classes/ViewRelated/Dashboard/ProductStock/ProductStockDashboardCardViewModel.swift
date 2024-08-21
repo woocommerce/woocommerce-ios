@@ -169,9 +169,12 @@ private extension ProductStockDashboardCardViewModel {
                     return reports.map { report in
                         guard let variationID = report.variationID,
                               report.productID == 0,
-                              let parentID = stock.first(where: { $0.productID == variationID })?.productID else {
+                              let parentID = stock.first(where: { $0.productID == variationID })?.parentID else {
                             return report
                         }
+                        /// For some stores, the product ID is not found for variations returned from variation reports.
+                        /// We need to copy the parent ID from the stock report over to the variation reports
+                        /// to be able to show the details for the variation upon selection.
                         return report.copy(productID: parentID)
                     }
                 }

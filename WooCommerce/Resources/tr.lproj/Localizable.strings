@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-07 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-19 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Mağazanızda görünmesi için varyasyonunuza bir fiyat ekleyin";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Ürün ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Bir ürünü elle ekleyin.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Satın alma notu ekleyin...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Ürününüzün internette bulunmasına yardımcı olmak için temel özellikler, avantajlar veya ayrıntılar ekleyin.";
-
-/* Title for the option to create product manually */
-"Add manually" = "El ile ekle";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -791,6 +784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "Birçok kez yanlış PIN girildi. Başka bir ödeme yöntemi deneyin";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment" = "Yanlış PIN girildi. Yeniden deneyin veya başka bir ödeme yöntemi kullanın";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Satın alma işleminden sonra müşteriye göndermek için isteğe bağlı not";
@@ -1500,9 +1496,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Bir şifre seçin";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Bir şablon seç";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Cihazdan seç";
 
@@ -2056,9 +2049,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Niteliklerinizin tüm kombinasyonları için varyasyonlar oluşturur.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Şablon Ürün Oluşturuluyor...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Varyasyon Oluşturuluyor...";
@@ -3510,9 +3500,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Nasıl iyileştirebiliriz?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Nasıl başlamak istiyorsunuz?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "Nasıl çalışır?";
@@ -6356,9 +6343,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Tümünü Seç";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Ortam Kaynağı Seçin";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Üst Kategori Seç";
 
@@ -6902,9 +6886,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mağazanıza ilk ürünü ekleyerek hemen bugün satışa başlayın.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Bir şablonla başlayın";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7036,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Suriye";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Sistem Durum Raporu";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7550,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Siteyle iletişimde bir sorun oluştu.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Şablon ürün oluşturulurken bir sorun oluştu.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
@@ -8425,9 +8402,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Bir güvenlik anahtarı kullanın";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Fiziksel, dijital, sanal ve değişken ürünler eklemek için bir şablon kullanın. Devam ederken düzenleyebilirsiniz.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "İletilerimizi alabilmek için çalışan bir e-posta adresi kullanın.";
 
@@ -8891,8 +8865,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress Ortam Kitaplığı";
 
@@ -9454,6 +9427,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "Gün başına ulaşılan tahmini insan sayısı";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "Ben durdurana kadar çalıştır";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "İzlenimler tahmin edilemedi. Tekrar dene";
 
@@ -9475,14 +9451,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Bütçenizi oluşturun";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "Toplam harcama";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "Güncelle";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "Günlük %1$@";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "%1$@ tarihinden itibaren";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d gün";
@@ -9498,6 +9474,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d gün için";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "Toplam harcama";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "Haftalık harcama";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "İptal et";
@@ -9638,6 +9620,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %3$@ tarihinden itibaren %2$d gün";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%2$@ tarihinden itibaren haftalık %1$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Her yer";
 
@@ -9728,11 +9713,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Toplam";
 
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ ABD doları";
-
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Yeniden Dene";
+
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "Haftalık %1$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "Haftalık %1$@ %2$@";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Reklamlarınız WordPress.com ve Tumblr ağlarındaki milyonlarca sitede.";
@@ -10401,6 +10392,10 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "gün";
 
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "Özel Alanlar";
+
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Şundan sonra sona erer:";
 
@@ -10707,6 +10702,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "manuel olarak, talep üzerine";
+
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "Fotoğraf çek";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "Cihazdan seç";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "Mevcut bir ürün fotoğrafı seç";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "WordPress Ortam Kütüphanesi";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "Ortam Kaynağı Seçin";
 
 /* Navigates to Collect a payment via the Simple Payment screen */
 "menu.payments.actions.collectPayment.row.title" = "Ödeme Alın";
@@ -11140,14 +11150,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "Ödeme durumu bilinmiyor";
 
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Siparişten çık";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Ödeme başarısız";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Başka bir ödeme yöntemi dene";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Yeniden Dene";
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Ödemeyi tekrar dene";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Bu işlemi gerçekleştirmeye devam etmek istiyorsanız lütfen ödemeyi yeniden deneyin.";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Ödeme başarısız";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Başka bir ödeme yöntemi dene";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Lütfen bekleyin...";
@@ -11155,7 +11177,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Ödeme işleniyor";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "%1$@ tutarındaki bir ödeme başarıyla alındı";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Ödeme başarılı!";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,17 +11207,26 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Ödemeye hazır";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "Ödeme Al";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Okuyucuya bağlan";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Okuyucu bağlantısı kesildi";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "Bu ödemeyi işlemek için lütfen okuyucunuzu bağlayın.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Okuyucu bağlanmadı";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Sipariş kontrol ediliyor";
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Hazırlanıyor";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "Tekrar dene";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Sipariş kontrol edilirken bir hata oluştu";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Kapat";
@@ -11259,6 +11293,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Okuyucuya bağlanılıyor";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Tamamlandı";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Okuyucu bağlandı";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "İptal Et";
@@ -11356,6 +11396,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Okuyucuya bağlanılamadı";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "Tekrar dene";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Toplamlar yüklenemedi";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = " için ürüne dokunun Sepete eklemek";
 
@@ -11365,17 +11411,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Temizle";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Basit bir ürün oluştur";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Devam eden tüm siparişler kaybolacak.";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS şu anda yalnızca basit ürünleri destekliyor";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Çık";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Mağazanızda herhangi bir ürün yok";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Satış Noktası Modundan Çıkılsın Mı?";
 
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Ürün yok";
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Ürünler";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Tekrar dene";
@@ -11401,14 +11447,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Başlatılıyor";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Ürünler";
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Birini eklemek için POS'tan çıkın ve Ürünler'e gidin";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS şu anda yalnızca basit ürünleri destekliyor.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "Desteklenen ürün bulunamadı";
+
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Mağaza yönetiminde sipariş oluşturun";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "Temel olmayan bir ürünün ödemesini almak için POS'tan çıkın ve siparişler sekmesinden yeni sipariş oluşturun.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "Değişken ve sanal gibi diğer ürün türleri gelecekteki güncellemelerde kullanılabilir olacak.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "Şu anda POS ile yalnızca basit fiziksel ürünler kullanılabiliyor.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "Tamam";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Ürünlerimi neden göremiyorum?";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Tutarları hesapla";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "Yeni işlem";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "Yeni sipariş";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Ara Toplam";
@@ -11979,6 +12049,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Ücretsiz deneme sürümü";
 
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "Tamamlandı";
+
 /* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
 "supportButton.accessibilityLabel" = "Yardım ve Destek";
 
@@ -12011,6 +12084,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Üzgünüz, şu anda destek talebi oluşturamıyoruz, lütfen daha sonra tekrar deneyin.";
+
+/* Navigation title of system status report screen */
+"systemStatusReportView.title" = "Sistem Durum Raporu";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Deneme Tap To Pay otomatik geri ödemesi";

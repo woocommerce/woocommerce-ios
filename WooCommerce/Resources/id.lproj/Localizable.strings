@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-07 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-13 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Tambahkan harga ke varian agar terlihat di toko Anda";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Tambahkan produk";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Tambahkan produk secara manual.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Tambahkan catatan pembelian...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Tambahkan detail, manfaat, atau fitur utama agar produk Anda lebih mudah ditemukan secara online.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Tambahkan secara manual";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Pilih kata sandi";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Pilih templat";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Pilih dari perangkat";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Membuat variasi untuk semua kombinasi atribut Anda.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Membuat Produk Templat...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Membuat Variasi...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Bagaimana kami dapat meningkatkan layanan?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Bagaimana Anda ingin memulai?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "Ini cara kerjanya";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Pilih Semua";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Pilih Sumber Media";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Pilih Kategori Induk";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Mulai berjualan hari ini dengan menambahkan produk pertama ke toko Anda.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Mulai dengan templat";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Suriah";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Laporan Status Sistem";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Ada kendala saat berkomunikasi dengan situs.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Terjadi masalah saat membuat produk templat.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Gunakan kunci keamanan";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Gunakan templat untuk membuat produk berwujud fisik, virtual, dan yang memiliki variasi. Anda juga dapat mengeditnya nanti.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Gunakan alamat email yang aktif agar Anda bisa menerima pesan-pesan kami.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Pustaka Media WordPress";
 
@@ -9454,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "Estimasi orang yang dijangkau per hari";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "Jalankan terus sampai saya nonaktifkan";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Gagal mengestimasi tayangan. Coba lagi?";
 
@@ -9475,14 +9448,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Tentukan anggaran";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "Total pengeluaran";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "Perbarui";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ per hari";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "Mulai dari %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d hari";
@@ -9498,6 +9471,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "selama %1$d hari";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "Total pengeluaran";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "Pengeluaran per minggu";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Batal";
@@ -9638,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d hari sejak %3$@";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%1$@ per minggu, mulai dari %2$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Semua lokasi";
 
@@ -9727,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Total";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Coba Lagi";
@@ -10400,6 +10379,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "hari";
+
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "Kolom Khusus";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Kedaluwarsa setelah";
@@ -11143,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Pembayaran gagal";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Coba Lagi";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Pembayaran gagal";
 
@@ -11155,7 +11135,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Memproses pembayaran";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "Pembayaran senilai %1$@ berhasil dilakukan";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Pembayaran berhasil!";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11165,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Siap untuk pembayaran";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "Terima Pembayaran";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Sambungkan ke pembaca";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Sambungan pembaca terputus";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "Untuk memproses pembayaran ini, hubungkan pembaca.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Pembaca tidak terhubung";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Memeriksa pesanan";
@@ -11259,6 +11245,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Menyambungkan ke pembaca";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Selesai";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Pembaca terhubung";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Batal";
@@ -11356,6 +11348,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Menyambungkan pembaca gagal";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "Coba lagi";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Tidak bisa memuat total";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Ketuk produk ke \n tambahkan ke keranjang";
 
@@ -11365,17 +11363,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Hapus";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Buat produk sederhana";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Semua pesanan yang sedang aktif akan hilang.";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS saat ini hanya mendukung produk sederhana";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Keluar";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Toko Anda tidak memiliki produk apa pun";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Tidak ada produk";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Coba lagi";
@@ -11401,14 +11396,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Memulai ";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Produk";
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Buat pesanan di manajemen toko";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "Untuk memproses pembayaran atas produk non-sederhana, keluar dari POS, kemudian buat pesanan baru dari tab pesanan.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "Jenis produk lain, seperti variabel dan virtual, akan tersedia dalam pembaruan mendatang.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "Saat ini, hanya produk fisik sederhana yang dapat menggunakan POS.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "Oke";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Mengapa produk saya tidak muncul?";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Hitung jumlah";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "Transaksi baru";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "Pesanan baru";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";

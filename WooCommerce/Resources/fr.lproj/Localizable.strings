@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-07 12:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-14 14:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Ajouter un prix à votre variante pour la rendre visible sur votre boutique";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Ajouter un produit";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Ajouter une image du produit";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Ajoutez un produit manuellement.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Ajouter une note à l’achat…";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Ajoutez les fonctionnalités, les avantages ou les détails clés pour faciliter la recherche de votre produit en ligne.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Ajouter manuellement";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Choisir un mot de passe";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Choose a template";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Choisir depuis l’appareil";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Crée des variantes pour toutes les combinaisons de vos attributs.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Création du modèle du produit en cours.";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Création des variantes en cours...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Comment nous améliorer ?";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Par où voulez-vous commencer ?";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "Comment ça marche ?";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Tout sélectionner";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Sélectionner une source multimédia";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Sélectionner la catégorie parente";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Commencez à vendre aujourd’hui en ajoutant votre premier produit à la boutique.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Commencer avec un modèle";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Syrie";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Rapport sur l’état du système";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Un problème est survenu lors de la communication avec le site.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Une erreur s’est produite lors de la création du modèle de produit.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Un problème est survenu lors de la suppression du bloc du site spécifié.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Utiliser une clé de sécurité";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Utilisez un modèle pour créer des produits physiques, virtuels et variables. Vous pouvez le modifier au fur et à mesure.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Utilisez une adresse e-mail opérationnelle pour recevoir nos messages.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "CMS WordPress";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Bibliothèque de médias WordPress";
 
@@ -9454,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "Estimation du nombre de personnes atteintes par jour";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "Exécuter jusqu’à ce que je l’arrête";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Impossible d'estimer les impressions. Réessayer ?";
 
@@ -9475,14 +9448,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Définir votre budget";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "Dépense totale";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "Mettre à jour";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ par jour";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "À partir du %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d jours";
@@ -9498,6 +9471,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "pendant %1$d jour";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "Dépense totale";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "Dépense hebdomadaire";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Annuler";
@@ -9638,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d jour à partir du %3$@";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%1$@ par semaine à partir du %2$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Partout";
 
@@ -9727,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Total";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Réessayer";
@@ -10400,6 +10379,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "jours";
+
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "Champs personnalisés";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Expire après";
@@ -11143,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Échec du paiement";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Réessayer";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Échec du paiement";
 
@@ -11155,7 +11135,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Traitement du paiement";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "Un paiement de %1$@ a bien été effectué";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Paiement réussi !";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11165,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Prêt pour le paiement";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "Percevoir le paiement";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Se connecter au lecteur";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Lecteur déconnecté";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "Pour traiter ce paiement, veuillez connecter votre lecteur.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Lecteur non connecté";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Vérification de la commande";
@@ -11259,6 +11245,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Connexion au lecteur";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Terminé";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Lecteur connecté";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Annuler";
@@ -11356,6 +11348,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Échec de la connexion au lecteur";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "Réessayer";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Impossible de charger les totaux";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Appuyer sur un produit pour \n l’ajouter au panier";
 
@@ -11365,17 +11363,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Effacer";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Créer un produit simple";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Toutes les commandes en cours seront perdues.";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "Le PDV ne prend actuellement en charge que les produits simples";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Quitter";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Votre boutique ne comporte pas de produits";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Aucun produit";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Quitter le mode point de vente ?";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Réessayer";
@@ -11401,14 +11396,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Démarrage";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Produits";
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Créer une commande dans la gestion de la boutique";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "Pour accepter un paiement pour un produit non simple, quittez le PDV et créez une nouvelle commande depuis l’onglet Commandes.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "D’autres types de produits, tels que les produits virtuels et variables, seront disponibles dans les mises à jour à venir.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "Seuls les produits physiques simples peuvent être utilisés avec le PDV actuellement.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "OK";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Pourquoi ne puis-je pas voir mes produits ?";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Calculer les montants";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "Nouvelle transaction";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "Nouvelle commande";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Sous-total";

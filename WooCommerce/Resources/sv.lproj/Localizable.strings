@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-08 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-16 16:34:33+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "Lägg till ett pris till din variant för att göra den synlig i din butik";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "Lägg till en produkt";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Lägg till en produktbild";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "Lägg till en produkt manuellt.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "Lägg till ett köpmeddelande...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Lägg till viktiga funktioner, fördelar eller information som hjälper kunder att hitta din produkt online.";
-
-/* Title for the option to create product manually */
-"Add manually" = "Lägg till manuellt";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Välj ett lösenord";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "Välj en mall";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Välj från enheten";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Skapar variationer för alla kombinationer av dina attribut.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "Skapar mallprodukt ...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Skapar variationer...";
@@ -3511,9 +3498,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Hur kan vi förbättra?";
 
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "Hur vill du börja?";
-
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "Hur det fungerar";
 
@@ -4131,7 +4115,7 @@ which should be translated separately and considered part of this sentence. */
 "Loading products" = "Laddar in produkter";
 
 /* Loading. Verb */
-"Loading..." = "Laddar...";
+"Loading..." = "Laddar in …";
 
 /* Button title.  Tapping takes the user to the login form.
    Button title. Takes the user to the login by store address flow.
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "Välj alla";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "Välj mediekälla";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Välj överordnad kategori";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Börja sälja idag genom att lägga till din första produkt i butiken.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "Börja med en mall";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "Syrien";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "Systemstatusrapport";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7571,9 +7548,6 @@ which should be translated separately and considered part of this sentence. */
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "Det var ett problem att kommunicera med webbplatsen.";
 
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "Det uppstod ett problem vid skapandet av mallprodukten.";
-
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Blockeringar för angiven webbplats kunde inte tas bort.";
 
@@ -7892,7 +7866,7 @@ which should be translated separately and considered part of this sentence. */
 "Troubleshooting" = "Felsökning";
 
 /* Connect when the SSL certificate is invalid */
-"Trust" = "Godkänn";
+"Trust" = "Lita på";
 
 /* Action button to retry Jetpack activation. */
 "Try Activating Again" = "Prova aktivera igen";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "Använd en säkerhetsnyckel";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Använd en mall för att skapa fysiska, virtuella och variabla produkter. Du kan redigera allteftersom.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "Använd en fungerande e-postadress så att du kan ta emot våra meddelanden.";
 
@@ -8605,7 +8576,7 @@ which should be translated separately and considered part of this sentence. */
 "WRITE NOTE" = "SKRIV NOTERING";
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
-"Waiting for Google to complete…" = "Väntar på att Google ska bli klara...";
+"Waiting for Google to complete…" = "Väntar på att Google ska slutföra …";
 
 /* Text while the webauthn signature is being verified
    Text while waiting for a security key challenge */
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "WordPress CMS";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress mediabibliotek";
 
@@ -9454,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "Uppskattat antal personer som nås per dag";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "Kör tills jag stoppar det";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Det gick inte att uppskatta antalet visningar. Försök igen?";
 
@@ -9475,14 +9448,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Ställ in din budget";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "Totalt spenderat";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "Uppdatera";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ per dag";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "Från och med %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d dagar";
@@ -9498,6 +9471,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "för %1$d dag";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "Totalt spenderat";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "Veckobelopp";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Avbryt";
@@ -9638,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d dag från %3$@";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%1$@ per vecka från och med %2$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Överallt";
 
@@ -9728,11 +9710,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "Totalt";
 
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ USD";
-
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Försök igen";
+
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "%1$@ varje vecka";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "%1$@ %2$@ varje vecka";
 
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Dina annonser på miljontals webbplatser inom WordPress.com- och Tumblr-nätverken.";
@@ -10401,6 +10389,10 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "dagar";
 
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "Anpassade fält";
+
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Löper ut efter";
 
@@ -10707,6 +10699,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "manuellt, på begäran";
+
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "Ta ett foto";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "Välj från enhet";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "Välj ett befintligt produktfoto";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "WordPress mediabibliotek";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "Välj mediakälla";
 
 /* Navigates to Collect a payment via the Simple Payment screen */
 "menu.payments.actions.collectPayment.row.title" = "Ta emot betalning";
@@ -11143,11 +11150,17 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Betalning misslyckades";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Prova med en annan betalningsmetod";
+
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "Försök igen";
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Försök med betalningen igen";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Betalning misslyckades";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Prova annan betalningsmetod";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Vänta …";
@@ -11155,7 +11168,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "Behandlar betalning";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "En betalning på %1$@ genomfördes utan problem";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "Betalning lyckades!";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,17 +11198,23 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "Redo för betalning";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "Ta emot betalning";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "Anslut till läsare";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "Läsare frånkopplad";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "Anslut din läsare för att behandla den här betalningen.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "Läsare inte ansluten";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Kontrollerar beställning";
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Förbereder";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "Försök igen";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Avfärda";
@@ -11259,6 +11281,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "Ansluter till läsare";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "Klar";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "Läsare ansluten";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "Avbryt";
@@ -11356,6 +11384,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Det gick inte att ansluta läsaren";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "Försök igen";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Klicka på en produkt för att \n lägga till den i varukorgen";
 
@@ -11365,17 +11399,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Rensa";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "Skapa en enkel produkt";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "Eventuella pågående beställningar kommer att gå förlorade.";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "POS stöder för närvarande bara enkla produkter";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "Avsluta";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "Din butik har inga produkter";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "Lämna Försäljningsplatsläge?";
 
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "Inga produkter";
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Produkter";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Försök igen";
@@ -11401,14 +11435,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Startar";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "Produkter";
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "Skapa en beställning i butikshanteringen";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "För att ta betalt för en icke-enkel produkt, lämna POS och skapa en ny beställning från fliken Beställningar.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "Andra produkttyper, till exempel rörliga och virtuella, kommer att bli tillgängliga i framtida uppdateringar.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "Endast enkla fysiska produkter kan användas med POS just nu.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "OK";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "Varför kan jag inte se mina produkter?";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "Beräkna belopp";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "Ny transaktion";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "Ny beställning";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Delsumma";
@@ -11978,6 +12027,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Gratis provperiod";
+
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "Klar";
 
 /* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
 "supportButton.accessibilityLabel" = "Hjälp och support";

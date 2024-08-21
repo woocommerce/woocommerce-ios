@@ -857,7 +857,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Pre-check
@@ -917,7 +917,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Then

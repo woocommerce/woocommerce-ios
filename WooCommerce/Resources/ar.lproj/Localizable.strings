@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-06 21:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-12 22:54:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -516,15 +516,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
 "Add a price to your variation to make it visible on your store" = "إضافة سعر إلى مجموعاتك لجعلها مرئية على متجرك";
 
-/* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product */
+/* The action to add a product */
 "Add a product" = "إضافة منتج";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "إضافة صورة منتج";
-
-/* Description for the option to create product manually */
-"Add a product manually." = "أضف منتجًا يدويًا.";
 
 /* Placeholder text in Product Purchase Note screen */
 "Add a purchase note..." = "إضافة ملحوظة الشراء...";
@@ -558,9 +554,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "أضف الميزات الأساسية أو المزايا أو التفاصيل لمساعدة منتجك على الظهور على الإنترنت.";
-
-/* Title for the option to create product manually */
-"Add manually" = "إضافة يدويًا";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -1500,9 +1493,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the password field on the account creation form. */
 "Choose a password" = "اختر كلمة مرور";
 
-/* Message title of bottom sheet for selecting a template or manual product */
-"Choose a template" = "اختيار قالب";
-
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "الاختيار من جهاز";
 
@@ -2056,9 +2046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "إنشاء تباينات لكل مجموعات السمات لديك.";
-
-/* Loading text while creating a product from a template */
-"Creating Template Product..." = "جارٍ إنشاء منتج القالب...";
 
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "جارٍ إنشاء التباينات...";
@@ -3510,9 +3497,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "كيف يمكننا تحسين ذلك؟";
-
-/* Message subtitle of bottom sheet for selecting a template or manual product */
-"How do you want to start?" = "كيف تريد البدء؟";
 
 /* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
 "How it works" = "كيفية عمله";
@@ -6356,9 +6340,6 @@ which should be translated separately and considered part of this sentence. */
 /* Select all button title in the issue refund screen */
 "Select All" = "تحديد الكل";
 
-/* Title of the media picker action sheet to select a source. */
-"Select Media Source" = "تحديد مصدر الوسائط";
-
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "تحديد التصنيف الأصلي";
 
@@ -6902,9 +6883,6 @@ which should be translated separately and considered part of this sentence. */
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "ابدأ بالبيع اليوم عن طريق إضافة منتجك الأول إلى المخزن.";
 
-/* Title for the option to create a template product */
-"Start with a template" = "البدء باستخدام قالب";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7055,8 +7033,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Syria" = "سوريا";
 
-/* Navigation title of system status report screen
-   View system status report cell title on Help screen */
+/* View system status report cell title on Help screen */
 "System Status Report" = "تقرير حالة النظام";
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
@@ -7570,9 +7547,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A general error message shown to the user when there was an API communication failure. */
 "There was a problem communicating with the site." = "حدثت مشكلة في أثناء الاتصال بالموقع.";
-
-/* Title for the error notice when creating a template product */
-"There was a problem creating the template product." = "ثمّة مشكلة في أثناء إنشاء منتج القالب.";
 
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "حدثت مشكلة أثناء إزالة حظر الموقع المحدد.";
@@ -8425,9 +8399,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button's title text to use a security key. */
 "Use a security key" = "استخدام مفتاح الأمان";
 
-/* Description for the option to create a template product */
-"Use a template to create physical, virtual, and variable products. You can edit it as you go." = "استخدم قالبًا لإنشاء منتجات مادية وافتراضية ومتغيرة. يمكنك تحريره في أثناء المضي قدمًا.";
-
 /* Account creation error when the email is invalid. */
 "Use a working email address, so you can receive our messages." = "استخدم عنوان بريد إلكتروني يعمل، حتى يمكنك الحصول على رسائلنا.";
 
@@ -8891,8 +8862,7 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "WordPress CMS" = "نظام إدارة المحتوى في ووردبريس";
 
-/* Menu option for selecting media from the device's photo library.
-   Menu option for selecting media from the site's media library.
+/* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "مكتبة وسائط ووردبريس";
 
@@ -9454,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedImpressions" = "عدد الأشخاص المتوقع وصولهم يوميًا";
 
+/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenCampaign" = "التشغيل حتى أوقفه";
+
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "فشل تقديم الانطباعات. هل تريد إعادة المحاولة؟";
 
@@ -9475,14 +9448,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "تعيين ميزانيتك";
 
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingView.totalSpend" = "إجمالي الإنفاق";
-
 /* Button to update the budget on the Blaze budget setting screen */
 "blazeBudgetSettingView.update" = "تحديث";
 
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ يوميًا";
+
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.evergreenCampaignDate" = "بدءًا من %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "⁦%1$d⁩ من الأيام";
@@ -9498,6 +9471,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
 "blazeBudgetSettingViewModel.totalDurationSingleDay" = "لمدة ⁦%1$d⁩ من الأيام";
+
+/* Label for total spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.totalSpend" = "إجمالي الإنفاق";
+
+/* Label for weekly spend on the Blaze budget setting screen */
+"blazeBudgetSettingViewModel.weeklySpend" = "الإنفاق الأسبوعي";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "إلغاء";
@@ -9638,6 +9617,9 @@ which should be translated separately and considered part of this sentence. */
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@، ⁦%2$d⁩ من الأيام من %3$@";
 
+/* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
+"blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "يبدأ %1$@ أسبوعيًا من %2$@";
+
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "في كل مكان";
 
@@ -9727,9 +9709,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the total amount to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.total" = "الإجمالي";
-
-/* The formatted total amount for a Blaze campaign, fixed in USD. Reads as $11 USD. */
-"blazeConfirmPaymentView.totalAmount" = "%1$@ من الدولارات الأمريكية";
 
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "المحاولة مجددًا";
@@ -10400,6 +10379,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "أيام";
+
+/* Details text for the Custom Fields row
+   Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsDetails" = "حقول مخصصة";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "تنتهي الصلاحية بعد";
@@ -11143,9 +11126,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "فشلت عملية الدفع";
 
-/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.tryAgain.button.title" = "المحاولة مجددًا";
-
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "فشلت عملية الدفع";
 
@@ -11155,7 +11135,10 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.title" = "معالجة الدفع";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
+/* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.cardPresent.paymentSuccessful.message" = "تم سداد دفعة قدرها %1$@ بنجاح";
+
+/* Title shown to users when payment is made successfully. */
 "pointOfSale.cardPresent.paymentSuccessful.title" = "تمت عملية الدفع بنجاح!";
 
 /* Message shown on the Point of Sale checkout while the reader is being prepared. */
@@ -11182,11 +11165,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.presentCard.title" = "مستعد للدفع";
 
-/* Button to try to collect a payment again. Presented to users after connecting to reader fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.button.title" = "تحصيل المدفوعات";
+/* Button to connect to the card reader, shown on the Point of Sale Checkout as a primary CTA. */
+"pointOfSale.cardPresent.readerNotConnected.button.title" = "الربط بالقارئ";
 
-/* Error message. Presented to users when reader is disconnected on the Point of Sale Checkout */
-"pointOfSale.cardPresent.readerDisconnected.title" = "تم فصل القارئ";
+/* Instruction to merchants shown on the Point of Sale Checkout, so they can take a card payment. */
+"pointOfSale.cardPresent.readerNotConnected.instruction" = "لمتابعة عملية الدفع هذه، يرجى ربط القارئ الخاص بك.";
+
+/* Error message. Presented to users when card reader is not connected on the Point of Sale Checkout */
+"pointOfSale.cardPresent.readerNotConnected.title" = "لم يتم ربط القارئ";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "التحقق من الطلب";
@@ -11259,6 +11245,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.connectingToReader.title" = "الربط بالقارئ";
+
+/* Button to dismiss the alert presented when successfully connected to a reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.done.button.title" = "تم";
+
+/* Title of the alert presented when the user successfully connects a Bluetooth card reader */
+"pointOfSale.cardPresentPayment.alert.connectionSuccess.title" = "تم ربط القارئ";
 
 /* Button to allow the user to close the modal without connecting. */
 "pointOfSale.cardPresentPayment.alert.foundMultipleReaders.cancel.button.title" = "إلغاء";
@@ -11356,6 +11348,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "فشل ربط القارئ";
 
+/* Button title to retry synchronizing order and calculating order totals */
+"pointOfSale.orderSync.error.retry" = "إعادة المحاولة";
+
+/* Title of the error when failing to synchronize order and calculate order totals */
+"pointOfSale.orderSync.error.title" = "تعذر تحميل الإجماليات";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
 
@@ -11365,17 +11363,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "مسح";
 
-/* Text for the button appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsButtonTitle" = "إنشاء منتج بسيط";
+/* Body text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitBody" = "سيتم فقدان أي طلبات قيد التقدم.";
 
-/* Text appearing on the item list screen as hint when there are no products to load. */
-"pos.itemList.emptyProductsHint" = "لا يدعم POS حاليًا سوى المنتجات البسيطة";
+/* Button text of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitButtom" = "إنهاء";
 
-/* Text appearing as subtitle on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsSubtitle" = "لا يحتوي متجرك على أي منتجات";
-
-/* Text appearing on the item list screen when there are no products to load. */
-"pos.itemList.emptyProductsTitle" = "لا توجد منتجات";
+/* Title of the exit Point of Sale modal alert */
+"pos.exitPOSModal.exitTitle" = "هل تريد إنهاء وضع نقطة البيع؟";
 
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "إعادة المحاولة";
@@ -11401,14 +11396,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "تشغيل";
 
-/* Title of the Point of Sale product selector */
-"pos.itemlistview.productSelectorTitle" = "المنتجات";
+/* Action text in the simple products information modal in POS */
+"pos.simpleProductsModal.action" = "إنشاء طلب في إدارة المتجر";
+
+/* Hint in the simple products information modal in POS */
+"pos.simpleProductsModal.hint" = "لتلقي دفعة مقابل منتج غير بسيط، اخرج من نقطة البيع وأنشئ طلبًا جديدًا من علامة تبويب الطلبات.";
+
+/* Message in the simple products information modal in POS, explaining future plans */
+"pos.simpleProductsModal.message.future" = "أما أنواع المنتجات الأخرى، مثل: المنتجات المتغيرة والظاهرية، ستتوفر في التحديثات المستقبلية.";
+
+/* Message in the simple products information modal in POS */
+"pos.simpleProductsModal.message.issue" = "لا يمكن استخدام إلا المنتجات المادية البسيطة التي تتضمن نقطة بيع الآن.";
+
+/* Title for the OK button on the simple products information modal in POS */
+"pos.simpleProductsModal.ok.button.title" = "موافق";
+
+/* Title of the simple products information modal in POS */
+"pos.simpleProductsModal.title" = "لماذا يتعذر علي رؤية منتجاتي؟";
 
 /* Button title for calculate amounts button */
 "pos.totalsView.calculateAmounts" = "حساب المبالغ";
 
-/* Button title for new transaction button */
-"pos.totalsView.newTransaction" = "معاملة جديدة";
+/* Button title for new order button */
+"pos.totalsView.newOrder" = "طلب جديد";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "الإجمالي الفرعي";

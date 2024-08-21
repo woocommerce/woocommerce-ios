@@ -134,13 +134,14 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
 // MARK: Public subtypes
 //
 public extension BlazeCampaignListItem {
-    enum Status: String {
+    enum Status: String, CaseIterable {
         case pending
         case scheduled
         case active
         case rejected
         case canceled
         case finished
+        case suspended
         case unknown
     }
 

@@ -2,10 +2,14 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
     let title: String = Localization.title
-    var message: String? = nil
+    let message: String?
 
-    mutating func updateMessage(formattedOrderTotal: String) {
-        message = String(format: Localization.message, formattedOrderTotal)
+    init(formattedOrderTotal: String?) {
+        if let formattedOrderTotal {
+            self.message = String(format: Localization.message, formattedOrderTotal)
+        } else {
+            self.message = nil
+        }
     }
 }
 

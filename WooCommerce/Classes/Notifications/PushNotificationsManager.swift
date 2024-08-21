@@ -259,7 +259,7 @@ extension PushNotificationsManager {
     @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
-        guard applicationState == .active, content.isRemoteNotification else {
+        guard applicationState == .active, content.isRemoteNotification, inAppNotices == true else {
             // Local notifications are currently not handled when the app is in the foreground.
             return UNNotificationPresentationOptions(rawValue: 0)
         }
@@ -279,12 +279,7 @@ extension PushNotificationsManager {
                                                    withProperties: [AnalyticKey.type: foregroundNotification.kind.rawValue])
                 }
 
-            if inAppNotices {
-                debugPrint("🍉 POS disabled. Sending in-app notice.")
-                foregroundNotificationsSubject.send(foregroundNotification)
-            } else {
-                debugPrint("🍉 POS enabled. Not sending notices.")
-            }
+            foregroundNotificationsSubject.send(foregroundNotification)
         }
 
         _ = await synchronizeNotifications()

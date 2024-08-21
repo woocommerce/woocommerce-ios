@@ -82,6 +82,7 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .posRootModal()
         .sheet(isPresented: $viewModel.showSupport) {
             supportForm
         }

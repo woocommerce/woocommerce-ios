@@ -45,12 +45,19 @@ struct PointOfSaleDashboardView: View {
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .renderedIf(!viewModel.isInitialLoading)
+
+            POSConnectivityView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
+                .zIndex(1) /// Consistent animations not working without setting explicit zIndex
+                .renderedIf(viewModel.showsConnectivityError)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
+        .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
@@ -143,6 +150,7 @@ private extension PointOfSaleDashboardView {
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
+        static let connectivityAnimationDuration: CGFloat = 1.0
     }
 
     enum Localization {

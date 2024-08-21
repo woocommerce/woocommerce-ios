@@ -56,11 +56,8 @@ final class HubMenuCoordinator {
         notificationsSubscription?.cancel()
     }
 
-    func start() {
-        // No-op: please call `activate(siteID:)` instead when the menu tab is configured.
-    }
-
-    /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
+    /// Used to reload the Hub menu screen when selected site changes
+    ///
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
                                                   navigationController: navigationController,

@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentCaptureFailedView: View {
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
             POSErrorExclamationMark()
+                .accessibilityAddTraits(.isHeader)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(Localization.title)

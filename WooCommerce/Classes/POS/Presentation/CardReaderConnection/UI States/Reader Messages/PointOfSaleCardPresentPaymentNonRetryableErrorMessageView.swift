@@ -11,6 +11,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                 Text(viewModel.title)
                     .foregroundStyle(Color.primaryText)
                     .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)

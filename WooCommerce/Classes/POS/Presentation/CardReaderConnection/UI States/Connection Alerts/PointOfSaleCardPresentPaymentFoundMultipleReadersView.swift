@@ -17,6 +17,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             Text(Localization.headline)
                 .font(.headline)
                 .padding(Layout.headerPadding)
+                .accessibilityAddTraits(.isHeader)
 
             List(readerIDs, id: \.self) { readerID in
                 VStack {
@@ -39,6 +40,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
+        .accessibilityElement(children: .contain)
     }
 }
 

@@ -18,6 +18,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                 Text(message)
                     .font(.posTitleEmphasized)
                     .foregroundStyle(Color(.neutral(.shade60)))
+                    .accessibilityAddTraits(.isHeader)
             }
         }
         .multilineTextAlignment(.center)

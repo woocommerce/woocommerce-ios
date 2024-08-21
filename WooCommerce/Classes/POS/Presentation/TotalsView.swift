@@ -129,6 +129,7 @@ private extension TotalsView {
                     .font(Constants.subtotalAmountFont)
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
+            .accessibilityElement(children: .combine)
             .foregroundColor(Color.primaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
@@ -152,6 +153,8 @@ private extension TotalsView {
                     .font(Constants.totalAmountFont)
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
             .foregroundColor(Color.primaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }

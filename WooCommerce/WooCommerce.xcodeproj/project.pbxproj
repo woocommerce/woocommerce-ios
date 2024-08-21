@@ -814,6 +814,7 @@
 		209AD3D22AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift */; };
 		209B15672AD85F070094152A /* OperatingSystemVersion+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */; };
 		209CA0EE2B50070D0073D1AC /* WooTabContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209CA0ED2B50070D0073D1AC /* WooTabContainerController.swift */; };
+		209EEF902C762ED5007969A4 /* POSModalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EEF8F2C762ED5007969A4 /* POSModalManager.swift */; };
 		20A130EB2C5A27190058022F /* PointOfSaleAssetsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */; };
 		20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */; };
 		20A3AFE32B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */; };
@@ -3843,6 +3844,7 @@
 		209AD3D12AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsCurrencyOverviewView.swift; sourceTree = "<group>"; };
 		209B15662AD85F070094152A /* OperatingSystemVersion+Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OperatingSystemVersion+Localization.swift"; sourceTree = "<group>"; };
 		209CA0ED2B50070D0073D1AC /* WooTabContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabContainerController.swift; sourceTree = "<group>"; };
+		209EEF8F2C762ED5007969A4 /* POSModalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSModalManager.swift; sourceTree = "<group>"; };
 		20A130EA2C5A27190058022F /* PointOfSaleAssetsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleAssetsTests.swift; sourceTree = "<group>"; };
 		20A3AFE02B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift; sourceTree = "<group>"; };
 		20A3AFE22B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsFlowPresentingView.swift; sourceTree = "<group>"; };
@@ -6045,6 +6047,7 @@
 			children = (
 				01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */,
 				204D1D612C5A50840064A6BE /* POSModalViewModifier.swift */,
+				209EEF8F2C762ED5007969A4 /* POSModalManager.swift */,
 				01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */,
 				207823E62C5D346300025A59 /* POSPrimaryButtonStyle.swift */,
 				20D3D42E2C64F175004CE6E3 /* POSSecondaryButtonStyle.swift */,
@@ -15213,6 +15216,7 @@
 				CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */,
 				45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */,
 				45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */,
+				209EEF902C762ED5007969A4 /* POSModalManager.swift in Sources */,
 				0379C51727BFCE9800A7E284 /* WCPayCardBrand+icons.swift in Sources */,
 				DA1D68C22C36F0980097859A /* PointOfSaleAssets.swift in Sources */,
 				0210D8692A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift in Sources */,

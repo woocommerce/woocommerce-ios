@@ -60,7 +60,6 @@ final class HubMenuCoordinator {
     ///
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
-                                                  navigationController: navigationController,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController = hubMenuController {
             let navigationController = UINavigationController(rootViewController: hubMenuController)

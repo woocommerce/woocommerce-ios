@@ -15,6 +15,7 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    let featureFlagService: FeatureFlagService
 
     private(set) var order: Order
 
@@ -29,11 +30,13 @@ final class OrderDetailsViewModel {
     init(order: Order,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
+        self.featureFlagService = featureFlagService
         self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
@@ -477,9 +480,12 @@ extension OrderDetailsViewModel {
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
             let customFields = order.customFields.map {
-                OrderCustomFieldsViewModel(metadata: $0)
+                CustomFieldsViewModel(metadata: $0)
             }
-            let customFieldsView = UIHostingController(rootView: OrderCustomFieldsDetails(customFields: customFields))
+            let customFieldsView = UIHostingController(
+                rootView: CustomFieldsDetailsView(
+                    isEditable: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
+                    customFields: customFields))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode

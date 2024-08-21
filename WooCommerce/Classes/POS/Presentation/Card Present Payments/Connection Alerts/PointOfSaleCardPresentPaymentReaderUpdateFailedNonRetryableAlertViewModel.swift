@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel {
     let title: String = Localization.title
-    let image: Image = .init(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(cancelUpdateAction: @escaping () -> Void) {

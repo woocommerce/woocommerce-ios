@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel {
     let title = Localization.bluetoothRequired
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let dismissButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let errorDetails: String

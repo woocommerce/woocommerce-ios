@@ -4,7 +4,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
     let title = Localization.title
     let errorDetails = Localization.errorDetails
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 

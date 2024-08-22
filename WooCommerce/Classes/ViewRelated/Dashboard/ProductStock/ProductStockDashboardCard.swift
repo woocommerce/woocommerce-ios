@@ -89,7 +89,7 @@ private extension ProductStockDashboardCard {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
                 Text(Localization.status)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.primary)
                     .subheadlineStyle()
                 Text(viewModel.selectedStockType.displayedName)
                     .subheadlineStyle()

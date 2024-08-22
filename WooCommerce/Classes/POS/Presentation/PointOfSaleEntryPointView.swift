@@ -31,7 +31,7 @@ struct PointOfSaleEntryPointView: View {
             cardPresentPaymentService: cardPresentPaymentService,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
-            itemListViewModel: itemListViewModel, 
+            itemListViewModel: itemListViewModel,
             connectivityObserver: ServiceLocator.connectivityObserver)
         )
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)

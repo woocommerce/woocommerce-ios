@@ -2,12 +2,6 @@ import SwiftUI
 
 extension Color {
 
-    /// Secondary POS background color
-    ///
-    static var secondaryBackground: Color {
-        return Color(red: 89.0 / 255.0, green: 181.0 / 255.0, blue: 227.0 / 255.0)
-    }
-
     /// Default POS text color
     ///
     static var primaryText: Color {

@@ -55,6 +55,7 @@ struct CartView: View {
                             )
                     }
                     .padding(.horizontal, Constants.itemHorizontalPadding)
+                    .padding(.top, 16)
                     .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }

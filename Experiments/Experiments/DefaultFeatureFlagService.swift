@@ -91,7 +91,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .viewEditCustomFieldsInProductsAndOrders:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeEvergreenCampaigns:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

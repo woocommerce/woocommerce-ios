@@ -37,8 +37,9 @@ extension Color {
         )
     }
 
-    /// Default POS text color
-    ///
+    // MARK: - Text
+
+    static var posPrimaryText: Color {
         return Color.primary
     }
 

@@ -63,7 +63,7 @@ private extension POSFloatingControlView {
     var fontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .primaryText
+            .posPrimaryText
         case .secondary:
             .posSecondaryTextInverted
         }

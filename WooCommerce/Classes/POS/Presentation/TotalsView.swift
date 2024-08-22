@@ -130,7 +130,7 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -155,7 +155,7 @@ private extension TotalsView {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -198,10 +198,10 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.newOrderButtonPadding)
-        .foregroundColor(Color.primaryText)
+        .foregroundColor(Color.posPrimaryText)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
-                .stroke(Color.primaryText, lineWidth: Constants.defaultBorderLineWidth)
+                .stroke(Color.posPrimaryText, lineWidth: Constants.defaultBorderLineWidth)
         )
     }
 

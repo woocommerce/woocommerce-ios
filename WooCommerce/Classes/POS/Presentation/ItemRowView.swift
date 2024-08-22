@@ -18,11 +18,11 @@ struct ItemRowView: View {
 
             VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
                 Text(cartItem.item.name)
-                    .foregroundColor(Color.primaryText)
+                    .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
                 Text(cartItem.item.formattedPrice)
-                    .foregroundColor(Color.primaryText)
+                    .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
             }

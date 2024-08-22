@@ -60,7 +60,7 @@ private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .primaryText
+            .posPrimaryText
         case .secondary:
             .posSecondaryTextInverted
         }

@@ -54,7 +54,7 @@ private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
         case .primary:
-            Color(.systemBackground)
+            .posSecondaryBackground
         case .secondary:
             Color(.wooCommercePurple(.shade80))
         }

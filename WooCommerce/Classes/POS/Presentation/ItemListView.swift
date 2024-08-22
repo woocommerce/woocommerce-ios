@@ -25,7 +25,7 @@ struct ItemListView: View {
         .refreshable {
             await viewModel.reload()
         }
-        .background(Color.posBackgroundGreyi3)
+        .background(Color.posPrimaryBackground)
         .accessibilityElement(children: .contain)
     }
 }
@@ -98,7 +98,7 @@ private extension ItemListView {
         }
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posBackgroundWhitei3)
+        .background(Color.posSecondaryBackground)
         .cornerRadius(Constants.bannerCornerRadius)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
         .accessibilityAddTraits(.isButton)

@@ -41,7 +41,7 @@ struct ItemRowView: View {
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posBackgroundWhitei3)
+        .background(Color.posSecondaryBackground)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)

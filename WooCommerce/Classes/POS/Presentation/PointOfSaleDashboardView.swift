@@ -60,7 +60,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
-        .background(Color.posBackgroundGreyi3)
+        .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
             // Might be the only way unless we make the type conform to `Identifiable`

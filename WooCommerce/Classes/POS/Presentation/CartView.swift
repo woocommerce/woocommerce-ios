@@ -115,7 +115,7 @@ struct CartView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(cartViewModel.isCartEmpty ? Color.posBackgroundEmptyWhitei3.ignoresSafeArea(edges: .all) : Color.posBackgroundWhitei3.ignoresSafeArea(.all))
+        .background(cartViewModel.isCartEmpty ? Color.posTertiaryBackground.ignoresSafeArea(edges: .all) : Color.posSecondaryBackground.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
 }

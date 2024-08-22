@@ -18,6 +18,7 @@ struct CartView: View {
                 HStack {
                     backAddMoreButton
                         .padding(.top, 16)
+                        .padding(.trailing, 16)
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
 

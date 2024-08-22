@@ -519,6 +519,73 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_navigateToDestination_replaces_navigationPath_with_specified_destination() {
+        // Given
+        let navigationPath = NavigationPath(["testPath1", "testPath2"])
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = navigationPath
+        XCTAssertEqual(viewModel.navigationPath.count, 2)
+
+        let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
+            .settings: HubMenuViewModel.Settings(),
+            .payments: HubMenuViewModel.Payments(),
+            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
+            .subscriptions: HubMenuViewModel.Subscriptions(),
+            .blaze: HubMenuViewModel.Blaze(),
+            .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
+            .viewStore: HubMenuViewModel.ViewStore(),
+            .coupons: HubMenuViewModel.Coupons(),
+            .reviews: HubMenuViewModel.Reviews(),
+            .inbox: HubMenuViewModel.Inbox(),
+            .customers: HubMenuViewModel.Customers(),
+            .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
+        ]
+
+        for (expected, menuItem) in expectedMenusAndDestinations {
+            // When
+            let destination = menuItem.navigationDestination
+            viewModel.navigateToDestination(destination)
+
+            // Then
+            XCTAssertEqual(destination, expected)
+            XCTAssertEqual(viewModel.navigationPath.count, 1)
+            XCTAssertEqual(viewModel.navigationPath, NavigationPath([expected]))
+        }
+    }
+
+    @MainActor
+    func test_navigateToDestination_without_destination_leaves_navigationPath_intact() {
+        // Given
+        let navigationPath = NavigationPath(["testPath1", "testPath2"])
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = navigationPath
+
+        // When
+        viewModel.navigateToDestination(nil)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 2)
+        XCTAssertEqual(viewModel.navigationPath, navigationPath)
+    }
+
+    @MainActor
+    func test_showReviewDetails_updates_navigationPath_correctly() {
+        // Given
+        let parcel = ProductReviewFromNoteParcel.fake().copy(note: .fake().copy(noteID: 123))
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+
+        // When
+        viewModel.showReviewDetails(using: parcel)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 1)
+        XCTAssertEqual(viewModel.navigationPath, NavigationPath([HubMenuNavigationDestination.reviewDetails(parcel: parcel)]))
+    }
+
+    @MainActor
     func test_hasGoogleAdsCampaigns_is_false_when_site_has_no_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

@@ -47,12 +47,12 @@ private extension ItemListView {
                             .font(.posTitleRegular)
                     })
                     .foregroundColor(.posPrimaryTexti3)
-                    .padding(.trailing, 16)
+                    .padding(.trailing, Constants.headerPadding)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.vertical, 16)
+                    .padding(.vertical, Constants.headerPadding)
             }
         }
     }
@@ -141,6 +141,7 @@ private extension ItemListView {
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
+        static let headerPadding: CGFloat = 16
     }
 
     enum Localization {

@@ -188,12 +188,15 @@ fileprivate extension CardPresentPaymentEvent {
 }
 
 #if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel()
+    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
     let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,

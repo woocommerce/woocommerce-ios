@@ -190,6 +190,9 @@ private extension CartView {
 
 #if DEBUG
 import Combine
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     // TODO:
     // Simplify this by mocking `CartViewModel`
@@ -197,7 +200,7 @@ import Combine
                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                           currencyFormatter: .init(currencySettings: .init()),
                                           paymentState: .acceptingCard)
-    let cartViewModel = CartViewModel()
+    let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview())
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,

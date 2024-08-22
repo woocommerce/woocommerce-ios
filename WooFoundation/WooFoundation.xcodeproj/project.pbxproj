@@ -46,6 +46,8 @@
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
+		6896C82A2C75D60D002DDAE2 /* MockAnalyticsPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6896C8292C75D60D002DDAE2 /* MockAnalyticsPreview.swift */; };
+		6896C82C2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6896C82B2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift */; };
 		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
@@ -131,6 +133,8 @@
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
 		686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
 		6874E81328998AD300074A97 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
+		6896C8292C75D60D002DDAE2 /* MockAnalyticsPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsPreview.swift; sourceTree = "<group>"; };
+		6896C82B2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsProviderPreview.swift; sourceTree = "<group>"; };
 		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
@@ -294,6 +298,8 @@
 			children = (
 				03597A9728F87948005E4A98 /* MockUTMParameterProvider.swift */,
 				689D11D22891B7D800F6A83F /* MockCrashLogger.swift */,
+				6896C8292C75D60D002DDAE2 /* MockAnalyticsPreview.swift */,
+				6896C82B2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -695,6 +701,7 @@
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
 				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
 				203758752AD55670000E4281 /* CountryCode.swift in Sources */,
+				6896C82A2C75D60D002DDAE2 /* MockAnalyticsPreview.swift in Sources */,
 				B9C9C65D283E71C8001B879F /* CurrencyFormatter.swift in Sources */,
 				AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */,
 				03597A9428F85686005E4A98 /* UTMParameters.swift in Sources */,
@@ -705,6 +712,7 @@
 				02427F092BECA12800E2073B /* Analytics.swift in Sources */,
 				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
+				6896C82C2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift in Sources */,
 				689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */,
 				26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */,
 				B95B15CB2B15FA3A00A54044 /* Publishers+KeyboardHeight.swift in Sources */,

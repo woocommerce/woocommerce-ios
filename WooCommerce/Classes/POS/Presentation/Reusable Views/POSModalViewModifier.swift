@@ -13,7 +13,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
 
-                modalManager.modalContent
+                modalManager.getContent()
                     .background(Color(.systemBackground))
                     .cornerRadius(16)
                     .shadow(radius: 10)
@@ -37,16 +37,16 @@ extension View {
     }
 }
 
-struct POSModalViewModifier<ModalContent: View>: ViewModifier {
+struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
-    @Binding var isPresented: Bool
-    @ViewBuilder let modalContent: () -> ModalContent
+    @Binding var item: Item?
+    let modalContent: (Item) -> ModalContent
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: isPresented) { newValue in
-                if newValue {
-                    modalManager.present(modalContent())
+            .onChange(of: item) { newItem in
+                if let newItem = newItem {
+                    modalManager.present { modalContent(newItem) }
                 } else {
                     modalManager.dismiss()
                 }
@@ -65,10 +65,11 @@ extension View {
     ///   - isPresented: Binding to control when the modal is shown.
     ///   - content: Content to sho
     /// - Returns: a modified view which can show the modal content specifed, when applicable.
-    func posModal<ModalContent: View>(isPresented: Binding<Bool>,
-                                      @ViewBuilder content: @escaping () -> ModalContent) -> some View {
+    func posModal<Item: Identifiable & Equatable, ModalContent: View>(
+        item: Binding<Item?>,
+        @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
-            POSModalViewModifier(isPresented: isPresented,
+            POSModalViewModifier(item: item,
                                  modalContent: content))
     }
 }

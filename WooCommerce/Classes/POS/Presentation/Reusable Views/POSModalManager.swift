@@ -1,15 +1,19 @@
 import SwiftUI
 
 class POSModalManager: ObservableObject {
-    @Published var isPresented: Bool = false
-    @Published var modalContent: AnyView = AnyView(EmptyView())
+    @Published private(set) var isPresented: Bool = false
+    private var contentBuilder: (() -> AnyView)?
 
-    func present<Content: View>(_ content: Content) {
-        self.modalContent = AnyView(content)
+    func present<Content: View>(_ content: @escaping () -> Content) {
+        self.contentBuilder = { AnyView(content()) }
         self.isPresented = true
     }
 
     func dismiss() {
         self.isPresented = false
+    }
+
+    func getContent() -> AnyView {
+        contentBuilder?() ?? AnyView(EmptyView())
     }
 }

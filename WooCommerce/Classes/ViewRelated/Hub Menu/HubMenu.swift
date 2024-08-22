@@ -176,8 +176,8 @@ private extension HubMenu {
                                                       credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
-                        hideAppTabBar: { isHidden in
-                            AppDelegate.shared.setShouldHideTabBar(isHidden)
+                        onPointOfSaleModeActiveStateChange: { isEnabled in
+                            AppDelegate.shared.updateSharedConfiguration(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
                         orderService: orderService,

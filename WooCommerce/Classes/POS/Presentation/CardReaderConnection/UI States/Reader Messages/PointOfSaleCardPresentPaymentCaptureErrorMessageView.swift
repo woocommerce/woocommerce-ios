@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             POSErrorXMark()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
+                    .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.primaryText)
                     .font(.posTitleEmphasized)
 

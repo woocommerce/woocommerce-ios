@@ -1876,7 +1876,7 @@
 		B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */; };
 		B61F212A2AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61F21292AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift */; };
 		B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */; };
-		B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */; };
+		B626C71B287659D60083820C /* CustomFieldsDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* CustomFieldsDetailsView.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
 		B63D9009293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63D9008293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift */; };
 		B6440FB6292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */; };
@@ -1892,7 +1892,7 @@
 		B6C78B8C293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C78B8B293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift */; };
 		B6C78B8E293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C78B8D293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift */; };
 		B6C78B90293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C78B8F293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift */; };
-		B6C838DE28793B3A003AB786 /* OrderCustomFieldsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C838DD28793B3A003AB786 /* OrderCustomFieldsViewModel.swift */; };
+		B6C838DE28793B3A003AB786 /* CustomFieldsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C838DD28793B3A003AB786 /* CustomFieldsViewModel.swift */; };
 		B6D2468C2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D2468B2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift */; };
 		B6E7DB64293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E7DB63293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift */; };
 		B6E851F3276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F2276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift */; };
@@ -2064,7 +2064,7 @@
 		CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */; };
 		CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */; };
 		CC593A6B26EA640800EF0E04 /* PackageCreationError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */; };
-		CC5BA5F5287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5BA5F4287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift */; };
+		CC5BA5F5287EDC900072F307 /* CustomFieldsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5BA5F4287EDC900072F307 /* CustomFieldsViewModelTests.swift */; };
 		CC5C278727EE19A700B25D2A /* UnifiedOrderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */; };
 		CC5C278B27EE314F00B25D2A /* orders_3337_create_order.json in Resources */ = {isa = PBXBuildFile; fileRef = CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */; };
 		CC666F2427F329DC0045AF1E /* View+DiscardChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */; };
@@ -4872,7 +4872,7 @@
 		B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTimeRangeCard.swift; sourceTree = "<group>"; };
 		B61F21292AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelHazmatCategory.swift; sourceTree = "<group>"; };
 		B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
-		B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsDetails.swift; sourceTree = "<group>"; };
+		B626C71A287659D60083820C /* CustomFieldsDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsDetailsView.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
 		B63D9008293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubQuarterToDateRangeData.swift; sourceTree = "<group>"; };
 		B6440FB5292E72DA0012D506 /* AnalyticsHubTimeRangeSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeSelection.swift; sourceTree = "<group>"; };
@@ -4888,7 +4888,7 @@
 		B6C78B8B293BADAA008934A1 /* AnalyticsHubLastWeekRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastWeekRangeData.swift; sourceTree = "<group>"; };
 		B6C78B8D293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastMonthRangeData.swift; sourceTree = "<group>"; };
 		B6C78B8F293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastYearRangeData.swift; sourceTree = "<group>"; };
-		B6C838DD28793B3A003AB786 /* OrderCustomFieldsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsViewModel.swift; sourceTree = "<group>"; };
+		B6C838DD28793B3A003AB786 /* CustomFieldsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsViewModel.swift; sourceTree = "<group>"; };
 		B6D2468B2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUCustomsScenarioValidatorTests.swift; sourceTree = "<group>"; };
 		B6E7DB63293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYesterdayRangeData.swift; sourceTree = "<group>"; };
 		B6E851F2276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCustomAmountsDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -5061,7 +5061,7 @@
 		CC53FB3F2759042600C4CA4F /* ProductSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6626EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModelTests.swift; sourceTree = "<group>"; };
 		CC593A6A26EA640800EF0E04 /* PackageCreationError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageCreationError+UI.swift"; sourceTree = "<group>"; };
-		CC5BA5F4287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsViewModelTests.swift; sourceTree = "<group>"; };
+		CC5BA5F4287EDC900072F307 /* CustomFieldsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsViewModelTests.swift; sourceTree = "<group>"; };
 		CC5C278627EE19A600B25D2A /* UnifiedOrderScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedOrderScreen.swift; sourceTree = "<group>"; };
 		CC5C278A27EE314E00B25D2A /* orders_3337_create_order.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = orders_3337_create_order.json; sourceTree = "<group>"; };
 		CC666F2327F329DC0045AF1E /* View+DiscardChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DiscardChanges.swift"; sourceTree = "<group>"; };
@@ -9139,7 +9139,6 @@
 				26C6E8E126E2D85300C7BB0F /* Addresses */,
 				025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */,
 				578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */,
-				CC5BA5F4287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift */,
 			);
 			path = "Order Details";
 			sourceTree = "<group>";
@@ -9618,6 +9617,14 @@
 			path = Reviews;
 			sourceTree = "<group>";
 		};
+		864059FE2C6F67A000DA04DC /* Custom Fields */ = {
+			isa = PBXGroup;
+			children = (
+				CC5BA5F4287EDC900072F307 /* CustomFieldsViewModelTests.swift */,
+			);
+			path = "Custom Fields";
+			sourceTree = "<group>";
+		};
 		8646A9B82B46C79A001F606C /* AdDestination */ = {
 			isa = PBXGroup;
 			children = (
@@ -10038,6 +10045,7 @@
 		B56DB3EF2049C06D00D4AA8E /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				B626C7192876599B0083820C /* Custom Fields */,
 				86023FA82B15CA8D00A28F07 /* Themes */,
 				DED91DF72AD78A0C00CDCC53 /* Blaze */,
 				EE45E2AB2A409B4C0085F227 /* Feature Highlight */,
@@ -10409,13 +10417,13 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		B626C7192876599B0083820C /* Order Custom Fields */ = {
+		B626C7192876599B0083820C /* Custom Fields */ = {
 			isa = PBXGroup;
 			children = (
-				B626C71A287659D60083820C /* OrderCustomFieldsDetails.swift */,
-				B6C838DD28793B3A003AB786 /* OrderCustomFieldsViewModel.swift */,
+				B626C71A287659D60083820C /* CustomFieldsDetailsView.swift */,
+				B6C838DD28793B3A003AB786 /* CustomFieldsViewModel.swift */,
 			);
-			path = "Order Custom Fields";
+			path = "Custom Fields";
 			sourceTree = "<group>";
 		};
 		B6440FB7292E73E50012D506 /* Analytics Hub */ = {
@@ -11450,7 +11458,6 @@
 			isa = PBXGroup;
 			children = (
 				6850C5EF2B69E7300026A93B /* Receipts */,
-				B626C7192876599B0083820C /* Order Custom Fields */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 				DE6906DA27D5F69900735E3B /* OrderDetailsViewController.xib */,
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
@@ -12005,6 +12012,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				864059FE2C6F67A000DA04DC /* Custom Fields */,
 				86023FAB2B16D80E00A28F07 /* Themes */,
 				EE45E2C02A42C9C70085F227 /* Feature Highlight */,
 				024D4E952A2EC6790090E0E6 /* Blaze */,
@@ -15401,7 +15409,7 @@
 				31FC8CE927B476BA004B9456 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				022266BC2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift in Sources */,
 				D449C52926DFBCCC00D75B02 /* WhatsNewHostingController.swift in Sources */,
-				B626C71B287659D60083820C /* OrderCustomFieldsDetails.swift in Sources */,
+				B626C71B287659D60083820C /* CustomFieldsDetailsView.swift in Sources */,
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */,
@@ -15757,7 +15765,7 @@
 				02AC30CF2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift in Sources */,
 				02B9243F2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift in Sources */,
 				2667BFEB2535FF09008099D4 /* RefundShippingCalculationUseCase.swift in Sources */,
-				B6C838DE28793B3A003AB786 /* OrderCustomFieldsViewModel.swift in Sources */,
+				B6C838DE28793B3A003AB786 /* CustomFieldsViewModel.swift in Sources */,
 				DE65C1F72C48E7DC003EF8D1 /* SupportButton.swift in Sources */,
 				20D210BE2B14C9B90099E517 /* WooPaymentsDepositStatusDisplayDetails.swift in Sources */,
 				026225212C21F01F00700977 /* PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel.swift in Sources */,
@@ -16491,7 +16499,7 @@
 				4572641B27F1FDF2004E1F95 /* AddEditCouponViewModelTests.swift in Sources */,
 				AEE1D4FF25D1580E006A490B /* AttributeOptionListSelectorCommandTests.swift in Sources */,
 				DE4D23A829B0D11E003A4B5D /* WPComPasswordLoginViewModelTests.swift in Sources */,
-				CC5BA5F5287EDC900072F307 /* OrderCustomFieldsViewModelTests.swift in Sources */,
+				CC5BA5F5287EDC900072F307 /* CustomFieldsViewModelTests.swift in Sources */,
 				02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */,
 				0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */,
 				02BAB02324D0250300F8B06E /* ProductVariation+ProductFormTests.swift in Sources */,

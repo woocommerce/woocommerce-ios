@@ -18,6 +18,7 @@ final class CartViewModel: CartViewModelProtocol {
     private var cancellables = Set<AnyCancellable>()
 
     @Published var canDeleteItemsFromCart: Bool = true
+    @Published private(set) var shouldShowClearCartButton: Bool = false
 
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
@@ -30,6 +31,16 @@ final class CartViewModel: CartViewModelProtocol {
 
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
+        assignClearCartButtonVisibility()
+    }
+
+    private func assignClearCartButtonVisibility() {
+        $canDeleteItemsFromCart
+            .combineLatest($itemsInCart)
+            .map { canDelete, itemsInCart in
+                return canDelete && itemsInCart.isNotEmpty
+            }
+            .assign(to: &$shouldShowClearCartButton)
     }
 
     func addItemToCart(_ item: POSItem) {

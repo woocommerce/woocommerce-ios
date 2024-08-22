@@ -375,6 +375,24 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: siteID, orderID: orderID))
         XCTAssertNil(storageOrder.attributionInfo)
     }
+
+    func test_it_removes_existing_order_items_from_storage_if_removed_in_remote() throws {
+        // Given
+        let orderID: Int64 = 11
+        let itemID: Int64 = 22
+        let item = makeOrderItem(itemID: itemID)
+        let order = makeOrder().copy(orderID: orderID, items: [item])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(items: [])])
+
+        // Then
+        XCTAssertNil(viewStorage.loadOrderItem(siteID: defaultSiteID, orderID: orderID, itemID: itemID))
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: orderID))
+        XCTAssertEqual(0, storageOrder.items?.count)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {

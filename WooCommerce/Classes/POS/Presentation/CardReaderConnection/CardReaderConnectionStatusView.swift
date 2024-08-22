@@ -20,6 +20,7 @@ struct CardReaderConnectionStatusView: View {
             .resizable()
             .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
             .foregroundColor(color)
+            .accessibilityHidden(true)
     }
 
     var body: some View {

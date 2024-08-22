@@ -3,12 +3,12 @@ import Yosemite
 
 @testable import WooCommerce
 
-class OrderCustomFieldsViewModelTests: XCTestCase {
+class CustomFieldsViewModelTests: XCTestCase {
 
     func test_view_model_inits_with_expected_values() throws {
         // Given
         let url = URL(string: "https://woocommerce.com/")
-        let viewModel = OrderCustomFieldsViewModel(id: 1, title: "First Metadata", content: "First Content", contentURL: url)
+        let viewModel = CustomFieldsViewModel(id: 1, title: "First Metadata", content: "First Content", contentURL: url)
 
         // Then
         XCTAssertEqual(viewModel.id, 1)
@@ -22,7 +22,7 @@ class OrderCustomFieldsViewModelTests: XCTestCase {
         let metadata = OrderMetaData(metadataID: 0, key: "HTML Metadata", value: "<strong>Fancy</strong> <a href=\"http://\">Metadata</a>")
 
         // When
-        let viewModel = OrderCustomFieldsViewModel(metadata: metadata)
+        let viewModel = CustomFieldsViewModel(metadata: metadata)
 
         // Then
         XCTAssertEqual(viewModel.content, "Fancy Metadata")
@@ -34,7 +34,7 @@ class OrderCustomFieldsViewModelTests: XCTestCase {
         let metadata = OrderMetaData(metadataID: 0, key: "URL Metadata", value: urlString)
 
         // When
-        let viewModel = OrderCustomFieldsViewModel(metadata: metadata)
+        let viewModel = CustomFieldsViewModel(metadata: metadata)
 
         // Then
         XCTAssertEqual(viewModel.contentURL, URL(string: urlString))

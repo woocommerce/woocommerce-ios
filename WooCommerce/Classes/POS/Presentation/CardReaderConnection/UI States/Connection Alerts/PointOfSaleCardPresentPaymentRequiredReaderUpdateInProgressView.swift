@@ -10,8 +10,10 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
             viewModel.image
+                .accessibilityHidden(true)
 
             Text(viewModel.progressTitle)
             Text(viewModel.progressSubtitle)
@@ -25,6 +27,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
             .buttonStyle(SecondaryButtonStyle())
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

@@ -22,7 +22,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false

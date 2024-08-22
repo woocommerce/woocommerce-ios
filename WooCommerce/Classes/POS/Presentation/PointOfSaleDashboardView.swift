@@ -58,13 +58,13 @@ struct PointOfSaleDashboardView: View {
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
         }
-//        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
-//            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
-//        }
-//        .posModal(isPresented: $viewModel.showExitPOSModal) {
-//            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
-//            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
-//        }
+        .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
+            SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
+        }
+        .posModal(isPresented: $viewModel.showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
+            .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
+        }
         .posRootModal()
         .sheet(isPresented: $viewModel.showSupport) {
             supportForm

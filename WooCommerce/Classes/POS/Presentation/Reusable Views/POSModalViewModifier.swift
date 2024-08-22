@@ -54,16 +54,53 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     }
 }
 
+struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
+    @EnvironmentObject var modalManager: POSModalManager
+    @Binding var isPresented: Bool
+    let modalContent: () -> ModalContent
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented) { newValue in
+                if newValue {
+                    modalManager.present { modalContent() }
+                } else {
+                    modalManager.dismiss()
+                }
+            }
+    }
+}
+
 extension View {
     /// Shows a modal view over the Point of Sale experience.
     ///
+    /// Note that the content will not be redrawn in response to changes outside of the view builder.
+    /// Use the `posModal(item: content:)` modifier to work around this limitation.
     /// The content is responsible for setting its own size – it will be presented at that size, with minimal padding around it.
     ///
     /// This will only work in a view heirarchy containing a `posRootModal` modifier.
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
-    ///   - content: Content to sho
+    ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
+    /// - Returns: a modified view which can show the modal content specifed, when applicable.
+    func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      @ViewBuilder content: @escaping () -> ModalContent) -> some View {
+        self.modifier(
+            POSModalViewModifierForBool(isPresented: isPresented,
+                                        modalContent: content))
+    }
+
+    /// Shows a modal view over the Point of Sale experience.
+    ///
+    /// The content will update when the item changes.
+    /// The content is responsible for setting its own size – it will be presented at that size, with minimal padding around it.
+    ///
+    /// This will only work in a view heirarchy containing a `posRootModal` modifier.
+    ///
+    /// - Parameters:
+    ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
+    ///   - content: Content to show
     /// - Returns: a modified view which can show the modal content specifed, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,

@@ -34,6 +34,7 @@
 - [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
 - [Internal] Beta fix: Fixed unreliable states of the Inbox screen when navigated from the Hub Menu. [https://github.com/woocommerce/woocommerce-ios/pull/13645]
 - [Internal] Beta fix: Fixed navigation to variations in stock card for some stores. [https://github.com/woocommerce/woocommerce-ios/pull/13648]
+- [*] Payments Beta fix: Fixed an issue which could lead to a frozen state after an error starting Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/13682]
 
 19.9
 -----

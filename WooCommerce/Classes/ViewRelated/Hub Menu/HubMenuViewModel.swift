@@ -446,7 +446,7 @@ extension HubMenuItem {
 extension HubMenuViewModel {
 
     struct Settings: HubMenuItem {
-        
+
         static var id = "settings"
 
         let title: String = Localization.settings

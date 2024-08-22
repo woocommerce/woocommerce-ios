@@ -1,7 +1,7 @@
 import Foundation
 
 public final class MockAnalyticsPreview: Analytics {
-    public init(userHasOptedIn: Bool, analyticsProvider: AnalyticsProvider) {
+    public init(userHasOptedIn: Bool = true, analyticsProvider: AnalyticsProvider = MockAnalyticsProviderPreview()) {
         self.userHasOptedIn = userHasOptedIn
         self.analyticsProvider = analyticsProvider
     }

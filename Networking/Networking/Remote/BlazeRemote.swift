@@ -165,7 +165,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ) async throws -> BlazeImpressions {
         let path = Paths.campaignImpressions(siteID: siteID)
 
-        let dateFormatter = DateFormatter()
+        let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)

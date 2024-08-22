@@ -2,7 +2,11 @@ import Foundation
 
 /// `PointOfSaleCardPresentPaymentAlertType` serves as a typed bridge between the `CardPresentPaymentEventDetails`
 /// and the POS alert view models, for those events which should be displayed as alerts.
-enum PointOfSaleCardPresentPaymentAlertType: Hashable {
+enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
+    var id: Self {
+        self
+    }
+
     case scanningForReaders(viewModel: PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel)
     case scanningFailed(viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel)
     case bluetoothRequired(viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel)

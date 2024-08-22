@@ -47,6 +47,7 @@ private extension ItemListView {
                             .font(.posTitleRegular)
                     })
                     .foregroundColor(.posPrimaryTexti3)
+                    .padding(.trailing, 16)
                 }
             }
             if viewModel.shouldShowHeaderBanner {

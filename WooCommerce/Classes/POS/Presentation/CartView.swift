@@ -17,6 +17,7 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack {
                     backAddMoreButton
+                        .padding(.top, 16)
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
 

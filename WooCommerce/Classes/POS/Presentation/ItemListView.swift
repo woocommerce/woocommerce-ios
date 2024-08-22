@@ -51,7 +51,7 @@ private extension ItemListView {
             }
             if viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.vertical, 16)
+                    .padding(.bottom, Constants.bannerCardPadding)
             }
         }
     }
@@ -105,7 +105,7 @@ private extension ItemListView {
         .onTapGesture {
             viewModel.simpleProductsInfoButtonTapped()
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Constants.bannerCardPadding)
     }
 
     @ViewBuilder
@@ -141,6 +141,7 @@ private extension ItemListView {
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
+        static let bannerCardPadding: CGFloat = 16
     }
 
     enum Localization {

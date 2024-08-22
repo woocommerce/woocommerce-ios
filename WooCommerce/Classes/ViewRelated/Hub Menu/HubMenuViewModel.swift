@@ -13,7 +13,7 @@ extension NSNotification.Name {
 }
 
 /// Destination views that the hub menu can navigate to.
-enum HubMenuNavigationDestination {
+enum HubMenuNavigationDestination: Hashable {
     case payments
     case settings
     case blaze
@@ -26,6 +26,7 @@ enum HubMenuNavigationDestination {
     case subscriptions
     case customers
     case pointOfSales
+    case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
 /// View model for `HubMenu`.
@@ -72,9 +73,6 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var selectedMenuID: String?
 
-    @Published var showingReviewDetail = false
-    @Published var showingCoupons = false
-
     @Published private(set) var viewAppeared = false
 
     @Published private(set) var shouldAuthenticateAdminPage = false
@@ -100,8 +98,6 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
-
-    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
@@ -188,20 +184,19 @@ final class HubMenuViewModel: ObservableObject {
 
     /// Shows the payments menu from the hub menu root view.
     func showPayments() {
-        updateNavigationPath(with: .payments)
+        navigateToDestination(.payments)
     }
 
-    func updateNavigationPath(with item: HubMenuNavigationDestination?) {
-        guard let item else {
+    func navigateToDestination(_ destination: HubMenuNavigationDestination?) {
+        guard let destination else {
             return
         }
         navigationPath = .init()
-        navigationPath.append(item)
+        navigationPath.append(destination)
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
-        productReviewFromNoteParcel = parcel
-        showingReviewDetail = true
+        navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
     func refreshGoogleAdsCampaignCheck() {

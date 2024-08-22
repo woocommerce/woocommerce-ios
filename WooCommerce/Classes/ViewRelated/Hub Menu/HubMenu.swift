@@ -28,12 +28,6 @@ struct HubMenu: View {
                 .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
                     detailView(destination: destination)
                 }
-                .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
-                    reviewDetailView
-                }
-                .navigationDestination(isPresented: $viewModel.showingCoupons) {
-                    couponListView
-                }
                 .onAppear {
                     viewModel.setupMenuElements()
                 }
@@ -52,13 +46,13 @@ struct HubMenu: View {
             googleAdsCampaignHandler()
         case HubMenuViewModel.Settings.id:
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-            viewModel.updateNavigationPath(with: menu.navigationDestination)
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-            viewModel.updateNavigationPath(with: menu.navigationDestination)
         default:
-            viewModel.updateNavigationPath(with: menu.navigationDestination)
+            break
         }
+
+        viewModel.navigateToDestination(menu.navigationDestination)
     }
 }
 
@@ -133,7 +127,7 @@ private extension HubMenu {
     func detailView(destination: HubMenuNavigationDestination) -> some View {
         Group {
             switch destination {
-                case .payments:
+            case .payments:
                     paymentsView
             case .settings:
                 SettingsView()
@@ -177,6 +171,8 @@ private extension HubMenu {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
                 }
+            case .reviewDetails(let parcel):
+                reviewDetailView(parcel: parcel)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -205,12 +201,10 @@ private extension HubMenu {
     }
 
     @ViewBuilder
-    var reviewDetailView: some View {
-        if let parcel = viewModel.productReviewFromNoteParcel {
-            ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(Localization.productReview)
-        }
+    func reviewDetailView(parcel: ProductReviewFromNoteParcel) -> some View {
+        ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.productReview)
     }
 
     var paymentsView: some View {

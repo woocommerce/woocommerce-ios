@@ -35,6 +35,7 @@ struct CartView: View {
                         }
                     }
                     .accessibilityElement(children: .combine)
+                    .padding(.top, 16)
                 }
 
                 HStack {

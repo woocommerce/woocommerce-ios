@@ -12,6 +12,7 @@
 
 - [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
 - [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671]
+- [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]
 
 20.0
 -----

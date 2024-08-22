@@ -105,6 +105,7 @@ private extension ItemListView {
         .onTapGesture {
             viewModel.simpleProductsInfoButtonTapped()
         }
+        .padding(.horizontal, 16)
     }
 
     @ViewBuilder

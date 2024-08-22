@@ -13,4 +13,14 @@ final class PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertView
                                    messageHint: "Please check that the manual equatable conformance includes new properties.")
         }
 
+    func test_manual_hashable_conformance_number_of_properties_unchanged() {
+            let sut = PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
+                progress: 0.5,
+                cancel: {})
+
+            XCTAssertPropertyCount(sut,
+                                   expectedCount: 7,
+                                   messageHint: "Please check that the manual hashable conformance includes new properties.")
+        }
+
 }

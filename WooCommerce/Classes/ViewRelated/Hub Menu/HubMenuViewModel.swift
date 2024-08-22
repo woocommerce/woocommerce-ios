@@ -592,7 +592,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .inAppPurchase
+        let navigationDestination: HubMenuNavigationDestination? = .pointOfSales
     }
 
     struct Subscriptions: HubMenuItem {

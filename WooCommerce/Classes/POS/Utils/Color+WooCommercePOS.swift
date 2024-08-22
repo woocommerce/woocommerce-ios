@@ -2,12 +2,6 @@ import SwiftUI
 
 extension Color {
 
-    /// Primary POS background color
-    ///
-    static var primaryBackground: Color {
-        Color(uiColor: .secondarySystemBackground)
-    }
-
     /// Secondary POS background color
     ///
     static var secondaryBackground: Color {

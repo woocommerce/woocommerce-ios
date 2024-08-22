@@ -2,6 +2,7 @@ import SwiftUI
 import class WooFoundation.CurrencyFormatter
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSOrderServiceProtocol
+import protocol WooFoundation.Analytics
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
@@ -9,27 +10,29 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
 
-    private let hideAppTabBar: ((Bool) -> Void)
+    private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
     init(itemProvider: POSItemProvider,
-         hideAppTabBar: @escaping ((Bool) -> Void),
+         onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
-         currencyFormatter: CurrencyFormatter) {
-        self.hideAppTabBar = hideAppTabBar
+         currencyFormatter: CurrencyFormatter,
+         analytics: Analytics) {
+        self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let totalsViewModel = TotalsViewModel(orderService: orderService,
                                               cardPresentPaymentService: cardPresentPaymentService,
                                               currencyFormatter: currencyFormatter,
                                               paymentState: .acceptingCard)
-        let cartViewModel = CartViewModel()
+        let cartViewModel = CartViewModel(analytics: analytics)
         let itemListViewModel = ItemListViewModel(itemProvider: itemProvider)
 
         self._viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             cardPresentPaymentService: cardPresentPaymentService,
             totalsViewModel: totalsViewModel,
             cartViewModel: cartViewModel,
-            itemListViewModel: itemListViewModel)
+            itemListViewModel: itemListViewModel, 
+            connectivityObserver: ServiceLocator.connectivityObserver)
         )
         self._cartViewModel = StateObject(wrappedValue: cartViewModel)
         self._totalsViewModel = StateObject(wrappedValue: totalsViewModel)
@@ -42,20 +45,25 @@ struct PointOfSaleEntryPointView: View {
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
             .onAppear {
-                hideAppTabBar(true)
+                onPointOfSaleModeActiveStateChange(true)
             }
             .onDisappear {
-                hideAppTabBar(false)
+                onPointOfSaleModeActiveStateChange(false)
             }
     }
 }
 
 #if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
-                              hideAppTabBar: { _ in },
+                              onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderService: POSOrderPreviewService(),
-                              currencyFormatter: .init(currencySettings: .init()))
+                              currencyFormatter: .init(currencySettings: .init()),
+                              analytics: MockAnalyticsPreview(userHasOptedIn: true,
+                                                              analyticsProvider: MockAnalyticsProviderPreview()))
 }
 #endif

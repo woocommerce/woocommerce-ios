@@ -5,7 +5,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
-            Image(viewModel.imageName)
+            Image(decorative: viewModel.imageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
@@ -19,6 +19,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                 Text(viewModel.message)
                     .font(.posTitleEmphasized)
                     .foregroundStyle(Color(.quaternaryLabel.inverted))
+                    .accessibilityAddTraits(.isHeader)
             }
         }
         .padding(.bottom)

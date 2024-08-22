@@ -19,35 +19,42 @@ struct CartView: View {
                     backAddMoreButton
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
-                    Text(Localization.cartTitle)
-                        .font(Constants.primaryFont)
-                        .foregroundColor(cartViewModel.cartLabelColor)
+
+                    HStack {
+                        Text(Localization.cartTitle)
+                            .font(Constants.primaryFont)
+                            .foregroundColor(cartViewModel.cartLabelColor)
+                            .accessibilityAddTraits(.isHeader)
+
+                        Spacer()
+
+                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                            Text(itemsInCartLabel)
+                                .font(Constants.itemsFont)
+                                .foregroundColor(Color.posSecondaryTexti3)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
                 }
 
-                Spacer()
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
-                if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
-                    HStack {
-                        Text(itemsInCartLabel)
-                            .font(Constants.itemsFont)
-                            .foregroundColor(Color.posSecondaryTexti3)
-                        Spacer()
-                            .renderedIf(dynamicTypeSize.isAccessibilitySize)
-                        Button {
-                            cartViewModel.removeAllItemsFromCart()
-                        } label: {
-                            Text(Localization.clearButtonTitle)
-                                .font(Constants.clearButtonFont)
-                                .padding(Constants.clearButtonTextPadding)
-                                .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
-                                        .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
-                                )
-                        }
-                        .padding(.horizontal, Constants.itemHorizontalPadding)
-                        .renderedIf(cartViewModel.canDeleteItemsFromCart)
+                HStack {
+                    Spacer()
+                        .renderedIf(dynamicTypeSize.isAccessibilitySize)
+
+                    Button {
+                        cartViewModel.removeAllItemsFromCart()
+                    } label: {
+                        Text(Localization.clearButtonTitle)
+                            .font(Constants.clearButtonFont)
+                            .padding(Constants.clearButtonTextPadding)
+                            .foregroundColor(Color.init(uiColor: .wooCommercePurple(.shade60)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Constants.clearButtonCornerRadius)
+                                    .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
+                            )
                     }
+                    .padding(.horizontal, Constants.itemHorizontalPadding)
+                    .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -55,10 +62,11 @@ struct CartView: View {
             .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
+
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
                     Spacer()
-                    Image(uiImage: .shoppingBagsImage)
+                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize)
                         .aspectRatio(contentMode: .fit)
@@ -100,6 +108,7 @@ struct CartView: View {
                 } else {
                     checkoutButton
                         .padding(Constants.checkoutButtonPadding)
+                        .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
                 EmptyView()
@@ -107,6 +116,7 @@ struct CartView: View {
         }
         .frame(maxWidth: .infinity)
         .background(cartViewModel.isCartEmpty ? Color.posBackgroundEmptyWhitei3.ignoresSafeArea(edges: .all) : Color.posBackgroundWhitei3.ignoresSafeArea(.all))
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -180,6 +190,9 @@ private extension CartView {
 
 #if DEBUG
 import Combine
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     // TODO:
     // Simplify this by mocking `CartViewModel`
@@ -187,12 +200,13 @@ import Combine
                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                           currencyFormatter: .init(currencySettings: .init()),
                                           paymentState: .acceptingCard)
-    let cartViewModel = CartViewModel()
+    let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview())
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
-                                                           itemListViewModel: itemsListViewModel)
+                                                           itemListViewModel: itemsListViewModel,
+                                                           connectivityObserver: POSConnectivityObserverPreview())
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

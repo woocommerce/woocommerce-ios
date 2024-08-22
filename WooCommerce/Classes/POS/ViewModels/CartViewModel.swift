@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import protocol Yosemite.POSItem
+import protocol WooFoundation.Analytics
 
 final class CartViewModel: CartViewModelProtocol {
     /// Emits cart items when the CTA is tapped to submit the cart.
@@ -17,19 +18,36 @@ final class CartViewModel: CartViewModelProtocol {
     private var cancellables = Set<AnyCancellable>()
 
     @Published var canDeleteItemsFromCart: Bool = true
+    @Published private(set) var shouldShowClearCartButton: Bool = false
 
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
     }
 
-    init() {
+    private var analytics: Analytics
+
+    init(analytics: Analytics) {
+        self.analytics = analytics
+
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
+        assignClearCartButtonVisibility()
+    }
+
+    private func assignClearCartButtonVisibility() {
+        $canDeleteItemsFromCart
+            .combineLatest($itemsInCart)
+            .map { canDelete, itemsInCart in
+                return canDelete && itemsInCart.isNotEmpty
+            }
+            .assign(to: &$shouldShowClearCartButton)
     }
 
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
+
+        analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {

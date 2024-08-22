@@ -184,6 +184,9 @@ final class SessionManager: SessionManagerProtocol {
         self.imageCache = imageCache
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
+
+        // Listens when the core data stack is rest.
+        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidReset), name: .StorageManagerDidResetStorage, object: nil)
     }
 
     /// Nukes all of the known Session's properties.
@@ -208,8 +211,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.themesPendingInstall] = nil
         defaults[.siteIDPendingStoreSwitch] = nil
         defaults[.expectedStoreNamePendingStoreSwitch] = nil
-        defaults[.latestBackgroundOrderSyncDate] = nil
-        DashboardTimestampStore.resetStore()
+        resetTimestampsValues()
         imageCache.clearCache()
     }
 
@@ -280,5 +282,18 @@ private extension SessionManager {
         keychain[username] = nil
         defaults[.defaultUsername] = nil
         defaults[.defaultCredentialsType] = nil
+    }
+
+    /// Updates the timestamps that control when background data is fetched.
+    ///
+    @objc func handleStorageDidReset() {
+        resetTimestampsValues()
+    }
+
+    /// Removes timestamp values.
+    ///
+    func resetTimestampsValues() {
+        defaults[.latestBackgroundOrderSyncDate] = nil
+        DashboardTimestampStore.resetStore(store: defaults)
     }
 }

@@ -38,7 +38,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
          itemListViewModel: any ItemListViewModelProtocol,
-         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+         connectivityObserver: ConnectivityObserver) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel

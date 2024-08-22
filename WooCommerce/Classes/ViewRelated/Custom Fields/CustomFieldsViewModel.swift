@@ -1,8 +1,8 @@
 import Foundation
 import Yosemite
 
-/// ViewModel for `OrderCustomFieldsDetails`
-struct OrderCustomFieldsViewModel: Identifiable {
+/// ViewModel for `CustomFieldsDetailsView`
+struct CustomFieldsViewModel: Identifiable {
     /// Unique identifier, required by `SwiftUI`
     ///
     let id: Int64

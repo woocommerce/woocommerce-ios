@@ -11,7 +11,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
 
     init(siteID: Int64,
-         navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)

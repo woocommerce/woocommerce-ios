@@ -9,13 +9,13 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
                     .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .accessibilityAddTraits(.isHeader)
 
                 if let message = viewModel.message {
                     Text(message)
                         .font(.posBodyRegular)
-                        .foregroundStyle(Color.posPrimaryTexti3)
+                        .foregroundStyle(Color.posPrimaryText)
                 }
             }
         }

@@ -77,7 +77,7 @@ final class CartViewModel: CartViewModelProtocol {
         if itemsInCart.isEmpty {
             Color.posSecondaryTexti3
         } else {
-            Color.posPrimaryTexti3
+            Color.posPrimaryText
         }
     }
 

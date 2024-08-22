@@ -46,7 +46,7 @@ private extension ItemListView {
                         Image(systemName: "info.circle")
                             .font(.posTitleRegular)
                     })
-                    .foregroundColor(.posPrimaryTexti3)
+                    .foregroundColor(.posPrimaryText)
                 }
             }
             if viewModel.shouldShowHeaderBanner {

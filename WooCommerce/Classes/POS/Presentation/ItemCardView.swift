@@ -29,12 +29,12 @@ struct ItemCardView: View {
 
             DynamicHStack(spacing: Constants.textSpacing) {
                 Text(item.name)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
                 Spacer()
                 Text(item.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
             }
             .padding(Constants.textPadding)

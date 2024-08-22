@@ -25,9 +25,6 @@ struct HubMenu: View {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             menuList
-                .navigationDestination(for: String.self) { id in
-                    detailView(menuID: id)
-                }
                 .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
                     detailView(destination: destination)
                 }
@@ -50,16 +47,17 @@ struct HubMenu: View {
             Constants.trackingOptionKey: menu.trackingOption
         ])
 
-        if menu.id == HubMenuViewModel.Settings.id {
-            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
-            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-        }
-
-        if menu.id == HubMenuViewModel.GoogleAds.id {
+        switch menu.id {
+        case HubMenuViewModel.GoogleAds.id:
             googleAdsCampaignHandler()
-        } else {
-            viewModel.selectedMenuID = menu.id
+        case HubMenuViewModel.Settings.id:
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+            viewModel.updateNavigationPath(with: menu.navigationDestination)
+        case HubMenuViewModel.Blaze.id:
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+            viewModel.updateNavigationPath(with: menu.navigationDestination)
+        default:
+            viewModel.updateNavigationPath(with: menu.navigationDestination)
         }
     }
 }
@@ -129,48 +127,40 @@ private extension HubMenu {
             .foregroundColor(Color(menu.iconColor))
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
-        .overlay {
-            if menu.id != HubMenuViewModel.GoogleAds.id {
-                NavigationLink(value: menu.id) {
-                    EmptyView()
-                }
-                .opacity(0)
-            }
-        }
     }
 
     @ViewBuilder
-    func detailView(menuID: String) -> some View {
+    func detailView(destination: HubMenuNavigationDestination) -> some View {
         Group {
-            switch menuID {
-            case HubMenuViewModel.Settings.id:
+            switch destination {
+                case .payments:
+                    paymentsView
+            case .settings:
                 SettingsView()
                     .navigationTitle(HubMenuViewModel.Localization.settings)
-            case HubMenuViewModel.Payments.id:
-                paymentsView
-            case HubMenuViewModel.Blaze.id:
+            case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
-            case HubMenuViewModel.WoocommerceAdmin.id:
+            case .wooCommerceAdmin:
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,
                         shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
-            case HubMenuViewModel.ViewStore.id:
+            case .viewStore:
                 webView(url: viewModel.storeURL,
                         title: HubMenuViewModel.Localization.viewStore,
                         shouldAuthenticate: false)
-            case HubMenuViewModel.Inbox.id:
+            case .inbox:
                 Inbox(viewModel: viewModel.inboxViewModel)
-            case HubMenuViewModel.Reviews.id:
+            case .reviews:
                 ReviewsView(siteID: viewModel.siteID)
-            case HubMenuViewModel.Coupons.id:
+            case .coupons:
                 couponListView
-            case HubMenuViewModel.InAppPurchases.id:
+            case .inAppPurchase:
                 InAppPurchasesDebugView()
-            case HubMenuViewModel.Subscriptions.id:
+            case .subscriptions:
                 SubscriptionsView(viewModel: .init())
-            case HubMenuViewModel.Customers.id:
+            case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
-            case HubMenuViewModel.PointOfSaleEntryPoint.id:
+            case .pointOfSales:
                 if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
                    let orderService = POSOrderService(siteID: viewModel.siteID,
                                                       credentials: viewModel.credentials) {
@@ -187,19 +177,6 @@ private extension HubMenu {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")
                 }
-            default:
-                fatalError("🚨 Unsupported menu item")
-            }
-        }
-        .navigationBarTitleDisplayMode(.inline)
-    }
-
-    @ViewBuilder
-    func detailView(destination: HubMenuNavigationDestination) -> some View {
-        Group {
-            switch destination {
-                case .payments:
-                    paymentsView
             }
         }
         .navigationBarTitleDisplayMode(.inline)

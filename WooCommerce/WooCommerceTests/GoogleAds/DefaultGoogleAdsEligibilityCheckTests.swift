@@ -4,7 +4,7 @@ import Yosemite
 
 final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     private let sampleSite: Int64 = 325
-    private let pluginSlug = "google-listings-and-ads/google-listings-and-ads.php"
+    private let pluginSlug = "/srv/htdocs/wp-content/plugins/google-listings-and-ads/google-listings-and-ads.php"
 
     private var stores: MockStoresManager!
 

@@ -49,7 +49,7 @@ private extension DefaultGoogleAdsEligibilityChecker {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    let plugin = info.systemPlugins.first(where: { $0.plugin.contains(Constants.pluginSlug) })
                     continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)

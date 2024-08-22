@@ -463,7 +463,9 @@ extension MainTabBarController {
 
     static func presentPayments() {
         switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            guard let hubMenuTabController = childViewController() as? TabContainerController,
+                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
                 return
             }
 
@@ -473,7 +475,9 @@ extension MainTabBarController {
 
     static func presentCoupons() {
         switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            guard let hubMenuTabController = childViewController() as? TabContainerController,
+                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
                 return
             }
 
@@ -485,7 +489,9 @@ extension MainTabBarController {
     ///
     static func navigateToPrivacySettings() {
         switchToHubMenuTab {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+            guard let hubMenuTabController = childViewController() as? TabContainerController,
+                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
                 return DDLogError("⛔️ Could not switch to the Hub Menu")
             }
             hubMenuViewController.showPrivacySettings()

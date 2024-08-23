@@ -324,8 +324,19 @@ extension MainTabBarController {
 
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///
-    static func switchToHubMenuTab(completion: (() -> Void)? = nil) {
-        navigateTo(.hubMenu, completion: completion)
+    static func switchToHubMenuTab(completion: ((HubMenuViewController?) -> Void)? = nil) {
+        navigateTo(.hubMenu, completion: {
+            let hubMenuViewController: HubMenuViewController? = {
+                guard let hubMenuTabController = childViewController() as? TabContainerController,
+                      let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                      let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
+                    DDLogError("⛔️ Could not switch to the Hub Menu")
+                    return nil
+                }
+                return hubMenuViewController
+            }()
+            completion?(hubMenuViewController)
+        })
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -462,39 +473,22 @@ extension MainTabBarController {
     }
 
     static func presentPayments() {
-        switchToHubMenuTab() {
-            guard let hubMenuTabController = childViewController() as? TabContainerController,
-                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
-                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
-                return
-            }
-
-            hubMenuViewController.showPaymentsMenu()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showPaymentsMenu()
         }
     }
 
     static func presentCoupons() {
-        switchToHubMenuTab() {
-            guard let hubMenuTabController = childViewController() as? TabContainerController,
-                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
-                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
-                return
-            }
-
-            hubMenuViewController.showCoupons()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showCoupons()
         }
     }
 
     /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.
     ///
     static func navigateToPrivacySettings() {
-        switchToHubMenuTab {
-            guard let hubMenuTabController = childViewController() as? TabContainerController,
-                  let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
-                  let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
-                return DDLogError("⛔️ Could not switch to the Hub Menu")
-            }
-            hubMenuViewController.showPrivacySettings()
+        switchToHubMenuTab { hubMenuViewController in
+            hubMenuViewController?.showPrivacySettings()
         }
     }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-12 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-20 14:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -784,6 +784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "Eine falsche PIN wurde zu oft eingegeben. Versuche es mit einer anderen Zahlungsmethode";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment" = "Es wurde eine falsche PIN eingegeben. Versuche es erneut oder verwende eine andere Zahlungsmethode";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Optionale Bestätigung, die dem Kunden nach dem Kauf gesendet wird";
@@ -9713,6 +9716,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Erneut versuchen";
 
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "%1$@ wöchentlich";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "%1$@ %2$@ wöchentlich";
+
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Deine Werbung auf Millionen Websites in den WordPress.com- und Tumblr-Netzwerken.";
 
@@ -10691,6 +10703,21 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "manuell, auf Anfrage";
 
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "Foto aufnehmen";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "Von Gerät auswählen";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "Vorhandenes Produktfoto auswählen";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "WordPress-Mediathek";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "Medienquelle auswählen";
+
 /* Navigates to Collect a payment via the Simple Payment screen */
 "menu.payments.actions.collectPayment.row.title" = "Zahlung empfangen";
 
@@ -11123,11 +11150,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "Unbekannter Zahlungsstatus";
 
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Bestellung verlassen";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Bezahlen fehlgeschlagen";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Andere Zahlungsmethode verwenden";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Zahlung erneut versuchen";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Wenn du die Transaktion fortsetzen möchtest, versuche bitte, die Zahlung erneut auszuführen.";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Bezahlen fehlgeschlagen";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Andere Zahlungsmethode verwenden";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Bitte warten …";
@@ -11179,6 +11221,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Vorbereitung läuft";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "Erneut versuchen";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Fehler beim Überprüfen der Bestellung";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Verwerfen";
@@ -11372,6 +11420,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Modus „Verkaufsort“ (POS) beenden?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Produkte";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Erneut versuchen";
 
@@ -11395,6 +11446,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Wird geladen";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Wenn du eins hinzufügen möchtest, verlasse POS und gehe zu den Produkten";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS unterstützt derzeit nur einfache Produkte.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "Keine unterstützten Produkte gefunden";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Eine Bestellung im Shop-Management erstellen";
@@ -11989,6 +12049,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Gratis-Test";
 
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "Fertig";
+
 /* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
 "supportButton.accessibilityLabel" = "Hilfe & Support";
 
@@ -12021,6 +12084,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Leider können wir derzeit keine Supportanfragen erstellen. Bitte versuche es später erneut.";
+
+/* Navigation title of system status report screen */
+"systemStatusReportView.title" = "Bericht zum Systemstatus";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Automatische Rückerstattung für Tap to Pay-Testzahlung";

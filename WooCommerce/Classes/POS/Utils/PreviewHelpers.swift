@@ -1,9 +1,11 @@
+#if DEBUG
+
 import Foundation
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSItem
 import enum Yosemite.ProductType
+import Combine
 
-#if DEBUG
 // MARK: - PreviewProvider helpers
 //
 struct POSProductPreview: POSItem {
@@ -41,4 +43,16 @@ final class POSItemProviderPreview: POSItemProvider {
                           productType: ProductType.simple)
     }
 }
+
+
+final class POSConnectivityObserverPreview: ConnectivityObserver {
+    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
+        $currentStatus.eraseToAnyPublisher()
+    }
+    func startObserving() {}
+
+    func stopObserving() {}
+}
+
 #endif

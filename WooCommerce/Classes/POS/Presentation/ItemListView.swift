@@ -47,6 +47,7 @@ private extension ItemListView {
                             .font(.posTitleRegular)
                     })
                     .foregroundColor(.posPrimaryTexti3)
+                    .padding(.trailing, Constants.infoIconPadding)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
@@ -139,6 +140,7 @@ private extension ItemListView {
         static let bannerTextSpacing: CGFloat = 2
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconSize: CGFloat = 36
+        static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16

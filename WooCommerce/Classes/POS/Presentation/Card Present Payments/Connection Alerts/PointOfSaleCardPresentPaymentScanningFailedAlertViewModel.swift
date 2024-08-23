@@ -1,9 +1,8 @@
 import Foundation
-import SwiftUI
 
-struct PointOfSaleCardPresentPaymentScanningFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentScanningFailedAlertViewModel: Hashable {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let buttonViewModel: CardPresentPaymentsModalButtonViewModel
     let errorDetails: String
 

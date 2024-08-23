@@ -9,7 +9,7 @@ final class PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModelTests
             selectionHandler: { _ in })
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 3,
+                               expectedCount: 4,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 
@@ -19,7 +19,7 @@ final class PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModelTests
             selectionHandler: { _ in })
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 3,
+                               expectedCount: 4,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
 

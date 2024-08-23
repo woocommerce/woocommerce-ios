@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel {
+struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel: Identifiable {
     let title: String = Localization.title
     private let progress: Float
     let image: Image
@@ -9,6 +9,9 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
     let progressSubtitle: String = Localization.messageRequired
     let cancelButtonTitle: String
     let cancelReaderUpdate: (() -> Void)?
+    // An unchanging, psuedo-random ID helps us correctly compare two copies which may have different closures.
+    // This relies on the closures being immutable
+    let id = UUID()
 
     init(progress: Float, cancel: (() -> Void)?) {
         self.image = Image(uiImage: .softwareUpdateProgress(progress: CGFloat(progress)))
@@ -27,7 +30,8 @@ extension PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewMo
         lhs.progress == rhs.progress &&
         lhs.progressTitle == rhs.progressTitle &&
         lhs.progressSubtitle == rhs.progressSubtitle &&
-        lhs.cancelButtonTitle == rhs.cancelButtonTitle
+        lhs.cancelButtonTitle == rhs.cancelButtonTitle &&
+        lhs.id == rhs.id
     }
 
     func hash(into hasher: inout Hasher) {
@@ -36,6 +40,7 @@ extension PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewMo
         hasher.combine(progressTitle)
         hasher.combine(progressSubtitle)
         hasher.combine(cancelButtonTitle)
+        hasher.combine(id)
     }
 }
 

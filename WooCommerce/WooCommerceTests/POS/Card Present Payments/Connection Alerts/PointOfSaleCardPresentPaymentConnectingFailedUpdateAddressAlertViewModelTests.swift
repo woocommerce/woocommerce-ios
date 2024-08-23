@@ -11,7 +11,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             cancelSearchAction: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 9,
+                               expectedCount: 10,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 
@@ -23,7 +23,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
             cancelSearchAction: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 9,
+                               expectedCount: 10,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
 

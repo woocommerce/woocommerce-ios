@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.1
+Explore smoother shopping experiences with our latest update! We've fixed an array of bugs, improved order creation flows, and enhanced campaign functionalities for non-Western Arabic numbering systems. Plus, enjoy streamlined order editing, updated campaign budgets, and a fresh barcode scanner icon. This version also resolves navigation crashes in the Hub Menu for iOS 18 beta users.
+
 ## 20.0
 Enhance your WooCommerce management with our latest update! Creating Blaze ads is now smoother with media selection streamlined for current products. Plus, we've ironed out kinks everywhere from creating orders to contacting support, ensuring a more reliable experience. Enjoy a more cohesive app environment with various fixes and improvements.
 

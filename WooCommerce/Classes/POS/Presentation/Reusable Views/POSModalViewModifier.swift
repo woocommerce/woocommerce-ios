@@ -15,7 +15,7 @@ struct POSModalViewModifier<ModalContent: View>: ViewModifier {
                     .edgesIgnoringSafeArea(.all)
 
                 modalContent()
-                    .background(Color(.systemBackground))
+                    .background(Color.posPrimaryBackground)
                     .cornerRadius(16)
                     .shadow(radius: 10)
                     .transition(.scale)

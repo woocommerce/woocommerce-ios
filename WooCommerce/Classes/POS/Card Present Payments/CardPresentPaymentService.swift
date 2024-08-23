@@ -19,6 +19,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private let connectionControllerManager: CardPresentPaymentsConnectionControllerManager
 
     private let siteID: Int64
+    private let stores: StoresManager
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         CardPresentConfigurationLoader().configuration
@@ -33,6 +34,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
+        self.stores = stores
+
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
             configuration: CardPresentConfigurationLoader().configuration,
@@ -76,7 +79,17 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         }
     }
 
-    func disconnectReader() {
+    @MainActor
+    func disconnectReader() async {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
+
+            let action = CardPresentPaymentAction.disconnect { result in
+                nillableContinuation?.resume()
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 
     @MainActor

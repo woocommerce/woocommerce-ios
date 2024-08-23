@@ -97,7 +97,7 @@ private struct StatsCard: View {
 
             // Orders & Conversion
             HStack {
-                Link(destination: URL(string: ordersDeepLink)!) {
+                Link(destination: WooConstants.URLs.ordersScreen.asURL()) {
                     VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
                         Text(StoreInfoView.Localization.orders)
                             .statTitleStyle()
@@ -117,8 +117,6 @@ private struct StatsCard: View {
             }
         }
     }
-
-    private let ordersDeepLink: String = "https://woocommerce.com/mobile/orders"
 }
 
 /// Accessibility card sub view. Shows only revenue and a `View More` button.

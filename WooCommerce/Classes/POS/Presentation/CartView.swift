@@ -205,7 +205,8 @@ import class WooFoundation.MockAnalyticsProviderPreview
     let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
-                                                           itemListViewModel: itemsListViewModel)
+                                                           itemListViewModel: itemsListViewModel,
+                                                           connectivityObserver: POSConnectivityObserverPreview())
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-14 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-20 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -784,6 +784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "올바르지 않은 PIN이 너무 여러 번 입력되었습니다. 다른 결제 수단 시도";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment" = "올바르지 않은 PIN이 입력되었습니다. 다시 시도하거나 다른 결제 수단을 사용하세요.";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "구매 후 고객에 보낼 메모(선택 사항)";
@@ -9713,6 +9716,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "다시 시도";
 
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "매주 %1$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "매주 %1$@ %2$@";
+
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "워드프레스닷컴과 Tumblr 네트워크 내 수백만 개의 사이트에 실리는 광고입니다.";
 
@@ -10691,6 +10703,21 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "요청 시 수동으로";
 
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "사진 촬영";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "기기에서 선택";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "기존 상품 사진 선택";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "워드프레스 미디어 라이브러리";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "미디어 소스 선택";
+
 /* Navigates to Collect a payment via the Simple Payment screen */
 "menu.payments.actions.collectPayment.row.title" = "결제 수령";
 
@@ -11123,11 +11150,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "결제 상태 알 수 없음";
 
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "주문 종료";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "결제 실패";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "다른 결제 수단 시도";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "다시 결제 시도";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "이 거래를 계속 처리하려면 결제를 다시 시도하세요.";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "결제 실패";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "다른 결제 수단 시도";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "기다려주세요...";
@@ -11179,6 +11221,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "준비 중";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "다시 시도";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "주문을 확인하는 중 오류 발생";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "해제";
@@ -11372,6 +11420,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "판매 지점 모드를 종료할까요?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "상품";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "다시 시도";
 
@@ -11395,6 +11446,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "시작하기";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "단순 상품을 추가하려면 POS를 종료하고 상품으로 이동하세요.";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "현재 POS에서는 단순 상품만 지원합니다.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "지원되는 상품을 찾을 수 없음";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "스토어 관리에서 주문 생성";
@@ -11989,6 +12049,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "무료 평가판";
 
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "완료";
+
 /* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
 "supportButton.accessibilityLabel" = "도움말 및 지원";
 
@@ -12021,6 +12084,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "죄송합니다. 지금은 지원 요청을 생성할 수 없습니다. 나중에 다시 시도해 주세요.";
+
+/* Navigation title of system status report screen */
+"systemStatusReportView.title" = "시스템 상태 보고서";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Tap To Pay 테스트 결제 자동 환불 테스트";

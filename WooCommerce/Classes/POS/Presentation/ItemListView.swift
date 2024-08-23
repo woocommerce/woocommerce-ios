@@ -47,11 +47,12 @@ private extension ItemListView {
                             .font(.posTitleRegular)
                     })
                     .foregroundColor(.posPrimaryText)
+                    .padding(.trailing, Constants.infoIconPadding)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.vertical, 16)
+                    .padding(.bottom, Constants.bannerCardPadding)
             }
         }
     }
@@ -75,10 +76,11 @@ private extension ItemListView {
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
                     Text(Localization.headerBannerSubtitle)
-                        .font(Constants.bannerSubtitleFont)
                     Text(Localization.headerBannerHint)
-                        .font(Constants.bannerSubtitleFont)
+                    Text(Localization.headerBannerLearnMoreHint)
+                        .linkStyle()
                 }
+                .font(Constants.bannerSubtitleFont)
                 .accessibilityElement(children: .combine)
             }
             .padding(.vertical, Constants.bannerVerticalPadding)
@@ -105,6 +107,7 @@ private extension ItemListView {
         .onTapGesture {
             viewModel.simpleProductsInfoButtonTapped()
         }
+        .padding(.horizontal, Constants.bannerCardPadding)
     }
 
     @ViewBuilder
@@ -134,31 +137,39 @@ private extension ItemListView {
         static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTextSpacing: CGFloat = 0
+        static let bannerTextSpacing: CGFloat = 2
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconSize: CGFloat = 36
+        static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26
         static let itemListPadding: CGFloat = 16
+        static let bannerCardPadding: CGFloat = 16
     }
 
     enum Localization {
         static let headerBannerTitle = NSLocalizedString(
-            "pos.itemlistview.headerBannerTitle",
+            "pos.itemlistview.headerBanner.title",
             value: "Showing simple products only",
             comment: "Title of the product selector header banner, which explains current POS limitations"
         )
 
         static let headerBannerSubtitle = NSLocalizedString(
-            "pos.itemlistview.headerBannerSubtitle",
+            "pos.itemlistview.headerBanner.subtitle",
             value: "Only simple physical products are available with POS right now.",
             comment: "Subtitle of the product selector header banner, which explains current POS limitations"
         )
 
         static let headerBannerHint = NSLocalizedString(
-            "pos.itemlistview.headerBannerHint",
-            value: "Other product types, such as variable and virtual, will become available in future updates. Learn more",
+            "pos.itemlistview.headerBanner.hint",
+            value: "Other product types, such as variable and virtual, will become available in future updates.",
             comment: "Additional text within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerLearnMoreHint = NSLocalizedString(
+            "pos.itemlistview.headerBanner.learnMoreHint",
+            value: "Learn More",
+            comment: "Link to more information within the product selector header banner, which explains current POS limitations"
         )
 
         static let dismissBannerAccessibilityLabel = NSLocalizedString(

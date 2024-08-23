@@ -84,8 +84,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
                                siteID: Int64) async throws {
         let path = Paths.campaigns(siteID: siteID)
 
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = Constants.dateFormat
+        let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         let parameters = try campaign.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
             .compactMapValues { $0 } // filters out any field with nil value
 
@@ -166,7 +165,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
     ) async throws -> BlazeImpressions {
         let path = Paths.campaignImpressions(siteID: siteID)
 
-        let dateFormatter = DateFormatter()
+        let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         dateFormatter.dateFormat = Constants.dateFormat
 
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)

@@ -22,10 +22,12 @@ struct ItemRowView: View {
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
+                    .padding(.top, Constants.verticalPadding)
                 Text(cartItem.item.formattedPrice)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
+                    .padding(.bottom, Constants.verticalPadding)
             }
             .accessibilityElement(children: .combine)
             Spacer()

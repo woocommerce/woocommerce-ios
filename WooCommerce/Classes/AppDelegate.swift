@@ -138,6 +138,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             jetpackSetupCoordinator = coordinator
             return coordinator.handleAuthenticationUrl(url)
         }
+        if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
+            universalLinkRouter.handle(url: url)
+            return true
+        }
         return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 

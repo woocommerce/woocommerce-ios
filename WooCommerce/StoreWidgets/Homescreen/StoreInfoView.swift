@@ -104,6 +104,7 @@ private struct StatsCard: View {
                     Text(entryData.orders)
                         .statValueStyle()
                 }
+                .widgetURL(URL(string: "https://woocommerce.com/mobile/orders"))
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {

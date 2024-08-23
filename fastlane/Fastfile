@@ -1484,8 +1484,8 @@ end
 def report_milestone_error(error_title:)
   error_message = <<-MESSAGE
     #{error_title}
-    - If this is a retry of the lane, the milestone might have already been closed and this error is expected.
-    - If this is the first run of the lane, please investigate the error.
+    - If this is not the first time you are running the release task (e.g. retrying because it failed on first attempt), the milestone might have already been closed and this error is expected.
+    - Otherwise if this is the first you are running the release task for this version, please investigate the error.
   MESSAGE
 
   UI.error(error_message)

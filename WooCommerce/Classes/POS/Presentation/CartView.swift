@@ -6,6 +6,7 @@ struct CartView: View {
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -118,8 +119,19 @@ struct CartView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(cartViewModel.isCartEmpty ? Color.posTertiaryBackground.ignoresSafeArea(edges: .all) : Color.posSecondaryBackground.ignoresSafeArea(.all))
+        .background(backgroundColor.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
+    }
+}
+
+private extension CartView {
+    var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posSecondaryBackground
+        default:
+            return cartViewModel.isCartEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
+        }
     }
 }
 

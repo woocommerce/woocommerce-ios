@@ -6,6 +6,7 @@ struct ItemRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
@@ -41,7 +42,7 @@ struct ItemRowView: View {
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posSecondaryBackground)
+        .background(backgroundColor)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)
@@ -71,6 +72,17 @@ struct ItemRowView: View {
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)
                 .foregroundColor(Color(.secondarySystemFill))
+        }
+    }
+}
+
+private extension ItemRowView {
+    var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posTertiaryBackground
+        default:
+            return Color.posSecondaryBackground
         }
     }
 }

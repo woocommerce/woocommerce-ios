@@ -98,7 +98,7 @@ private extension TotalsView {
                                   matchedGeometryId: Constants.matchedGeometryTaxId)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 Divider()
-                    .overlay(Color.posTotalsSeparator)
+                    .overlay(Constants.separatorColor)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 totalFieldView(formattedPrice: viewModel.formattedOrderTotalPrice,
                                shimmeringActive: viewModel.isShimmering,
@@ -162,7 +162,7 @@ private extension TotalsView {
     }
 
     func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Color.posTotalsSeparator
+        Constants.separatorColor
             .frame(width: width, height: height)
             .fixedSize(horizontal: true, vertical: true)
             .redacted(reason: [.placeholder])
@@ -308,6 +308,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyRegular
         static let totalTitleFont: POSFontStyle = .posTitleRegular
         static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let separatorColor: Color = Color(.systemGray3)
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334

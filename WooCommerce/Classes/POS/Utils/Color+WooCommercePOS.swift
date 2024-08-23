@@ -70,8 +70,4 @@ extension Color {
             )
         )
     }
-
-    static var posTotalsSeparator: Color {
-        Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
-    }
 }

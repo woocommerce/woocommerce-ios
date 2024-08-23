@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel: Hashable {

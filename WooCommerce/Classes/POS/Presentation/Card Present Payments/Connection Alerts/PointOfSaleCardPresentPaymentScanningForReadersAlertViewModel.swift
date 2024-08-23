@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 
 struct PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel: Hashable {
     let title: String = Localization.title

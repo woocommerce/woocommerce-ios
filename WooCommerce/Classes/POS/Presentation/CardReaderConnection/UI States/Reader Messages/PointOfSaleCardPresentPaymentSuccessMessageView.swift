@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack(alignment: .center, spacing: Constants.headerSpacing) {
@@ -28,11 +29,29 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
                 .shadow(color: Color(.wooCommerceEmerald(.shade80)).opacity(Constants.shadowOpacity),
                         radius: Constants.shadowRadius, x: Constants.shadowSize.width, y: Constants.shadowSize.height)
-                .foregroundColor(Color(uiColor: .systemBackground))
+                .foregroundColor(circleBackgroundColor)
             Image(systemName: Constants.imageName)
                 .font(.system(size: Constants.checkmarkSize, weight: .bold))
-                .foregroundColor(Color(.wooCommerceEmerald(.shade40)))
+                .foregroundColor(checkmarkColor)
                 .accessibilityHidden(true)
+        }
+    }
+
+    private var circleBackgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            Color(red: 0/255, green: 173/255, blue: 100/255)
+        default:
+            Color.white
+        }
+    }
+
+    private var checkmarkColor: Color {
+        switch colorScheme {
+        case .dark:
+            Color.white
+        default:
+            Color(.wooCommerceEmerald(.shade40))
         }
     }
 }

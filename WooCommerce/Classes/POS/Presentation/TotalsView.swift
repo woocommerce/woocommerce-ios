@@ -12,6 +12,7 @@ struct TotalsView: View {
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
@@ -70,9 +71,9 @@ struct TotalsView: View {
     private var backgroundColor: Color {
         switch viewModel.paymentState {
         case .cardPaymentSuccessful:
-            Color(.wooCommerceEmerald(.shade20))
+            colorScheme == .light ? Color(.wooCommerceEmerald(.shade20)) : Color(red: 0/255, green: 81/255, blue: 57/255)
         case .processingPayment:
-            Color(.wooCommercePurple(.shade70))
+            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
         default:
             .clear
         }

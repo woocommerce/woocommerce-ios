@@ -97,16 +97,15 @@ private struct StatsCard: View {
 
             // Orders & Conversion
             HStack {
-                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
-                    Text(StoreInfoView.Localization.orders)
-                        .statTitleStyle()
-
-                    Text(entryData.orders)
-                        .statValueStyle()
+                Link(destination: URL(string: ordersDeepLink)!) {
+                    VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                        Text(StoreInfoView.Localization.orders)
+                            .statTitleStyle()
+                        Text(entryData.orders)
+                            .statValueStyle()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .widgetURL(URL(string: "https://woocommerce.com/mobile/orders"))
-                .frame(maxWidth: .infinity, alignment: .leading)
-
                 VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
                     Text(StoreInfoView.Localization.conversion)
                         .statTitleStyle()
@@ -118,6 +117,8 @@ private struct StatsCard: View {
             }
         }
     }
+
+    private let ordersDeepLink: String = "https://woocommerce.com/mobile/orders"
 }
 
 /// Accessibility card sub view. Shows only revenue and a `View More` button.

@@ -26,6 +26,7 @@ final class CardReaderConnectionViewModel: ObservableObject {
         guard connectionStatus == .connected else {
             return
         }
+        connectionStatus = .disconnecting
         Task { @MainActor in
             await cardPresentPayment.disconnectReader()
         }

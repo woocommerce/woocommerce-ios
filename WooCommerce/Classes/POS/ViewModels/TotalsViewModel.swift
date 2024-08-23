@@ -241,6 +241,7 @@ private extension TotalsViewModel {
     func observeConnectedReaderForStatus() {
         cardPresentPaymentService.connectedReaderPublisher
             .map { connectedReader in
+                // Note that this does not cover when a reader is disconnecting
                 connectedReader == nil ? .disconnected: .connected
             }
             .assign(to: &$connectionStatus)
@@ -257,7 +258,7 @@ private extension TotalsViewModel {
                 }
 
                 switch connectionStatus {
-                case .connected:
+                case .connected, .disconnecting:
                     return message != nil
                 case .disconnected:
                     // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.

@@ -2,6 +2,7 @@ import SwiftUI
 
 enum CardReaderConnectionStatus {
     case connected
+    case disconnecting
     case disconnected
 }
 
@@ -39,6 +40,18 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.readerConnected)
                             .foregroundColor(connectedFontColor)
                     }
+                }
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.vertical, Constants.verticalPadding)
+            case .disconnecting:
+                HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                    ProgressView()
+                        .progressViewStyle(POSProgressViewStyle(
+                            size: Constants.disconnectingProgressIndicatorDimension * scale,
+                            lineWidth: Constants.disconnectingProgressIndicatorLineWidth * scale
+                        ))
+                    Text(Localization.readerDisconnecting)
+                        .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
@@ -88,6 +101,8 @@ private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
+        static let disconnectingProgressIndicatorDimension: CGFloat = 10
+        static let disconnectingProgressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posDetailEmphasized
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
@@ -109,6 +124,13 @@ private extension CardReaderConnectionStatusView {
             "pointOfSale.floatingButtons.readerDisconnected.title",
             value: "Connect your reader",
             comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
+        )
+
+        static let readerDisconnecting = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerDisconnecting.title",
+            value: "Disconnecting",
+            comment: "The title of the floating button to indicate that reader is in the process " +
+            " of disconnecting."
         )
 
         static let disconnectCardReader = NSLocalizedString(

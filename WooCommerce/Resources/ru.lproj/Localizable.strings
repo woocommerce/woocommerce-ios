@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-13 17:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-21 13:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -784,6 +784,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when an incorrect PIN has been entered too many times. */
 "An incorrect PIN has been entered too many times. Try another means of payment" = "Неверный PIN-код введен слишком много раз. Попробуйте другое средство платежа";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment" = "Введён неверный PIN-код. Повторите попытку или попробуйте другое средство платежа";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Сообщение, отправляемое клиентку после покупки";
@@ -9713,6 +9716,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.tryAgain" = "Повторить попытку";
 
+/* Total amount of a Blaze campaign. Placeholders are formatted amount and currency. Reads as: $11 USD */
+"blazeConfirmPaymentViewModel.totalAmountWithCurrency" = "%1$@ %2$@";
+
+/* Total weekly amount of a Blaze campaign without an end date. Reads as: $11 weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmount" = "%1$@ еженедельно";
+
+/* Total weekly amount of a Blaze campaign without an end date. Placeholders are formatted amount and currency. Reads as: $11 USD weekly */
+"blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency" = "%1$@ %2$@ еженедельно";
+
 /* Subtitle for the access a vast audience feature */
 "blazeCreateCampaignIntroView.audienceFeature.subtitle" = "Ваша реклама появится на миллионах сайтов в сетях WordPress.com и Tumblr.";
 
@@ -10691,6 +10703,21 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "вручную, по запросу";
 
+/* Menu option for taking an image or video with the device's camera. */
+"mediaSourceActionSheet.camera" = "Сделать фото";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.photoLibrary" = "Выбрать с устройства";
+
+/* Menu option for selecting media attached to the given product ID. */
+"mediaSourceActionSheet.productMedia" = "Выберите существующее фото товара";
+
+/* Menu option for selecting media from the device's photo library. */
+"mediaSourceActionSheet.siteMediaLibrary" = "Библиотека медиафайлов WordPress";
+
+/* Title of the media picker action sheet to select a source. */
+"mediaSourceActionSheet.title" = "Выберите источник медиафайлов";
+
 /* Navigates to Collect a payment via the Simple Payment screen */
 "menu.payments.actions.collectPayment.row.title" = "Получение платежей";
 
@@ -11123,11 +11150,26 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.title" = "Статус платежа неизвестен";
 
+/* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Выйти из заказа";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Платёж отменён";
 
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout, when it's unlikely that the same card will work. */
+"pointOfSale.cardPresent.paymentError.tryAnotherPaymentMethod.button.title" = "Попробуйте другой способ оплаты";
+
+/* Button to try to collect a payment again. Presented to users after collecting a payment fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Повторить платёж";
+
+/* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Чтобы продолжить обработку этой транзакции, попробуйте повторить платёж.";
+
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Платёж отменён";
+
+/* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
+"pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Попробуйте другой способ оплаты";
 
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Подождите…";
@@ -11179,6 +11221,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.title" = "Подготовка";
+
+/* Button title to retry order validation. */
+"pointOfSale.cardPresent.validatingOrderError.retry" = "Повторить попытку";
+
+/* Title shown on the Point of Sale checkout while the order validation fails. */
+"pointOfSale.cardPresent.validatingOrderError.title" = "Ошибка при проверке заказа";
 
 /* Button to dismiss the alert presented when finding a reader to connect to fails */
 "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title" = "Закрыть";
@@ -11372,6 +11420,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Выйти из режима «Пункт продажи»?";
 
+/* Title at the top of the Point of Sale product selector screen. */
+"pos.headerTitleView.productSelectorTitle" = "Товары";
+
 /* Text for the button appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadButtonTitle" = "Повторить попытку";
 
@@ -11395,6 +11446,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Point of Sale entry point loading */
 "pos.itemlistview.loading.title" = "Начало работы";
+
+/* Text hinting the merchant to create a product. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Чтобы добавить товар, выйдите из POS и откройте «Товары»";
+
+/* Subtitle text on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "В данный момент POS поддерживает только простые товары.";
+
+/* Text appearing on screen when there are no products to load. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsTitle" = "Нет поддерживаемых товаров";
 
 /* Action text in the simple products information modal in POS */
 "pos.simpleProductsModal.action" = "Создать заказ в разделе «Управление магазином»";
@@ -11989,6 +12049,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Пробный период";
 
+/* Button to dismiss the support form. */
+"subscriptionsView.dismissSupport" = "Готово";
+
 /* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
 "supportButton.accessibilityLabel" = "Помощь и техническая поддержка";
 
@@ -12021,6 +12084,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
+
+/* Navigation title of system status report screen */
+"systemStatusReportView.title" = "Отчёт о статусе системы";
 
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Проверьте автоматический возврат средств за «Оплату в касание»";

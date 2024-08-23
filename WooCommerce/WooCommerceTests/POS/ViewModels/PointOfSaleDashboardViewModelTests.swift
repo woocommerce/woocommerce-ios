@@ -11,6 +11,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var mockCartViewModel: MockCartViewModel!
     private var mockTotalsViewModel: MockTotalsViewModel!
     private var mockItemListViewModel: MockItemListViewModel!
+    private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
 
@@ -21,10 +22,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
+        mockConnectivityObserver = MockConnectivityObserver()
         sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
-                                            itemListViewModel: mockItemListViewModel)
+                                            itemListViewModel: mockItemListViewModel,
+                                            connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
 
@@ -33,6 +36,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = nil
         mockTotalsViewModel = nil
         mockItemListViewModel = nil
+        mockConnectivityObserver = nil
         sut = nil
         cancellables = []
         super.tearDown()
@@ -353,6 +357,22 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
+    }
+
+    func test_showsConnectivityError_when_nonReachable_then_shows_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.notReachable)
+
+        // Then
+        XCTAssertTrue(sut.showsConnectivityError)
+    }
+
+    func test_showsConnectivityError_when_reachable_then_no_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
+
+        // Then
+        XCTAssertFalse(sut.showsConnectivityError)
     }
 }
 

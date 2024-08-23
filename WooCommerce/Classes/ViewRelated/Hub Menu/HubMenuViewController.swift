@@ -10,6 +10,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private var storePickerCoordinator: StorePickerCoordinator?
     private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
 
+    private var shouldShowNavigationBar = false
+
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
@@ -65,10 +67,17 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         let settings = SettingsViewController()
         navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
         navigationController.setNavigationBarHidden(false, animated: false)
+        shouldShowNavigationBar = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Skip hiding navigation bar when `shouldShowNavigationBar` is set to true.
+        guard !shouldShowNavigationBar else {
+            shouldShowNavigationBar = false
+            return
+        }
 
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.

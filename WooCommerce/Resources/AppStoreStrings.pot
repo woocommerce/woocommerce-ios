@@ -61,9 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v20.0-whats-new"
+msgctxt "v20.1-whats-new"
 msgid ""
-"Enhance your WooCommerce management with our latest update! Creating Blaze ads is now smoother with media selection streamlined for current products. Plus, we've ironed out kinks everywhere from creating orders to contacting support, ensuring a more reliable experience. Enjoy a more cohesive app environment with various fixes and improvements.\n"
+"In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.\n"
+"We've also made it easier to understand the budgets for your Braze ad campaigns, and added support for Braze ad creation in locales which don't use Western Arabic numerals.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

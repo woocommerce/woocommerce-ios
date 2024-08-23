@@ -115,6 +115,50 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
     }
 
+    func test_createCampaign_sends_correctly_formatted_dates_regardless_of_locale() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
+
+        let startDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-19"))
+        let endDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-26"))
+
+        // Create dates with Arabic locale
+        let arabicFormatter = DateFormatter()
+        arabicFormatter.locale = Locale(identifier: "ar_SA")
+        arabicFormatter.dateFormat = "yyyy-MM-dd"
+        let arabicStartDateString = arabicFormatter.string(from: startDate)
+        let arabicEndDateString = arabicFormatter.string(from: endDate)
+
+        let campaign = CreateBlazeCampaign.fake().copy(
+            startDate: arabicFormatter.date(from: arabicStartDateString),
+            endDate: arabicFormatter.date(from: arabicEndDateString)
+        )
+
+        // When
+        _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
+
+        // Then
+
+        // Assert that the arabic numbering system were used as input,
+        // to mimic a device's locale setting when the language is set to Arabic.
+        XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
+
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        // Assert that the date parameters are now formatted in Western Arabic numerals
+        let paramStartDate = request.parameters?["start_date"] as? String ?? ""
+        let paramEndDate = request.parameters?["start_date"] as? String ?? ""
+
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramStartDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramEndDate))
+    }
+
     func test_createCampaign_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)
@@ -486,6 +530,56 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
     }
 
+    func test_fetchForecastedImpressions_sends_correctly_formatted_dates_regardless_of_locale() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-impressions")
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
+
+        let startDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-19"))
+        let endDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-26"))
+
+        // Create dates with Arabic locale
+        let arabicFormatter = DateFormatter()
+        arabicFormatter.locale = Locale(identifier: "ar_SA")
+        arabicFormatter.dateFormat = "yyyy-MM-dd"
+        let arabicStartDateString = arabicFormatter.string(from: startDate)
+        let arabicEndDateString = arabicFormatter.string(from: endDate)
+
+        let targeting = BlazeTargetOptions(locations: nil,
+                                           languages: ["en", "de"],
+                                           devices: nil,
+                                           pageTopics: ["IAB3", "IAB4"])
+
+        let input = BlazeForecastedImpressionsInput(startDate: arabicFormatter.date(from: arabicStartDateString) ?? startDate,
+                                                    endDate: arabicFormatter.date(from: arabicEndDateString) ?? endDate,
+                                                    timeZone: "America/New_York",
+                                                    totalBudget: 35.00,
+                                                    targeting: targeting,
+                                                    isEvergreen: true
+        )
+
+        // When
+        _ = try await remote.fetchForecastedImpressions(for: sampleSiteID, with: input)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        // Assert that the arabic numbering system were used as input,
+        // to mimic a device's locale setting when the language is set to Arabic.
+        XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
+
+        // Assert that the date parameters are now formatted in Western Arabic numerals
+        let paramStartDate = request.parameters?["start_date"] as? String ?? ""
+        let paramEndDate = request.parameters?["end_date"] as? String ?? ""
+
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramStartDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramEndDate))
+    }
+
     func test_fetchForecastedImpressions_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)
@@ -615,5 +709,13 @@ final class BlazeRemoteTests: XCTestCase {
             // Then
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
+    }
+}
+
+/// Helpers
+private extension BlazeRemoteTests {
+    func isValidWesternArabicFormattedDateString(_ dateString: String) -> Bool {
+        // to match yyyy-MM-dd, where each number needs to be between 0-9
+        return dateString.range(of: #"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"#, options: .regularExpression) != nil
     }
 }

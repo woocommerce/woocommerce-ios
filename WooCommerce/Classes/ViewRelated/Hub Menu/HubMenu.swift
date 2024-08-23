@@ -181,7 +181,8 @@ private extension HubMenu {
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
                         orderService: orderService,
-                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings))
+                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings),
+                        analytics: ServiceLocator.analytics)
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

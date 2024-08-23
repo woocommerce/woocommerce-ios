@@ -66,8 +66,14 @@ private extension POSFloatingControlView {
         case .primary:
             .posPrimaryText
         case .secondary:
-            .posSecondaryText
+            Self.secondaryFontColor
         }
+    }
+}
+
+extension POSFloatingControlView {
+    static var secondaryFontColor: Color {
+        return .posDarkGray.opacity(0.6)
     }
 }
 

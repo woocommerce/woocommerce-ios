@@ -54,8 +54,8 @@ extension Color {
     private static var posGray: Color {
         return Color(
             UIColor(
-                light: .init(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, alpha: 1.0),
-                dark: .init(red: 235.0 / 255.0, green: 235.0 / 255.0, blue: 245.0 / 255.0, alpha: 1.0)
+                light: UIColor(.posLightGray),
+                dark: UIColor(.posDarkGray)
             )
         )
     }
@@ -69,5 +69,17 @@ extension Color {
                 dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
             )
         )
+    }
+}
+
+// MARK: - Non-adaptive colors
+
+extension Color {
+    static var posLightGray: Color {
+        return .init(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0)
+    }
+
+    static var posDarkGray: Color {
+        return .init(red: 235.0 / 255.0, green: 235.0 / 255.0, blue: 245.0 / 255.0)
     }
 }

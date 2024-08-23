@@ -101,7 +101,7 @@ private extension CardReaderConnectionStatusView {
     enum Localization {
         static let readerConnected = NSLocalizedString(
             "pointOfSale.floatingButtons.readerConnected.title",
-            value: "Reader Connected",
+            value: "Reader connected",
             comment: "The title of the floating button to indicate that reader is connected."
         )
 
@@ -113,7 +113,7 @@ private extension CardReaderConnectionStatusView {
 
         static let disconnectCardReader = NSLocalizedString(
             "pointOfSale.floatingButtons.disconnectCardReader.button.title",
-            value: "Disconnect reader",
+            value: "Disconnect Reader",
             comment: "The title of the menu button to disconnect a connected card reader, as confirmation.")
     }
 }

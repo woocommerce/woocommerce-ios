@@ -25,6 +25,7 @@ extension CardPresentPaymentsModalButtonViewModel: Hashable {
     }
 
     func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
         hasher.combine(id)
     }
 }

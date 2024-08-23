@@ -15,10 +15,9 @@ struct CartView: View {
     var body: some View {
         VStack {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
-                HStack {
+                HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
                         .padding(.top, Constants.headerPadding)
-                        .padding(.trailing, Constants.headerPadding)
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
 
@@ -142,6 +141,7 @@ private extension CartView {
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
         static let headerPadding: CGFloat = 16
+        static let cartHeaderElementSpacing: CGFloat = 16
     }
 
     enum Localization {

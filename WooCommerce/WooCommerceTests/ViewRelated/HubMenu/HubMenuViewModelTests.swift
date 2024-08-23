@@ -541,6 +541,9 @@ final class HubMenuViewModelTests: XCTestCase {
             .customers: HubMenuViewModel.Customers(),
             .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
         ]
+        /// Counting the cases to ensure new cases are tested.
+        /// `.reviewDetails` is not included as it's not associated with a menu item.
+        XCTAssertEqual(expectedMenusAndDestinations.count, 12)
 
         for (expected, menuItem) in expectedMenusAndDestinations {
             // When

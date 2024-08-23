@@ -43,6 +43,23 @@ extension Color {
         return Color.primary
     }
 
+    static var posSecondaryText: Color {
+        return Self.posGray.opacity(0.6)
+    }
+
+    static var posTertiaryText: Color {
+        return Self.posGray.opacity(0.3)
+    }
+
+    private static var posGray: Color {
+        return Color(
+            UIColor(
+                light: .init(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, alpha: 1.0),
+                dark: .init(red: 235.0 / 255.0, green: 235.0 / 255.0, blue: 245.0 / 255.0, alpha: 1.0)
+            )
+        )
+    }
+
     static var toolbarBackground: Color {
         Color(uiColor: .systemBackground)
     }
@@ -51,23 +68,11 @@ extension Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
 
-    static var posSecondaryTexti3: Color {
-        Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.6)
-    }
-
     static var posSecondaryTextInverted: Color {
         return Color(UIColor(
             light: .secondaryLabel.color(for: .init(userInterfaceStyle: .dark)),
             dark: .secondaryLabel.color(for: .init(userInterfaceStyle: .light)))
         )
-    }
-
-    static var posTertiaryTexti3: Color {
-        Color(red: 60.0 / 255.0, green: 60.0 / 255.0, blue: 67.0 / 255.0, opacity: 0.3)
-    }
-
-    static var posIconGrayi3: Color {
-        return Color.gray
     }
 
     static var posTotalsSeparator: Color {

@@ -131,7 +131,7 @@ private extension HubMenu {
                 SettingsView()
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
-                    paymentsView
+                paymentsView
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:

@@ -60,6 +60,17 @@ extension Color {
         )
     }
 
+    // MARK: - Buttons
+
+    static var posPrimaryButtonBackground: Color {
+        return Color(
+            UIColor(
+                light: .withColorStudio(.wooCommercePurple, shade: .shade50),
+                dark: .withColorStudio(.wooCommercePurple, shade: .shade30)
+            )
+        )
+    }
+
     static var primaryTint: Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
@@ -73,14 +84,6 @@ extension Color {
 
     static var posTotalsSeparator: Color {
         Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
-    }
-
-    static var posPrimaryButtonBackground: Color {
-        Color(uiColor: .wooCommercePurple(.shade50))
-    }
-
-    static var posSecondaryButtonTint: Color {
-        Color(uiColor: .wooCommercePurple(.shade50))
     }
 
     static var posSecondaryButtonBackground: Color {

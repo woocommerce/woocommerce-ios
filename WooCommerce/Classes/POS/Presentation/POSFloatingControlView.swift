@@ -4,6 +4,7 @@ struct POSFloatingControlView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
@@ -54,7 +55,7 @@ private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .posSecondaryBackground
+            colorScheme == .light ? .posSecondaryBackground : .posTertiaryBackground
         case .secondary:
             Color(.wooCommercePurple(.shade80))
         }

@@ -21,6 +21,15 @@ final class CardReaderConnectionViewModel: ObservableObject {
             }
         }
     }
+
+    func disconnectReader() {
+        guard connectionStatus == .connected else {
+            return
+        }
+        Task { @MainActor in
+            await cardPresentPayment.disconnectReader()
+        }
+    }
 }
 
 private extension CardReaderConnectionViewModel {

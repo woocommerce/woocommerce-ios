@@ -27,10 +27,18 @@ struct CardReaderConnectionStatusView: View {
         Group {
             switch connectionViewModel.connectionStatus {
             case .connected:
-                HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                    circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
-                    Text(Localization.readerConnected)
-                        .foregroundColor(connectedFontColor)
+                Menu {
+                    Button {
+                        connectionViewModel.disconnectReader()
+                    } label: {
+                        Text(Localization.disconnectCardReader)
+                    }
+                } label: {
+                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
+                        circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
+                        Text(Localization.readerConnected)
+                            .foregroundColor(connectedFontColor)
+                    }
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
                 .padding(.vertical, Constants.verticalPadding)
@@ -102,6 +110,11 @@ private extension CardReaderConnectionStatusView {
             value: "Connect your reader",
             comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
         )
+
+        static let disconnectCardReader = NSLocalizedString(
+            "pointOfSale.floatingButtons.disconnectCardReader.button.title",
+            value: "Disconnect reader",
+            comment: "The title of the menu button to disconnect a connected card reader, as confirmation.")
     }
 }
 

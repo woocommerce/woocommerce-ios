@@ -22,7 +22,7 @@ protocol CardPresentPaymentFacade {
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult
 
     /// Also cancels any in-progress connection attempt.
-    func disconnectReader()
+    func disconnectReader() async
 
     /// Collects a card present payment for an order.
     /// If the appropriate type of reader is not already connected, this should attempt a connection before the payment.

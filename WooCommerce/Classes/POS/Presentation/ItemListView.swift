@@ -136,7 +136,7 @@ private extension ItemListView {
         static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTextSpacing: CGFloat = 0
+        static let bannerTextSpacing: CGFloat = 2
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconSize: CGFloat = 36
         static let bannerInfoIconSize: CGFloat = 44

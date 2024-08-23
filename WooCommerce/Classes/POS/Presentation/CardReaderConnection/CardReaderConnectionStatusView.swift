@@ -9,6 +9,7 @@ struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.colorScheme) var colorScheme
 
     init(connectionViewModel: CardReaderConnectionViewModel) {
         self.connectionViewModel = connectionViewModel
@@ -62,7 +63,7 @@ private extension CardReaderConnectionStatusView {
         case .primary:
             .posPrimaryText
         case .secondary:
-            .posSecondaryTextInverted
+            .posSecondaryText
         }
     }
 
@@ -71,7 +72,7 @@ private extension CardReaderConnectionStatusView {
         case .primary:
             Color(.wooCommercePurple(.shade60))
         case .secondary:
-            .posSecondaryTextInverted
+            .posSecondaryText
         }
     }
 }

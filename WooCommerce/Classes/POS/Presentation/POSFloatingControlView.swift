@@ -57,7 +57,7 @@ private extension POSFloatingControlView {
         case .primary:
             colorScheme == .light ? .posSecondaryBackground : .posTertiaryBackground
         case .secondary:
-            Color(.wooCommercePurple(.shade80))
+            colorScheme == .light ? Color(.wooCommercePurple(.shade80)) : Color(.wooCommercePurple(.shade20))
         }
     }
 
@@ -66,7 +66,7 @@ private extension POSFloatingControlView {
         case .primary:
             .posPrimaryText
         case .secondary:
-            .posSecondaryTextInverted
+            .posSecondaryText
         }
     }
 }

@@ -75,13 +75,6 @@ extension Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }
 
-    static var posSecondaryTextInverted: Color {
-        return Color(UIColor(
-            light: .secondaryLabel.color(for: .init(userInterfaceStyle: .dark)),
-            dark: .secondaryLabel.color(for: .init(userInterfaceStyle: .light)))
-        )
-    }
-
     static var posTotalsSeparator: Color {
         Color(red: 198.0 / 255.0, green: 198.0 / 255.0, blue: 200.0 / 255.0)
     }

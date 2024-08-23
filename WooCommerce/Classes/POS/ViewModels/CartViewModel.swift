@@ -73,14 +73,6 @@ final class CartViewModel: CartViewModelProtocol {
         }
     }
 
-    var cartLabelColor: Color {
-        if itemsInCart.isEmpty {
-            Color.posSecondaryTexti3
-        } else {
-            Color.posPrimaryText
-        }
-    }
-
     func submitCart() {
         cartSubmissionSubject.send(itemsInCart)
     }

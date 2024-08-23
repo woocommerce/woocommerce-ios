@@ -91,7 +91,7 @@ private extension ItemListView {
                 }, label: {
                     Image(systemName: "xmark")
                         .font(.posBodyRegular)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                        .foregroundColor(Color.posTertiaryText)
                         .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
                 .padding(Constants.iconPadding)

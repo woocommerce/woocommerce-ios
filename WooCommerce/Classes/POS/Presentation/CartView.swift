@@ -25,7 +25,7 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(cartViewModel.cartLabelColor)
+                            .foregroundColor(cartViewModel.itemsInCart.isEmpty ? .posSecondaryText : .posPrimaryText)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()
@@ -33,7 +33,7 @@ struct CartView: View {
                         if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
-                                .foregroundColor(Color.posSecondaryTexti3)
+                                .foregroundColor(Color.posSecondaryText)
                         }
                     }
                     .accessibilityElement(children: .combine)
@@ -76,7 +76,7 @@ struct CartView: View {
                         .aspectRatio(contentMode: .fit)
                     Text(Localization.addItemsToCartHint)
                         .font(Constants.secondaryFont)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                        .foregroundColor(Color.posTertiaryText)
                         .multilineTextAlignment(.center)
                     Spacer()
                 }

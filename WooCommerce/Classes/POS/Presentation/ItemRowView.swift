@@ -40,7 +40,7 @@ struct ItemRowView: View {
                 })
                 .accessibilityLabel(Localization.removeFromCartAccessibilityLabel)
                 .padding()
-                .foregroundColor(Color.posIconGrayi3)
+                .foregroundColor(Color.posTertiaryText)
             }
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)

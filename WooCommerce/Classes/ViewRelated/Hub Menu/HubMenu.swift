@@ -127,11 +127,11 @@ private extension HubMenu {
     func detailView(destination: HubMenuNavigationDestination) -> some View {
         Group {
             switch destination {
-            case .payments:
-                    paymentsView
             case .settings:
                 SettingsView()
                     .navigationTitle(HubMenuViewModel.Localization.settings)
+            case .payments:
+                    paymentsView
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:

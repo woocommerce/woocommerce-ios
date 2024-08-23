@@ -1,10 +1,2 @@
-- [*] Order Creation: Fix an occasional issue where text fields wouldn't automatically focus and accept input. [https://github.com/woocommerce/woocommerce-ios/pull/13650]
-- [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
-- [*] Blaze: Campaign creation on devices using language with non-Western Arabic numbering system now should work correctly. [https://github.com/woocommerce/woocommerce-ios/pull/13658]
-- [*] Blaze: Updated campaign item's displayed budget. [https://github.com/woocommerce/woocommerce-ios/pull/13605]
-- [*] Blaze: Updated budget field for active campaigns. [https://github.com/woocommerce/woocommerce-ios/pull/13621]
-- [*] Orders: Fixed the discard confirmation prompt during order creation, so you will be prompted to discard changes if you exit the order form after making changes to a new order. [https://github.com/woocommerce/woocommerce-ios/pull/13654]
-- [*] Orders: Fixed an issue where the last item in an order couldn't be removed. [https://github.com/woocommerce/woocommerce-ios/pull/13665]
-- [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
-- [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671, https://github.com/woocommerce/woocommerce-ios/pull/13697]
-
+In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.
+We've also made it easier to understand the budgets for your Braze ad campaigns, and added support for Braze ad creation in locales which don't use Western Arabic numerals.

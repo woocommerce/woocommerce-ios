@@ -8,6 +8,7 @@ struct POSRootModalViewModifier: ViewModifier {
             content
                 .blur(radius: modalManager.isPresented ? 3 : 0)
                 .disabled(modalManager.isPresented)
+                .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
             if modalManager.isPresented {
                 Color.black.opacity(0.4)

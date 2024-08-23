@@ -60,10 +60,6 @@ extension Color {
         )
     }
 
-    static var toolbarBackground: Color {
-        Color(uiColor: .systemBackground)
-    }
-
     static var primaryTint: Color {
         Color(uiColor: .wooCommercePurple(.shade60))
     }

@@ -7,6 +7,13 @@ struct CartView: View {
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
+    @State private var offSetPosition: CGFloat = 0.0
+    private var coordinateSpace: CoordinateSpace = .global
+    private var shouldApplyBottomShadow: Bool {
+        !cartViewModel.isCartEmpty &&
+        offSetPosition < Constants.offSetPositionThreshold
+    }
+
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
         self.cartViewModel = cartViewModel
@@ -65,7 +72,7 @@ struct CartView: View {
             .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
-            .if(!cartViewModel.isCartEmpty, transform: { $0.applyBottomShadow() })
+            .if(shouldApplyBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
@@ -93,6 +100,13 @@ struct CartView: View {
                             }
                         }
                         .padding(.bottom, floatingControlAreaSize.height)
+                        .background(GeometryReader { geometry in
+                            Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
+                                                   value: geometry.frame(in: coordinateSpace).minY)
+                        })
+                        .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
+                            self.offSetPosition = position
+                        }
                     }
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,
@@ -124,6 +138,14 @@ struct CartView: View {
     }
 }
 
+private struct ScrollOffSetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat { .zero }
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        // No-op
+    }
+}
+
 private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posTitleEmphasized
@@ -138,6 +160,7 @@ private extension CartView {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
+        static let offSetPositionThreshold: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"

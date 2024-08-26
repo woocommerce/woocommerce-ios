@@ -92,38 +92,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
-        // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginIneligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Inbox.id
-        }))
-    }
-
-    @MainActor
     func test_generalElements_does_not_include_blaze_when_default_site_is_not_set() {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -657,17 +625,5 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
-    }
-}
-
-private extension HubMenuViewModelTests {
-    enum PluginName {
-        static let wooCommerce = "WooCommerce"
-    }
-
-    enum Fixtures {
-        // TODO: 6148 - Update the minimum WC version with inbox filtering.
-        static let wcPluginIneligibleForInbox = SystemPlugin.fake().copy(version: "3.0.0", active: true)
-        static let wcPluginEligibleForInbox = SystemPlugin.fake().copy(version: "6.1.0", active: true)
     }
 }

@@ -16,7 +16,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
             Image(decorative: viewModel.imageName)
 
             Text(viewModel.errorDetails)
-                .font(POSFontStyle.posBodyRegular)
+                .font(POSFontStyle.posDetailLight)
 
             Button(viewModel.buttonViewModel.title,
                    action: viewModel.buttonViewModel.actionHandler)

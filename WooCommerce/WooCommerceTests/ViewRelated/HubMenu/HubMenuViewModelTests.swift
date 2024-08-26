@@ -3,6 +3,7 @@ import XCTest
 
 @testable import WooCommerce
 @testable import Yosemite
+@testable import Storage
 
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
@@ -487,11 +488,27 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_navigateToDestination_replaces_navigationPath_with_specified_destination() {
+    func test_navigateToDestination_replaces_navigationPath_with_specified_destination() throws {
         // Given
+        let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+        var inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
+
         let navigationPath = NavigationPath(["testPath1", "testPath2"])
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         generalAppSettings: generalAppSettings,
+                                         inboxEligibilityChecker: inboxEligibilityChecker,
+                                         blazeEligibilityChecker: blazeEligibilityChecker,
+                                         googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         viewModel.navigationPath = navigationPath
         XCTAssertEqual(viewModel.navigationPath.count, 2)
 
@@ -509,9 +526,12 @@ final class HubMenuViewModelTests: XCTestCase {
             .customers: HubMenuViewModel.Customers(),
             .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
         ]
+
         /// Counting the cases to ensure new cases are tested.
-        /// `.reviewDetails` is not included as it's not associated with a menu item.
-        XCTAssertEqual(expectedMenusAndDestinations.count, 12)
+        viewModel.setupMenuElements()
+        waitUntil {
+            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count
+        }
 
         for (expected, menuItem) in expectedMenusAndDestinations {
             // When
@@ -625,5 +645,16 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.hasGoogleAdsCampaigns)
+    }
+}
+
+private extension HubMenuViewModelTests {
+    func mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: Bool) throws -> GeneralAppSettingsStorage {
+        let fileStorage = MockInMemoryStorage()
+        let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        var settings = GeneralAppSettings.default
+        settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
+        try storage.saveSettings(settings)
+        return storage
     }
 }

@@ -74,7 +74,6 @@ public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderGiftCard = Networking.OrderGiftCard
-public typealias OrderMetaData = Networking.MetaData
 public typealias OrderAttributionInfo = Networking.OrderAttributionInfo
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
@@ -307,6 +306,8 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
+
+public typealias MetaData = Networking.MetaData
 
 // MARK: - Internal ReadOnly Models
 

@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleCardPresentPaymentProcessingMessageViewModel {
+struct PointOfSaleCardPresentPaymentProcessingMessageViewModel: Equatable {
     let imageName = PointOfSaleAssets.processingPayment.imageName
     let message = Localization.pleaseWait
     let title = Localization.paymentProcessing

@@ -12,12 +12,12 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posBodyRegular)
 
                 Text(viewModel.message)
                     .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .accessibilityAddTraits(.isHeader)
             }
         }

@@ -9,12 +9,12 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
             POSErrorExclamationMark()
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(viewModel.message)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posBodyRegular)
             }
 

@@ -1345,6 +1345,30 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundTopics.first, topic1)
     }
 
+    func test_loadAllBlazeCampaignObjectives_with_locale() throws {
+        // Given
+        let objective1 = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
+        objective1.id = "sale"
+        objective1.title = "Sale"
+        objective1.explanation = "Lorem ipsum"
+        objective1.suitableForDescription = "e-commerce"
+        objective1.locale = "en"
+
+        let objective2 = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
+        objective2.id = "sale"
+        objective2.title = "doanh thu"
+        objective2.explanation = "la la la"
+        objective2.suitableForDescription = "thương mại điện tử"
+        objective2.locale = "vi"
+
+        // When
+        let foundObjectives = try XCTUnwrap(storage.loadAllBlazeCampaignObjectives(locale: "en"))
+
+        // Then
+        XCTAssertEqual(foundObjectives.count, 1)
+        XCTAssertEqual(foundObjectives.first, objective1)
+    }
+
     func test_loadOrderAttributionInfo_by_siteID_orderID() throws {
         // Given
         let orderAttributionInfo = storage.insertNewObject(ofType: OrderAttributionInfo.self)

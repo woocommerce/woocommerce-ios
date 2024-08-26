@@ -904,6 +904,7 @@
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
 		262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A2C2A2537A3330086C1BE /* MockRefunds.swift */; };
+		262B442E2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B442D2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift */; };
 		262C25362C1B4EB800E525E4 /* Environment+AppBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C25352C1B4EB800E525E4 /* Environment+AppBindings.swift */; };
 		262C921F26EEF8B100011F92 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C921E26EEF8B100011F92 /* Binding.swift */; };
 		262C922126F1370000011F92 /* StorePickerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C922026F1370000011F92 /* StorePickerError.swift */; };
@@ -3941,6 +3942,7 @@
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
 		262A2C2A2537A3330086C1BE /* MockRefunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRefunds.swift; sourceTree = "<group>"; };
+		262B442D2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewControllerTests.swift; sourceTree = "<group>"; };
 		262C25352C1B4EB800E525E4 /* Environment+AppBindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+AppBindings.swift"; sourceTree = "<group>"; };
 		262C921E26EEF8B100011F92 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		262C922026F1370000011F92 /* StorePickerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerError.swift; sourceTree = "<group>"; };
@@ -9176,6 +9178,7 @@
 				26C6E8E126E2D85300C7BB0F /* Addresses */,
 				025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */,
 				578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */,
+				262B442D2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift */,
 			);
 			path = "Order Details";
 			sourceTree = "<group>";
@@ -13581,6 +13584,7 @@
 			buildConfigurationList = B56DB3E92049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerceTests" */;
 			buildPhases = (
 				E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */,
+				4B108CBFE1E4CAAD77FEFC46 /* [CP] Embed Pods Frameworks */,
 				B56DB3D92049BFAA00D4AA8E /* Sources */,
 				B56DB3DA2049BFAA00D4AA8E /* Frameworks */,
 				B56DB3DB2049BFAA00D4AA8E /* Resources */,
@@ -14156,6 +14160,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"$SRCROOT/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		4B108CBFE1E4CAAD77FEFC46 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {
@@ -16831,6 +16852,7 @@
 				B993051E2B7CC2A400456E35 /* LocallyStoredStateNameRetrieverTests.swift in Sources */,
 				DE7E5E8A2B4D4015002E28D2 /* BlazeTargetDeviceViewModelTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
+				262B442E2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift in Sources */,
 				CCCFFC5D2934F0BA006130AF /* StatsIntervalDataParserTests.swift in Sources */,
 				953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */,
 				02645D8A27BA2EDB0065DC68 /* NSAttributedString+AttributesTests.swift in Sources */,

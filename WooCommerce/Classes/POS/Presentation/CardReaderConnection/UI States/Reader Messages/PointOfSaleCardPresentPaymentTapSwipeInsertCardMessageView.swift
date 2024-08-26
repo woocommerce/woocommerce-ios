@@ -34,7 +34,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
     return PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(
         viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
             inputMethods: [.tap, .insert]
-        ), 
+        ),
         animation: .init(namespace: namespace)
     )
 }

@@ -112,13 +112,6 @@ public extension StorageType {
         return firstObject(ofType: OrderTaxLine.self, matching: predicate)
     }
 
-    /// Retrieves the Stored Order Metadata.
-    ///
-    func loadOrderMetaData(siteID: Int64, metadataID: Int64) -> OrderMetaData? {
-        let predicate = \OrderMetaData.order?.siteID == siteID && \OrderMetaData.metadataID == metadataID
-        return firstObject(ofType: OrderMetaData.self, matching: predicate)
-    }
-
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.
@@ -748,5 +741,14 @@ public extension StorageType {
     func loadOrderAttributionInfo(siteID: Int64, orderID: Int64) -> OrderAttributionInfo? {
         let predicate = \OrderAttributionInfo.order?.siteID == siteID && \OrderAttributionInfo.order?.orderID == orderID
         return firstObject(ofType: OrderAttributionInfo.self, matching: predicate)
+    }
+
+    // MARK: - Meta Data
+
+    /// Retrieves the Stored Metadata.
+    ///
+    func loadMetaData(siteID: Int64, metadataID: Int64) -> MetaData? {
+        let predicate = \MetaData.order?.siteID == siteID && \MetaData.metadataID == metadataID
+        return firstObject(ofType: MetaData.self, matching: predicate)
     }
 }

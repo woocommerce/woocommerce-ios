@@ -10,13 +10,16 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .font(POSFontStyle.posBodyRegular)
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
                 .accessibilityHidden(true)
 
             Text(viewModel.progressTitle)
+                .font(POSFontStyle.posDetailLight)
             Text(viewModel.progressSubtitle)
+                .font(POSFontStyle.posDetailLight)
 
             Button(viewModel.cancelButtonTitle,
                    action: {

@@ -38,7 +38,7 @@ struct TotalsView: View {
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor.withoutAnimation())
+                                .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
                                 .minimumScaleFactor(0.1)
                                 .layoutPriority(1)
@@ -63,7 +63,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.isPaymentSuccessState)
+        .animation(.default, value: viewModel.paymentState)
         .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()

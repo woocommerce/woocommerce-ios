@@ -26,7 +26,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
     @Published private(set) var isShowingTotalsFields: Bool = false
-    @Published private(set) var isPaymentSuccessState: Bool = false
 
     @Published private(set) var order: Order? = nil
     private var totalsCalculator: OrderTotalsCalculator? = nil
@@ -337,13 +336,6 @@ private extension TotalsViewModel {
                 }
             }
             .assign(to: &$isShowingTotalsFields)
-
-        paymentStatePublisher
-            .map {
-                $0 == .cardPaymentSuccessful
-            }
-            .removeDuplicates()
-            .assign(to: &$isPaymentSuccessState)
     }
 }
 

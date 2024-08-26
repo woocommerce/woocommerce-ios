@@ -50,7 +50,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
 
 struct POSCardPresentPaymentInLineMessageAnimation {
     let namespace: Namespace.ID
-    let iconTransitionId: String = "pos_card_present_payment_in_line_message_matched_geometry_id"
+    let iconTransitionId: String = "pos_card_present_payment_in_line_message_icon_matched_geometry_id"
     let titleTransitionId: String = "pos_card_present_payment_in_line_message_title_matched_geometry_id"
     let messageTransitionId: String = "pos_card_present_payment_in_line_message_message_matched_geometry_id"
 }

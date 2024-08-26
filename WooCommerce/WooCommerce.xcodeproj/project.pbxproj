@@ -309,7 +309,6 @@
 		026826C02BF59E410036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */; };
 		026826C12BF59E410036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */; };
 		026826C22BF59E410036F959 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift */; };
-		026826C32BF59E410036F959 /* ReaderConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BA2BF59E400036F959 /* ReaderConnectedView.swift */; };
 		026826C42BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReaderView.swift */; };
 		026826C72BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BE2BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift */; };
 		02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */; };
@@ -3343,7 +3342,6 @@
 		026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingFailedView.swift; sourceTree = "<group>"; };
 		026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingToReaderView.swift; sourceTree = "<group>"; };
 		026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView.swift; sourceTree = "<group>"; };
-		026826BA2BF59E400036F959 /* ReaderConnectedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderConnectedView.swift; sourceTree = "<group>"; };
 		026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentFoundReaderView.swift; sourceTree = "<group>"; };
 		026826BE2BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentScanningForReadersView.swift; sourceTree = "<group>"; };
 		0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModelTests.swift; sourceTree = "<group>"; };
@@ -6746,7 +6744,6 @@
 				68C7E5C32C69B3CD00856513 /* PointOfSaleItemListErrorLayout.swift */,
 				205E79492C204B2D001BA266 /* Reader Messages */,
 				2023E2AC2C21D8A400FC365A /* Connection Alerts */,
-				026826BA2BF59E400036F959 /* ReaderConnectedView.swift */,
 			);
 			path = "UI States";
 			sourceTree = "<group>";
@@ -14663,7 +14660,6 @@
 				26C6E8E026E2B7BD00C7BB0F /* CountrySelectorViewModel.swift in Sources */,
 				03E471D62942222E001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift in Sources */,
 				B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */,
-				026826C32BF59E410036F959 /* ReaderConnectedView.swift in Sources */,
 				E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift in Sources */,
 				039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */,
 				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,

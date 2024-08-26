@@ -38,7 +38,7 @@ struct TotalsView: View {
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
                                 .transition(.opacity)
-                                .background(cardReaderViewLayout.backgroundColor)
+                                .background(cardReaderViewLayout.backgroundColor.withoutAnimation())
                                 .accessibilityShowsLargeContentViewer()
                                 .minimumScaleFactor(0.1)
                                 .layoutPriority(1)

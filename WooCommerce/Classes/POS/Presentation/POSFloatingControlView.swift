@@ -4,6 +4,7 @@ struct POSFloatingControlView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
@@ -54,19 +55,25 @@ private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
         case .primary:
-            Color(.systemBackground)
+            colorScheme == .light ? .posSecondaryBackground : .posTertiaryBackground
         case .secondary:
-            Color(.wooCommercePurple(.shade80))
+            colorScheme == .light ? Color(.wooCommercePurple(.shade80)) : Color(.wooCommercePurple(.shade20))
         }
     }
 
     var fontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .primaryText
+            .posPrimaryText
         case .secondary:
-            .posSecondaryTextInverted
+            Self.secondaryFontColor
         }
+    }
+}
+
+extension POSFloatingControlView {
+    static var secondaryFontColor: Color {
+        return .posDarkGray.opacity(0.6)
     }
 }
 

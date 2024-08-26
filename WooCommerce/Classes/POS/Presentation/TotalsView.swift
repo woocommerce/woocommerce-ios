@@ -12,6 +12,7 @@ struct TotalsView: View {
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
@@ -70,9 +71,9 @@ struct TotalsView: View {
     private var backgroundColor: Color {
         switch viewModel.paymentState {
         case .cardPaymentSuccessful:
-            Color(.wooCommerceEmerald(.shade20))
+            colorScheme == .light ? Color(.wooCommerceEmerald(.shade20)) : Color(red: 0/255, green: 81/255, blue: 57/255)
         case .processingPayment:
-            Color(.wooCommercePurple(.shade70))
+            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
         default:
             .clear
         }
@@ -97,7 +98,7 @@ private extension TotalsView {
                                   matchedGeometryId: Constants.matchedGeometryTaxId)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 Divider()
-                    .overlay(Color.posTotalsSeparator)
+                    .overlay(Constants.separatorColor)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 totalFieldView(formattedPrice: viewModel.formattedOrderTotalPrice,
                                shimmeringActive: viewModel.isShimmering,
@@ -130,7 +131,7 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -155,13 +156,13 @@ private extension TotalsView {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
 
     func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Color.posTotalsSeparator
+        Constants.separatorColor
             .frame(width: width, height: height)
             .fixedSize(horizontal: true, vertical: true)
             .redacted(reason: [.placeholder])
@@ -198,10 +199,10 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.newOrderButtonPadding)
-        .foregroundColor(Color.primaryText)
+        .foregroundColor(Color.posPrimaryText)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
-                .stroke(Color.primaryText, lineWidth: Constants.defaultBorderLineWidth)
+                .stroke(Color.posPrimaryText, lineWidth: Constants.defaultBorderLineWidth)
         )
     }
 
@@ -307,6 +308,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyRegular
         static let totalTitleFont: POSFontStyle = .posTitleRegular
         static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let separatorColor: Color = Color(.systemGray3)
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334

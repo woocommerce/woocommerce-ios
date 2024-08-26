@@ -129,21 +129,6 @@ final class CartViewModelTests: XCTestCase {
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
     }
 
-    func test_cartLabelColor_when_addItemToCart_then_color_updates_accordingly() {
-        // Given
-        let item = Self.makeItem()
-        let initialCartLabelColor = Color.posSecondaryTexti3
-        let expectedCartLabelColor = Color.posPrimaryTexti3
-
-        XCTAssertEqual(sut.cartLabelColor, initialCartLabelColor)
-
-        // When
-        sut.addItemToCart(item)
-
-        // Then
-        XCTAssertEqual(sut.cartLabelColor, expectedCartLabelColor)
-    }
-
     func test_isCartEmpty() {
         // Given
         let item = Self.makeItem()

@@ -252,6 +252,30 @@ extension Networking.BlazeCampaignListItem {
     }
 }
 
+extension Networking.BlazeCampaignObjective {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        suitableForDescription: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
+    ) -> Networking.BlazeCampaignObjective {
+        let id = id ?? self.id
+        let title = title ?? self.title
+        let description = description ?? self.description
+        let suitableForDescription = suitableForDescription ?? self.suitableForDescription
+        let locale = locale ?? self.locale
+
+        return Networking.BlazeCampaignObjective(
+            id: id,
+            title: title,
+            description: description,
+            suitableForDescription: suitableForDescription,
+            locale: locale
+        )
+    }
+}
+
 extension Networking.BlazeImpressions {
     public func copy(
         totalImpressionsMin: CopiableProp<Int64> = .copy,

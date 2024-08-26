@@ -18,7 +18,7 @@ struct StatSelectionBar<Stat: Hashable>: View {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
                 Text(Localization.metric)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.primary)
                     .subheadlineStyle()
                 Text(selectedStat[keyPath: titleKeyPath])
                     .subheadlineStyle()

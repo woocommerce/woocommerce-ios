@@ -243,6 +243,8 @@
 		DE001330279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00132C279FDC2200EB0350 /* CouponSearchResult+CoreDataProperties.swift */; };
 		DE26B5262775C5F000A2EA0A /* Coupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */; };
 		DE26B5272775C5F000A2EA0A /* Coupon+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */; };
+		DE26D9B52C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26D9B32C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataClass.swift */; };
+		DE26D9B62C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26D9B42C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataProperties.swift */; };
 		DEA4938B2B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */; };
 		DEA4938C2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */; };
 		DEA4938D2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */; };
@@ -562,6 +564,9 @@
 		DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE26B52A2775C8DC00A2EA0A /* Model 60.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 60.xcdatamodel"; sourceTree = "<group>"; };
+		DE26D9B32C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignObjective+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DE26D9B42C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignObjective+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DE4DF9C22C7C322300FE9B1E /* Model 115.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 115.xcdatamodel"; sourceTree = "<group>"; };
 		DE653EAA2A6FB7C900937C78 /* Model 92.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 92.xcdatamodel"; sourceTree = "<group>"; };
 		DE8311BE2C6B1A7C00A88709 /* Model 114.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 114.xcdatamodel"; sourceTree = "<group>"; };
 		DEA0D0692BA953D3007786F2 /* Model 109.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 109.xcdatamodel"; sourceTree = "<group>"; };
@@ -1151,6 +1156,8 @@
 		EE3D1E802B8EA93C0016B132 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
+				DE26D9B32C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataClass.swift */,
+				DE26D9B42C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataProperties.swift */,
 				EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */,
 				EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */,
 				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
@@ -1357,6 +1364,7 @@
 				574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */,
 				CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */,
 				45E462092684BCEE00011BF2 /* StateOfACountry+CoreDataProperties.swift in Sources */,
+				DE26D9B62C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataProperties.swift in Sources */,
 				CE4FD44B2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataClass.swift in Sources */,
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
 				025CA2BD238EB86200B05C81 /* ProductShippingClass+CoreDataClass.swift in Sources */,
@@ -1487,6 +1495,7 @@
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
 				45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */,
 				02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */,
+				DE26D9B52C7C336D00EE3439 /* BlazeCampaignObjective+CoreDataClass.swift in Sources */,
 				CCBEBD4027C68E660010C96F /* FeatureIcon.swift in Sources */,
 				2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
@@ -2006,6 +2015,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				DE4DF9C22C7C322300FE9B1E /* Model 115.xcdatamodel */,
 				DE8311BE2C6B1A7C00A88709 /* Model 114.xcdatamodel */,
 				45DE59E12C527A2400EC444B /* Model 113.xcdatamodel */,
 				456C14062C08D7C4006710C0 /* Model 112.xcdatamodel */,
@@ -2121,7 +2131,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = DE8311BE2C6B1A7C00A88709 /* Model 114.xcdatamodel */;
+			currentVersion = DE4DF9C22C7C322300FE9B1E /* Model 115.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

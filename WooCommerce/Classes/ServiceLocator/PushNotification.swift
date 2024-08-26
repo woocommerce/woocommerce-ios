@@ -28,9 +28,9 @@ struct PushNotification {
     /// The `alert.message` value received from the Remote Notification's `userInfo`.
     ///
     let message: String?
-    /// The orderID value received from the Remote Notification's `userInfo`, extracted from note_full_data.
+    /// The `note` value received from the Remote Notification's `userInfo` and parsed from `note_full_data`.
     ///
-    let orderID: Int64?
+    let note: Note?
 }
 
 extension PushNotification {
@@ -45,11 +45,11 @@ extension PushNotification {
               }
         let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
         let message = alert.string(forKey: APNSKey.alertMessage)
-        let orderID: Int64? = orderIdFromNoteData(userInfo.string(forKey: APNSKey.noteFullData))
-        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message, orderID: orderID)
+        let note: Note? = noteFromNoteData(userInfo.string(forKey: APNSKey.noteFullData))
+        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message, note: note)
     }
 
-    static func orderIdFromNoteData(_ noteFulldata: String?) -> Int64? {
+    static func noteFromNoteData(_ noteFulldata: String?) -> Note? {
         guard let noteFulldata, var data = Data(base64Encoded: noteFulldata) else {
             return nil
         }
@@ -60,13 +60,13 @@ extension PushNotification {
         let zlibData = Data(referencing: zlib)
         guard let dataDictionary = try? JSONSerialization.jsonObject(with: zlibData) as? [String: Any],
               let notes = dataDictionary[APNSKey.notes] as? [[String: Any]],
-              let firstNote = notes.first, let meta = firstNote[APNSKey.meta] as? [String: Any],
-              let ids = meta[APNSKey.ids] as? [String: Any],
-              let orderID = ids[APNSKey.order] as? Int64
-        else {
+              let firstNote = notes.first else {
             return nil
         }
-        return orderID
+        guard let note = try? Note(payload: firstNote) else {
+            return nil
+        }
+        return note
     }
 }
 

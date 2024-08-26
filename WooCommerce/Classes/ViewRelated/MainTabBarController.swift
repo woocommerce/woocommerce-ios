@@ -382,6 +382,16 @@ extension MainTabBarController {
         ServiceLocator.stores.dispatch(action)
     }
 
+    static func switchStoreAndPresentNotificationDetails(notification: PushNotification) {
+        guard let note = notification.note else {
+            return
+        }
+        let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
+        showStore(with: siteID, onCompletion: { _ in
+            presentNotificationDetails(for: note)
+        })
+    }
+
     /// Presents the order details if the `note` is for an order push notification.
     ///
     private static func presentNotificationDetails(for note: Note) {

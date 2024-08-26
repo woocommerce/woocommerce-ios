@@ -27,8 +27,6 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     var presentDetailsNoteIDs = [Int64]()
 
-
-
     /// Innocuous `registerForRemoteNotifications`
     ///
     func registerForRemoteNotifications() {
@@ -43,8 +41,11 @@ final class MockApplicationAdapter: ApplicationAdapter {
 
     /// Innocuous `displayNotificationDetails`
     ///
-    func presentNotificationDetails(for noteID: Int64) {
-        presentDetailsNoteIDs.append(noteID)
+    func presentNotificationDetails(notification: PushNotification) {
+        guard let note = notification.note else {
+            return
+        }
+        presentDetailsNoteIDs.append(note.noteID)
     }
 
     /// Restores the initial state

@@ -142,7 +142,52 @@ extension Note {
     }
 }
 
+extension Note {
+    public init?(payload: [String: Any]) throws {
+        guard let noteID = payload[CodingKeys.noteID.rawValue] as? Int64 else {
+            return nil
+        }
+        let hash: Int64 = Int64.min
+        let read: Bool = (payload[CodingKeys.read.rawValue] as? Bool) ?? false
+        let icon: String? = payload[CodingKeys.icon.rawValue] as? String
+        let noticon: String? = payload[CodingKeys.noticon.rawValue] as? String
+        let timestamp: String = (payload[CodingKeys.timestamp.rawValue] as? String) ?? String()
+        let type: String = (payload[CodingKeys.type.rawValue] as? String) ?? String()
+        let subtype: String? = payload[CodingKeys.subtype.rawValue] as? String
+        let url: String? = payload[CodingKeys.url.rawValue] as? String
+        let title: String? = payload[CodingKeys.title.rawValue] as? String
 
+        let rawSubjectAsData = (payload[CodingKeys.subject.rawValue] as? String) ?? ""
+        let subjectAsData = try JSONEncoder().encode(rawSubjectAsData)
+
+        let rawHeaderAsData = (payload[CodingKeys.header.rawValue] as? String) ?? ""
+        let headerAsData = try JSONEncoder().encode(rawHeaderAsData)
+
+        let rawMetaAsData = (payload[CodingKeys.meta.rawValue] as? [String: Any]) ?? [:]
+        let rawMetaAsDataCodable = rawMetaAsData.compactMapValues { x in
+            return AnyCodable(x)
+        }
+        let metaAsData = try JSONEncoder().encode(rawMetaAsDataCodable)
+
+        let rawBodyAsData = (payload[CodingKeys.body.rawValue] as? String) ?? ""
+        let bodyAsData = try JSONEncoder().encode(rawBodyAsData)
+
+        self.init(noteID: noteID,
+                  hash: hash,
+                  read: read,
+                  icon: icon,
+                  noticon: noticon,
+                  timestamp: timestamp,
+                  type: type,
+                  subtype: subtype,
+                  url: url,
+                  title: title,
+                  subject: subjectAsData,
+                  header: headerAsData,
+                  body: bodyAsData,
+                  meta: metaAsData)
+    }
+}
 // MARK: - Decodable Conformance
 //
 extension Note: Decodable {

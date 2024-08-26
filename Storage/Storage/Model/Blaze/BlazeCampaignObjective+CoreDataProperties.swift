@@ -9,7 +9,7 @@ extension BlazeCampaignObjective {
 
     @NSManaged public var id: String
     @NSManaged public var title: String
-    @NSManaged public var name: String
+    @NSManaged public var explanation: String
     @NSManaged public var suitableForDescription: String
     @NSManaged public var locale: String
 

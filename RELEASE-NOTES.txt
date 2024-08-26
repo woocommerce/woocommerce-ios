@@ -4,7 +4,7 @@
 20.2
 -----
 - [*] Home Screen Widget: Tapping on the Orders section of the home screen widget opens the Orders part of the app.
-
+- [*] Payments: Punctuation updates to error and decline reason messages [https://github.com/woocommerce/woocommerce-ios/pull/13739]
 
 20.1
 -----

@@ -120,7 +120,7 @@ public enum BlazeAction: Action {
     ///     - `result.success([BlazeCampaignObjective])`: list of objectives for Blaze campaigns.
     ///     - `result.failure(Error)`: error indicates issues syncing data.
     ///
-    case fetchCampaignObjectives(siteID: Int64,
-                                 locale: String,
-                                 onCompletion: (Result<[BlazeCampaignObjective], Error>) -> Void)
+    case synchronizeCampaignObjectives(siteID: Int64,
+                                       locale: String,
+                                       onCompletion: (Result<[BlazeCampaignObjective], Error>) -> Void)
 }

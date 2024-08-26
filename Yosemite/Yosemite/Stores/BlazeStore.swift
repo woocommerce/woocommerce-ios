@@ -75,7 +75,7 @@ public final class BlazeStore: Store {
             fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case let .fetchPaymentInfo(siteID, onCompletion):
             fetchPaymentInfo(siteID: siteID, onCompletion: onCompletion)
-        case let .fetchCampaignObjectives(siteID, locale, onCompletion):
+        case let .synchronizeCampaignObjectives(siteID, locale, onCompletion):
             synchronizeCampaignObjectives(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
     }

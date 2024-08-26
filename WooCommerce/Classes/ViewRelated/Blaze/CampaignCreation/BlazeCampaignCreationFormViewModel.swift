@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -36,6 +37,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }
 
+    // Whether the campaign should have no end date
+    private var isEvergreen: Bool
+
     // Budget details
     private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
@@ -61,11 +65,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
+                                    isEvergreen: isEvergreen,
                                     duration: duration,
                                     startDate: startDate,
-                                    targetOptions: targetOptions) { [weak self] dailyBudget, duration, startDate in
+                                    targetOptions: targetOptions) { [weak self] dailyBudget, isEvegreen, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
+            self.isEvergreen = isEvegreen
             self.duration = duration
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
@@ -77,6 +83,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                      tagline: tagline,
                                      description: description)
         return BlazeEditAdViewModel(siteID: siteID,
+                                    productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
                                     onSave: { [weak self] adData in
@@ -218,6 +225,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     private let targetUrn: String
 
+    private var campaignBudgetInfo: BlazeCampaignBudget {
+        // send daily budget for evergreen mode.
+        BlazeCampaignBudget(mode: isEvergreen ? .daily : .total,
+                            amount: isEvergreen ? dailyBudget : dailyBudget * Double(duration),
+                            currency: Constants.defaultCurrency)
+    }
+
     private var campaignInfo: CreateBlazeCampaign {
         CreateBlazeCampaign(origin: Constants.campaignOrigin,
                             originVersion: UserAgent.bundleShortVersion,
@@ -225,9 +239,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             startDate: startDate,
                             endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
                             timeZone: TimeZone.current.identifier,
-                            budget: BlazeCampaignBudget(mode: .total,
-                                                        amount: dailyBudget * Double(duration),
-                                                        currency: Constants.defaultCurrency),
+                            budget: campaignBudgetInfo,
+                            isEvergreen: isEvergreen,
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,
@@ -248,6 +261,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -257,6 +271,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
+
+        // sets isEvergreen = true by default if evergreen campaigns are supported
+        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
         updateBudgetDetails()
         updateTargetLanguagesText()
@@ -397,13 +414,21 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
-        let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
-        let date = dateFormatter.string(for: startDate) ?? ""
-        budgetDetailText = String.pluralize(
-            duration,
-            singular: String(format: Localization.budgetSingleDay, amount, duration, date),
-            plural: String(format: Localization.budgetMultipleDays, amount, duration, date)
-        )
+        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+        if isEvergreen {
+            let weeklyAmount = String.localizedStringWithFormat(
+                Localization.totalBudget,
+                dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+            )
+            budgetDetailText = String(format: Localization.evergreenCampaignWeeklyBudget, weeklyAmount, formattedStartDate)
+        } else {
+            let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
+            budgetDetailText = String.pluralize(
+                duration,
+                singular: String(format: Localization.budgetSingleDay, amount, duration, formattedStartDate),
+                plural: String(format: Localization.budgetMultipleDays, amount, duration, formattedStartDate)
+            )
+        }
     }
 
     func updateTargetLanguagesText() {
@@ -490,6 +515,12 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d days from %3$@",
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
+        )
+        static let evergreenCampaignWeeklyBudget = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget",
+            value: "%1$@ weekly starting from %2$@",
+            comment: "The formatted weekly budget for an evergreen Blaze campaign with a starting date. " +
+            "Reads as $11 USD weekly starting from May 11 2024."
         )
         static let totalBudget = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.totalBudget",

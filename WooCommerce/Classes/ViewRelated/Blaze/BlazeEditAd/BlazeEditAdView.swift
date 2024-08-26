@@ -80,7 +80,9 @@ private extension BlazeEditAdView {
                 Image(uiImage: .blazeProductPlaceholder)
             })
             .cornerRadius(Layout.Image.cornerRadius)
-            .mediaSourceActionSheet(showsActionSheet: $isShowingMediaPickerSheet, selectMedia: { source in
+            .mediaSourceActionSheet(showsActionSheet: $isShowingMediaPickerSheet,
+                                    sourceOptions: [.camera, .photoLibrary, .productMedia(productID: viewModel.productID), .siteMediaLibrary],
+                                    selectMedia: { source in
                 viewModel.addImage(from: source)
             })
 
@@ -340,6 +342,7 @@ private enum Layout {
 struct BlazeEditAdView_Previews: PreviewProvider {
     static var previews: some View {
         BlazeEditAdView(viewModel: .init(siteID: 123,
+                                         productID: 34,
                                          adData: .init(image: .init(image: .init(), source: .asset(asset: .init())),
                                                        tagline: "Tagline",
                                                        description: "Description"),

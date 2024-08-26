@@ -52,7 +52,12 @@ public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
                               slug: String,
                               completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = Constants.sitePluginsPath
-        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: path, parameters: [Constants.slugParameter: slug])
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: [Constants.slugParameter: slug],
+                                     availableAsRESTRequest: true)
         let mapper = SitePluginMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -72,7 +77,7 @@ public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
                                      method: .post,
                                      siteID: siteID,
                                      path: path,
-                                     parameters: [Constants.statusParameter: Constants.statusActive])
+                                     parameters: [Constants.statusParameter: Constants.statusActive], availableAsRESTRequest: true)
         let mapper = SitePluginMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -88,7 +93,12 @@ public class SitePluginsRemote: Remote, SitePluginsRemoteProtocol {
                                  pluginName: String,
                                  completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = String(format: "%@/%@", Constants.sitePluginsPath, pluginName)
-        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: nil)
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
         let mapper = SitePluginMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }

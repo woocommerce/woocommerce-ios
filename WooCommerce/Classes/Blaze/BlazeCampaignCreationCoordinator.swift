@@ -172,9 +172,7 @@ private extension BlazeCampaignCreationCoordinator {
             Task { @MainActor [weak self] in
                 await self?.restoreBlazeOnDashboardIfNeeded()
                 self?.onCampaignCreated()
-                self?.dismissCampaignCreation {
-                    self?.showSuccessView()
-                }
+                self?.dismissCampaignCreation()
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
@@ -244,10 +242,12 @@ private extension BlazeCampaignCreationCoordinator {
 
 // MARK: - Completion handler
 private extension BlazeCampaignCreationCoordinator {
-    func dismissCampaignCreation(completionHandler: @escaping () -> Void) {
+    func dismissCampaignCreation() {
         // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
         if blazeNavigationController.presentingViewController != nil {
-            navigationController.dismiss(animated: true, completion: completionHandler)
+            navigationController.dismiss(animated: true) { [weak self] in
+                self?.showSuccessView()
+            }
         } else {
             // Forces any presented controller to be dismissed and wait until completion to continue navigation.
             // Reason: presenting the bottom sheet will fail if the transition for the previous modal hasn't completed.
@@ -259,7 +259,7 @@ private extension BlazeCampaignCreationCoordinator {
                     return
                 }
                 navigationController.popToViewController(originController, animated: true)
-                completionHandler()
+                showSuccessView()
             }
         }
     }

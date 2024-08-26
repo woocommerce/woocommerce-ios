@@ -31,6 +31,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        blazeEligibilityUpdateSubject.eraseToAnyPublisher()
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
@@ -56,12 +61,13 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligibilityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
-    private var isEligibleForBlaze: Bool = false
+    private var isEligibleForBlaze = false
 
-    private var hasActiveBlazeCampaign: Bool = false
+    private var hasActiveBlazeCampaign = false
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -785,13 +791,16 @@ private extension ProductFormViewModel {
             isEligibleForBlaze = false
             return
         }
-        let isEligible = blazeEligibilityChecker.isProductEligible(
-            site: site,
-            product: originalProduct,
-            isPasswordProtected: password?.isNotEmpty == true
-        )
-        isEligibleForBlaze = isEligible
-        updateActionsFactory()
+        Task { @MainActor in
+            let isEligible = await blazeEligibilityChecker.isProductEligible(
+                site: site,
+                product: originalProduct,
+                isPasswordProtected: password?.isNotEmpty == true
+            )
+            isEligibleForBlaze = isEligible
+            updateActionsFactory()
+            blazeEligibilityUpdateSubject.send()
+        }
     }
 
     /// Performs initial fetch from storage and updates results.
@@ -828,8 +837,7 @@ private extension ProductFormViewModel {
     func hasBlazeCampaign() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
         return campaigns.contains(where: {
-            ($0.productID == product.productID) &&
-            ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
+            $0.productID == product.productID && $0.isActive
         })
     }
 }

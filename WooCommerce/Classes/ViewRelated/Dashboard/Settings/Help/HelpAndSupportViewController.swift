@@ -65,6 +65,20 @@ final class HelpAndSupportViewController: UIViewController {
     ///
     private let sourceTag: String?
 
+    private lazy var viewModel = HelpAndSupportViewModel(
+        isAuthenticated: ServiceLocator.stores.isAuthenticated,
+        isZendeskEnabled: ZendeskProvider.shared.zendeskEnabled,
+        isMacCatalyst: isMacCatalyst
+    )
+
+    private var isMacCatalyst: Bool {
+        #if targetEnvironment(macCatalyst)
+        return true
+        #else
+        return false
+        #endif
+    }
+
     init?(customHelpCenterContent: CustomHelpCenterContent, sourceTag: String? = nil, coder: NSCoder) {
         self.customHelpCenterContent = customHelpCenterContent
         self.sourceTag = sourceTag
@@ -145,37 +159,17 @@ private extension HelpAndSupportViewController {
         try? paymentGatewayAccountsResultsController?.performFetch()
     }
 
-    /// Disable Zendesk if configuration on ZD init fails.
+    /// Configure sections using ViewModel
     ///
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
-        #if !targetEnvironment(macCatalyst)
-        guard ZendeskProvider.shared.zendeskEnabled == true else {
-            sections = [Section(title: helpAndSupportTitle, rows: [.helpCenter])]
-            return
-        }
-
-        sections = [
-            Section(title: helpAndSupportTitle, rows: calculateRows())
-        ]
-        #else
-        sections = [Section(title: helpAndSupportTitle, rows: [.helpCenter])]
-        #endif
-    }
-
-    private func calculateRows() -> [Row] {
-        var rows: [Row] = [.helpCenter, .contactSupport]
-
-        rows.append(contentsOf: [.contactEmail,
-                                 .applicationLog,
-                                 .systemStatusReport])
-        return rows
+        sections = [Section(title: helpAndSupportTitle, rows: viewModel.getRows())]
     }
 
     /// Register table cells.
     ///
     func registerTableViewCells() {
-        for row in Row.allCases {
+        for row in HelpAndSupportRow.allCases {
             tableView.registerNib(for: row.type)
         }
     }
@@ -199,7 +193,7 @@ private extension HelpAndSupportViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, for row: HelpAndSupportRow, at indexPath: IndexPath) {
         switch cell {
         case let cell as ValueOneTableViewCell where row == .helpCenter:
             configureHelpCenter(cell: cell)
@@ -276,12 +270,11 @@ private extension HelpAndSupportViewController {
     }
 }
 
-
 // MARK: - Convenience Methods
 //
 private extension HelpAndSupportViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    func rowAtIndexPath(_ indexPath: IndexPath) -> HelpAndSupportRow {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
@@ -422,7 +415,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
     }
 }
 
-
 // MARK: - Private Types
 //
 private struct Constants {
@@ -432,10 +424,12 @@ private struct Constants {
 
 private struct Section {
     let title: String?
-    let rows: [Row]
+    let rows: [HelpAndSupportRow]
 }
 
-private enum Row: CaseIterable {
+// MARK: - Row type
+//
+enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
     case contactEmail
@@ -444,15 +438,7 @@ private enum Row: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter:
-            return ValueOneTableViewCell.self
-        case .contactSupport:
-            return ValueOneTableViewCell.self
-        case .contactEmail:
-            return ValueOneTableViewCell.self
-        case .applicationLog:
-            return ValueOneTableViewCell.self
-        case .systemStatusReport:
+        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport:
             return ValueOneTableViewCell.self
         }
     }

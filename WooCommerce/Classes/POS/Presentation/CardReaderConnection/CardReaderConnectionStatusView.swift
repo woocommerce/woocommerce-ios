@@ -9,6 +9,7 @@ struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.colorScheme) var colorScheme
 
     init(connectionViewModel: CardReaderConnectionViewModel) {
         self.connectionViewModel = connectionViewModel
@@ -20,6 +21,7 @@ struct CardReaderConnectionStatusView: View {
             .resizable()
             .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
             .foregroundColor(color)
+            .accessibilityHidden(true)
     }
 
     var body: some View {
@@ -27,8 +29,8 @@ struct CardReaderConnectionStatusView: View {
             switch connectionViewModel.connectionStatus {
             case .connected:
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                    circleIcon(with: Color.wooEmeraldShade40)
-                    Text("Reader Connected")
+                    circleIcon(with: Color(.wooCommerceEmerald(.shade40)))
+                    Text(Localization.readerConnected)
                         .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
@@ -38,8 +40,8 @@ struct CardReaderConnectionStatusView: View {
                     connectionViewModel.connectReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        circleIcon(with: Color.wooAmberShade60)
-                        Text("Connect your reader")
+                        circleIcon(with: Color(.wooCommerceAmber(.shade60)))
+                        Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
                 }
@@ -51,7 +53,7 @@ struct CardReaderConnectionStatusView: View {
                 }
             }
         }
-        .font(Constants.font)
+        .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
     }
 }
 
@@ -59,9 +61,9 @@ private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
-            .primaryText
+            .posPrimaryText
         case .secondary:
-            .posSecondaryTextInverted
+            POSFloatingControlView.secondaryFontColor
         }
     }
 
@@ -70,7 +72,7 @@ private extension CardReaderConnectionStatusView {
         case .primary:
             Color(.wooCommercePurple(.shade60))
         case .secondary:
-            .posSecondaryTextInverted
+            POSFloatingControlView.secondaryFontColor
         }
     }
 }
@@ -79,12 +81,28 @@ private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
-        static let font = Font.system(size: 16.0, weight: .semibold)
+        static let font = POSFontStyle.posDetailEmphasized
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
         static let overlayRadius: CGFloat = 4
         static let overlayLineWidth: CGFloat = 2
         static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
+    }
+}
+
+private extension CardReaderConnectionStatusView {
+    enum Localization {
+        static let readerConnected = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerConnected.title",
+            value: "Reader Connected",
+            comment: "The title of the floating button to indicate that reader is connected."
+        )
+
+        static let readerDisconnected = NSLocalizedString(
+            "pointOfSale.floatingButtons.readerDisconnected.title",
+            value: "Connect your reader",
+            comment: "The title of the floating button to indicate that reader is disconnected and prompt connect after tapping."
+        )
     }
 }
 

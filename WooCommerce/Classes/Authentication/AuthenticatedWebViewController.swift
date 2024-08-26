@@ -11,6 +11,14 @@ final class AuthenticatedWebViewController: UIViewController {
 
     private let viewModel: AuthenticatedWebViewModel
 
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.color = .gray
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        return activityIndicator
+    }()
+
     /// Main web view
     private lazy var webView: WKWebView = {
         let webView = WKWebView(frame: .zero)
@@ -83,6 +91,7 @@ final class AuthenticatedWebViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureWebView()
+        configureActivityIndicator()
         configureProgressBar()
         startLoading()
     }
@@ -111,6 +120,14 @@ private extension AuthenticatedWebViewController {
 
         extendContentUnderSafeAreas()
         webView.configureForSandboxEnvironment()
+    }
+
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: webView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: webView.centerYAnchor)
+        ])
     }
 
     func extendContentUnderSafeAreas() {
@@ -193,17 +210,24 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         progressBar.setProgress(0, animated: false)
+        activityIndicator.startAnimating()
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
         guard let url = webView.url else {
             return
         }
         viewModel.didFinishNavigation(for: url)
     }
 
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: any Error) {
+        activityIndicator.stopAnimating()
+    }
+
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         viewModel.didFailProvisionalNavigation(with: error)
+        activityIndicator.stopAnimating()
     }
 }
 

@@ -536,3 +536,37 @@ public extension UIColor {
         }
     }
 }
+
+public extension UIColor {
+    class func wooCommerceEmerald(_ shade: ColorStudioShade) -> UIColor {
+        switch shade {
+        case .shade0, .shade5:
+            return .withColorStudio(.wooCommerceEmerald, shade: .shade5)
+        case .shade10, .shade20:
+            return .withColorStudio(.wooCommerceEmerald, shade: .shade20)
+        case .shade30, .shade40:
+            return .withColorStudio(.wooCommerceEmerald, shade: .shade40)
+        case .shade50, .shade60:
+            return .withColorStudio(.wooCommerceEmerald, shade: .shade60)
+        case .shade70, .shade80, .shade90, .shade100:
+            return .withColorStudio(.wooCommerceEmerald, shade: .shade80)
+        }
+    }
+}
+
+public extension UIColor {
+    class func wooCommerceAmber(_ shade: ColorStudioShade) -> UIColor {
+        switch shade {
+        case .shade0, .shade5:
+            return .withColorStudio(.wooCommerceAmber, shade: .shade5)
+        case .shade10, .shade20:
+            return .withColorStudio(.wooCommerceAmber, shade: .shade20)
+        case .shade30, .shade40:
+            return .withColorStudio(.wooCommerceAmber, shade: .shade40)
+        case .shade50, .shade60:
+            return .withColorStudio(.wooCommerceAmber, shade: .shade60)
+        case .shade70, .shade80, .shade90, .shade100:
+            return .withColorStudio(.wooCommerceAmber, shade: .shade80)
+        }
+    }
+}

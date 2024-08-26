@@ -203,7 +203,22 @@ extension Networking.BlazeCampaignListItem {
             spentBudget: .fake(),
             budgetMode: .fake(),
             budgetAmount: .fake(),
-            budgetCurrency: .fake()
+            budgetCurrency: .fake(),
+            isEvergreen: .fake(),
+            durationDays: .fake()
+        )
+    }
+}
+extension Networking.BlazeCampaignObjective {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignObjective {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            description: .fake(),
+            suitableForDescription: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -216,7 +231,8 @@ extension Networking.BlazeForecastedImpressionsInput {
             endDate: .fake(),
             timeZone: .fake(),
             totalBudget: .fake(),
-            targeting: .fake()
+            targeting: .fake(),
+            isEvergreen: .fake()
         )
     }
 }
@@ -411,6 +427,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: .fake(),
             timeZone: .fake(),
             budget: .fake(),
+            isEvergreen: .fake(),
             siteName: .fake(),
             textSnippet: .fake(),
             targetUrl: .fake(),

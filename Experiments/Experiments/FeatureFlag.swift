@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables view/editing of custom fields (metadata) in both Products and Orders
     ///
     case viewEditCustomFieldsInProductsAndOrders
+
+    /// Supports evergreen campaigns for Blaze
+    ///
+    case blazeEvergreenCampaigns
 }

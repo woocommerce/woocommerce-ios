@@ -164,7 +164,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProductName()
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
-        trackBlazeEntryPointIfNeeded()
+        observeUpdateBlazeEligibility()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -433,6 +433,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
+            case .customFields:
+                // TODO-13493: add tap handling.
+                return
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
@@ -773,10 +776,18 @@ private extension ProductFormViewController {
         }
     }
 
-    func trackBlazeEntryPointIfNeeded() {
-        if viewModel.canPromoteWithBlaze() && !viewModel.shouldShowBlazeIntroView {
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
+    /// Updates table rows when Blaze eligibility is computed.
+    /// Needed to show/hide the "Promote with Blaze" button accordingly.
+    ///
+    func observeUpdateBlazeEligibility() {
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
+            guard let self else { return }
+            self.updateFormTableContent()
+            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
+            }
         }
+
     }
 
     /// Updates table view model and datasource.
@@ -1284,7 +1295,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
-            presentationStyle.createExitForm(viewController: self, completion: onDiscard)
+            presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)
         }()
         let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {

@@ -12,36 +12,38 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     let itemListViewModel: any ItemListViewModelProtocol
 
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
+    private let connectivityObserver: ConnectivityObserver
 
     enum OrderStage {
         case building
         case finalizing
     }
 
-    @Published private(set) var orderStage: OrderStage = .building {
-        didSet {
-            orderStageSubject.send(orderStage)
-        }
-    }
-
-    private let orderStageSubject = PassthroughSubject<OrderStage, Never>()
+    @Published private(set) var orderStage: OrderStage = .building
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
     @Published var isInitialLoading: Bool = false
+    @Published var isError: Bool = false
+    @Published var isEmpty: Bool = false
+    @Published var showExitPOSModal: Bool = false
+    @Published var showSupport: Bool = false
+    @Published var showsConnectivityError: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          totalsViewModel: any TotalsViewModelProtocol,
          cartViewModel: any CartViewModelProtocol,
-         itemListViewModel: any ItemListViewModelProtocol) {
+         itemListViewModel: any ItemListViewModelProtocol,
+         connectivityObserver: ConnectivityObserver) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         self.itemListViewModel = itemListViewModel
         self.totalsViewModel = totalsViewModel
         self.cartViewModel = cartViewModel
+        self.connectivityObserver = connectivityObserver
 
         observeOrderStage()
         observeSelectedItemToAddToCart()
@@ -50,13 +52,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
         observeItemListState()
+        observeTotalsStartNewOrderAction()
+        observeConnectivity()
     }
 
-    func startNewTransaction() {
+    private func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
         orderStage = .building
-        totalsViewModel.startNewTransaction()
     }
 
     private func cartSubmitted(cartItems: [CartItem]) {
@@ -102,17 +105,17 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observePaymentStateForButtonDisabledProperties() {
-        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.isSyncingOrderPublisher)
-            .map { paymentState, isSyncingOrder in
+        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.orderStatePublisher)
+            .map { paymentState, orderState in
                 switch paymentState {
                 case .processingPayment,
-                        .cardPaymentSuccessful:
-                    return true
-                case .idle,
-                        .acceptingCard,
+                        .paymentError,
+                        .cardPaymentSuccessful,
                         .validatingOrder,
                         .preparingReader:
-                    return isSyncingOrder
+                    return true
+                case .idle, .validatingOrderError, .acceptingCard:
+                    return orderState.isSyncing
                 }
             }
             .assign(to: &$isAddMoreDisabled)
@@ -125,7 +128,9 @@ private extension PointOfSaleDashboardViewModel {
                 case .idle,
                         .acceptingCard,
                         .validatingOrder,
+                        .validatingOrderError,
                         .preparingReader,
+                        .paymentError,
                         .cardPaymentSuccessful:
                     return false
                 }
@@ -136,10 +141,12 @@ private extension PointOfSaleDashboardViewModel {
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,
+                        .paymentError,
                         .cardPaymentSuccessful:
                     return true
                 case .idle,
                         .validatingOrder,
+                        .validatingOrderError,
                         .preparingReader,
                         .acceptingCard:
                     return false
@@ -149,17 +156,55 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        cartViewModel.bind(to: orderStageSubject.eraseToAnyPublisher())
+        $orderStage.sink { [weak self] stage in
+            guard let self else { return }
+            cartViewModel.canDeleteItemsFromCart = stage == .building
+
+            if stage == .building {
+                totalsViewModel.cancelReaderPreparation()
+            }
+        }
+        .store(in: &cancellables)
+    }
+
+    func observeItemListState() {
+        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
+            .sink { [weak self] state, items in
+                guard let self = self else { return }
+
+                self.isInitialLoading = (state == .loading && items.isEmpty)
+
+                switch state {
+                case .error:
+                    self.isError = true
+                case .empty:
+                    self.isEmpty = true
+                default:
+                    self.isError = false
+                    self.isEmpty = false
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeTotalsStartNewOrderAction() {
+        totalsViewModel.startNewOrderActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.startNewOrder()
+            }
+            .store(in: &cancellables)
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeItemListState() {
-        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
-            .map { state, items -> Bool in
-                return state == .loading && items.isEmpty
+    func observeConnectivity() {
+        connectivityObserver.statusPublisher
+            .removeDuplicates()
+            .map { connectivityStatus in
+                return connectivityStatus == .notReachable
             }
-            .assign(to: &$isInitialLoading)
+            .assign(to: &$showsConnectivityError)
     }
 }
 

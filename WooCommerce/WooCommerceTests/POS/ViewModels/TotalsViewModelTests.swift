@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import WooCommerce
 @testable import class Yosemite.POSOrderService
 @testable import protocol Yosemite.POSOrderServiceProtocol
@@ -12,6 +13,7 @@ final class TotalsViewModelTests: XCTestCase {
     private var sut: TotalsViewModel!
     private var cardPresentPaymentService: MockCardPresentPaymentService!
     private var orderService: MockPOSOrderService!
+    private var cancellables = Set<AnyCancellable>()
 
     override func setUp() {
         super.setUp()
@@ -20,10 +22,9 @@ final class TotalsViewModelTests: XCTestCase {
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
-                              paymentState: .acceptingCard,
-                              isSyncingOrder: false)
+                              paymentState: .acceptingCard)
+        cancellables = Set()
     }
-    func test_isSyncingOrder() {}
     func test_on_checkOutTapped_startSyncOrder() {}
     func test_stopSyncOrder() {}
     func test_order() {}
@@ -39,7 +40,7 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertNil(sut.order)
     }
     func test_setOrder() {}
-    func test_startNewTransaction_after_collecting_payment() async throws {
+    func test_startNewOrder_after_collecting_payment() async throws {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
         let item = Self.makeItem()
@@ -49,26 +50,35 @@ final class TotalsViewModelTests: XCTestCase {
         await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
         XCTAssertNotNil(sut.order)
 
+        var startNewOrderEventWasPublished = false
+        sut.startNewOrderActionPublisher.sink { _ in
+            startNewOrderEventWasPublished = true
+        }.store(in: &cancellables)
+        XCTAssertFalse(startNewOrderEventWasPublished)
+
         // When
         guard let order = sut.order else {
             return XCTFail("Expected order. Got nothing")
         }
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-        sut.startNewTransaction()
+        sut.startNewOrder()
 
         // Then
+        XCTAssertTrue(startNewOrderEventWasPublished)
         XCTAssertEqual(sut.paymentState, paymentState)
         XCTAssertNil(sut.order)
         XCTAssertNil(sut.cardPresentPaymentInlineMessage)
     }
 
-    func test_isShowingCardReaderStatus_when_order_syncing_then_false() {
+    func test_isShowingCardReaderStatus_when_order_not_loaded_then_false() async {
         // Given
         sut = TotalsViewModel(orderService: orderService,
                               cardPresentPaymentService: cardPresentPaymentService,
                               currencyFormatter: .init(currencySettings: .init()),
-                              paymentState: .acceptingCard,
-                              isSyncingOrder: true)
+                              paymentState: .acceptingCard)
+        orderService.orderToReturn = nil
+
+        await sut.syncOrder(for: [], allItems: [])
 
         // Then
         XCTAssertFalse(sut.isShowingCardReaderStatus)
@@ -144,6 +154,67 @@ final class TotalsViewModelTests: XCTestCase {
             // When
             self.sut.checkOutTapped(with: [], allItems: [])
         }
+    }
+
+    func test_cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async {
+        // Given
+        orderService.orderToReturn = Order.fake().copy(currency: "$", total: "52.30")
+        await sut.syncOrder(for: [], allItems: [])
+
+        // When
+        cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: { }))
+        let message = sut.cardPresentPaymentInlineMessage
+
+        // Then
+        if case .paymentSuccess(let viewModel) = message {
+            XCTAssertEqual(viewModel.title, "Payment successful")
+            XCTAssertEqual(viewModel.message, "A payment of $52.30 was successfully made")
+        } else {
+            XCTFail("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
+        }
+    }
+
+
+    func test_orderState_when_syncOrder_succeeds_then_syncing_and_loaded() async {
+        // Given sync order succeeds
+        let expectation = XCTestExpectation(description: "OrderState should change 2 times when syncing order")
+        orderService.orderToReturn = Order.fake()
+
+        // When we sync order
+        var orderStates: [TotalsViewModel.OrderState] = []
+        sut.orderStatePublisher
+            .collect(3)
+            .sink { orderState in
+                orderStates.append(contentsOf: orderState)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        await sut.syncOrder(for: [], allItems: [])
+        await fulfillment(of: [expectation], timeout: 1)
+
+        // Then OrderState changes from idle to syncing to loaded
+        XCTAssertEqual(orderStates, [.idle, .syncing, .loaded])
+    }
+
+    func test_orderState_when_syncOrder_fails_then_syncing_and_error() async {
+        // Given sync order fails
+        let expectation = XCTestExpectation(description: "OrderState should change 2 times when syncing order")
+        orderService.orderToReturn = nil
+
+        // When we sync order
+        var orderStates: [TotalsViewModel.OrderState] = []
+        sut.orderStatePublisher
+            .collect(3)
+            .sink { orderState in
+                orderStates.append(contentsOf: orderState)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        await sut.syncOrder(for: [], allItems: [])
+        await fulfillment(of: [expectation], timeout: 1)
+
+        // Then OrderState changes from idle to syncing to error
+        XCTAssertEqual(orderStates, [.idle, .syncing, .error(.init(message: "", handler: {}))])
     }
 }
 

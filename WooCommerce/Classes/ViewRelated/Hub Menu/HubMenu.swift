@@ -159,7 +159,7 @@ private extension HubMenu {
                         title: HubMenuViewModel.Localization.viewStore,
                         shouldAuthenticate: false)
             case HubMenuViewModel.Inbox.id:
-                Inbox(viewModel: .init(siteID: viewModel.siteID))
+                Inbox(viewModel: viewModel.inboxViewModel)
             case HubMenuViewModel.Reviews.id:
                 ReviewsView(siteID: viewModel.siteID)
             case HubMenuViewModel.Coupons.id:
@@ -176,12 +176,13 @@ private extension HubMenu {
                                                       credentials: viewModel.credentials) {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
-                        hideAppTabBar: { isHidden in
-                            AppDelegate.shared.setShouldHideTabBar(isHidden)
+                        onPointOfSaleModeActiveStateChange: { isEnabled in
+                            AppDelegate.shared.updateSharedConfiguration(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
                         orderService: orderService,
-                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings))
+                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings),
+                        analytics: ServiceLocator.analytics)
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

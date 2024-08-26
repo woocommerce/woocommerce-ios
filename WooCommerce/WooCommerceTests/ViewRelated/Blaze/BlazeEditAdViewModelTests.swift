@@ -35,6 +35,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_shouldDisplayImageSizeErrorAlert_turns_false_upon_selecting_image_with_invalid_size() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -57,6 +58,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_tagline_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -71,6 +73,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_tagline_footer_text_is_singular_when_one_character_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -85,6 +88,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_tagline_footer_text_is_plural_when_zero_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -99,6 +103,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_tagline_footer_text_shows_error_when_tagline_is_empty() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -113,6 +118,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_tagline_footer_text_shows_error_when_tagline_exceeds_limit() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -130,6 +136,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_description_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -144,6 +151,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_description_footer_text_is_singular_when_one_character_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -158,6 +166,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_description_footer_text_is_plural_when_zero_characters_remaining() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -172,6 +181,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_description_footer_text_shows_error_when_description_is_empty() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -186,6 +196,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_description_footer_text_shows_error_when_description_exceeds_limit() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -205,6 +216,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_disabled_when_no_change_made_to_ad_data() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -216,6 +228,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_enabled_when_image_is_changed() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -236,6 +249,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_enabled_when_tagline_is_changed_even_though_image_is_nil() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
                                                                description: "Sample description"),
@@ -252,6 +266,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_enabled_when_tagline_is_changed() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -266,6 +281,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_enabled_when_description_is_changed() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -280,6 +296,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_disabled_when_tagline_exceeds_character_limit() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -294,6 +311,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_disabled_when_description_exceeds_character_limit() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake()],
                                        onSave: { _ in })
@@ -308,6 +326,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_is_enabled_when_description_is_changed_even_though_image_is_nil() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: BlazeEditAdData(image: nil,
                                                                tagline: "Sample Tagline",
                                                                description: "Sample description"),
@@ -326,6 +345,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_canSelectPreviousSuggestion_is_false_initially() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: [.fake(), .fake(), .fake()],
                                        onSave: { _ in })
@@ -337,6 +357,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_canSelectPreviousSuggestion_is_true_when_second_suggestion_selected() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -354,6 +375,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_canSelectPreviousSuggestion_is_false_when_first_suggestion_selected() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -373,6 +395,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_canSelectNextSuggestion_is_true_initially() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -384,6 +407,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_canSelectNextSuggestion_is_false_when_last_suggestion_selected() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -404,6 +428,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_didTapPrevious_does_not_change_selection_if_no_suggestion_selected() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -418,6 +443,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_didTapPrevious_selects_previous_item_when_a_suggestion_selected_already() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -438,6 +464,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_didTapNext_selects_first_item_when_no_suggestion_is_selected_already() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -452,6 +479,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_didTapNext_selects_next_item_when_a_suggestion_selected_already() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -468,6 +496,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_didTapNext_does_not_change_selection_when_the_last_suggestion_selected() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -487,6 +516,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_it_preselects_suggestion_if_injected_tagline_and_description_match() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
@@ -505,6 +535,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_isTaglineValidated_is_updated_correctly_depending_on_tagline_length() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -531,6 +562,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_isDescriptionValidated_is_updated_correctly_depending_on_description_length() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: sampleAdData,
                                        suggestions: sampleAISuggestions,
                                        onSave: { _ in })
@@ -558,6 +590,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_AI_suggestion_arrows_tap_is_tracked() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,
@@ -582,6 +615,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
     func test_save_button_tap_is_tracked() {
         // Given
         let sut = BlazeEditAdViewModel(siteID: 123,
+                                       productID: 34,
                                        adData: BlazeEditAdData(image: MediaPickerImage(image: UIImage.emailImage,
                                                                                        source: .media(media: .fake())),
                                                                tagline: sampleAISuggestions[1].siteName,

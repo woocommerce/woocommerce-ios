@@ -8,11 +8,12 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     }
 
     var body: some View {
-
         // TODO: replace temporary inline message UI based on design
         switch messageType {
         case .validatingOrder(let viewModel):
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message)
+        case .validatingOrderError(let viewModel):
+            PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView(viewModel: viewModel)
         case .preparingForPayment(let viewModel):
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message)
         case .tapSwipeOrInsertCard(let viewModel):
@@ -26,6 +27,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
                 .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentSuccess(let viewModel):
             PointOfSaleCardPresentPaymentSuccessMessageView(viewModel: viewModel)
+                .matchedGeometryEffect(id: Self.transitionAnimationId, in: transitionAnimation)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
         case .paymentErrorNonRetryable(let viewModel):

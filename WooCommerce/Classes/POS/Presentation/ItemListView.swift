@@ -14,22 +14,19 @@ struct ItemListView: View {
         VStack {
             headerView
             switch viewModel.state {
-            case .empty(let emptyModel):
-                emptyView(emptyModel)
-            case .loading:
-                /// TODO: handle pull to refresh
+            case .empty, .error:
+                // These cases are handled directly in the dashboard, we do not render
+                // a specific view within the ItemListView to handle them
+                EmptyView()
+            case .loading, .loaded:
                 listView(viewModel.items)
-            case .loaded(let items):
-                listView(items)
-            case .error(let errorModel):
-                errorView(errorModel)
             }
         }
         .refreshable {
             await viewModel.reload()
         }
-        .padding(.horizontal, Constants.itemListPadding)
-        .background(Color.posBackgroundGreyi3)
+        .background(Color.posPrimaryBackground)
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -40,30 +37,24 @@ private extension ItemListView {
     var headerView: some View {
         VStack {
             HStack {
-                headerTextView
+                POSHeaderTitleView()
                 if !viewModel.shouldShowHeaderBanner {
                     Spacer()
                     Button(action: {
-                        openInfoBanner()
+                        viewModel.simpleProductsInfoButtonTapped()
                     }, label: {
                         Image(systemName: "info.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Constants.infoIconSize, height: Constants.infoIconSize)
-                            .foregroundColor(Color(uiColor: .wooCommercePurple(.shade50)))
+                            .font(.posTitleRegular)
                     })
+                    .foregroundColor(.posPrimaryText)
+                    .padding(.trailing, Constants.infoIconPadding)
                 }
             }
             if viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.vertical, 16)
+                    .padding(.bottom, Constants.bannerCardPadding)
             }
         }
-    }
-
-    private func openInfoBanner() {
-        // TODO:
-        // https://github.com/woocommerce/woocommerce-ios/issues/13357
     }
 
     var bannerCardView: some View {
@@ -76,16 +67,21 @@ private extension ItemListView {
                     .frame(width: Constants.bannerInfoIconSize, height: Constants.bannerInfoIconSize)
                     .padding(Constants.iconPadding)
                     .foregroundColor(Color(uiColor: .wooCommercePurple(.shade30)))
+                    .accessibilityHidden(true)
                 Spacer()
             }
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Constants.bannerTitleSpacing) {
                 Text(Localization.headerBannerTitle)
                     .font(Constants.bannerTitleFont)
-                    .padding(.bottom, Constants.bannerTitleBottomPadding)
-                Text(Localization.headerBannerSubtitle)
-                    .font(Constants.bannerSubtitleFont)
-                Text(Localization.headerBannerHint)
-                    .font(Constants.bannerSubtitleFont)
+                    .accessibilityAddTraits(.isHeader)
+                VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
+                    Text(Localization.headerBannerSubtitle)
+                    Text(Localization.headerBannerHint)
+                    Text(Localization.headerBannerLearnMoreHint)
+                        .linkStyle()
+                }
+                .font(Constants.bannerSubtitleFont)
+                .accessibilityElement(children: .combine)
             }
             .padding(.vertical, Constants.bannerVerticalPadding)
             Spacer()
@@ -93,9 +89,10 @@ private extension ItemListView {
                 Button(action: {
                     viewModel.dismissBanner()
                 }, label: {
-                    Image(PointOfSaleAssets.dismissProductsBanner.imageName)
-                        .frame(width: Constants.closeIconSize, height: Constants.closeIconSize)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                    Image(systemName: "xmark")
+                        .font(.posBodyRegular)
+                        .foregroundColor(Color.posTertiaryText)
+                        .accessibilityLabel(Localization.dismissBannerAccessibilityLabel)
                 })
                 .padding(Constants.iconPadding)
                 Spacer()
@@ -103,38 +100,14 @@ private extension ItemListView {
         }
         .frame(maxWidth: .infinity)
         .fixedSize(horizontal: false, vertical: true)
-        .background(Color.posBackgroundWhitei3)
+        .background(Color.posSecondaryBackground)
         .cornerRadius(Constants.bannerCornerRadius)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .accessibilityAddTraits(.isButton)
         .onTapGesture {
-            openInfoBanner()
+            viewModel.simpleProductsInfoButtonTapped()
         }
-    }
-
-    var headerTextView: some View {
-        Text(Localization.productSelectorTitle)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, Constants.headerPadding)
-            .font(Constants.titleFont)
-            .foregroundColor(Color.posPrimaryTexti3)
-    }
-
-    @ViewBuilder
-    func emptyView(_ content: ItemListViewModel.EmptyModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Text(content.subtitle)
-            Button(action: {
-                // TODO:
-                // Redirect the merchant to the app in order to create a new product
-                // https://github.com/woocommerce/woocommerce-ios/issues/13297
-            }, label: {
-                Text(content.buttonText)}
-            )
-            Text(content.hint)
-            Spacer()
-        }
+        .padding(.horizontal, Constants.bannerCardPadding)
     }
 
     @ViewBuilder
@@ -150,22 +123,7 @@ private extension ItemListView {
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
-        }
-    }
-
-    @ViewBuilder
-    func errorView(_ content: ItemListViewModel.ErrorModel) -> some View {
-        VStack {
-            Spacer()
-            Text(content.title)
-            Button(action: {
-                Task {
-                    await viewModel.populatePointOfSaleItems()
-                }
-            }, label: {
-                Text(content.buttonText)
-            })
-            Spacer()
+            .padding(.horizontal, Constants.itemListPadding)
         }
     }
 }
@@ -174,41 +132,51 @@ private extension ItemListView {
 ///
 private extension ItemListView {
     enum Constants {
-        static let titleFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let bannerTitleFont: Font = .system(size: 24, weight: .bold, design: .default)
-        static let bannerSubtitleFont: Font = .system(size: 16, weight: .medium, design: .default)
+        static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
+        static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTitleBottomPadding: CGFloat = 16
+        static let bannerTextSpacing: CGFloat = 2
+        static let bannerTitleSpacing: CGFloat = 8
         static let infoIconSize: CGFloat = 36
+        static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44
-        static let closeIconSize: CGFloat = 26
         static let iconPadding: CGFloat = 26
-        static let headerPadding: CGFloat = 8
         static let itemListPadding: CGFloat = 16
+        static let bannerCardPadding: CGFloat = 16
     }
 
     enum Localization {
-        static let productSelectorTitle = NSLocalizedString(
-            "pos.itemlistview.productSelectorTitle",
-            value: "Products",
-            comment: "Title of the Point of Sale product selector"
-        )
         static let headerBannerTitle = NSLocalizedString(
-            "pos.itemlistview.headerBannerTitle",
+            "pos.itemlistview.headerBanner.title",
             value: "Showing simple products only",
             comment: "Title of the product selector header banner, which explains current POS limitations"
         )
+
         static let headerBannerSubtitle = NSLocalizedString(
-            "pos.itemlistview.headerBannerSubtitle",
+            "pos.itemlistview.headerBanner.subtitle",
             value: "Only simple physical products are available with POS right now.",
             comment: "Subtitle of the product selector header banner, which explains current POS limitations"
         )
+
         static let headerBannerHint = NSLocalizedString(
-            "pos.itemlistview.headerBannerHint",
-            value: "Other product types, such as variable and virtual, will become available in future updates. Learn more",
+            "pos.itemlistview.headerBanner.hint",
+            value: "Other product types, such as variable and virtual, will become available in future updates.",
             comment: "Additional text within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let headerBannerLearnMoreHint = NSLocalizedString(
+            "pos.itemlistview.headerBanner.learnMoreHint",
+            value: "Learn More",
+            comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        )
+
+        static let dismissBannerAccessibilityLabel = NSLocalizedString(
+            "pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel",
+            value: "Dismiss",
+            comment: "Accessibility label for button to dismiss the product selector header banner. " +
+            "The banner explains current POS limitations. Tapping the button prevents it being shown again."
         )
     }
 }

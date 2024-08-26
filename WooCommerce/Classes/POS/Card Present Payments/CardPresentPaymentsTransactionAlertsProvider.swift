@@ -38,14 +38,15 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .paymentError(error: error,
-                      tryAgain: tryAgain,
+                      retryApproach: CardPresentPaymentRetryApproach(error: error, retryAction: tryAgain),
                       cancelPayment: dismissCompletion)
     }
 
     func nonRetryableError(error: any Error,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .paymentErrorNonRetryable(error: error,
-                                  cancelPayment: dismissCompletion)
+        .paymentError(error: error,
+                      retryApproach: .dontRetry,
+                      cancelPayment: dismissCompletion)
     }
 
     func cancelledOnReader() -> CardPresentPaymentEventDetails? {

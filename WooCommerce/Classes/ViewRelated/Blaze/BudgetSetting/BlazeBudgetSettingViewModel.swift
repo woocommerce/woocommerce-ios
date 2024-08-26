@@ -15,6 +15,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
+    // Whether the campaign should have no end date
+    @Published var isEvergreen: Bool
+
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
     /// Using Double because Slider doesn't work with Int
@@ -31,8 +34,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
     }
 
+    var totalAmountTitle: String {
+        isEvergreen ? Localization.weeklySpend : Localization.totalSpend
+    }
+
     var totalAmountText: String {
-        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
+        let duration = isEvergreen ? Double(Constants.dayCountInWeek) : dayCount
+        let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
@@ -43,8 +51,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var formattedDateRange: String {
-        let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
-        return dateFormatter.string(from: startDate, to: endDate)
+        if isEvergreen {
+            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
+            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
+        } else {
+            let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
+            return dateFormatter.string(from: startDate, to: endDate)
+        }
     }
 
     private let dateFormatter: DateIntervalFormatter = {
@@ -61,13 +74,14 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ duration: Int, _ startDate: Date) -> Void
+    typealias BlazeBudgetSettingCompletionHandler = (_ dailyBudget: Double, _ isEvergreen: Bool, _ duration: Int, _ startDate: Date) -> Void
     private let completionHandler: BlazeBudgetSettingCompletionHandler
 
     private var settingSubscription: AnyCancellable?
 
     init(siteID: Int64,
          dailyBudget: Double,
+         isEvergreen: Bool,
          duration: Int,
          startDate: Date,
          locale: Locale = .current,
@@ -78,6 +92,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
+        self.isEvergreen = isEvergreen
         self.dayCount = Double(duration)
         self.startDate = startDate
         self.locale = locale
@@ -107,7 +122,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
                                                           totalBudget: totalBudget))
-        completionHandler(dailyAmount, days, startDate)
+        completionHandler(dailyAmount, isEvergreen, days, startDate)
     }
 
     @MainActor
@@ -124,7 +139,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     endDate: endDate,
                                                     timeZone: timeZone.identifier,
                                                     totalBudget: totalBudget,
-                                                    targeting: targetOptions)
+                                                    targeting: targetOptions,
+                                                    isEvergreen: isEvergreen)
         do {
             let result = try await fetchForecastedImpressions(input: input)
             let formattedImpressions = String(format: "%d - %d",
@@ -186,6 +202,7 @@ extension BlazeBudgetSettingViewModel {
         static let minimumDayCount = 1
         static let maximumDayCount = 28
         static let defaultDayCount = 7
+        static let dayCountInWeek = 7
         static let dayCountSliderStep = 1
     }
 
@@ -230,6 +247,22 @@ extension BlazeBudgetSettingViewModel {
             value: "$%.0f USD",
             comment: "The formatted total budget for a Blaze campaign, fixed in USD. " +
             "Reads as $11 USD. Keep %.0f as is."
+        )
+        static let evergreenCampaignDate = NSLocalizedString(
+            "blazeBudgetSettingViewModel.evergreenCampaignDate",
+            value: "Starting from %1$@",
+            comment: "The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. " +
+            "Read as Starting from May 11."
+        )
+        static let totalSpend = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalSpend",
+            value: "Total spend",
+            comment: "Label for total spend on the Blaze budget setting screen"
+        )
+        static let weeklySpend = NSLocalizedString(
+            "blazeBudgetSettingViewModel.weeklySpend",
+            value: "Weekly spend",
+            comment: "Label for weekly spend on the Blaze budget setting screen"
         )
     }
 }

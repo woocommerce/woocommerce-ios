@@ -192,7 +192,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type),
+            let tabBarController else {
             completionHandler(false)
             return
         }
@@ -201,13 +202,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MainTabBarController.presentAddProductFlow()
             completionHandler(true)
         case QuickAction.addOrder:
-            MainTabBarController.presentOrderCreationFlow()
+            tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         case QuickAction.openOrders:
-            MainTabBarController.switchToOrdersTab()
+            tabBarController.navigate(to: OrdersDestination.orderList)
             completionHandler(true)
         case QuickAction.collectPayment:
-            MainTabBarController.presentCollectPayment()
+            tabBarController.navigate(to: PaymentsMenuDestination.collectPayment)
             completionHandler(true)
         }
     }
@@ -273,11 +274,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - Helper method for WooCommerce POS
 //
 extension AppDelegate {
-    func setShouldHideTabBar(_ hidden: Bool) {
+    func updateSharedConfiguration(_ isPointOfSaleActive: Bool) {
+        // Show/hide app's tab bars
         guard let tabBarController = AppDelegate.shared.tabBarController else {
             return
         }
-        tabBarController.tabBar.isHidden = hidden
+        tabBarController.tabBar.isHidden = isPointOfSaleActive
+        tabBarController.selectedViewController?.view.layoutIfNeeded()
+
+        // Enable/disable foreground in-app notifications
+        if isPointOfSaleActive {
+            ServiceLocator.pushNotesManager.disableInAppNotifications()
+        } else {
+            ServiceLocator.pushNotesManager.enableInAppNotifications()
+        }
     }
 }
 

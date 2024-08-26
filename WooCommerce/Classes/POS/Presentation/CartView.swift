@@ -5,6 +5,8 @@ struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -13,17 +15,35 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                backAddMoreButton
-                    .disabled(viewModel.isAddMoreDisabled)
-                Text(Localization.cartTitle)
-                    .font(Constants.primaryFont)
-                    .foregroundColor(cartViewModel.cartLabelColor)
-                Spacer()
-                if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
-                    Text(itemsInCartLabel)
-                        .font(Constants.itemsFont)
-                        .foregroundColor(Color.posSecondaryTexti3)
+            DynamicHStack(spacing: Constants.cartHeaderSpacing) {
+                HStack(spacing: Constants.cartHeaderElementSpacing) {
+                    backAddMoreButton
+                        .padding(.top, Constants.headerPadding)
+                        .disabled(viewModel.isAddMoreDisabled)
+                        .shimmering(active: viewModel.isAddMoreDisabled)
+
+                    HStack {
+                        Text(Localization.cartTitle)
+                            .font(Constants.primaryFont)
+                            .foregroundColor(cartViewModel.itemsInCart.isEmpty ? .posSecondaryText : .posPrimaryText)
+                            .accessibilityAddTraits(.isHeader)
+
+                        Spacer()
+
+                        if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
+                            Text(itemsInCartLabel)
+                                .font(Constants.itemsFont)
+                                .foregroundColor(Color.posSecondaryText)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                    .padding(.top, Constants.headerPadding)
+                }
+
+                HStack {
+                    Spacer()
+                        .renderedIf(dynamicTypeSize.isAccessibilitySize)
+
                     Button {
                         cartViewModel.removeAllItemsFromCart()
                     } label: {
@@ -37,24 +57,24 @@ struct CartView: View {
                             )
                     }
                     .padding(.horizontal, Constants.itemHorizontalPadding)
-                    .renderedIf(cartViewModel.canDeleteItemsFromCart)
+                    .padding(.top, Constants.headerPadding)
+                    .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.vertical, Constants.verticalPadding)
-            .font(.title)
-            .foregroundColor(Color.white)
+
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
                     Spacer()
-                    Image(uiImage: .shoppingBagsImage)
+                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize)
                         .aspectRatio(contentMode: .fit)
                     Text(Localization.addItemsToCartHint)
                         .font(Constants.secondaryFont)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                        .foregroundColor(Color.posTertiaryText)
                         .multilineTextAlignment(.center)
                     Spacer()
                 }
@@ -90,22 +110,35 @@ struct CartView: View {
                 } else {
                     checkoutButton
                         .padding(Constants.checkoutButtonPadding)
+                        .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
                 EmptyView()
             }
         }
         .frame(maxWidth: .infinity)
-        .background(cartViewModel.isCartEmpty ? Color.posBackgroundEmptyWhitei3.ignoresSafeArea(edges: .all) : Color.posBackgroundWhitei3.ignoresSafeArea(.all))
+        .background(backgroundColor.ignoresSafeArea(.all))
+        .accessibilityElement(children: .contain)
+    }
+}
+
+private extension CartView {
+    var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posSecondaryBackground
+        default:
+            return cartViewModel.isCartEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
+        }
     }
 }
 
 private extension CartView {
     enum Constants {
-        static let primaryFont: Font = .system(size: 40, weight: .bold, design: .default)
-        static let secondaryFont: Font = .system(size: 24, weight: .regular, design: .default)
-        static let itemsFont: Font = .system(size: 16, weight: .medium, design: .default)
-        static let clearButtonFont: Font = .system(size: 16, weight: .semibold, design: .default)
+        static let primaryFont: POSFontStyle = .posTitleEmphasized
+        static let secondaryFont: POSFontStyle = .posBodyRegular
+        static let itemsFont: POSFontStyle = .posDetailRegular
+        static let clearButtonFont: POSFontStyle = .posDetailEmphasized
         static let clearButtonCornerRadius: CGFloat = 4
         static let clearButtonBorderWidth: CGFloat = 2
         static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
@@ -115,6 +148,10 @@ private extension CartView {
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let cartEmptyViewSpacing: CGFloat = 40
+        static let cartHeaderSpacing: CGFloat = 8
+        static let backButtonSymbol: String = "chevron.backward"
+        static let headerPadding: CGFloat = 16
+        static let cartHeaderElementSpacing: CGFloat = 16
     }
 
     enum Localization {
@@ -130,6 +167,10 @@ private extension CartView {
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
             comment: "Hint to add products to the Cart when this is empty.")
+        static let checkoutButtonTitle = NSLocalizedString(
+            "pos.cartView.checkoutButtonTitle",
+            value: "Check out",
+            comment: "Title for the 'Checkout' button to process the Order.")
     }
 }
 
@@ -140,7 +181,7 @@ private extension CartView {
         Button {
             cartViewModel.submitCart()
         } label: {
-            Text("Check out")
+            Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSPrimaryButtonStyle())
     }
@@ -154,31 +195,33 @@ private extension CartView {
             Button {
                 cartViewModel.addMoreToCart()
             } label: {
-                Image(PointOfSaleAssets.cartBack.imageName)
-                    .resizable()
-                    .frame(width: 32, height: 32)
+                Image(systemName: Constants.backButtonSymbol)
+                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                    .foregroundColor(.primary)
             }
-
         }
     }
 }
 
 #if DEBUG
 import Combine
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     // TODO:
     // Simplify this by mocking `CartViewModel`
     let totalsViewModel = TotalsViewModel(orderService: POSOrderPreviewService(),
                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                           currencyFormatter: .init(currencySettings: .init()),
-                                          paymentState: .acceptingCard,
-                                          isSyncingOrder: false)
-    let cartViewModel = CartViewModel()
+                                          paymentState: .acceptingCard)
+    let cartViewModel = CartViewModel(analytics: MockAnalyticsPreview())
     let itemsListViewModel = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let dashboardViewModel = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                                            totalsViewModel: totalsViewModel,
                                                            cartViewModel: cartViewModel,
-                                                           itemListViewModel: itemsListViewModel)
+                                                           itemListViewModel: itemsListViewModel,
+                                                           connectivityObserver: POSConnectivityObserverPreview())
     return CartView(viewModel: dashboardViewModel, cartViewModel: cartViewModel)
 }
 #endif

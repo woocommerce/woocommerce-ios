@@ -125,14 +125,13 @@ private extension SiteStore {
         }
     }
 
-    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Site, Error>) -> Void) {
+    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
                 try await remote.updateSiteTitle(siteID: siteID, title: title)
                 // Updates site info in local storage immediately.
-                let site = try await remote.loadSite(siteID: siteID)
-                await upsertStoredSiteInBackground(readOnlySite: site)
-                completion(.success(site))
+                await upsertStoredSiteInBackground(siteID: siteID, name: title)
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }
@@ -158,6 +157,21 @@ private extension SiteStore {
             derivedStorage.perform {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
+            }
+
+            storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+                DispatchQueue.main.async(execute: { continuation.resume() })
+            }
+        }
+    }
+
+    func upsertStoredSiteInBackground(siteID: Int64, name: String) async {
+        await withCheckedContinuation { continuation in
+            let derivedStorage = sharedDerivedStorage
+            derivedStorage.perform {
+                if let storageSite = derivedStorage.loadSite(siteID: siteID) {
+                    storageSite.name = name
+                }
             }
 
             storageManager.saveDerivedType(derivedStorage: derivedStorage) {

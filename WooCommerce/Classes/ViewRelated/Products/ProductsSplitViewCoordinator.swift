@@ -228,15 +228,11 @@ private extension ProductsSplitViewCoordinator {
 }
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        if willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, willShow: viewController) {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
             contentTypes = []
             secondaryNavigationController.viewControllers = []
             return
-        }
-
-        if let tabNavigationController = navigationController as? WooTabNavigationController {
-            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
@@ -250,19 +246,24 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
             contentTypes.removeLast()
         }
     }
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let tabNavigationController = navigationController as? WooTabNavigationController {
+            tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
+        }
+    }
 }
 
 private extension ProductsSplitViewCoordinator {
     /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.
     /// When the user taps the back button to leave the last secondary view controller (e.g. product form), we want to reset `contentTypes`
-    /// while there is no proper callback that I can find other than observing the primary navigation controller's `willShow`.
+    /// while there is no proper callback that I can find other than observing the primary navigation controller's `didShow`.
     /// As a workaround, it checks the following to empty out the secondary view content types:
     /// - Split view is collapsed
-    /// - The navigation controller that will show a view controller is the primary one
+    /// - The navigation controller that did show a view controller is the primary one
     /// - The current content types state is still non-empty, i.e. some secondary content is currently shown
     /// - The view controller to show in the primary navigation stack is the product list
-    func willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
-                                                                                    willShow viewController: UIViewController) -> Bool {
+    func didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
+                                                                                    didShow viewController: UIViewController) -> Bool {
         let isNavigatingToProductList = viewController == productsViewController ||
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return splitViewController.isCollapsed && navigationController == primaryNavigationController

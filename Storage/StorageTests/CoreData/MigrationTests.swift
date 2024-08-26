@@ -2886,6 +2886,72 @@ final class MigrationTests: XCTestCase {
         let password = try XCTUnwrap(migratedProductEntity.value(forKey: "password") as? String)
         XCTAssertEqual(password, "test", "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_113_to_114_adds_new_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 113")
+        let sourceContext = sourceContainer.viewContext
+
+        let blazeCampaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["isEvergreen"],
+                     "Precondition. Property isEvergreen does not exist.")
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["durationDays"],
+                     "Precondition. Property durationDays does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 114")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCampaignEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool, false, "Confirm property isEvergreen exists and is false by default.")
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "durationDays") as? Int64, 0, "Confirm property durationDays exists and is 0 by default.")
+
+        migratedCampaignEntity.setValue(true, forKey: "isEvergreen")
+        migratedCampaignEntity.setValue(7, forKey: "durationDays")
+        try targetContext.save()
+
+        let isEvergreen = try XCTUnwrap(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool)
+        let durationDays = try XCTUnwrap(migratedCampaignEntity.value(forKey: "durationDays") as? Int64)
+        XCTAssertEqual(isEvergreen, true)
+        XCTAssertEqual(durationDays, 7)
+    }
+
+    func test_migrating_from_114_to_115_adds_BlazeCampaignObjective_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 114")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 114
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 115")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 0)
+
+        // Insert a new BlazeCampaignObjective
+        let objective = insertBlazeCampaignObjective(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(objective.entity.attributesByName["id"])
+        XCTAssertNotNil(objective.entity.attributesByName["title"])
+        XCTAssertNotNil(objective.entity.attributesByName["generalDescription"])
+        XCTAssertNotNil(objective.entity.attributesByName["suitableForDescription"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3709,6 +3775,17 @@ private extension MigrationTests {
             "siteID": 1,
             "methodID": "flat_rate",
             "title": "Flat rate"
+        ])
+        return method
+    }
+
+    @discardableResult
+    func insertBlazeCampaignObjective(to context: NSManagedObjectContext) -> NSManagedObject {
+        let method = context.insert(entityName: "BlazeCampaignObjective", properties: [
+            "id": "sales",
+            "title": "Sales",
+            "generalDescription": "Converts potential customers into buyers by encouraging purchase.",
+            "suitableForDescription": "E-commerce, retailers, subscription services."
         ])
         return method
     }

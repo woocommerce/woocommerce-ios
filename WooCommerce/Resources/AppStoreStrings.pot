@@ -61,9 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v19.8-whats-new"
+msgctxt "v20.1-whats-new"
 msgid ""
-"Experience seamless updates with our latest release! Now enjoy background updates for your order list and dashboard analytics cards. We've enhanced the dynamic dashboard to display unavailable analytics views when not logged into WPCom. Plus, we've fixed large text support in the Barcode Scanner for better accessibility. Update now for a smoother experience!\n"
+"In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.\n"
+"We've also made it easier to understand the budgets for your Blaze ad campaigns, and added support for Blaze ad creation in locales which don't use Western Arabic numerals.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

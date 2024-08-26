@@ -3,58 +3,75 @@ import Foundation
 enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case message(PointOfSaleCardPresentPaymentMessageType)
     case alert(PointOfSaleCardPresentPaymentAlertType)
-}
 
-extension CardPresentPaymentEventDetails {
-    var pointOfSalePresentationStyle: PointOfSaleCardPresentPaymentEventPresentationStyle? {
-        switch self {
-        /// Connection alerts
+    struct Dependencies {
+        let tryPaymentAgainBackToCheckoutAction: () -> Void
+        let nonRetryableErrorExitAction: () -> Void
+        let formattedOrderTotalPrice: String?
+        let paymentCaptureErrorTryAgainAction: () -> Void
+        let paymentCaptureErrorNewOrderAction: () -> Void
+    }
+
+    /// Determines the appropriate payment alert/message type and creates its view model.
+    /// This init will fail for unsupported `CardPresentPaymentEventDetails` cases.
+    ///
+    /// - Parameters:
+    ///   - cardPresentPaymentEventDetails: Provides the basis for the decision on the presentation style and view model creation.
+    ///   In many cases, this is enough. These events are produced by the `CardPresentPaymentService`
+    ///
+    ///   - dependencies: Additional information which is considered when deciding the presentation style –
+    ///   e.g. information about the order, or actions which don't originate from the payments code.
+    ///   See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
+    init?(for cardPresentPaymentEventDetails: CardPresentPaymentEventDetails,
+          dependencies: Dependencies) {
+        switch cardPresentPaymentEventDetails {
+            /// Connection alerts
         case .scanningForReaders(let endSearch):
-            return .alert(.scanningForReaders(
+            self = .alert(.scanningForReaders(
                 viewModel: PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel(endSearchAction: endSearch)))
 
         case .scanningFailed(let error, let endSearch):
-            return .alert(.scanningFailed(
+            self = .alert(.scanningFailed(
                 viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel(
                     error: error,
                     endSearchAction: endSearch)))
 
         case .bluetoothRequired(let error, let endSearch):
-            return .alert(.bluetoothRequired(
+            self = .alert(.bluetoothRequired(
                 viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel(
                     error: error,
                     endSearch: endSearch)))
 
         case .connectingToReader:
-            return .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
+            self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
 
         case .connectingFailed(let error, let retrySearch, let endSearch):
-            return .alert(.connectingFailed(
+            self = .alert(.connectingFailed(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel(
                     error: error,
                     retryButtonAction: retrySearch,
                     cancelButtonAction: endSearch)))
 
         case .connectingFailedNonRetryable(let error, let endSearch):
-            return .alert(.connectingFailedNonRetryable(
+            self = .alert(.connectingFailedNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
                     error: error,
                     cancelAction: endSearch)))
 
         case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
-            return .alert(.connectingFailedUpdatePostalCode(
+            self = .alert(.connectingFailedUpdatePostalCode(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel(
                     retryButtonAction: retrySearch,
                     cancelButtonAction: endSearch)))
 
         case .connectingFailedChargeReader(let retrySearch, let endSearch):
-            return .alert(.connectingFailedChargeReader(
+            self = .alert(.connectingFailedChargeReader(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
                     retryButtonAction: retrySearch,
                     cancelButtonAction: endSearch)))
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
-            return .alert(.connectingFailedUpdateAddress(
+            self = .alert(.connectingFailedUpdateAddress(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
                     settingsAdminUrl: wcSettingsAdminURL,
                     showsInAuthenticatedWebView: showsInAuthenticatedWebView,
@@ -62,7 +79,7 @@ extension CardPresentPaymentEventDetails {
                     cancelSearchAction: endSearch)))
 
         case .foundReader(let name, let connect, let continueSearch, let endSearch):
-            return .alert(.foundReader(
+            self = .alert(.foundReader(
                 viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel(
                     readerName: name,
                     connectAction: connect,
@@ -70,92 +87,110 @@ extension CardPresentPaymentEventDetails {
                     endSearchAction: endSearch)))
 
         case .foundMultipleReaders(let readerIDs, let selectionHandler):
-            return .alert(.foundMultipleReaders(
+            self = .alert(.foundMultipleReaders(
                 viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel(
                     readerIDs: readerIDs,
                     selectionHandler: selectionHandler)))
 
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
-                if progress == 1.0 {
-                    return .alert(.readerUpdateCompletion(viewModel: .init()))
-                } else {
-                    return requiredUpdate ?
-                        .alert(.requiredReaderUpdateInProgress(
-                            viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel(
-                                progress: progress,
-                                cancel: cancelUpdate))) :
-                        .alert(.optionalReaderUpdateInProgress(
-                            viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
-                                progress: progress,
-                                cancel: cancelUpdate)))
+            if progress == 1.0 {
+                self = .alert(.readerUpdateCompletion(viewModel: .init()))
+            } else {
+                self = requiredUpdate ?
+                    .alert(.requiredReaderUpdateInProgress(
+                        viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel(
+                            progress: progress,
+                            cancel: cancelUpdate))) :
+                    .alert(.optionalReaderUpdateInProgress(
+                        viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
+                            progress: progress,
+                            cancel: cancelUpdate)))
 
-                }
+            }
 
         case .updateFailed(let tryAgain, let cancelUpdate):
-            return .alert(.updateFailed(
+            self = .alert(.updateFailed(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel(
                     retryAction: tryAgain,
                     cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedNonRetryable(let cancelUpdate):
-            return .alert(.updateFailedNonRetryable(
+            self = .alert(.updateFailedNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel(
                     cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
-            return .alert(.updateFailedLowBattery(
+            self = .alert(.updateFailedLowBattery(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
                     batteryLevel: batteryLevel,
                     cancelUpdateAction: cancelUpdate)))
 
         case .connectionSuccess(let done):
-            return .alert(.connectionSuccess(
+            self = .alert(.connectionSuccess(
                 viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(
                     doneAction: done)))
 
-        /// Payment messages
+            /// Payment messages
         case .validatingOrder:
-            return .message(.validatingOrder(
+            self = .message(.validatingOrder(
                 viewModel: PointOfSaleCardPresentPaymentValidatingOrderMessageViewModel()))
         case .preparingForPayment:
-            return .message(.preparingForPayment(
+            self = .message(.preparingForPayment(
                 viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: _):
-            return .message(.tapSwipeOrInsertCard(
+            self = .message(.tapSwipeOrInsertCard(
                 viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
                     inputMethods: inputMethods)))
-
         case .paymentSuccess:
-            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
+            self = .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(
+                formattedOrderTotal: dependencies.formattedOrderTotalPrice)))
+        case .paymentError(error: let error, retryApproach: let retryApproach, _):
+            switch error {
+            case CollectOrderPaymentUseCaseError.couldNotRefreshOrder,
+                CollectOrderPaymentUseCaseError.orderTotalChanged,
+                CollectOrderPaymentUseCaseNotValidAmountError.belowMinimumAmount,
+                CollectOrderPaymentUseCaseNotValidAmountError.other:
+                self = .message(.validatingOrderError(viewModel: .init(error: error, retryApproach: retryApproach)))
+            default:
+                switch retryApproach {
+                case .tryAnotherPaymentMethod(let retryAction):
+                    self = .message(.paymentError(
+                        viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                            error: error,
+                            tryAnotherPaymentMethodButtonAction: retryAction)))
+                case .tryAgain(let retryAction):
+                    self = .message(.paymentError(
+                        viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                            error: error,
+                            tryPaymentAgainButtonAction: retryAction,
+                            backToCheckoutButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction)))
+                case .dontRetry:
+                    self = .message(.paymentErrorNonRetryable(
+                        viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
+                            error: error,
+                            tryAnotherPaymentMethodAction: dependencies.nonRetryableErrorExitAction)))
+                }
+            }
 
-        case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: _):
-            return .message(.paymentError(
-                viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
-                    error: error,
-                    tryAgainButtonAction: tryAgain)))
-
-        case .paymentErrorNonRetryable(error: let error, cancelPayment: _):
-            return .message(.paymentErrorNonRetryable(
-                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
-                    error: error)))
-
-        case .paymentCaptureError(let cancelPayment):
-            return .message(.paymentCaptureError(
-                viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(cancelButtonAction: cancelPayment)))
+        case .paymentCaptureError:
+            self = .message(.paymentCaptureError(
+                viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
+                    tryAgainButtonAction: dependencies.paymentCaptureErrorTryAgainAction,
+                    newOrderButtonAction: dependencies.paymentCaptureErrorNewOrderAction)))
 
         case .processing:
-            return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
+            self = .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
 
         case .displayReaderMessage(message: let message):
-            return .message(.displayReaderMessage(
+            self = .message(.displayReaderMessage(
                 viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(message: message)))
 
         case .cancelledOnReader:
-            return .message(.cancelledOnReader(
+            self = .message(.cancelledOnReader(
                 viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
 
-        /// Not-yet supported types
+            /// Not-yet supported types
         case .selectSearchType:
             return nil
         }

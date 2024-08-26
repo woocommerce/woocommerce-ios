@@ -11,33 +11,37 @@ struct ItemCardView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalCardSpacing) {
+        HStack(spacing: Constants.cardSpacing) {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: Constants.productCardHeight,
+                                      productImageSize: Constants.productCardSize * scale,
                                       scale: scale,
                                       foregroundColor: .clear)
+                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                       height: Constants.productCardSize * scale)
+                .clipped()
             } else {
-                // TODO:
-                // Handle what we'll show when there's lack of images:
                 Rectangle()
-                    .frame(width: Constants.productCardHeight * scale,
-                           height: Constants.productCardHeight * scale)
-                    .foregroundColor(.gray)
+                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                           height: Constants.productCardSize * scale)
+                    .foregroundColor(Color(.secondarySystemFill))
             }
-            Text(item.name)
-                .foregroundStyle(Color.posPrimaryTexti3)
-                .multilineTextAlignment(.leading)
-                .font(Constants.itemNameFont)
-                .padding(.horizontal, Constants.horizontalElementSpacing)
+
+            DynamicHStack(spacing: Constants.textSpacing) {
+                Text(item.name)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemNameFont)
+                Spacer()
+                Text(item.formattedPrice)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .font(Constants.itemPriceFont)
+            }
+            .padding(Constants.textPadding)
             Spacer()
-            Text(item.formattedPrice)
-                .foregroundStyle(Color.posPrimaryTexti3)
-                .font(Constants.itemPriceFont)
-                .padding()
         }
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
-        .background(Color.posBackgroundWhitei3)
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .background(Color.posSecondaryBackground)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)
@@ -49,16 +53,18 @@ struct ItemCardView: View {
 
 private extension ItemCardView {
     enum Constants {
-        static let productCardHeight: CGFloat = 112
+        static let productCardSize: CGFloat = 112
+        static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
         static let productCardCornerRadius: CGFloat = 8
         static let productImageCornerRadius: CGFloat = 0
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0
-        static let horizontalCardSpacing: CGFloat = 0
-        static let horizontalElementSpacing: CGFloat = 32
-        static let itemNameFont: Font = .system(size: 24, weight: .bold, design: .default)
-        static let itemPriceFont: Font = .system(size: 24, weight: .regular, design: .default)
+        static let cardSpacing: CGFloat = 0
+        static let textSpacing: CGFloat = 8
+        static let textPadding: CGFloat = 32
+        static let itemNameFont: POSFontStyle = .posBodyEmphasized
+        static let itemPriceFont: POSFontStyle = .posBodyRegular
     }
 }
 

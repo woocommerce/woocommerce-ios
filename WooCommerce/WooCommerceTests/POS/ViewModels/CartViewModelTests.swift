@@ -7,37 +7,22 @@ import SwiftUI
 
 final class CartViewModelTests: XCTestCase {
 
-    private var orderStageSubject: PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>!
     private var sut: CartViewModel!
+    private var analytics: WooAnalytics!
+    private var analyticsProvider: MockAnalyticsProvider!
 
     override func setUp() {
         super.setUp()
-        orderStageSubject = PassthroughSubject<PointOfSaleDashboardViewModel.OrderStage, Never>()
-        sut = CartViewModel()
-        sut.bind(to: orderStageSubject.eraseToAnyPublisher())
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        sut = CartViewModel(analytics: analytics)
     }
 
     override func tearDown() {
-        orderStageSubject = nil
+        analyticsProvider = nil
+        analytics = nil
         sut = nil
         super.tearDown()
-    }
-
-    func test_canDeleteItemsFromCart_when_orderStage_is_building_then_returns_true() {
-        // Given/When
-        XCTAssertEqual(sut.canDeleteItemsFromCart, true, "Initial state")
-        orderStageSubject.send(.finalizing)
-
-        // Then
-        XCTAssertEqual(sut.canDeleteItemsFromCart, false)
-    }
-
-    func test_canDeleteItemsFromCart_when_orderStage_is_finalizing_then_returns_false() {
-        // Given/When
-        orderStageSubject.send(.finalizing)
-
-        // Then
-        XCTAssertEqual(sut.canDeleteItemsFromCart, false)
     }
 
     func test_cart_when_submitCart_is_invoked_then_cartSubmissionPublisher_emits_cart_items() {
@@ -144,21 +129,6 @@ final class CartViewModelTests: XCTestCase {
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
     }
 
-    func test_cartLabelColor_when_addItemToCart_then_color_updates_accordingly() {
-        // Given
-        let item = Self.makeItem()
-        let initialCartLabelColor = Color.posSecondaryTexti3
-        let expectedCartLabelColor = Color.posPrimaryTexti3
-
-        XCTAssertEqual(sut.cartLabelColor, initialCartLabelColor)
-
-        // When
-        sut.addItemToCart(item)
-
-        // Then
-        XCTAssertEqual(sut.cartLabelColor, expectedCartLabelColor)
-    }
-
     func test_isCartEmpty() {
         // Given
         let item = Self.makeItem()
@@ -169,6 +139,54 @@ final class CartViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isCartEmpty)
+    }
+
+    func test_shouldShowClearCartButton_before_addItemToCart_and_deletion_allowed_false() {
+        // Given
+        sut.canDeleteItemsFromCart = true
+
+        // When/Then
+        XCTAssertFalse(sut.shouldShowClearCartButton)
+    }
+
+    func test_shouldShowClearCartButton_when_addItemToCart_and_deletion_allowed_true() {
+        XCTAssertFalse(sut.shouldShowClearCartButton, "Initial state")
+
+        // Given
+        sut.canDeleteItemsFromCart = true
+        let anItem = Self.makeItem()
+
+        // When/Then
+        sut.addItemToCart(anItem)
+
+        // Then
+        XCTAssertTrue(sut.shouldShowClearCartButton)
+    }
+
+    func test_shouldShowClearCartButton_when_addItemToCart_and_deletion_disallowed_false() {
+        XCTAssertFalse(sut.shouldShowClearCartButton, "Initial state")
+
+        // Given
+        sut.canDeleteItemsFromCart = false
+        let anItem = Self.makeItem()
+
+        // When/Then
+        sut.addItemToCart(anItem)
+
+        // Then
+        XCTAssertFalse(sut.shouldShowClearCartButton)
+    }
+
+    func test_receivedEvents_when_addItemToCart_then_tracks_pos_item_added_to_cart_event() {
+        // Given
+        let expectedEvent = "pos_item_added_to_cart"
+        let item = Self.makeItem()
+
+        // When
+        sut.addItemToCart(item)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent)
     }
 }
 

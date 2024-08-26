@@ -1,0 +1,28 @@
+{
+    "objectives": [
+        {
+            "id": "traffic",
+            "title": "Traffic",
+            "description": "Aims to drive more visitors and increase page views.",
+            "suitable_for_description": "E-commerce sites, content-driven websites, startups."
+        },
+        {
+            "id": "sales",
+            "title": "Sales",
+            "description": "Converts potential customers into buyers by encouraging purchase.",
+            "suitable_for_description": "E-commerce, retailers, subscription services."
+        },
+        {
+            "id": "awareness",
+            "title": "Awareness",
+            "description": "Focuses on increasing brand recognition and visibility.",
+            "suitable_for_description": "New businesses, brands launching new products."
+        },
+        {
+            "id": "engagement",
+            "title": "Engagement",
+            "description": "Encourages your audience to interact and connect with your brand.",
+            "suitable_for_description": "Influencers and community builders looking for followers of the same interest."
+        }
+    ]
+}

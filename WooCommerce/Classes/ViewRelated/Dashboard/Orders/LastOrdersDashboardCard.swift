@@ -111,7 +111,7 @@ private extension LastOrdersDashboardCard {
     var filterBar: some View {
         HStack {
             Text(Localization.status)
-                .foregroundStyle(Color.primaryText)
+                .foregroundStyle(Color.primary)
                 .subheadlineStyle()
             Text(viewModel.status)
                 .subheadlineStyle()

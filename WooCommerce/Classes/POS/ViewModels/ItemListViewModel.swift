@@ -8,6 +8,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var items: [POSItem] = []
     @Published private(set) var state: ItemListState = .loading
     @Published private(set) var isHeaderBannerDismissed: Bool = false
+    @Published var showSimpleProductsModal: Bool = false
 
     var isEmptyOrError: Bool {
         switch state {
@@ -19,10 +20,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     }
 
     var shouldShowHeaderBanner: Bool {
-        // The banner it's only shown when:
-        // - Loading the item list
-        // - Hasn't been already been previously dismissed
-        !isHeaderBannerDismissed && state.isLoaded
+        // The banner it's shown as long as it hasn't already been dismissed once:
+        if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
+            return false
+        }
+        return !isHeaderBannerDismissed && state.isLoaded
     }
 
     private let itemProvider: POSItemProvider
@@ -49,11 +51,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             state = .loading
             items = try await itemProvider.providePointOfSaleItems()
             if items.count == 0 {
-                let itemListEmpty = EmptyModel(title: Constants.emptyProductsTitle,
-                                                  subtitle: Constants.emptyProductsSubtitle,
-                                                  hint: Constants.emptyProductsHint,
-                                                  buttonText: Constants.emptyProductsButtonTitle)
-                state = .empty(itemListEmpty)
+                state = .empty
             } else {
                 state = .loaded(items)
             }
@@ -73,12 +71,17 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     func dismissBanner() {
         isHeaderBannerDismissed = true
+        UserDefaults.standard.set(isHeaderBannerDismissed, forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey)
+    }
+
+    func simpleProductsInfoButtonTapped() {
+        showSimpleProductsModal = true
     }
 }
 
 extension ItemListViewModel {
     enum ItemListState: Equatable {
-        case empty(EmptyModel)
+        case empty
         // TODO:
         // Differentiate between loading on entering POS mode and reloading, as the
         // screens will be different:
@@ -96,11 +99,22 @@ extension ItemListViewModel {
             }
         }
 
+        var hasError: ErrorModel {
+            switch self {
+            case .error(let errorModel):
+                return errorModel
+            default:
+                return ItemListViewModel.ErrorModel(title: "Unknown error",
+                                                    subtitle: "Unknown error",
+                                                    buttonText: "Retry")
+            }
+        }
+
         // Equatable conformance for testing:
         static func == (lhs: ItemListViewModel.ItemListState, rhs: ItemListViewModel.ItemListState) -> Bool {
             switch (lhs, rhs) {
-            case (.empty(let lhsItems), .empty(let rhsItems)):
-                return lhsItems == rhsItems
+            case (.empty, .empty):
+                return true
             case (.loading, .loading):
                 return true
             case (.loaded(let lhsItems), .loaded(let rhsItems)):
@@ -119,40 +133,13 @@ extension ItemListViewModel {
         let buttonText: String
     }
 
-    struct EmptyModel: Equatable {
-        // TODO:
-        // Differentiate between empty with no products vs empty with no eligible products
-        // https://github.com/woocommerce/woocommerce-ios/issues/12815
-        // https://github.com/woocommerce/woocommerce-ios/issues/12816
-        let title: String
-        let subtitle: String
-        let hint: String
-        let buttonText: String
+    struct BannerState {
+        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 }
 
 private extension ItemListViewModel {
     enum Constants {
-        static let emptyProductsTitle = NSLocalizedString(
-            "pos.itemList.emptyProductsTitle",
-            value: "No products",
-            comment: "Text appearing on the item list screen when there are no products to load."
-        )
-        static let emptyProductsSubtitle = NSLocalizedString(
-            "pos.itemList.emptyProductsSubtitle",
-            value: "Your store doesn't have any products",
-            comment: "Text appearing as subtitle on the item list screen when there are no products to load."
-        )
-        static let emptyProductsHint = NSLocalizedString(
-            "pos.itemList.emptyProductsHint",
-            value: "POS currently only supports simple products",
-            comment: "Text appearing on the item list screen as hint when there are no products to load."
-        )
-        static let emptyProductsButtonTitle = NSLocalizedString(
-            "pos.itemList.emptyProductsButtonTitle",
-            value: "Create a simple product",
-            comment: "Text for the button appearing on the item list screen when there are no products to load."
-        )
         static let failedToLoadTitle = NSLocalizedString(
             "pos.itemList.failedToLoadTitle",
             value: "Error loading products",

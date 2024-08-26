@@ -5,21 +5,28 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            Spacer()
+        VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
+            POSErrorXMark()
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.posPrimaryTexti3)
-                    .font(.posBody)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .font(.posTitleEmphasized)
+                    .accessibilityAddTraits(.isHeader)
 
-                Text(viewModel.message)
-                    .font(.posTitle)
-                    .foregroundStyle(Color.posPrimaryTexti3)
-                    .bold()
+                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
+                    Text(viewModel.message)
+                    Text(viewModel.nextStep)
+                }
+                .font(.posBodyRegular)
+                .foregroundStyle(Color.posPrimaryText)
             }
-            .multilineTextAlignment(.center)
-            Spacer()
+
+            Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
+                   action: viewModel.tryAnotherPaymentMethodButtonViewModel.actionHandler)
+            .buttonStyle(POSPrimaryButtonStyle())
         }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
     }
 }
 
@@ -27,5 +34,5 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
-                underlyingError: .paymentDeclinedByCardReader)))
+                underlyingError: .paymentDeclinedByCardReader), tryAnotherPaymentMethodAction: {}))
 }

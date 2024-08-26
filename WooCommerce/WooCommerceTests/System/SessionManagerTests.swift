@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import KeychainAccess
 @testable import Networking
+import Storage
 
 /// SessionManager Unit Tests
 ///
@@ -444,6 +445,33 @@ final class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.defaultCredentials, Settings.wpcomCredentials)
+    }
+
+    func test_core_data_reset_clears_timestamps_stores() throws {
+
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+
+        // Preload info
+        defaults[UserDefaults.Key.latestBackgroundOrderSyncDate] = Date.now
+        for card in DashboardTimestampStore.Card.allCases {
+            for range in DashboardTimestampStore.TimeRange.allCases {
+                DashboardTimestampStore.saveTimestamp(Date.now, for: card, at: range, store: defaults)
+            }
+        }
+
+        // When
+        let sut = SessionManager(defaults: defaults, keychainServiceName: uuid)
+        NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: nil)
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.latestBackgroundOrderSyncDate])
+        for card in DashboardTimestampStore.Card.allCases {
+            for range in DashboardTimestampStore.TimeRange.allCases {
+                XCTAssertNil(DashboardTimestampStore.loadTimestamp(for: card, at: range, store: defaults))
+            }
+        }
     }
 }
 

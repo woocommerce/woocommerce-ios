@@ -10,8 +10,9 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .accessibilityAddTraits(.isHeader)
 
-            viewModel.image
+            Image(decorative: viewModel.imageName)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.retryButtonViewModel.title,
@@ -24,6 +25,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
             }
         }
         .multilineTextAlignment(.center)
+        .accessibilityElement(children: .contain)
     }
 }
 

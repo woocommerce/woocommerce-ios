@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import protocol Yosemite.POSItem
+import protocol WooFoundation.Analytics
 
 final class CartViewModel: CartViewModelProtocol {
     /// Emits cart items when the CTA is tapped to submit the cart.
@@ -14,32 +15,39 @@ final class CartViewModel: CartViewModelProtocol {
     @Published private(set) var itemsInCart: [CartItem] = []
     var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
 
-    // It should be synced with the source of truth in `PointOfSaleDashboardViewModel`.
-    @Published private var orderStage: PointOfSaleDashboardViewModel.OrderStage = .building
     private var cancellables = Set<AnyCancellable>()
 
-    var canDeleteItemsFromCart: Bool {
-        orderStage != .finalizing
-    }
+    @Published var canDeleteItemsFromCart: Bool = true
+    @Published private(set) var shouldShowClearCartButton: Bool = false
 
     var isCartEmpty: Bool {
         return itemsInCart.isEmpty
     }
 
-    init() {
+    private var analytics: Analytics
+
+    init(analytics: Analytics) {
+        self.analytics = analytics
+
         cartSubmissionPublisher = cartSubmissionSubject.eraseToAnyPublisher()
         addMoreToCartActionPublisher = addMoreToCartActionSubject.eraseToAnyPublisher()
+        assignClearCartButtonVisibility()
     }
 
-    func bind(to orderStagePublisher: AnyPublisher<PointOfSaleDashboardViewModel.OrderStage, Never>) {
-        orderStagePublisher
-            .assign(to: \.orderStage, on: self)
-            .store(in: &cancellables)
+    private func assignClearCartButtonVisibility() {
+        $canDeleteItemsFromCart
+            .combineLatest($itemsInCart)
+            .map { canDelete, itemsInCart in
+                return canDelete && itemsInCart.isNotEmpty
+            }
+            .assign(to: &$shouldShowClearCartButton)
     }
 
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
+
+        analytics.track(.pointOfSaleAddItemToCart)
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
@@ -62,14 +70,6 @@ final class CartViewModel: CartViewModelProtocol {
             return String.pluralize(itemsInCart.count,
                                     singular: "%1$d item",
                                     plural: "%1$d items")
-        }
-    }
-
-    var cartLabelColor: Color {
-        if itemsInCart.isEmpty {
-            Color.posSecondaryTexti3
-        } else {
-            Color.posPrimaryTexti3
         }
     }
 

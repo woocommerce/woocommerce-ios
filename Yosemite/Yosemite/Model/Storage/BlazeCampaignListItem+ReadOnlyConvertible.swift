@@ -27,6 +27,8 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
         budgetAmount = campaign.budgetAmount
         budgetCurrency = campaign.budgetCurrency
         budgetMode = campaign.budgetMode.rawValue
+        isEvergreen = campaign.isEvergreen
+        durationDays = campaign.durationDays
     }
 
     /// Returns a ReadOnly (`Networking.BlazeCampaignListItem`) version of the `Storage.BlazeCampaignListItem`
@@ -46,6 +48,8 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
                               spentBudget: spentBudget,
                               budgetMode: BlazeCampaignBudget.Mode(rawValue: budgetMode) ?? .total,
                               budgetAmount: budgetAmount,
-                              budgetCurrency: budgetCurrency)
+                              budgetCurrency: budgetCurrency,
+                              isEvergreen: isEvergreen,
+                              durationDays: durationDays)
     }
 }

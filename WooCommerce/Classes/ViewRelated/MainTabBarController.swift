@@ -98,7 +98,7 @@ final class MainTabBarController: UITabBarController {
     private let productsNavigationController = WooTabNavigationController()
 
     private let reviewsNavigationController = WooTabNavigationController()
-    private let hubMenuNavigationController = WooTabNavigationController()
+    private let hubMenuContainerController = TabContainerController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
@@ -324,8 +324,19 @@ extension MainTabBarController {
 
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///
-    static func switchToHubMenuTab(completion: (() -> Void)? = nil) {
-        navigateTo(.hubMenu, completion: completion)
+    static func switchToHubMenuTab(completion: ((HubMenuViewController?) -> Void)? = nil) {
+        navigateTo(.hubMenu, completion: {
+            let hubMenuViewController: HubMenuViewController? = {
+                guard let hubMenuTabController = childViewController() as? TabContainerController,
+                      let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                      let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
+                    DDLogError("⛔️ Could not switch to the Hub Menu")
+                    return nil
+                }
+                return hubMenuViewController
+            }()
+            completion?(hubMenuViewController)
+        })
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -436,19 +447,6 @@ extension MainTabBarController {
         })
     }
 
-    static func presentOrderCreationFlow() {
-        switchToOrdersTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let ordersContainerController = tabBar?.ordersContainerController
-
-            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
-                return
-            }
-
-            ordersSplitViewWrapperController.presentOrderCreationFlow()
-        }
-    }
-
     static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController
@@ -475,33 +473,22 @@ extension MainTabBarController {
     }
 
     static func presentPayments() {
-        switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return
-            }
-
-            hubMenuViewController.showPaymentsMenu()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showPaymentsMenu()
         }
     }
 
     static func presentCoupons() {
-        switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return
-            }
-
-            hubMenuViewController.showCoupons()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showCoupons()
         }
     }
 
     /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.
     ///
     static func navigateToPrivacySettings() {
-        switchToHubMenuTab {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return DDLogError("⛔️ Could not switch to the Hub Menu")
-            }
-            hubMenuViewController.showPrivacySettings()
+        switchToHubMenuTab { hubMenuViewController in
+            hubMenuViewController?.showPrivacySettings()
         }
     }
 
@@ -517,8 +504,18 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        navigateTo(.hubMenu) { [weak self] in
-            self?.hubMenuTabCoordinator?.navigate(to: destination)
+        switch destination {
+        case is HubMenuDestination,
+            is PaymentsMenuDestination:
+            navigateTo(.hubMenu) { [weak self] in
+                self?.hubMenuTabCoordinator?.navigate(to: destination)
+            }
+        case is OrdersDestination:
+            navigateTo(.orders) {
+                Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
+            }
+        default:
+            return
         }
     }
 }
@@ -549,7 +546,7 @@ private extension MainTabBarController {
             case .products:
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
             case .hubMenu:
-                return hubMenuNavigationController
+                return hubMenuContainerController
         }
     }
 
@@ -588,7 +585,6 @@ private extension MainTabBarController {
         if hubMenuTabCoordinator == nil {
             let hubTabCoordinator = createHubMenuTabCoordinator()
             self.hubMenuTabCoordinator = hubTabCoordinator
-            hubTabCoordinator.start()
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
@@ -607,7 +603,7 @@ private extension MainTabBarController {
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
-        HubMenuCoordinator(navigationController: hubMenuNavigationController,
+        HubMenuCoordinator(tabContainerController: hubMenuContainerController,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in

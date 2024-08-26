@@ -1,9 +1,8 @@
 import Foundation
-import SwiftUI
 
-struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel {
+struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel: Hashable {
     let title: String = Localization.title
-    let image: Image = .init(uiImage: .cardReaderLowBattery)
+    let imageName = PointOfSaleAssets.cardReaderLowBattery.imageName
     let batteryLevelInfo: String
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 

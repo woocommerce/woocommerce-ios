@@ -11,6 +11,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var mockCartViewModel: MockCartViewModel!
     private var mockTotalsViewModel: MockTotalsViewModel!
     private var mockItemListViewModel: MockItemListViewModel!
+    private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
 
@@ -21,10 +22,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
+        mockConnectivityObserver = MockConnectivityObserver()
         sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
-                                            itemListViewModel: mockItemListViewModel)
+                                            itemListViewModel: mockItemListViewModel,
+                                            connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
 
@@ -33,6 +36,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = nil
         mockTotalsViewModel = nil
         mockItemListViewModel = nil
+        mockConnectivityObserver = nil
         sut = nil
         cancellables = []
         super.tearDown()
@@ -50,20 +54,18 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(sut.isExitPOSDisabled, expectedExitPOSButtonDisabledState)
     }
 
-    func test_start_new_transaction() {
+    func test_start_new_order() {
         // Given
         let expectedOrderStage = PointOfSaleDashboardViewModel.OrderStage.building
         let itemsAdded = false
-        let expectedPaymentState = TotalsViewModel.PaymentState.acceptingCard
 
         // When
-        sut.startNewTransaction()
+        mockTotalsViewModel.startNewOrderAction = ()
 
         // Then
         XCTAssertEqual(sut.orderStage, expectedOrderStage)
         XCTAssertEqual(mockCartViewModel.addItemToCartCalled, itemsAdded)
-        XCTAssertEqual(sut.totalsViewModel.paymentState, expectedPaymentState)
-        XCTAssertNil(sut.totalsViewModel.order)
+        XCTAssertTrue(mockCartViewModel.removeAllItemsFromCartCalled)
     }
 
     func test_items_added_to_cart() {
@@ -234,9 +236,9 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         var receivedIsSyncingOrder: Bool = false
 
         // Attach sink to observe changes to isSyncingOrder
-        mockTotalsViewModel.isSyncingOrderPublisher
-            .sink { isSyncingOrder in
-                receivedIsSyncingOrder = isSyncingOrder
+        mockTotalsViewModel.orderStatePublisher
+            .sink { orderState in
+                receivedIsSyncingOrder = orderState.isSyncing
                 expectation.fulfill()
             }
             .store(in: &cancellables)
@@ -307,7 +309,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     func test_isInitialLoading_when_item_list_empty_then_false() {
         // Given
         mockItemListViewModel.items = []
-        mockItemListViewModel.state = .empty(.init(title: "", subtitle: "", hint: "", buttonText: ""))
+        mockItemListViewModel.state = .empty
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)
@@ -321,6 +323,56 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.isInitialLoading)
+    }
+
+    func test_cartSubmitted_sets_cartViewModel_canDeleteItems_false() {
+        // Given
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+
+        // Then
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_sets_cartViewModel_canDeleteItems_true() {
+        // Given
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+        XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
+    }
+
+    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
+        // Given
+        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+
+        // When
+        mockCartViewModel.addMoreToCartActionSubject.send(())
+
+        // Then
+        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
+    }
+
+    func test_showsConnectivityError_when_nonReachable_then_shows_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.notReachable)
+
+        // Then
+        XCTAssertTrue(sut.showsConnectivityError)
+    }
+
+    func test_showsConnectivityError_when_reachable_then_no_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
+
+        // Then
+        XCTAssertFalse(sut.showsConnectivityError)
     }
 }
 

@@ -1249,6 +1249,9 @@ enum WooAnalyticsStat: String {
     case pushNotificationOrderBackgroundSynced = "push_notification_order_background_synced"
     case pushNotificationOrderBackgroundSyncError = "push_notification_order_background_sync_error"
     case backgroundUpdatesDisabled = "background_updates_disabled"
+
+    // MARK: Point of Sale events
+    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
 }
 
 extension WooAnalyticsStat {

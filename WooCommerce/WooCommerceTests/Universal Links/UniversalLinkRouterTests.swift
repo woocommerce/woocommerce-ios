@@ -160,6 +160,22 @@ final class UniversalLinkRouterTests: XCTestCase {
         // Then
         XCTAssertEqual(bouncingURL, url)
     }
+
+    func test_defaultUniversalLinkRouter_includes_expected_routes() {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+
+        // When
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+
+        // Then
+        assertEqual(4, routes.count)
+
+        XCTAssert(routes.contains { $0 is OrderDetailsRoute })
+        XCTAssert(routes.contains { $0 is MyStoreRoute })
+        XCTAssert(routes.contains { $0 is PaymentsRoute })
+        XCTAssert(routes.contains { $0 is OrdersRoute })
+    }
 }
 
 private extension UniversalLinkRouterTests {

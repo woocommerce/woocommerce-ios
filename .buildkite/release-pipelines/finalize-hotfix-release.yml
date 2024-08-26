@@ -16,3 +16,7 @@ steps:
 
       echo '--- :fire: Finalize Hotfix Release'
       bundle exec fastlane finalize_hotfix_release skip_confirm:true
+    retry:
+      manual:
+        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        allowed: false

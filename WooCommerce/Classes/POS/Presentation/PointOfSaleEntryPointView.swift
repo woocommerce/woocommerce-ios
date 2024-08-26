@@ -9,6 +9,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var totalsViewModel: TotalsViewModel
     @StateObject private var cartViewModel: CartViewModel
     @StateObject private var itemListViewModel: ItemListViewModel
+    @StateObject private var posModalManager = POSModalManager()
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
 
@@ -44,12 +45,13 @@ struct PointOfSaleEntryPointView: View {
                                  totalsViewModel: totalsViewModel,
                                  cartViewModel: cartViewModel,
                                  itemListViewModel: itemListViewModel)
-            .onAppear {
-                onPointOfSaleModeActiveStateChange(true)
-            }
-            .onDisappear {
-                onPointOfSaleModeActiveStateChange(false)
-            }
+        .environmentObject(posModalManager)
+        .onAppear {
+            onPointOfSaleModeActiveStateChange(true)
+        }
+        .onDisappear {
+            onPointOfSaleModeActiveStateChange(false)
+        }
     }
 }
 

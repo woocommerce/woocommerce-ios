@@ -1,9 +1,8 @@
 import Foundation
-import SwiftUI
 
-struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel {
+struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel: Hashable {
     let title: String = Localization.title
-    let image: Image = .init(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     init(cancelUpdateAction: @escaping () -> Void) {

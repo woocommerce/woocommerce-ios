@@ -7,6 +7,20 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel {
     let progressTitle: String = .init(format: Localization.percentCompleteFormat, 100.0)
 }
 
+extension PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel: Hashable, Equatable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(progressTitle)
+    }
+
+    /// This can be synthesised – implemented manually to ensure it matches the `hash` function.
+    static func ==(lhs: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel,
+                   rhs: PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.progressTitle == rhs.progressTitle
+    }
+}
+
 private extension PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(

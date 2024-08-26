@@ -8,8 +8,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
             Text(viewModel.title)
                 .accessibilityAddTraits(.isHeader)
 
-            viewModel.image
-                .accessibilityHidden(true)
+            Image(decorative: viewModel.imageName)
 
             Text(viewModel.errorDetails)
 

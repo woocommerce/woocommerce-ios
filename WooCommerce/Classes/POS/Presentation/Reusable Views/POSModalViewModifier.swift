@@ -16,7 +16,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 modalManager.getContent()
                     .background(Color.posPrimaryBackground)
                     .cornerRadius(16)
-                    .shadow(color: Color.black.opacity(0.04), radius: 24, x: 0, y: 8)
+                    .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
                     .transition(.scale)
                     .zIndex(1)
                     .padding()

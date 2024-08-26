@@ -6,8 +6,9 @@ struct ReaderConnectedView: View {
 
     var body: some View {
         Text("Connected")
+            .font(POSFontStyle.posDetailLight)
         Text(readerID)
-            .bold()
+            .font(POSFontStyle.posDetailEmphasized)
         Button("Disconnect") {
             disconnect()
         }

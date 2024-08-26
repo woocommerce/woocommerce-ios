@@ -8,10 +8,9 @@ struct CartView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var offSetPosition: CGFloat = 0.0
-    private var coordinateSpace: CoordinateSpace = .global
-    private var shouldApplyBottomShadow: Bool {
-        !cartViewModel.isCartEmpty &&
-        offSetPosition < Constants.offSetPositionThreshold
+    private var coordinateSpace: CoordinateSpace = .named(Constants.scrollViewCoordinateSpaceIdentifier)
+    private var shouldApplyHeaderBottomShadow: Bool {
+        !cartViewModel.isCartEmpty && offSetPosition < 0
     }
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
@@ -72,7 +71,7 @@ struct CartView: View {
             .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
-            .if(shouldApplyBottomShadow, transform: { $0.applyBottomShadow() })
+            .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
@@ -108,6 +107,7 @@ struct CartView: View {
                             self.offSetPosition = position
                         }
                     }
+                    .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,
                            let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
@@ -160,7 +160,7 @@ private extension CartView {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
-        static let offSetPositionThreshold: CGFloat = 104
+        static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let cartEmptyViewSpacing: CGFloat = 40
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"

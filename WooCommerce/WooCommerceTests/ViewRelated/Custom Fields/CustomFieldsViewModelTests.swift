@@ -17,9 +17,9 @@ class CustomFieldsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.contentURL, url)
     }
 
-    func test_init_with_OrderMetaData_strips_HTML_from_metadata_value() throws {
+    func test_init_with_MetaData_strips_HTML_from_metadata_value() throws {
         // Given
-        let metadata = OrderMetaData(metadataID: 0, key: "HTML Metadata", value: "<strong>Fancy</strong> <a href=\"http://\">Metadata</a>")
+        let metadata = MetaData(metadataID: 0, key: "HTML Metadata", value: "<strong>Fancy</strong> <a href=\"http://\">Metadata</a>")
 
         // When
         let viewModel = CustomFieldsViewModel(metadata: metadata)
@@ -28,10 +28,10 @@ class CustomFieldsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.content, "Fancy Metadata")
     }
 
-    func test_init_with_OrderMetaData_creates_contentURL_from_metadata_value() throws {
+    func test_init_with_MetaData_creates_contentURL_from_metadata_value() throws {
         // Given
         let urlString = "https://woocommerce.com/"
-        let metadata = OrderMetaData(metadataID: 0, key: "URL Metadata", value: urlString)
+        let metadata = MetaData(metadataID: 0, key: "URL Metadata", value: urlString)
 
         // When
         let viewModel = CustomFieldsViewModel(metadata: metadata)

@@ -480,7 +480,7 @@ private extension OrderListViewModelTests {
                      status: OrderStatusEnum,
                      dateCreated: Date = Date(),
                      datePaid: Date? = nil,
-                     customFields: [Yosemite.OrderMetaData] = [],
+                     customFields: [Yosemite.MetaData] = [],
                      paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
@@ -493,7 +493,7 @@ private extension OrderListViewModelTests {
         storageOrder.update(with: readonlyOrder)
 
         for field in customFields {
-            let storageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+            let storageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
             storageMetaData.update(with: field)
             storageOrder.addToCustomFields(storageMetaData)
         }

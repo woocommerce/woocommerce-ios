@@ -256,10 +256,10 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderNote, storedNote)
     }
 
-    func test_loadOrderMetaData_by_siteID_metadataID() throws {
+    func test_loadMetaData_by_siteID_metadataID() throws {
         // Given
         let metadataID: Int64 = 123
-        let metadata = storage.insertNewObject(ofType: OrderMetaData.self)
+        let metadata = storage.insertNewObject(ofType: MetaData.self)
         metadata.metadataID = metadataID
 
         let order = storage.insertNewObject(ofType: Order.self)
@@ -267,7 +267,7 @@ final class StorageTypeExtensionsTests: XCTestCase {
         order.addToCustomFields(metadata)
 
         // When
-        let storedMetaData = try XCTUnwrap(storage.loadOrderMetaData(siteID: sampleSiteID, metadataID: metadataID))
+        let storedMetaData = try XCTUnwrap(storage.loadMetaData(siteID: sampleSiteID, metadataID: metadataID))
 
         // Then
         XCTAssertEqual(metadata, storedMetaData)

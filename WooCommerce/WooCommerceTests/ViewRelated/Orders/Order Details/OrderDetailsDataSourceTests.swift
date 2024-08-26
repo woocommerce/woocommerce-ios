@@ -529,7 +529,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
     func test_custom_fields_button_is_visible() throws {
         // Given
         let order = MockOrders().makeOrder(customFields: [
-            OrderMetaData(metadataID: 123, key: "Key", value: "Value")
+            MetaData(metadataID: 123, key: "Key", value: "Value")
         ])
         let dataSource = OrderDetailsDataSource(
             order: order, storageManager: storageManager,

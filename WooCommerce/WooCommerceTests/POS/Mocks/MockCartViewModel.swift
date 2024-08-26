@@ -16,7 +16,6 @@ class MockCartViewModel: CartViewModelProtocol {
     var canDeleteItemsFromCart: Bool = false
     var itemToScrollToWhenCartUpdated: WooCommerce.CartItem? = nil
     var itemsInCartLabel: String? = nil
-    var cartLabelColor: Color = .clear
 
     func addItemToCart(_ item: any Yosemite.POSItem) {
         addItemToCartCalled = true

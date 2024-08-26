@@ -6,6 +6,7 @@ struct CartView: View {
     @ObservedObject private var cartViewModel: CartViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: PointOfSaleDashboardViewModel, cartViewModel: CartViewModel) {
         self.viewModel = viewModel
@@ -24,7 +25,7 @@ struct CartView: View {
                     HStack {
                         Text(Localization.cartTitle)
                             .font(Constants.primaryFont)
-                            .foregroundColor(cartViewModel.cartLabelColor)
+                            .foregroundColor(cartViewModel.itemsInCart.isEmpty ? .posSecondaryText : .posPrimaryText)
                             .accessibilityAddTraits(.isHeader)
 
                         Spacer()
@@ -32,7 +33,7 @@ struct CartView: View {
                         if let itemsInCartLabel = cartViewModel.itemsInCartLabel {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
-                                .foregroundColor(Color.posSecondaryTexti3)
+                                .foregroundColor(Color.posSecondaryText)
                         }
                     }
                     .accessibilityElement(children: .combine)
@@ -63,8 +64,6 @@ struct CartView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Constants.horizontalPadding)
             .padding(.vertical, Constants.verticalPadding)
-            .font(.title)
-            .foregroundColor(Color.white)
 
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {
@@ -75,7 +74,7 @@ struct CartView: View {
                         .aspectRatio(contentMode: .fit)
                     Text(Localization.addItemsToCartHint)
                         .font(Constants.secondaryFont)
-                        .foregroundColor(Color.posTertiaryTexti3)
+                        .foregroundColor(Color.posTertiaryText)
                         .multilineTextAlignment(.center)
                     Spacer()
                 }
@@ -118,8 +117,19 @@ struct CartView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(cartViewModel.isCartEmpty ? Color.posBackgroundEmptyWhitei3.ignoresSafeArea(edges: .all) : Color.posBackgroundWhitei3.ignoresSafeArea(.all))
+        .background(backgroundColor.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
+    }
+}
+
+private extension CartView {
+    var backgroundColor: Color {
+        switch colorScheme {
+        case .dark:
+            return Color.posSecondaryBackground
+        default:
+            return cartViewModel.isCartEmpty ? Color.posTertiaryBackground : Color.posSecondaryBackground
+        }
     }
 }
 

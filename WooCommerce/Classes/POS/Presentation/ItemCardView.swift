@@ -29,19 +29,19 @@ struct ItemCardView: View {
 
             DynamicHStack(spacing: Constants.textSpacing) {
                 Text(item.name)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
                 Spacer()
                 Text(item.formattedPrice)
-                    .foregroundStyle(Color.posPrimaryTexti3)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
             }
             .padding(Constants.textPadding)
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posBackgroundWhitei3)
+        .background(Color.posSecondaryBackground)
         .overlay {
             RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
                 .stroke(Color.black, lineWidth: Constants.nilOutline)

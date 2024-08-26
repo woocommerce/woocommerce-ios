@@ -40,7 +40,7 @@
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <entity name="BlazeCampaignObjective" representedClassName="BlazeCampaignObjective" syncable="YES">
-        <attribute name="explanation" attributeType="String" defaultValueString=""/>
+        <attribute name="generalDescription" attributeType="String" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="locale" attributeType="String" defaultValueString=""/>
         <attribute name="suitableForDescription" attributeType="String" defaultValueString=""/>

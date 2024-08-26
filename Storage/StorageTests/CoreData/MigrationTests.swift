@@ -2949,7 +2949,7 @@ final class MigrationTests: XCTestCase {
         // Check all attributes
         XCTAssertNotNil(objective.entity.attributesByName["id"])
         XCTAssertNotNil(objective.entity.attributesByName["title"])
-        XCTAssertNotNil(objective.entity.attributesByName["explanation"])
+        XCTAssertNotNil(objective.entity.attributesByName["generalDescription"])
         XCTAssertNotNil(objective.entity.attributesByName["suitableForDescription"])
     }
 }
@@ -3784,7 +3784,7 @@ private extension MigrationTests {
         let method = context.insert(entityName: "BlazeCampaignObjective", properties: [
             "id": "sales",
             "title": "Sales",
-            "explanation": "Converts potential customers into buyers by encouraging purchase.",
+            "generalDescription": "Converts potential customers into buyers by encouraging purchase.",
             "suitableForDescription": "E-commerce, retailers, subscription services."
         ])
         return method

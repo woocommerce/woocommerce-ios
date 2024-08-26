@@ -562,6 +562,7 @@
 		DE26B5242775C5F000A2EA0A /* Coupon+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DE26B5252775C5F000A2EA0A /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DE26B52A2775C8DC00A2EA0A /* Model 60.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 60.xcdatamodel"; sourceTree = "<group>"; };
+		DE4DF9C22C7C322300FE9B1E /* Model 115.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 115.xcdatamodel"; sourceTree = "<group>"; };
 		DE653EAA2A6FB7C900937C78 /* Model 92.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 92.xcdatamodel"; sourceTree = "<group>"; };
 		DE8311BE2C6B1A7C00A88709 /* Model 114.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 114.xcdatamodel"; sourceTree = "<group>"; };
 		DEA0D0692BA953D3007786F2 /* Model 109.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 109.xcdatamodel"; sourceTree = "<group>"; };
@@ -2006,6 +2007,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				DE4DF9C22C7C322300FE9B1E /* Model 115.xcdatamodel */,
 				DE8311BE2C6B1A7C00A88709 /* Model 114.xcdatamodel */,
 				45DE59E12C527A2400EC444B /* Model 113.xcdatamodel */,
 				456C14062C08D7C4006710C0 /* Model 112.xcdatamodel */,

@@ -65,6 +65,15 @@ struct CartView: View {
             .padding(.vertical, Constants.verticalPadding)
             .font(.title)
             .foregroundColor(Color.white)
+            .if(!cartViewModel.isCartEmpty, transform: {
+                // Applies shadows to the bottom of the header if the cart has items
+                $0.background(
+                    Color.white
+                        .shadow(color: Color(.secondarySystemFill), radius: 10, x: 0, y: 0)
+                        .mask(Rectangle().padding(.bottom, -20))
+                )
+            })
+
 
             if cartViewModel.isCartEmpty {
                 VStack(spacing: Constants.cartEmptyViewSpacing) {

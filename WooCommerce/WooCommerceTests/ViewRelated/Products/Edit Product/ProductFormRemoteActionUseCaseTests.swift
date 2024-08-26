@@ -117,7 +117,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
 
         // When
-        let isEligible: Bool = sut.isEligibleForNewPasswordEndpoint()
+        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertFalse(isEligible)
@@ -134,7 +134,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
 
         // When
-        let isEligible: Bool = sut.isEligibleForNewPasswordEndpoint()
+        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
 
         // Then
         XCTAssertTrue(isEligible)
@@ -165,7 +165,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForWooProductPasswordEndpoint())
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
@@ -196,7 +196,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForWooProductPasswordEndpoint())
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
@@ -232,7 +232,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertTrue(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForWooProductPasswordEndpoint())
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         if case .success(let resultData) = result {
@@ -273,7 +273,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForNewPasswordEndpoint())
+        XCTAssertFalse(ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager).isEligibleForWooProductPasswordEndpoint())
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         if case .success(let resultData) = result {

@@ -101,7 +101,7 @@ struct CartView: View {
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
-                                                   value: geometry.frame(in: coordinateSpace).minY)
+                                                   value: geometry.frame(in: coordinateSpace).origin.y)
                         })
                         .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
                             self.offSetPosition = position

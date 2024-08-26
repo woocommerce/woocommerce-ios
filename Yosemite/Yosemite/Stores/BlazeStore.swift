@@ -75,6 +75,8 @@ public final class BlazeStore: Store {
             fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case let .fetchPaymentInfo(siteID, onCompletion):
             fetchPaymentInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .fetchCampaignObjectives(siteID, locale, onCompletion):
+            synchronizeCampaignObjectives(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
     }
 }
@@ -339,6 +341,46 @@ private extension BlazeStore {
             } catch {
                 onCompletion(.failure(error))
             }
+        }
+    }
+}
+
+// MARK: Sync campaign objectives
+//
+private extension BlazeStore {
+    func synchronizeCampaignObjectives(siteID: Int64,
+                                       locale: String,
+                                       onCompletion: @escaping (Result<[BlazeCampaignObjective], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let objectives = try await remote.fetchCampaignObjectives(siteID: siteID, locale: locale)
+                insertStoredCampaignObjectiveInBackground(readonlyObjectives: objectives, locale: locale) {
+                    onCompletion(.success(objectives))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Removes BlazeCampaignObjective entities with the given locale
+    /// and inserts specified entities in a background thread.
+    /// `onCompletion` will be called on the main thread.
+    ///
+    func insertStoredCampaignObjectiveInBackground(readonlyObjectives: [Networking.BlazeCampaignObjective],
+                                                   locale: String,
+                                                   onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            derivedStorage.deleteBlazeCampaignObjectives(locale: locale)
+            for objective in readonlyObjectives {
+                let storageObjectives = derivedStorage.insertNewObject(ofType: Storage.BlazeCampaignObjective.self)
+                storageObjectives.update(with: objective)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 }

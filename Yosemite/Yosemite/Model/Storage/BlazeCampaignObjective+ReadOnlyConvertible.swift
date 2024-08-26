@@ -9,7 +9,7 @@ extension Storage.BlazeCampaignObjective: ReadOnlyConvertible {
     public func update(with objective: Yosemite.BlazeCampaignObjective) {
         id = objective.id
         title = objective.title
-        explanation = objective.description
+        generalDescription = objective.description
         suitableForDescription = objective.suitableForDescription
         locale = objective.locale
     }
@@ -19,7 +19,7 @@ extension Storage.BlazeCampaignObjective: ReadOnlyConvertible {
     public func toReadOnly() -> BlazeCampaignObjective {
         BlazeCampaignObjective(id: id,
                                title: title,
-                               description: explanation,
+                               description: generalDescription,
                                suitableForDescription: suitableForDescription,
                                locale: locale)
     }

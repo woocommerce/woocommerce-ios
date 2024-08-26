@@ -60,7 +60,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
-        .background(Color.posBackgroundGreyi3)
+        .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)

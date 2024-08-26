@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct POSHeaderTitleView: View {
-    var foregroundColor: Color = Color.posPrimaryTexti3
+    var foregroundColor: Color = Color.posPrimaryText
 
     var body: some View {
         Text(Localization.productSelectorTitle)

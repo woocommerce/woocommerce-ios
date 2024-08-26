@@ -19,7 +19,7 @@ struct PointOfSaleExitPosAlertView: View {
                         .font(.system(size: UIFontMetrics.default.scaledValue(for: Constants.closeIconSize),
                                       weight: .medium))
                 }
-                .foregroundColor(Color.posTertiaryTexti3)
+                .foregroundColor(Color.posTertiaryText)
             }
             Text(Localization.exitTitle)
                 .font(.posTitleEmphasized)

@@ -10,14 +10,14 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
-                .font(POSFontStyle.posBodyRegular)
+                .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
             viewModel.image
                 .accessibilityHidden(true)
 
             Text(viewModel.progressTitle)
-                .font(POSFontStyle.posDetailLight)
+                .font(POSFontStyle.posBodyRegular)
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)

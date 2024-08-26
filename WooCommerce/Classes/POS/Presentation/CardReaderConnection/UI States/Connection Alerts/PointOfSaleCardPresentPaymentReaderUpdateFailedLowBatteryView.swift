@@ -10,13 +10,13 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
-                .font(POSFontStyle.posBodyRegular)
+                .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
             Image(decorative: viewModel.imageName)
 
             Text(viewModel.batteryLevelInfo)
-                .font(POSFontStyle.posDetailLight)
+                .font(POSFontStyle.posBodyRegular)
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

@@ -58,10 +58,12 @@ struct TotalsView: View {
                 }
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+                    .transition(.opacity)
             }
         }
         .background(backgroundColor)
         .animation(.default, value: viewModel.isPaymentSuccessState)
+        .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }

@@ -39,6 +39,13 @@
         <attribute name="textSnippet" attributeType="String" defaultValueString=""/>
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
+    <entity name="BlazeCampaignObjective" representedClassName="BlazeCampaignObjective" syncable="YES">
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="locale" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="suitableForDescription" attributeType="String" defaultValueString=""/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+    </entity>
     <entity name="BlazeTargetDevice" representedClassName="BlazeTargetDevice" syncable="YES">
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="locale" attributeType="String" defaultValueString=""/>

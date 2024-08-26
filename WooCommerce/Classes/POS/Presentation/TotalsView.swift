@@ -52,10 +52,11 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
+                .animation(.default, value: viewModel.isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
                     .transition(.opacity)

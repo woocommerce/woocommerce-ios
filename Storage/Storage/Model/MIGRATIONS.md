@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 115 (Release 20.2.0.0)
+- @itsmeichigo 2024-08-26
+    - Added `BlazeCampaignObjective` entity.
+
 ## Model 114 (Release 20.0.0.0)
 - @itsmeichigo 2024-08-13
     - Added `isEvergreen` and `durationDays` attributes to `BlazeCampaignListItem` entity.

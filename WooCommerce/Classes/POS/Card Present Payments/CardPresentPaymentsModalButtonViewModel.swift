@@ -17,3 +17,15 @@ struct CardPresentPaymentsModalButtonViewModel: Identifiable {
         self.init(title: title, actionHandler: actionHandler)
     }
 }
+
+extension CardPresentPaymentsModalButtonViewModel: Hashable {
+    static func == (lhs: CardPresentPaymentsModalButtonViewModel, rhs: CardPresentPaymentsModalButtonViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(id)
+    }
+}

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-20 14:54:05+0000 */
+/* Translation-Revision-Date: 2024-08-22 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -11163,7 +11163,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.paymentError.tryPaymentAgain.button.title" = "Zahlung erneut versuchen";
 
 /* Instruction used on a card payment error from the Point of Sale Checkout telling the merchant how to continue with the payment. */
-"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Wenn du die Transaktion fortsetzen möchtest, versuche bitte, die Zahlung erneut auszuführen.";
+"pointOfSale.cardPresent.paymentErrorNonRetryable.nextStep.instruction" = "Wenn du die Bearbeitung der Transaktion fortsetzen möchtest, versuche bitte, die Zahlung erneut auszuführen.";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.title" = "Bezahlen fehlgeschlagen";
@@ -11448,7 +11448,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.itemlistview.loading.title" = "Wird geladen";
 
 /* Text hinting the merchant to create a product. */
-"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Wenn du eins hinzufügen möchtest, verlasse POS und gehe zu den Produkten";
+"pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Wenn du eins hinzufügen möchtest, verlasse POS und gehe zu „Produkte“";
 
 /* Subtitle text on screen when there are no products to load. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsSubtitle" = "POS unterstützt derzeit nur einfache Produkte.";

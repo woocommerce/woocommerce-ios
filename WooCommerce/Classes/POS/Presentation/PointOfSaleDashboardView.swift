@@ -62,18 +62,8 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
+        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
         }
         .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
@@ -82,6 +72,7 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .posRootModal()
         .sheet(isPresented: $viewModel.showSupport) {
             supportForm
         }

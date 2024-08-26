@@ -16,6 +16,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersView: View {
             Image(decorative: viewModel.imageName)
 
             Text(viewModel.instruction)
+                .font(POSFontStyle.posDetailLight)
 
             Button(viewModel.buttonViewModel.title,
                    action: viewModel.buttonViewModel.actionHandler)

@@ -23,8 +23,8 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))
     }
 
-    func disconnectReader() {
-        // no-op
+    func disconnectReader() async {
+        connectedReader = nil
     }
 
     var onCollectPaymentCalled: (() -> Void)?

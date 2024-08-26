@@ -86,7 +86,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func disconnectReader() async {
+        cancelPayment()
+
         connectionControllerManager.knownReaderProvider.forgetCardReader()
+
         return await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
 

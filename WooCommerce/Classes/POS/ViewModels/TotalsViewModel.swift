@@ -113,6 +113,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var startPaymentOnReaderConnection: AnyCancellable?
+    private var cardReaderDisconnection: AnyCancellable?
 
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
         Task { @MainActor in
@@ -153,9 +154,18 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         cancelReaderPreparation()
     }
 
-    func cancelReaderPreparation() {
+    func startShowingTotalsView() {
+        observeReaderReconnection()
+    }
+
+    func stopShowingTotalsView() {
+        cancelReaderPreparation()
+    }
+
+    private func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         startPaymentOnReaderConnection?.cancel()
+        cardReaderDisconnection?.cancel()
     }
 }
 
@@ -266,6 +276,16 @@ private extension TotalsViewModel {
                 }
             }
             .assign(to: &$isShowingCardReaderStatus)
+    }
+
+    func observeReaderReconnection() {
+        cardReaderDisconnection = $connectionStatus
+            .filter({ $0 == .disconnected })
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    await self?.startPaymentWhenReaderConnected()
+                }
+            }
     }
 
     func startPaymentWhenReaderConnected() async {

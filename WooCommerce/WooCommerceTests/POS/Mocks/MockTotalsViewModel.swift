@@ -79,8 +79,13 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         // Provide a mock implementation if needed
     }
 
-    var spyCancelReaderPreparationCalled = false
-    func cancelReaderPreparation() {
-        spyCancelReaderPreparationCalled = true
+    var spyStopShowingTotalsViewCalled = false
+    func stopShowingTotalsView() {
+        spyStopShowingTotalsViewCalled = true
+    }
+
+    var spyStartShowingTotalsViewCalled = false
+    func startShowingTotalsView() {
+        spyStartShowingTotalsViewCalled = true
     }
 }

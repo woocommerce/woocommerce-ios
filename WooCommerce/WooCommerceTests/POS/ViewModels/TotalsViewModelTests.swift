@@ -216,6 +216,29 @@ final class TotalsViewModelTests: XCTestCase {
         // Then OrderState changes from idle to syncing to error
         XCTAssertEqual(orderStates, [.idle, .syncing, .error(.init(message: "", handler: {}))])
     }
+
+    func test_when_reader_reconnects_on_TotalsView_reader_is_prepared_for_payment() async {
+        // Given a reader has been connected, with the order synced, on the TotalsView
+        sut.startShowingTotalsView()
+        cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        orderService.orderToReturn = Order.fake()
+        await sut.syncOrder(for: [], allItems: [])
+        // And that reader has subsequently disconnected
+        await cardPresentPaymentService.disconnectReader()
+
+        let collectPaymentCalled = waitFor { promise in
+            // Then the reader is prepared for payment
+            self.cardPresentPaymentService.onCollectPaymentCalled = {
+                promise(true)
+            }
+
+            // When a reader reconnects
+            self.cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        }
+
+        XCTAssertTrue(collectPaymentCalled)
+    }
 }
 
 private extension TotalsViewModelTests {

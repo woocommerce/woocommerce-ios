@@ -348,15 +348,15 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
     }
 
-    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
+    func test_addMoreTapped_calls_totalsViewModel_stopShowingTotalsView_called() {
         // Given
-        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+        mockTotalsViewModel.spyStopShowingTotalsViewCalled = false
 
         // When
         mockCartViewModel.addMoreToCartActionSubject.send(())
 
         // Then
-        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
+        XCTAssertTrue(mockTotalsViewModel.spyStopShowingTotalsViewCalled)
     }
 
     func test_showsConnectivityError_when_nonReachable_then_shows_error() {

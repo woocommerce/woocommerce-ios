@@ -156,12 +156,17 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     private func observeOrderStage() {
-        $orderStage.sink { [weak self] stage in
+        $orderStage
+            .removeDuplicates()
+            .sink { [weak self] stage in
             guard let self else { return }
             cartViewModel.canDeleteItemsFromCart = stage == .building
 
-            if stage == .building {
-                totalsViewModel.cancelReaderPreparation()
+            switch stage {
+            case .building:
+                totalsViewModel.stopShowingTotalsView()
+            case .finalizing:
+                totalsViewModel.startShowingTotalsView()
             }
         }
         .store(in: &cancellables)

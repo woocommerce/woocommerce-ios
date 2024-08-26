@@ -29,23 +29,25 @@ struct POSFloatingControlView: View {
                     )
                 }
             } label: {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
-                    .foregroundStyle(fontColor)
-                    .frame(width: Constants.size, height: Constants.size)
+                VStack {
+                    Spacer()
+                    Image(systemName: "ellipsis")
+                        .font(.posBodyEmphasized, maximumContentSizeCategory: .accessibilityLarge)
+                        .foregroundStyle(fontColor)
+                    Spacer()
+                }
+                .frame(width: Constants.size)
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
             .disabled(viewModel.isExitPOSDisabled)
-            HStack {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-                    .padding(Constants.cardStatusPadding)
-                    .foregroundStyle(fontColor)
-            }
-            .frame(height: Constants.size)
-            .background(backgroundColor)
-            .cornerRadius(Constants.cornerRadius)
+
+            CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
+                .foregroundStyle(fontColor)
+                .background(backgroundColor)
+                .cornerRadius(Constants.cornerRadius)
         }
+        .frame(height: Constants.size)
         .background(Color.clear)
     }
 }
@@ -72,7 +74,6 @@ private extension POSFloatingControlView {
 
 private extension POSFloatingControlView {
     enum Constants {
-        static let cardStatusPadding: CGFloat = 8
         static let size: CGFloat = 56
         static let cornerRadius: CGFloat = 8
     }

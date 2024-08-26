@@ -40,9 +40,9 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.readerConnected)
                             .foregroundColor(connectedFontColor)
                     }
+                    .padding(.horizontal, Constants.horizontalPadding)
+                    .frame(maxHeight: .infinity)
                 }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.verticalPadding)
             case .disconnecting:
                 HStack(spacing: Constants.buttonImageAndTextSpacing) {
                     ProgressView()
@@ -54,7 +54,7 @@ struct CardReaderConnectionStatusView: View {
                         .foregroundColor(connectedFontColor)
                 }
                 .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.verticalPadding)
+                .frame(maxHeight: .infinity)
             case .disconnected:
                 Button {
                     connectionViewModel.connectReader()
@@ -64,12 +64,15 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
-                }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.verticalPadding)
-                .overlay {
-                    RoundedRectangle(cornerRadius: Constants.overlayRadius)
-                        .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
+                    .padding(.horizontal, Constants.horizontalPadding / 2)
+                    .frame(maxHeight: .infinity)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: Constants.overlayRadius)
+                            .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
+                    }
+                    .padding(.horizontal, Constants.horizontalPadding / 2)
+                    .padding(.vertical, Constants.verticalPadding)
+                    .frame(maxHeight: .infinity)
                 }
             }
         }

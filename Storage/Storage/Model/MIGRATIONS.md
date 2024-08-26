@@ -5,6 +5,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 115 (Release 20.2.0.0)
 - @itsmeichigo 2024-08-26
     - Added `BlazeCampaignObjective` entity.
+- @hafizrahman 2024-08-26
+    - Rename `OrderMetaData` entity to `MetaData` while migrating existing data.
 
 ## Model 114 (Release 20.0.0.0)
 - @itsmeichigo 2024-08-13

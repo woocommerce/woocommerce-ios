@@ -69,6 +69,7 @@ struct TotalsView: View {
             viewModel.onTotalsViewDisappearance()
         }
         .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
@@ -354,6 +355,20 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
+    }
+}
+
+private extension View {
+    ///  Force the position and size values to be resolved and animated by the parent
+    ///  before being passed down to each subview.
+    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
+    ///  It results in the whole TotalsView animated together when transitioning.
+    func geometryGroupIfSupported() -> some View {
+        if #available(iOS 17.0, *) {
+            return self.geometryGroup()
+        } else {
+            return self
+        }
     }
 }
 

@@ -23,10 +23,10 @@ private extension POSHeaderTitleView {
     }
 
     enum Constants {
-        static let padding: EdgeInsets = .init(top: POSHeaderLayoutConstants.posSectionTopPadding,
-                                               leading: 16,
-                                               bottom: 24,
-                                               trailing: 16)
+        static let padding: EdgeInsets = .init(top: POSHeaderLayoutConstants.sectionTopPadding,
+                                               leading: POSHeaderLayoutConstants.sectionHorizontalPadding,
+                                               bottom: POSHeaderLayoutConstants.sectionBottomPadding,
+                                               trailing: POSHeaderLayoutConstants.sectionHorizontalPadding)
     }
 }
 

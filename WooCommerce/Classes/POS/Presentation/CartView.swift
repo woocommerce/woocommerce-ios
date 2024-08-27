@@ -65,8 +65,8 @@ struct CartView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.vertical, POSHeaderLayoutConstants.posSectionTopPadding)
+            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+            .padding(.vertical, POSHeaderLayoutConstants.sectionTopPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {
@@ -121,7 +121,7 @@ struct CartView: View {
                     EmptyView()
                 } else {
                     checkoutButton
-                        .padding(Constants.checkoutButtonPadding)
+                        .padding(POSHeaderLayoutConstants.sectionHorizontalPadding)
                         .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
@@ -162,9 +162,7 @@ private extension CartView {
         static let clearButtonCornerRadius: CGFloat = 4
         static let clearButtonBorderWidth: CGFloat = 2
         static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
-        static let checkoutButtonPadding: CGFloat = 16
         static let itemHorizontalPadding: CGFloat = 8
-        static let horizontalPadding: CGFloat = 16
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let cartEmptyViewSpacing: CGFloat = 40

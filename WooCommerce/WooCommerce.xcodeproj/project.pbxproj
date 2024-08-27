@@ -841,6 +841,7 @@
 		20CC1EDD2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */; };
 		20CCBF212B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CCBF202B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift */; };
 		20D210BE2B14C9B90099E517 /* WooPaymentsDepositStatusDisplayDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D210BD2B14C9B90099E517 /* WooPaymentsDepositStatusDisplayDetails.swift */; };
+		20D2CCA32C7E175700051705 /* WavesProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D2CCA22C7E175700051705 /* WavesProgressViewStyle.swift */; };
 		20D3D42B2C64D7CC004CE6E3 /* SimpleProductsOnlyInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D42A2C64D7CC004CE6E3 /* SimpleProductsOnlyInformation.swift */; };
 		20D3D42F2C64F175004CE6E3 /* POSSecondaryButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D42E2C64F175004CE6E3 /* POSSecondaryButtonStyle.swift */; };
 		20D3D4312C64F202004CE6E3 /* POSButtonStyleConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4302C64F202004CE6E3 /* POSButtonStyleConstants.swift */; };
@@ -3881,6 +3882,7 @@
 		20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewModel.swift; sourceTree = "<group>"; };
 		20CCBF202B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsCurrencyOverviewViewModelTests.swift; sourceTree = "<group>"; };
 		20D210BD2B14C9B90099E517 /* WooPaymentsDepositStatusDisplayDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositStatusDisplayDetails.swift; sourceTree = "<group>"; };
+		20D2CCA22C7E175700051705 /* WavesProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavesProgressViewStyle.swift; sourceTree = "<group>"; };
 		20D3D42A2C64D7CC004CE6E3 /* SimpleProductsOnlyInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleProductsOnlyInformation.swift; sourceTree = "<group>"; };
 		20D3D42E2C64F175004CE6E3 /* POSSecondaryButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSecondaryButtonStyle.swift; sourceTree = "<group>"; };
 		20D3D4302C64F202004CE6E3 /* POSButtonStyleConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSButtonStyleConstants.swift; sourceTree = "<group>"; };
@@ -6077,6 +6079,7 @@
 				683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */,
 				016C6B962C74AB17000D86FD /* POSConnectivityView.swift */,
 				68D3E98C2C7C371B005B6278 /* POSBottomShadowViewModifier.swift */,
+				20D2CCA22C7E175700051705 /* WavesProgressViewStyle.swift */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -14501,6 +14504,7 @@
 				B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */,
 				B935D35C2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift in Sources */,
 				EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */,
+				20D2CCA32C7E175700051705 /* WavesProgressViewStyle.swift in Sources */,
 				02E4908929AE49B9005942AE /* TopPerformersEmptyView.swift in Sources */,
 				4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */,
 				D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */,

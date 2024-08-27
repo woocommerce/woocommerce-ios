@@ -6,11 +6,8 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
-            Image(decorative: viewModel.imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                       height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+            ProgressView()
+                .progressViewStyle(WaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {

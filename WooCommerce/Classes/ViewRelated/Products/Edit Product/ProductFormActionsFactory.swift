@@ -71,7 +71,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
-    private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
     private let isCustomFieldsEnabled: Bool
@@ -82,7 +81,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
-         isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          isCustomFieldsEnabled: Bool =
@@ -96,7 +94,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
-        self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
         self.isCustomFieldsEnabled = isCustomFieldsEnabled
@@ -272,14 +269,13 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForBundleProduct() -> [ProductFormEditAction] {
-        let shouldShowBundledProductsRow = isBundledProductsEnabled
         let canOpenBundledProducts = product.bundledItems.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowBundledProductsRow ? .bundledProducts(actionable: canOpenBundledProducts) : nil,
+            .bundledProducts(actionable: canOpenBundledProducts),
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),

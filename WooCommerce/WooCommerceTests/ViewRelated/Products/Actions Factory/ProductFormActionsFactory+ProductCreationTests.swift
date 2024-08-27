@@ -64,7 +64,6 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   isBundledProductsEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
@@ -72,7 +71,6 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isBundledProductsEnabled: isBundledProductsEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       variationsPrice: variationsPrice)

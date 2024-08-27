@@ -63,6 +63,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
     func presentOrderCreationFlow() {
         ordersViewController.presentOrderCreationFlow()
     }
+
+    func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
+        ordersViewController.presentOrderCreationFlowWithCustomer(id: customerID, billing: billing, shipping: shipping)
+    }
 }
 
 private extension OrdersSplitViewWrapperController {
@@ -177,6 +181,20 @@ private extension OrdersSplitViewWrapperController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+}
+
+extension OrdersSplitViewWrapperController: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        guard let ordersDestination = destination as? OrdersDestination else {
+            return
+        }
+        switch ordersDestination {
+        case .createOrder:
+            presentOrderCreationFlow()
+        case .orderList:
+            return
+        }
     }
 }
 

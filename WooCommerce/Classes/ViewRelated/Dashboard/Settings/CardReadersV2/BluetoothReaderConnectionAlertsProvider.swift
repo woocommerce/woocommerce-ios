@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalScanningForReader(cancel: cancel)
     }
@@ -25,10 +26,15 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
         CardPresentModalNonRetryableError(amount: "", error: error, onDismiss: close)
     }
 
-    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
+                                           openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
+                                                      openWCSettings: openWCSettings,
+                                                      retrySearch: retrySearch,
+                                                      cancelSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
@@ -48,6 +54,12 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
                         progress: Float,
                         cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
         CardPresentModalUpdateProgress(requiredUpdate: requiredUpdate, progress: progress, cancel: cancel)
+    }
+
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
     }
 
     func foundReader(name: String,

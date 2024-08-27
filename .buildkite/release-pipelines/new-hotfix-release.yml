@@ -4,7 +4,7 @@ steps:
       - automattic/a8c-ci-toolkit#3.0.1
     env:
       # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-      IMAGE_ID: xcode-15.1
+      IMAGE_ID: xcode-15.4
     command: |
       .buildkite/commands/configure-environment.sh
 
@@ -13,3 +13,7 @@ steps:
 
       echo '--- :fire: Start New Hotfix Release'
       bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true
+    retry:
+      manual:
+        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        allowed: false

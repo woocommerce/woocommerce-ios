@@ -163,25 +163,22 @@ platform :ios do
   ########################################################################
   # Release Lanes
   ########################################################################
-  #####################################################################################
-  # start_code_freeze
-  # -----------------------------------------------------------------------------------
-  # This lane executes the steps planned on code freeze
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane start_code_freeze [skip_confirm:<skip confirm>]
+
+  # This lane executes the steps planned on code freeze, creating a new release branch from the current trunk
   #
-  # Example:
-  # bundle exec fastlane start_code_freeze
-  # bundle exec fastlane start_code_freeze skip_confirm:true
-  #####################################################################################
-  desc 'Creates a new release branch from the current trunk'
-  lane :start_code_freeze do |options|
-    # Verify that there's nothing in progress in the working copy
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane start_code_freeze skip_confirm:true
+  #
+  lane :start_code_freeze do |skip_confirm: false|
     ensure_git_status_clean
 
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
+
+    # Checks if internal dependencies are on a stable version
+    check_pods_references
 
     UI.important <<-MESSAGE
 
@@ -191,13 +188,14 @@ platform :ios do
       • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
 
     MESSAGE
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Create the release branch
+    new_release_branch = "release/#{release_version_next}"
+    ensure_branch_does_not_exist!(new_release_branch)
+
     UI.message('Creating release branch...')
-    Fastlane::Helper::GitHelper.create_branch("release/#{release_version_next}", from: DEFAULT_BRANCH)
+    Fastlane::Helper::GitHelper.create_branch(new_release_branch, from: DEFAULT_BRANCH)
     UI.success("Done! New release branch is: #{git_branch}")
 
     # Bump the release version and build code and write it to the `xcconfig` file
@@ -222,23 +220,48 @@ platform :ios do
     )
 
     UI.important('Pushing changes to remote and configuring the release on GitHub')
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     push_to_git_remote(tags: false)
 
+    # Protect release/* branch
     copy_branch_protection(
       repository: GITHUB_REPO,
       from_branch: DEFAULT_BRANCH,
       to_branch: "release/#{new_version}"
     )
-    set_milestone_frozen_marker(
-      repository: GITHUB_REPO,
-      milestone: new_version
-    )
 
-    check_pods_references
+    begin
+      # Move PRs to next milestone
+      moved_prs = update_assigned_milestone(
+        repository: GITHUB_REPO,
+        from_milestone: new_version,
+        to_milestone: release_version_next,
+        comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
+      )
+
+      # Add ❄️ marker to milestone title to indicate we entered code-freeze
+      set_milestone_frozen_marker(
+        repository: GITHUB_REPO,
+        milestone: new_version
+      )
+    rescue StandardError => e
+      moved_prs = []
+
+      report_milestone_error(error_title: "Error freezing milestone `#{new_version}`: #{e.message}")
+    end
+
+    UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
+
+    # Annotate the build with the moved PRs
+    moved_prs_info = if moved_prs.empty?
+                       "👍 No open PR were targeting `#{new_version}` at the time of code-freeze"
+                     else
+                       "#{moved_prs.count} PRs targeting `#{new_version}` were still open and thus moved to `#{release_version_next}`:\n" \
+                         + moved_prs.map { |pr_num| "[##{pr_num}](https://github.com/#{GITHUB_REPO}/pull/#{pr_num})" }.join(', ')
+                     end
+
+    buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze-wcios', message: moved_prs_info) if is_ci
   end
 
   #####################################################################################
@@ -255,10 +278,8 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
-    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
-
-    ensure_git_branch_is_release_branch
+    ensure_git_branch_is_release_branch!
 
     UI.important("Completing code freeze for: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -273,17 +294,7 @@ platform :ios do
 
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{release_version_current}-code-freeze-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{release_version_current} code freeze to #{DEFAULT_BRANCH}"
-    )
+    create_backmerge_pr
   end
 
   # Updates the `AppStoreStrings.pot` file with the latest content from the `release_notes.txt` files and the other text sources.
@@ -329,10 +340,8 @@ platform :ios do
   #####################################################################################
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
-    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
-
-    ensure_git_branch_is_release_branch
+    ensure_git_branch_is_release_branch!
 
     UI.important <<-MESSAGE
 
@@ -350,7 +359,7 @@ platform :ios do
 
     # Bump the build code
     UI.message('Bumping build code...')
-    ensure_git_branch_is_release_branch
+    ensure_git_branch_is_release_branch!
     VERSION_FILE.write(version_long: build_code_next)
     commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
@@ -364,17 +373,7 @@ platform :ios do
 
     trigger_beta_build(branch_to_build: "release/#{release_version_current}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{build_code_current}-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{build_code_current} into #{DEFAULT_BRANCH}"
-    )
+    create_backmerge_pr
   end
 
   #####################################################################################
@@ -436,48 +435,35 @@ platform :ios do
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
   end
 
-  #####################################################################################
-  # finalize_hotfix_release
-  # -----------------------------------------------------------------------------------
-  # This lane finalizes the hotfix branch.
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane finalize_hotfix_release
-  #####################################################################################
-  desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
-  lane :finalize_hotfix_release do |options|
-    ensure_git_branch_is_release_branch
-
-    # Verify that there's nothing in progress in the working copy
+  # This lane finalizes the hotfix branch, triggering a release build.
+  #
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane finalize_hotfix_release skip_confirm:true
+  #
+  lane :finalize_hotfix_release do |skip_confirm: false|
+    ensure_git_branch_is_release_branch!
     ensure_git_status_clean
 
     hotfix_version = release_version_current
 
     UI.important("Triggering hotfix build for version: #{hotfix_version}")
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
-
-    push_to_git_remote(tags: false)
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     trigger_release_build(branch_to_build: "release/#{hotfix_version}")
 
-    # Retrieve the current non-hotfix release version
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-    non_hotfix_release_version = release_version_current
+    create_backmerge_pr
 
-    # Create an intermediate branch
-    Fastlane::Helper::GitHelper.checkout_and_pull("release/#{hotfix_version}")
-    new_intermediate_branch_name = "merge/#{hotfix_version}-hotfix-into-release-#{non_hotfix_release_version}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
-
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: "release/#{non_hotfix_release_version}",
-      title: "Merge #{hotfix_version} hotfix into release/#{non_hotfix_release_version}"
-    )
+    # Close hotfix milestone
+    begin
+      close_milestone(
+        repository: GITHUB_REPO,
+        milestone: hotfix_version
+      )
+    rescue StandardError => e
+      report_milestone_error(error_title: "Error closing milestone `#{hotfix_version}`: #{e.message}")
+    end
   end
 
   #####################################################################################
@@ -496,10 +482,9 @@ platform :ios do
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
-    ensure_git_branch_is_release_branch
 
-    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
+    ensure_git_branch_is_release_branch!
 
     UI.important("Finalizing release: #{release_version_current}")
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -517,28 +502,6 @@ platform :ios do
     commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
 
-    # Wrap up
-    version = release_version_current
-    remove_branch_protection(
-      repository: GITHUB_REPO,
-      branch: "release/#{version}"
-    )
-    set_milestone_frozen_marker(
-      repository: GITHUB_REPO,
-      milestone: version,
-      freeze: false
-    )
-    create_new_milestone(
-      repository: GITHUB_REPO,
-      need_appstore_submission: true,
-      milestone_duration: 7,
-      number_of_days_from_code_freeze_to_release: 10
-    )
-    close_milestone(
-      repository: GITHUB_REPO,
-      milestone: version
-    )
-
     # Start the build
     UI.important('Pushing changes to remote and triggering the release build')
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
@@ -547,19 +510,31 @@ platform :ios do
 
     push_to_git_remote(tags: false)
 
+    version = release_version_current
+
     trigger_release_build(branch_to_build: "release/#{version}")
 
-    # Create an intermediate branch
-    new_intermediate_branch_name = "merge/#{release_version_current}-final-into-#{DEFAULT_BRANCH}"
-    Fastlane::Helper::GitHelper.create_branch(new_intermediate_branch_name)
+    create_backmerge_pr
 
-    # Push up the intermediate branch
-    push_to_git_remote(tags: false)
-
-    create_release_management_pull_request(
-      base_branch: DEFAULT_BRANCH,
-      title: "Merge #{release_version_current} final into #{DEFAULT_BRANCH}"
+    remove_branch_protection(
+      repository: GITHUB_REPO,
+      branch: "release/#{version}"
     )
+
+    # Close milestone
+    begin
+      set_milestone_frozen_marker(
+        repository: GITHUB_REPO,
+        milestone: version,
+        freeze: false
+      )
+      close_milestone(
+        repository: GITHUB_REPO,
+        milestone: version
+      )
+    rescue StandardError => e
+      report_milestone_error(error_title: "Error closing milestone `#{version}`: #{e.message}")
+    end
   end
 
   lane :check_translation_progress_all do
@@ -583,34 +558,30 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # trigger_beta_build
-  # -----------------------------------------------------------------------------------
-  # This lane triggers a beta build on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane trigger_beta_build [branch_to_build:<branch_name>]
+  # This lane triggers a beta build on CI.
   #
-  #####################################################################################
-  lane :trigger_beta_build do |options|
+  # @param [String] branch_to_build The git branch the CI build should run on.
+  #
+  # @example Running the lane
+  #          bundle exec fastlane trigger_beta_build branch_to_build:main
+  #
+  lane :trigger_beta_build do |branch_to_build:|
     trigger_buildkite_release_build(
-      branch: options[:branch_to_build],
+      branch: branch_to_build,
       beta: true
     )
   end
 
-  #####################################################################################
-  # trigger_release_build
-  # -----------------------------------------------------------------------------------
-  # This lane triggers a stable release build on CI
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane trigger_release_build [branch_to_build:<branch_name>]
+  # This lane triggers a stable release build on CI.
   #
-  #####################################################################################
-  lane :trigger_release_build do |options|
+  # @param [String] branch_to_build The git branch the CI build should run on.
+  #
+  # @example Running the lane
+  #          bundle exec fastlane trigger_release_build branch_to_build:main
+  #
+  lane :trigger_release_build do |branch_to_build:|
     trigger_buildkite_release_build(
-      branch: options[:branch_to_build],
+      branch: branch_to_build,
       beta: false
     )
   end
@@ -1330,13 +1301,16 @@ end
 # Kicks off a Buildkite build
 # -----------------------------------------------------------------------------------
 def trigger_buildkite_release_build(branch:, beta:)
-  buildkite_trigger_build(
+  build_url = buildkite_trigger_build(
     buildkite_organization: 'automattic',
     buildkite_pipeline: 'woocommerce-ios',
     branch: branch,
     environment: { BUILDKITE_BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
   )
+
+  message = "This build triggered a build on <code>#{branch}</code>:<br>- #{build_url}"
+  buildkite_annotate(style: 'info', context: 'trigger-release-build', message: message) if is_ci
 end
 
 def inject_buildkite_analytics_environment(xctestrun_path:)
@@ -1470,20 +1444,53 @@ TEST_ANALYTICS_ENVIRONMENT = %w[
 # -----------------------------------------------------------------------------------
 # Release Management Utils
 # -----------------------------------------------------------------------------------
-def create_release_management_pull_request(base_branch:, title:)
-  create_pull_request(
-    api_token: get_required_env('GITHUB_TOKEN'),
-    repo: GITHUB_REPO,
-    title: title,
-    head: Fastlane::Helper::GitHelper.current_git_branch,
-    base: base_branch,
-    labels: 'Releases'
+def create_backmerge_pr
+  version = release_version_current
+
+  create_release_backmerge_pull_request(
+    repository: GITHUB_REPO,
+    source_branch: "release/#{version}",
+    labels: ['Releases'],
+    milestone_title: release_version_next
   )
+rescue StandardError => e
+  error_message = <<-MESSAGE
+    Error creating backmerge pull request: #{e.message}
+    - If this is not the first time you are running the release task, the backmerge PR for the version `#{version}` might have already been previously created.
+    Please close any previous backmerge PR for `#{version}`, delete the previous merge branch, then run the release task again.
+  MESSAGE
+
+  buildkite_annotate(style: 'error', context: 'error-creating-backmerge', message: error_message) if is_ci
+
+  UI.user_error!(error_message)
 end
 
-def ensure_git_branch_is_release_branch
+def ensure_git_branch_is_release_branch!
   # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
   ensure_git_branch(branch: '^release/')
+end
+
+def ensure_branch_does_not_exist!(branch_name)
+  return unless Fastlane::Helper::GitHelper.branch_exists_on_remote?(branch_name: branch_name)
+
+  error_message = "The branch `#{branch_name}` already exists. Please check first if there is an existing Pull Request that needs to be merged or closed first, " \
+                  'or delete the branch to then run again the release task.'
+
+  buildkite_annotate(style: 'error', context: 'error-checking-branch', message: error_message) if is_ci
+
+  UI.user_error!(error_message)
+end
+
+def report_milestone_error(error_title:)
+  error_message = <<-MESSAGE
+    #{error_title}
+    - If this is not the first time you are running the release task (e.g. retrying because it failed on first attempt), the milestone might have already been closed and this error is expected.
+    - Otherwise if this is the first you are running the release task for this version, please investigate the error.
+  MESSAGE
+
+  UI.error(error_message)
+
+  buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
 end
 
 def check_pods_references

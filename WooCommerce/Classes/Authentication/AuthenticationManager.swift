@@ -25,12 +25,6 @@ class AuthenticationManager: Authentication {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    /// Store creation coordinator in the logged-out state.
-    private var loggedOutStoreCreationCoordinator: LoggedOutStoreCreationCoordinator?
-
-    /// Store creation coordinator in the logged-in state.
-    private var storeCreationCoordinator: StoreCreationCoordinator?
-
     /// Keychain access for SIWA auth token
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -559,16 +553,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         analytics.track(wooEvent, withError: error)
     }
 
-    // Navigate to store creation
-    func showSiteCreation(in navigationController: UINavigationController) {
-        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped(isFreeTrial: true))
-
-        let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
-                                                            navigationController: navigationController)
-        self.loggedOutStoreCreationCoordinator = coordinator
-        coordinator.start()
-    }
-
     func showSiteCreationGuide(in navigationController: UINavigationController) {
         analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
 
@@ -582,24 +566,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
 // MARK: - Private helpers
 private extension AuthenticationManager {
-    @MainActor
-    func presentStoreCreationFlowInitiatedFromPrologue(source: SignInSource? = nil,
-                                                       in navigationController: UINavigationController,
-                                                       onCompletion: @escaping () -> Void) async {
-        // If the user logs in from the store creation flow
-        guard case .custom(let source) = source,
-              let storeCreationSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source),
-              storeCreationSource == .prologue else {
-            return
-        }
-
-        // Starts the store creation process because the user came from the store creation CTA in the prologue screen.
-        let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
-                                                   navigationController: navigationController,
-                                                   featureFlagService: featureFlagService)
-        self.storeCreationCoordinator = coordinator
-        coordinator.start()
-    }
 
     func getAvailableStores() async -> [Site] {
         let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
@@ -649,18 +615,7 @@ private extension AuthenticationManager {
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
         // Start the store picker
-        let config: StorePickerConfiguration = {
-            switch source {
-            case .custom(let source):
-                if let loggedOutSource = LoggedOutStoreCreationCoordinator.Source(rawValue: source) {
-                    return .storeCreationFromLogin(source: loggedOutSource)
-                } else {
-                    return .login
-                }
-            default:
-                return .login
-            }
-        }()
+        let config = StorePickerConfiguration.login
         storePickerCoordinator = StorePickerCoordinator(navigationController,
                                                         config: config,
                                                         switchStoreUseCase: switchStoreUseCase)
@@ -669,12 +624,6 @@ private extension AuthenticationManager {
             storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: onDismiss)
         } else {
             storePickerCoordinator?.start()
-        }
-
-        Task { @MainActor in
-            await presentStoreCreationFlowInitiatedFromPrologue(source: source,
-                                                                in: navigationController,
-                                                                onCompletion: onDismiss)
         }
     }
 

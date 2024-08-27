@@ -15,6 +15,13 @@ Closes: #
 ## Screenshots
 <!-- Include before and after images or gifs when appropriate. -->
 
-
 ---
 - [ ] I have considered if this change warrants user-facing release notes and have added them to `RELEASE-NOTES.txt` if necessary.
+
+## Reviewer (or Author, in the case of optional code reviews):
+
+Please make sure these conditions are met before approving the PR, or request changes if the PR needs improvement:
+
+- [ ] The PR is small and has a clear, single focus, or a valid explanation is provided in the description. If needed, please request to split it into smaller PRs.
+- [ ] Ensure Adequate Unit Test Coverage: The changes are reasonably covered by unit tests or an explanation is provided in the PR description.
+- [ ] Manual Testing: The author listed all the tests they ran, including smoke tests when needed (e.g., for refactorings). The reviewer confirmed that the PR works as expected on all devices (phone/tablet) and no regressions are added.

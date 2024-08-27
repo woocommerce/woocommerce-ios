@@ -2,13 +2,19 @@ import UIKit
 import protocol WooFoundation.Analytics
 
 /// The source of the media to pick from.
-enum MediaPickingSource {
+enum MediaPickingSource: Hashable, Identifiable {
+    var id: Self {
+        return self
+    }
+
     /// Device camera.
     case camera
     /// Device photo library.
     case photoLibrary
     /// Site's media library.
     case siteMediaLibrary
+    /// Media attached to given product.
+    case productMedia(productID: Int64)
 }
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.
@@ -19,17 +25,20 @@ final class MediaPickingCoordinator {
     }()
 
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
-        return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
+        return DeviceMediaLibraryPicker(imagesOnly: imagesOnly,
+                                        allowsMultipleSelections: allowsMultipleSelections,
+                                        onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =
         .init(siteID: siteID,
-              imagesOnly: true,
-              allowsMultipleSelections: allowsMultipleImages,
+              imagesOnly: imagesOnly,
+              allowsMultipleSelections: allowsMultipleSelections,
               onCompletion: onWPMediaPickerCompletion)
 
     private let siteID: Int64
-    private let allowsMultipleImages: Bool
+    private let imagesOnly: Bool
+    private let allowsMultipleSelections: Bool
     private let flow: Flow
     private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
@@ -37,14 +46,16 @@ final class MediaPickingCoordinator {
     private let onWPMediaPickerCompletion: WordPressMediaLibraryPickerViewController.Completion
 
     init(siteID: Int64,
-         allowsMultipleImages: Bool,
+         imagesOnly: Bool,
+         allowsMultipleSelections: Bool,
          flow: Flow,
          analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
          onWPMediaPickerCompletion: @escaping WordPressMediaLibraryPickerViewController.Completion) {
         self.siteID = siteID
-        self.allowsMultipleImages = allowsMultipleImages
+        self.imagesOnly = imagesOnly
+        self.allowsMultipleSelections = allowsMultipleSelections
         self.flow = flow
         self.analytics = analytics
         self.onCameraCaptureCompletion = onCameraCaptureCompletion
@@ -86,6 +97,9 @@ final class MediaPickingCoordinator {
             showDeviceMediaLibraryPicker(origin: origin)
         case .siteMediaLibrary:
             showSiteMediaPicker(origin: origin)
+        case .productMedia(let productID):
+            showSiteMediaPicker(origin: origin,
+                                productID: productID)
         }
     }
 }
@@ -133,20 +147,24 @@ private extension MediaPickingCoordinator {
         deviceMediaLibraryPicker.presentPicker(origin: origin)
     }
 
-    func showSiteMediaPicker(origin: UIViewController) {
-        wpMediaLibraryPicker.start(from: origin)
+    func showSiteMediaPicker(origin: UIViewController,
+                             productID: Int64? = nil) {
+        wpMediaLibraryPicker.start(from: origin,
+                                   productID: productID)
     }
 }
 
 private extension MediaPickingSource {
     var analyticsValue: String {
         switch self {
-            case .camera:
-                return "camera"
-            case .photoLibrary:
-                return "device"
-            case .siteMediaLibrary:
-                return "wpmedia"
+        case .camera:
+            return "camera"
+        case .photoLibrary:
+            return "device"
+        case .siteMediaLibrary:
+            return "wpmedia"
+        case .productMedia:
+            return "product_media"
         }
     }
 }
@@ -157,5 +175,6 @@ extension MediaPickingCoordinator {
         case productForm = "product_form"
         case productFromImageForm = "product_from_image_form"
         case blazeEditAdForm = "blaze_edit_ad_form"
+        case readTextFromProductPhoto = "read_text_from_product_photo"
     }
 }

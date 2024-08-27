@@ -365,9 +365,9 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Shipping line properties
 
-    /// Use case to display, add, edit, or remove shipping lines.
+    /// View model to display, add, edit, or remove shipping lines.
     ///
-    @Published var shippingUseCase: EditableOrderShippingUseCase
+    @Published var shippingLineViewModel: EditableOrderShippingLineViewModel
 
     // MARK: Customer data properties
 
@@ -451,6 +451,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let initialItem: OrderBaseItem?
 
+    /// Initial customer data given to the order when it is created, if any
+    ///
+    private let initialCustomer: (id: Int64, billing: Address?, shipping: Address?)?
+
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
@@ -467,6 +471,7 @@ final class EditableOrderViewModel: ObservableObject {
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          initialItem: OrderBaseItem? = nil,
+         initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
@@ -479,6 +484,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
+        self.initialCustomer = initialCustomer
         self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
 
@@ -504,7 +510,7 @@ final class EditableOrderViewModel: ObservableObject {
             resetAddressForm: {}
         )
 
-        self.shippingUseCase = EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
@@ -609,7 +615,7 @@ final class EditableOrderViewModel: ObservableObject {
         discountViewModel = .init(id: itemID,
                                   imageURL: rowViewModel.productRow.imageURL,
                                   name: rowViewModel.productRow.name,
-                                  price: rowViewModel.productRow.price,
+                                  totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
                                   discountConfiguration: addProductDiscountConfiguration(on: orderItem))
     }
@@ -692,7 +698,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: variation.imageURL,
                                                                   name: item.name,
                                                                   sku: variation.sku,
-                                                                  price: variation.price,
+                                                                  price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
@@ -725,6 +731,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
+
             let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
                                                                   productOrVariationID: product.productID,
                                                                   hasParentProduct: item.parent != nil,
@@ -734,7 +741,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
-                                                                  price: product.price,
+                                                                  price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
@@ -1512,6 +1519,10 @@ private extension EditableOrderViewModel {
         // otherwise may ignore the subsequent values that are sent
         let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
+
+        guard (addedItemsToSync + removedItemsToSync).isNotEmpty else {
+            return
+        }
         orderSynchronizer.setProducts.send(addedItemsToSync + removedItemsToSync)
 
         let productCount = addedItemsToSync.count - removedItemsToSync.count
@@ -1654,6 +1665,17 @@ private extension EditableOrderViewModel {
         match?.productRow.stepperViewModel.incrementQuantity()
     }
 
+    /// If given initial customer data on initialization, updates the Order with the customer data.
+    ///
+    func configureOrderWithInitialCustomerIfNeeded(_ customerID: Int64?, billing: Address?, shipping: Address?) {
+        guard let customerID else {
+            return
+        }
+        orderSynchronizer.setCustomerID.send(customerID)
+        orderSynchronizer.setAddresses.send(Self.createAddressesInputIfPossible(billingAddress: billing, shippingAddress: shipping))
+        resetAddressForm()
+    }
+
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
@@ -1664,6 +1686,7 @@ private extension EditableOrderViewModel {
                     CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
                 }
                 .assign(to: &$customerDataViewModel)
+            configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
             return
         }
 
@@ -1701,6 +1724,8 @@ private extension EditableOrderViewModel {
                 )
             }
             .assign(to: &customerSectionViewModel.$customerData)
+
+        configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
     }
 
     /// Updates notes data viewmodel based on order customer notes.
@@ -1923,6 +1948,7 @@ private extension EditableOrderViewModel {
                 }
                 return ProductSelectorViewModel(
                     siteID: siteID,
+                    source: .orderForm(flow: flow.analyticsFlow),
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,
@@ -2117,68 +2143,14 @@ private extension EditableOrderViewModel {
                                           quantity: Decimal,
                                           discount: Decimal? = nil,
                                           bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
-        // Finds the product or productVariation associated with the order item.
-        let product: OrderSyncProductInput.ProductType? = {
-            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-                return .variation(variation)
-            }
-
-            if let product = allProducts.first(where: { $0.productID == item.productID }) {
-                return .product(product)
-            }
-
-            return nil
-        }()
-
-        guard let product = product else {
-            DDLogError("⛔️ Product with ID: \(item.productID) not found.")
-            return nil
-        }
-
-        // When updating a bundle product's quantity while there are no bundle configuration updates from the configuration form,
-        // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
-        // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
-        if case let .product(productValue) = product,
-           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && childItems.isNotEmpty {
-            let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
-                .compactMap { bundleItem -> BundledProductConfiguration? in
-                    guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
-                        return .init(bundledItemID: bundleItem.bundledItemID,
-                                     productOrVariation: .product(id: bundleItem.productID),
-                                     quantity: 0,
-                                     isOptionalAndSelected: false)
-                    }
-                    let attributes = existingOrderItem.attributes
-                        .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
-                    let productOrVariation: BundledProductConfiguration.ProductOrVariation = existingOrderItem.variationID == 0 ?
-                        .product(id: existingOrderItem.productID): .variation(productID: existingOrderItem.productID,
-                                                                              variationID: existingOrderItem.variationID,
-                                                                              attributes: attributes)
-                    // The quantity per bundle: as a buggy behavior in Pe5pgL-3Vd-p2#quantity-of-bundle-child-order-items, the child item quantity
-                    // can either by multiplied by the bundle quantity or not. To encounter for the edge case, the quantity is only divided by
-                    // the bundle quantity if the child item has at least the same quantity as the bundle.
-                    let quantity = existingOrderItem.quantity >= item.quantity ?
-                    existingOrderItem.quantity * 1.0 / item.quantity: existingOrderItem.quantity
-                    return .init(bundledItemID: bundleItem.bundledItemID,
-                                 productOrVariation: productOrVariation,
-                                 quantity: quantity,
-                                 isOptionalAndSelected: bundleItem.isOptional ? true: nil)
-                }
-            return OrderSyncProductInput(id: item.itemID,
-                                         product: product,
-                                         quantity: quantity,
-                                         discount: discount ?? currentDiscount(on: item),
-                                         baseSubtotal: baseSubtotal(on: item),
-                                         bundleConfiguration: bundleConfiguration)
-        }
-
-        // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID,
-                                     product: product,
-                                     quantity: quantity,
-                                     discount: discount ?? currentDiscount(on: item),
-                                     baseSubtotal: baseSubtotal(on: item),
-                                     bundleConfiguration: bundleConfiguration)
+        ProductInputTransformer.createUpdateProductInput(item: item,
+                                                         childItems: childItems,
+                                                         quantity: quantity,
+                                                         discount: discount,
+                                                         bundleConfiguration: bundleConfiguration,
+                                                         allProducts: Array(allProducts),
+                                                         allProductVariations: allProductVariations,
+                                                         defaultDiscount: currentDiscount(on: item))
     }
 
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
@@ -2214,16 +2186,6 @@ private extension EditableOrderViewModel {
         return subtotal.subtracting(total) as Decimal
     }
 
-    /// Calculates the subtotal of a single quantity of an item
-    ///
-    func baseSubtotal(on item: OrderItem) -> Decimal? {
-        guard let itemSubtotal = Decimal(string: item.subtotal) else {
-            return nil
-        }
-
-        return itemSubtotal / item.quantity
-    }
-
     /// Creates `ProductRowViewModels` ready to be used as product rows.
     ///
     func createProductRows(items: [OrderItem]) -> [CollapsibleProductCardViewModel] {
@@ -2247,7 +2209,7 @@ private extension EditableOrderViewModel {
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
-                    guard let newInput = self.createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity) else {
+                    guard let newInput = createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)

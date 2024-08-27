@@ -35,7 +35,7 @@ final class TopPerformerDataViewController: UIViewController {
     private let storageManager: StorageManagerType
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
-    private lazy var viewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
+    private lazy var viewModel = TopPerformersPeriodViewModel(state: .loading(cached: [])) { [weak self] topPerformersItem in
         guard let self else { return }
         self.usageTracksEventEmitter.interacted()
         self.presentProductDetails(statsItem: topPerformersItem)
@@ -99,7 +99,7 @@ final class TopPerformerDataViewController: UIViewController {
 
 private extension TopPerformerDataViewController {
     func updateUIInLoadingState() {
-        viewModel.update(state: .loading)
+        viewModel.update(state: .loading(cached: []))
         if #unavailable(iOS 16.0) {
             hostingController?.view.invalidateIntrinsicContentSize()
         }
@@ -159,7 +159,7 @@ private extension TopPerformerDataViewController {
     func createResultsController(siteTimeZone: TimeZone) -> ResultsController<StorageTopEarnerStats> {
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
-            return StatsStoreV4.buildDateString(from: date, with: granularity)
+            return StatsStoreV4.buildDateString(from: date, timeRange: timeRange)
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)

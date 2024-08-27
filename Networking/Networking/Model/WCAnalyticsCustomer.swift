@@ -24,7 +24,7 @@ public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeab
     public let dateRegistered: Date?
 
     /// Date customer was last active, in GMT
-    public let dateLastActive: Date
+    public let dateLastActive: Date?
 
     /// Number of orders for the customer
     public let ordersCount: Int
@@ -56,7 +56,7 @@ public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeab
                 email: String?,
                 username: String?,
                 dateRegistered: Date?,
-                dateLastActive: Date,
+                dateLastActive: Date?,
                 ordersCount: Int,
                 totalSpend: Decimal,
                 averageOrderValue: Decimal,
@@ -96,7 +96,7 @@ public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeab
         let email = try container.decode(String.self, forKey: .email)
         let username = try container.decode(String.self, forKey: .username)
         let dateRegistered = try? container.decode(Date.self, forKey: .dateRegisteredGMT)
-        let dateLastActive = try container.decode(Date.self, forKey: .dateLastActiveGMT)
+        let dateLastActive = try? container.decode(Date.self, forKey: .dateLastActiveGMT)
         let ordersCount = try container.decode(Int.self, forKey: .ordersCount)
         let totalSpend = try container.decode(Decimal.self, forKey: .totalSpend)
         let averageOrderValue = try container.decode(Decimal.self, forKey: .avgOrderValue)

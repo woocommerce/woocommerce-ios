@@ -30,7 +30,7 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 3.0'
+  pod 'Automattic-Tracks-iOS', '~> 3.4.1'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
@@ -49,7 +49,6 @@ def alamofire
 end
 
 def cocoa_lumberjack
-  pod 'CocoaLumberjack', '~> 3.8.5'
   pod 'CocoaLumberjack/Swift', '~> 3.8.5'
 end
 
@@ -92,7 +91,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 9.0.7'
+  pod 'WordPressAuthenticator', '~> 9.0.9'
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: ''
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
@@ -114,7 +113,7 @@ target 'WooCommerce' do
   alamofire
   cocoa_lumberjack
   keychain
-  pod 'ZendeskSupportSDK', '~> 6.0'
+  pod 'ZendeskSupportSDK', '~> 8.0.3'
   stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']
@@ -124,6 +123,7 @@ target 'WooCommerce' do
   #
   target 'WooCommerceTests' do
     inherit! :search_paths
+    pod 'ViewControllerPresentationSpy', '~> 7.0'
   end
 end
 
@@ -151,6 +151,7 @@ end
 target 'Woo Watch App' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   platform :watchos, app_watchos_deployment_target.version
+  pod 'Sentry', '~> 8.33.0'
   networking_watch_os_pods
 end
 

@@ -5,18 +5,18 @@ import Foundation
 
 extension Networking.AIProduct {
     public func copy(
-        name: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy,
-        shortDescription: CopiableProp<String> = .copy,
+        names: CopiableProp<[String]> = .copy,
+        descriptions: CopiableProp<[String]> = .copy,
+        shortDescriptions: CopiableProp<[String]> = .copy,
         virtual: CopiableProp<Bool> = .copy,
         shipping: CopiableProp<AIProduct.Shipping> = .copy,
         tags: CopiableProp<[String]> = .copy,
         price: CopiableProp<String> = .copy,
         categories: CopiableProp<[String]> = .copy
     ) -> Networking.AIProduct {
-        let name = name ?? self.name
-        let description = description ?? self.description
-        let shortDescription = shortDescription ?? self.shortDescription
+        let names = names ?? self.names
+        let descriptions = descriptions ?? self.descriptions
+        let shortDescriptions = shortDescriptions ?? self.shortDescriptions
         let virtual = virtual ?? self.virtual
         let shipping = shipping ?? self.shipping
         let tags = tags ?? self.tags
@@ -24,9 +24,9 @@ extension Networking.AIProduct {
         let categories = categories ?? self.categories
 
         return Networking.AIProduct(
-            name: name,
-            description: description,
-            shortDescription: shortDescription,
+            names: names,
+            descriptions: descriptions,
+            shortDescriptions: shortDescriptions,
             virtual: virtual,
             shipping: shipping,
             tags: tags,
@@ -208,7 +208,9 @@ extension Networking.BlazeCampaignListItem {
         spentBudget: CopiableProp<Double> = .copy,
         budgetMode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
         budgetAmount: CopiableProp<Double> = .copy,
-        budgetCurrency: CopiableProp<String> = .copy
+        budgetCurrency: CopiableProp<String> = .copy,
+        isEvergreen: CopiableProp<Bool> = .copy,
+        durationDays: CopiableProp<Int64> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -225,6 +227,8 @@ extension Networking.BlazeCampaignListItem {
         let budgetMode = budgetMode ?? self.budgetMode
         let budgetAmount = budgetAmount ?? self.budgetAmount
         let budgetCurrency = budgetCurrency ?? self.budgetCurrency
+        let isEvergreen = isEvergreen ?? self.isEvergreen
+        let durationDays = durationDays ?? self.durationDays
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -241,7 +245,33 @@ extension Networking.BlazeCampaignListItem {
             spentBudget: spentBudget,
             budgetMode: budgetMode,
             budgetAmount: budgetAmount,
-            budgetCurrency: budgetCurrency
+            budgetCurrency: budgetCurrency,
+            isEvergreen: isEvergreen,
+            durationDays: durationDays
+        )
+    }
+}
+
+extension Networking.BlazeCampaignObjective {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        title: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        suitableForDescription: CopiableProp<String> = .copy,
+        locale: CopiableProp<String> = .copy
+    ) -> Networking.BlazeCampaignObjective {
+        let id = id ?? self.id
+        let title = title ?? self.title
+        let description = description ?? self.description
+        let suitableForDescription = suitableForDescription ?? self.suitableForDescription
+        let locale = locale ?? self.locale
+
+        return Networking.BlazeCampaignObjective(
+            id: id,
+            title: title,
+            description: description,
+            suitableForDescription: suitableForDescription,
+            locale: locale
         )
     }
 }
@@ -537,6 +567,7 @@ extension Networking.CreateBlazeCampaign {
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
         budget: CopiableProp<BlazeCampaignBudget> = .copy,
+        isEvergreen: CopiableProp<Bool> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -553,6 +584,7 @@ extension Networking.CreateBlazeCampaign {
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
         let budget = budget ?? self.budget
+        let isEvergreen = isEvergreen ?? self.isEvergreen
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -570,6 +602,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: endDate,
             timeZone: timeZone,
             budget: budget,
+            isEvergreen: isEvergreen,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,
@@ -797,6 +830,123 @@ extension Networking.GiftCardStatsTotals {
             usedAmount: usedAmount,
             refundedAmount: refundedAmount,
             netAmount: netAmount
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaign {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
+        rawType: CopiableProp<String> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        country: CopiableProp<String> = .copy,
+        targetedLocations: CopiableProp<[String]> = .copy
+    ) -> Networking.GoogleAdsCampaign {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let rawStatus = rawStatus ?? self.rawStatus
+        let rawType = rawType ?? self.rawType
+        let amount = amount ?? self.amount
+        let country = country ?? self.country
+        let targetedLocations = targetedLocations ?? self.targetedLocations
+
+        return Networking.GoogleAdsCampaign(
+            id: id,
+            name: name,
+            rawStatus: rawStatus,
+            rawType: rawType,
+            amount: amount,
+            country: country,
+            targetedLocations: targetedLocations
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        totals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy,
+        campaigns: CopiableProp<[GoogleAdsCampaignStatsItem]> = .copy,
+        nextPageToken: NullableCopiableProp<String> = .copy
+    ) -> Networking.GoogleAdsCampaignStats {
+        let siteID = siteID ?? self.siteID
+        let totals = totals ?? self.totals
+        let campaigns = campaigns ?? self.campaigns
+        let nextPageToken = nextPageToken ?? self.nextPageToken
+
+        return Networking.GoogleAdsCampaignStats(
+            siteID: siteID,
+            totals: totals,
+            campaigns: campaigns,
+            nextPageToken: nextPageToken
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsItem {
+    public func copy(
+        campaignID: CopiableProp<Int64> = .copy,
+        campaignName: NullableCopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<GoogleAdsCampaignStatsTotals> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsItem {
+        let campaignID = campaignID ?? self.campaignID
+        let campaignName = campaignName ?? self.campaignName
+        let rawStatus = rawStatus ?? self.rawStatus
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.GoogleAdsCampaignStatsItem(
+            campaignID: campaignID,
+            campaignName: campaignName,
+            rawStatus: rawStatus,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.GoogleAdsCampaignStatsTotals {
+    public func copy(
+        sales: NullableCopiableProp<Decimal> = .copy,
+        spend: NullableCopiableProp<Decimal> = .copy,
+        clicks: NullableCopiableProp<Int> = .copy,
+        impressions: NullableCopiableProp<Int> = .copy,
+        conversions: NullableCopiableProp<Decimal> = .copy
+    ) -> Networking.GoogleAdsCampaignStatsTotals {
+        let sales = sales ?? self.sales
+        let spend = spend ?? self.spend
+        let clicks = clicks ?? self.clicks
+        let impressions = impressions ?? self.impressions
+        let conversions = conversions ?? self.conversions
+
+        return Networking.GoogleAdsCampaignStatsTotals(
+            sales: sales,
+            spend: spend,
+            clicks: clicks,
+            impressions: impressions,
+            conversions: conversions
+        )
+    }
+}
+
+extension Networking.GoogleAdsConnection {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        currency: CopiableProp<String> = .copy,
+        symbol: CopiableProp<String> = .copy,
+        rawStatus: CopiableProp<String> = .copy
+    ) -> Networking.GoogleAdsConnection {
+        let id = id ?? self.id
+        let currency = currency ?? self.currency
+        let symbol = symbol ?? self.symbol
+        let rawStatus = rawStatus ?? self.rawStatus
+
+        return Networking.GoogleAdsConnection(
+            id: id,
+            currency: currency,
+            symbol: symbol,
+            rawStatus: rawStatus
         )
     }
 }
@@ -1164,7 +1314,7 @@ extension Networking.Order {
         refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
         fees: CopiableProp<[OrderFeeLine]> = .copy,
         taxes: CopiableProp<[OrderTaxLine]> = .copy,
-        customFields: CopiableProp<[OrderMetaData]> = .copy,
+        customFields: CopiableProp<[MetaData]> = .copy,
         renewalSubscriptionID: NullableCopiableProp<String> = .copy,
         appliedGiftCards: CopiableProp<[OrderGiftCard]> = .copy,
         attributionInfo: NullableCopiableProp<OrderAttributionInfo> = .copy
@@ -1811,6 +1961,7 @@ extension Networking.Product {
         bundleMinSize: NullableCopiableProp<Decimal> = .copy,
         bundleMaxSize: NullableCopiableProp<Decimal> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
+        password: NullableCopiableProp<String> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
         subscription: NullableCopiableProp<ProductSubscription> = .copy,
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
@@ -1887,6 +2038,7 @@ extension Networking.Product {
         let bundleMinSize = bundleMinSize ?? self.bundleMinSize
         let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
         let bundledItems = bundledItems ?? self.bundledItems
+        let password = password ?? self.password
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
         let minAllowedQuantity = minAllowedQuantity ?? self.minAllowedQuantity
@@ -1964,6 +2116,7 @@ extension Networking.Product {
             bundleMinSize: bundleMinSize,
             bundleMaxSize: bundleMaxSize,
             bundledItems: bundledItems,
+            password: password,
             compositeComponents: compositeComponents,
             subscription: subscription,
             minAllowedQuantity: minAllowedQuantity,
@@ -2287,7 +2440,7 @@ extension Networking.ProductReport {
         name: CopiableProp<String> = .copy,
         imageURL: NullableCopiableProp<URL> = .copy,
         itemsSold: CopiableProp<Int> = .copy,
-        stockQuantity: CopiableProp<Int> = .copy
+        stockQuantity: NullableCopiableProp<Decimal> = .copy
     ) -> Networking.ProductReport {
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
@@ -2311,7 +2464,7 @@ extension Networking.ProductReport.ExtendedInfo {
     public func copy(
         name: CopiableProp<String> = .copy,
         image: NullableCopiableProp<String> = .copy,
-        stockQuantity: CopiableProp<Int> = .copy
+        stockQuantity: NullableCopiableProp<Decimal> = .copy
     ) -> Networking.ProductReport.ExtendedInfo {
         let name = name ?? self.name
         let image = image ?? self.image
@@ -3462,7 +3615,7 @@ extension Networking.WCAnalyticsCustomer {
         email: NullableCopiableProp<String> = .copy,
         username: NullableCopiableProp<String> = .copy,
         dateRegistered: NullableCopiableProp<Date> = .copy,
-        dateLastActive: CopiableProp<Date> = .copy,
+        dateLastActive: NullableCopiableProp<Date> = .copy,
         ordersCount: CopiableProp<Int> = .copy,
         totalSpend: CopiableProp<Decimal> = .copy,
         averageOrderValue: CopiableProp<Decimal> = .copy,

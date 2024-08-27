@@ -52,7 +52,7 @@ protocol CardReaderSettingsAlertsProvider {
     /// The user may try again or cancel
     ///
     func connectingFailedIncompleteAddress(from: UIViewController,
-                                           openWCSettings: ((UIViewController) -> Void)?,
+                                           openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void)
 

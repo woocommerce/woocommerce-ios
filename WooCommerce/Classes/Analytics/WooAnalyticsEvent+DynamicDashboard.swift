@@ -7,6 +7,7 @@ extension WooAnalyticsEvent {
             case type
             case cards
             case newCardAvailable = "new_card_available"
+            case sortedCards = "sorted_cards"
         }
 
         /// When the user taps the button to edit the dashboard layout.
@@ -23,9 +24,15 @@ extension WooAnalyticsEvent {
 
         /// When the user taps the Save button to in the layout editor.
         static func editorSaveTapped(types: [DashboardCard.CardType]) -> WooAnalyticsEvent {
-            let typeNames = types.map { $0.analyticName }.sorted().joined(separator: ",")
-            return WooAnalyticsEvent(statName: .dynamicDashboardEditorSaveTapped,
-                                     properties: [Keys.cards.rawValue: typeNames])
+            let typeNamesUserSorted = types.map { $0.analyticName }
+            let typeNamesAlphabeticallySorted = typeNamesUserSorted.sorted()
+            return WooAnalyticsEvent(
+                statName: .dynamicDashboardEditorSaveTapped,
+                properties: [
+                    Keys.cards.rawValue: typeNamesAlphabeticallySorted.joined(separator: ","),
+                    Keys.sortedCards.rawValue: typeNamesUserSorted.joined(separator: ","),
+                ].compactMapValues { $0 }
+            )
         }
 
         /// When the user taps the Retry button on the error state view of any dashboard card.
@@ -43,6 +50,25 @@ extension WooAnalyticsEvent {
         /// When the user taps the Add new sections button on the new cards suggestion.
         static func dashboardCardAddNewSectionsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dynamicDashboardAddNewSectionsTapped, properties: [:])
+        }
+
+        /// When a dashboard card starts loading data.
+        static func cardLoadingStarted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingStarted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When a dashboard card completes loading data without error
+        static func cardLoadingCompleted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingCompleted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When a dashboard card fails to load data
+        static func cardLoadingFailed(type: DashboardCard.CardType, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardDataLoadingFailed,
+                              properties: [Keys.type.rawValue: type.analyticName],
+                              error: error)
         }
     }
 }
@@ -68,6 +94,8 @@ extension DashboardCard.CardType {
             "orders"
         case .coupons:
             "coupons"
+        case .googleAds:
+            "google-ads"
         }
     }
 }

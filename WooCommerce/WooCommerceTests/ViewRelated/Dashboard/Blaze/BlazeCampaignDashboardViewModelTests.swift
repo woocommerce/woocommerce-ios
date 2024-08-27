@@ -28,6 +28,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         super.setUp()
         WordPressAuthenticator.initializeAuthenticator()
         stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -60,7 +62,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
 
         // When
-        await sut.reload()
+        await sut.checkAvailability()
 
         // Then
         XCTAssertTrue(sut.canShowInDashboard)
@@ -81,7 +83,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
 
         // When
-        await sut.reload()
+        await sut.checkAvailability()
 
         // Then
         XCTAssertFalse(sut.canShowInDashboard)
@@ -102,7 +104,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
 
         // When
-        await sut.reload()
+        await sut.checkAvailability()
 
         // Then
         XCTAssertFalse(sut.canShowInDashboard)
@@ -132,6 +134,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -201,6 +204,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -228,6 +232,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -254,6 +259,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -277,6 +283,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -321,6 +328,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
     }
 
@@ -338,6 +346,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -361,6 +370,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -380,6 +390,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -420,6 +431,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
     }
 
@@ -435,7 +447,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
+
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -458,6 +472,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -477,6 +492,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -498,6 +514,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
+        await sut.checkAvailability()
         await sut.reload()
 
         if case .empty = sut.state {
@@ -518,6 +535,40 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_latest_campaign_is_displayed() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let campaign1 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "9", budgetCurrency: "USD")
+        let campaign2 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "10", budgetCurrency: "USD")
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaignsList()
+        mockSynchronizeProducts()
+
+        await sut.checkAvailability()
+        await sut.reload()
+
+        if case .empty = sut.state {
+            // Expected empty state when no Blaze campaign or published product
+        } else {
+            XCTFail("Wrong state")
+        }
+
+        // When
+        insertCampaigns([campaign1, campaign2])
+
+        // Then
+        if case .showCampaign(let campaign) = sut.state {
+            XCTAssertEqual(campaign, campaign2)
+        } else {
+            XCTFail("Wrong state")
+        }
+    }
+
+    @MainActor
     func test_state_is_showProduct_if_published_product_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -532,6 +583,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
+        await sut.checkAvailability()
         await sut.reload()
 
         if case .empty = sut.state {
@@ -553,6 +605,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: latestPublishedProduct
 
+    @MainActor
     func test_latestPublishedProduct_returns_correct_product() throws {
         // Given
         insertProduct(Product.fake().copy(siteID: sampleSiteID,
@@ -578,6 +631,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(product.productID, 3)
     }
 
+    @MainActor
     func test_latestPublishedProduct_is_nil_when_no_published_product_available() throws {
         // Given
         insertProduct(Product.fake().copy(siteID: sampleSiteID,
@@ -596,6 +650,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: `selectedCampaignURL`
 
+    @MainActor
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"
@@ -619,6 +674,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_didTapCreateYourCampaignButtonFromIntroView_tracks_entry_point_tapped() throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -637,6 +693,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
 
+    @MainActor
     func test_didSelectCampaignList_tracks_blazeCampaignListEntryPointSelected_with_the_correct_source() throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -656,6 +713,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "my_store_section")
     }
 
+    @MainActor
     func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_the_correct_source() throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -675,6 +733,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "my_store_section")
     }
 
+    @MainActor
     func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -709,6 +768,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -736,6 +796,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
@@ -803,18 +864,21 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts()
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
 
         // When
+        await sut.checkAvailability()
         await sut.reload()
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
     }
 
+    @MainActor
     func test_dismissBlazeSection_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

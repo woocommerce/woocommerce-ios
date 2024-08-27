@@ -4,7 +4,7 @@ import Combine
 extension UniversalLinkRouter {
     static func justInTimeMessagesUniversalLinkRouter(tabBarController: MainTabBarController?,
                                                       urlOpener: URLOpener) -> UniversalLinkRouter {
-        UniversalLinkRouter(routes: Self.defaultRoutes(tabBarController: tabBarController),
+        UniversalLinkRouter(routes: Self.defaultRoutes(navigator: tabBarController),
                             bouncingURLOpener: urlOpener,
                             analyticsTracker: nil)
     }

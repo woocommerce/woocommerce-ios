@@ -2,6 +2,7 @@ import WatchKit
 import UserNotifications
 import CocoaLumberjack
 import struct NetworkingWatchOS.Note
+import Sentry
 
 
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
@@ -16,6 +17,11 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     ///
     var appBindings: AppBindings = AppBindings()
 
+    /// Handles and configures the crash logging system.
+    /// This type should be assigned from the main WooApp file.
+    ///
+    var crashLoggingStack: WatchCrashLoggingStack?
+
     /// Setup code after the app finishes launching
     ///
     func applicationDidFinishLaunching() {
@@ -26,6 +32,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
+    /// Setup code when the app transitions from background to foreground.
+    ///
+    func applicationWillEnterForeground() {
+        appBindings.refreshData.send()
+    }
+
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
@@ -34,6 +46,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(DDOSLogger.sharedInstance)
         DDLog.add(fileLogger)
+    }
+
+    /// Perform the necessary updates when dependencies are updated.
+    ///
+    func onUpdateDependencies(dependencies: WatchDependencies?) {
+        crashLoggingStack?.updateUserData(enablesCrashReports: dependencies?.enablesCrashReports ?? true, account: dependencies?.account)
     }
 }
 

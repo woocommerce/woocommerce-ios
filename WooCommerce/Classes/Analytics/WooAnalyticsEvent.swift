@@ -82,6 +82,8 @@ extension WooAnalyticsEvent {
         case tapToPayFirstPaymentPaymentsMenu
         /// Shown in Product details form for a AI generated product
         case productCreationAI = "product_creation_ai"
+        /// Shown in the order form after adding a shipping line
+        case orderFormShippingLines = "order_form_shipping_lines"
     }
 
     /// The action performed on the survey screen.
@@ -2583,24 +2585,11 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
-            case templateEligible = "template_eligible"
             case horizontalSizeClass = "horizontal_size_class"
         }
 
-        enum CreationType: String {
-            case manual
-            case template
-        }
-
-        /// Trackas when the merchants selects a product creation type.
-        ///
-        static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
-        }
-
-        static func productListAddProductButtonTapped(templateEligible: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible,
-                                                                                   Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
+        static func productListAddProductButtonTapped(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
         }
     }
 }
@@ -2663,6 +2652,8 @@ extension WooAnalyticsEvent {
             case compare
             case enabledCards = "enabled_cards"
             case disabledCards = "disabled_cards"
+            case card
+            case selectedMetric = "selected_metric"
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2739,6 +2730,15 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubSettingsSaved, properties: [
                 Keys.enabledCards.rawValue: cards.filter { $0.enabled }.map { $0.type.rawValue }.joined(separator: ","),
                 Keys.disabledCards.rawValue: cards.filter { !$0.enabled }.map { $0.type.rawValue }.joined(separator: ",")
+            ])
+        }
+
+        /// Tracks when a new metric is selected on a card in the Analytics Hub.
+        ///
+        static func selectedMetric(_ selectedMetric: String, for cardType: AnalyticsCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubCardMetricSelected, properties: [
+                Keys.card.rawValue: cardType.rawValue,
+                Keys.selectedMetric.rawValue: selectedMetric
             ])
         }
     }
@@ -3075,6 +3075,26 @@ extension WooAnalyticsEvent {
             static let registered = "registered"
             static let hasEmail = "has_email_address"
         }
+
+        /// Possible actions to take in customer details
+        enum Action: String {
+            fileprivate static let key = "action"
+
+            case call = "phone_call"
+            case message = "text_message"
+            case copyPhone = "copy_phone_number"
+            case whatsapp = "whatsapp"
+            case telegram = "telegram"
+        }
+
+        /// Possible addresses in customer details
+        enum Address: String {
+            fileprivate static let key = "address"
+
+            case shipping = "shipping_address"
+            case billing = "billing_address"
+        }
+
         static func customerListLoaded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customerHubLoaded, properties: [:])
         }
@@ -3102,6 +3122,22 @@ extension WooAnalyticsEvent {
 
         static func customerDetailCopyEmailOptionTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customersHubDetailCopyEmailOptionTapped, properties: [:])
+        }
+
+        static func customerDetailPhoneMenuTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailPhoneMenuTapped, properties: [:])
+        }
+
+        static func customerDetailActionTapped(_ action: Action) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailPhoneActionTapped, properties: [Action.key: action.rawValue])
+        }
+
+        static func customerDetailAddressCopied(_ address: Address) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailAddressCopied, properties: [Address.key: address.rawValue])
+        }
+
+        static func customerDetailNewOrder() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailNewOrderTapped, properties: [:])
         }
     }
 }

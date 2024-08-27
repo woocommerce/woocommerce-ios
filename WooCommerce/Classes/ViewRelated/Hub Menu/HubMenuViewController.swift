@@ -8,9 +8,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var googleAdsCampaignCoordinator: GoogleAdsCampaignCoordinator?
+
+    private var shouldShowNavigationBar = false
 
     init(siteID: Int64,
-         navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
@@ -18,8 +20,13 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+
         rootView.switchStoreHandler = { [weak self] in
             self?.presentSwitchStore()
+        }
+
+        rootView.googleAdsCampaignHandler = { [weak self] in
+            self?.presentGoogleAds()
         }
     }
 
@@ -44,7 +51,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showCoupons() {
-        viewModel.showingCoupons = true
+        viewModel.navigateToDestination(.coupons)
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.
@@ -59,10 +66,18 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         let settings = SettingsViewController()
         navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+        navigationController.setNavigationBarHidden(false, animated: false)
+        shouldShowNavigationBar = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        // Skip hiding navigation bar when `shouldShowNavigationBar` is set to true.
+        guard !shouldShowNavigationBar else {
+            shouldShowNavigationBar = false
+            return
+        }
 
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.
@@ -79,6 +94,33 @@ private extension HubMenuViewController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
         }
+    }
+
+    func presentGoogleAds() {
+        guard let navigationController else {
+            return
+        }
+        googleAdsCampaignCoordinator = GoogleAdsCampaignCoordinator(
+            siteID: viewModel.siteID,
+            siteAdminURL: viewModel.woocommerceAdminURL.absoluteString,
+            source: .moreMenu,
+            shouldStartCampaignCreation: viewModel.hasGoogleAdsCampaigns,
+            shouldAuthenticateAdminPage: viewModel.shouldAuthenticateAdminPage,
+            navigationController: navigationController,
+            onCompletion: { [weak self] createdNewCampaign in
+                guard createdNewCampaign else {
+                    return
+                }
+                self?.viewModel.refreshGoogleAdsCampaignCheck()
+            }
+        )
+        googleAdsCampaignCoordinator?.start()
+
+        ServiceLocator.analytics.track(event: .GoogleAds.entryPointTapped(
+            source: .moreMenu,
+            type: viewModel.hasGoogleAdsCampaigns ? .dashboard : .campaignCreation,
+            hasCampaigns: viewModel.hasGoogleAdsCampaigns
+        ))
     }
 }
 

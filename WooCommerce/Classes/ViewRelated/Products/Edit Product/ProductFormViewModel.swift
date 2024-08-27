@@ -33,7 +33,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     /// Emits a void value informing when Blaze eligibility is computed
     var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
-        blazeEligiblityUpdateSubject.eraseToAnyPublisher()
+        blazeEligibilityUpdateSubject.eraseToAnyPublisher()
     }
 
     /// The latest product value.
@@ -57,24 +57,27 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
 
-    private let productSubject: PassthroughSubject<EditableProductModel, Never> = PassthroughSubject<EditableProductModel, Never>()
-    private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
-    private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
+    private let productSubject = PassthroughSubject<EditableProductModel, Never>()
+    private let productNameSubject = PassthroughSubject<String, Never>()
+    private let isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
-    private let blazeEligiblityUpdateSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligibilityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
-    private var isEligibleForBlaze: Bool = false
+    private var isEligibleForBlaze = false
 
-    private var hasActiveBlazeCampaign: Bool = false
+    private var hasActiveBlazeCampaign = false
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                 matching: predicate,
-                                                                                sortedBy: [])
+                                                                                sortedBy: [sortDescriptorByID])
         return resultsController
     }()
 
@@ -783,15 +786,20 @@ private extension ProductFormViewModel {
 
 private extension ProductFormViewModel {
     func updateBlazeEligibility() {
-        guard formType == .edit else {
+        guard formType == .edit,
+              let site = stores.sessionManager.defaultSite else {
             isEligibleForBlaze = false
             return
         }
         Task { @MainActor in
-            let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
+            let isEligible = await blazeEligibilityChecker.isProductEligible(
+                site: site,
+                product: originalProduct,
+                isPasswordProtected: password?.isNotEmpty == true
+            )
             isEligibleForBlaze = isEligible
             updateActionsFactory()
-            blazeEligiblityUpdateSubject.send()
+            blazeEligibilityUpdateSubject.send()
         }
     }
 
@@ -815,6 +823,7 @@ private extension ProductFormViewModel {
 
     func updateBlazeCampaignResult() {
         hasActiveBlazeCampaign = hasBlazeCampaign()
+        updateActionsFactory()
     }
 }
 
@@ -828,8 +837,7 @@ private extension ProductFormViewModel {
     func hasBlazeCampaign() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
         return campaigns.contains(where: {
-            ($0.productID == product.productID) &&
-            ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
+            $0.productID == product.productID && $0.isActive
         })
     }
 }

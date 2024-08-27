@@ -18,10 +18,12 @@ struct BlazeAdDestinationSettingView: View {
         NavigationView {
             List {
                 Section {
-                    destinationItem(title: Localization.productURLLabel,
-                                    subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
-                                    type: DestinationType.product)
-                    .listRowInsets(EdgeInsets())
+                    if viewModel.productURL.isNotEmpty {
+                        destinationItem(title: Localization.productURLLabel,
+                                        subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.productURL),
+                                        type: DestinationType.product)
+                        .listRowInsets(EdgeInsets())
+                    }
 
                     destinationItem(title: Localization.siteHomeLabel,
                                     subtitle: String(format: Localization.destinationUrlSubtitle, viewModel.homeURL),

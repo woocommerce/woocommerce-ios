@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order Refund Entity.
 ///
-public struct OrderRefundCondensed: Decodable, Equatable, GeneratedFakeable {
+public struct OrderRefundCondensed: Decodable, Equatable, Sendable, GeneratedFakeable {
     public let refundID: Int64
     public let reason: String?
     public let total: String

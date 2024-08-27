@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipping Line Entity.
 ///
-public struct ShippingLine: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ShippingLine: Codable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let shippingID: Int64
     public let methodTitle: String
 

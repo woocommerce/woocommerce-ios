@@ -83,6 +83,10 @@ public enum WooConstants {
     /// Key used to identify track events sent between the phone and the watch.
     ///
     static let watchTracksKey = "watch-tracks-event"
+
+    /// Key used to identify sync request attempt from the watch.
+    ///
+    static let watchSyncKey = "watch-sync-event"
 }
 
 // MARK: URLs
@@ -334,6 +338,8 @@ extension WooConstants {
 
         case giftCardsExtension = "https://woocommerce.com/products/gift-cards/"
 
+        case googleAdsExtension = "https://woocommerce.com/products/google-listings-and-ads/"
+
         case wooPaymentsStartupGuide = "https://woocommerce.com/document/woopayments/startup-guide/"
 
         // swiftlint:disable:next line_length
@@ -356,6 +362,8 @@ extension WooConstants {
 #else
         case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-production"
 #endif
+
+        case ordersScreen = "https://woocommerce.com/mobile/orders"
 
         /// Returns the URL version of the receiver
         ///

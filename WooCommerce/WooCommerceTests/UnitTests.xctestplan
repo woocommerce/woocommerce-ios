@@ -31,12 +31,6 @@
     {
       "skippedTests" : [
         "CardReaderConnectionControllerTests",
-        "DashboardViewModelTests\/test_dashboard_cards_contain_unavailable_and_disabled_analytics_cards_when_there_are_no_orders()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_eligible_for_inbox()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_not_eligible_for_inbox()",
-        "DashboardViewModelTests\/test_hasOrders_is_false_when_site_has_no_orders()",
-        "DashboardViewModelTests\/test_hasOrders_is_updated_correctly_when_orders_availability_changes()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StripeCardReaderIntegrationTests"

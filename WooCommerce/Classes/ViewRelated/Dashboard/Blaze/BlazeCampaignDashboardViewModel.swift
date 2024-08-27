@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCampaignDashboardView`.
+@MainActor
 final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// UI state of the Blaze campaign view in dashboard.
     enum State: Equatable {
@@ -69,7 +70,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let userDefaults: UserDefaults
 
     private var isSiteEligibleForBlaze = false
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
@@ -77,7 +77,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                 matching: predicate,
                                                                                 fetchLimit: 1,
@@ -102,42 +104,58 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    @Published private var syncingError: Error?
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         userDefaults: UserDefaults = .standard) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
-        self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
     }
 
     @MainActor
+    func checkAvailability() async {
+        isSiteEligibleForBlaze = await checkSiteEligibility()
+        try? await synchronizePublishedProducts()
+        updateAvailability()
+    }
+
+    @MainActor
     func reload() async {
+        syncingError = nil
         update(state: .loading)
-        isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
+
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
+
+        isSiteEligibleForBlaze = await checkSiteEligibility()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
             return
         }
 
-        // Load Blaze campaigns
-        await synchronizeBlazeCampaigns()
+        do {
+            // Load Blaze campaigns
+            try await synchronizeBlazeCampaigns()
 
-        // Load all products
-        // In case there are no campaigns, this helps decide whether to show a Product on the Blaze dashboard.
-        // It also helps determine whether the "Promote" button opens to product selector first (if the site has multiple
-        // products) or straight to campaign creation form (if there is only one product).
-        await synchronizePublishedProducts()
+            // Load all products
+            // In case there are no campaigns, this helps decide whether to show a Product on the Blaze dashboard.
+            // It also helps determine whether the "Promote" button opens to product selector first (if the site has multiple
+            // products) or straight to campaign creation form (if there is only one product).
+            try await synchronizePublishedProducts()
+        } catch {
+            syncingError = error
+        }
 
+        trackSyncingResult()
         updateResults()
     }
 
@@ -150,6 +168,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -178,16 +197,26 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
 // MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
+    func checkSiteEligibility() async -> Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return await blazeEligibilityChecker.isSiteEligible(site)
+    }
+
     @MainActor
-    func synchronizeBlazeCampaigns() async {
-        await withCheckedContinuation({ continuation in
+    func synchronizeBlazeCampaigns() async throws {
+        try await withCheckedThrowingContinuation({ continuation in
             stores.dispatch(BlazeAction.synchronizeCampaignsList(siteID: siteID,
                                                                   skip: 0,
                                                                   limit: PaginationTracker.Defaults.pageSize) { result in
-                if case .failure(let error) = result {
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
                     DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
+                    continuation.resume(throwing: error)
                 }
-                continuation.resume(returning: ())
             })
         })
     }
@@ -197,8 +226,8 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func synchronizePublishedProducts() async {
-        await withCheckedContinuation { continuation in
+    func synchronizePublishedProducts() async throws {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
                                                               pageNumber: Store.Default.firstPageNumber,
                                                               stockStatus: nil,
@@ -208,10 +237,13 @@ private extension BlazeCampaignDashboardViewModel {
                                                               sortOrder: .dateDescending,
                                                               shouldDeleteStoredProductsOnFirstPage: false,
                                                               onCompletion: { result in
-                if case .failure(let error) = result {
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
                     DDLogError("⛔️ Dashboard — Error fetching first published product to show the Blaze campaign view: \(error)")
+                    continuation.resume(throwing: error)
                 }
-                continuation.resume(returning: ())
             }))
         }
     }
@@ -232,9 +264,11 @@ private extension BlazeCampaignDashboardViewModel {
         onStateChange?()
     }
 
-    func updateResults() {
+    func updateAvailability() {
         canShowInDashboard = isSiteEligibleForBlaze && latestPublishedProduct != nil
+    }
 
+    func updateResults() {
         guard isSiteEligibleForBlaze else {
             return update(state: .empty)
         }
@@ -258,9 +292,11 @@ private extension BlazeCampaignDashboardViewModel {
         }
 
         productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateAvailability()
             self?.updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
+            self?.updateAvailability()
             self?.updateResults()
         }
 
@@ -289,6 +325,14 @@ private extension BlazeCampaignDashboardViewModel {
                 self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSection))
             }
             .store(in: &subscriptions)
+    }
+
+    func trackSyncingResult() {
+        if let syncingError {
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .blaze, error: syncingError))
+        } else {
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .blaze))
+        }
     }
 }
 

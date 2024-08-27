@@ -4,8 +4,8 @@ struct AddOrderComponentsSection: View {
     /// View model to drive the view content
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
-    /// Use case for shipping lines on an order
-    @ObservedObject private var shippingUseCase: EditableOrderShippingUseCase
+    /// View model for shipping lines on an order
+    @ObservedObject private var shippingLineViewModel: EditableOrderShippingLineViewModel
 
     /// Indicates if the coupon line details screen should be shown or not.
     ///
@@ -30,11 +30,11 @@ struct AddOrderComponentsSection: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
-         shippingUseCase: EditableOrderShippingUseCase,
+         shippingLineViewModel: EditableOrderShippingLineViewModel,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
-        self.shippingUseCase = shippingUseCase
+        self.shippingLineViewModel = shippingLineViewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
@@ -76,17 +76,11 @@ private extension AddOrderComponentsSection {
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")
-        .overlay {
-            TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
-                        toolTipDescription: Localization.couponsTooltipDescription,
-                        offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
-                        safeAreaInsets: EdgeInsets())
-            .padding()
-            .renderedIf(shouldShowCouponsInfoTooltip)
-        }
-        // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
-        // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
-        .zIndex(1)
+        .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
+                 toolTipTitle: Localization.couponsTooltipTitle,
+                 toolTipDescription: Localization.couponsTooltipDescription,
+                 offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                 safeAreaInsets: EdgeInsets())
         .sheet(isPresented: $shouldShowAddCouponLineDetails) {
             NavigationView {
                 CouponListView(siteID: viewModel.siteID,
@@ -122,14 +116,14 @@ private extension AddOrderComponentsSection {
 
     @ViewBuilder var addShippingRow: some View {
         Button(Localization.addShipping) {
-            shippingUseCase.addShippingLine()
+            shippingLineViewModel.addShippingLine()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-shipping-button")
         .disabled(viewModel.orderIsEmpty)
-        .renderedIf(!shippingUseCase.paymentData.shouldShowShippingTotal)
-        .sheet(item: $shippingUseCase.shippingLineDetails, content: { viewModel in
+        .renderedIf(!shippingLineViewModel.paymentData.shouldShowShippingTotal)
+        .sheet(item: $shippingLineViewModel.shippingLineDetails, content: { viewModel in
             ShippingLineSelectionDetails(viewModel: viewModel)
         })
     }
@@ -234,10 +228,12 @@ private extension AddOrderComponentsSection {
 struct AddOrderComponentsSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
-        let shippingUseCase = EditableOrderShippingUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
+        let shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: 1,
+                                                                       flow: .creation,
+                                                                       orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         AddOrderComponentsSection(viewModel: viewModel,
-                                  shippingUseCase: shippingUseCase,
+                                  shippingLineViewModel: shippingLineViewModel,
                                   shouldShowCouponsInfoTooltip: .constant(true),
                                   shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)

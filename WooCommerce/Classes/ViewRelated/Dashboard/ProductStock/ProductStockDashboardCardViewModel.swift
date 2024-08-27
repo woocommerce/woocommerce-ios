@@ -1,9 +1,12 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `ProductStockDashboardCard`
 ///
+@MainActor
 final class ProductStockDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
@@ -12,6 +15,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedStockType: StockType = .lowStock
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     private let stores: StoresManager
@@ -34,6 +38,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .stock))
         syncingData = true
         syncingError = nil
         do {
@@ -42,9 +47,19 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             reports = stock.compactMap { item in
                 savedReports[item.productID]
             }
-            .sorted { $0.stockQuantity < $1.stockQuantity }
+            .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
+
+            analyticsEnabled = true
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .stock, error: error))
         }
         syncingData = false
     }
@@ -151,7 +166,17 @@ private extension ProductStockDashboardCardViewModel {
                         productIDs: Array(Set(variationsToFetchReports.map { $0.parentID })),
                         variationIDs: variationsToFetchReports.map { $0.productID }
                     )
-                    return self.updatedVariationReports(from: reports, using: variationsToFetchReports)
+                    return reports.map { report in
+                        guard let variationID = report.variationID,
+                              report.productID == 0,
+                              let parentID = stock.first(where: { $0.productID == variationID })?.parentID else {
+                            return report
+                        }
+                        /// For some stores, the product ID is not found for variations returned from variation reports.
+                        /// We need to copy the parent ID from the stock report over to the variation reports
+                        /// to be able to show the details for the variation upon selection.
+                        return report.copy(productID: parentID)
+                    }
                 }
             }
 
@@ -161,11 +186,10 @@ private extension ProductStockDashboardCardViewModel {
                 }
             }
 
-            while !group.isEmpty {
-                // gather the results and re-throw any failure.
-                if let items = try await group.next() {
-                    allReports.append(contentsOf: items)
-                }
+            // rethrow any failure.
+            for try await items in group {
+                // gather the results
+                allReports.append(contentsOf: items)
             }
 
             return allReports
@@ -175,19 +199,6 @@ private extension ProductStockDashboardCardViewModel {
         for report in reports {
             let id = report.variationID ?? report.productID
             savedReports[id] = report
-        }
-    }
-
-    // In some cases, variation reports can have invalid product ID.
-    // Fix that by restoring the parent ID from the stock item.
-    func updatedVariationReports(from reports: [ProductReport], using stock: [ProductStock]) -> [ProductReport] {
-        reports.map { report in
-            guard let variationID = report.variationID,
-                  report.productID == 0,
-                  let parentID = stock.first(where: { $0.productID == variationID })?.productID else {
-                return report
-            }
-            return report.copy(productID: parentID)
         }
     }
 }

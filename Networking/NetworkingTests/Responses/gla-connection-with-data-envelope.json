@@ -1,0 +1,11 @@
+{
+    "data": {
+        "id": 3904318964,
+        "currency": "USD",
+        "symbol": "$",
+        "status": "incomplete",
+        "step": "account_access",
+        "sub_account": true,
+        "created_timestamp": 1718811662
+    }
+}

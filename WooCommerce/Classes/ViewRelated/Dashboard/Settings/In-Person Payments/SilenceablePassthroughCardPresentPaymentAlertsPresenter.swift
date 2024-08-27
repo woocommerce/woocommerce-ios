@@ -1,14 +1,18 @@
 import Foundation
 import Combine
 
-final class SilenceablePassthroughCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
-    private var alertSubject: CurrentValueSubject<CardPresentPaymentsModalViewModel?, Never> = CurrentValueSubject(nil)
-    private var alertsPresenter: CardPresentPaymentAlertsPresenting?
+final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentAlertsPresenting {
+    private var alertSubject: CurrentValueSubject<AlertPresenter.AlertDetails?, Never> = CurrentValueSubject(nil)
+    private var alertsPresenter: (any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>)?
 
     private var alertSubscription: AnyCancellable? = nil
 
-    func present(viewModel: CardPresentPaymentsModalViewModel) {
+    func present(viewModel: AlertPresenter.AlertDetails) {
         alertSubject.send(viewModel)
+    }
+
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        // TODO: confirm if this is needed
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
@@ -24,7 +28,7 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter: CardPresent
         alertsPresenter?.dismiss()
     }
 
-    func startPresentingAlerts(from alertsPresenter: CardPresentPaymentAlertsPresenting) {
+    func startPresentingAlerts(from alertsPresenter: AlertPresenter) {
         self.alertsPresenter = alertsPresenter
         alertSubscription = alertSubject.share().sink { viewModel in
             DispatchQueue.main.async {

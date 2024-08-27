@@ -74,6 +74,7 @@ extension Product {
                 bundleMinSize: nil,
                 bundleMaxSize: nil,
                 bundledItems: [],
+                password: nil,
                 compositeComponents: [],
                 subscription: nil,
                 minAllowedQuantity: nil,

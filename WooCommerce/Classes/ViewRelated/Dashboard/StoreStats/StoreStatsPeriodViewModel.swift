@@ -105,7 +105,7 @@ final class StoreStatsPeriodViewModel {
     private lazy var summaryStatsResultsController: ResultsController<StorageSiteSummaryStats> = {
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-            return StatsStoreV4.buildDateString(from: date, with: .day)
+            return StatsStoreV4.buildDateString(from: date, timeRange: .today)
         }()
         let predicate = NSPredicate(format: "siteID = %ld AND period == %@ AND date == %@",
                                     siteID,
@@ -113,6 +113,13 @@ final class StoreStatsPeriodViewModel {
                                     formattedDateString)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
+
+    /// Returns `true` if there is no content for the selected time range.
+    /// Useful for knowing when we are fetching data for the first time.
+    ///
+    var noDataFound: Bool {
+        siteStatsResultsController.isEmpty || orderStatsResultsController.isEmpty || siteStatsResultsController.isEmpty
+    }
 
     // MARK: - Configurations
 
@@ -145,6 +152,14 @@ final class StoreStatsPeriodViewModel {
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
+    }
+
+    /// Manually update datasources using the already fetched information
+    ///
+    func loadCachedContent() {
+        updateOrderDataIfNeeded()
+        updateSiteVisitDataIfNeeded()
+        updateSiteSummaryDataIfNeeded()
     }
 }
 

@@ -6,17 +6,34 @@ import WebKit
 final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     let title: String
     let initialURL: URL?
+
+    /// Optional closure for when the web page loads the initial URL successfully.
+    let pageLoadHandler: ((URL) -> Void)?
+
+    /// A url to trigger dismissing of the web view.
     let urlToTriggerExit: String?
-    let exitTrigger: ((URL?) -> Void)?
+
+    /// Closure to determine the action given the redirect URL.
+    /// If `urlToTriggerExit` is provided, this closure is triggered only when
+    /// a redirect URL matches `urlToTriggerExit`.
+    /// Otherwise, the closure is triggered whenever the web view redirects to a new URL.
+    let redirectHandler: ((URL) -> Void)?
+
+    /// Optional closure for when a web page fails to load.
+    let errorHandler: ((Error) -> Void)?
 
     init(title: String = "",
          initialURL: URL,
          urlToTriggerExit: String? = nil,
-         exitTrigger: ((URL?) -> Void)? = nil) {
+         pageLoadHandler: ((URL) -> Void)? = nil,
+         redirectHandler: ((URL) -> Void)? = nil,
+         errorHandler: ((Error) -> Void)? = nil) {
         self.title = title
         self.initialURL = initialURL
         self.urlToTriggerExit = urlToTriggerExit
-        self.exitTrigger = exitTrigger
+        self.pageLoadHandler = pageLoadHandler
+        self.redirectHandler = redirectHandler
+        self.errorHandler = errorHandler
     }
 
     func handleDismissal() {
@@ -24,15 +41,29 @@ final class DefaultAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     }
 
     func handleRedirect(for url: URL?) {
-        if let urlToTriggerExit,
-            let url,
-            url.absoluteString.contains(urlToTriggerExit) {
-            exitTrigger?(url)
+        guard let url else {
+            return
+        }
+        guard let urlToTriggerExit else {
+            // always trigger `redirectHandler` if `urlToTriggerExit` is not specified.
+            redirectHandler?(url)
+            return
+        }
+        if url.absoluteString.contains(urlToTriggerExit) {
+            redirectHandler?(url)
         }
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
+    }
+
+    func didFinishNavigation(for url: URL) {
+        pageLoadHandler?(url)
+    }
+
+    func didFailProvisionalNavigation(with error: Error) {
+        errorHandler?(error)
     }
 }
 
@@ -51,19 +82,19 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
     let viewModel: AuthenticatedWebViewModel
 
     init(isPresented: Binding<Bool>,
-             viewModel: AuthenticatedWebViewModel) {
-            self._isPresented = isPresented
-            self.viewModel = viewModel
-        }
+         viewModel: AuthenticatedWebViewModel) {
+        self._isPresented = isPresented
+        self.viewModel = viewModel
+    }
 
     init(isPresented: Binding<Bool>,
-             url: URL,
-             urlToTriggerExit: String? = nil,
-             exitTrigger: ((URL?) -> Void)? = nil) {
+         url: URL,
+         urlToTriggerExit: String? = nil,
+         redirectHandler: ((URL) -> Void)? = nil) {
             self._isPresented = isPresented
             viewModel = DefaultAuthenticatedWebViewModel(initialURL: url,
                                                          urlToTriggerExit: urlToTriggerExit,
-                                                         exitTrigger: exitTrigger)
+                                                         redirectHandler: redirectHandler)
         }
 
     func makeUIViewController(context: Context) -> AuthenticatedWebViewController {

@@ -101,6 +101,8 @@ public final class CoreDataManager: StorageManagerType {
                 try container.persistentStoreCoordinator.destroyPersistentStore(at: self.storeURL,
                                                                                 ofType: storeDescription.type,
                                                                                 options: nil)
+                NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+
             } catch {
                 persistentStoreRemovalError = error
             }

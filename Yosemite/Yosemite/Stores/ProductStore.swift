@@ -118,8 +118,6 @@ public class ProductStore: Store {
             replaceProductLocally(product: product, onCompletion: onCompletion)
         case let .checkIfStoreHasProducts(siteID, status, onCompletion):
             checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
-        case let .createTemplateProduct(siteID, template, onCompletion):
-            createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
@@ -586,21 +584,6 @@ private extension ProductStore {
             switch result {
             case .success(let ids):
                 onCompletion(.success(ids.isEmpty == false))
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
-    }
-
-    /// Creates a product using the provided template type.
-    /// The created product is not stored locally.
-    ///
-    func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
-            switch result {
-            case .success(let productID):
-                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
-
             case .failure(let error):
                 onCompletion(.failure(error))
             }

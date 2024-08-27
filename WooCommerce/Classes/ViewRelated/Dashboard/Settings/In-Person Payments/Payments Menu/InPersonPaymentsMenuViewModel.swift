@@ -31,8 +31,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
     /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
-    /// Whether the payment methods view is shown after creating an order.
-    @Published var presentPaymentMethods: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -61,7 +59,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
-        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
+        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
         let noticePresenter: NoticePresenter
@@ -71,7 +69,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
-             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol?,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -142,8 +140,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private func refreshDepositSummary() async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
-        await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
-                                                                         pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
+              let depositService = dependencies.wooPaymentsDepositService,
+              await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
+                                                                               pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
             shouldShowDepositSummary = false
             return
         }
@@ -154,7 +153,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             if depositViewModel == nil {
                 isLoadingDepositSummary = true
             }
-            let depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+            let depositCurrencyViewModels = try await depositService.fetchDepositsOverview().map({
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
             isLoadingDepositSummary = false
@@ -213,7 +212,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
         dependencies.onboardingUseCase.clearPluginSelection()
         dependencies.onboardingUseCase.selectPlugin(plugin)
-        presentManagePaymentGateways = false
     }
 
     lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
@@ -272,12 +270,11 @@ private extension InPersonPaymentsMenuViewModel {
                             dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
                     }
                 }
-            presentPaymentMethods = true
+            navigationPath.append(CollectPaymentNavigationDestination.paymentMethods)
         }
 
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
-        presentPaymentMethods = false
         navigationPathBeforePaymentCollection = navigationPath
         navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
     }
@@ -446,6 +443,10 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
 /// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
 enum InPersonPaymentsMenuNavigationDestination {
     case collectPayment
+}
+
+enum CollectPaymentNavigationDestination {
+    case paymentMethods
 }
 
 private enum Constants {

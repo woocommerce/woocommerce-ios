@@ -1,8 +1,11 @@
 import Foundation
+import SwiftUI
 import UIKit
 
-protocol CardPresentPaymentAlertsPresenting {
-    func present(viewModel: CardPresentPaymentsModalViewModel)
+protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
+    associatedtype AlertDetails
+    func present(viewModel: AlertDetails)
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void)
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void)
@@ -11,15 +14,16 @@ protocol CardPresentPaymentAlertsPresenting {
 }
 
 final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 
     /// There should not be a strong reference to the view controller, as generally the alerts presenter
     /// will be owned (perhaps indirectly) by the view controller. Keeping a strong reference here makes
     /// retain cycles likely/unavoidable.
-    private weak var rootViewController: UIViewController?
+    private weak var rootViewController: ViewControllerPresenting?
 
-    init(rootViewController: UIViewController) {
+    init(rootViewController: ViewControllerPresenting) {
         self.rootViewController = rootViewController
     }
 
@@ -46,7 +50,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     /// Dismisses any view controller based on `CardPresentPaymentsModalViewController`,
     /// then presents any `SeveralReadersFoundViewController` passed to it
     ///
-    private func dismissCommonAndPresent(animated: Bool = true, from: UIViewController? = nil, present: SeveralReadersFoundViewController? = nil) {
+    private func dismissCommonAndPresent(animated: Bool = true, from: ViewControllerPresenting? = nil, present: SeveralReadersFoundViewController? = nil) {
         /// Dismiss any common modal
         ///
         guard modalController == nil else {
@@ -69,10 +73,23 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         from.present(present, animated: animated)
     }
 
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        guard let modalController else {
+            return
+        }
+        let nav = WCSettingsWebView(adminUrl: adminURL) {
+            modalController.dismiss(animated: true) {
+                completion()
+            }
+        }
+        let hostingController = UIHostingController(rootView: nav)
+        modalController.present(hostingController, animated: true, completion: nil)
+    }
+
     /// Dismisses the `SeveralReadersFoundViewController`, then presents any
     /// `CardPresentPaymentsModalViewController` passed to it.
     ///
-    func dismissSeveralFoundAndPresent(animated: Bool = true, from: UIViewController? = nil, present: CardPresentPaymentsModalViewController? = nil) {
+    func dismissSeveralFoundAndPresent(animated: Bool = true, from: ViewControllerPresenting? = nil, present: CardPresentPaymentsModalViewController? = nil) {
         guard severalFoundController == nil else {
             let shouldAnimateDismissal = animated && present == nil
             severalFoundController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in

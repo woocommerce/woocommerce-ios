@@ -2,9 +2,12 @@ import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageManagerType
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `MostActiveCouponsCard`.
 ///
+@MainActor
 final class MostActiveCouponsCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Coupons card.
     var onDismiss: (() -> Void)?
@@ -14,6 +17,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     @Published private(set) var syncingError: Error?
     @Published private(set) var rows: [MostActiveCouponRowViewModel] = []
     @Published private(set) var timeRangeText = ""
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -64,6 +68,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .coupons))
         syncingData = true
         syncingError = nil
         rows = []
@@ -87,9 +92,19 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                     }
                 }
             }
+
+            analyticsEnabled = true
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .coupons))
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
             DDLogError("⛔️ Dashboard (Most active coupons) — Error loading most active coupons: \(error)")
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .coupons, error: error))
         }
         syncingData = false
     }

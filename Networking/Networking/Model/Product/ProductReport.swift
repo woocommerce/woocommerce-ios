@@ -3,20 +3,20 @@ import Codegen
 
 /// A struct to decode product reports.
 ///
-public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     public let productID: Int64
     public let variationID: Int64?
     public let name: String
     public let imageURL: URL?
     public let itemsSold: Int
-    public let stockQuantity: Int
+    public let stockQuantity: Decimal?
 
     public init(productID: Int64,
                 variationID: Int64?,
                 name: String,
                 imageURL: URL? = nil,
                 itemsSold: Int,
-                stockQuantity: Int) {
+                stockQuantity: Decimal?) {
         self.productID = productID
         self.variationID = variationID
         self.itemsSold = itemsSold
@@ -55,14 +55,27 @@ public extension ProductReport {
     struct ExtendedInfo: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
         public let name: String
         public let image: String?
-        public let stockQuantity: Int
+        public let stockQuantity: Decimal?
 
         public init(name: String,
                     image: String?,
-                    stockQuantity: Int) {
+                    stockQuantity: Decimal?) {
             self.name = name
             self.image = image
             self.stockQuantity = stockQuantity
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let name = try container.decode(String.self, forKey: .name)
+            let image = try container.decodeIfPresent(String.self, forKey: .image)
+
+            // Even though WooCommerce Core returns Int or null values,
+            // some plugins alter the field value from Int to Decimal or String.
+            // We handle this as an optional Decimal value.
+            let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
+
+            self.init(name: name, image: image, stockQuantity: stockQuantity)
         }
 
         private enum CodingKeys: String, CodingKey {

@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
+import Experiments
 
 enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1
@@ -23,9 +24,14 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     let siteID: Int64
     let source: AddProductCoordinator.Source
+    let featureFlagService: FeatureFlagService
 
     var canBeDismissed: Bool {
-        currentStep == .productName && addProductNameViewModel.productName == nil
+        if featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
+            currentStep == .productName && startingInfoViewModel.productFeatures == nil
+        } else {
+            currentStep == .productName && addProductNameViewModel.productName == nil
+        }
     }
 
     private let analytics: Analytics
@@ -37,8 +43,12 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private(set) var productDescription: String?
     private var isFirstAttemptGeneratingDetails: Bool
 
+    private(set) lazy var startingInfoViewModel: ProductCreationAIStartingInfoViewModel = {
+        ProductCreationAIStartingInfoViewModel(siteID: siteID)
+    }()
+
     private(set) lazy var addProductNameViewModel: AddProductNameWithAIViewModel = {
-        .init(siteID: siteID)
+        AddProductNameWithAIViewModel(siteID: siteID)
     }()
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
@@ -47,12 +57,14 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
          source: AddProductCoordinator.Source,
          analytics: Analytics = ServiceLocator.analytics,
          onCancel: @escaping () -> Void,
-         onCompletion: @escaping (Product) -> Void) {
+         onCompletion: @escaping (Product) -> Void,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.source = source
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
+        self.featureFlagService = featureFlagService
         isFirstAttemptGeneratingDetails = true
     }
 
@@ -66,7 +78,8 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onProductFeaturesAdded(features: String) {
-        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails))
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails,
+                                                                        features: features))
         productFeatures = features
         currentStep = .preview
         isFirstAttemptGeneratingDetails = false
@@ -88,6 +101,11 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func backtrackOrDismiss() {
+        if featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1),
+           currentStep == .preview {
+            return currentStep = .productName
+        }
+
         if let previousStep = currentStep.previousStep {
             currentStep = previousStep
         } else {

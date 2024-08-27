@@ -462,6 +462,21 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_update_order_when_payment_method_id_and_title_passed_then_request_parameters_set() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake().copy(paymentMethodID: "cod", paymentMethodTitle: "Pay in Person")
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.paymentMethodID, .paymentMethodTitle]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters as? [String: AnyHashable])
+        assertEqual(received["payment_method"], "cod")
+        assertEqual(received["payment_method_title"], "Pay in Person")
+    }
+
     // MARK: - Load Order Notes Tests
 
     /// Verifies that loadOrderNotes properly parses the `order-notes` sample response.

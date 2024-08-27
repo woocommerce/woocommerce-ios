@@ -18,29 +18,34 @@ struct Woo_Watch_AppApp: App {
         WindowGroup {
             Group {
                 if let dependencies = phoneDependencySynchronizer.dependencies {
+                    NavigationStack {
+                        TabView(selection: $selectedTab) {
+                            MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
+                                .tag(WooWatchTab.myStore)
 
-                    TabView(selection: $selectedTab) {
-                        MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
-                            .tag(WooWatchTab.myStore)
-
-                        OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
-                            .tag(WooWatchTab.ordersList)
+                            OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
+                                .tag(WooWatchTab.ordersList)
+                        }
                     }
                     .sheet(item: $appBindings.orderNotification, content: { orderNotification in
                         OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
                     })
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)
+                    .environment(\.appBindings, appBindings)
                     .id(dependencies.storeID) // Forces a redraw when the store id changes
 
                 } else {
 
-                    ConnectView()
+                    ConnectView(synchronizer: phoneDependencySynchronizer)
 
                 }
             }
             .environmentObject(tracksProvider)
             .task {
+                // Create the crash logging stack with the known account to properly identify crashes
+                delegate.crashLoggingStack = WatchCrashLoggingStack(account: phoneDependencySynchronizer.dependencies?.account)
+
                 // For some reason I can't use the bindings directly from our AppDelegate.
                 // We need to store them in this type assign them to the delegate for further modification.
                 delegate.appBindings = appBindings
@@ -52,6 +57,10 @@ struct Woo_Watch_AppApp: App {
                 // Tracks
                 tracksProvider.sendTracksEvent(.watchAppOpened)
             }
+            .onChange(of: phoneDependencySynchronizer.dependencies, perform: { newDependencies in
+                // Make sure the app delegate performs any update needed when we find new dependencies.
+                delegate.onUpdateDependencies(dependencies: newDependencies)
+            })
         }
     }
 }

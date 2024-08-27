@@ -12,18 +12,18 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     private var stores: MockStoresManager!
     private var alertsPresenter: MockCardPresentPaymentAlertsPresenter!
-    private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
-    private var useCase: CollectOrderPaymentUseCase!
+    private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                        BluetoothCardReaderPaymentAlertsProvider,
+                                                        MockCardPresentPaymentAlertsPresenter>!
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         stores.reset()
         mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
-        onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
@@ -31,8 +31,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(order, nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
             default:
                 break
             }
@@ -41,12 +41,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
                                              order: order,
                                              formattedAmount: "1.5",
-                                             rootViewController: .init(),
-                                             onboardingPresenter: onboardingPresenter,
+                                             rootViewController: MockViewControllerPresenting(),
                                              configuration: Mocks.configuration,
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
+                                             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+                                             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker)
     }
@@ -92,22 +93,26 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
-        let useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                                 order: order,
-                                                 formattedAmount: "0.49",
-                                                 rootViewController: .init(),
-                                                 onboardingPresenter: onboardingPresenter,
-                                                 configuration: Mocks.configuration,
-                                                 stores: stores,
-                                                 paymentOrchestrator: mockPaymentOrchestrator,
-                                                 alertsPresenter: alertsPresenter,
-                                                 preflightController: mockPreflightController,
-                                                 analyticsTracker: mockAnalyticsTracker)
+        let useCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                    BluetoothCardReaderPaymentAlertsProvider,
+                                                    MockCardPresentPaymentAlertsPresenter>(
+            siteID: 122,
+            order: order,
+            formattedAmount: "0.49",
+            rootViewController: MockViewControllerPresenting(),
+            configuration: Mocks.configuration,
+            stores: stores,
+            paymentOrchestrator: mockPaymentOrchestrator,
+            alertsPresenter: alertsPresenter,
+            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: mockPreflightController,
+            analyticsTracker: mockAnalyticsTracker)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(order, nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(order))
             default:
                 break
             }
@@ -135,8 +140,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackPaymentFailure)
-        let receivedError = try XCTUnwrap(mockAnalyticsTracker.spyTrackPaymentFailureError as? CollectOrderPaymentUseCase.NotValidAmountError)
-        assertEqual(CollectOrderPaymentUseCase.NotValidAmountError.belowMinimumAmount(amount: "$0.50"), receivedError)
+        let receivedError = try XCTUnwrap(mockAnalyticsTracker.spyTrackPaymentFailureError as? CollectOrderPaymentUseCaseNotValidAmountError)
+        assertEqual(CollectOrderPaymentUseCaseNotValidAmountError.belowMinimumAmount(amount: "$0.50"), receivedError)
     }
 
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
@@ -149,8 +154,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
             default:
@@ -182,8 +187,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .retrieveOrder(_, _, let completion):
-                completion(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5"), nil)
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(Order.fake().copy(siteID: self.defaultSiteID, orderID: self.defaultOrderID, total: "1.5")))
             case .markOrderAsPaidLocally(let siteID, let orderID, _, _):
                 markOrderAsPaidLocallyAction = (siteID: siteID, orderID: orderID)
             default:

@@ -14,6 +14,10 @@ protocol OrderListViewControllerDelegate: AnyObject {
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
 
+    /// Called when new the order list has been synced and the sync timestamp changes.
+    ///
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date)
+
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
@@ -86,12 +90,23 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private let syncingCoordinator = SyncingCoordinator()
 
     /// Timestamp for last successful sync.
+    /// Reads and feeds from `OrderListSyncBackgroundTask.latestSyncDate`
     ///
-    private var lastFullSyncTimestamp: Date?
+    private(set) var lastFullSyncTimestamp: Date {
+        get {
+            OrderListSyncBackgroundTask.latestSyncDate
+        }
+        set {
+            OrderListSyncBackgroundTask.latestSyncDate = newValue
+            delegate?.orderListViewControllerSyncTimestampChanged(newValue)
+        }
+    }
 
     /// Minimum time interval allowed between full sync.
     ///
-    private let minimalIntervalBetweenSync: TimeInterval = 30
+    private let minimalIntervalBetweenSync: TimeInterval = {
+        return 30 * 60 // 30m
+    }()
 
     /// UI Active State
     ///
@@ -276,14 +291,16 @@ private extension OrderListViewController {
     ///
     func configureViewModel() {
         viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
-            guard let self = self,
-                  // Avoid synchronizing if the view is not visible. The refresh will be handled in
-                  // `viewWillAppear` instead.
-                  self.viewIfLoaded?.window != nil else {
-                return
-            }
+            guard let self else { return }
 
-            self.syncingCoordinator.resynchronize()
+            // Avoid synchronizing if the view is not visible. The refresh will be handled in
+            // `viewWillAppear` instead.
+            guard self.viewIfLoaded?.window != nil else { return }
+
+            // Send a delegate event in case the updated happened while the app was in the background.
+            self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
+
+            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -343,6 +360,7 @@ private extension OrderListViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
+        tableView.allowsFocus = supportsFocus()
     }
 
     /// Registers all of the available table view cells and headers
@@ -424,13 +442,18 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
-        if pageNumber == syncingCoordinator.pageFirstIndex,
-           reason == SyncReason.viewWillAppear.rawValue,
-           let lastFullSyncTimestamp = lastFullSyncTimestamp,
-           Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync {
-            // less than 30 s from last full sync
-            onCompletion?(true)
-            return
+        // Decide if we need to continue with the sync depending on custom conditions between sync reason and latest sync
+        if let syncReason = SyncReason(rawValue: reason ?? ""), pageNumber == syncingCoordinator.pageFirstIndex {
+
+            switch syncReason {
+            case .viewWillAppear where Date().timeIntervalSince(lastFullSyncTimestamp) < minimalIntervalBetweenSync:
+                onCompletion?(true) // less than 30m from last full sync
+                return
+            case .viewWillAppear:
+                refreshControl.showRefreshAnimation(on: self.tableView)
+            default:
+                break
+            }
         }
 
         transitionToSyncingState()
@@ -473,6 +496,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 }
 
                 self.transitionToResultsUpdatedState()
+                self.refreshControl.endRefreshing()
                 onCompletion?(error == nil)
         }
 
@@ -558,6 +582,21 @@ private extension OrderListViewController {
             if shouldScrollIfNeeded {
                 tableView.scrollToRow(at: orderIndexPath, at: .none, animated: true)
             }
+        }
+    }
+
+    /// Focus code crashes on iPadOS 16 and 16.1 versions
+    /// peaMlT-Ng-p2
+    /// https://github.com/woocommerce/woocommerce-ios/issues/13485
+    private func supportsFocus() -> Bool {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return true
+        }
+
+        if #available(iOS 16.2, *) {
+            return true
+        } else {
+            return false
         }
     }
 

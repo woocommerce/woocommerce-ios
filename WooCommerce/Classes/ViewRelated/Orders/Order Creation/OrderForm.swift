@@ -24,6 +24,12 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
+            guard viewModel.canBeDismissed else {
+                self?.presentDiscardChangesActionSheet {
+                    self?.discardOrderAndDismiss()
+                }
+                return
+            }
             self?.dismiss(animated: true)
         }
     }
@@ -133,7 +139,6 @@ struct OrderFormPresentationWrapper: View {
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
                         ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                            source: .orderForm(flow: flow),
                                             isPresented: isShowingProductSelector,
                                             viewModel: productSelectorViewModel)
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
@@ -227,6 +232,10 @@ struct OrderForm: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    private var isLoading: Bool {
+        viewModel.paymentDataViewModel.isLoading
+    }
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
@@ -276,7 +285,8 @@ struct OrderForm: View {
                                             flow: flow,
                                             presentProductSelector: presentProductSelector,
                                             viewModel: viewModel,
-                                            navigationButtonID: $navigationButtonID)
+                                            navigationButtonID: $navigationButtonID,
+                                            isLoading: isLoading)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -294,15 +304,15 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                OrderShippingSection(useCase: viewModel.shippingUseCase)
+                                OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingUseCase.shippingLineRows.isNotEmpty)
+                            .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
                             AddOrderComponentsSection(
                                 viewModel: viewModel.paymentDataViewModel,
-                                shippingUseCase: viewModel.shippingUseCase,
+                                shippingLineViewModel: viewModel.shippingLineViewModel,
                                 shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                 shouldShowGiftCardForm: $shouldShowGiftCardForm)
                             .addingTopAndBottomDividers()
@@ -378,17 +388,21 @@ struct OrderForm: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                BannerPopover(isPresented: $viewModel.shippingUseCase.shouldShowFeedbackSurvey, config: viewModel.shippingUseCase.feedbackSurveyConfig)
+                FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
+                                      config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
                 ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
-                    VStack {
+                    VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
+                                .redacted(reason: isLoading ? .placeholder : [])
+                                .shimmering(active: isLoading)
+
                         }
                         .font(.headline)
-                        .padding()
+                        .padding([.bottom, .horizontal])
 
                         Divider()
                             .padding([.leading], Layout.dividerLeadingPadding)
@@ -399,7 +413,7 @@ struct OrderForm: View {
                 } expandableContent: {
                     OrderPaymentSection(
                         viewModel: viewModel.paymentDataViewModel,
-                        shippingUseCase: viewModel.shippingUseCase,
+                        shippingLineViewModel: viewModel.shippingLineViewModel,
                         shouldShowGiftCardForm: $shouldShowGiftCardForm)
                     .disabled(viewModel.shouldShowNonEditableIndicators)
                 }
@@ -572,6 +586,9 @@ private struct ProductsSection: View {
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
 
+    /// Tracks if the order is loading (syncing remotely)
+    let isLoading: Bool
+
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -600,6 +617,9 @@ private struct ProductsSection: View {
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
     ///
     @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
+
+    /// Tracks the scale of the view due to accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
@@ -663,7 +683,8 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductCard(viewModel: productRow,
                                            flow: flow,
-                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           isLoading: isLoading,
+                                           shouldDisableDiscountEditing: isLoading,
                                            shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                            onAddDiscount: viewModel.setDiscountViewModel)
                     .sheet(item: $viewModel.discountViewModel, content: { discountViewModel in
@@ -714,7 +735,6 @@ private struct ProductsSection: View {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
                     ProductSelectorNavigationView(
                         configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        source: .orderForm(flow: flow),
                         isPresented: $viewModel.isProductSelectorPresented,
                         viewModel: productSelectorViewModel)
                     .onDisappear {
@@ -787,6 +807,9 @@ private extension ProductsSection {
             } else {
                 HStack() {
                     Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: Layout.scanImageSize * scale)
                     Text(Localization.scanProductRowTitle)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -810,6 +833,9 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: Layout.scanImageSize * scale)
             }
         })
         .accessibilityLabel(OrderForm.Localization.scanProductButtonAccessibilityLabel)
@@ -968,6 +994,7 @@ private extension ProductSelectorView.Configuration {
 private extension ProductsSection {
     enum Layout {
         static let rowHeight: CGFloat = 56.0
+        static let scanImageSize: CGFloat = 24
     }
 
     enum Localization {

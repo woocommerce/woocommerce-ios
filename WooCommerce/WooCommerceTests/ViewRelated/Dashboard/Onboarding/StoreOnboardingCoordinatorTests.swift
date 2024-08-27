@@ -2,7 +2,6 @@ import TestKit
 import XCTest
 @testable import WooCommerce
 
-@MainActor
 final class StoreOnboardingCoordinatorTests: XCTestCase {
     private var navigationController: UINavigationController!
 

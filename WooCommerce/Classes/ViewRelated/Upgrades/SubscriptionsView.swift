@@ -8,19 +8,10 @@ final class SubscriptionsHostingController: UIHostingController<SubscriptionsVie
     init(siteID: Int64) {
         let viewModel = SubscriptionsViewModel()
         super.init(rootView: .init(viewModel: viewModel))
-
-        rootView.onReportIssueTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
-        supportController.show(from: self)
     }
 }
 
@@ -35,6 +26,8 @@ struct SubscriptionsView: View {
     /// Closure to be invoked when the "Report Issue" button is tapped.
     ///
     var onReportIssueTapped: (() -> ())?
+
+    @State private var isShowingSupport = false
 
     var body: some View {
         List {
@@ -55,34 +48,9 @@ struct SubscriptionsView: View {
                 Text(viewModel.planInfo)
             })
 
-            VStack(alignment: .leading, spacing: Layout.sectionsSpacing) {
-                Text(Localization.experienceFeatures)
-                    .bold()
-                    .headlineStyle()
-
-                ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
-                    VStack(alignment: .leading, spacing: Layout.featureSpacing) {
-                        Text(feature.title)
-                            .foregroundColor(Color(.text))
-                            .font(.subheadline.weight(.semibold))
-                        ForEach(feature.contents, id: \.self) { text in
-                            HStack {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(Color(uiColor: .accent))
-                                Text(text)
-                                    .foregroundColor(Color(.text))
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                    .listRowSeparator(.hidden)
-                }
-            }
-            .renderedIf(viewModel.shouldShowFreeTrialFeatures)
-
             Section(Localization.troubleshooting) {
                 Button(Localization.report) {
-                    onReportIssueTapped?()
+                    isShowingSupport = true
                 }
                 .linkStyle()
             }
@@ -95,6 +63,25 @@ struct SubscriptionsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             viewModel.loadPlan()
+        }
+        .sheet(isPresented: $isShowingSupport) {
+            supportForm
+        }
+    }
+}
+
+private extension SubscriptionsView {
+    var supportForm: some View {
+        NavigationStack {
+            SupportForm(isPresented: $isShowingSupport,
+                        viewModel: SupportFormViewModel())
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        isShowingSupport = false
+                    }
+                }
+            }
         }
     }
 }
@@ -119,6 +106,12 @@ private extension SubscriptionsView {
             let format = NSLocalizedString("Current: %@", comment: "Reads like: Current: Free Trial")
             return .localizedStringWithFormat(format, plan)
         }
+
+        static let done = NSLocalizedString(
+            "subscriptionsView.dismissSupport",
+            value: "Done",
+            comment: "Button to dismiss the support form."
+        )
     }
 }
 

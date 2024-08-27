@@ -29,7 +29,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     private let transactionType: CardPresentTransactionType
 
-    private let alertsProvider: CardReaderTransactionAlertsProviding
+    private let alertsProvider: BluetoothCardReaderPaymentAlertsProvider
 
     init(transactionType: CardPresentTransactionType,
          presentingController: UIViewController) {
@@ -91,11 +91,6 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
         let viewModel = alertsProvider.nonRetryableError(error: error,
                                                          dismissCompletion: dismissCompletion)
-        presentViewModel(viewModel: viewModel)
-    }
-
-    func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {
-        let viewModel = alertsProvider.retryableError(tryAgain: tryAgain)
         presentViewModel(viewModel: viewModel)
     }
 }

@@ -6,28 +6,46 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     typealias Model = BottomSheetProductType
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    var data: [BottomSheetProductType] = {
-        return [
+    enum Source {
+        case creationForm
+        case editForm(selected: BottomSheetProductType)
+    }
+
+    var data: [BottomSheetProductType] {
+        let defaultOptions: [BottomSheetProductType] = [
             .simple(isVirtual: false),
             .simple(isVirtual: true),
-            .subscription,
+            isEligibleForSubscriptionProducts ? .subscription : nil,
             .variable,
-            .variableSubscription,
+            isEligibleForSubscriptionProducts ? .variableSubscription : nil,
             .grouped,
             .affiliate
-        ]
-    }()
+        ].compactMap { $0 }
 
-    var selected: BottomSheetProductType? = nil
+        switch source {
+        case .creationForm:
+            return defaultOptions
+        case .editForm(let selected):
+            return defaultOptions.filter { $0 != selected }
+        }
+    }
 
+    let selected: BottomSheetProductType?
+
+    private let source: Source
     private let onSelection: (BottomSheetProductType) -> Void
+    private let isEligibleForSubscriptionProducts: Bool
 
-    init(selected: BottomSheetProductType?, onSelection: @escaping (BottomSheetProductType) -> Void) {
+    init(source: Source,
+         subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol,
+         onSelection: @escaping (BottomSheetProductType) -> Void) {
+        self.source = source
         self.onSelection = onSelection
-
-        /// Remove from `data` the selected product type, so that it is not shown in the list.
-        data.removeAll { (productType) -> Bool in
-            productType == selected
+        self.isEligibleForSubscriptionProducts = subscriptionProductsEligibilityChecker.isSiteEligible()
+        if case let .editForm(selected) = source {
+            self.selected = selected
+        } else {
+            self.selected = nil
         }
     }
 

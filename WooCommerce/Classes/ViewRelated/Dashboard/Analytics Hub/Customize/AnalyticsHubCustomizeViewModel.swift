@@ -85,6 +85,8 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
             WooConstants.URLs.jetpackStats.asURL()
         case .giftCards:
             WooConstants.URLs.giftCardsExtension.asURL()
+        case .googleCampaigns:
+            WooConstants.URLs.googleAdsExtension.asURL()
         case .revenue, .orders, .products:
             nil
         }

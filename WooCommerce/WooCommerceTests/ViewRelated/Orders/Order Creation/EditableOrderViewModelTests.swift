@@ -83,7 +83,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // Trigger remote sync
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -191,7 +191,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -215,7 +215,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -240,7 +240,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Remote sync is triggered
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -516,18 +516,19 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "10")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
+        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1, price: 8)
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
         let expectedProductRow = ProductRowViewModel(product: product)
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -536,7 +537,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
                                                             productID: sampleProductID,
                                                             productVariationID: 33,
-                                                            sku: "product-variation")
+                                                            sku: "product-variation",
+                                                            price: "10")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -545,7 +547,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderItem = OrderItem.fake().copy(name: product.name,
                                               productID: product.productID,
                                               variationID: productVariation.productVariationID,
-                                              quantity: 2)
+                                              quantity: 2,
+                                              price: 8)
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
@@ -556,6 +559,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {
@@ -853,7 +857,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Pre-check
@@ -913,7 +917,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Then
@@ -966,7 +970,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            self.viewModel.shippingUseCase.saveShippingLine(.fake())
+            self.viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -990,7 +994,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -1015,7 +1019,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         }
         // Trigger remote sync
-        viewModel.shippingUseCase.saveShippingLine(.fake())
+        viewModel.shippingLineViewModel.saveShippingLine(.fake())
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -1080,7 +1084,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let shippingLine = ShippingLine.fake()
 
         // When
-        viewModel.shippingUseCase.saveShippingLine(shippingLine)
+        viewModel.shippingLineViewModel.saveShippingLine(shippingLine)
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -1352,7 +1356,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // Then
@@ -1427,7 +1431,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.shippingUseCase.saveShippingLine(.fake())
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
         }
 
         // When
@@ -3142,11 +3146,99 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager)
 
         // When
-        viewModel.shippingUseCase.shippingLineRows.first?.editShippingLine()
+        viewModel.shippingLineViewModel.shippingLineRows.first?.editShippingLine()
 
         // Then
-        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingUseCase.shippingLineDetails)
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingLineViewModel.shippingLineDetails)
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
+    }
+
+    func test_order_creation_when_initialCustomer_is_nil_does_not_trigger_sync() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: true)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        _ = EditableOrderViewModel(siteID: sampleSiteID,
+                                   stores: stores,
+                                   featureFlagService: featureFlagService,
+                                   initialCustomer: nil)
+    }
+
+    func test_order_creation_when_initialCustomer_is_nil_does_not_trigger_sync_in_legacy_customer_flow() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        _ = EditableOrderViewModel(siteID: sampleSiteID,
+                                   stores: stores,
+                                   featureFlagService: featureFlagService,
+                                   initialCustomer: nil)
+    }
+
+    func test_order_creation_when_initialCustomer_is_not_nil_syncs_order_with_customer_data() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: true)
+        let address = Address.fake().copy(address1: "1 Main Street")
+        let customerData: (id: Int64, billing: Address, shipping: Address) = (123, address, address)
+
+        // When
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            _ = EditableOrderViewModel(siteID: self.sampleSiteID,
+                                       stores: self.stores,
+                                       featureFlagService: featureFlagService,
+                                       initialCustomer: customerData)
+        }
+
+        // Then
+        assertEqual(customerData.id, orderToUpdate.customerID)
+        assertEqual(customerData.billing, orderToUpdate.billingAddress)
+        assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
+    }
+
+    func test_order_creation_when_initialCustomer_is_not_nil_syncs_order_with_customer_data_in_legacy_customer_flow() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let address = Address.fake().copy(address1: "1 Main Street")
+        let customerData: (id: Int64, billing: Address, shipping: Address) = (123, address, address)
+
+        // When
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            _ = EditableOrderViewModel(siteID: self.sampleSiteID,
+                                       stores: self.stores,
+                                       featureFlagService: featureFlagService,
+                                       initialCustomer: customerData)
+        }
+
+        // Then
+        assertEqual(customerData.id, orderToUpdate.customerID)
+        assertEqual(customerData.billing, orderToUpdate.billingAddress)
+        assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
     }
 }
 

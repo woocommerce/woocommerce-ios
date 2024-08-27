@@ -2,6 +2,18 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 115 (Release 20.2.0.0)
+- @itsmeichigo 2024-08-26
+    - Added `BlazeCampaignObjective` entity.
+
+## Model 114 (Release 20.0.0.0)
+- @itsmeichigo 2024-08-13
+    - Added `isEvergreen` and `durationDays` attributes to `BlazeCampaignListItem` entity.
+
+## Model 113 (Release 19.7.0.0)
+- @pmusolino 2024-07-25
+    - Added `password` attribute to `Product` entity.
+
 ## Model 112 (Release 19.0.0.0)
 - @pmusolino 2024-05-31
     - Added `visibility` attribute to `Site` entity.
@@ -36,7 +48,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 105 (Release 16.8.0.0)
 - @rachelmcr 2023-12-19
     - Removed `price` attribute from `TopEarnerStatsItem` entity.
-- @hihuongdo 2023-12-26
+- @itsmeichigo 2023-12-26
     - Added new entities `BlazeTargetDevice`, `BlazeTargetLanguage`, `BlazeTargetTopic`.
 
 ## Model 104 (Release 16.5.0.0)
@@ -68,7 +80,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
     - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional`, `allowedVariations`, `overridesDefaultVariationAttributes`, `overridesVariations` attributes and `defaultVariationAttributes` relationship to `ProductBundleItem` entity.
 
 ## Model 98 (Release 15.4.0.0)
-- @hihuongdo 2023-09-15
+- @itsmeichigo 2023-09-15
     - Added `isSampleItem` attribute to `Product` entity.
 - @selanthiraiyan 2023-09-14
     - Added `isAIAssitantFeatureActive` attribute to `Site` entity.

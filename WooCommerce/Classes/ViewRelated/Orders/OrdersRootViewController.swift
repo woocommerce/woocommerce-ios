@@ -127,6 +127,7 @@ final class OrdersRootViewController: UIViewController {
 
         // Clears application icon badge
         ServiceLocator.pushNotesManager.resetBadgeCount(type: .storeOrder)
+        updateTimeoutText()
     }
 
     /// Shows `SearchViewController`.
@@ -188,6 +189,13 @@ final class OrdersRootViewController: UIViewController {
     ///
     private func presentOrderCreationFlowWithScannedProduct(_ result: SKUSearchResult) {
         let viewModel = EditableOrderViewModel(siteID: siteID, initialItem: result)
+        setupNavigation(viewModel: viewModel)
+    }
+
+    /// Presents the Order Creation flow with the given customer pre-filled.
+    ///
+    func presentOrderCreationFlowWithCustomer(id customerID: Int64, billing: Address?, shipping: Address?) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, initialCustomer: (customerID, billing, shipping))
         setupNavigation(viewModel: viewModel)
     }
 
@@ -411,12 +419,28 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
         // Do nothing here
     }
 
+    func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
+        updateTimeoutText()
+    }
+
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
     func clearFilters() {
         filters = FilterOrderListViewModel.Filters()
+    }
+
+    private func updateTimeoutText() {
+        let syncTimestamp = OrderListSyncBackgroundTask.latestSyncDate
+
+        // Prevents an old date to be displayed when there isn't a sync timestamp.
+        guard syncTimestamp != .distantPast else {
+            return
+        }
+
+        let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
     }
 }
 

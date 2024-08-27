@@ -13,9 +13,11 @@ struct AnalyticsSessionsReportCard: View {
                              message: Localization.sessionsCTAMessage,
                              buttonLabel: Localization.sessionsCTAButton,
                              isLoading: $isEnablingJetpackStats) {
-                isEnablingJetpackStats = true
-                await viewModel.enableJetpackStats()
-                isEnablingJetpackStats = false
+                Task { @MainActor in
+                    isEnablingJetpackStats = true
+                    await viewModel.enableJetpackStats()
+                    isEnablingJetpackStats = false
+                }
             }.onAppear {
                 viewModel.trackJetpackStatsCTAShown()
             }

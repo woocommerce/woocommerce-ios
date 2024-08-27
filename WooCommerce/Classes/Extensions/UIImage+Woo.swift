@@ -569,6 +569,11 @@ extension UIImage {
         UIImage(named: "store-creation-progress-4")!
     }
 
+    /// Swap icon - horizontal
+    static var swapHorizontal: UIImage {
+        UIImage(named: "swap-horizontal")!
+    }
+
     /// Add product image
     ///
     static var addProductImage: UIImage {
@@ -976,6 +981,12 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Custom Fields Icon
+    ///
+    static var customFieldsImage: UIImage {
+        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24))
+    }
+
     /// Print Icon
     ///
     static var print: UIImage {
@@ -1058,10 +1069,10 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Play square image
+    /// Switching mode image
     ///
-    static var playSquareImage: UIImage {
-        UIImage(systemName: "play.square")!
+    static var switchingModeImage: UIImage {
+        UIImage(systemName: "arrow.left.arrow.right")!
     }
 
     /// Plus Icon
@@ -1141,7 +1152,7 @@ extension UIImage {
     /// Scan Icon
     ///
     static var scanImage: UIImage {
-        return UIImage(named: "icon-scan")!
+        return UIImage(systemName: "barcode.viewfinder")!
     }
 
     /// WordPress Logo Icon
@@ -1218,6 +1229,12 @@ extension UIImage {
     static var statsAltImage: UIImage {
         return UIImage.gridicon(.statsAlt)
         .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Tooltip icon
+    ///
+    static var tooltipImage: UIImage {
+        return UIImage(named: "icon-tooltip")!
     }
 
     /// Trash Can Icon
@@ -1382,6 +1399,12 @@ extension UIImage {
     ///
     static var circularTimeIcon: UIImage {
         return UIImage(named: "icon-circular-time")!
+    }
+
+    /// Google Icon
+    ///
+    static var googleLogo: UIImage {
+        return UIImage(named: "google-logo")!
     }
 
     /// Lock Image

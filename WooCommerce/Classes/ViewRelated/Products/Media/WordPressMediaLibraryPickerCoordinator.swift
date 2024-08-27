@@ -22,10 +22,14 @@ final class WordPressMediaLibraryPickerCoordinator: NSObject {
     }
 
     /// Starts navigation to show the media picker.
-    /// - Parameter origin: View controller to present the media picker.
-    func start(from origin: UIViewController) {
+    /// - Parameters:
+    ///   - origin: View controller to present the media picker.
+    ///   - productID: If non-nil loads only media attached to this product ID
+    func start(from origin: UIViewController,
+               productID: Int64? = nil) {
         let wordPressMediaPickerViewController = WordPressMediaLibraryPickerViewController(
             siteID: siteID,
+            productID: productID,
             imagesOnly: imagesOnly,
             allowsMultipleSelections: allowsMultipleSelections) { [weak self] selectedMediaItems in
                 self?.dismissAndComplete(with: selectedMediaItems)

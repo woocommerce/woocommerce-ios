@@ -2,10 +2,13 @@ import XCTest
 import Yosemite
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 @testable import WooCommerce
+
 
 final class StorePerformanceViewModelTests: XCTestCase {
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -21,6 +24,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(now.adding(days: -30)).isSameDay(as: startDateForCustomRange))
     }
 
+    @MainActor
     func test_dates_for_custom_range_are_correct_for_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -35,6 +39,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.endDateForCustomRange, endDate)
     }
 
+    @MainActor
     func test_granularityText_is_nil_for_non_custom_time_range() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -46,6 +51,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.granularityText)
     }
 
+    @MainActor
     func test_granularityText_is_not_nil_for_custom_time_range() throws {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -59,6 +65,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.granularityText)
     }
 
+    @MainActor
     func test_loadLastTimeRange_is_fetched_upon_initialization() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -81,6 +88,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_saveLastTimeRange_is_triggered_when_updating_time_range() {
         // Given
         var savedTimeRange: StatsTimeRangeV4?
@@ -102,6 +110,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(savedTimeRange, .thisYear)
     }
 
+    @MainActor
     func test_shouldHighlightStats_is_updated_correctly() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -140,18 +149,33 @@ final class StorePerformanceViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_statsVersion_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
-        mockSyncAllStats(with: stores, toReturn: .v3)
-        XCTAssertEqual(viewModel.statsVersion, .v4) // Initial value
+        mockSyncAllStats(with: stores, retrieveStatsError: DotcomError.noRestRoute)
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
-        XCTAssertEqual(viewModel.statsVersion, .v3)
+        XCTAssertFalse(viewModel.analyticsEnabled)
+    }
+
+    @MainActor
+    func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_notFound_error() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+        mockSyncAllStats(with: stores, retrieveStatsError: NetworkError.notFound(response: nil))
+        XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then
+        XCTAssertFalse(viewModel.analyticsEnabled)
     }
 
     @MainActor
@@ -163,7 +187,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
 
         // When
         viewModel.didSelectTimeRange(.thisMonth)
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
@@ -182,7 +206,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date().endOfDay(timezone: .current)
         let startDate = Date().startOfDay(timezone: .current)
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
@@ -201,7 +225,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToCustomRange)
@@ -220,7 +244,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
@@ -239,7 +263,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let endDate = Date()
         let startDate = try XCTUnwrap(endDate.adding(days: -10))
         viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -253,7 +277,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.noPermission)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -269,7 +293,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
@@ -285,12 +309,13 @@ final class StorePerformanceViewModelTests: XCTestCase {
         mockSyncAllStats(with: stores, visitorStatsError: SiteStatsStoreError.statsModuleDisabled)
 
         // When
-        await viewModel.reloadData()
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
 
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
     }
 
+    @MainActor
     func test_hideStorePerformance_triggers_onDismiss() {
         // Given
         let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
@@ -306,6 +331,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertTrue(onDismissTriggered)
     }
 
+    @MainActor
     func test_hideStorePerformance_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -326,16 +352,16 @@ final class StorePerformanceViewModelTests: XCTestCase {
 //
 private extension StorePerformanceViewModelTests {
     func mockSyncAllStats(with stores: MockStoresManager,
-                          toReturn statsVersion: StatsVersion = .v4,
+                          retrieveStatsError: Error? = nil,
                           visitorStatsError: Error? = nil,
                           siteSummaryStatsError: Error? = nil) {
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
-                if statsVersion == .v4 {
-                    onCompletion(.success(()))
+                if let retrieveStatsError {
+                    onCompletion(.failure(retrieveStatsError))
                 } else {
-                    onCompletion(.failure(DotcomError.noRestRoute))
+                    onCompletion(.success(()))
                 }
             case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
                 if let visitorStatsError {

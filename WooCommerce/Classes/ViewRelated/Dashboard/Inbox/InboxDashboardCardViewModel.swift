@@ -6,6 +6,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `InboxDashboardCard`.
 ///
+@MainActor
 final class InboxDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
@@ -47,13 +48,16 @@ final class InboxDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .inbox))
         syncingData = true
         syncingError = nil
         do {
             // Ignoring the result from remote as we're using storage as the single source of truth
             _ = try await loadInboxMessages()
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .inbox))
         } catch {
             syncingError = error
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .inbox, error: error))
         }
         syncingData = false
     }

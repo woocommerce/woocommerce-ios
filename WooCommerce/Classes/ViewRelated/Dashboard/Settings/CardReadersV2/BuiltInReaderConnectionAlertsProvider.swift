@@ -29,10 +29,13 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
     }
 
 
-    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           showsInAuthenticatedWebView: Bool,
+                                           openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdateAddress(image: .builtInReaderError,
+                                                      wcSettingsAdminURL: wcSettingsAdminURL,
                                                       openWCSettings: openWCSettings,
                                                       retrySearch: retrySearch,
                                                       cancelSearch: cancelSearch)
@@ -58,5 +61,11 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
                         progress: Float,
                         cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
         CardPresentModalBuiltInConfigurationProgress(progress: progress, cancel: cancel)
+    }
+
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
     }
 }

@@ -8,7 +8,7 @@ import Codegen
 ///
 /// Only attributes with `String` values are supported.
 ///
-public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderItemAttribute: Decodable, Hashable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let metaID: Int64
     public let name: String
     public let value: String

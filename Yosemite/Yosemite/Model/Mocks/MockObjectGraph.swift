@@ -317,6 +317,7 @@ extension MockObjectGraph {
             bundleMinSize: nil,
             bundleMaxSize: nil,
             bundledItems: [],
+            password: nil,
             compositeComponents: [],
             subscription: nil,
             minAllowedQuantity: nil,
@@ -473,10 +474,10 @@ extension MockObjectGraph {
         }
     }
 
-    static func createStats(siteID: Int64, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
+    static func createStats(siteID: Int64, timeRange: StatsTimeRangeV4, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
         TopEarnerStats(
             siteID: siteID,
-            date: StatsStoreV4.buildDateString(from: Date(), with: granularity),
+            date: StatsStoreV4.buildDateString(from: Date(), timeRange: timeRange),
             granularity: granularity,
             limit: "",
             items: items

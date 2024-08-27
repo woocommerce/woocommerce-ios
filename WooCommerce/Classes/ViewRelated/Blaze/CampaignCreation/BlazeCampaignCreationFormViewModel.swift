@@ -1,4 +1,5 @@
 import Foundation
+import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -25,8 +26,19 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var onEditAd: (() -> Void)?
 
     @Published private(set) var image: MediaPickerImage?
-    @Published private(set) var tagline: String = ""
-    @Published private(set) var description: String = ""
+    @Published private(set) var tagline: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
+    @Published private(set) var description: String = "" {
+        didSet {
+            updateIsUsingAISuggestions()
+        }
+    }
+
+    // Whether the campaign should have no end date
+    private var isEvergreen: Bool
 
     // Budget details
     private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
@@ -53,11 +65,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     var budgetSettingViewModel: BlazeBudgetSettingViewModel {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
+                                    isEvergreen: isEvergreen,
                                     duration: duration,
                                     startDate: startDate,
-                                    targetOptions: targetOptions) { [weak self] dailyBudget, duration, startDate in
+                                    targetOptions: targetOptions) { [weak self] dailyBudget, isEvegreen, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
+            self.isEvergreen = isEvegreen
             self.duration = duration
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
@@ -69,6 +83,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                                      tagline: tagline,
                                      description: description)
         return BlazeEditAdViewModel(siteID: siteID,
+                                    productID: productID,
                                     adData: adData,
                                     suggestions: suggestions,
                                     onSave: { [weak self] adData in
@@ -120,7 +135,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
+    lazy private(set) var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
             DDLogError("Error: unable to create BlazeAdDestinationSettingViewModel because productURL and/or siteURL is empty.")
@@ -134,10 +149,16 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                 self.targetUrl = targetUrl
                 self.urlParams = urlParams
         }
-    }
+    }()
 
     // For Ad destination purposes
-    private var productURL: String? { product?.permalink }
+    private var productURL: String? {
+        if let product, let siteURL, product.permalink.isEmpty {
+            /// fallback to the default product URL {site_url}?post_type=product&p={product_id}
+            return product.alternativePermalink(with: siteURL)
+        }
+        return product?.permalink
+    }
     private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
     @Published private(set) var budgetDetailText: String = ""
@@ -159,6 +180,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = false
+
+    // Indicates whether AI suggestions are currently being used in the campaign creation form.
+    @Published private(set) var isUsingAISuggestions: Bool = false
+
     private let storage: StorageManagerType
     private var product: Product? {
         guard let product = productsResultsController.fetchedObjects.first else {
@@ -181,8 +206,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         tagline.isNotEmpty && description.isNotEmpty
     }
 
-    @Published var isShowingMissingImageErrorAlert: Bool = false
-    @Published var isShowingPaymentInfo: Bool = false
+    @Published var isShowingMissingImageErrorAlert = false
+    @Published var isShowingMissingDestinationURLAlert = false
+    @Published var isShowingPaymentInfo = false
 
     /// ResultController to get the product for the given product ID
     ///
@@ -199,6 +225,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     private let targetUrn: String
 
+    private var campaignBudgetInfo: BlazeCampaignBudget {
+        // send daily budget for evergreen mode.
+        BlazeCampaignBudget(mode: isEvergreen ? .daily : .total,
+                            amount: isEvergreen ? dailyBudget : dailyBudget * Double(duration),
+                            currency: Constants.defaultCurrency)
+    }
+
     private var campaignInfo: CreateBlazeCampaign {
         CreateBlazeCampaign(origin: Constants.campaignOrigin,
                             originVersion: UserAgent.bundleShortVersion,
@@ -206,9 +239,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             startDate: startDate,
                             endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
                             timeZone: TimeZone.current.identifier,
-                            budget: BlazeCampaignBudget(mode: .total,
-                                                        amount: dailyBudget * Double(duration),
-                                                        currency: Constants.defaultCurrency),
+                            budget: campaignBudgetInfo,
+                            isEvergreen: isEvergreen,
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,
@@ -229,6 +261,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -238,6 +271,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.analytics = analytics
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
+
+        // sets isEvergreen = true by default if evergreen campaigns are supported
+        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
         updateBudgetDetails()
         updateTargetLanguagesText()
@@ -301,6 +337,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingImageErrorAlert = true
         }
 
+        guard finalDestinationURL.isNotEmpty else {
+            return isShowingMissingDestinationURLAlert = true
+        }
+
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }
         let descriptionMatching = suggestions.map { $0.textSnippet }.contains { $0 == description }
         let isAISuggestedAdContent = taglineMatching || descriptionMatching
@@ -355,6 +395,16 @@ private extension BlazeCampaignCreationFormViewModel {
         })
     }
 
+    // Updates the `isUsingAISuggestions` property based on whether the current
+    // `tagline` and `description` match any of the provided AI suggestions.
+    // The property will be set to `true` if there is at least one suggestion
+    // that matches both the `tagline` and `description`, and the suggestions list is not empty.
+    func updateIsUsingAISuggestions() {
+        isUsingAISuggestions = suggestions.contains { element in
+            element.siteName == tagline && element.textSnippet == description && !suggestions.isEmpty
+        }
+    }
+
     enum FetchAISuggestionsError: Error {
         case suggestionsEmpty
     }
@@ -364,13 +414,21 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func updateBudgetDetails() {
-        let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
-        let date = dateFormatter.string(for: startDate) ?? ""
-        budgetDetailText = String.pluralize(
-            duration,
-            singular: String(format: Localization.budgetSingleDay, amount, duration, date),
-            plural: String(format: Localization.budgetMultipleDays, amount, duration, date)
-        )
+        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+        if isEvergreen {
+            let weeklyAmount = String.localizedStringWithFormat(
+                Localization.totalBudget,
+                dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+            )
+            budgetDetailText = String(format: Localization.evergreenCampaignWeeklyBudget, weeklyAmount, formattedStartDate)
+        } else {
+            let amount = String.localizedStringWithFormat(Localization.totalBudget, dailyBudget * Double(duration))
+            budgetDetailText = String.pluralize(
+                duration,
+                singular: String(format: Localization.budgetSingleDay, amount, duration, formattedStartDate),
+                plural: String(format: Localization.budgetMultipleDays, amount, duration, formattedStartDate)
+            )
+        }
     }
 
     func updateTargetLanguagesText() {
@@ -457,6 +515,12 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "%1$@, %2$d days from %3$@",
             comment: "Blaze campaign budget details with duration in plural form. " +
             "Reads like: $35, 15 days from Dec 31"
+        )
+        static let evergreenCampaignWeeklyBudget = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget",
+            value: "%1$@ weekly starting from %2$@",
+            comment: "The formatted weekly budget for an evergreen Blaze campaign with a starting date. " +
+            "Reads as $11 USD weekly starting from May 11 2024."
         )
         static let totalBudget = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.totalBudget",

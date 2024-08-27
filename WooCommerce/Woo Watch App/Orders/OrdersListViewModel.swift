@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import NetworkingWatchOS
 import WooFoundationWatchOS
 
@@ -10,17 +11,43 @@ final class OrdersListViewModel: ObservableObject {
     ///
     @Published private(set) var viewState = OrdersListView.State.idle
 
+    /// Combine subs store.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
     private let dependencies: WatchDependencies
 
     init(dependencies: WatchDependencies) {
         self.dependencies = dependencies
     }
 
+    /// Perform the initial fetch and binds the refresh trigger for further refreshes.
+    ///
+    @MainActor
+    func fetchAndBindRefreshTrigger(trigger: AnyPublisher<Void, Never>) async {
+        trigger
+            .sink { [weak self] _ in
+                // Do not refresh data if we are already loading it.
+                guard let self, self.viewState != .loading else { return }
+
+                Task {
+                    await self.fetchOrders()
+                }
+            }
+            .store(in: &subscriptions)
+
+        await fetchOrders()
+    }
+
     /// Fetch orders from a the remote source and updates the view state accordingly.
     ///
     @MainActor
-    func fetchOrders() async {
-        self.viewState = .loading
+    private func fetchOrders() async {
+
+        if Self.shouldTransitionToLoading(state: viewState) {
+            self.viewState = .loading
+        }
+
         let service = OrdersDataService(credentials: dependencies.credentials)
         do {
             let orders = try await service.loadAllOrders(for: dependencies.storeID, pageNumber: 1, pageSize: 50)
@@ -36,7 +63,7 @@ final class OrdersListViewModel: ObservableObject {
     ///
     static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
-            let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
+            let orderViewModel = OrderListCellViewModel(order: order, currencySettings: currencySettings)
 
             let items = order.items.enumerated().map { index, orderItem in
                 OrdersListView.OrderItem(id: orderItem.itemID,
@@ -57,6 +84,17 @@ final class OrdersListViewModel: ObservableObject {
                                         items: items)
         }
     }
+
+    /// Determines when we should transition to a loading state.
+    ///
+    static private func shouldTransitionToLoading(state: OrdersListView.State) -> Bool {
+        switch state {
+        case .idle, .error:
+            return true
+        case .loading, .loaded: // If we have already loaded the data don't transition to a loading state.
+            return false
+        }
+    }
 }
 
 /// Data types that feed the OrdersListView
@@ -65,7 +103,7 @@ extension OrdersListView {
 
     /// Represents the possible view states
     ///
-    enum State {
+    enum State: Equatable {
         case idle
         case loading
         case loaded(orders: [Order])

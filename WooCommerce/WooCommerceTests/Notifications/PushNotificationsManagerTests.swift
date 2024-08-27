@@ -583,6 +583,64 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications)
         XCTAssertTrue(userNotificationCenter.removeAllNotificationsWasCalled)
     }
+
+    func test_handleNotification_displays_inApp_notice_when_enableInAppNotifications() async throws {
+        // Given
+        let payload = notificationPayload(title: Sample.defaultTitle,
+                                          subtitle: Sample.defaultSubtitle,
+                                          message: Sample.defaultMessage)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
+
+        application.applicationState = .active
+        manager.disableInAppNotifications()
+
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        XCTAssertTrue(application.presentInAppMessages.isEmpty, "Initial state: No in-app notification is received while disableInAppNotifications")
+
+        // When
+        manager.enableInAppNotifications()
+
+        let newNotification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(newNotification)
+
+        // Then
+        XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
+        XCTAssertEqual(application.presentInAppMessages.first?.subtitle, Sample.defaultSubtitle)
+        XCTAssertEqual(application.presentInAppMessages.first?.message, Sample.defaultMessage)
+    }
+
+    func test_handleNotification_does_not_display_inApp_notice_when_disableInAppNotifications() async throws {
+        let payload = notificationPayload(title: Sample.defaultTitle,
+                                          subtitle: Sample.defaultSubtitle,
+                                          message: Sample.defaultMessage)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration)
+        }()
+
+        // When
+        application.applicationState = .active
+        manager.disableInAppNotifications()
+
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+    }
 }
 
 

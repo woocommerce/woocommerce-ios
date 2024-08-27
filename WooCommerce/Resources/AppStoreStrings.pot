@@ -61,9 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.9-whats-new"
+msgctxt "v20.1-whats-new"
 msgid ""
-"Stay ahead with our latest WooCommerce update! Explore our new Watch App for instant store data and order updates at a glance. We've fixed the issue with shipping methods, plus you can now have multiple shipping lines on orders, so you can handle complex shipping needs for your orders seamlessly.\n"
+"In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.\n"
+"We've also made it easier to understand the budgets for your Blaze ad campaigns, and added support for Blaze ad creation in locales which don't use Western Arabic numerals.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

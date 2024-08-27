@@ -105,6 +105,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
 
+    /// If not `nil` the product is protected by password. This parameter is available from WooCommerce 8.1.
+    /// If under `<8.1`, it should be used `Post` entity under WP.
+    public let password: String?
+
     // MARK: Composite Product properties
 
     /// List of components that this product consists of. Applicable to composite-type products only.
@@ -166,7 +170,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Whether the product has an integer (or nil) stock quantity.
     /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
     /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
-    public var hasIntegerStockQuantity: Bool {
+    private var hasIntegerStockQuantity: Bool {
         guard let stockQuantity = stockQuantity else {
             return true
         }
@@ -251,6 +255,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 bundleMinSize: Decimal?,
                 bundleMaxSize: Decimal?,
                 bundledItems: [ProductBundleItem],
+                password: String?,
                 compositeComponents: [ProductCompositeComponent],
                 subscription: ProductSubscription?,
                 minAllowedQuantity: String?,
@@ -326,6 +331,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundleMinSize = bundleMinSize
         self.bundleMaxSize = bundleMaxSize
         self.bundledItems = bundledItems
+        self.password = password
         self.compositeComponents = compositeComponents
         self.subscription = subscription
         self.minAllowedQuantity = minAllowedQuantity.refinedMinMaxQuantityEmptyValue
@@ -532,6 +538,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleMaxSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMaxSize)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
+        // Password
+        let password = container.failsafeDecodeIfPresent(stringForKey: .password)
+
         // Composite Product properties
         let compositeComponents = try container.decodeIfPresent([ProductCompositeComponent].self, forKey: .compositeComponents) ?? []
 
@@ -617,6 +626,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   bundleMinSize: bundleMinSize,
                   bundleMaxSize: bundleMaxSize,
                   bundledItems: bundledItems,
+                  password: password,
                   compositeComponents: compositeComponents,
                   subscription: subscription,
                   minAllowedQuantity: minAllowedQuantity,
@@ -736,6 +746,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
         }
+
+        // Password
+        try container.encode(password, forKey: .password)
     }
 
     private func buildMetaDataValuePairs() -> [KeyValuePair] {
@@ -743,6 +756,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             return subscription.toKeyValuePairs()
         }
         return []
+    }
+}
+
+public extension Product {
+    /// Default product URL {site_url}?post_type=product&p={product_id} works for all sites.
+    func alternativePermalink(with siteURL: String) -> String {
+        String(format: "%@?post_type=product&p=%d", siteURL, productID)
     }
 }
 
@@ -832,6 +852,8 @@ private extension Product {
         case bundleMinSize                  = "bundle_min_size"
         case bundleMaxSize                  = "bundle_max_size"
         case bundledItems                   = "bundled_items"
+
+        case password = "post_password"
 
         case compositeComponents    = "composite_components"
 

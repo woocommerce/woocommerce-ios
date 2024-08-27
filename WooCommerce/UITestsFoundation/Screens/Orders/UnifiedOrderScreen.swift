@@ -53,6 +53,10 @@ public final class UnifiedOrderScreen: ScreenObject {
         $0.buttons["custom-amount-percentage-button"]
     }
 
+    private let feedbackBannerCloseButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["feedback-banner-popover-close-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     private var recalculateButton: XCUIElement { recalculateButtonGetter(app) }
@@ -96,6 +100,10 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Percentage of Order Total Button in Custom Amount ssheet.
     ///
     private var percentageOfTotalButton: XCUIElement { percentageOfTotalButtonGetter(app) }
+
+    /// Close button for Feedback Banner popover.
+    ///
+    private var feedbackBannerCloseButton: XCUIElement { feedbackBannerCloseButtonGetter(app) }
 
     public enum Flow {
         case creation
@@ -182,6 +190,16 @@ public final class UnifiedOrderScreen: ScreenObject {
         return try CustomerNoteScreen()
     }
 
+    /// Closes the feedback banner popover, if needed.
+    /// - Returns: Unified Order screen object.
+    @discardableResult
+    func closeFeedbackBannerPopoverIfNeeded() -> UnifiedOrderScreen {
+        if feedbackBannerCloseButton.exists {
+            feedbackBannerCloseButton.tap()
+        }
+        return self
+    }
+
 // MARK: - High-level Order Creation actions
 
     /// Creates a remote order with all of the entered order data.
@@ -238,6 +256,7 @@ public final class UnifiedOrderScreen: ScreenObject {
             .enterShippingAmount(amount)
             .enterShippingName(name)
             .confirmShippingDetails()
+            .closeFeedbackBannerPopoverIfNeeded()
     }
 
     /// Adds a fee on the Custom Amount screen.

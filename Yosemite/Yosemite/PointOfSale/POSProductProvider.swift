@@ -1,61 +1,72 @@
 import Foundation
-import protocol Storage.StorageManagerType
+import protocol Networking.Network
+import class Networking.ProductsRemote
+import class Networking.AlamofireNetwork
+import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 /// Product provider for the Point of Sale feature
 ///
 public final class POSProductProvider: POSItemProvider {
-    private let storageManager: StorageManagerType
     private var siteID: Int64
     private var currencySettings: CurrencySettings
+    private let productsRemote: ProductsRemote
 
-    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings) {
-        self.storageManager = storageManager
+    public init(siteID: Int64, currencySettings: CurrencySettings, network: Network) {
         self.siteID = siteID
         self.currencySettings = currencySettings
+        self.productsRemote = ProductsRemote(network: network)
     }
 
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
-        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
-                                                                  matching: predicate,
-                                                                  sortedBy: [descriptor])
-        return resultsController
-    }()
+    public convenience init(siteID: Int64,
+                            currencySettings: CurrencySettings,
+                            credentials: Credentials?) {
+        self.init(siteID: siteID,
+                  currencySettings: currencySettings,
+                  network: AlamofireNetwork(credentials: credentials))
+    }
 
-    /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
-    ///
-    public func providePointOfSaleItems() -> [POSItem] {
-        var loadedProducts: [Product] = []
-
-        // 1. Fetch products from storage, and filter them by `purchasable` and `simple`
+    public func providePointOfSaleItems() async throws -> [POSItem] {
         do {
-            try productsResultsController.performFetch()
-            if productsResultsController.fetchedObjects.isEmpty {
-                // TODO: Handle case for empty product list, or not empty but no eligible products
-                // https://github.com/woocommerce/woocommerce-ios/issues/12815
-                // https://github.com/woocommerce/woocommerce-ios/issues/12816
-                DDLogWarn("No products eligible for POS, or empty storage.")
-            } else {
-                // Ideally we should handle the filtering through a policy that can be easily modified,
-                // rather than having this declared implicitly:
-                loadedProducts = productsResultsController.fetchedObjects.filter { $0.productType == .simple && $0.purchasable }
-            }
-        } catch {
-            // TODO: Handle case for error when fetching products
-            // https://github.com/woocommerce/woocommerce-ios/issues/12846
-            DDLogError("Error fetching products from storage")
-        }
+            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
 
-        // 2. Map result to POSProduct and populate the output
-        return loadedProducts.map { product in
-            // TODO: Decorate the price with currency formatting
-            POSProduct(itemID: UUID(),
-                       productID: product.productID,
-                       name: product.name,
-                       price: product.price,
-                       formattedPrice: "$\(product.price)")
+            let eligibilityCriteria: [(Product) -> Bool] = [
+                isNotVirtual,
+                isNotDownloadable,
+                hasPrice
+            ]
+            let filteredProducts = filterProducts(products: products, using: eligibilityCriteria)
+
+            return mapProductsToPOSItems(products: filteredProducts)
+        } catch {
+            DDLogError("Failed to retrieve products. Error: \(error)")
+            throw POSProductProviderError.requestFailed
+        }
+    }
+
+    enum POSProductProviderError: Error {
+        case requestFailed
+    }
+
+    // Maps result to POSProduct, and populate the output with:
+    // - Formatted price based on store's currency settings.
+    // - Product categories, if any.
+    // - Product thumbnail, if any.
+    private func mapProductsToPOSItems(products: [Product]) -> [POSItem] {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return products.map { product in
+            let formattedPrice = currencyFormatter.formatAmount(product.price) ?? "-"
+            let thumbnailSource = product.images.first?.src
+            let productCategories = product.categories.map { $0.name }
+
+            return POSProduct(itemID: UUID(),
+                              productID: product.productID,
+                              name: product.name,
+                              price: product.price,
+                              formattedPrice: formattedPrice,
+                              itemCategories: productCategories,
+                              productImageSource: thumbnailSource,
+                              productType: product.productType)
         }
     }
 
@@ -63,34 +74,22 @@ public final class POSProductProvider: POSItemProvider {
     // https://github.com/woocommerce/woocommerce-ios/issues/12837
 }
 
-// MARK: - PreviewProvider helpers
-//
-extension POSProductProvider {
-    public static func provideProductForPreview() -> POSProduct {
-        POSProduct(itemID: UUID(),
-                   productID: 1,
-                   name: "Product 1",
-                   price: "1.00",
-                   formattedPrice: "$1.00")
+private extension POSProductProvider {
+    func filterProducts(products: [Product], using criteria: [(Product) -> Bool]) -> [Product] {
+        return products.filter { product in
+            criteria.allSatisfy { $0(product) }
+        }
     }
 
-    public static func provideProductsForPreview() -> [POSProduct] {
-        return [
-            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00"),
-            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00"),
-            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00"),
-            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00"),
-        ]
+    func isNotVirtual(product: Product) -> Bool {
+        !product.virtual
     }
-}
 
-/// Null product provider that acts as preview helper for the Point of Sale feature
-///
-public final class NullPOSProductProvider: POSItemProvider {
+    func isNotDownloadable(product: Product) -> Bool {
+        !product.downloadable
+    }
 
-    public init() {}
-
-    public func providePointOfSaleItems() -> [POSItem] {
-        []
+    func hasPrice(product: Product) -> Bool {
+        !product.price.isEmpty
     }
 }

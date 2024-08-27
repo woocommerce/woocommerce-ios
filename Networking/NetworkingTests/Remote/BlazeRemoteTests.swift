@@ -60,6 +60,7 @@ final class BlazeRemoteTests: XCTestCase {
                                            devices: nil,
                                            pageTopics: ["IAB3", "IAB4"])
         let budget = BlazeCampaignBudget(mode: .total, amount: 35, currency: "USD")
+        let isEvergreen = true
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        originVersion: "1.0.1",
                                                        paymentMethodID: "payment-method-id-123",
@@ -67,6 +68,7 @@ final class BlazeRemoteTests: XCTestCase {
                                                        endDate: endDate,
                                                        timeZone: "America/New_York",
                                                        budget: budget,
+                                                       isEvergreen: isEvergreen,
                                                        siteName: "Unleash Your Brain's Potential",
                                                        textSnippet: "Discover the power of computer neural networks in unlocking your brain's full potential.",
                                                        targetUrl: "https://example.com/2023/06/25/unlocking-the-secrets-of-computer-neural-networks/",
@@ -92,6 +94,7 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(requestedBudget["amount"] as? Double, budget.amount)
         XCTAssertEqual(requestedBudget["currency"] as? String, budget.currency)
         XCTAssertEqual(requestedBudget["mode"] as? String, budget.mode.rawValue)
+        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, isEvergreen)
 
         XCTAssertEqual(request.parameters?["site_name"] as? String, campaign.siteName)
         XCTAssertEqual(request.parameters?["text_snippet"] as? String, campaign.textSnippet)
@@ -110,6 +113,50 @@ final class BlazeRemoteTests: XCTestCase {
 
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
         XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
+    }
+
+    func test_createCampaign_sends_correctly_formatted_dates_regardless_of_locale() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
+
+        let startDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-19"))
+        let endDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-26"))
+
+        // Create dates with Arabic locale
+        let arabicFormatter = DateFormatter()
+        arabicFormatter.locale = Locale(identifier: "ar_SA")
+        arabicFormatter.dateFormat = "yyyy-MM-dd"
+        let arabicStartDateString = arabicFormatter.string(from: startDate)
+        let arabicEndDateString = arabicFormatter.string(from: endDate)
+
+        let campaign = CreateBlazeCampaign.fake().copy(
+            startDate: arabicFormatter.date(from: arabicStartDateString),
+            endDate: arabicFormatter.date(from: arabicEndDateString)
+        )
+
+        // When
+        _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
+
+        // Then
+
+        // Assert that the arabic numbering system were used as input,
+        // to mimic a device's locale setting when the language is set to Arabic.
+        XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
+
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        // Assert that the date parameters are now formatted in Western Arabic numerals
+        let paramStartDate = request.parameters?["start_date"] as? String ?? ""
+        let paramEndDate = request.parameters?["start_date"] as? String ?? ""
+
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramStartDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramEndDate))
     }
 
     func test_createCampaign_properly_relays_networking_errors() async {
@@ -462,7 +509,8 @@ final class BlazeRemoteTests: XCTestCase {
                                                     endDate: endDate,
                                                     timeZone: "America/New_York",
                                                     totalBudget: 35.00,
-                                                    targeting: targeting)
+                                                    targeting: targeting,
+                                                    isEvergreen: true)
 
         // When
         _ = try await remote.fetchForecastedImpressions(for: sampleSiteID, with: input)
@@ -473,12 +521,63 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
         XCTAssertEqual(request.parameters?["time_zone"] as? String, input.timeZone)
         XCTAssertEqual(request.parameters?["total_budget"] as? Double, input.totalBudget)
+        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, true)
 
         let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
         XCTAssertNil(targetingDict["locations"])
         XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
         XCTAssertNil(targetingDict["devices"])
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
+    }
+
+    func test_fetchForecastedImpressions_sends_correctly_formatted_dates_regardless_of_locale() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/forecast"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-impressions")
+
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withFullDate]
+
+        let startDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-19"))
+        let endDate = try XCTUnwrap(dateFormatter.date(from: "2024-08-26"))
+
+        // Create dates with Arabic locale
+        let arabicFormatter = DateFormatter()
+        arabicFormatter.locale = Locale(identifier: "ar_SA")
+        arabicFormatter.dateFormat = "yyyy-MM-dd"
+        let arabicStartDateString = arabicFormatter.string(from: startDate)
+        let arabicEndDateString = arabicFormatter.string(from: endDate)
+
+        let targeting = BlazeTargetOptions(locations: nil,
+                                           languages: ["en", "de"],
+                                           devices: nil,
+                                           pageTopics: ["IAB3", "IAB4"])
+
+        let input = BlazeForecastedImpressionsInput(startDate: arabicFormatter.date(from: arabicStartDateString) ?? startDate,
+                                                    endDate: arabicFormatter.date(from: arabicEndDateString) ?? endDate,
+                                                    timeZone: "America/New_York",
+                                                    totalBudget: 35.00,
+                                                    targeting: targeting,
+                                                    isEvergreen: true
+        )
+
+        // When
+        _ = try await remote.fetchForecastedImpressions(for: sampleSiteID, with: input)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+
+        // Assert that the arabic numbering system were used as input,
+        // to mimic a device's locale setting when the language is set to Arabic.
+        XCTAssertEqual(arabicFormatter.locale.numberingSystem, "arab")
+
+        // Assert that the date parameters are now formatted in Western Arabic numerals
+        let paramStartDate = request.parameters?["start_date"] as? String ?? ""
+        let paramEndDate = request.parameters?["end_date"] as? String ?? ""
+
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramStartDate))
+        XCTAssertTrue(isValidWesternArabicFormattedDateString(paramEndDate))
     }
 
     func test_fetchForecastedImpressions_properly_relays_networking_errors() async {
@@ -610,5 +709,67 @@ final class BlazeRemoteTests: XCTestCase {
             // Then
             XCTAssertEqual(error as? NetworkError, expectedError)
         }
+    }
+
+    // MARK: - Fetch campaign objectives
+
+    func test_fetchCampaignObjectives_returns_parsed_objectives() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-objectives")
+
+        // When
+        let results = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+        // Then
+        XCTAssertEqual(results.count, 4)
+        let firstItem = try XCTUnwrap(results.first)
+        XCTAssertEqual(firstItem.id, "traffic")
+        XCTAssertEqual(firstItem.title, "Traffic")
+        XCTAssertEqual(firstItem.description, "Aims to drive more visitors and increase page views.")
+        XCTAssertEqual(firstItem.suitableForDescription, "E-commerce sites, content-driven websites, startups.")
+        XCTAssertEqual(firstItem.locale, "vi")
+    }
+
+    func test_fetchCampaignObjectives_sends_correct_parameters() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-objectives")
+
+        // When
+        _ = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["locale"] as? String, "vi")
+    }
+
+    func test_fetchCampaignObjectives_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/objectives"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchCampaignObjectives(siteID: sampleSiteID, locale: "vi")
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+}
+
+/// Helpers
+private extension BlazeRemoteTests {
+    func isValidWesternArabicFormattedDateString(_ dateString: String) -> Bool {
+        // to match yyyy-MM-dd, where each number needs to be between 0-9
+        return dateString.range(of: #"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"#, options: .regularExpression) != nil
     }
 }

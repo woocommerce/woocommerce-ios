@@ -14,3 +14,21 @@ public struct ProductReviewFromNoteParcel: GeneratedFakeable, GeneratedCopiable 
         self.product = product
     }
 }
+
+// MARK: Equatable conformance
+extension ProductReviewFromNoteParcel: Equatable {
+    public static func == (lhs: ProductReviewFromNoteParcel, rhs: ProductReviewFromNoteParcel) -> Bool {
+        lhs.product == rhs.product &&
+        lhs.note.hash == rhs.note.hash &&
+        lhs.review == rhs.review
+    }
+}
+
+// MARK: Hashable conformance
+extension ProductReviewFromNoteParcel: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(product)
+        hasher.combine(review)
+        hasher.combine(note.hash)
+    }
+}

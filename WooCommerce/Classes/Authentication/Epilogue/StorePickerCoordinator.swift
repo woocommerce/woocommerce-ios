@@ -25,8 +25,6 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
 
-    private var storeCreationCoordinator: StoreCreationCoordinator?
-
     /// Site Picker VC
     ///
     private lazy var storePicker: StorePickerViewController = {
@@ -152,9 +150,6 @@ private extension StorePickerConfiguration {
             return .fullscreen
         case .switchingStores:
             return .modally
-        case .storeCreationFromLogin(let source):
-            let willPresentStoreCreationScreenAfterNavigation = source == .prologue
-            return .navigationStack(animated: willPresentStoreCreationScreenAfterNavigation ? false : true)
         default:
             return .navigationStack(animated: true)
         }

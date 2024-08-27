@@ -41,10 +41,22 @@ struct AddProductWithAIActionSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Constants.margin) {
-                Text(Localization.title)
-                    .subheadlineStyle()
-                    .padding(.top, Constants.margin)
+            VStack(alignment: .leading) {
+                Group {
+                    Text(Localization.title)
+                        .titleStyle()
+                        .bold()
+                        .padding(.top, Constants.titleTopSpacing)
+                        .padding(.bottom, Constants.verticalSpacing)
+
+                    Text(Localization.subtitle)
+                        .subheadlineStyle()
+                }
+                .padding(.horizontal, Constants.horizontalSpacing)
+
+                Divider()
+                    .padding(.vertical, Constants.margin)
+
 
                 // AI option
                 HStack(alignment: .top, spacing: Constants.margin) {
@@ -53,14 +65,16 @@ struct AddProductWithAIActionSheet: View {
                         .resizable()
                         .foregroundColor(.accentColor)
                         .frame(width: Constants.sparkleIconSize * scale, height: Constants.sparkleIconSize * scale)
+                        .padding(.top, Constants.productIconTopSpacing)
+
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        Text(Localization.aiTitle)
+                        Text(Localization.CreateProductWithAI.aiTitle)
                             .bodyStyle()
-                        Text(Localization.aiDescription)
+                        Text(Localization.CreateProductWithAI.aiDescription)
                             .subheadlineStyle()
                         AdaptiveStack(horizontalAlignment: .leading) {
-                            Text(Localization.legalText)
-                            Text(.init(Localization.learnMore)).underline()
+                            Text(Localization.CreateProductWithAI.legalText)
+                            Text(.init(Localization.CreateProductWithAI.learnMore)).underline()
                         }
                         .environment(\.openURL, OpenURLAction { url in
                             legalURL = url
@@ -75,8 +89,10 @@ struct AddProductWithAIActionSheet: View {
                 .onTapGesture {
                     onAIOption()
                 }
+                .padding(.horizontal, Constants.horizontalSpacing)
 
                 Divider()
+                    .padding(.vertical, Constants.margin)
 
                 // Manual option
                 if !isShowingManualOptions {
@@ -84,6 +100,8 @@ struct AddProductWithAIActionSheet: View {
                         Image(systemName: "plus.circle")
                             .font(.title3)
                             .foregroundColor(.secondary)
+                            .padding(.top, Constants.productIconTopSpacing)
+
                         VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                             Text(Localization.manualTitle)
                                 .bodyStyle()
@@ -92,22 +110,19 @@ struct AddProductWithAIActionSheet: View {
                         }
                         Spacer()
                     }
+                    .padding(.horizontal, Constants.horizontalSpacing)
                     .onTapGesture {
                         withAnimation {
                             isShowingManualOptions = true
                         }
                     }
                 } else {
-                    Text(Localization.manualOptionsTitle)
-                        .subheadlineStyle()
-                        .padding(.top, Constants.margin)
-
-                    ManualProductTypeOptions(productTypes: productTypes, onOptionSelected: onProductTypeOption)
+                    ManualProductTypeOptions(supportedProductTypes: productTypes, onOptionSelected: onProductTypeOption)
                 }
 
                 Spacer()
             }
-            .padding(Constants.margin)
+            .padding(.vertical, Constants.margin)
             .safariSheet(url: $legalURL)
         }
     }
@@ -117,43 +132,55 @@ private extension AddProductWithAIActionSheet {
     enum Constants {
         static let sparkleIconSize: CGFloat = 24
         static let verticalSpacing: CGFloat = 4
+        static let horizontalSpacing: CGFloat = 16
+        static let titleTopSpacing: CGFloat = 16
+        static let productIconTopSpacing: CGFloat = 8
         static let margin: CGFloat = 16
         static let legalURL = "https://automattic.com/ai-guidelines/"
     }
 
     enum Localization {
         static let title = NSLocalizedString(
-            "Add a product",
+            "addProductWithAIActionSheet.title",
+            value: "Create Product",
             comment: "Title on the action sheet to select an option for adding new product"
         )
-        static let manualOptionsTitle = NSLocalizedString(
-            "addProductWithAIActionSheet.manualOptionsTitle",
+        static let subtitle = NSLocalizedString(
+            "addProductWithAIActionSheet.subtitle",
             value: "Select a product type",
-            comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
+            comment: "Subitle on the action sheet to select an option for adding new product"
         )
-        static let aiTitle = NSLocalizedString(
-            "Create a product with AI",
-            comment: "Title of the option to add new product with AI assistance"
-        )
-        static let aiDescription = NSLocalizedString(
-            "Quickly generate details for you",
-            comment: "Description of the option to add new product with AI assistance"
-        )
-        static let legalText = NSLocalizedString(
-            "Powered by AI.",
-            comment: "Label to indicate AI-generated content on the product creation action sheet."
-        )
-        static let learnMore = NSLocalizedString(
-            "[Learn more.](https://automattic.com/ai-guidelines/)",
-            comment: "Markdown content learn more link on the product creation action sheet. " +
-            "Please translate the words while keeping the markdown format and URL."
-        )
+        enum CreateProductWithAI {
+            static let aiTitle = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.aiTitle",
+                value: "Create a product with AI",
+                comment: "Title of the option to add new product with AI assistance"
+            )
+            static let aiDescription = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.aiDescription",
+                value: "Let us generate product details for you",
+                comment: "Description of the option to add new product with AI assistance"
+            )
+            static let legalText = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.legalText",
+                value: "Powered by AI.",
+                comment: "Label to indicate AI-generated content on the product creation action sheet."
+            )
+            static let learnMore = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.learnMore",
+                value: "[Learn more.](https://automattic.com/ai-guidelines/)",
+                comment: "Markdown content learn more link on the product creation action sheet. " +
+                "Please translate the words while keeping the markdown format and URL."
+            )
+        }
         static let manualTitle = NSLocalizedString(
-            "Add manually",
+            "addProductWithAIActionSheet.manualTitle",
+            value: "Add manually",
             comment: "Title of the option to add new product manually"
         )
         static let manualDescription = NSLocalizedString(
-            "Add a product and the details manually",
+            "addProductWithAIActionSheet.manualDescription",
+            value: "Add a product and the details manually",
             comment: "Description of the option to add new product manually"
         )
     }

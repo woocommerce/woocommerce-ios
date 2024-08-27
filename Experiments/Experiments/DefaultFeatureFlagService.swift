@@ -44,8 +44,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
-        case .compositeProducts:
-            return true
         case .readOnlyGiftCards:
             return true
         case .readOnlyMinMaxQuantities:

@@ -64,14 +64,12 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       variationsPrice: variationsPrice)
         }

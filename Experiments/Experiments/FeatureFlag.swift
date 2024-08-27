@@ -104,10 +104,6 @@ public enum FeatureFlag: Int {
     ///
     case manualErrorHandlingForSiteCredentialLogin
 
-    /// Enables composite product settings in product details
-    ///
-    case compositeProducts
-
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards

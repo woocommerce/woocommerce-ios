@@ -610,38 +610,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_composite_product_with_feature_flag_disabled() {
+    func test_view_model_for_composite_product() {
         // Arrange
         let product = Fixtures.compositeProduct
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
-                                                                      .name(editable: true),
-                                                                      .description(editable: true)]
-        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
-                                                                       .reviews,
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: false)]
-        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
-        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
-    }
-
-    func test_view_model_for_composite_product_with_feature_flag_enabled() {
-        // Arrange
-        let product = Fixtures.compositeProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
@@ -1021,7 +996,6 @@ private extension ProductFormActionsFactoryTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
                                    isCustomFieldsEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
@@ -1029,7 +1003,6 @@ private extension ProductFormActionsFactoryTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       isCustomFieldsEnabled: isCustomFieldsEnabled,
                                       variationsPrice: variationsPrice)

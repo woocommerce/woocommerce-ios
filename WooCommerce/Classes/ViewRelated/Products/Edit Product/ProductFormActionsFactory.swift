@@ -71,7 +71,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
-    private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
     private let isCustomFieldsEnabled: Bool
 
@@ -81,7 +80,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
-         isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          isCustomFieldsEnabled: Bool =
          ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
@@ -94,7 +92,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
-        self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
         self.isCustomFieldsEnabled = isCustomFieldsEnabled
         self.stores = stores
@@ -291,14 +288,13 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForCompositeProduct() -> [ProductFormEditAction] {
-        let shouldShowComponentsRow = isCompositeProductsEnabled
         let canOpenComponents = product.compositeComponents.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowComponentsRow ? .components(actionable: canOpenComponents) : nil,
+            .components(actionable: canOpenComponents),
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),

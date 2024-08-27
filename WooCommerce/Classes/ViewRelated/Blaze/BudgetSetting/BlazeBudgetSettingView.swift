@@ -33,11 +33,7 @@ struct BlazeBudgetSettingView: View {
             footerView
         }
         .sheet(isPresented: $showingImpressionInfo) {
-            if #available(iOS 16, *) {
-                impressionInfoView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
-            } else {
-                impressionInfoView
-            }
+            impressionInfoView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
         }
         .sheet(isPresented: $showingDurationSetting) {
             durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
@@ -184,7 +180,7 @@ private extension BlazeBudgetSettingView {
                     Text(Localization.startDate)
                         .bodyStyle()
 
-                    Spacer()
+                    Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
 
                     DatePicker(selection: $startDate,
                                in: viewModel.minDayAllowedInPickerSelection...viewModel.maxDayAllowedInPickerSelection,
@@ -210,7 +206,7 @@ private extension BlazeBudgetSettingView {
                     AdaptiveStack(horizontalAlignment: .leading) {
                         Text(Localization.duration)
                             .bodyStyle()
-                        Spacer()
+                        Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
                         AttributedText(viewModel.formatDayCount(duration))
                     }
 

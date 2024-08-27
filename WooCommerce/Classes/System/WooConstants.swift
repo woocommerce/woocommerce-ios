@@ -363,6 +363,8 @@ extension WooConstants {
         case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-production"
 #endif
 
+        case ordersScreen = "https://woocommerce.com/mobile/orders"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

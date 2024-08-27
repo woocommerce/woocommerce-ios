@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel {
+struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel: Equatable {
     let title = Localization.cancelledOnReader
 }
 

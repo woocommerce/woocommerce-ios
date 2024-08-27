@@ -2,21 +2,25 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel
+    let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack(alignment: .center, spacing: Constants.headerSpacing) {
             successIcon
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: Constants.textSpacing) {
                 Text(viewModel.title)
                     .font(.posTitleEmphasized)
                     .foregroundStyle(Color.posPrimaryText)
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 if let message = viewModel.message {
                     Text(message)
                         .font(.posBodyRegular)
                         .foregroundStyle(Color.posPrimaryText)
+                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
             }
         }
@@ -70,7 +74,10 @@ private extension PointOfSaleCardPresentPaymentSuccessMessageView {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentSuccessMessageView(
-        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00")
+    @Namespace var namespace
+
+    return PointOfSaleCardPresentPaymentSuccessMessageView(
+        viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel(formattedOrderTotal: "$3.00"),
+        animation: .init(namespace: namespace)
     )
 }

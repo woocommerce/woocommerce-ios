@@ -11,12 +11,12 @@ struct POSRootModalViewModifier: ViewModifier {
                 .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
             if modalManager.isPresented {
-                Color.black.opacity(0.4)
+                Color.posOverlayFill
                     .edgesIgnoringSafeArea(.all)
                 modalManager.getContent()
                     .background(Color.posPrimaryBackground)
-                    .cornerRadius(16)
-                    .shadow(radius: 10)
+                    .cornerRadius(24)
+                    .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
                     .transition(.scale)
                     .zIndex(1)
                     .padding()

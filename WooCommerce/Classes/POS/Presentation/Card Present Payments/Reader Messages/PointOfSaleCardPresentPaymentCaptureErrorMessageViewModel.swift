@@ -26,7 +26,12 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: Observabl
     }
 
     static func == (lhs: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, rhs: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.message == rhs.message  &&
+        lhs.tryAgainButtonViewModel == rhs.tryAgainButtonViewModel &&
+        lhs.newOrderButtonViewModel == rhs.newOrderButtonViewModel &&
+        lhs.showsInfoSheet == rhs.showsInfoSheet
     }
 }
 

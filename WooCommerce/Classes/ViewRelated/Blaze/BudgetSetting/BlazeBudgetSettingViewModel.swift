@@ -40,9 +40,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
             String.localizedStringWithFormat(Localization.weeklySpendAmount, totalAmountText)
         } else {
             if dayCount == 1 {
-                String.localizedStringWithFormat(Localization.totalAmountSingleDay, totalAmountText, dayCount)
+                String.localizedStringWithFormat(Localization.totalAmountSingleDay, totalAmountText, Int(dayCount))
             } else {
-                String.localizedStringWithFormat(Localization.totalAmountMultipleDays, totalAmountText, dayCount)
+                String.localizedStringWithFormat(Localization.totalAmountMultipleDays, totalAmountText, Int(dayCount))
             }
         }
     }

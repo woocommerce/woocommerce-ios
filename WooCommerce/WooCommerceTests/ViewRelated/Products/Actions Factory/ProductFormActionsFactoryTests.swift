@@ -896,7 +896,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isMinMaxQuantitiesEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
@@ -996,14 +996,12 @@ private extension ProductFormActionsFactoryTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   isMinMaxQuantitiesEnabled: Bool = false,
                                    isCustomFieldsEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       isCustomFieldsEnabled: isCustomFieldsEnabled,
                                       variationsPrice: variationsPrice)
         }

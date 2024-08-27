@@ -183,8 +183,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
 
         // Action
         let factory = ProductVariationFormActionsFactory(productVariation: model,
-                                                         editable: true,
-                                                         isMinMaxQuantitiesEnabled: true)
+                                                         editable: true)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .variationName, .description(editable: true)]

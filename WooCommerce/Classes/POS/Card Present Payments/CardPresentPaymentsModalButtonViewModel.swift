@@ -1,6 +1,6 @@
 import Foundation
 
-struct CardPresentPaymentsModalButtonViewModel: Identifiable, Equatable {
+struct CardPresentPaymentsModalButtonViewModel: Identifiable {
     let title: String
     let actionHandler: () -> Void
     let id = UUID()

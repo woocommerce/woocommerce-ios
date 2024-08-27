@@ -24,7 +24,6 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .padding(.top, Constants.headerPadding)
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
 
@@ -43,7 +42,6 @@ struct CartView: View {
                         }
                     }
                     .accessibilityElement(children: .combine)
-                    .padding(.top, Constants.headerPadding)
                 }
 
                 HStack {
@@ -63,13 +61,12 @@ struct CartView: View {
                             )
                     }
                     .padding(.horizontal, Constants.itemHorizontalPadding)
-                    .padding(.top, Constants.headerPadding)
                     .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.vertical, Constants.verticalPadding)
+            .padding(.vertical, POSHeaderLayoutConstants.posSectionTopPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {
@@ -168,13 +165,11 @@ private extension CartView {
         static let checkoutButtonPadding: CGFloat = 16
         static let itemHorizontalPadding: CGFloat = 8
         static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let cartEmptyViewSpacing: CGFloat = 40
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
-        static let headerPadding: CGFloat = 16
         static let cartHeaderElementSpacing: CGFloat = 16
     }
 

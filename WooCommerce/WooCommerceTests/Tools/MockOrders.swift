@@ -52,6 +52,10 @@ final class MockOrders {
         makeOrder()
     }
 
+    func sampleOrderWithItems() -> Order {
+        makeOrder(items: sampleOrderItems())
+    }
+
     func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
     }
@@ -106,6 +110,12 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
+    }
+
+    func sampleOrderItems() -> [OrderItem] {
+        [
+            OrderItem.fake().copy(itemID: 1, name: "Sample Item", quantity: 2, price: 123)
+        ]
     }
 
     func sampleFeeLines() -> [OrderFeeLine] {

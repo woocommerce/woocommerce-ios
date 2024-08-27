@@ -3,7 +3,6 @@ import Foundation
 enum PointOfSaleAssets: CaseIterable {
     case cardReaderLowBattery
     case paymentsError
-    case processingPayment
     case readyForPayment
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
@@ -17,8 +16,6 @@ enum PointOfSaleAssets: CaseIterable {
             "card-reader-low-battery"
         case .paymentsError:
             "woo-payments-error"
-        case .processingPayment:
-            "pos-processing-payment"
         case .readyForPayment:
             "pos-ready-for-payment"
         case .readerConnectionScanning:

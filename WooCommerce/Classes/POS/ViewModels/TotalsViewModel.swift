@@ -113,6 +113,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var startPaymentOnReaderConnection: AnyCancellable?
+    private var cardReaderDisconnection: AnyCancellable?
 
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem]) {
         Task { @MainActor in
@@ -153,9 +154,18 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         cancelReaderPreparation()
     }
 
-    func cancelReaderPreparation() {
+    func startShowingTotalsView() {
+        observeReaderReconnection()
+    }
+
+    func stopShowingTotalsView() {
+        cancelReaderPreparation()
+    }
+
+    private func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         startPaymentOnReaderConnection?.cancel()
+        cardReaderDisconnection?.cancel()
     }
 }
 
@@ -241,6 +251,7 @@ private extension TotalsViewModel {
     func observeConnectedReaderForStatus() {
         cardPresentPaymentService.connectedReaderPublisher
             .map { connectedReader in
+                // Note that this does not cover when a reader is disconnecting
                 connectedReader == nil ? .disconnected: .connected
             }
             .assign(to: &$connectionStatus)
@@ -257,7 +268,7 @@ private extension TotalsViewModel {
                 }
 
                 switch connectionStatus {
-                case .connected:
+                case .connected, .disconnecting:
                     return message != nil
                 case .disconnected:
                     // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -265,6 +276,16 @@ private extension TotalsViewModel {
                 }
             }
             .assign(to: &$isShowingCardReaderStatus)
+    }
+
+    func observeReaderReconnection() {
+        cardReaderDisconnection = $connectionStatus
+            .filter({ $0 == .disconnected })
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    await self?.startPaymentWhenReaderConnected()
+                }
+            }
     }
 
     func startPaymentWhenReaderConnected() async {

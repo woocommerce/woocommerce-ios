@@ -31,7 +31,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$33 USD for 3 days") // total spend for 3 days
 
         // When
-        viewModel.isEvergreen = true
+        viewModel.specifiedEndDate = false
 
         // Then
         XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$77 USD weekly spend") // weekly spend
@@ -57,7 +57,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.isEvergreen = false
+        viewModel.specifiedEndDate = true
         viewModel.dailyAmount = 80
         viewModel.didTapApplyDuration(dayCount: 7, since: expectedStartDate)
         viewModel.confirmSettings()

@@ -181,15 +181,32 @@ private extension BlazeBudgetSettingView {
 
     var durationSettingView: some View {
         NavigationView {
-            ScrollView {
+            ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.sectionSpacing) {
 
-                Spacer().frame(height: Layout.sectionSpacing)
+                // Start date picker
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(Localization.startDate)
+                        .bodyStyle()
+
+                    Spacer()
+
+                    DatePicker(selection: $startDate,
+                               in: viewModel.minDayAllowedInPickerSelection...viewModel.maxDayAllowedInPickerSelection,
+                               displayedComponents: [.date]) {
+                        EmptyView()
+                    }
+                    .datePickerStyle(.compact)
+                }
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.
-                Toggle(Localization.evergreenCampaign, isOn: $viewModel.isEvergreen)
+                Toggle(Localization.specifyDuration, isOn: $viewModel.specifiedEndDate)
                     .toggleStyle(.switch)
-                    .padding(Layout.contentPadding)
                     .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
+
+                Text(Localization.evergreenDescription)
+                    .secondaryBodyStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .renderedIf(viewModel.isEvergreen)
 
                 // Duration slider - available only if the campaign is not evergreen
                 VStack(spacing: Layout.sectionContentSpacing) {
@@ -201,28 +218,7 @@ private extension BlazeBudgetSettingView {
                            in: viewModel.dayCountSliderRange,
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
-                .padding(Layout.contentPadding)
                 .renderedIf(viewModel.isEvergreen == false)
-
-                // Start date picker
-                VStack {
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        Text(Localization.starts)
-                            .bodyStyle()
-
-                        Spacer()
-
-                        DatePicker(selection: $startDate,
-                                   in: viewModel.minDayAllowedInPickerSelection...viewModel.maxDayAllowedInPickerSelection,
-                                   displayedComponents: [.date]) {
-                            EmptyView()
-                        }
-                        .datePickerStyle(.compact)
-                    }
-                    .padding(Layout.contentPadding)
-
-                    Divider()
-                }
 
                 Spacer()
 
@@ -232,7 +228,6 @@ private extension BlazeBudgetSettingView {
                     showingDurationSetting = false
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentPadding)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.setDuration)
@@ -319,9 +314,9 @@ private extension BlazeBudgetSettingView {
             value: "Set duration",
             comment: "Title of the Blaze campaign duration setting screen"
         )
-        static let starts = NSLocalizedString(
-            "blazeBudgetSettingView.starts",
-            value: "Starts",
+        static let startDate = NSLocalizedString(
+            "blazeBudgetSettingView.startDate",
+            value: "Start date",
             comment: "Label of the start date picker on the Blaze campaign duration setting screen"
         )
         static let apply = NSLocalizedString(
@@ -334,10 +329,15 @@ private extension BlazeBudgetSettingView {
             value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
         )
-        static let evergreenCampaign = NSLocalizedString(
-            "blazeBudgetSettingView.evergreenCampaign",
-            value: "Run until I stop it",
-            comment: "Switch to toggle evergreen mode on or off for a Blaze campaign."
+        static let specifyDuration = NSLocalizedString(
+            "blazeBudgetSettingView.specifyDuration",
+            value: "Specify the duration",
+            comment: "Switch to enable an end date for a Blaze campaign."
+        )
+        static let evergreenDescription = NSLocalizedString(
+            "blazeBudgetSettingView.evergreenDescription",
+            value: "Campaign will run until you stop it.",
+            comment: "Label to explain when no end date is specified for a Blaze campaign."
         )
     }
 }

@@ -5,19 +5,18 @@ import SwiftUI
 struct ReviewsView: UIViewControllerRepresentable {
     let siteID: Int64
 
+    typealias UIViewControllerType = ReviewsViewController
+
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
         var rightBarButtonItemsObserver: NSKeyValueObservation?
     }
-
-    typealias UIViewControllerType = ReviewsViewController
 
     /// This is a UIKit solution for fixing Bar Button Items ignored in NavigationView.
     /// This solution doesn't require making internal changes to the destination `UIViewController`
     /// and should be called once, when wrapped.
     /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
     ///
-
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
         let viewController = ReviewsViewController(siteID: siteID)
 
@@ -27,7 +26,7 @@ struct ReviewsView: UIViewControllerRepresentable {
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
         })
 
-        // This fixes the issue when `rightBarButtonItem` is updated in `CouponListViewController`,
+        // This fixes the issue when `rightBarButtonItem` is updated in `ReviewsViewController`,
         // the hosting controller should be updated to reflect the change.
         context.coordinator.rightBarButtonItemsObserver = viewController.observe(\.navigationItem.rightBarButtonItems, changeHandler: { vc, _ in
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems

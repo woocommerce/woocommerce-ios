@@ -13,7 +13,6 @@ struct EnhancedCouponListView: UIViewControllerRepresentable {
     /// and should be called once, when wrapped.
     /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
     ///
-    
     func makeUIViewController(context: Self.Context) -> EnhancedCouponListViewController {
         let viewController = EnhancedCouponListViewController(siteID: siteID)
 

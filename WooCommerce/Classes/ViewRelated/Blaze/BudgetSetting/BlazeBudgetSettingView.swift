@@ -97,14 +97,17 @@ private extension BlazeBudgetSettingView {
 
             // Estimated impressions
             VStack(alignment: .leading) {
-                AdaptiveStack(horizontalAlignment: .leading) {
-                    Text(Localization.estimatedImpressions)
-                    Image(systemName: "info.circle")
-                }
-                .font(.subheadline)
-                .onTapGesture {
+                Button {
                     showingImpressionInfo = true
+                } label: {
+                    AdaptiveStack(horizontalAlignment: .leading) {
+                        Text(Localization.estimatedImpressions)
+                        Image(systemName: "info.circle")
+                    }
+                    .font(.subheadline)
                 }
+                .buttonStyle(.plain)
+                .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
                 .renderedIf(viewModel.forecastedImpressionState != .failure)
 
                 forecastedImpressionsView
@@ -334,6 +337,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.evergreenDescription",
             value: "Campaign will run until you stop it.",
             comment: "Label to explain when no end date is specified for a Blaze campaign."
+        )
+        static let estimatedImpressionsAccessibilityHint = NSLocalizedString(
+            "blazeBudgetSettingView.estimatedImpressionsAccessibilityHint",
+            value: "Tap for more information about estimated impressions",
+            comment: "Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen"
         )
     }
 }

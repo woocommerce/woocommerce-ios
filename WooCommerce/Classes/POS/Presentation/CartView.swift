@@ -95,8 +95,10 @@ struct CartView: View {
                                     cartViewModel.removeItemFromCart(cartItem)
                                 } : nil)
                                 .id(cartItem.id)
+                                .transition(.opacity)
                             }
                         }
+                        .animation(.spring(duration: Constants.itemAnimationDuration), value: cartViewModel.itemsInCart.map(\.id))
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
@@ -176,6 +178,7 @@ private extension CartView {
         static let backButtonSymbol: String = "chevron.backward"
         static let headerPadding: CGFloat = 16
         static let cartHeaderElementSpacing: CGFloat = 16
+        static let itemAnimationDuration: CGFloat = 0.2
     }
 
     enum Localization {

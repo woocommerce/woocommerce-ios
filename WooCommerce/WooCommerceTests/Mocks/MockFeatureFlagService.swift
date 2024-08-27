@@ -9,7 +9,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isReadOnlyGiftCardsEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
     private let productBundlesInOrderForm: Bool
     private let isScanToUpdateInventoryEnabled: Bool
@@ -28,7 +27,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isReadOnlyGiftCardsEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
@@ -46,7 +44,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
@@ -75,8 +72,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .readOnlyGiftCards:
-            return isReadOnlyGiftCardsEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:

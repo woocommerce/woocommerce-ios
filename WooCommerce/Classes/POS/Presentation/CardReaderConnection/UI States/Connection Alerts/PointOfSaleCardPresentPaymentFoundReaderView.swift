@@ -19,11 +19,10 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)
                 .buttonStyle(SecondaryButtonStyle())
-
-                Button(viewModel.cancelSearchButton.title,
-                       action: viewModel.cancelSearchButton.actionHandler)
             }
         }
+        .posModalCloseButton(action: viewModel.cancelSearchButton.actionHandler,
+                             accessibilityLabel: viewModel.cancelSearchButton.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

@@ -3,7 +3,10 @@
 
 20.2
 -----
-
+- [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]
+- [*] Orders/Products: The filter menu can now be swiped to dismiss it if there are no changes to the selected filters. [https://github.com/woocommerce/woocommerce-ios/pull/13737]
+- [*] Home Screen Widget: Tapping on the Orders section of the home screen widget opens the Orders part of the app.
+- [*] Payments: Punctuation updates to error and decline reason messages [https://github.com/woocommerce/woocommerce-ios/pull/13739]
 
 20.1
 -----

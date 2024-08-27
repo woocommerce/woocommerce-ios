@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
             Image(decorative: viewModel.imageName)

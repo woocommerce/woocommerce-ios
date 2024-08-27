@@ -43,7 +43,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
     func test_when_receiving_a_non_review_notification_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
+        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
 
         coordinator.activate(siteID: siteID)
 
@@ -64,7 +64,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
     func test_when_receiving_a_notification_while_in_foreground_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
 
         coordinator.activate(siteID: siteID)
 
@@ -83,7 +83,7 @@ final class HubMenuCoordinatorTests: XCTestCase {
     func test_when_failing_to_retrieve_ProductReview_details_then_it_will_present_a_notice() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
 
         coordinator.activate(siteID: siteID)
 

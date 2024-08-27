@@ -40,11 +40,7 @@ struct BlazeBudgetSettingView: View {
             }
         }
         .sheet(isPresented: $showingDurationSetting) {
-            if #available(iOS 16, *) {
-                durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
-            } else {
-                durationSettingView
-            }
+            durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
         }
         .onAppear {
             duration = viewModel.dayCount

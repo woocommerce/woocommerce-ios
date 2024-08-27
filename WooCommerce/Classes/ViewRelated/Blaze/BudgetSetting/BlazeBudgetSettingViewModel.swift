@@ -54,7 +54,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                 }
             }
         }()
-        return createAttributedString(content: content, highlightedContent: amount)
+        return createAttributedString(content: content,
+                                      highlightedContent: amount,
+                                      font: .headline)
     }
 
     var formattedDateRange: String {
@@ -119,10 +121,17 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.startDate = startDate
     }
 
-    func formatDayCount(_ count: Double) -> String {
-        String.pluralize(Int(count),
-                         singular: Localization.singleDay,
-                         plural: Localization.multipleDays)
+    func formatDayCount(_ count: Double) -> NSAttributedString {
+        let dayCount = String.pluralize(Int(count),
+                                        singular: Localization.singleDay,
+                                        plural: Localization.multipleDays)
+        let endDate = calculateEndDate(from: startDate, dayCount: count)
+        let formattedEndDate = endDate.toString(dateStyle: .medium, timeStyle: .none)
+        let content = String.localizedStringWithFormat(Localization.dayCountToEndDate, dayCount, formattedEndDate)
+        return createAttributedString(content: content,
+                                      highlightedContent: dayCount,
+                                      font: .body,
+                                      alignment: .right)
     }
 
     func confirmSettings() {
@@ -199,16 +208,19 @@ private extension BlazeBudgetSettingViewModel {
         }
     }
 
-    func createAttributedString(content: String, highlightedContent: String) -> NSAttributedString {
+    func createAttributedString(content: String,
+                                highlightedContent: String,
+                                font: UIFont,
+                                alignment: NSTextAlignment = .center) -> NSAttributedString {
         let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
+        paragraph.alignment = alignment
 
         let highlightedText = NSAttributedString(string: highlightedContent,
                                                  attributes: [.foregroundColor: UIColor.text.cgColor,
-                                                              .font: UIFont.headline.bold,
+                                                              .font: font.bold,
                                                               .paragraphStyle: paragraph])
         let message = NSMutableAttributedString(string: content,
-                                                attributes: [.font: UIFont.headline.bold,
+                                                attributes: [.font: font,
                                                              .paragraphStyle: paragraph,
                                                              .foregroundColor: UIColor.secondaryLabel.cgColor])
         message.replaceFirstOccurrence(of: highlightedContent, with: highlightedText)
@@ -254,6 +266,13 @@ extension BlazeBudgetSettingViewModel {
             value: "%1$d days",
             comment: "The duration for a Blaze campaign in plural form. " +
             "Reads like: 10 days"
+        )
+        static let dayCountToEndDate = NSLocalizedString(
+            "blazeBudgetSettingViewModel.dayCountToEndDate",
+            value: "%1$@ to %2$@",
+            comment: "The duration for a Blaze campaign with an end date. " +
+            "Placeholders are day count and formatted end date." +
+            "Reads like: 10 days to Dec 19, 2024"
         )
         static let totalAmountSingleDay = NSLocalizedString(
             "blazeBudgetSettingViewModel.totalAmountSingleDay",

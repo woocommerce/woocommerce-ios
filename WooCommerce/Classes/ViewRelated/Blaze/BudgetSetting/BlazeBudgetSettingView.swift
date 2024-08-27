@@ -205,10 +205,14 @@ private extension BlazeBudgetSettingView {
                     .renderedIf(viewModel.isEvergreen)
 
                 // Duration slider - available only if the campaign is not evergreen
-                VStack(spacing: Layout.sectionContentSpacing) {
-                    Text(viewModel.formatDayCount(duration))
-                        .fontWeight(.semibold)
-                        .bodyStyle()
+                VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
+                    // Duration and end date
+                    AdaptiveStack(horizontalAlignment: .leading) {
+                        Text(Localization.duration)
+                            .bodyStyle()
+                        Spacer()
+                        AttributedText(viewModel.formatDayCount(duration))
+                    }
 
                     Slider(value: $duration,
                            in: viewModel.dayCountSliderRange,
@@ -226,7 +230,7 @@ private extension BlazeBudgetSettingView {
                 .buttonStyle(PrimaryButtonStyle())
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Localization.setDuration)
+            .navigationTitle(Localization.schedule)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
@@ -305,10 +309,10 @@ private extension BlazeBudgetSettingView {
             value: "Done",
             comment: "Button to dismiss the Blaze impression info screen"
         )
-        static let setDuration = NSLocalizedString(
-            "blazeBudgetSettingView.setDuration",
-            value: "Set duration",
-            comment: "Title of the Blaze campaign duration setting screen"
+        static let duration = NSLocalizedString(
+            "blazeBudgetSettingView.duration",
+            value: "Duration",
+            comment: "Title label of the Blaze campaign duration field"
         )
         static let startDate = NSLocalizedString(
             "blazeBudgetSettingView.startDate",

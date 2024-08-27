@@ -30,7 +30,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -59,7 +59,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -87,7 +87,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -114,7 +114,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .tags(editable: true),
                                                                        .shortDescription(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles, .editLinkedProducts]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -143,7 +143,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -171,7 +171,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -200,7 +200,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -229,7 +229,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -257,7 +257,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
@@ -559,37 +559,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertTrue(containsAttributeAction)
     }
 
-    func test_view_model_for_bundle_product_with_feature_flag_disabled() {
+    func test_view_model_for_bundle_product_without_price_or_bundled_items() {
         // Arrange
         let product = Fixtures.bundleProduct
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
-                                                                      .name(editable: true),
-                                                                      .description(editable: true)]
-        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews,
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: false)]
-        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
-        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
-    }
-
-    func test_view_model_for_bundle_product_without_price_or_bundled_items_with_feature_flag_enabled() {
-        // Arrange
-        let product = Fixtures.bundleProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
@@ -608,13 +584,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_bundle_product_with_price_and_bundled_items_with_feature_flag_enabled() {
+    func test_view_model_for_bundle_product_with_price_and_bundled_items() {
         // Arrange
         let product = Fixtures.bundleProduct.copy(regularPrice: "2", bundledItems: [.fake()])
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
@@ -1045,7 +1021,6 @@ private extension ProductFormActionsFactoryTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   isBundledProductsEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
@@ -1053,7 +1028,6 @@ private extension ProductFormActionsFactoryTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isBundledProductsEnabled: isBundledProductsEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
                                       variationsPrice: variationsPrice)

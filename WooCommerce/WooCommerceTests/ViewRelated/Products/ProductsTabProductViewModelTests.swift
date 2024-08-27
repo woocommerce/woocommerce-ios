@@ -121,7 +121,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertFalse(detailsText.contains(skuText))
     }
 
-    func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock_and_feature_flag_enabled() {
+    func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle",
                                           manageStock: false,
@@ -131,7 +131,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           bundleStockQuantity: 0)
 
         // When
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
 
         // Then
@@ -140,7 +140,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                       "Expected details text to include \(expectedStockText) but it was \(detailsText) instead")
     }
 
-    func test_details_for_product_bundle_contain_product_stock_status_when_product_is_backordered_and_feature_flag_enabled() {
+    func test_details_for_product_bundle_contain_product_stock_status_when_product_is_backordered() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle",
                                           manageStock: false,
@@ -150,7 +150,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           bundleStockQuantity: 0)
 
         // When
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
 
         // Then
@@ -159,25 +159,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                       "Expected details text to include \(expectedStockText) but it was \(detailsText) instead")
     }
 
-    func test_details_for_product_bundle_contain_product_stock_status_when_bundle_not_in_stock_and_feature_flag_disabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "bundle",
-                                          manageStock: false,
-                                          stockQuantity: 5,
-                                          stockStatusKey: "instock",
-                                          bundleStockStatus: .insufficientStock,
-                                          bundleStockQuantity: 0)
-
-        // When
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: false)
-        let detailsText = viewModel.detailsAttributedString.string
-
-        // Then
-        let expectedStockText = ProductStockStatus.inStock.description
-        XCTAssertTrue(detailsText.contains(expectedStockText))
-    }
-
-    func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_quantity_is_set_and_feature_flag_enabled() {
+    func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_quantity_is_set() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: "bundle",
                                           manageStock: false,
@@ -187,7 +169,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           bundleStockQuantity: 1)
 
         // Action
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
@@ -197,7 +179,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
 
-    func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_manageStock_enabled_and_feature_flag_enabled() {
+    func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_manageStock_enabled() {
         // Arrange
         let product = Product.fake().copy(productTypeKey: "bundle",
                                           manageStock: true,
@@ -207,31 +189,11 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           bundleStockQuantity: 1)
 
         // Action
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: true)
+        let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
-        let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
-        XCTAssertTrue(detailsText.contains(expectedStockDetail))
-    }
-
-    func test_details_for_product_bundle_contain_stock_status_with_product_stock_quantity_when_manageStock_enabled_and_feature_flag_disabled() {
-        // Arrange
-        let product = Product.fake().copy(productTypeKey: "bundle",
-                                          manageStock: true,
-                                          stockQuantity: 5,
-                                          stockStatusKey: "instock",
-                                          bundleStockStatus: .inStock,
-                                          bundleStockQuantity: 1)
-
-        // Action
-        let viewModel = ProductsTabProductViewModel(product: product, productBundlesEnabled: false)
-        let detailsText = viewModel.detailsAttributedString.string
-
-        // Assert
-        let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSNumber, number: .decimal)
         let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
         let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))

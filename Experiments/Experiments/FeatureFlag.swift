@@ -100,10 +100,6 @@ public enum FeatureFlag: Int {
     ///
     case addProductToOrderViaSKUScanner
 
-    /// Whether to enable product bundle settings in product details
-    ///
-    case productBundles
-
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin

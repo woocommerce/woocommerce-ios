@@ -147,7 +147,7 @@ extension Note {
         guard let noteID = payload[CodingKeys.noteID.rawValue] as? Int64 else {
             return nil
         }
-        let hash: Int64 = Int64.min
+        let hash: Int64 = payload[CodingKeys.hash.rawValue] as? Int64 ?? Int64.min
         let read: Bool = (payload[CodingKeys.read.rawValue] as? Bool) ?? false
         let icon: String? = payload[CodingKeys.icon.rawValue] as? String
         let noticon: String? = payload[CodingKeys.noticon.rawValue] as? String
@@ -157,20 +157,17 @@ extension Note {
         let url: String? = payload[CodingKeys.url.rawValue] as? String
         let title: String? = payload[CodingKeys.title.rawValue] as? String
 
-        let rawSubjectAsData = (payload[CodingKeys.subject.rawValue] as? String) ?? ""
-        let subjectAsData = try JSONEncoder().encode(rawSubjectAsData)
+        let rawSubject = (payload[CodingKeys.subject.rawValue] as? [[String: Any]]) ?? []
+        let rawSubjectData = try? JSONSerialization.data(withJSONObject: rawSubject)
 
-        let rawHeaderAsData = (payload[CodingKeys.header.rawValue] as? String) ?? ""
-        let headerAsData = try JSONEncoder().encode(rawHeaderAsData)
+        let rawHeader = (payload[CodingKeys.header.rawValue] as? [[String: Any]]) ?? []
+        let rawHeaderData = try? JSONSerialization.data(withJSONObject: rawHeader)
 
-        let rawMetaAsData = (payload[CodingKeys.meta.rawValue] as? [String: Any]) ?? [:]
-        let rawMetaAsDataCodable = rawMetaAsData.compactMapValues { x in
-            return AnyCodable(x)
-        }
-        let metaAsData = try JSONEncoder().encode(rawMetaAsDataCodable)
+        let rawBody = (payload[CodingKeys.body.rawValue] as? [[String: Any]]) ?? []
+        let rawBodyData = try? JSONSerialization.data(withJSONObject: rawBody)
 
-        let rawBodyAsData = (payload[CodingKeys.body.rawValue] as? String) ?? ""
-        let bodyAsData = try JSONEncoder().encode(rawBodyAsData)
+        let rawMeta = (payload[CodingKeys.meta.rawValue] as? [String: Any]) ?? [:]
+        let rawMetaData = try? JSONSerialization.data(withJSONObject: rawMeta)
 
         self.init(noteID: noteID,
                   hash: hash,
@@ -182,10 +179,10 @@ extension Note {
                   subtype: subtype,
                   url: url,
                   title: title,
-                  subject: subjectAsData,
-                  header: headerAsData,
-                  body: bodyAsData,
-                  meta: metaAsData)
+                  subject: rawSubjectData ?? Data(),
+                  header: rawHeaderData ?? Data(),
+                  body: rawBodyData ?? Data(),
+                  meta: rawMetaData ?? Data())
     }
 }
 // MARK: - Decodable Conformance

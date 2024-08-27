@@ -15,14 +15,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
-    // Whether the campaign should have no end date
-    private(set) var isEvergreen: Bool
-
-    @Published var hasEndDate = false {
-        didSet {
-            isEvergreen = !hasEndDate
-        }
-    }
+    @Published var hasEndDate = false
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
@@ -36,7 +29,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
 
     private var totalAmountText: String {
-        let duration = isEvergreen ? Double(Constants.dayCountInWeek) : dayCount
+        let duration = !hasEndDate ? Double(Constants.dayCountInWeek) : dayCount
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
@@ -44,14 +37,13 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     var formattedAmountAndDuration: NSAttributedString {
         let amount = totalAmountText
         let content: String = {
-            if isEvergreen {
-                String.localizedStringWithFormat(Localization.weeklySpendAmount, amount)
+            guard hasEndDate else {
+                return String.localizedStringWithFormat(Localization.weeklySpendAmount, amount)
+            }
+            if dayCount == 1 {
+                return String.localizedStringWithFormat(Localization.totalAmountSingleDay, amount, Int(dayCount))
             } else {
-                if dayCount == 1 {
-                    String.localizedStringWithFormat(Localization.totalAmountSingleDay, amount, Int(dayCount))
-                } else {
-                    String.localizedStringWithFormat(Localization.totalAmountMultipleDays, amount, Int(dayCount))
-                }
+                return String.localizedStringWithFormat(Localization.totalAmountMultipleDays, amount, Int(dayCount))
             }
         }()
         return createAttributedString(content: content,
@@ -60,12 +52,12 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     var formattedDateRange: String {
-        if isEvergreen {
-            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
-            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
-        } else {
+        if hasEndDate {
             let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
             return dateFormatter.string(from: startDate, to: endDate)
+        } else {
+            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
+            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
         }
     }
 
@@ -101,7 +93,6 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
-        self.isEvergreen = isEvergreen
         self.hasEndDate = !isEvergreen
         self.dayCount = Double(duration)
         self.startDate = startDate
@@ -139,7 +130,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
                                                           totalBudget: totalBudget))
-        completionHandler(dailyAmount, isEvergreen, days, startDate)
+        completionHandler(dailyAmount, !hasEndDate, days, startDate)
     }
 
     @MainActor
@@ -157,7 +148,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     timeZone: timeZone.identifier,
                                                     totalBudget: totalBudget,
                                                     targeting: targetOptions,
-                                                    isEvergreen: isEvergreen)
+                                                    isEvergreen: !hasEndDate)
         do {
             let result = try await fetchForecastedImpressions(input: input)
             let formattedImpressions = String(format: "%d - %d",

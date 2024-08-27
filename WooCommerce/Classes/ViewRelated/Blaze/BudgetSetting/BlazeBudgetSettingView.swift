@@ -202,7 +202,7 @@ private extension BlazeBudgetSettingView {
                 Text(Localization.evergreenDescription)
                     .secondaryBodyStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(viewModel.isEvergreen)
+                    .renderedIf(viewModel.hasEndDate == false)
 
                 // Duration slider - available only if the campaign is not evergreen
                 VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
@@ -218,7 +218,7 @@ private extension BlazeBudgetSettingView {
                            in: viewModel.dayCountSliderRange,
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
-                .renderedIf(viewModel.isEvergreen == false)
+                .renderedIf(viewModel.hasEndDate)
 
                 Spacer()
 

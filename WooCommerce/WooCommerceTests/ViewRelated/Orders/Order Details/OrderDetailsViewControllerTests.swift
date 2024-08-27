@@ -75,6 +75,28 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         let presentedVC = try XCTUnwrap(presentedNav?.topViewController)
         XCTAssertTrue(presentedVC is ProductLoaderViewController)
     }
+
+    @MainActor
+    func test_edit_order_button_is_visible_and_navigates_to_edit_order_screen() throws {
+        // Given
+        let presentationVerifier = PresentationVerifier()
+        let storageManager = MockStorageManager()
+        let order = MockOrders().sampleOrder()
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+        let navController = UINavigationController(rootViewController: viewController)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let editItem = try XCTUnwrap(viewController.navigationItem.rightBarButtonItem)
+        Self.performActionOf(item: editItem)
+
+        // Then
+        let presentedVC: OrderFormHostingController? = presentationVerifier.verify(animated: true, presentingViewController: viewController)
+        XCTAssertNotNil(presentedVC)
+    }
 }
 
 // MARK: - Mirroring
@@ -107,6 +129,13 @@ private extension OrderDetailsViewControllerTests {
             }
         }
         return nil
+    }
+
+    static func performActionOf(item: UIBarButtonItem) {
+        guard let target = item.target, let action = item.action else {
+            return
+        }
+        target.performSelector(onMainThread: action, with: nil, waitUntilDone: true)
     }
 }
 

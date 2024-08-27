@@ -9,11 +9,11 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+            Image(decorative: viewModel.imageName)
+
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
-
-            Image(decorative: viewModel.imageName)
 
             if let errorDetails = viewModel.errorDetails {
                 Text(errorDetails)

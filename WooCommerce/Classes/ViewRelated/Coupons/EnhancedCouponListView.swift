@@ -27,7 +27,6 @@ struct EnhancedCouponListView: UIViewControllerRepresentable {
         context.coordinator.rightBarButtonItemsObserver = viewController.observe(\.navigationItem.rightBarButtonItems, changeHandler: { vc, _ in
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
         })
-
         return viewController
     }
 

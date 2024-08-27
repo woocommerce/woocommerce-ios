@@ -1023,6 +1023,7 @@ private extension ProductFormActionsFactoryTests {
                                    isLinkedProductsPromoEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
+                                   isCustomFieldsEnabled: Bool = false,
                                    variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
@@ -1030,6 +1031,7 @@ private extension ProductFormActionsFactoryTests {
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
+                                      isCustomFieldsEnabled: isCustomFieldsEnabled,
                                       variationsPrice: variationsPrice)
         }
     }

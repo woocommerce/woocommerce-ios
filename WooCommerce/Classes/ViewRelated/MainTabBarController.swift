@@ -384,6 +384,7 @@ extension MainTabBarController {
 
     static func switchStoreAndPresentNotificationDetails(notification: PushNotification) {
         guard let note = notification.note else {
+            presentNotificationDetails(for: notification.noteID)
             return
         }
         let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)

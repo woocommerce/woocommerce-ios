@@ -18,7 +18,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_formattedAmountAndDuration_is_updated_correctly_depending_on_isEvergreen() {
+    func test_formattedAmountAndDuration_is_updated_correctly_depending_on_hasEndDate() {
         // Given
         let initialStartDate = Date(timeIntervalSinceNow: 0)
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
@@ -35,6 +35,23 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$77 USD weekly spend") // weekly spend
+    }
+
+    func test_formatDayCount_returns_correct_content() {
+        // Given
+        let initialStartDate = Date(timeIntervalSinceNow: 0)
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 11,
+                                                    isEvergreen: false,
+                                                    duration: 3,
+                                                    startDate: initialStartDate) { _, _, _, _ in }
+
+        // When
+        let content = viewModel.formatDayCount(3).string
+
+        // Then
+        let endDate = initialStartDate.addingDays(3).toString(dateStyle: .medium, timeStyle: .none)
+        XCTAssertEqual(content, "3 days to \(endDate)")
     }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {

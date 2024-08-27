@@ -29,7 +29,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
 
     private var totalAmountText: String {
-        let duration = !hasEndDate ? Double(Constants.dayCountInWeek) : dayCount
+        let duration = hasEndDate ? dayCount : Double(Constants.dayCountInWeek)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }

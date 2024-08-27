@@ -29,25 +29,22 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     // (internally, we validate 61 to simplify the logic related to timezones).
     let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
 
-    var dailyAmountText: String {
-        let formattedAmount = String(format: "$%.0f", dailyAmount)
-        return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
-    }
-
-    var totalAmountTitle: String {
-        isEvergreen ? Localization.weeklySpend : Localization.totalSpend
-    }
-
-    var totalAmountText: String {
+    private var totalAmountText: String {
         let duration = isEvergreen ? Double(Constants.dayCountInWeek) : dayCount
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
-    var formattedTotalDuration: String {
-        String.pluralize(Int(dayCount),
-                         singular: Localization.totalDurationSingleDay,
-                         plural: Localization.totalDurationMultipleDays)
+    var formattedAmountAndDuration: String {
+        if isEvergreen {
+            String.localizedStringWithFormat(Localization.weeklySpendAmount, totalAmountText)
+        } else {
+            if dayCount == 1 {
+                String.localizedStringWithFormat(Localization.totalAmountSingleDay, totalAmountText, dayCount)
+            } else {
+                String.localizedStringWithFormat(Localization.totalAmountMultipleDays, totalAmountText, dayCount)
+            }
+        }
     }
 
     var formattedDateRange: String {
@@ -230,17 +227,17 @@ extension BlazeBudgetSettingViewModel {
             comment: "The duration for a Blaze campaign in plural form. " +
             "Reads like: 10 days"
         )
-        static let totalDurationSingleDay = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalDurationSingleDay",
-            value: "for %1$d day",
-            comment: "The total duration for a Blaze campaign in singular form. " +
-            "Reads like: for 1 day"
+        static let totalAmountSingleDay = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalAmountSingleDay",
+            value: "%1$@ for %2$d day",
+            comment: "The total amount with duration for a Blaze campaign in singular form. " +
+            "Reads like: $35 USD for 1 day"
         )
-        static let totalDurationMultipleDays = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalDurationMultipleDays",
-            value: "for %1$d days",
-            comment: "The total duration for a Blaze campaign in plural form. " +
-            "Reads like: for 10 days"
+        static let totalAmountMultipleDays = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalAmountMultipleDays",
+            value: "%1$@ for %2$d days",
+            comment: "The total amount with duration for a Blaze campaign in plural form. " +
+            "Reads like: $35 USD for 7 days"
         )
         static let totalBudget = NSLocalizedString(
             "blazeBudgetSettingViewModel.totalBudget",
@@ -249,20 +246,16 @@ extension BlazeBudgetSettingViewModel {
             "Reads as $11 USD. Keep %.0f as is."
         )
         static let evergreenCampaignDate = NSLocalizedString(
-            "blazeBudgetSettingViewModel.evergreenCampaignDate",
-            value: "Starting from %1$@",
+            "blazeBudgetSettingViewModel.ongoingCampaignDate",
+            value: "Ongoing from %1$@",
             comment: "The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. " +
             "Read as Starting from May 11."
         )
-        static let totalSpend = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalSpend",
-            value: "Total spend",
-            comment: "Label for total spend on the Blaze budget setting screen"
-        )
-        static let weeklySpend = NSLocalizedString(
-            "blazeBudgetSettingViewModel.weeklySpend",
-            value: "Weekly spend",
-            comment: "Label for weekly spend on the Blaze budget setting screen"
+        static let weeklySpendAmount = NSLocalizedString(
+            "blazeBudgetSettingViewModel.weeklySpendAmount",
+            value: "%1$@ weekly spend",
+            comment: "The total amount for weekly spend on the Blaze budget setting screen. " +
+            "Reads like: $35 USD weekly spend"
         )
     }
 }

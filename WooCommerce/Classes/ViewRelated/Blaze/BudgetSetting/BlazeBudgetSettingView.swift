@@ -270,8 +270,8 @@ private extension BlazeBudgetSettingView {
             comment: "Title of the Blaze budget setting screen"
         )
         static let subtitle = NSLocalizedString(
-            "blazeBudgetSettingView.subtitle",
-            value: "How much would you like to spend on your product promotion campaign?",
+            "blazeBudgetSettingView.description",
+            value: "How much would you like to spend on your campaign, and how long should it run for?",
             comment: "Subtitle of the Blaze budget setting screen"
         )
         static let dailySpend = NSLocalizedString(

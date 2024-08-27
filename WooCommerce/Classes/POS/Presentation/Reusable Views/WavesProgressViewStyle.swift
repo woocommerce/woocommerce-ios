@@ -54,6 +54,7 @@ private struct WaveProgressView: View {
         .onAppear {
             startAnimating()
         }
+        .accessibilityLabel(Localization.accessibilityLabel)
     }
 
     private func startAnimating() {
@@ -62,6 +63,15 @@ private struct WaveProgressView: View {
                 activeArcIndex = (activeArcIndex + 1) % arcCount
             }
         }
+    }
+}
+
+private extension WaveProgressView {
+    enum Localization {
+        static let accessibilityLabel = NSLocalizedString(
+            "waves.progressView.accessibilityLabel",
+            value: "In progress",
+            comment: "Default accessibility label for a custom indeterminate progress view.")
     }
 }
 

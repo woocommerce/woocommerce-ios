@@ -9,6 +9,7 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
             ProgressView()
                 .progressViewStyle(WaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                .accessibilityHidden(true)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 Text(viewModel.title)

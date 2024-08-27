@@ -6,9 +6,9 @@ struct ReviewsView: UIViewControllerRepresentable {
     let siteID: Int64
 
     class Coordinator {
-         var parentObserver: NSKeyValueObservation?
-         var rightBarButtonItemsObserver: NSKeyValueObservation?
-     }
+        var parentObserver: NSKeyValueObservation?
+        var rightBarButtonItemsObserver: NSKeyValueObservation?
+    }
 
     typealias UIViewControllerType = ReviewsViewController
 
@@ -24,14 +24,14 @@ struct ReviewsView: UIViewControllerRepresentable {
         // This makes sure that the navigation item of the hosting controller
         // is in sync with that of the wrapped controller.
         context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-         })
+            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+        })
 
         // This fixes the issue when `rightBarButtonItem` is updated in `CouponListViewController`,
         // the hosting controller should be updated to reflect the change.
-         context.coordinator.rightBarButtonItemsObserver = viewController.observe(\.navigationItem.rightBarButtonItems, changeHandler: { vc, _ in
-             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-         })
+        context.coordinator.rightBarButtonItemsObserver = viewController.observe(\.navigationItem.rightBarButtonItems, changeHandler: { vc, _ in
+            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+        })
 
         return viewController
     }

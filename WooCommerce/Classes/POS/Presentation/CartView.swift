@@ -98,7 +98,7 @@ struct CartView: View {
                                 .transition(.opacity)
                             }
                         }
-                        .animation(.spring(duration: Constants.itemAnimationDuration), value: cartViewModel.itemsInCart.map(\.id))
+                        .animation(Constants.cartAnimation, value: cartViewModel.itemsInCart.map(\.id))
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
@@ -133,6 +133,7 @@ struct CartView: View {
                 EmptyView()
             }
         }
+        .animation(Constants.cartAnimation, value: cartViewModel.isCartEmpty)
         .frame(maxWidth: .infinity)
         .background(backgroundColor.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
@@ -178,7 +179,7 @@ private extension CartView {
         static let backButtonSymbol: String = "chevron.backward"
         static let headerPadding: CGFloat = 16
         static let cartHeaderElementSpacing: CGFloat = 16
-        static let itemAnimationDuration: CGFloat = 0.2
+        static let cartAnimation: Animation = .spring(duration: 0.2)
     }
 
     enum Localization {

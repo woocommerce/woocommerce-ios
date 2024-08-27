@@ -2967,6 +2967,11 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(NSEntityDescription.entity(forEntityName: "MetaData", in: sourceContext))
         XCTAssertEqual(try sourceContext.count(entityName: "OrderMetaData"), 1)
 
+        let originalOrderMetaData = try XCTUnwrap(sourceContext.first(entityName: "OrderMetaData"))
+        let originalAttributes = originalOrderMetaData.entity.attributesByName.keys.reduce(into: [String: Any]()) { result, key in
+            result[key] = originalOrderMetaData.value(forKey: key)
+        }
+
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 115")
         let targetContext = targetContainer.viewContext
@@ -2981,11 +2986,19 @@ final class MigrationTests: XCTestCase {
         // Check that the data has been migrated
         XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 1)
 
-        // Check that the relationship with Order is correct
+        // Check that the relationship with Order is correct and compare migrated data
         let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
         let migratedMetaData = try XCTUnwrap(migratedOrder.value(forKey: "customFields") as? NSSet)
         XCTAssertEqual(migratedMetaData.count, 1)
-        XCTAssertTrue(migratedMetaData.anyObject() is NSManagedObject)
+
+        let migratedMetaDataObject = try XCTUnwrap(migratedMetaData.anyObject() as? NSManagedObject)
+        XCTAssertTrue(migratedMetaDataObject.entity.name == "MetaData")
+
+        // Compare attribute values
+        for (attribute, originalValue) in originalAttributes {
+            let migratedValue = migratedMetaDataObject.value(forKey: attribute)
+            XCTAssertEqual(originalValue as? NSObject, migratedValue as? NSObject, "Attribute '\(attribute)' mismatch")
+        }
 
         // Test adding new MetaData
         let newMetaData = insertMetaData(to: targetContext)

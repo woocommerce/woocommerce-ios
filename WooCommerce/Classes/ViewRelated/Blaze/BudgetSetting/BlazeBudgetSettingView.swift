@@ -195,7 +195,7 @@ private extension BlazeBudgetSettingView {
                 }
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.
-                Toggle(Localization.specifyDuration, isOn: $viewModel.specifiedEndDate)
+                Toggle(Localization.specifyDuration, isOn: $viewModel.hasEndDate)
                     .toggleStyle(.switch)
                     .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
 

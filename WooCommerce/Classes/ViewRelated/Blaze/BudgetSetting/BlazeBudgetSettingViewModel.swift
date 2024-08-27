@@ -18,9 +18,9 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     // Whether the campaign should have no end date
     private(set) var isEvergreen: Bool
 
-    @Published var specifiedEndDate = false {
+    @Published var hasEndDate = false {
         didSet {
-            isEvergreen = !specifiedEndDate
+            isEvergreen = !hasEndDate
         }
     }
 
@@ -102,7 +102,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
         self.isEvergreen = isEvergreen
-        self.specifiedEndDate = !isEvergreen
+        self.hasEndDate = !isEvergreen
         self.dayCount = Double(duration)
         self.startDate = startDate
         self.locale = locale

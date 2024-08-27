@@ -24,19 +24,20 @@ struct TotalsView: View {
             switch viewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
-                                 height: cardReaderViewLayout.topPadding)
+                    Spacer()
+                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if viewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing],
+                                .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.sidePadding)
                                 .padding(.bottom,
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
+                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
@@ -266,17 +267,6 @@ private extension TotalsView {
             topPadding: 40,
             bottomPadding: 40
         )
-    }
-
-    /// Creates a Spacer with backgroundColor and optional fixed height
-    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
-        return ZStack {
-            Spacer()
-        }
-        .background(backgroundColor)
-        .if(height != nil) {
-            $0.frame(height: height)
-        }
     }
 
     private var cardReaderViewLayout: CardReaderViewLayout {

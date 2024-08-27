@@ -23,6 +23,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var isAddMoreDisabled: Bool = false
     @Published var isExitPOSDisabled: Bool = false
+    @Published var isReaderDisconnectionDisabled: Bool = false
     /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
     @Published var isTotalsViewFullScreen: Bool = false
     @Published var isInitialLoading: Bool = false
@@ -137,7 +138,7 @@ private extension PointOfSaleDashboardViewModel {
             }
             .assign(to: &$isExitPOSDisabled)
 
-        totalsViewModel.paymentStatePublisher
+        let afterCardTapPaymentStates = totalsViewModel.paymentStatePublisher
             .map { paymentState in
                 switch paymentState {
                 case .processingPayment,
@@ -152,16 +153,28 @@ private extension PointOfSaleDashboardViewModel {
                     return false
                 }
             }
+            .share()
+
+        afterCardTapPaymentStates
             .assign(to: &$isTotalsViewFullScreen)
+
+        afterCardTapPaymentStates
+            .assign(to: &$isReaderDisconnectionDisabled)
+
     }
 
     private func observeOrderStage() {
-        $orderStage.sink { [weak self] stage in
+        $orderStage
+            .removeDuplicates()
+            .sink { [weak self] stage in
             guard let self else { return }
             cartViewModel.canDeleteItemsFromCart = stage == .building
 
-            if stage == .building {
-                totalsViewModel.cancelReaderPreparation()
+            switch stage {
+            case .building:
+                totalsViewModel.stopShowingTotalsView()
+            case .finalizing:
+                totalsViewModel.startShowingTotalsView()
             }
         }
         .store(in: &cancellables)

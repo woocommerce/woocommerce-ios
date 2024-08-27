@@ -7,7 +7,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
             Text(viewModel.title)
                 .font(.posTitleEmphasized)
-                .foregroundStyle(Color.posPrimaryTexti3)
+                .foregroundStyle(Color.posPrimaryText)
                 .accessibilityAddTraits(.isHeader)
         }
         .multilineTextAlignment(.center)

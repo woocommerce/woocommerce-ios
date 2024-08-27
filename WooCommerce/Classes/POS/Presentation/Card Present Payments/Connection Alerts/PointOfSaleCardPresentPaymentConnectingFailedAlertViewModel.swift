@@ -1,10 +1,9 @@
 import Foundation
-import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
-struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel: Hashable {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.paymentsError.imageName
     let errorDetails: String?
 
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel

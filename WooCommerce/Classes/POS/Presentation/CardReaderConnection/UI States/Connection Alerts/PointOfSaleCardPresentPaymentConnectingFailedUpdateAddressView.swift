@@ -5,10 +5,10 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
-            viewModel.image
-                .accessibilityHidden(true)
+            Image(decorative: viewModel.imageName)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 if let primaryButtonViewModel = viewModel.primaryButtonViewModel {

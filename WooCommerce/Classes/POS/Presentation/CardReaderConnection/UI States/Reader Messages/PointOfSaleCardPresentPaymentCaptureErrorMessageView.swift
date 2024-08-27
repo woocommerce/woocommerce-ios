@@ -14,7 +14,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
@@ -22,7 +22,7 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                     Text(viewModel.nextStep)
                 }
                 .font(.posBodyRegular)
-                .foregroundStyle(Color.primaryText)
+                .foregroundStyle(Color.posPrimaryText)
             }
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {

@@ -3,7 +3,11 @@
 
 20.2
 -----
+- [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]
 - [*] Hub menu: Fix disappearing title bug on Coupons and Reviews screen.[https://github.com/woocommerce/woocommerce-ios/pull/13726]
+- [*] Orders/Products: The filter menu can now be swiped to dismiss it if there are no changes to the selected filters. [https://github.com/woocommerce/woocommerce-ios/pull/13737]
+- [*] Home Screen Widget: Tapping on the Orders section of the home screen widget opens the Orders part of the app.
+
 
 20.1
 -----
@@ -15,8 +19,8 @@
 - [*] Orders: Fixed the discard confirmation prompt during order creation, so you will be prompted to discard changes if you exit the order form after making changes to a new order. [https://github.com/woocommerce/woocommerce-ios/pull/13654]
 - [*] Orders: Fixed an issue where the last item in an order couldn't be removed. [https://github.com/woocommerce/woocommerce-ios/pull/13665]
 - [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
-- [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]
 - [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671, https://github.com/woocommerce/woocommerce-ios/pull/13697]
+- [Internal] Products: Fix for Partial swipe back gesture from product details removes the content https://github.com/woocommerce/woocommerce-ios/pull/13667
 
 20.0
 -----

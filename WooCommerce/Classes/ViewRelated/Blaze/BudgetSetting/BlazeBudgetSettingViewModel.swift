@@ -35,16 +35,20 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
-    var formattedAmountAndDuration: String {
-        if isEvergreen {
-            String.localizedStringWithFormat(Localization.weeklySpendAmount, totalAmountText)
-        } else {
-            if dayCount == 1 {
-                String.localizedStringWithFormat(Localization.totalAmountSingleDay, totalAmountText, Int(dayCount))
+    var formattedAmountAndDuration: NSAttributedString {
+        let amount = totalAmountText
+        let content: String = {
+            if isEvergreen {
+                String.localizedStringWithFormat(Localization.weeklySpendAmount, amount)
             } else {
-                String.localizedStringWithFormat(Localization.totalAmountMultipleDays, totalAmountText, Int(dayCount))
+                if dayCount == 1 {
+                    String.localizedStringWithFormat(Localization.totalAmountSingleDay, amount, Int(dayCount))
+                } else {
+                    String.localizedStringWithFormat(Localization.totalAmountMultipleDays, amount, Int(dayCount))
+                }
             }
-        }
+        }()
+        return createAttributedString(content: content, highlightedContent: amount)
     }
 
     var formattedDateRange: String {
@@ -186,6 +190,23 @@ private extension BlazeBudgetSettingViewModel {
                 }
             })
         }
+    }
+
+    func createAttributedString(content: String, highlightedContent: String) -> NSAttributedString {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+
+        let highlightedText = NSAttributedString(string: highlightedContent,
+                                                 attributes: [.foregroundColor: UIColor.text.cgColor,
+                                                              .font: UIFont.headline.bold,
+                                                              .paragraphStyle: paragraph])
+        let message = NSMutableAttributedString(string: content,
+                                                attributes: [.font: UIFont.headline.bold,
+                                                             .paragraphStyle: paragraph,
+                                                             .foregroundColor: UIColor.secondaryLabel.cgColor])
+        message.replaceFirstOccurrence(of: highlightedContent, with: highlightedText)
+
+        return message
     }
 }
 

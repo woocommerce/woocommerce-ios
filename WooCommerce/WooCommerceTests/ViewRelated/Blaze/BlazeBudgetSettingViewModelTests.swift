@@ -28,13 +28,13 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
                                                     startDate: initialStartDate) { _, _, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmountAndDuration, "$33 USD for 3 days") // total spend for 3 days
+        XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$33 USD for 3 days") // total spend for 3 days
 
         // When
         viewModel.isEvergreen = true
 
         // Then
-        XCTAssertEqual(viewModel.formattedAmountAndDuration, "$77 USD weekly spend") // weekly spend
+        XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$77 USD weekly spend") // weekly spend
     }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {

@@ -147,10 +147,7 @@ private extension BlazeBudgetSettingView {
         VStack(alignment: .center, spacing: Layout.sectionContentSpacing) {
             Divider()
             // Total amount and duration
-            Text(viewModel.formattedAmountAndDuration)
-                .foregroundColor(Color.secondary)
-                .fontWeight(.semibold)
-                .headlineStyle()
+            AttributedText(viewModel.formattedAmountAndDuration)
 
             // CTA to confirm all settings
             Button(Localization.update) {

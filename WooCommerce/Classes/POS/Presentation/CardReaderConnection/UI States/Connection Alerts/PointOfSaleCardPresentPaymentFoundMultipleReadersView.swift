@@ -36,7 +36,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             }) {
                 Text(Localization.cancel)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(POSSecondaryButtonStyle())
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)

@@ -14,11 +14,8 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
                 .accessibilityAddTraits(.isHeader)
 
             Image(decorative: viewModel.imageName)
-
-            Button(viewModel.buttonViewModel.title,
-                   action: viewModel.buttonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
         }
+        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

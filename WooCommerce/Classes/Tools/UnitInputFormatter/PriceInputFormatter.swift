@@ -9,6 +9,8 @@ struct PriceInputFormatter: UnitInputFormatter {
     ///
     private let currencySettings: CurrencySettings
 
+    private let numberFormatter = NumberFormatter()
+
     /// Number formatter with comma
     ///
     private let numberFormatterPoint: NumberFormatter = {
@@ -37,7 +39,7 @@ struct PriceInputFormatter: UnitInputFormatter {
             return true
         }
 
-        return numberFormatterPoint.number(from: input) != nil || numberFormatterComma.number(from: input) != nil
+        return numberFormatterPoint.number(from: input) != nil || numberFormatterComma.number(from: input) != nil || input == numberFormatter.negativePrefix
     }
 
     func format(input text: String?) -> String {

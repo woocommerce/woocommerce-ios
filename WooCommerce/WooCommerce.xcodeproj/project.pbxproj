@@ -2427,7 +2427,6 @@
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
 		DAF0ED8A2C7F1EFE0002E302 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DAF0ED8B2C7F21A30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
-		DAF0ED8C2C7F697C0002E302 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DAF0ED8D2C7F69B30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
@@ -16298,7 +16297,6 @@
 				DE96844D2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift in Sources */,
 				26100B202722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift in Sources */,
 				263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */,
-				DAF0ED8C2C7F697C0002E302 /* PushNotification.swift in Sources */,
 				0279F0DC252DBF1F0098D7DE /* ProductVariationDetailsFactoryTests.swift in Sources */,
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
 				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,

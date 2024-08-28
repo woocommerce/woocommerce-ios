@@ -54,7 +54,7 @@ labels_checker.check(
 
 # runs the milestone check if this is not a WIP feature and the PR is against the main branch or the release branch
 if (github_utils.main_branch? || github_utils.release_branch?) && !github_utils.wip_feature?
-  report_type = github.pr_labels.include?('milestone-exemption') ? :warning : :error
+  report_type = github.pr_labels.include?('milestone-not-required') || github.pr_labels.include?('status: feature-flagged') ? :message : :error
   milestone_checker.check_milestone_due_date(
     days_before_due: 2,
     report_type_if_no_milestone: report_type

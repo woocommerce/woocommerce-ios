@@ -9,8 +9,8 @@ struct PointOfSaleCardPresentPaymentAlert: View {
 
     var body: some View {
         alertContent
-            .frame(width: frameWidth, height: frameHeight)
             .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
+            .frame(width: frameWidth, height: frameHeight)
     }
 
     @ViewBuilder
@@ -59,12 +59,12 @@ struct PointOfSaleCardPresentPaymentAlert: View {
 
     private var frameWidth: CGFloat {
         switch sizeCategory {
-        case .extraSmall, .small, .medium:
-            return 496
-        case .large, .extraLarge:
+        case .extraSmall, .small:
             return 560
+        case .medium, .large, .extraLarge:
+            return 640
         case .extraExtraLarge, .extraExtraExtraLarge:
-            return 624
+            return 720
         case .accessibilityMedium,
                 .accessibilityLarge,
                 .accessibilityExtraLarge,
@@ -72,18 +72,18 @@ struct PointOfSaleCardPresentPaymentAlert: View {
                 .accessibilityExtraExtraExtraLarge:
             return windowBounds.width
         @unknown default:
-            return 624
+            return 640
         }
     }
 
     private var frameHeight: CGFloat {
         switch sizeCategory {
-        case .extraSmall, .small, .medium:
-            return 528
-        case .large, .extraLarge:
-            return 592
+        case .extraSmall, .small:
+            return 624
+        case .medium, .large, .extraLarge:
+            return 656
         case .extraExtraLarge, .extraExtraExtraLarge:
-            return 640
+            return 688
         case .accessibilityMedium,
                 .accessibilityLarge,
                 .accessibilityExtraLarge,
@@ -91,7 +91,7 @@ struct PointOfSaleCardPresentPaymentAlert: View {
                 .accessibilityExtraExtraExtraLarge:
             return windowBounds.height
         @unknown default:
-            return 640
+            return 656
         }
     }
 

@@ -97,7 +97,7 @@ struct BlazeCampaignDashboardView: View {
                         createCampaignTapped?(product.productID)
                     }
             case .showCampaign(let campaign):
-                BlazeCampaignItemView(campaign: campaign, showBudget: false)
+                BlazeCampaignItemView(campaign: campaign)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         viewModel.didSelectCampaignDetails(campaign)

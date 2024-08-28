@@ -1117,6 +1117,7 @@
 		26F81B1C2BE433A3009EC58E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26F81B1B2BE433A3009EC58E /* Assets.xcassets */; };
 		26F81B1F2BE433A3009EC58E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26F81B1E2BE433A3009EC58E /* Preview Assets.xcassets */; };
 		26F81B222BE433A3009EC58E /* Woo Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 26F81B152BE433A2009EC58E /* Woo Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26F92DBE2C7ECAB20074A208 /* EditOrderFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F92DBD2C7ECAB20074A208 /* EditOrderFormTests.swift */; };
 		26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */; };
 		26F94E21267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */; };
 		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
@@ -4109,6 +4110,7 @@
 		26F81B192BE433A2009EC58E /* MyStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoreView.swift; sourceTree = "<group>"; };
 		26F81B1B2BE433A3009EC58E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		26F81B1E2BE433A3009EC58E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		26F92DBD2C7ECAB20074A208 /* EditOrderFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditOrderFormTests.swift; sourceTree = "<group>"; };
 		26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewController.swift; sourceTree = "<group>"; };
 		26F94E20267A41BE00DB6CCF /* ProductAddOnsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewModel.swift; sourceTree = "<group>"; };
 		26F94E25267A559300DB6CCF /* ProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOn.swift; sourceTree = "<group>"; };
@@ -9179,6 +9181,7 @@
 				025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */,
 				578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */,
 				262B442D2C77D9B000441FD5 /* OrderDetailsViewControllerTests.swift */,
+				26F92DBD2C7ECAB20074A208 /* EditOrderFormTests.swift */,
 			);
 			path = "Order Details";
 			sourceTree = "<group>";
@@ -16379,6 +16382,7 @@
 				B55BC1F321A8790F0011A0C0 /* StringHTMLTests.swift in Sources */,
 				0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */,
 				455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */,
+				26F92DBE2C7ECAB20074A208 /* EditOrderFormTests.swift in Sources */,
 				D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */,
 				B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */,
 				02645D8227BA20A30065DC68 /* InboxViewModelTests.swift in Sources */,

@@ -86,7 +86,6 @@ final class OrderDetailsViewControllerTests: XCTestCase {
 
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let viewController = OrderDetailsViewController(viewModel: viewModel)
-        let navController = UINavigationController(rootViewController: viewController)
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -94,8 +93,14 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         Self.performActionOf(item: editItem)
 
         // Then
-        let presentedVC: OrderFormHostingController? = presentationVerifier.verify(animated: true, presentingViewController: viewController)
-        XCTAssertNotNil(presentedVC)
+        switch presentationVerifier.presentedViewController {
+        case is OrderFormHostingController:
+            break //Success
+        case let navController as UINavigationController:
+            XCTAssertTrue(navController.topViewController is OrderFormHostingController)
+        default:
+            XCTFail("Expected OrderFormHostingController to be presented, got: \(String(describing: presentationVerifier.presentedViewController))")
+        }
     }
 }
 

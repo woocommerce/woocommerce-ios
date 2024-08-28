@@ -47,7 +47,10 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
         content
             .onChange(of: item) { newItem in
                 if let newItem = newItem {
-                    modalManager.present { modalContent(newItem) }
+                    modalManager.present {
+                        modalContent(newItem)
+                            .animation(.default, value: item)
+                    }
                 } else {
                     modalManager.dismiss()
                 }

@@ -1080,7 +1080,6 @@
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
 		26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDED92C029322005ABC31 /* AppDelegate.swift */; };
 		26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEDB2C02932C005ABC31 /* AppBindings.swift */; };
-		26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		26CFDEE52C038C39005ABC31 /* OrderNotificationDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEE42C038C39005ABC31 /* OrderNotificationDataService.swift */; };
 		26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEE42C038C39005ABC31 /* OrderNotificationDataService.swift */; };
 		26D1E9E82949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D1E9E72949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift */; };
@@ -2424,8 +2423,6 @@
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
 		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
-		DAF0ED8B2C7F21A30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
-		DAF0ED8D2C7F69B30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
@@ -14354,7 +14351,6 @@
 				26CA2BC42AA92CA9003B16C2 /* AppLocalizedString.swift in Sources */,
 				2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */,
 				26CFDEE52C038C39005ABC31 /* OrderNotificationDataService.swift in Sources */,
-				DAF0ED8B2C7F21A30002E302 /* Dictionary+Woo.swift in Sources */,
 				26EE79602AA795EC00857293 /* WooConstants.swift in Sources */,
 				2679F02D2AAADB1C00AF80C5 /* OrderNotificationViewModel.swift in Sources */,
 			);
@@ -14381,7 +14377,6 @@
 				26CA47222BFD82B900E54348 /* TimeZone+Woo.swift in Sources */,
 				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
 				26CA471C2BFD7FE600E54348 /* Address+Woo.swift in Sources */,
-				26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */,
 				26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */,
 				26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */,
 				26A52EF12C69B947000B1CFB /* ApiCredentials.swift in Sources */,
@@ -16487,7 +16482,6 @@
 				D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				2667BFDD252F61C5008099D4 /* RefundShippingDetailsViewModelTests.swift in Sources */,
-				DAF0ED8D2C7F69B30002E302 /* Dictionary+Woo.swift in Sources */,
 				DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */,
 				0271125D2887D4E900FCD13C /* LoggedOutAppSettingsTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,

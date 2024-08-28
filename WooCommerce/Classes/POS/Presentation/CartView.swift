@@ -24,7 +24,6 @@ struct CartView: View {
             DynamicHStack(spacing: Constants.cartHeaderSpacing) {
                 HStack(spacing: Constants.cartHeaderElementSpacing) {
                     backAddMoreButton
-                        .padding(.top, Constants.headerPadding)
                         .disabled(viewModel.isAddMoreDisabled)
                         .shimmering(active: viewModel.isAddMoreDisabled)
 
@@ -43,7 +42,6 @@ struct CartView: View {
                         }
                     }
                     .accessibilityElement(children: .combine)
-                    .padding(.top, Constants.headerPadding)
                 }
 
                 HStack {
@@ -62,14 +60,13 @@ struct CartView: View {
                                     .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
                             )
                     }
-                    .padding(.horizontal, Constants.itemHorizontalPadding)
-                    .padding(.top, Constants.headerPadding)
+                    .padding(.leading, Constants.itemHorizontalPadding)
                     .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, Constants.horizontalPadding)
-            .padding(.vertical, Constants.verticalPadding)
+            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+            .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {
@@ -124,7 +121,8 @@ struct CartView: View {
                     EmptyView()
                 } else {
                     checkoutButton
-                        .padding(Constants.checkoutButtonPadding)
+                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                        .padding(.top, Constants.checkoutButtonTopPadding)
                         .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
@@ -165,17 +163,14 @@ private extension CartView {
         static let clearButtonCornerRadius: CGFloat = 4
         static let clearButtonBorderWidth: CGFloat = 2
         static let clearButtonTextPadding = EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24)
-        static let checkoutButtonPadding: CGFloat = 16
         static let itemHorizontalPadding: CGFloat = 8
-        static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
         static let cartEmptyViewSpacing: CGFloat = 40
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
-        static let headerPadding: CGFloat = 16
         static let cartHeaderElementSpacing: CGFloat = 16
+        static let checkoutButtonTopPadding: CGFloat = 16
     }
 
     enum Localization {

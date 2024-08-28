@@ -100,25 +100,9 @@ public enum FeatureFlag: Int {
     ///
     case addProductToOrderViaSKUScanner
 
-    /// Whether to enable product bundle settings in product details
-    ///
-    case productBundles
-
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
-
-    /// Enables composite product settings in product details
-    ///
-    case compositeProducts
-
-    /// Enables read-only support for the Gift Cards extension
-    ///
-    case readOnlyGiftCards
-
-    /// Enables read-only support for the Min/Max Quantities extension
-    ///
-    case readOnlyMinMaxQuantities
 
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///

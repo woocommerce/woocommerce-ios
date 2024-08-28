@@ -251,7 +251,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     var shouldShowGiftCards: Bool {
-        appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards)
+        appliedGiftCards.isNotEmpty
     }
 
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

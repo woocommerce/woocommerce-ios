@@ -8,6 +8,7 @@
 - [*] Home Screen Widget: Tapping on the Orders section of the home screen widget opens the Orders part of the app.
 - [*] Payments: Punctuation updates to error and decline reason messages [https://github.com/woocommerce/woocommerce-ios/pull/13739]
 - [*] Blaze: Display budget field on the dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13761]
+- [*] Store picker: fixed the irresponsive Continue button in the site discovery flow. [https://github.com/woocommerce/woocommerce-ios/pull/13766]
 
 20.1
 -----

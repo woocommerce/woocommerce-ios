@@ -1080,7 +1080,6 @@
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
 		26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDED92C029322005ABC31 /* AppDelegate.swift */; };
 		26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEDB2C02932C005ABC31 /* AppBindings.swift */; };
-		26CFDEE22C029A5A005ABC31 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		26CFDEE52C038C39005ABC31 /* OrderNotificationDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEE42C038C39005ABC31 /* OrderNotificationDataService.swift */; };
 		26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEE42C038C39005ABC31 /* OrderNotificationDataService.swift */; };
@@ -2425,7 +2424,6 @@
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
 		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
-		DAF0ED8A2C7F1EFE0002E302 /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DAF0ED8B2C7F21A30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		DAF0ED8D2C7F69B30002E302 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
@@ -14352,7 +14350,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAF0ED8A2C7F1EFE0002E302 /* PushNotification.swift in Sources */,
 				26CA2BC62AAA1773003B16C2 /* OrderNotificationView.swift in Sources */,
 				26CA2BC42AA92CA9003B16C2 /* AppLocalizedString.swift in Sources */,
 				2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */,
@@ -14381,7 +14378,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				26A52EF22C69BD14000B1CFB /* CrashLoggingStack.swift in Sources */,
-				26CFDEE22C029A5A005ABC31 /* PushNotification.swift in Sources */,
 				26CA47222BFD82B900E54348 /* TimeZone+Woo.swift in Sources */,
 				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
 				26CA471C2BFD7FE600E54348 /* Address+Woo.swift in Sources */,

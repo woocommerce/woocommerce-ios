@@ -7,7 +7,7 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
             ProgressView()
-                .progressViewStyle(WaveProgressViewStyle())
+                .progressViewStyle(CardWaveProgressViewStyle())
                 .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {

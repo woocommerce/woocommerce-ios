@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct WaveProgressViewStyle: ProgressViewStyle {
+struct CardWaveProgressViewStyle: ProgressViewStyle {
     func makeBody(configuration: Configuration) -> some View {
-        WaveProgressView(configuration: configuration)
+        CardWaveProgressView(configuration: configuration)
     }
 }
 
-private struct WaveProgressView: View {
+private struct CardWaveProgressView: View {
     let configuration: ProgressViewStyleConfiguration
     private let animationDuration: Double = 0.5
     private let radii: [CGFloat] = [40.0, 70.0, 100.0]
@@ -14,7 +14,7 @@ private struct WaveProgressView: View {
 
     @State private var activeArcIndex: Int = 0
 
-    private var arcCount: Int {
+    private var waveCount: Int {
         radii.count
     }
 
@@ -30,12 +30,12 @@ private struct WaveProgressView: View {
 
     var body: some View {
         ZStack {
-            ForEach(0..<arcCount, id: \.self) { index in
+            ForEach(0 ..< waveCount, id: \.self) { index in
                 let isActive = index == activeArcIndex
                 let radius = radii[index]
 
-                ArcShape(startAngle: .degrees(333),
-                         endAngle: .degrees(27))
+                WaveShape(startAngle: .degrees(333),
+                          endAngle: .degrees(27))
                 .trim(from: isActive ? 0.0 : 0 + inactiveInset,
                       to: isActive ? 1.0 : 1 - inactiveInset)
                 .stroke(isActive ? Color(.wooCommercePurple(.shade60)) : Color(.wooCommercePurple(.shade40)),
@@ -60,22 +60,22 @@ private struct WaveProgressView: View {
     private func startAnimating() {
         Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
             withAnimation {
-                activeArcIndex = (activeArcIndex + 1) % arcCount
+                activeArcIndex = (activeArcIndex + 1) % waveCount
             }
         }
     }
 }
 
-private extension WaveProgressView {
+private extension CardWaveProgressView {
     enum Localization {
         static let accessibilityLabel = NSLocalizedString(
-            "waves.progressView.accessibilityLabel",
+            "card.waves.progressView.accessibilityLabel",
             value: "In progress",
-            comment: "Default accessibility label for a custom indeterminate progress view.")
+            comment: "Default accessibility label for a custom indeterminate progress view, used for card payments.")
     }
 }
 
-private struct ArcShape: Shape {
+private struct WaveShape: Shape {
     var startAngle: Angle
     var endAngle: Angle
 
@@ -92,5 +92,5 @@ private struct ArcShape: Shape {
 
 #Preview {
     ProgressView()
-        .progressViewStyle(WaveProgressViewStyle())
+        .progressViewStyle(CardWaveProgressViewStyle())
 }

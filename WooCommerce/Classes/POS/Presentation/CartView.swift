@@ -60,7 +60,7 @@ struct CartView: View {
                                     .stroke(Color.init(uiColor: .wooCommercePurple(.shade60)), lineWidth: Constants.clearButtonBorderWidth)
                             )
                     }
-                    .padding(.horizontal, Constants.itemHorizontalPadding)
+                    .padding(.leading, Constants.itemHorizontalPadding)
                     .renderedIf(cartViewModel.shouldShowClearCartButton)
                 }
             }

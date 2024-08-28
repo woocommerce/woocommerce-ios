@@ -8,8 +8,8 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 Image(decorative: viewModel.imageName)
 
                 Text(viewModel.title)

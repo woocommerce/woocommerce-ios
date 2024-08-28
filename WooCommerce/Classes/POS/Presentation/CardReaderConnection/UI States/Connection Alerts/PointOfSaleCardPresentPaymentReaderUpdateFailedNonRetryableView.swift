@@ -8,13 +8,15 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Image(decorative: viewModel.imageName)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

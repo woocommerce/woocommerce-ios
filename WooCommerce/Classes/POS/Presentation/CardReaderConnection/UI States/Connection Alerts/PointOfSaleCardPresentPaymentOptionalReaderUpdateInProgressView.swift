@@ -8,23 +8,25 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
             Spacer()
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 viewModel.image
                     .accessibilityHidden(true)
 
-                Text(viewModel.title)
-                    .font(POSFontStyle.posTitleEmphasized)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityAddTraits(.isHeader)
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posTitleEmphasized)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
 
-                Text(viewModel.progressTitle)
-                    .font(POSFontStyle.posBodyRegular)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(viewModel.progressSubtitle)
-                    .font(POSFontStyle.posBodyRegular)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(viewModel.progressTitle)
+                        .font(POSFontStyle.posBodyRegular)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(viewModel.progressSubtitle)
+                        .font(POSFontStyle.posBodyRegular)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()

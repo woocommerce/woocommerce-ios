@@ -4,18 +4,20 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
     let viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 Image(decorative: viewModel.imageName)
 
-                Text(viewModel.title)
-                    .font(POSFontStyle.posTitleEmphasized)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityAddTraits(.isHeader)
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posTitleEmphasized)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
 
-                Text(viewModel.description)
-                    .font(POSFontStyle.posBodyRegular)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(viewModel.description)
+                        .font(POSFontStyle.posBodyRegular)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()

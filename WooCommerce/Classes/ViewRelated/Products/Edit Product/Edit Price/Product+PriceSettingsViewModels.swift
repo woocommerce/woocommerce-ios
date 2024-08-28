@@ -2,12 +2,6 @@ import Yosemite
 import WooFoundation
 
 extension Product {
-
-    // Regex that match all the occurrences of the thousand separators.
-    // All the points or comma (but not the last `.` or `,`)
-    //
-    private static let regexThousandSeparators = "(?:[.,](?=.*[.,])|)+"
-
     private static let placeholder = "0"
 
     static func createRegularPriceViewModel(regularPrice: String?,
@@ -16,13 +10,15 @@ extension Product {
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
         let value: String = {
             guard let regularPrice, regularPrice.isNotEmpty else {
                 return ""
             }
             return (currencyFormatter.formatAmount(regularPrice, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
-                .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
+                .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
         return UnitInputViewModel(title: Localization.regularPriceTitle,
                                   unit: unit,
@@ -42,13 +38,15 @@ extension Product {
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
         let value: String = {
             guard let salePrice, salePrice.isNotEmpty else {
                 return ""
             }
             return (currencyFormatter.formatAmount(salePrice, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
-                .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
+                .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
 
         return UnitInputViewModel(title: Localization.salePriceTitle,
@@ -69,13 +67,15 @@ extension Product {
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let thousandsSeparator = ServiceLocator.currencySettings.groupingSeparator
         let value: String = {
             guard let fee, fee.isNotEmpty else {
                 return ""
             }
             return (currencyFormatter.formatAmount(fee, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
-                .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
+                .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
         return UnitInputViewModel(title: Localization.signupFeeTitle,
                                   subtitle: Localization.signupFeeSubtitle,

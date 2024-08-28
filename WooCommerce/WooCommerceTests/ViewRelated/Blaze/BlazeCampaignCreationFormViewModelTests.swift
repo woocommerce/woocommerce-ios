@@ -676,6 +676,66 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
         XCTAssertFalse(isAISuggested)
     }
+
+    @MainActor
+    func test_event_is_tracked_upon_tapping_confirm_details_with_correct_campaign_type_when_no_end_date_is_specified() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set evergreen
+        viewModel.budgetSettingViewModel.hasEndDate = false
+        viewModel.budgetSettingViewModel.confirmSettings()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let campaignType = try XCTUnwrap(eventProperties["campaign_type"] as? String)
+        XCTAssertEqual(campaignType, "evergreen")
+    }
+
+    @MainActor
+    func test_event_is_tracked_upon_tapping_confirm_details_with_correct_campaign_type_when_end_date_is_specified() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set non-evergreen
+        viewModel.budgetSettingViewModel.hasEndDate = true
+        viewModel.budgetSettingViewModel.confirmSettings()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let campaignType = try XCTUnwrap(eventProperties["campaign_type"] as? String)
+        XCTAssertEqual(campaignType, "start_end")
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {

@@ -62,21 +62,21 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
-    var budgetSettingViewModel: BlazeBudgetSettingViewModel {
+    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     isEvergreen: isEvergreen,
                                     duration: duration,
                                     startDate: startDate,
-                                    targetOptions: targetOptions) { [weak self] dailyBudget, isEvegreen, duration, startDate in
+                                    targetOptions: targetOptions) { [weak self] dailyBudget, isEvergreen, duration, startDate in
             guard let self else { return }
             self.startDate = startDate
-            self.isEvergreen = isEvegreen
+            self.isEvergreen = isEvergreen
             self.duration = duration
             self.dailyBudget = dailyBudget
             self.updateBudgetDetails()
         }
-    }
+    }()
 
     var editAdViewModel: BlazeEditAdViewModel {
         let adData = BlazeEditAdData(image: image,
@@ -346,7 +346,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         let isAISuggestedAdContent = taglineMatching || descriptionMatching
         analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(
             isAISuggestedAdContent: isAISuggestedAdContent,
-            isEvergreen: campaignInfo.isEvergreen
+            isEvergreen: isEvergreen
         ))
         isShowingPaymentInfo = true
     }

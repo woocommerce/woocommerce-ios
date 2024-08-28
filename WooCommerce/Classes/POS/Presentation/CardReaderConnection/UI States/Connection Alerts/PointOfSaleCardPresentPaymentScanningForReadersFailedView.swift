@@ -13,10 +13,12 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Text(viewModel.errorDetails)
                 .font(POSFontStyle.posBodyRegular)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler,
                              accessibilityLabel: viewModel.buttonViewModel.title)

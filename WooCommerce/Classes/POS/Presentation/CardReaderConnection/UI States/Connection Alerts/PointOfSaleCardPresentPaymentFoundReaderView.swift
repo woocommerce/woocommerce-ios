@@ -5,14 +5,20 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
 
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Image(decorative: viewModel.imageName)
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
 
-            Text(viewModel.description)
-                .font(POSFontStyle.posBodyRegular)
+                Text(viewModel.description)
+                    .font(POSFontStyle.posBodyRegular)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,

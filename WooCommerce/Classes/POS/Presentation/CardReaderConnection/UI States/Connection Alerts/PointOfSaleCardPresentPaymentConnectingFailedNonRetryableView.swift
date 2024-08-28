@@ -9,10 +9,12 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Text(viewModel.errorDetails)
                 .font(POSFontStyle.posBodyRegular)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)

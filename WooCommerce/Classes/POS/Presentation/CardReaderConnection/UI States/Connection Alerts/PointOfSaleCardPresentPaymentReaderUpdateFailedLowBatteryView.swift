@@ -13,10 +13,12 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Text(viewModel.batteryLevelInfo)
                 .font(POSFontStyle.posBodyRegular)
+                .fixedSize(horizontal: false, vertical: true)
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

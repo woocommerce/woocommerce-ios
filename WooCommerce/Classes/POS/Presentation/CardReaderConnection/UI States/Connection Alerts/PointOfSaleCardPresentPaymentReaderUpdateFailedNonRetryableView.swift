@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Button(viewModel.cancelButtonViewModel.title,

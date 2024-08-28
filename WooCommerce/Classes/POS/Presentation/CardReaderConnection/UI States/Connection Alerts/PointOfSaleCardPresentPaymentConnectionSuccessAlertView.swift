@@ -13,6 +13,7 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
         }
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)

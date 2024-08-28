@@ -14,9 +14,11 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Text(viewModel.progressTitle)
+                .fixedSize(horizontal: false, vertical: true)
                 .font(POSFontStyle.posBodyRegular)
         }
         .multilineTextAlignment(.center)

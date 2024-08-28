@@ -125,6 +125,18 @@ final class PriceInputFormatterTests: XCTestCase {
         XCTAssertEqual(formatter.format(input: input), "189293891203.20")
     }
 
+    func testFormattingNegativePriceInput() {
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
+        let input = "-12.34"
+        XCTAssertEqual(formatter.format(input: input), "-12.34")
+    }
+
     func test_value_is_correct() {
         // When
         let pointValue = "0.00"

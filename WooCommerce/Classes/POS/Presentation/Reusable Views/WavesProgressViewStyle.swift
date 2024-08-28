@@ -38,7 +38,7 @@ private struct CardWaveProgressView: View {
                           endAngle: .degrees(27))
                 .trim(from: isActive ? 0.0 : 0 + inactiveInset,
                       to: isActive ? 1.0 : 1 - inactiveInset)
-                .stroke(isActive ? Color(.wooCommercePurple(.shade60)) : Color(.wooCommercePurple(.shade40)),
+                .stroke(isActive ? Constants.activeWaveColor : Constants.inactiveWaveColor,
                         lineWidth: isActive ? 10 : 7)
                 .frame(width: radius, height: radius)
                 .animation(.easeInOut(duration: animationDuration),
@@ -48,7 +48,7 @@ private struct CardWaveProgressView: View {
         .offset(x: xOffset)
         .frame(width: 130, height: 115)
         .background() {
-            Color(.wooCommercePurple(.shade20))
+            Constants.cardColor
                 .clipShape(RoundedRectangle(cornerRadius: 13))
         }
         .onAppear {
@@ -72,6 +72,12 @@ private extension CardWaveProgressView {
             "card.waves.progressView.accessibilityLabel",
             value: "In progress",
             comment: "Default accessibility label for a custom indeterminate progress view, used for card payments.")
+    }
+
+    enum Constants {
+        static let activeWaveColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade60)
+        static let inactiveWaveColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade40)
+        static let cardColor = Color.withColorStudio(name: .wooCommercePurple, shade: .shade20)
     }
 }
 

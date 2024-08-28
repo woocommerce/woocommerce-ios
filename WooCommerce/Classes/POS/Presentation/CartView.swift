@@ -92,8 +92,10 @@ struct CartView: View {
                                     cartViewModel.removeItemFromCart(cartItem)
                                 } : nil)
                                 .id(cartItem.id)
+                                .transition(.opacity)
                             }
                         }
+                        .animation(Constants.cartAnimation, value: cartViewModel.itemsInCart.map(\.id))
                         .padding(.bottom, floatingControlAreaSize.height)
                         .background(GeometryReader { geometry in
                             Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
@@ -129,6 +131,7 @@ struct CartView: View {
                 EmptyView()
             }
         }
+        .animation(Constants.cartAnimation, value: cartViewModel.isCartEmpty)
         .frame(maxWidth: .infinity)
         .background(backgroundColor.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
@@ -170,6 +173,7 @@ private extension CartView {
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
         static let cartHeaderElementSpacing: CGFloat = 16
+        static let cartAnimation: Animation = .spring(duration: 0.2)
         static let checkoutButtonTopPadding: CGFloat = 16
     }
 

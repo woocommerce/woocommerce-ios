@@ -18,6 +18,7 @@ extension Product {
             return (currencyFormatter.formatAmount(regularPrice, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
         return UnitInputViewModel(title: Localization.regularPriceTitle,
                                   unit: unit,
@@ -45,6 +46,7 @@ extension Product {
             return (currencyFormatter.formatAmount(salePrice, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
 
         return UnitInputViewModel(title: Localization.salePriceTitle,
@@ -73,6 +75,7 @@ extension Product {
             return (currencyFormatter.formatAmount(fee, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: thousandsSeparator, with: "")
+                .filter { !$0.isWhitespace }
         }()
         return UnitInputViewModel(title: Localization.signupFeeTitle,
                                   subtitle: Localization.signupFeeSubtitle,

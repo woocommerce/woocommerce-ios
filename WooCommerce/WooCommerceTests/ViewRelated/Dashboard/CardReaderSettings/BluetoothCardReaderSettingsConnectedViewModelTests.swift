@@ -294,7 +294,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.cardReaderModel] as? String,
                        MockCardReader.bbposChipper2XBT().readerType.model)
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Required")
-        let expectedErrorDescription = "Unable to update card reader software - the reader battery is too low"
+        let expectedErrorDescription = "Unable to update card reader software - the reader battery is too low."
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.errorDescription] as? String, expectedErrorDescription)
     }
 

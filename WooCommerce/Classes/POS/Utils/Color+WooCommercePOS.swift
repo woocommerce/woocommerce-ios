@@ -37,6 +37,15 @@ extension Color {
         )
     }
 
+    static var posOverlayFill: Color {
+        Color(
+            UIColor(
+                light: UIColor(red: 120.0 / 255.0, green: 120.0 / 255.0, blue: 128.0 / 255.0, alpha: 0.2),
+                dark: UIColor(red: 50.0 / 255.0, green: 50.0 / 255.0, blue: 50.0 / 255.0, alpha: 0.8)
+            )
+        )
+    }
+
     // MARK: - Text
 
     static var posPrimaryText: Color {

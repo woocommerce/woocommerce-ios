@@ -52,16 +52,19 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
+                .animation(.default, value: viewModel.isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+                    .transition(.opacity)
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.isPaymentSuccessState)
+        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
@@ -228,7 +231,7 @@ private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
-        case .connected:
+        case .connected, .disconnecting:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()

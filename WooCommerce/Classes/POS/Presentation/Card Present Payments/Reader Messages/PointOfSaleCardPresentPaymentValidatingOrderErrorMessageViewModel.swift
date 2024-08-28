@@ -1,7 +1,7 @@
 import Foundation
 import enum Networking.DotcomError
 
-struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel {
+struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel: Equatable {
     let title: String = Localization.title
     let message: String
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel?

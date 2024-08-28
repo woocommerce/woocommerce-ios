@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleCardPresentPaymentSuccessMessageViewModel {
+struct PointOfSaleCardPresentPaymentSuccessMessageViewModel: Equatable {
     let title: String = Localization.title
     let message: String?
 

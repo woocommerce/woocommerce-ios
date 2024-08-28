@@ -17,11 +17,12 @@ struct POSRootModalViewModifier: ViewModifier {
                     .background(Color.posPrimaryBackground)
                     .cornerRadius(24)
                     .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
-                    .transition(.scale)
+                    .transition(.opacity)
                     .zIndex(1)
                     .padding()
             }
         }
+        .animation(.default, value: modalManager.isPresented)
     }
 }
 

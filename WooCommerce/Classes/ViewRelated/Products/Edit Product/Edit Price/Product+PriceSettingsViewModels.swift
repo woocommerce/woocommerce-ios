@@ -26,7 +26,7 @@ extension Product {
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.regularPriceAccessibilityHint,
                                   unitPosition: currencySettings.currencyUnitPosition,
-                                  keyboardType: .decimalPad,
+                                  keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
                                   onInputChange: onInputChange)
@@ -55,7 +55,7 @@ extension Product {
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.salePriceAccessibility,
                                   unitPosition: currencySettings.currencyUnitPosition,
-                                  keyboardType: .decimalPad,
+                                  keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
                                   onInputChange: onInputChange)
@@ -84,7 +84,7 @@ extension Product {
                                   placeholder: placeholder,
                                   accessibilityHint: Localization.signupFeeAccessibilityHint,
                                   unitPosition: currencySettings.currencyUnitPosition,
-                                  keyboardType: .decimalPad,
+                                  keyboardType: .numbersAndPunctuation,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .primary,
                                   onInputChange: onInputChange)

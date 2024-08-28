@@ -7,6 +7,14 @@ extension WooAnalyticsEvent {
             static let duration = "duration"
             static let totalBudget = "total_budget"
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
+            static let campaignType = "campaign_type"
+        }
+
+        private enum Values {
+            enum CampaignType {
+                static let startEnd = "start_end"
+                static let evergreen = "evergreen"
+            }
         }
 
         /// Tracked when the Blaze entry point is shown to the user.
@@ -109,16 +117,22 @@ extension WooAnalyticsEvent {
 
         enum Budget {
             /// Tracked upon tapping "Update" in Blaze set budget screen
-            static func updateTapped(duration: Int, totalBudget: Double) -> WooAnalyticsEvent {
+            static func updateTapped(duration: Int, totalBudget: Double, hasEndDate: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditBudgetSaveTapped,
                                   properties: [Key.duration: duration,
-                                               Key.totalBudget: totalBudget])
+                                               Key.totalBudget: totalBudget,
+                                               Key.campaignType: hasEndDate ?
+                                                Values.CampaignType.startEnd :
+                                                Values.CampaignType.evergreen])
             }
 
-            /// Tracked upon changing duration in Blaze set budget screen
-            static func changedDuration(_ duration: Int) -> WooAnalyticsEvent {
+            /// Tracked upon changing schedule in Blaze set budget screen
+            static func changedSchedule(duration: Int, hasEndDate: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditBudgetDurationApplied,
-                                  properties: [Key.duration: duration])
+                                  properties: [Key.duration: duration,
+                                               Key.campaignType: hasEndDate ?
+                                                Values.CampaignType.startEnd :
+                                                Values.CampaignType.evergreen])
             }
         }
 

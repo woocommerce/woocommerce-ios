@@ -2,6 +2,7 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentFoundReaderAlertViewModel: Hashable {
     let title: String
+    let description: String = Localization.description
     let imageName = PointOfSaleAssets.readerConnectionDoYouWantToConnect.imageName
     let connectButton: CardPresentPaymentsModalButtonViewModel
     let continueSearchButton: CardPresentPaymentsModalButtonViewModel
@@ -24,9 +25,16 @@ struct PointOfSaleCardPresentPaymentFoundReaderAlertViewModel: Hashable {
 private extension PointOfSaleCardPresentPaymentFoundReaderAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSale.cardPresentPayment.alert.foundReader.title",
-            value: "Do you want to connect to reader %1$@?",
+            "pointOfSale.cardPresentPayment.alert.foundReader.title.2",
+            value: "Found %1$@",
             comment: "Dialog title that displays the name of a found card reader"
+        )
+
+        static let description = NSLocalizedString(
+            "pointOfSale.cardPresentPayment.alert.foundReader.description",
+            value: "Do you want to connect to this reader?",
+            comment: "Dialog description that asks the user if they want to connect to a specific found card reader. " +
+            "They can instead, keep searching for mor readers."
         )
 
         static let connect = NSLocalizedString(

@@ -11,6 +11,9 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
                 .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
+            Text(viewModel.description)
+                .font(POSFontStyle.posBodyRegular)
+
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
                        action: viewModel.connectButton.actionHandler)

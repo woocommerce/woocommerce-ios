@@ -24,19 +24,20 @@ struct TotalsView: View {
             switch viewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
-                                 height: cardReaderViewLayout.topPadding)
+                    Spacer()
+                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if viewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing],
+                                .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.sidePadding)
                                 .padding(.bottom,
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
+                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
@@ -69,6 +70,7 @@ struct TotalsView: View {
             viewModel.onTotalsViewDisappearance()
         }
         .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
@@ -267,17 +269,6 @@ private extension TotalsView {
         )
     }
 
-    /// Creates a Spacer with backgroundColor and optional fixed height
-    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
-        return ZStack {
-            Spacer()
-        }
-        .background(backgroundColor)
-        .if(height != nil) {
-            $0.frame(height: height)
-        }
-    }
-
     private var cardReaderViewLayout: CardReaderViewLayout {
         guard viewModel.isShowingCardReaderStatus else {
             return .primary
@@ -354,6 +345,20 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
+    }
+}
+
+private extension View {
+    ///  Force the position and size values to be resolved and animated by the parent
+    ///  before being passed down to each subview.
+    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
+    ///  It results in the whole TotalsView animated together when transitioning.
+    func geometryGroupIfSupported() -> some View {
+        if #available(iOS 17.0, *) {
+            return self.geometryGroup()
+        } else {
+            return self
+        }
     }
 }
 

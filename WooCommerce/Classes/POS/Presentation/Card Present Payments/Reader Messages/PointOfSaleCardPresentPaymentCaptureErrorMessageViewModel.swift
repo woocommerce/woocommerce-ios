@@ -29,6 +29,7 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: Observabl
         lhs.id == rhs.id &&
         lhs.title == rhs.title &&
         lhs.message == rhs.message  &&
+        lhs.nextStep == rhs.nextStep &&
         lhs.tryAgainButtonViewModel == rhs.tryAgainButtonViewModel &&
         lhs.newOrderButtonViewModel == rhs.newOrderButtonViewModel &&
         lhs.showsInfoSheet == rhs.showsInfoSheet

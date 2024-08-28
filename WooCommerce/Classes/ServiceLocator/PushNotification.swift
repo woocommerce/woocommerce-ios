@@ -56,7 +56,9 @@ extension PushNotification {
         guard let noteFulldata, !noteFulldata.isEmpty, var data = Data(base64Encoded: noteFulldata) else {
             return nil
         }
-        data.removeFirst(2)
+        if data.count > 1 {
+            data.removeFirst(2) // https://stackoverflow.com/a/76510182
+        }
         guard let zlib = try? (data as NSData).decompressed(using: .zlib) else {
             return nil
         }

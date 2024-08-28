@@ -66,7 +66,7 @@ struct CartView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-            .padding(.vertical, POSHeaderLayoutConstants.sectionTopPadding)
+            .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
             if cartViewModel.isCartEmpty {

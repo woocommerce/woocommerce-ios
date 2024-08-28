@@ -97,9 +97,13 @@ extension WooAnalyticsEvent {
             }
 
             /// Tracked upon tapping "Confirm Details" in Blaze creation form
-            static func confirmDetailsTapped(isAISuggestedAdContent: Bool) -> WooAnalyticsEvent {
+            static func confirmDetailsTapped(isAISuggestedAdContent: Bool,
+                                             isEvergreen: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
-                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent])
+                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent,
+                                               Key.campaignType: isEvergreen ?
+                                                Values.CampaignType.evergreen :
+                                                Values.CampaignType.startEnd])
             }
         }
 
@@ -188,8 +192,10 @@ extension WooAnalyticsEvent {
             }
 
             /// Tracked when campaign creation is successful
-            static func campaignCreationSuccess() -> WooAnalyticsEvent {
-                WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [:])
+            static func campaignCreationSuccess(isEvergreen: Bool) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [
+                    Key.campaignType: isEvergreen ? Values.CampaignType.evergreen : Values.CampaignType.startEnd
+                ])
             }
 
             /// Tracked when campaign creation fails

@@ -121,7 +121,8 @@ struct CartView: View {
                     EmptyView()
                 } else {
                     checkoutButton
-                        .padding(POSHeaderLayoutConstants.sectionHorizontalPadding)
+                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                        .padding(.top, Constants.checkoutButtonTopPadding)
                         .accessibilityAddTraits(.isHeader)
                 }
             case .finalizing:
@@ -169,6 +170,7 @@ private extension CartView {
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
         static let cartHeaderElementSpacing: CGFloat = 16
+        static let checkoutButtonTopPadding: CGFloat = 16
     }
 
     enum Localization {

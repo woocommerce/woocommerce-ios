@@ -1,7 +1,7 @@
 import Foundation
 import enum Yosemite.CardReaderServiceError
 
-struct PointOfSaleCardPresentPaymentErrorMessageViewModel {
+struct PointOfSaleCardPresentPaymentErrorMessageViewModel: Equatable {
     let title = Localization.title
     let message: String
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel

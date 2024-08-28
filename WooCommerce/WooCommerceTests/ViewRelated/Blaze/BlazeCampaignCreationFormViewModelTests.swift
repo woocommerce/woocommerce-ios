@@ -117,7 +117,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
     }
 
-    func test_isEvergreen_is_false_when_feature_flag_is_disabled() {
+    func test_hasEndDate_is_true_when_feature_flag_is_disabled() {
         // Given
         insertProduct(sampleProduct)
         let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
@@ -130,10 +130,10 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            onCompletion: {})
 
         // Then
-        XCTAssertFalse(viewModel.budgetSettingViewModel.isEvergreen)
+        XCTAssertTrue(viewModel.budgetSettingViewModel.hasEndDate)
     }
 
-    func test_isEvergreen_is_true_when_feature_flag_is_enabled() {
+    func test_hasEndDate_is_false_when_feature_flag_is_enabled() {
         // Given
         insertProduct(sampleProduct)
         let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
@@ -146,7 +146,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            onCompletion: {})
 
         // Then
-        XCTAssertTrue(viewModel.budgetSettingViewModel.isEvergreen)
+        XCTAssertFalse(viewModel.budgetSettingViewModel.hasEndDate)
     }
 
     // MARK: On load

@@ -36,6 +36,19 @@ final class OrderNotificationDataService {
         notesRemote = NotificationsRemote(network: network)
     }
 
+    @MainActor
+    func loadOrderFrom(notification: PushNotification) async throws -> (Note, Order) {
+        let note: Note
+        if let notificationNote = notification.note {
+            note = notificationNote
+        }
+        else {
+            note = try await loadNotification(noteID: notification.noteID)
+        }
+        let order = try await loadOrder(from: note)
+        return (note, order)
+    }
+
     /// Loads the order associated with the given note id if possible.
     ///
     @MainActor

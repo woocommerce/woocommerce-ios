@@ -4,6 +4,8 @@ import Foundation
 import struct Yosemite.Note
 #elseif canImport(NetworkingWatchOS)
 import struct NetworkingWatchOS.Note
+#elseif canImport(Networking)
+import struct Networking.Note
 #endif
 #if DEBUG
 import UserNotifications

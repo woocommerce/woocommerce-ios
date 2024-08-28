@@ -1,5 +1,6 @@
 import UIKit
 @testable import WooCommerce
+import Yosemite
 
 @objc(TestingAppDelegate)
 class TestingAppDelegate: AppDelegate {

@@ -9,6 +9,8 @@
 - [*] Payments: Punctuation updates to error and decline reason messages [https://github.com/woocommerce/woocommerce-ios/pull/13739]
 - [*] Blaze: Display budget field on the dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13761]
 - [Internal] Custom fields: Renamed the OrderMetaData entity to MetaData [https://github.com/woocommerce/woocommerce-ios/pull/13736]
+- [*] Products: Fixed a bug where editing the product price did not work as expected, depending on the store's currency settings. [https://github.com/woocommerce/woocommerce-ios/pull/13768]
+- [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
 
 20.1
 -----

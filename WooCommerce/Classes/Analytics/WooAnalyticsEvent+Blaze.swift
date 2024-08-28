@@ -30,34 +30,6 @@ extension WooAnalyticsEvent {
                               properties: [Key.source: source.analyticsValue])
         }
 
-        /// Tracked when the Blaze webview is first loaded.
-        static func blazeFlowStarted(source: BlazeSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowStarted,
-                              properties: [Key.source: source.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview is dismissed without completing the flow.
-        static func blazeFlowCanceled(source: BlazeSource, step: Step) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowCanceled,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview flow completes.
-        static func blazeFlowCompleted(source: BlazeSource, step: Step) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowCompleted,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview returns an error.
-        static func blazeFlowError(source: BlazeSource, step: Step, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowError,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue],
-                              error: error)
-        }
-
         /// Tracked when the Blaze campaign list entry point is selected.
         static func blazeCampaignListEntryPointSelected(source: BlazeCampaignListSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeCampaignListEntryPointSelected,

@@ -42,13 +42,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackSetupWithApplicationPassword:
             return true
-        case .productBundles:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
-            return true
-        case .compositeProducts:
-            return true
-        case .readOnlyGiftCards:
             return true
         case .readOnlyMinMaxQuantities:
             return true

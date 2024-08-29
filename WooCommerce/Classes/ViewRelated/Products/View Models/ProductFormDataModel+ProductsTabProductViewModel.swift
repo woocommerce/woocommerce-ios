@@ -3,8 +3,8 @@ import Foundation
 /// Helpers for `ProductsTabProductViewModel` from `ProductFormDataModel`.
 extension ProductFormDataModel {
     /// Create a description text based on a product data model's stock status/quantity.
-    func createStockText(productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) -> String {
-        if productBundlesEnabled && productType == .bundle {
+    func createStockText() -> String {
+        if productType == .bundle {
             return createProductBundleStockText()
         }
 

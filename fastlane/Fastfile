@@ -261,7 +261,7 @@ platform :ios do
                          + moved_prs.map { |pr_num| "[##{pr_num}](https://github.com/#{GITHUB_REPO}/pull/#{pr_num})" }.join(', ')
                      end
 
-    buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze-wcios', message: moved_prs_info) if is_ci
+    buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze', message: moved_prs_info) if is_ci
   end
 
   #####################################################################################

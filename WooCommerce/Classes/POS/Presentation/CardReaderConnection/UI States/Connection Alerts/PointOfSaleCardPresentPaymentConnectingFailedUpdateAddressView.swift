@@ -3,25 +3,24 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Image(decorative: viewModel.imageName)
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                    Button(primaryButtonViewModel.title,
-                           action: primaryButtonViewModel.actionHandler)
-                    .buttonStyle(PrimaryButtonStyle())
-                }
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Button(primaryButtonViewModel.title,
+                       action: primaryButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
             }
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {

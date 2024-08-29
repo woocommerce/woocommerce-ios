@@ -20,6 +20,26 @@ let postBtnTitle = NSLocalizedString("Post", comment: "Verb. Action to publish a
 let postType = NSLocalizedString("Post", comment: "Noun. Describes when an entry is a blog post (and not story or page)"
 ```
 
+Treat translated strings as immutable. If a string value needs to be updated on an existing string, be sure to update the key as well. (Do not update the value only and delete the `en.lproj` translation, as this could cause issues with the localization workflow.)
+
+```swift
+// Do
+// Old string
+let postBtnTitle = NSLocalizedString("editor.post.buttonTitle", value: "Post", comment: "Verb. Action to publish a post")
+
+// New string
+let postBtnTitle = NSLocalizedString("editor.post.publishButtonTitle", value: "Publish", comment: "Verb. Action to publish a post")
+```
+
+```swift
+// Don't
+// Old string
+let postBtnTitle = NSLocalizedString("editor.post.buttonTitle", value: "Post", comment: "Verb. Action to publish a post")
+
+// New string
+let postBtnTitle = NSLocalizedString("editor.post.buttonTitle", value: "Publish", comment: "Verb. Action to publish a post")
+```
+
 ## Always Add Comments
 
 Always add a meaningful comment. If possible, describe where and how the string will be used. If there are placeholders, describe what each placeholder is. 

@@ -3,7 +3,7 @@ import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel: Hashable {
     let title = Localization.title
-    let imageName = PointOfSaleAssets.paymentsError.imageName
+    let imageName = PointOfSaleAssets.readerConnectionError.imageName
     let errorDetails: String?
 
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel

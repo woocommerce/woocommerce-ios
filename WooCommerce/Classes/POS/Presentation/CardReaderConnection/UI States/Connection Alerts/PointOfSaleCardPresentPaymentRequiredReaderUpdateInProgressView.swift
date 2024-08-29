@@ -25,13 +25,15 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                         .accessibilityAddTraits(.isHeader)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                    Text(viewModel.progressTitle)
-                        .font(POSFontStyle.posBodyRegular)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text(viewModel.progressSubtitle)
-                        .font(POSFontStyle.posBodyRegular)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                        Text(viewModel.progressTitle)
+                            .font(POSFontStyle.posBodyRegular)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text(viewModel.progressSubtitle)
+                            .font(POSFontStyle.posBodyRegular)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
             }
             .frame(maxWidth: .infinity)

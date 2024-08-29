@@ -10,18 +10,14 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
 
             Image(decorative: viewModel.imageName)
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                    Button(primaryButtonViewModel.title,
-                           action: primaryButtonViewModel.actionHandler)
-                    .buttonStyle(PrimaryButtonStyle())
-                }
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Button(primaryButtonViewModel.title,
+                       action: primaryButtonViewModel.actionHandler)
+                .buttonStyle(PrimaryButtonStyle())
             }
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {

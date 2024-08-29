@@ -7,6 +7,14 @@ extension WooAnalyticsEvent {
             static let duration = "duration"
             static let totalBudget = "total_budget"
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
+            static let campaignType = "campaign_type"
+        }
+
+        private enum Values {
+            enum CampaignType {
+                static let startEnd = "start_end"
+                static let evergreen = "evergreen"
+            }
         }
 
         /// Tracked when the Blaze entry point is shown to the user.
@@ -20,34 +28,6 @@ extension WooAnalyticsEvent {
         static func blazeEntryPointTapped(source: BlazeSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeEntryPointTapped,
                               properties: [Key.source: source.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview is first loaded.
-        static func blazeFlowStarted(source: BlazeSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowStarted,
-                              properties: [Key.source: source.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview is dismissed without completing the flow.
-        static func blazeFlowCanceled(source: BlazeSource, step: Step) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowCanceled,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview flow completes.
-        static func blazeFlowCompleted(source: BlazeSource, step: Step) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowCompleted,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue])
-        }
-
-        /// Tracked when the Blaze webview returns an error.
-        static func blazeFlowError(source: BlazeSource, step: Step, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeFlowError,
-                              properties: [Key.source: source.analyticsValue,
-                                           Key.step: step.analyticsValue],
-                              error: error)
         }
 
         /// Tracked when the Blaze campaign list entry point is selected.
@@ -89,9 +69,13 @@ extension WooAnalyticsEvent {
             }
 
             /// Tracked upon tapping "Confirm Details" in Blaze creation form
-            static func confirmDetailsTapped(isAISuggestedAdContent: Bool) -> WooAnalyticsEvent {
+            static func confirmDetailsTapped(isAISuggestedAdContent: Bool,
+                                             isEvergreen: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
-                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent])
+                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent,
+                                               Key.campaignType: isEvergreen ?
+                                                Values.CampaignType.evergreen :
+                                                Values.CampaignType.startEnd])
             }
         }
 
@@ -109,16 +93,22 @@ extension WooAnalyticsEvent {
 
         enum Budget {
             /// Tracked upon tapping "Update" in Blaze set budget screen
-            static func updateTapped(duration: Int, totalBudget: Double) -> WooAnalyticsEvent {
+            static func updateTapped(duration: Int, totalBudget: Double, hasEndDate: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditBudgetSaveTapped,
                                   properties: [Key.duration: duration,
-                                               Key.totalBudget: totalBudget])
+                                               Key.totalBudget: totalBudget,
+                                               Key.campaignType: hasEndDate ?
+                                                Values.CampaignType.startEnd :
+                                                Values.CampaignType.evergreen])
             }
 
-            /// Tracked upon changing duration in Blaze set budget screen
-            static func changedDuration(_ duration: Int) -> WooAnalyticsEvent {
+            /// Tracked upon changing schedule in Blaze set budget screen
+            static func changedSchedule(duration: Int, hasEndDate: Bool) -> WooAnalyticsEvent {
                 WooAnalyticsEvent(statName: .blazeEditBudgetDurationApplied,
-                                  properties: [Key.duration: duration])
+                                  properties: [Key.duration: duration,
+                                               Key.campaignType: hasEndDate ?
+                                                Values.CampaignType.startEnd :
+                                                Values.CampaignType.evergreen])
             }
         }
 
@@ -174,8 +164,10 @@ extension WooAnalyticsEvent {
             }
 
             /// Tracked when campaign creation is successful
-            static func campaignCreationSuccess() -> WooAnalyticsEvent {
-                WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [:])
+            static func campaignCreationSuccess(isEvergreen: Bool) -> WooAnalyticsEvent {
+                WooAnalyticsEvent(statName: .blazeCampaignCreationSuccess, properties: [
+                    Key.campaignType: isEvergreen ? Values.CampaignType.evergreen : Values.CampaignType.startEnd
+                ])
             }
 
             /// Tracked when campaign creation fails

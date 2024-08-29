@@ -128,7 +128,7 @@ private extension HubMenu {
         Group {
             switch destination {
             case .settings:
-                SettingsView()
+                ViewControllerContainer(SettingsViewController())
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
                 paymentsView
@@ -146,6 +146,8 @@ private extension HubMenu {
                 Inbox(viewModel: viewModel.inboxViewModel)
             case .reviews:
                 ReviewsView(siteID: viewModel.siteID)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle(Localization.reviews)
             case .coupons:
                 couponListView
             case .inAppPurchase:
@@ -202,7 +204,7 @@ private extension HubMenu {
 
     @ViewBuilder
     func reviewDetailView(parcel: ProductReviewFromNoteParcel) -> some View {
-        ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+        ViewControllerContainer(ReviewDetailsViewController(productReview: parcel.review, product: parcel.product, notification: parcel.note))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.productReview)
     }
@@ -215,6 +217,7 @@ private extension HubMenu {
     var couponListView: some View {
         EnhancedCouponListView(siteID: viewModel.siteID)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.coupons)
     }
 
     /// Reusable List row for the hub menu
@@ -385,6 +388,16 @@ private extension HubMenu {
             "hubMenu.productReview",
             value: "Product Review",
             comment: "Title of the view containing a single Product Review"
+        )
+        static let reviews = NSLocalizedString(
+            "hubMenu.coupons",
+            value: "Reviews",
+            comment: "Title of the view containing Reviews list"
+        )
+        static let coupons = NSLocalizedString(
+            "hubMenu.coupons",
+            value: "Coupons",
+            comment: "Title of the view containing Coupons list"
         )
     }
 }

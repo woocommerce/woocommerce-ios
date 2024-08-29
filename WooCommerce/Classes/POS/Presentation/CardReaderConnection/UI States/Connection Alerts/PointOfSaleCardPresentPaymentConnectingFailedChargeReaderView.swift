@@ -14,16 +14,12 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
             Text(viewModel.errorDetails)
                 .font(POSFontStyle.posBodyRegular)
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                Button(viewModel.retryButtonViewModel.title,
-                       action: viewModel.retryButtonViewModel.actionHandler)
-                .buttonStyle(PrimaryButtonStyle())
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
-            }
+            Button(viewModel.retryButtonViewModel.title,
+                   action: viewModel.retryButtonViewModel.actionHandler)
+            .buttonStyle(PrimaryButtonStyle())
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

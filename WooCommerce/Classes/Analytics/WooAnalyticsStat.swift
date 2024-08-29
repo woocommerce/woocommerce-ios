@@ -211,10 +211,6 @@ enum WooAnalyticsStat: String {
     //
     case blazeEntryPointDisplayed = "blaze_entry_point_displayed"
     case blazeEntryPointTapped = "blaze_entry_point_tapped"
-    case blazeFlowStarted = "blaze_flow_started"
-    case blazeFlowCanceled = "blaze_flow_canceled"
-    case blazeFlowCompleted = "blaze_flow_completed"
-    case blazeFlowError = "blaze_flow_error"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeViewDismissed = "blaze_view_dismissed"

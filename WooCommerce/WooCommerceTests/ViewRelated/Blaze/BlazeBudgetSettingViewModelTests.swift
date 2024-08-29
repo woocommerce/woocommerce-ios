@@ -230,6 +230,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
 
         // When
+        viewModel.hasEndDate = false
         viewModel.confirmSettings()
 
         // Then
@@ -237,9 +238,21 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["duration"] as? Int, 3)
         XCTAssertEqual(eventProperties["total_budget"] as? Double, 45.0)
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "evergreen")
+
+        // When
+        viewModel.hasEndDate = true
+        viewModel.confirmSettings()
+
+        // Then
+        let lastIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_edit_budget_save_tapped"))
+        let lastEventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[lastIndex])
+        XCTAssertEqual(lastEventProperties["duration"] as? Int, 3)
+        XCTAssertEqual(lastEventProperties["total_budget"] as? Double, 45.0)
+        XCTAssertEqual(lastEventProperties["campaign_type"] as? String, "start_end")
     }
 
-    func test_changing_duration_tracks_event_with_correct_properties() throws {
+    func test_changing_schedule_tracks_event_with_correct_properties() throws {
         // Given
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
                                                     dailyBudget: 15,
@@ -257,5 +270,16 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["duration"] as? Int, 7)
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "evergreen")
+
+        // When
+        viewModel.hasEndDate = true
+        viewModel.didTapApplyDuration(dayCount: 7, since: .now)
+
+        // Then
+        let lastIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
+        let lastEventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[lastIndex])
+        XCTAssertEqual(lastEventProperties["duration"] as? Int, 7)
+        XCTAssertEqual(lastEventProperties["campaign_type"] as? String, "start_end")
     }
 }

@@ -17,11 +17,9 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
 
             Text(viewModel.errorDetails)
                 .font(POSFontStyle.posBodyRegular)
-
-            Button(viewModel.buttonViewModel.title,
-                   action: viewModel.buttonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
         }
+        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.buttonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

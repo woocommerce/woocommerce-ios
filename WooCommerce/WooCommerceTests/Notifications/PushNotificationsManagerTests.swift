@@ -355,7 +355,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             return PushNotificationsManager(configuration: configuration)
         }()
 
-        var emittedNotifications = [PushNotification]()
+        var emittedNotifications = [WooCommerce.PushNotification]()
         manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }.store(in: &subscriptions)
@@ -385,7 +385,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         application.applicationState = .background
 
-        var emittedNotifications = [PushNotification]()
+        var emittedNotifications = [WooCommerce.PushNotification]()
         _ = manager.foregroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }
@@ -411,7 +411,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             return PushNotificationsManager(configuration: configuration)
         }()
 
-        var emittedNotifications = [PushNotification]()
+        var emittedNotifications = [WooCommerce.PushNotification]()
         manager.inactiveNotifications.sink { notification in
             emittedNotifications.append(notification)
         }.store(in: &subscriptions)
@@ -447,7 +447,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             return PushNotificationsManager(configuration: configuration)
         }()
 
-        var emittedNotifications = [PushNotification]()
+        var emittedNotifications = [WooCommerce.PushNotification]()
         manager.backgroundNotifications.sink { notification in
             emittedNotifications.append(notification)
         }.store(in: &subscriptions)

@@ -2423,6 +2423,9 @@
 		DA0DBE2F2C4FC61D00DF14C0 /* POSFloatingControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */; };
 		DA1D68C22C36F0980097859A /* PointOfSaleAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1D68C12C36F0980097859A /* PointOfSaleAssets.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
+		DA706BF92C8063B600E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
+		DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
+		DA706BFB2C80663800E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
 		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
@@ -14352,10 +14355,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA706BF92C8063B600E08A5B /* PushNotification.swift in Sources */,
 				26CA2BC62AAA1773003B16C2 /* OrderNotificationView.swift in Sources */,
 				26CA2BC42AA92CA9003B16C2 /* AppLocalizedString.swift in Sources */,
 				2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */,
 				26CFDEE52C038C39005ABC31 /* OrderNotificationDataService.swift in Sources */,
+				DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */,
 				26EE79602AA795EC00857293 /* WooConstants.swift in Sources */,
 				2679F02D2AAADB1C00AF80C5 /* OrderNotificationViewModel.swift in Sources */,
 			);
@@ -16733,6 +16738,7 @@
 				02BC5AA824D2802B00C43326 /* MockProductVariationStoresManager.swift in Sources */,
 				20A130EB2C5A27190058022F /* PointOfSaleAssetsTests.swift in Sources */,
 				026D4654295D79230037F59A /* CountryCode+FlagEmojiTests.swift in Sources */,
+				DA706BFB2C80663800E08A5B /* PushNotification.swift in Sources */,
 				E1C6535C27BD1D0A003E87D4 /* CardPresentConfigurationLoaderTests.swift in Sources */,
 				2688644325D471C700821BA5 /* EditAttributesViewModelTests.swift in Sources */,
 				8697AFBF2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift in Sources */,

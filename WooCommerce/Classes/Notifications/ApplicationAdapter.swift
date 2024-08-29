@@ -23,7 +23,7 @@ protocol ApplicationAdapter: AnyObject {
 
     /// Presents the Details for the specified Notification.
     ///
-    func presentNotificationDetails(notification: PushNotification)
+    func presentNotificationDetails(notification: WooCommerce.PushNotification)
 }
 
 
@@ -32,7 +32,7 @@ protocol ApplicationAdapter: AnyObject {
 extension UIApplication: ApplicationAdapter {
     /// Presents the Details for the specified Notification
     ///
-    func presentNotificationDetails(notification: PushNotification) {
+    func presentNotificationDetails(notification: WooCommerce.PushNotification) {
         MainTabBarController.switchStoreAndPresentNotificationDetails(notification: notification)
     }
 

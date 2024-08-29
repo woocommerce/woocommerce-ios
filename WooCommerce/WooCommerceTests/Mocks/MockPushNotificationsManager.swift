@@ -13,29 +13,29 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    var foregroundNotifications: AnyPublisher<PushNotification, Never> {
+    var foregroundNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
         foregroundNotificationsSubject.eraseToAnyPublisher()
     }
 
-    private let foregroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+    private let foregroundNotificationsSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
 
-    var foregroundNotificationsToView: AnyPublisher<PushNotification, Never> {
+    var foregroundNotificationsToView: AnyPublisher<WooCommerce.PushNotification, Never> {
         foregroundNotificationsToViewSubject.eraseToAnyPublisher()
     }
 
-    private let foregroundNotificationsToViewSubject = PassthroughSubject<PushNotification, Never>()
+    private let foregroundNotificationsToViewSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
 
-    var inactiveNotifications: AnyPublisher<PushNotification, Never> {
+    var inactiveNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
         inactiveNotificationsSubject.eraseToAnyPublisher()
     }
 
-    private let inactiveNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+    private let inactiveNotificationsSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
 
-    var backgroundNotifications: AnyPublisher<PushNotification, Never> {
+    var backgroundNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
         backgroundNotificationsSubject.eraseToAnyPublisher()
     }
 
-    private let backgroundNotificationsSubject = PassthroughSubject<PushNotification, Never>()
+    private let backgroundNotificationsSubject = PassthroughSubject<WooCommerce.PushNotification, Never>()
 
     var localNotificationUserResponses: AnyPublisher<UNNotificationResponse, Never> {
         localNotificationResponsesSubject.eraseToAnyPublisher()
@@ -129,21 +129,21 @@ extension MockPushNotificationsManager {
     /// Send a `PushNotification` that will be emitted by the `foregroundNotifications`
     /// observable.
     ///
-    func sendForegroundNotification(_ notification: PushNotification) {
+    func sendForegroundNotification(_ notification: WooCommerce.PushNotification) {
         foregroundNotificationsSubject.send(notification)
     }
 
     /// Send a `PushNotification` that will be emitted by the `foregroundNotificationsToView`
     /// observable.
     ///
-    func sendForegroundNotificationToView(_ notification: PushNotification) {
+    func sendForegroundNotificationToView(_ notification: WooCommerce.PushNotification) {
         foregroundNotificationsToViewSubject.send(notification)
     }
 
     /// Send a `PushNotification` that will be emitted by the `inactiveNotifications`
     /// observable.
     ///
-    func sendInactiveNotification(_ notification: PushNotification) {
+    func sendInactiveNotification(_ notification: WooCommerce.PushNotification) {
         inactiveNotificationsSubject.send(notification)
     }
 

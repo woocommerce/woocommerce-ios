@@ -224,7 +224,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -244,7 +244,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert

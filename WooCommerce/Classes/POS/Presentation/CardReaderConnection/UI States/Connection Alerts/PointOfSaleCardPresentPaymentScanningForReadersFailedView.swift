@@ -2,24 +2,30 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
     private let viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel
+    private let animation: POSCardPresentPaymentAlertAnimation
 
-    init(viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel,
+         animation: POSCardPresentPaymentAlertAnimation) {
         self.viewModel = viewModel
+        self.animation = animation
     }
 
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             Image(decorative: viewModel.imageName)
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                 Text(viewModel.title)
                     .font(POSFontStyle.posTitleEmphasized)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.errorDetails)
                     .font(POSFontStyle.posBodyRegular)
                     .fixedSize(horizontal: false, vertical: true)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler,
@@ -30,8 +36,10 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentScanningForReadersFailedView(
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentScanningForReadersFailedView(
         viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel(
             error: NSError(domain: "", code: 1, userInfo: nil),
-            endSearchAction: {}))
+            endSearchAction: {}),
+        animation: .init(namespace: namespace))
 }

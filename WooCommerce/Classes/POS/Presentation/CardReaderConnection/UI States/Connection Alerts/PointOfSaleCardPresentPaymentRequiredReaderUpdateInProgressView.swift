@@ -2,9 +2,12 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
     private let viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
+    private let animation: POSCardPresentPaymentAlertAnimation
 
-    init(viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel,
+         animation: POSCardPresentPaymentAlertAnimation) {
         self.viewModel = viewModel
+        self.animation = animation
     }
 
     var body: some View {
@@ -13,12 +16,14 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 viewModel.image
                     .accessibilityHidden(true)
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)
                         .font(POSFontStyle.posTitleEmphasized)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.progressTitle)
                         .font(POSFontStyle.posBodyRegular)
@@ -26,6 +31,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                     Text(viewModel.progressSubtitle)
                         .font(POSFontStyle.posBodyRegular)
                         .fixedSize(horizontal: false, vertical: true)
+                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -38,6 +44,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                 }
             })
             .buttonStyle(POSSecondaryButtonStyle())
+            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
@@ -48,6 +55,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
 
 struct CardPresentPaymentRequiredReaderUpdateInProgressPreviewView: View {
     @State var showsSheet = false
+    @Namespace var namespace
 
     var body: some View {
         VStack {
@@ -58,7 +66,7 @@ struct CardPresentPaymentRequiredReaderUpdateInProgressPreviewView: View {
         .sheet(isPresented: $showsSheet) {
             PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView(viewModel: .init(
                 progress: 0.6, cancel: nil
-            ))
+            ), animation: .init(namespace: namespace))
         }
     }
 }

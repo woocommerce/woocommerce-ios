@@ -34,7 +34,7 @@ private extension PointOfSaleCardPresentPaymentFoundReaderAlertViewModel {
             "pointOfSale.cardPresentPayment.alert.foundReader.description",
             value: "Do you want to connect to this reader?",
             comment: "Dialog description that asks the user if they want to connect to a specific found card reader. " +
-            "They can instead, keep searching for mor readers."
+            "They can instead, keep searching for more readers."
         )
 
         static let connect = NSLocalizedString(

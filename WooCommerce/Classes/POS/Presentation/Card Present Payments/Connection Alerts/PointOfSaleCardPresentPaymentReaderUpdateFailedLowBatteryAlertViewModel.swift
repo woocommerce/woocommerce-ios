@@ -2,7 +2,7 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel: Hashable {
     let title: String = Localization.title
-    let imageName = PointOfSaleAssets.cardReaderLowBattery.imageName
+    let imageName = PointOfSaleAssets.readerConnectionLowBattery.imageName
     let batteryLevelInfo: String
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 

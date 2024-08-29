@@ -107,7 +107,7 @@ extension PushNotification {
     static func scheduleTestingOrderNotification() {
         let content = UNMutableNotificationContent()
         content.title = "[Testing] You have a new order! 🎉"
-        content.body = "New order for $3.00 on Indie Melon"
+        content.body = "New order for $2.00 on the store"
         content.sound = UNNotificationSound.default
         content.userInfo = [
             "blog": "205617935",
@@ -130,6 +130,8 @@ extension PushNotification {
             "note_id": "8326526386",
             "user": "212589093",
             "title": "You have a new order! 🎉",
+            "content-available": 1,
+            "mutable-content": 1
         ]
         // Deliver the notification in five seconds.
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)

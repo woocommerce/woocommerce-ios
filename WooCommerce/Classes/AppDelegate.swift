@@ -279,7 +279,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //
 extension AppDelegate {
     func updateSharedConfiguration(_ isPointOfSaleActive: Bool) {
-        // Show/hide app's tab bars
+        updateTabBarVisibility(isPointOfSaleActive)
+        updateInAppNotifications(isPointOfSaleActive)
+    }
+
+    // Show/hide app's tab bars
+    private func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
@@ -287,8 +292,10 @@ extension AppDelegate {
         mainTabBarController.tabBar.isHidden = isPointOfSaleActive
         mainTabBarController.viewSafeAreaInsetsDidChange()
         mainTabBarController.selectedViewController?.view.layoutIfNeeded()
+    }
 
-        // Enable/disable foreground in-app notifications
+    // Enable/disable foreground in-app notifications
+    private func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
         if isPointOfSaleActive {
             ServiceLocator.pushNotesManager.disableInAppNotifications()
         } else {

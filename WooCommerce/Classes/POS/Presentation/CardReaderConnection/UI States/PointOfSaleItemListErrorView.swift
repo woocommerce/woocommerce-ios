@@ -10,42 +10,32 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-                POSHeaderTitleView(foregroundColor: .posSecondaryText)
+        PointOfSaleItemListFullscreenView {
+            VStack {
+                Spacer()
+                VStack(alignment: .center) {
+                    POSErrorExclamationMark()
+                        .padding(.bottom)
+                    Text(error.title)
+                        .accessibilityAddTraits(.isHeader)
+                        .foregroundStyle(Color.posPrimaryText)
+                        .font(.posTitleEmphasized)
+                        .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+                    Text(error.subtitle)
+                        .foregroundStyle(Color.posPrimaryText)
+                        .font(.posBodyRegular)
+                        .padding([.leading, .trailing])
+                        .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+                    Button(action: {
+                        onRetry?()
+                    }, label: {
+                        Text(error.buttonText)
+                    })
+                    .buttonStyle(POSPrimaryButtonStyle())
+                    .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
+                }
                 Spacer()
             }
-
-            errorContent
-                .zIndex(1)
-        }
-    }
-
-    private var errorContent: some View {
-        VStack {
-            Spacer()
-            VStack(alignment: .center) {
-                POSErrorExclamationMark()
-                    .padding(.bottom)
-                Text(error.title)
-                    .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
-                Text(error.subtitle)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
-                    .padding([.leading, .trailing])
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
-                Button(action: {
-                    onRetry?()
-                }, label: {
-                    Text(error.buttonText)
-                })
-                .buttonStyle(POSPrimaryButtonStyle())
-                .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
-            }
-            Spacer()
         }
     }
 }

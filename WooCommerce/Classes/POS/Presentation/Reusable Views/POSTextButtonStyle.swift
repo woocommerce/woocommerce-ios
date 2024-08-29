@@ -1,10 +1,3 @@
-//
-//  POSTextButtonStyle.swift
-//  WooCommerce
-//
-//  Created by Josh Heald on 28/08/2024.
-//  Copyright © 2024 Automattic. All rights reserved.
-//
 
 import SwiftUI
 

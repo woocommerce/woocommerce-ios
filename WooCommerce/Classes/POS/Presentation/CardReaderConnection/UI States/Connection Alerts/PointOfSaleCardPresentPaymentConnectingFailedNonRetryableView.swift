@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
                 Text(viewModel.errorDetails)
                     .font(POSFontStyle.posBodyRegular)
                     .fixedSize(horizontal: false, vertical: true)
-                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,

@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                             .font(POSFontStyle.posBodyRegular)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                    .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                 }
             }
             .frame(maxWidth: .infinity)

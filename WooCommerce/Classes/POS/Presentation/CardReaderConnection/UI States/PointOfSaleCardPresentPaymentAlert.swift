@@ -120,6 +120,6 @@ struct POSCardPresentPaymentAlertAnimation {
     let namespace: Namespace.ID
     let iconTransitionId: String = "pos_card_present_payment_payment_alert_icon_matched_geometry_id"
     let titleTransitionId: String = "pos_card_present_payment_payment_alert_title_matched_geometry_id"
-    let messageTransitionId: String = "pos_card_present_payment_payment_alert_message_matched_geometry_id"
+    let contentTransitionId: String = "pos_card_present_payment_payment_alert_content_matched_geometry_id"
     let buttonsTransitionId: String = "pos_card_present_payment_payment_alert_buttons_matched_geometry_id"
 }

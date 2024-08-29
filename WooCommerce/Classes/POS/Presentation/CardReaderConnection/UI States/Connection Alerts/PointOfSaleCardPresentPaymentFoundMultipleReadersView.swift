@@ -33,7 +33,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
                 }
                 .listStyle(.plain)
             }
-            .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+            .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
 
             Button(action: {
                 cancelSearch()

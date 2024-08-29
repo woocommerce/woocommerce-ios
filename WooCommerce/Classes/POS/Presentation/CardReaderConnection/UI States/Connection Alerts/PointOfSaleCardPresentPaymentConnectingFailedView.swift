@@ -25,7 +25,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
                     if let errorDetails = viewModel.errorDetails {
                         Text(errorDetails)
                             .font(POSFontStyle.posBodyRegular)
-                            .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                            .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
                     }
                 }
                 .fixedSize(horizontal: false, vertical: true)

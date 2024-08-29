@@ -5,13 +5,11 @@ struct PointOfSaleItemListEmptyView: View {
         PointOfSaleItemListFullscreenView {
             VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
                 Spacer()
-                Image(systemName: Constants.iconSystemName)
+                Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .foregroundColor(.posSecondaryText)
-                    .scaleEffect(x: -1, y: 1)
-                    .accessibilityHidden(true)
                 Text(Localization.emptyProductsTitle)
                     .foregroundStyle(Color.posSecondaryText)
                     .font(.posTitleEmphasized)

@@ -10,13 +10,25 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            POSHeaderTitleView(foregroundColor: .posSecondaryText)
+        ZStack {
+            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+                POSHeaderTitleView(foregroundColor: .posSecondaryText)
+                Spacer()
+            }
+
+            errorContent
+                .zIndex(1)
+        }
+    }
+
+    private var errorContent: some View {
+        VStack {
             Spacer()
             VStack(alignment: .center) {
                 POSErrorExclamationMark()
                     .padding(.bottom)
                 Text(error.title)
+                    .accessibilityAddTraits(.isHeader)
                     .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
                     .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)

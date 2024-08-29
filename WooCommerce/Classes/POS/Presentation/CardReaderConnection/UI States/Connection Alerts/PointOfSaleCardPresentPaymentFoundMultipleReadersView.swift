@@ -23,17 +23,15 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
                 .accessibilityAddTraits(.isHeader)
                 .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-            VStack {
-                scanningText()
+            scanningText()
+                .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
 
-                List(readerIDs, id: \.self) { readerID in
-                    readerRow(readerID: readerID)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.posPrimaryBackground)
-                }
-                .listStyle(.plain)
+            List(readerIDs, id: \.self) { readerID in
+                readerRow(readerID: readerID)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.posPrimaryBackground)
             }
-            .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
+            .listStyle(.plain)
 
             Button(action: {
                 cancelSearch()

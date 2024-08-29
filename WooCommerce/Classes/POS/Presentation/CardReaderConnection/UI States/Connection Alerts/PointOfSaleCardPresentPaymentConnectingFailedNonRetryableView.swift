@@ -24,6 +24,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
+        .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }
 }

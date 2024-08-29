@@ -280,11 +280,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate {
     func updateSharedConfiguration(_ isPointOfSaleActive: Bool) {
         // Show/hide app's tab bars
-        guard let tabBarController = AppDelegate.shared.tabBarController else {
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
-        tabBarController.tabBar.isHidden = isPointOfSaleActive
-        tabBarController.selectedViewController?.view.layoutIfNeeded()
+        // Modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar:
+        mainTabBarController.tabBar.isHidden = isPointOfSaleActive
+        mainTabBarController.viewSafeAreaInsetsDidChange()
+        mainTabBarController.selectedViewController?.view.layoutIfNeeded()
 
         // Enable/disable foreground in-app notifications
         if isPointOfSaleActive {

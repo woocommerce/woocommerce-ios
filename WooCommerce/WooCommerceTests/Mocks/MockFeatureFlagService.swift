@@ -9,9 +9,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isReadOnlyGiftCardsEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
-    private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
     private let isScanToUpdateInventoryEnabled: Bool
     private let isBackendReceiptsEnabled: Bool
@@ -29,9 +27,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isReadOnlyGiftCardsEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
-         productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isBackendReceiptsEnabled: Bool = false,
@@ -48,9 +44,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
-        self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
@@ -78,12 +72,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .readOnlyGiftCards:
-            return isReadOnlyGiftCardsEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
-        case .productBundles:
-            return productBundles
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
         case .scanToUpdateInventory:

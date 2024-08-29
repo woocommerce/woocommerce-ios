@@ -3,19 +3,23 @@ import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel
+    let animation: POSCardPresentPaymentInLineMessageAnimation
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
             POSErrorXMark()
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
                     .font(.posBodyRegular)
                     .foregroundStyle(Color.posPrimaryText)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
@@ -36,18 +40,26 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
 }
 
 #Preview("Generic retry") {
-    PointOfSaleCardPresentPaymentErrorMessageView(
+    @Namespace var namespace
+
+    return PointOfSaleCardPresentPaymentErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
                 underlyingError: .paymentDeclinedByCardReader),
             tryPaymentAgainButtonAction: {},
-            backToCheckoutButtonAction: {}))
+            backToCheckoutButtonAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }
 
 #Preview("Retry with another payment method") {
-    PointOfSaleCardPresentPaymentErrorMessageView(
+    @Namespace var namespace
+
+    return PointOfSaleCardPresentPaymentErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
                 underlyingError: .paymentDeclinedByCardReader),
-            tryAnotherPaymentMethodButtonAction: {}))
+            tryAnotherPaymentMethodButtonAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }

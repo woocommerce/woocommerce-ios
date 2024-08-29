@@ -210,6 +210,32 @@ final class StorageTypeDeletionsTests: XCTestCase {
         let viTopics = storage.loadAllBlazeTargetTopics(locale: "vi")
         XCTAssertEqual(viTopics.count, 1)
     }
+
+    func test_deleteBlazeCampaignObjectives_with_locale() throws {
+        // Given
+        let objective1 = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
+        objective1.id = "sale"
+        objective1.title = "Sale"
+        objective1.generalDescription = "Lorem ipsum"
+        objective1.suitableForDescription = "e-commerce"
+        objective1.locale = "en"
+
+        let objective2 = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
+        objective2.id = "sale"
+        objective2.title = "doanh thu"
+        objective2.generalDescription = "la la la"
+        objective2.suitableForDescription = "thương mại điện tử"
+        objective2.locale = "vi"
+
+        // When
+        storage.deleteBlazeCampaignObjectives(locale: "en")
+
+        // Then
+        let enTopics = storage.loadAllBlazeCampaignObjectives(locale: "en")
+        XCTAssertTrue(enTopics.isEmpty)
+        let viTopics = storage.loadAllBlazeCampaignObjectives(locale: "vi")
+        XCTAssertEqual(viTopics.count, 1)
+    }
 }
 
 private extension StorageTypeDeletionsTests {

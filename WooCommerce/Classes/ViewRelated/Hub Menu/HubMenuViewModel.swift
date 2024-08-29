@@ -13,8 +13,20 @@ extension NSNotification.Name {
 }
 
 /// Destination views that the hub menu can navigate to.
-enum HubMenuNavigationDestination {
+enum HubMenuNavigationDestination: Hashable {
     case payments
+    case settings
+    case blaze
+    case wooCommerceAdmin
+    case viewStore
+    case inbox
+    case reviews
+    case coupons
+    case inAppPurchase
+    case subscriptions
+    case customers
+    case pointOfSales
+    case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
 /// View model for `HubMenu`.
@@ -61,9 +73,6 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var selectedMenuID: String?
 
-    @Published var showingReviewDetail = false
-    @Published var showingCoupons = false
-
     @Published private(set) var viewAppeared = false
 
     @Published private(set) var shouldAuthenticateAdminPage = false
@@ -89,8 +98,6 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
-
-    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
@@ -177,13 +184,19 @@ final class HubMenuViewModel: ObservableObject {
 
     /// Shows the payments menu from the hub menu root view.
     func showPayments() {
+        navigateToDestination(.payments)
+    }
+
+    func navigateToDestination(_ destination: HubMenuNavigationDestination?) {
+        guard let destination else {
+            return
+        }
         navigationPath = .init()
-        navigationPath.append(HubMenuNavigationDestination.payments)
+        navigationPath.append(destination)
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
-        productReviewFromNoteParcel = parcel
-        showingReviewDetail = true
+        navigateToDestination(.reviewDetails(parcel: parcel))
     }
 
     func refreshGoogleAdsCampaignCheck() {
@@ -421,6 +434,7 @@ protocol HubMenuItem {
     var accessibilityIdentifier: String { get }
     var trackingOption: String { get }
     var iconBadge: HubMenuBadgeType? { get }
+    var navigationDestination: HubMenuNavigationDestination? { get }
 }
 
 extension HubMenuItem {
@@ -432,6 +446,7 @@ extension HubMenuItem {
 extension HubMenuViewModel {
 
     struct Settings: HubMenuItem {
+
         static var id = "settings"
 
         let title: String = Localization.settings
@@ -441,6 +456,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "dashboard-settings-button"
         let trackingOption: String = "settings"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .settings
     }
 
     struct Payments: HubMenuItem {
@@ -454,6 +470,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-payments"
         let trackingOption: String = "payments"
         let iconBadge: HubMenuBadgeType?
+        let navigationDestination: HubMenuNavigationDestination? = .payments
 
         init(iconBadge: HubMenuBadgeType? = nil) {
             self.iconBadge = iconBadge
@@ -470,6 +487,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-blaze"
         let trackingOption: String = "blaze"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .blaze
     }
 
     struct GoogleAds: HubMenuItem {
@@ -482,6 +500,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-google-ads"
         let trackingOption: String = "google-ads"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = nil
     }
 
     struct WoocommerceAdmin: HubMenuItem {
@@ -494,6 +513,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-woocommerce-admin"
         let trackingOption: String = "admin_menu"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .wooCommerceAdmin
     }
 
     struct ViewStore: HubMenuItem {
@@ -506,6 +526,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-view-store"
         let trackingOption: String = "view_store"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .viewStore
     }
 
     struct Inbox: HubMenuItem {
@@ -518,6 +539,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-inbox"
         let trackingOption: String = "inbox"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .inbox
     }
 
     struct Coupons: HubMenuItem {
@@ -531,6 +553,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-coupons"
         let trackingOption: String = "coupons"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .coupons
     }
 
     struct Reviews: HubMenuItem {
@@ -543,6 +566,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-reviews"
         let trackingOption: String = "reviews"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .reviews
     }
 
     struct InAppPurchases: HubMenuItem {
@@ -555,6 +579,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-iap"
         let trackingOption: String = "debug-iap"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .inAppPurchase
     }
 
     struct PointOfSaleEntryPoint: HubMenuItem {
@@ -567,6 +592,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .pointOfSales
     }
 
     struct Subscriptions: HubMenuItem {
@@ -579,6 +605,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .subscriptions
     }
 
     struct Customers: HubMenuItem {
@@ -591,6 +618,7 @@ extension HubMenuViewModel {
         let accessibilityIdentifier: String = "menu-customers"
         let trackingOption: String = "customers"
         let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .customers
     }
 
     enum Localization {

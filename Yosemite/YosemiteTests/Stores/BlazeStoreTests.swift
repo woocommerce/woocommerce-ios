@@ -46,6 +46,10 @@ final class BlazeStoreTests: XCTestCase {
         return viewStorage.countObjects(ofType: StorageBlazeTargetTopic.self)
     }
 
+    private var storedCampaignObjectiveCount: Int {
+        return viewStorage.countObjects(ofType: StorageBlazeCampaignObjective.self)
+    }
+
     /// SiteID
     ///
     private let sampleSiteID: Int64 = 120934
@@ -728,6 +732,101 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Synchronize campaign objectives
+
+    func test_synchronizeCampaignObjectives_is_successful_when_fetching_successfully() throws {
+        // Given
+        remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        //Then
+        let objectives = try result.get()
+        XCTAssertEqual(objectives.count, 1)
+    }
+
+    func test_synchronizeCampaignObjectives_stores_devices_upon_success() throws {
+        // Given
+        remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedCampaignObjectiveCount, 0)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCampaignObjectiveCount, 1)
+    }
+
+    func test_synchronizeCampaignObjectives_overwrites_existing_objective_with_the_given_locale() throws {
+        // Given
+        let locale = "vi"
+        storeCampaignObjectives(.init(id: "test", title: "Test", description: "", suitableForDescription: "", locale: locale))
+        storeCampaignObjectives(.init(id: "test-2", title: "Test 2", description: "", suitableForDescription: "", locale: "en"))
+
+        let expectedObjective = BlazeCampaignObjective(id: "sale", title: "Sale", description: "", suitableForDescription: "", locale: locale)
+        remote.whenFetchingCampaignObjectives(thenReturn: .success([expectedObjective]))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+        XCTAssertEqual(storedCampaignObjectiveCount, 2)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: locale, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCampaignObjectiveCount, 2)
+        let objectives = viewStorage.loadAllBlazeCampaignObjectives(locale: locale)
+        XCTAssertEqual(objectives.count, 1)
+        let objective = try XCTUnwrap(objectives.first)
+        XCTAssertEqual(objective.id, "sale")
+        XCTAssertEqual(objective.title, "Sale")
+        XCTAssertEqual(objective.locale, locale)
+    }
+
+    func test_synchronizeCampaignObjectives_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingCampaignObjectives(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.synchronizeCampaignObjectives(siteID: self.sampleSiteID, locale: "en", onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 private extension BlazeStoreTests {
@@ -757,5 +856,12 @@ private extension BlazeStoreTests {
         let storedTopic = storage.insertNewObject(ofType: BlazeTargetTopic.self)
         storedTopic.update(with: topic)
         return storedTopic
+    }
+
+    @discardableResult
+    func storeCampaignObjectives(_ objective: Networking.BlazeCampaignObjective) -> Storage.BlazeCampaignObjective {
+        let storedItem = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
+        storedItem.update(with: objective)
+        return storedItem
     }
 }

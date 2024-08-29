@@ -284,27 +284,12 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productAccessibilityLabel, expectedLabel)
     }
 
-    func test_product_stock_status_used_for_product_bundles_when_feature_flag_disabled() {
+    func test_bundle_stock_status_used_for_product_bundles_when_insufficient_stock() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundles: false))
-
-        // Then
-        let expectedStockText = ProductStockStatus.inStock.description
-        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockText),
-                      "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
-    }
-
-    func test_bundle_stock_status_used_for_product_bundles_when_insufficient_stock_and_feature_flag_enabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService())
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedStockText = ProductStockStatus.insufficientStock.description
@@ -312,13 +297,12 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_product_stock_status_used_for_product_bundles_when_backordered_and_feature_flag_enabled() {
+    func test_product_stock_status_used_for_product_bundles_when_backordered() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "onbackorder", bundleStockStatus: .inStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService())
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let expectedStockText = ProductStockStatus.onBackOrder.description
@@ -326,29 +310,12 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedStockText)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_product_stock_quantity_used_for_product_bundles_when_feature_flag_disabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
-
-        // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundles: false))
-
-        // Then
-        let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSDecimalNumber, number: .decimal)
-        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
-        let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
-        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
-                      "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
-    }
-
-    func test_bundle_stock_quantity_used_for_product_bundles_when_feature_flag_enabled() {
+    func test_bundle_stock_quantity_used_for_product_bundles() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle", manageStock: false, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService())
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSDecimalNumber, number: .decimal)
@@ -655,8 +622,8 @@ final class ProductRowViewModelTests: XCTestCase {
 }
 
 private extension ProductRowViewModelTests {
-    func createFeatureFlagService(productBundles: Bool = true, productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
-        MockFeatureFlagService(productBundles: productBundles, productBundlesInOrderForm: productBundlesInOrderForm)
+    func createFeatureFlagService(productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
+        MockFeatureFlagService(productBundlesInOrderForm: productBundlesInOrderForm)
     }
 
     func createFakeSubscription(price: String? = "5",

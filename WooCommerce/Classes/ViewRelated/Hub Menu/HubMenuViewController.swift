@@ -51,7 +51,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showCoupons() {
-        viewModel.showingCoupons = true
+        viewModel.navigateToDestination(.coupons)
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.

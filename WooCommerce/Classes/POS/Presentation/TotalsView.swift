@@ -24,19 +24,20 @@ struct TotalsView: View {
             switch viewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
-                                 height: cardReaderViewLayout.topPadding)
+                    Spacer()
+                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if viewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing],
+                                .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.sidePadding)
                                 .padding(.bottom,
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
+                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
@@ -52,20 +53,24 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
+                .animation(.default, value: viewModel.isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+                    .transition(.opacity)
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.isPaymentSuccessState)
+        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
         .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
@@ -228,7 +233,7 @@ private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
-        case .connected:
+        case .connected, .disconnecting:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
@@ -262,17 +267,6 @@ private extension TotalsView {
             topPadding: 40,
             bottomPadding: 40
         )
-    }
-
-    /// Creates a Spacer with backgroundColor and optional fixed height
-    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
-        return ZStack {
-            Spacer()
-        }
-        .background(backgroundColor)
-        .if(height != nil) {
-            $0.frame(height: height)
-        }
     }
 
     private var cardReaderViewLayout: CardReaderViewLayout {
@@ -351,6 +345,20 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
+    }
+}
+
+private extension View {
+    ///  Force the position and size values to be resolved and animated by the parent
+    ///  before being passed down to each subview.
+    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
+    ///  It results in the whole TotalsView animated together when transitioning.
+    func geometryGroupIfSupported() -> some View {
+        if #available(iOS 17.0, *) {
+            return self.geometryGroup()
+        } else {
+            return self
+        }
     }
 }
 

@@ -18,16 +18,12 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
             Text(viewModel.errorDetails)
                 .font(POSFontStyle.posBodyRegular)
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                Button(viewModel.openSettingsButtonViewModel.title,
-                       action: viewModel.openSettingsButtonViewModel.actionHandler)
-                .buttonStyle(PrimaryButtonStyle())
-
-                Button(viewModel.dismissButtonViewModel.title,
-                       action: viewModel.dismissButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
-            }
+            Button(viewModel.openSettingsButtonViewModel.title,
+                   action: viewModel.openSettingsButtonViewModel.actionHandler)
+            .buttonStyle(PrimaryButtonStyle())
         }
+        .posModalCloseButton(action: viewModel.dismissButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.dismissButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

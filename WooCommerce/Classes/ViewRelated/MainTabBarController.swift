@@ -382,7 +382,7 @@ extension MainTabBarController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    static func switchStoreAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
+    static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
         guard let note = notification.note else {
             presentNotificationDetails(for: notification.noteID)
             return

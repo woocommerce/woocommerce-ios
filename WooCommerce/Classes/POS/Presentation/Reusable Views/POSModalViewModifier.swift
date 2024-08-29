@@ -3,6 +3,9 @@ import SwiftUI
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
 
+    private let animationDuration = Constants.animationDuration
+    private let scaleTransitionAmount = Constants.scaleTransitionAmount
+
     func body(content: Content) -> some View {
         ZStack {
             content
@@ -13,16 +16,31 @@ struct POSRootModalViewModifier: ViewModifier {
             if modalManager.isPresented {
                 Color.posOverlayFill
                     .edgesIgnoringSafeArea(.all)
-                modalManager.getContent()
-                    .background(Color.posPrimaryBackground)
-                    .cornerRadius(24)
-                    .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
-                    .transition(.opacity)
-                    .zIndex(1)
-                    .padding()
+                    // Don't scale/fade in the backdrop
+                    .animation(nil, value: modalManager.isPresented)
+                ZStack {
+                    modalManager.getContent()
+                        .background(Color.posPrimaryBackground)
+                        .cornerRadius(24)
+                        .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
+                        .padding()
+                }
+                .zIndex(1)
+                // Scale the modal container in and out, fading appropriately.
+                // Unfortunately combined doesn't work on removal.
+                // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                // consistent even when animating out, which it wouldn't be if unspecified.
+                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
             }
         }
-        .animation(.default, value: modalManager.isPresented)
+        .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+    }
+}
+
+private extension POSRootModalViewModifier {
+    enum Constants {
+        static let animationDuration: CGFloat = 0.25
+        static let scaleTransitionAmount: CGFloat = 0.9
     }
 }
 

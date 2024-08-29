@@ -2,7 +2,7 @@ import Foundation
 
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel: Hashable {
     let title = Localization.title
-    let imageName = PointOfSaleAssets.paymentsError.imageName
+    let imageName = PointOfSaleAssets.readerConnectionError.imageName
     let errorDetails = Localization.errorDetails
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel

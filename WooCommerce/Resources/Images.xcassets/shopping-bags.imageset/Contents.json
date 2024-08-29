@@ -3,6 +3,16 @@
     {
       "filename" : "shopping-bags.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Shopping bags.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

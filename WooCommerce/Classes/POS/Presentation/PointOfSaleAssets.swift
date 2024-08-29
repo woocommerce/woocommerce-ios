@@ -1,21 +1,20 @@
 import Foundation
 
 enum PointOfSaleAssets: CaseIterable {
-    case cardReaderLowBattery
-    case paymentsError
+    case processingPayment
     case readyForPayment
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
+    case readerConnectionError
+    case readerConnectionLowBattery
     case readerConnectionSuccess
     case shoppingBags
 
     var imageName: String {
         switch self {
-        case .cardReaderLowBattery:
-            "card-reader-low-battery"
-        case .paymentsError:
-            "woo-payments-error"
+        case .processingPayment:
+            "pos-processing-payment"
         case .readyForPayment:
             "pos-ready-for-payment"
         case .readerConnectionScanning:
@@ -24,6 +23,10 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-do-you-want-to-connect"
         case .readerConnectionConnecting:
             "pos-reader-connection-connecting"
+        case .readerConnectionError:
+            "pos-reader-connection-error"
+        case .readerConnectionLowBattery:
+            "pos-reader-connection-battery"
         case .readerConnectionSuccess:
             "pos-reader-connection-complete"
         case .shoppingBags:

@@ -8,17 +8,15 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
-
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             Image(decorative: viewModel.imageName)
 
-            Button(viewModel.buttonViewModel.title,
-                   action: viewModel.buttonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+            Text(viewModel.title)
+                .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
         }
+        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

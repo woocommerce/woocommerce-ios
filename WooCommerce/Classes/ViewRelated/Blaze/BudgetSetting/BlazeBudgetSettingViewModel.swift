@@ -15,8 +15,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     @Published private(set) var forecastedImpressionState = ForecastedImpressionState.loading
 
-    // Whether the campaign should have no end date
-    @Published var isEvergreen: Bool
+    @Published var hasEndDate = false
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
@@ -29,34 +28,36 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     // (internally, we validate 61 to simplify the logic related to timezones).
     let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
 
-    var dailyAmountText: String {
-        let formattedAmount = String(format: "$%.0f", dailyAmount)
-        return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)
-    }
-
-    var totalAmountTitle: String {
-        isEvergreen ? Localization.weeklySpend : Localization.totalSpend
-    }
-
-    var totalAmountText: String {
-        let duration = isEvergreen ? Double(Constants.dayCountInWeek) : dayCount
+    private var totalAmountText: String {
+        let duration = hasEndDate ? dayCount : Double(Constants.dayCountInWeek)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
         return String.localizedStringWithFormat(Localization.totalBudget, totalBudget)
     }
 
-    var formattedTotalDuration: String {
-        String.pluralize(Int(dayCount),
-                         singular: Localization.totalDurationSingleDay,
-                         plural: Localization.totalDurationMultipleDays)
+    var formattedAmountAndDuration: NSAttributedString {
+        let amount = totalAmountText
+        let content: String = {
+            guard hasEndDate else {
+                return String.localizedStringWithFormat(Localization.weeklySpendAmount, amount)
+            }
+            if dayCount == 1 {
+                return String.localizedStringWithFormat(Localization.totalAmountSingleDay, amount, Int(dayCount))
+            } else {
+                return String.localizedStringWithFormat(Localization.totalAmountMultipleDays, amount, Int(dayCount))
+            }
+        }()
+        return createAttributedString(content: content,
+                                      highlightedContent: amount,
+                                      font: .headline)
     }
 
     var formattedDateRange: String {
-        if isEvergreen {
-            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
-            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
-        } else {
+        if hasEndDate {
             let endDate = calculateEndDate(from: startDate, dayCount: dayCount)
             return dateFormatter.string(from: startDate, to: endDate)
+        } else {
+            let formattedStartDate = startDate.toString(dateStyle: .medium, timeStyle: .none)
+            return String(format: Localization.evergreenCampaignDate, formattedStartDate)
         }
     }
 
@@ -92,7 +93,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
          onCompletion: @escaping BlazeBudgetSettingCompletionHandler) {
         self.siteID = siteID
         self.dailyAmount = dailyBudget
-        self.isEvergreen = isEvergreen
+        self.hasEndDate = !isEvergreen
         self.dayCount = Double(duration)
         self.startDate = startDate
         self.locale = locale
@@ -106,23 +107,32 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     func didTapApplyDuration(dayCount: Double, since startDate: Date) {
-        analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+        analytics.track(event: .Blaze.Budget.changedSchedule(duration: Int(dayCount),
+                                                             hasEndDate: hasEndDate))
         self.dayCount = dayCount
         self.startDate = startDate
     }
 
-    func formatDayCount(_ count: Double) -> String {
-        String.pluralize(Int(count),
-                         singular: Localization.singleDay,
-                         plural: Localization.multipleDays)
+    func formatDayCount(_ count: Double) -> NSAttributedString {
+        let dayCount = String.pluralize(Int(count),
+                                        singular: Localization.singleDay,
+                                        plural: Localization.multipleDays)
+        let endDate = calculateEndDate(from: startDate, dayCount: count)
+        let formattedEndDate = endDate.toString(dateStyle: .medium, timeStyle: .none)
+        let content = String.localizedStringWithFormat(Localization.dayCountToEndDate, dayCount, formattedEndDate)
+        return createAttributedString(content: content,
+                                      highlightedContent: dayCount,
+                                      font: .body,
+                                      alignment: .right)
     }
 
     func confirmSettings() {
         let days = Int(dayCount)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
-                                                          totalBudget: totalBudget))
-        completionHandler(dailyAmount, isEvergreen, days, startDate)
+                                                          totalBudget: totalBudget,
+                                                          hasEndDate: hasEndDate))
+        completionHandler(dailyAmount, !hasEndDate, days, startDate)
     }
 
     @MainActor
@@ -140,7 +150,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                                     timeZone: timeZone.identifier,
                                                     totalBudget: totalBudget,
                                                     targeting: targetOptions,
-                                                    isEvergreen: isEvergreen)
+                                                    isEvergreen: !hasEndDate)
         do {
             let result = try await fetchForecastedImpressions(input: input)
             let formattedImpressions = String(format: "%d - %d",
@@ -190,6 +200,26 @@ private extension BlazeBudgetSettingViewModel {
             })
         }
     }
+
+    func createAttributedString(content: String,
+                                highlightedContent: String,
+                                font: UIFont,
+                                alignment: NSTextAlignment = .center) -> NSAttributedString {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = alignment
+
+        let highlightedText = NSAttributedString(string: highlightedContent,
+                                                 attributes: [.foregroundColor: UIColor.text.cgColor,
+                                                              .font: font.bold,
+                                                              .paragraphStyle: paragraph])
+        let message = NSMutableAttributedString(string: content,
+                                                attributes: [.font: font,
+                                                             .paragraphStyle: paragraph,
+                                                             .foregroundColor: UIColor.secondaryLabel.cgColor])
+        message.replaceFirstOccurrence(of: highlightedContent, with: highlightedText)
+
+        return message
+    }
 }
 
 // MARK: - subtypes
@@ -230,17 +260,24 @@ extension BlazeBudgetSettingViewModel {
             comment: "The duration for a Blaze campaign in plural form. " +
             "Reads like: 10 days"
         )
-        static let totalDurationSingleDay = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalDurationSingleDay",
-            value: "for %1$d day",
-            comment: "The total duration for a Blaze campaign in singular form. " +
-            "Reads like: for 1 day"
+        static let dayCountToEndDate = NSLocalizedString(
+            "blazeBudgetSettingViewModel.dayCountToEndDate",
+            value: "%1$@ to %2$@",
+            comment: "The duration for a Blaze campaign with an end date. " +
+            "Placeholders are day count and formatted end date." +
+            "Reads like: 10 days to Dec 19, 2024"
         )
-        static let totalDurationMultipleDays = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalDurationMultipleDays",
-            value: "for %1$d days",
-            comment: "The total duration for a Blaze campaign in plural form. " +
-            "Reads like: for 10 days"
+        static let totalAmountSingleDay = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalAmountSingleDay",
+            value: "%1$@ for %2$d day",
+            comment: "The total amount with duration for a Blaze campaign in singular form. " +
+            "Reads like: $35 USD for 1 day"
+        )
+        static let totalAmountMultipleDays = NSLocalizedString(
+            "blazeBudgetSettingViewModel.totalAmountMultipleDays",
+            value: "%1$@ for %2$d days",
+            comment: "The total amount with duration for a Blaze campaign in plural form. " +
+            "Reads like: $35 USD for 7 days"
         )
         static let totalBudget = NSLocalizedString(
             "blazeBudgetSettingViewModel.totalBudget",
@@ -249,20 +286,16 @@ extension BlazeBudgetSettingViewModel {
             "Reads as $11 USD. Keep %.0f as is."
         )
         static let evergreenCampaignDate = NSLocalizedString(
-            "blazeBudgetSettingViewModel.evergreenCampaignDate",
-            value: "Starting from %1$@",
+            "blazeBudgetSettingViewModel.ongoingCampaignDate",
+            value: "Ongoing from %1$@",
             comment: "The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. " +
             "Read as Starting from May 11."
         )
-        static let totalSpend = NSLocalizedString(
-            "blazeBudgetSettingViewModel.totalSpend",
-            value: "Total spend",
-            comment: "Label for total spend on the Blaze budget setting screen"
-        )
-        static let weeklySpend = NSLocalizedString(
-            "blazeBudgetSettingViewModel.weeklySpend",
-            value: "Weekly spend",
-            comment: "Label for weekly spend on the Blaze budget setting screen"
+        static let weeklySpendAmount = NSLocalizedString(
+            "blazeBudgetSettingViewModel.weeklySpendAmount",
+            value: "%1$@ weekly spend",
+            comment: "The total amount for weekly spend on the Blaze budget setting screen. " +
+            "Reads like: $35 USD weekly spend"
         )
     }
 }

@@ -8,15 +8,19 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
-
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             Image(decorative: viewModel.imageName)
 
-            Text(viewModel.instruction)
-                .font(POSFontStyle.posBodyRegular)
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(viewModel.instruction)
+                    .font(POSFontStyle.posBodyRegular)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)

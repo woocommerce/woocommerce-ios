@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pos-reader-connection-complete.pdf",
+      "filename" : "pos-reader-connection-success-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-reader-connection-success-dark.pdf",
       "idiom" : "universal"
     }
   ],

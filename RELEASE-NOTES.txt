@@ -10,6 +10,7 @@
 - [*] Blaze: Display budget field on the dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13761]
 - [*] Products: Fixed a bug where editing the product price did not work as expected, depending on the store's currency settings. [https://github.com/woocommerce/woocommerce-ios/pull/13768]
 - [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
+- [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 
 20.1
 -----
@@ -21,8 +22,6 @@
 - [*] Orders: Fixed the discard confirmation prompt during order creation, so you will be prompted to discard changes if you exit the order form after making changes to a new order. [https://github.com/woocommerce/woocommerce-ios/pull/13654]
 - [*] Orders: Fixed an issue where the last item in an order couldn't be removed. [https://github.com/woocommerce/woocommerce-ios/pull/13665]
 - [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
-- [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671]
-- [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 - [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671, https://github.com/woocommerce/woocommerce-ios/pull/13697]
 - [Internal] Products: Fix for Partial swipe back gesture from product details removes the content https://github.com/woocommerce/woocommerce-ios/pull/13667
 

@@ -128,7 +128,7 @@ private extension HubMenu {
         Group {
             switch destination {
             case .settings:
-                SettingsView()
+                ViewControllerContainer(SettingsViewController())
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
                 paymentsView
@@ -204,7 +204,7 @@ private extension HubMenu {
 
     @ViewBuilder
     func reviewDetailView(parcel: ProductReviewFromNoteParcel) -> some View {
-        ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+        ViewControllerContainer(ReviewDetailsViewController(productReview: parcel.review, product: parcel.product, notification: parcel.note))
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.productReview)
     }

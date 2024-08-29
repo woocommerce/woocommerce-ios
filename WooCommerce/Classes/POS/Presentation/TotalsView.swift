@@ -12,6 +12,7 @@ struct TotalsView: View {
     @State private var isShowingPaymentsButtonSpacing: Bool = false
 
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.colorScheme) var colorScheme
 
     init(viewModel: TotalsViewModel) {
         self.viewModel = viewModel
@@ -23,19 +24,20 @@ struct TotalsView: View {
             switch viewModel.orderState {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
-                    filledSpacer(backgroundColor: cardReaderViewLayout.backgroundColor,
-                                 height: cardReaderViewLayout.topPadding)
+                    Spacer()
+                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     VStack(alignment: .center, spacing: Constants.verticalSpacing) {
                         if viewModel.isShowingCardReaderStatus {
                             cardReaderView
                                 .font(.title)
-                                .padding([.top, .leading, .trailing],
+                                .padding([.leading, .trailing],
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.sidePadding)
                                 .padding(.bottom,
                                          dynamicTypeSize.isAccessibilitySize ? nil :
                                             cardReaderViewLayout.bottomPadding)
+                                .padding(.top, dynamicTypeSize.isAccessibilitySize ? nil : cardReaderViewLayout.topPadding)
                                 .transition(.opacity)
                                 .background(cardReaderViewLayout.backgroundColor)
                                 .accessibilityShowsLargeContentViewer()
@@ -51,28 +53,32 @@ struct TotalsView: View {
                                 .layoutPriority(2)
                         }
                     }
-                    .animation(.default, value: viewModel.isShowingCardReaderStatus)
+                    .animation(.default, value: viewModel.cardPresentPaymentInlineMessage)
                     paymentsActionButtons
                     Spacer()
                 }
+                .animation(.default, value: viewModel.isShowingCardReaderStatus)
             case .error(let viewModel):
                 PointOfSaleOrderSyncErrorMessageView(viewModel: viewModel)
+                    .transition(.opacity)
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: viewModel.isPaymentSuccessState)
+        .animation(.default, value: viewModel.paymentState)
+        .animation(.default, value: viewModel.orderState.isError)
         .onDisappear {
             viewModel.onTotalsViewDisappearance()
         }
         .onChange(of: viewModel.isShowingTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .geometryGroupIfSupported()
     }
 
     private var backgroundColor: Color {
         switch viewModel.paymentState {
         case .cardPaymentSuccessful:
-            Color(.wooCommerceEmerald(.shade20))
+            colorScheme == .light ? Color(.wooCommerceEmerald(.shade20)) : Color(red: 0/255, green: 81/255, blue: 57/255)
         case .processingPayment:
-            Color(.wooCommercePurple(.shade70))
+            colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
         default:
             .clear
         }
@@ -97,7 +103,7 @@ private extension TotalsView {
                                   matchedGeometryId: Constants.matchedGeometryTaxId)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 Divider()
-                    .overlay(Color.posTotalsSeparator)
+                    .overlay(Constants.separatorColor)
                 Spacer().frame(height: Constants.totalVerticalSpacing)
                 totalFieldView(formattedPrice: viewModel.formattedOrderTotalPrice,
                                shimmeringActive: viewModel.isShimmering,
@@ -130,7 +136,7 @@ private extension TotalsView {
                     .redacted(reason: redacted ? [.placeholder] : [])
             }
             .accessibilityElement(children: .combine)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
@@ -155,13 +161,13 @@ private extension TotalsView {
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.primaryText)
+            .foregroundColor(Color.posPrimaryText)
             .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
         }
     }
 
     func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Color.posTotalsSeparator
+        Constants.separatorColor
             .frame(width: width, height: height)
             .fixedSize(horizontal: true, vertical: true)
             .redacted(reason: [.placeholder])
@@ -198,10 +204,10 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.newOrderButtonPadding)
-        .foregroundColor(Color.primaryText)
+        .foregroundColor(Color.posPrimaryText)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
-                .stroke(Color.primaryText, lineWidth: Constants.defaultBorderLineWidth)
+                .stroke(Color.posPrimaryText, lineWidth: Constants.defaultBorderLineWidth)
         )
     }
 
@@ -227,7 +233,7 @@ private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
-        case .connected:
+        case .connected, .disconnecting:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
@@ -263,17 +269,6 @@ private extension TotalsView {
         )
     }
 
-    /// Creates a Spacer with backgroundColor and optional fixed height
-    private func filledSpacer(backgroundColor: Color = .clear, height: CGFloat? = nil) -> some View {
-        return ZStack {
-            Spacer()
-        }
-        .background(backgroundColor)
-        .if(height != nil) {
-            $0.frame(height: height)
-        }
-    }
-
     private var cardReaderViewLayout: CardReaderViewLayout {
         guard viewModel.isShowingCardReaderStatus else {
             return .primary
@@ -307,6 +302,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyRegular
         static let totalTitleFont: POSFontStyle = .posTitleRegular
         static let totalAmountFont: POSFontStyle = .posTitleEmphasized
+        static let separatorColor: Color = Color(.systemGray3)
 
         static let shimmeringCornerRadius: CGFloat = 4
         static let shimmeringWidth: CGFloat = 334
@@ -349,6 +345,20 @@ private extension TotalsView {
             "pos.totalsView.calculateAmounts",
             value: "Calculate amounts",
             comment: "Button title for calculate amounts button")
+    }
+}
+
+private extension View {
+    ///  Force the position and size values to be resolved and animated by the parent
+    ///  before being passed down to each subview.
+    ///  GeometryGroup is created to ensure that childs views stay locked together as animations are applied.
+    ///  It results in the whole TotalsView animated together when transitioning.
+    func geometryGroupIfSupported() -> some View {
+        if #available(iOS 17.0, *) {
+            return self.geometryGroup()
+        } else {
+            return self
+        }
     }
 }
 

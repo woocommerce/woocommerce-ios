@@ -154,6 +154,17 @@ public extension StorageType {
         }
     }
 
+    // MARK: - BlazeCampaignObjective
+
+    /// Delete all of the stored Blaze campaign objectives with the provided locale.
+    ///
+    func deleteBlazeCampaignObjectives(locale: String) {
+        let objectives = loadAllBlazeCampaignObjectives(locale: locale)
+        for objective in objectives {
+            deleteObject(objective)
+        }
+    }
+
     // MARK: - Coupons
 
     /// Deletes all of the stored Coupons for the provided siteID.

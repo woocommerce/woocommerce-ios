@@ -9,7 +9,6 @@ protocol CartViewModelProtocol: ObservableObject {
     var canDeleteItemsFromCart: Bool { get set }
     var itemToScrollToWhenCartUpdated: CartItem? { get }
     var itemsInCartLabel: String? { get }
-    var cartLabelColor: Color { get }
     var itemsInCartPublisher: Published<[CartItem]>.Publisher { get }
 
     func addItemToCart(_ item: POSItem)

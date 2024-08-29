@@ -6,6 +6,8 @@ enum PointOfSaleAssets: CaseIterable {
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
     case readerConnectionConnecting
+    case readerConnectionError
+    case readerConnectionLowBattery
     case readerConnectionSuccess
     case shoppingBags
 
@@ -21,6 +23,10 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-do-you-want-to-connect"
         case .readerConnectionConnecting:
             "pos-reader-connection-connecting"
+        case .readerConnectionError:
+            "pos-reader-connection-error"
+        case .readerConnectionLowBattery:
+            "pos-reader-connection-battery"
         case .readerConnectionSuccess:
             "pos-reader-connection-complete"
         case .shoppingBags:

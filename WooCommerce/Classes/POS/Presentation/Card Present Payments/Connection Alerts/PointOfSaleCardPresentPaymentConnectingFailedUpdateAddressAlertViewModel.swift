@@ -1,10 +1,13 @@
 import Foundation
 import SwiftUI
 
-final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject {
+final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject, Identifiable {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.readerConnectionError.imageName
     let settingsAdminUrl: URL
+    // An unchanging, psuedo-random ID helps us correctly compare two copies which may have different closures.
+    // This relies on the closures being immutable
+    let id = UUID()
 
     @Published var shouldShowSettingsWebView: Bool = false
 
@@ -48,6 +51,33 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
     func settingsWebViewWasDismissed() {
         retrySearchAction()
+    }
+}
+
+extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: Hashable {
+    static func == (lhs: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel,
+                    rhs: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+        lhs.imageName == rhs.imageName &&
+        lhs.settingsAdminUrl == rhs.settingsAdminUrl &&
+        lhs.shouldShowSettingsWebView == rhs.shouldShowSettingsWebView &&
+        lhs.primaryButtonViewModel == rhs.primaryButtonViewModel &&
+        lhs.cancelButtonViewModel == rhs.cancelButtonViewModel &&
+        lhs.retryButtonViewModel == rhs.retryButtonViewModel &&
+        lhs.showsInAuthenticatedWebView == rhs.showsInAuthenticatedWebView &&
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(imageName)
+        hasher.combine(settingsAdminUrl)
+        hasher.combine(shouldShowSettingsWebView)
+        hasher.combine(primaryButtonViewModel)
+        hasher.combine(cancelButtonViewModel)
+        hasher.combine(retryButtonViewModel)
+        hasher.combine(showsInAuthenticatedWebView)
+        hasher.combine(id)
     }
 }
 

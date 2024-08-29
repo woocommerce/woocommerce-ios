@@ -111,4 +111,16 @@ public enum BlazeAction: Action {
     ///
     case fetchPaymentInfo(siteID: Int64,
                           onCompletion: (Result<BlazePaymentInfo, Error>) -> Void)
+
+    /// Retrieves and stores campaign objectives for creating Blaze campaigns for a site.
+    ///
+    /// - `siteID`: the site to create Blaze campaign.
+    /// - `locale`: the locale for the response.
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///     - `result.success([BlazeCampaignObjective])`: list of objectives for Blaze campaigns.
+    ///     - `result.failure(Error)`: error indicates issues syncing data.
+    ///
+    case synchronizeCampaignObjectives(siteID: Int64,
+                                       locale: String,
+                                       onCompletion: (Result<[BlazeCampaignObjective], Error>) -> Void)
 }

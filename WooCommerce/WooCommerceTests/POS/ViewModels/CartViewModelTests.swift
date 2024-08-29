@@ -8,13 +8,19 @@ import SwiftUI
 final class CartViewModelTests: XCTestCase {
 
     private var sut: CartViewModel!
+    private var analytics: WooAnalytics!
+    private var analyticsProvider: MockAnalyticsProvider!
 
     override func setUp() {
         super.setUp()
-        sut = CartViewModel()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        sut = CartViewModel(analytics: analytics)
     }
 
     override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
         sut = nil
         super.tearDown()
     }
@@ -123,21 +129,6 @@ final class CartViewModelTests: XCTestCase {
         XCTAssertEqual(sut.itemsInCartLabel, "2 items")
     }
 
-    func test_cartLabelColor_when_addItemToCart_then_color_updates_accordingly() {
-        // Given
-        let item = Self.makeItem()
-        let initialCartLabelColor = Color.posSecondaryTexti3
-        let expectedCartLabelColor = Color.posPrimaryTexti3
-
-        XCTAssertEqual(sut.cartLabelColor, initialCartLabelColor)
-
-        // When
-        sut.addItemToCart(item)
-
-        // Then
-        XCTAssertEqual(sut.cartLabelColor, expectedCartLabelColor)
-    }
-
     func test_isCartEmpty() {
         // Given
         let item = Self.makeItem()
@@ -184,6 +175,18 @@ final class CartViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.shouldShowClearCartButton)
+    }
+
+    func test_receivedEvents_when_addItemToCart_then_tracks_pos_item_added_to_cart_event() {
+        // Given
+        let expectedEvent = "pos_item_added_to_cart"
+        let item = Self.makeItem()
+
+        // When
+        sut.addItemToCart(item)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, expectedEvent)
     }
 }
 

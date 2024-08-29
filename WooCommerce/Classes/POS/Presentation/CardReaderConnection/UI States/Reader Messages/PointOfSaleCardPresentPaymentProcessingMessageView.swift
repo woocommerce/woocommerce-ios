@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel
+    let animation: POSCardPresentPaymentInLineMessageAnimation
 
     var body: some View {
         VStack(alignment: .center, spacing: Layout.headerSpacing) {
@@ -10,16 +11,19 @@ struct PointOfSaleCardPresentPaymentProcessingMessageView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,
                        height: PointOfSaleCardPresentPaymentLayout.headerSize.height)
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             VStack(alignment: .center, spacing: Layout.textSpacing) {
                 Text(viewModel.title)
                     .foregroundStyle(.white)
                     .font(.posBodyRegular)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
                     .font(.posTitleEmphasized)
-                    .foregroundStyle(Color.posQuaternaryTextInverted)
+                    .foregroundStyle(Color.posDarkGray.opacity(0.16))
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .padding(.bottom)
@@ -35,7 +39,9 @@ private extension PointOfSaleCardPresentPaymentProcessingMessageView {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentProcessingMessageView(
-        viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentProcessingMessageView(
+        viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel(),
+        animation: .init(namespace: namespace)
     )
 }

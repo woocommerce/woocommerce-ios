@@ -47,26 +47,23 @@ struct PointOfSaleDashboardView: View {
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
                 .renderedIf(!viewModel.isInitialLoading)
+
+            POSConnectivityView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
+                .zIndex(1) /// Consistent animations not working without setting explicit zIndex
+                .renderedIf(viewModel.showsConnectivityError)
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, totalsViewModel.paymentState != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: viewModel.isInitialLoading)
-        .background(Color.posBackgroundGreyi3)
+        .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
+        .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(isPresented: $totalsViewModel.showsCardReaderSheet) {
-            // Might be the only way unless we make the type conform to `Identifiable`
-            if let alertType = totalsViewModel.cardPresentPaymentAlertViewModel {
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-            } else {
-                switch totalsViewModel.cardPresentPaymentEvent {
-                case .idle,
-                        .show, // handled above
-                        .showOnboarding:
-                    Text(totalsViewModel.cardPresentPaymentEvent.temporaryEventDescription)
-                }
-            }
+        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
         }
         .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
@@ -75,6 +72,7 @@ struct PointOfSaleDashboardView: View {
             PointOfSaleExitPosAlertView(isPresented: $viewModel.showExitPOSModal)
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
+        .posRootModal()
         .sheet(isPresented: $viewModel.showSupport) {
             supportForm
         }
@@ -148,6 +146,7 @@ private extension PointOfSaleDashboardView {
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
         static let supportTag = "origin:point-of-sale"
+        static let connectivityAnimationDuration: CGFloat = 1.0
     }
 
     enum Localization {
@@ -188,17 +187,21 @@ fileprivate extension CardPresentPaymentEvent {
 }
 
 #if DEBUG
+import class WooFoundation.MockAnalyticsPreview
+import class WooFoundation.MockAnalyticsProviderPreview
+
 #Preview {
     let totalsVM = TotalsViewModel(orderService: POSOrderPreviewService(),
                                    cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                    currencyFormatter: .init(currencySettings: .init()),
                                    paymentState: .acceptingCard)
-    let cartVM = CartViewModel()
+    let cartVM = CartViewModel(analytics: MockAnalyticsPreview())
     let itemsListVM = ItemListViewModel(itemProvider: POSItemProviderPreview())
     let posVM = PointOfSaleDashboardViewModel(cardPresentPaymentService: CardPresentPaymentPreviewService(),
                                               totalsViewModel: totalsVM,
                                               cartViewModel: cartVM,
-                                              itemListViewModel: itemsListVM)
+                                              itemListViewModel: itemsListVM,
+                                              connectivityObserver: POSConnectivityObserverPreview())
 
     return NavigationStack {
         PointOfSaleDashboardView(viewModel: posVM,

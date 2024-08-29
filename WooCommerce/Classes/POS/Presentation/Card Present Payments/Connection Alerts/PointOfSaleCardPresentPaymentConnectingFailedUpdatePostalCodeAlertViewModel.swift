@@ -1,9 +1,8 @@
 import Foundation
-import SwiftUI
 
-struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel: Hashable {
     let title = Localization.title
-    let image = Image(uiImage: .paymentErrorImage)
+    let imageName = PointOfSaleAssets.readerConnectionError.imageName
     let errorDetails = Localization.errorDetails
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel

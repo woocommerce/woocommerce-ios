@@ -6,12 +6,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
             Text(viewModel.title)
+                .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
 
-            viewModel.image
-                .accessibilityHidden(true)
+            Image(decorative: viewModel.imageName)
 
             Text(viewModel.errorDetails)
+                .font(POSFontStyle.posBodyRegular)
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)

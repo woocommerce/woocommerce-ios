@@ -1,18 +1,30 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.2
+-----
+- [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]
+- [*] Orders/Products: The filter menu can now be swiped to dismiss it if there are no changes to the selected filters. [https://github.com/woocommerce/woocommerce-ios/pull/13737]
+- [*] Home Screen Widget: Tapping on the Orders section of the home screen widget opens the Orders part of the app.
+- [*] Payments: Punctuation updates to error and decline reason messages [https://github.com/woocommerce/woocommerce-ios/pull/13739]
+- [*] Blaze: Display budget field on the dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13761]
+- [*] Products: Fixed a bug where editing the product price did not work as expected, depending on the store's currency settings. [https://github.com/woocommerce/woocommerce-ios/pull/13768]
+- [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
+
 20.1
 -----
 - [*] Order Creation: Fix an occasional issue where text fields wouldn't automatically focus and accept input. [https://github.com/woocommerce/woocommerce-ios/pull/13650]
 - [Internal] Orders: The orders list now only wraps name on multiple lines if it's too long to fit on a single line. [https://github.com/woocommerce/woocommerce-ios/pull/13652]
+- [*] Blaze: Campaign creation on devices using language with non-Western Arabic numbering system now should work correctly. [https://github.com/woocommerce/woocommerce-ios/pull/13658]
 - [*] Blaze: Updated campaign item's displayed budget. [https://github.com/woocommerce/woocommerce-ios/pull/13605]
 - [*] Blaze: Updated budget field for active campaigns. [https://github.com/woocommerce/woocommerce-ios/pull/13621]
 - [*] Orders: Fixed the discard confirmation prompt during order creation, so you will be prompted to discard changes if you exit the order form after making changes to a new order. [https://github.com/woocommerce/woocommerce-ios/pull/13654]
 - [*] Orders: Fixed an issue where the last item in an order couldn't be removed. [https://github.com/woocommerce/woocommerce-ios/pull/13665]
-
 - [*] Design: Updates the barcode scanner icon to a new icon from SF Symbols [https://github.com/woocommerce/woocommerce-ios/pull/13666]
 - [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671]
 - [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
+- [*] Hub Menu: Fixes a crash while navigating to the Menu tab. This crash happens in iOS 18 beta. [https://github.com/woocommerce/woocommerce-ios/pull/13671, https://github.com/woocommerce/woocommerce-ios/pull/13697]
+- [Internal] Products: Fix for Partial swipe back gesture from product details removes the content https://github.com/woocommerce/woocommerce-ios/pull/13667
 
 20.0
 -----
@@ -35,6 +47,7 @@
 - [*] Login: Hid the site credential login option when entering a WPCom site address. [https://github.com/woocommerce/woocommerce-ios/pull/13623]
 - [Internal] Beta fix: Fixed unreliable states of the Inbox screen when navigated from the Hub Menu. [https://github.com/woocommerce/woocommerce-ios/pull/13645]
 - [Internal] Beta fix: Fixed navigation to variations in stock card for some stores. [https://github.com/woocommerce/woocommerce-ios/pull/13648]
+- [*] Payments Beta fix: Fixed an issue which could lead to a frozen state after an error starting Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/13682]
 
 19.9
 -----

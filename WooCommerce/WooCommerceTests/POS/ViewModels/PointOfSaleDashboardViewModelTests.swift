@@ -11,6 +11,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
     private var mockCartViewModel: MockCartViewModel!
     private var mockTotalsViewModel: MockTotalsViewModel!
     private var mockItemListViewModel: MockItemListViewModel!
+    private var mockConnectivityObserver: MockConnectivityObserver!
 
     private var cancellables: Set<AnyCancellable>!
 
@@ -21,10 +22,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = MockCartViewModel()
         mockTotalsViewModel = MockTotalsViewModel()
         mockItemListViewModel = MockItemListViewModel()
+        mockConnectivityObserver = MockConnectivityObserver()
         sut = PointOfSaleDashboardViewModel(cardPresentPaymentService: cardPresentPaymentService,
                                             totalsViewModel: mockTotalsViewModel,
                                             cartViewModel: mockCartViewModel,
-                                            itemListViewModel: mockItemListViewModel)
+                                            itemListViewModel: mockItemListViewModel,
+                                            connectivityObserver: mockConnectivityObserver)
         cancellables = []
     }
 
@@ -33,6 +36,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         mockCartViewModel = nil
         mockTotalsViewModel = nil
         mockItemListViewModel = nil
+        mockConnectivityObserver = nil
         sut = nil
         cancellables = []
         super.tearDown()
@@ -332,6 +336,17 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(mockCartViewModel.canDeleteItemsFromCart)
     }
 
+    func test_cartSubmitted_calls_totalsViewModel_startShowingTotalsView() {
+        // Given
+        mockTotalsViewModel.spyStartShowingTotalsViewCalled = false
+
+        // When
+        mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
+
+        // Then
+        XCTAssertTrue(mockTotalsViewModel.spyStartShowingTotalsViewCalled)
+    }
+
     func test_addMoreTapped_sets_cartViewModel_canDeleteItems_true() {
         // Given
         mockCartViewModel.cartSubmissionSubject.send([CartItem(id: UUID(), item: Self.makeItem(), quantity: 1)])
@@ -344,15 +359,32 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(mockCartViewModel.canDeleteItemsFromCart)
     }
 
-    func test_addMoreTapped_calls_totalsViewModel_cancelReaderPreparation() {
-        // Given
-        mockTotalsViewModel.spyCancelReaderPreparationCalled = false
+    func test_addMoreTapped_calls_totalsViewModel_stopShowingTotalsView() {
+        // Given the TotalsView is showing
+        mockCartViewModel.cartSubmissionSubject.send([])
+        mockTotalsViewModel.spyStopShowingTotalsViewCalled = false
 
         // When
         mockCartViewModel.addMoreToCartActionSubject.send(())
 
         // Then
-        XCTAssertTrue(mockTotalsViewModel.spyCancelReaderPreparationCalled)
+        XCTAssertTrue(mockTotalsViewModel.spyStopShowingTotalsViewCalled)
+    }
+
+    func test_showsConnectivityError_when_nonReachable_then_shows_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.notReachable)
+
+        // Then
+        XCTAssertTrue(sut.showsConnectivityError)
+    }
+
+    func test_showsConnectivityError_when_reachable_then_no_error() {
+        // Given
+        mockConnectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
+
+        // Then
+        XCTAssertFalse(sut.showsConnectivityError)
     }
 }
 

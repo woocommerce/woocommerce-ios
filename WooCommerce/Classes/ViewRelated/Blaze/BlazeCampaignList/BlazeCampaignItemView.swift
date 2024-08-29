@@ -9,12 +9,9 @@ struct BlazeCampaignItemView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let campaign: BlazeCampaignListItem
-    private let showBudget: Bool
 
-    init(campaign: BlazeCampaignListItem,
-         showBudget: Bool = true) {
+    init(campaign: BlazeCampaignListItem) {
         self.campaign = campaign
-        self.showBudget = showBudget
     }
 
     var body: some View {
@@ -87,7 +84,6 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .renderedIf(showBudget)
 
                 Spacer()
 

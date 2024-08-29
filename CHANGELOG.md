@@ -1,6 +1,10 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.1
+In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.
+We've also made it easier to understand the budgets for your Blaze ad campaigns, and added support for Blaze ad creation in locales which don't use Western Arabic numerals.
+
 ## 20.0
 Enhance your WooCommerce management with our latest update! Creating Blaze ads is now smoother with media selection streamlined for current products. Plus, we've ironed out kinks everywhere from creating orders to contacting support, ensuring a more reliable experience. Enjoy a more cohesive app environment with various fixes and improvements.
 

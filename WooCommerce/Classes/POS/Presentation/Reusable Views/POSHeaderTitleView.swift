@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct POSHeaderTitleView: View {
-    var foregroundColor: Color = Color.posPrimaryTexti3
+    var foregroundColor: Color = Color.posPrimaryText
 
     var body: some View {
         Text(Localization.productSelectorTitle)
@@ -23,10 +23,10 @@ private extension POSHeaderTitleView {
     }
 
     enum Constants {
-        static let padding: EdgeInsets = .init(top: 24,
-                                               leading: 16,
-                                               bottom: 24,
-                                               trailing: 16)
+        static let padding: EdgeInsets = .init(top: POSHeaderLayoutConstants.sectionVerticalPadding,
+                                               leading: POSHeaderLayoutConstants.sectionHorizontalPadding,
+                                               bottom: POSHeaderLayoutConstants.sectionVerticalPadding,
+                                               trailing: POSHeaderLayoutConstants.sectionHorizontalPadding)
     }
 }
 

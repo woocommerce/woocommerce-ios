@@ -13,12 +13,15 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 
+    private let connectedReaderSubject = PassthroughSubject<CardPresentPaymentCardReader?, Never>()
+
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
     private let paymentAlertsPresenterAdaptor: CardPresentPaymentsAlertPresenterAdaptor
     private let connectionControllerManager: CardPresentPaymentsConnectionControllerManager
 
     private let siteID: Int64
+    private let stores: StoresManager
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         CardPresentConfigurationLoader().configuration
@@ -33,6 +36,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.onboardingAdaptor = onboardingAdaptor
         let paymentAlertsPresenterAdaptor = CardPresentPaymentsAlertPresenterAdaptor()
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
+        self.stores = stores
+
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
             configuration: CardPresentConfigurationLoader().configuration,
@@ -53,6 +58,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             .eraseToAnyPublisher()
 
         connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
+            .merge(with: connectedReaderSubject)
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     @MainActor
@@ -76,7 +84,27 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         }
     }
 
-    func disconnectReader() {
+    @MainActor
+    func disconnectReader() async {
+        cancelPayment()
+
+        connectionControllerManager.knownReaderProvider.forgetCardReader()
+
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
+
+            let action = CardPresentPaymentAction.disconnect { [weak self] result in
+                if case .failure = result {
+                    // Disconnections typically fail because the reader is not connected in the first place.
+                    // Assuming we're disconnected allows further connection attempts, which can resolve the situation.
+                    // Connection attempts with a reader already connected succeed immediately.
+                    self?.connectedReaderSubject.send(nil)
+                }
+                nillableContinuation?.resume()
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 
     @MainActor

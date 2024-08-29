@@ -3,26 +3,31 @@ import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     @StateObject private var viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel
+    let animation: POSCardPresentPaymentInLineMessageAnimation
 
-    init(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, animation: POSCardPresentPaymentInLineMessageAnimation) {
         self._viewModel = .init(wrappedValue: viewModel)
+        self.animation = animation
     }
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
             POSErrorXMark()
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
                     .accessibilityAddTraits(.isHeader)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
                 .font(.posBodyRegular)
-                .foregroundStyle(Color.primaryText)
+                .foregroundStyle(Color.posPrimaryText)
+                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             VStack(spacing: PointOfSaleCardPresentPaymentLayout.buttonSpacing) {
@@ -48,8 +53,11 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentCaptureErrorMessageView(
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentCaptureErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
             tryAgainButtonAction: {},
-            newOrderButtonAction: {}))
+            newOrderButtonAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }

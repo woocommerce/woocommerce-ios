@@ -3,22 +3,26 @@ import enum Yosemite.CardReaderServiceError
 
 struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
+    let animation: POSCardPresentPaymentInLineMessageAnimation
 
     var body: some View {
         VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.errorElementSpacing) {
             POSErrorXMark()
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(viewModel.title)
-                    .foregroundStyle(Color.primaryText)
+                    .foregroundStyle(Color.posPrimaryText)
                     .font(.posTitleEmphasized)
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.smallTextSpacing) {
                     Text(viewModel.message)
                     Text(viewModel.nextStep)
                 }
                 .font(.posBodyRegular)
-                .foregroundStyle(Color.primaryText)
+                .foregroundStyle(Color.posPrimaryText)
+                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
 
             Button(viewModel.tryAnotherPaymentMethodButtonViewModel.title,
@@ -31,8 +35,11 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(
-                underlyingError: .paymentDeclinedByCardReader), tryAnotherPaymentMethodAction: {}))
+                underlyingError: .paymentDeclinedByCardReader), tryAnotherPaymentMethodAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }

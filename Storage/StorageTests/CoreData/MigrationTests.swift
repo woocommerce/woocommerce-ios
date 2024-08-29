@@ -2921,6 +2921,37 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(isEvergreen, true)
         XCTAssertEqual(durationDays, 7)
     }
+
+    func test_migrating_from_114_to_115_adds_BlazeCampaignObjective_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 114")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 114
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 115")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 0)
+
+        // Insert a new BlazeCampaignObjective
+        let objective = insertBlazeCampaignObjective(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(objective.entity.attributesByName["id"])
+        XCTAssertNotNil(objective.entity.attributesByName["title"])
+        XCTAssertNotNil(objective.entity.attributesByName["generalDescription"])
+        XCTAssertNotNil(objective.entity.attributesByName["suitableForDescription"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3744,6 +3775,17 @@ private extension MigrationTests {
             "siteID": 1,
             "methodID": "flat_rate",
             "title": "Flat rate"
+        ])
+        return method
+    }
+
+    @discardableResult
+    func insertBlazeCampaignObjective(to context: NSManagedObjectContext) -> NSManagedObject {
+        let method = context.insert(entityName: "BlazeCampaignObjective", properties: [
+            "id": "sales",
+            "title": "Sales",
+            "generalDescription": "Converts potential customers into buyers by encouraging purchase.",
+            "suitableForDescription": "E-commerce, retailers, subscription services."
         ])
         return method
     }

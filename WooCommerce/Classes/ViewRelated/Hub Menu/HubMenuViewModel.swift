@@ -214,8 +214,47 @@ final class HubMenuViewModel: ObservableObject {
         }
     }
 
+    func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
+        updateTabBarVisibility(isPointOfSaleActive)
+        updateInAppNotifications(isPointOfSaleActive)
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
+
+// MARK: - Helper method for WooCommerce POS
+//
+private extension HubMenuViewModel {
+    // Hides the app's tab bars when Point of Sale is active
+    //
+    func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
+            return
+        }
+        // If hidden, modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar.
+        // Otherwise resets safeAreaInsets
+        mainTabBarController.tabBar.isHidden = isPointOfSaleActive
+
+        let bottomInset = 8.0
+        if mainTabBarController.tabBar.isHidden {
+            mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        } else {
+            mainTabBarController.additionalSafeAreaInsets = .zero
+        }
+
+        mainTabBarController.selectedViewController?.view.layoutIfNeeded()
+    }
+
+    // Disables foreground in-app notifications when Point of Sale is active
+    //
+    func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
+        if isPointOfSaleActive {
+            ServiceLocator.pushNotesManager.disableInAppNotifications()
+        } else {
+            ServiceLocator.pushNotesManager.enableInAppNotifications()
+        }
     }
 }
 

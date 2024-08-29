@@ -275,44 +275,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-// MARK: - Helper method for WooCommerce POS
-//
-extension AppDelegate {
-    func updateSharedConfiguration(_ isPointOfSaleActive: Bool) {
-        updateTabBarVisibility(isPointOfSaleActive)
-        updateInAppNotifications(isPointOfSaleActive)
-    }
-
-    // Show/hide app's tab bars
-    private func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
-        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
-        // If hidden, modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar.
-        // Otherwise resets safeAreaInsets
-        mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-
-        let bottomInset = 8.0
-        if mainTabBarController.tabBar.isHidden {
-            mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        } else {
-            mainTabBarController.additionalSafeAreaInsets = .zero
-        }
-
-        mainTabBarController.selectedViewController?.view.layoutIfNeeded()
-    }
-
-    // Enable/disable foreground in-app notifications
-    private func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
-        if isPointOfSaleActive {
-            ServiceLocator.pushNotesManager.disableInAppNotifications()
-        } else {
-            ServiceLocator.pushNotesManager.enableInAppNotifications()
-        }
-    }
-}
-
-
 // MARK: - Initialization Methods
 //
 private extension AppDelegate {

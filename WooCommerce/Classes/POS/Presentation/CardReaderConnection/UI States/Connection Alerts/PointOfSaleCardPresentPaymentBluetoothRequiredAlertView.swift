@@ -8,15 +8,22 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Image(decorative: viewModel.imageName)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posTitleEmphasized)
+                        .accessibilityAddTraits(.isHeader)
 
-            Text(viewModel.errorDetails)
-                .font(POSFontStyle.posBodyRegular)
+                    Text(viewModel.errorDetails)
+                        .font(POSFontStyle.posBodyRegular)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)

@@ -4,15 +4,19 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             Image(decorative: viewModel.imageName)
 
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
 
-            Text(viewModel.errorDetails)
-                .font(POSFontStyle.posBodyRegular)
+                Text(viewModel.errorDetails)
+                    .font(POSFontStyle.posBodyRegular)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)

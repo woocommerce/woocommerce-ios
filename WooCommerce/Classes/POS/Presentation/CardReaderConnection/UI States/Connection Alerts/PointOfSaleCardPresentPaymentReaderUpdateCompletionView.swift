@@ -8,16 +8,20 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             viewModel.image
                 .accessibilityHidden(true)
 
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
 
-            Text(viewModel.progressTitle)
-                .font(POSFontStyle.posBodyRegular)
+                Text(viewModel.progressTitle)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .font(POSFontStyle.posBodyRegular)
+            }
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)

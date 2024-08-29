@@ -8,11 +8,12 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
             Image(decorative: viewModel.imageName)
 
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
         }
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)

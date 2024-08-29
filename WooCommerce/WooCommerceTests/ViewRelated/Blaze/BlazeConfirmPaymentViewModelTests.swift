@@ -513,11 +513,11 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_payment_submit_campaign_tapped"))
     }
 
-    func test_event_is_tracked_when_campaign_creation_successful() async throws {
+    func test_event_is_tracked_when_campaign_creation_successful_for_evergreen_campaign() async throws {
         // Given
         let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
                                                      siteID: sampleSiteID,
-                                                     campaignInfo: .fake(),
+                                                     campaignInfo: .fake().copy(isEvergreen: true),
                                                      image: .init(image: .init(), source: .productImage(image: .fake())),
                                                      stores: stores,
                                                      analytics: analytics) {}
@@ -530,7 +530,31 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         await viewModel.submitCampaign()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_creation_success"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_campaign_creation_success"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "evergreen")
+    }
+
+    func test_event_is_tracked_when_campaign_creation_successful_for_non_evergreen_campaign() async throws {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake().copy(isEvergreen: false),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores,
+                                                     analytics: analytics) {}
+        // When
+        mockRetrieveMedia(with: .success(.fake()))
+        mockCampaignCreation(with: .success(Void()))
+        await viewModel.updatePaymentInfo()
+
+        // When
+        await viewModel.submitCampaign()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_campaign_creation_success"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "start_end")
     }
 
     func test_event_is_tracked_when_campaign_creation_failed() async throws {

@@ -4,11 +4,11 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
+            Image(decorative: viewModel.imageName)
+
             Text(viewModel.title)
                 .font(POSFontStyle.posTitleEmphasized)
                 .accessibilityAddTraits(.isHeader)
-
-            Image(decorative: viewModel.imageName)
 
             if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
                 Button(primaryButtonViewModel.title,

@@ -288,9 +288,17 @@ extension AppDelegate {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
-        // Modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar:
+        // If hidden, modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar.
+        // Otherwise resets safeAreaInsets
         mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-        mainTabBarController.viewSafeAreaInsetsDidChange()
+
+        let bottomInset = 8.0
+        if mainTabBarController.tabBar.isHidden {
+            mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        } else {
+            mainTabBarController.additionalSafeAreaInsets = .zero
+        }
+
         mainTabBarController.selectedViewController?.view.layoutIfNeeded()
     }
 

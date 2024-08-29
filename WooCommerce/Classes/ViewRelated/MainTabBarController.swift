@@ -183,17 +183,6 @@ final class MainTabBarController: UITabBarController {
         }
     }
 
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-
-        if tabBar.isHidden {
-            let bottomInset = 8.0
-            additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        } else {
-            additionalSafeAreaInsets = .zero
-        }
-    }
-
     // MARK: - Public Methods
 
     /// Switches the TabBarController to the specified Tab

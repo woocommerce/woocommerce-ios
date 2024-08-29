@@ -21,10 +21,8 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
                 .font(.posTitleEmphasized)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
-                .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
             scanningText()
-                .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
 
             List(readerIDs, id: \.self) { readerID in
                 readerRow(readerID: readerID)
@@ -40,7 +38,6 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             }
             .buttonStyle(POSSecondaryButtonStyle())
             .padding(Layout.buttonPadding)
-            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .padding(Layout.padding)
         .accessibilityElement(children: .contain)

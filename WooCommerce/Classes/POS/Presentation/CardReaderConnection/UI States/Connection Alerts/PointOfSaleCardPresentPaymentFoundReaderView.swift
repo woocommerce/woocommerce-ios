@@ -14,11 +14,11 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
                        action: viewModel.connectButton.actionHandler)
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(POSPrimaryButtonStyle())
 
                 Button(viewModel.continueSearchButton.title,
                        action: viewModel.continueSearchButton.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(POSSecondaryButtonStyle())
             }
         }
         .posModalCloseButton(action: viewModel.cancelSearchButton.actionHandler,

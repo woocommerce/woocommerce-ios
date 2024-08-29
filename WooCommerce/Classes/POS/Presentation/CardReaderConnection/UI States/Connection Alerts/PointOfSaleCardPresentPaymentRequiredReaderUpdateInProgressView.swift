@@ -27,7 +27,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                     cancelReaderUpdate()
                 }
             })
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(POSSecondaryButtonStyle())
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)

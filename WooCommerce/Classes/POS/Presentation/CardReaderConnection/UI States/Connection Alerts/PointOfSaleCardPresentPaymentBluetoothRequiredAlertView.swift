@@ -20,7 +20,7 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(POSPrimaryButtonStyle())
         }
         .posModalCloseButton(action: viewModel.dismissButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.dismissButtonViewModel.title)

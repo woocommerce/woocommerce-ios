@@ -22,7 +22,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedView: View {
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(POSPrimaryButtonStyle())
         }
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)

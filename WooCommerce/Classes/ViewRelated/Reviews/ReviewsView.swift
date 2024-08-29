@@ -9,7 +9,6 @@ struct ReviewsView: UIViewControllerRepresentable {
 
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
-        var rightBarButtonItemObserver: NSKeyValueObservation?
     }
 
     /// This is a UIKit solution for fixing Bar Button Items ignored in NavigationView.
@@ -26,11 +25,6 @@ struct ReviewsView: UIViewControllerRepresentable {
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
         })
 
-        // This fixes the issue when `rightBarButtonItem` is updated in `ReviewsViewController`,
-        // the hosting controller should be updated to reflect the change.
-        context.coordinator.rightBarButtonItemObserver = viewController.observe(\.navigationItem.rightBarButtonItem, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.rightBarButtonItem = vc.navigationItem.rightBarButtonItem
-        })
         return viewController
     }
 

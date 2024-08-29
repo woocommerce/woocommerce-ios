@@ -5,7 +5,6 @@ struct EnhancedCouponListView: UIViewControllerRepresentable {
 
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
-        var rightBarButtonItemsObserver: NSKeyValueObservation?
     }
 
     /// This is a UIKit solution for fixing Bar Button Items ignored in NavigationView.
@@ -22,11 +21,6 @@ struct EnhancedCouponListView: UIViewControllerRepresentable {
             vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
         })
 
-        // This fixes the issue when `rightBarButtonItem` is updated in `CouponListViewController`,
-        // the hosting controller should be updated to reflect the change.
-        context.coordinator.rightBarButtonItemsObserver = viewController.observe(\.navigationItem.rightBarButtonItems, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-        })
         return viewController
     }
 

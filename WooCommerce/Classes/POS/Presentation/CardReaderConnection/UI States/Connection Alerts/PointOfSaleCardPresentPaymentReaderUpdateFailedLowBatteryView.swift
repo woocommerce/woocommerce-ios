@@ -8,19 +8,28 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            Spacer()
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Image(decorative: viewModel.imageName)
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posTitleEmphasized)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
 
-            Text(viewModel.batteryLevelInfo)
-                .font(POSFontStyle.posBodyRegular)
+                    Text(viewModel.batteryLevelInfo)
+                        .font(POSFontStyle.posBodyRegular)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
 
             Button(viewModel.cancelButtonViewModel.title,
                    action: viewModel.cancelButtonViewModel.actionHandler)
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(POSSecondaryButtonStyle())
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)

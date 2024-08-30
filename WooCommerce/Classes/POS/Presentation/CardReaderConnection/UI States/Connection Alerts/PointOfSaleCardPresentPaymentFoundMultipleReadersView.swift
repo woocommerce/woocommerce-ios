@@ -5,11 +5,14 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     private let readerIDs: [String]
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
+    private let animation: POSCardPresentPaymentAlertAnimation
 
-    init(viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel,
+         animation: POSCardPresentPaymentAlertAnimation) {
         self.readerIDs = viewModel.readerIDs
         self.connect = viewModel.connect
         self.cancelSearch = viewModel.cancelSearch
+        self.animation = animation
     }
 
     var body: some View {
@@ -106,6 +109,10 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentFoundMultipleReadersView(viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
-                                                                           selectionHandler: { _ in }))
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentFoundMultipleReadersView(
+        viewModel: .init(readerIDs: ["Reader 1", "Reader 2"],
+                         selectionHandler: { _ in }),
+        animation: .init(namespace: namespace)
+    )
 }

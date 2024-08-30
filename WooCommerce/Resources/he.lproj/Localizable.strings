@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-21 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-29 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -730,9 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "סכום (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
-"Amount (%1$@)" = "סכום (%1$@)";
-
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "סכום (%@)";
 
@@ -1127,9 +1124,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "ברוניי";
 
-/* Title label for the total budget of a Blaze campaign */
-"Budget" = "תקציב";
-
 /* Country option for a site address. */
 "Bulgaria" = "בולגריה";
 
@@ -1191,9 +1185,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "חבילות מותאמות אישית";
-
-/* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "סכום מחושב";
 
 /* Call phone number button title */
 "Call" = "להתקשר";
@@ -1583,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "ניקוי בחירה";
 
-/* Title label for the total clicks of a Blaze ads campaign */
-"Clicks" = "לחיצות";
-
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1594,7 +1582,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee/Discounts Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "סגור";
 
@@ -2429,7 +2416,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee/Discounts Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3560,9 +3546,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "מידע חשוב";
-
-/* Title label for the total impressions of a Blaze ads campaign */
-"Impressions" = "צפיות";
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "ב-%1$@, מותר להשתמש בכרטיסים עם Tap To Pay רק עבור עסקאות עד למגבלת ללא מגע.";
@@ -5170,9 +5153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's pending status */
 "Pending review" = "תצוגה מקדימה בהמתנה";
-
-/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "אחוז (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "אחוזי הנחה";
@@ -9650,6 +9630,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "מגדילים את הנראות ומאיצים את מכירת המוצרים.";
 
+/* Title label for the total impressions and clicks of a Blaze ads campaign */
+"blazeCampaignItemView.clickthroughs" = "קליקים";
+
+/* Title of the remaining budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.remainingBudget" = "נשאר";
+
 /* Status name of an approved Blaze campaign */
 "blazeCampaignListItem.status.active" = "פעיל";
 
@@ -9668,8 +9654,17 @@ which should be translated separately and considered part of this sentence. */
 /* Status name of a scheduled Blaze campaign */
 "blazeCampaignListItem.status.scheduled" = "מתוזמן לפרסום";
 
+/* Status name of a suspended Blaze campaign */
+"blazeCampaignListItem.status.suspended" = "מושהה";
+
 /* Status name of a Blaze campaign without specified state */
 "blazeCampaignListItem.status.unknown" = "לא ידוע";
+
+/* Title of the total budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.totalBudget" = "סכום כולל";
+
+/* Title of the budget field of a Blaze campaign without an end date. */
+"blazeCampaignListItem.weeklyBudget" = "שבועית";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "מדיניות פרסום";
@@ -10613,6 +10608,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "אהבתי";
 
+/* Button to dismiss the confirmation alert on the Inbox screen. */
+"inbox.alert.cancel" = "ביטול";
+
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "אין הודעות שלא נקראו";
 
@@ -11139,19 +11137,22 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "המערכת סורקת כדי לאתר קורא";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "לנסות את התשלום שוב";
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "הזמנה חדשה";
+
+/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "עליך לאמת את התשלום במכשיר עם חיבור פעיל לרשת. אם הפעולה לא הצליחה, יש לנסות את התשלום שוב. אם הפעולה הצליחה, יש ליצור הזמנה חדשה.";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.message" = "לא הצלחנו לטעון את הפרטים המלאים של ההזמנה כדי לבדוק את מצב התשלום. יש לבדוק את ההזמנה האחרונה בנפרד או לנסות שוב.";
-
-/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "למידע נוסף";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "עקב שגיאת רשת, אנחנו לא יכולים לאשר שהתשלום בוצע בהצלחה.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.title" = "מצב התשלום לא ידוע";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "שגיאת תשלום";
 
 /* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "לצאת מההזמנה";
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "לחזור לתשלום בקופה";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "התשלום נכשל";
@@ -11336,12 +11337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "מעדכן את התוכנה";
 
-/* Subtitle of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "עקב שגיאה בקליטת התשלום וברענון ההזמנה, לא הצלחנו לטעון את הפרטים המלאים של ההזמנה. כדי להימנע מתשלום חלקי או מתשלום כפול, יש לבדוק את ההזמנה האחרונה בנפרד לפני ההמשך.";
-
-/* Title of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "יש לבדוק את מצב התשלום של ההזמנה";
-
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "הבנתי";
 
@@ -11396,11 +11391,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "החיבור לקורא נכשל";
 
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "עקב שגיאת רשת, אנחנו לא יודעים אם התשלום בוצע בהצלחה.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "יש לבדוק שוב את ההזמנה במכשיר עם חיבור לאינטרנט לפני ההמשך.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "ייתכן שההזמנה נכשלה";
+
+/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "לצאת מ-POS";
+
+/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+"pointOfSale.floatingButtons.getSupport.button.title" = "לקבלת תמיכה";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "הקורא חובר";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "לחבר את הקורא";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "להסיר";
+
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.retry" = "לנסות שוב";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "לא ניתן היה לטעון את הסכום הכולל";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.done" = "בוצע";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה";
@@ -11408,8 +11430,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "עגלת קניות";
 
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "מומלץ לנסות";
+
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "למחוק";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "אין חיבור אינטרנט";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "כל התקדמות שנרשמה בהזמנות תאבד.";
@@ -11432,14 +11460,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "שגיאה בטעינת המוצרים";
 
+/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
+"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "לבטל";
+
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "סוגי מוצרים אחרים, כמו מוצרים עם סוגים או מוצרים וירטואליים, יהיו זמינים בעדכונים בעתיד. למידע נוסף";
+"pos.itemlistview.headerBanner.hint" = "סוגי מוצרים אחרים, כמו מוצרים עם סוגים או מוצרים וירטואליים, יהיו זמינים בעדכונים בעתיד.";
+
+/* Link to more information within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.learnMoreHint" = "למידע נוסף";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerSubtitle" = "רק מוצרים פיזיים פשוטים זמינים עם POS כרגע.";
+"pos.itemlistview.headerBanner.subtitle" = "רק מוצרים פיזיים פשוטים זמינים עם POS כרגע.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerTitle" = "מציג רק מוצרים פשוטים";
+"pos.itemlistview.headerBanner.title" = "מציג רק מוצרים פשוטים";
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "זה הזמן להעניק ללקוחות שירות";

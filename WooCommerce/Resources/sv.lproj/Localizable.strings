@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-20 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-29 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -730,9 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Belopp (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
-"Amount (%1$@)" = "Belopp (%1$@)";
-
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "Belopp (%@)";
 
@@ -1127,9 +1124,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "Brunei";
 
-/* Title label for the total budget of a Blaze campaign */
-"Budget" = "Budget";
-
 /* Country option for a site address. */
 "Bulgaria" = "Bulgarien";
 
@@ -1191,9 +1185,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "ANPASSADE PAKET";
-
-/* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "Beräknat belopp";
 
 /* Call phone number button title */
 "Call" = "Ring";
@@ -1583,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Rensa val";
 
-/* Title label for the total clicks of a Blaze ads campaign */
-"Clicks" = "Klick";
-
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1594,7 +1582,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee/Discounts Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "Stäng";
 
@@ -2429,7 +2416,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee/Discounts Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3560,9 +3546,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Viktig information";
-
-/* Title label for the total impressions of a Blaze ads campaign */
-"Impressions" = "Visningar";
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "I %1$@ får kort endast användas med Tryck för att betala för transaktioner upp till gränsen för kontaktlös betalning.";
@@ -5170,9 +5153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's pending status */
 "Pending review" = "Inväntar granskning";
-
-/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "Procent (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuell rabatt";
@@ -9650,6 +9630,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Öka synlighet och få dina produkter sålda snabbt.";
 
+/* Title label for the total impressions and clicks of a Blaze ads campaign */
+"blazeCampaignItemView.clickthroughs" = "Klick";
+
+/* Title of the remaining budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.remainingBudget" = "Återstående";
+
 /* Status name of an approved Blaze campaign */
 "blazeCampaignListItem.status.active" = "Aktivt";
 
@@ -9668,8 +9654,17 @@ which should be translated separately and considered part of this sentence. */
 /* Status name of a scheduled Blaze campaign */
 "blazeCampaignListItem.status.scheduled" = "Schemalagt";
 
+/* Status name of a suspended Blaze campaign */
+"blazeCampaignListItem.status.suspended" = "Suspenderad";
+
 /* Status name of a Blaze campaign without specified state */
 "blazeCampaignListItem.status.unknown" = "Okänt";
+
+/* Title of the total budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.totalBudget" = "Totalt";
+
+/* Title of the budget field of a Blaze campaign without an end date. */
+"blazeCampaignListItem.weeklyBudget" = "Veckovis";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Annonseringspolicy";
@@ -10613,6 +10608,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Jag gillar den";
 
+/* Button to dismiss the confirmation alert on the Inbox screen. */
+"inbox.alert.cancel" = "Avbryt";
+
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "Inga olästa meddelanden";
 
@@ -11139,19 +11137,22 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Skannar efter läsare";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Försök genomföra betalningen igen";
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Ny beställning";
+
+/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Verifiera betalningen på en enhet med fungerande nätverksanslutning. Om det misslyckas, försök genomföra betalningen igen. Om det lyckas, starta en ny beställning.";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Försök med betalningen igen";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.message" = "Vi kunde inte läsa in den fullständiga beställningsinformationen för att kontrollera betalningsstatusen. Kontrollera den senaste beställningen separat eller försök igen.";
-
-/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Lär dig mer";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "På grund av ett nätverksfel kan vi inte bekräfta att betalningen lyckades.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.title" = "Betalningsstatus okänd";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Betalningsfel";
 
 /* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Avsluta order";
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Gå tillbaka till kassa";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Betalning misslyckades";
@@ -11336,12 +11337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Uppdaterar programvara";
 
-/* Subtitle of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "På grund av ett fel som uppstod när betalningen genomfördes och beställningen uppdaterades kunde vi inte läsa in den fullständiga beställningsinformationen. För att undvika under- eller dubbeldebitering, kontrollera den senaste beställningen separat innan du fortsätter.";
-
-/* Title of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Kontrollera beställningens betalningsstatus";
-
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Jag förstår";
 
@@ -11396,11 +11391,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Det gick inte att ansluta läsaren";
 
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "På grund av ett nätverksfel vet vi inte om betalningen lyckades.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Dubbelkolla beställningen på en enhet med nätverksanslutning innan du fortsätter.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Denna beställning kan ha misslyckats";
+
+/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "Avsluta POS";
+
+/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+"pointOfSale.floatingButtons.getSupport.button.title" = "Skaffa support";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "Läsare ansluten";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "Anslut din läsare";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Ta bort";
+
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.retry" = "Försök igen";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Det gick inte att hämta summor.";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.done" = "Klar";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Klicka på en produkt för att \n lägga till den i varukorgen";
@@ -11408,8 +11430,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Varukorg";
 
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "Gå till kassa";
+
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Rensa";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "Ingen internetanslutning";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Eventuella pågående beställningar kommer att gå förlorade.";
@@ -11432,14 +11460,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Det gick inte att läsa in produkterna";
 
+/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
+"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Avfärda";
+
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar. Lär dig mer";
+"pos.itemlistview.headerBanner.hint" = "Andra produkttyper, såsom variabel och virtuell, kommer att bli tillgängliga i framtida uppdateringar.";
+
+/* Link to more information within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.learnMoreHint" = "Lär dig mer";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerSubtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
+"pos.itemlistview.headerBanner.subtitle" = "Endast enkla fysiska produkter är tillgängliga med POS just nu.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerTitle" = "Visar endast enkla produkter";
+"pos.itemlistview.headerBanner.title" = "Visar endast enkla produkter";
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "Låt oss betjäna några kunder";

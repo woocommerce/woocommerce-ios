@@ -233,18 +233,22 @@ private extension HubMenuViewModel {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
-        // If hidden, modifies the safeAreaInsets so that the view controller's view can occupy the space left by the hidden tab bar.
-        // Otherwise resets safeAreaInsets
         mainTabBarController.tabBar.isHidden = isPointOfSaleActive
 
-        let bottomInset = 8.0
+        /*
+         When hidding the app's tab bar on POS initialization, we've observed a recurring issue with the UI not being updated appropiately,
+         leaving additional padding in the bottom rather than re-positioning components taking all the available space.
+         In order to address this issue we have to explicitely call for an update to the safeAreaInsets in order to trigger the layout update we need,
+         so that the view controller's view can occupy the space left by the hidden tab bar.
+         Updating the bottom UIEdgeInset to a non-zero value seems to be enough to trigger the UI layout refresh we need.
+         Ref: gh-13785
+         */
         if mainTabBarController.tabBar.isHidden {
+            let bottomInset = CGFloat.leastNonzeroMagnitude
             mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         } else {
             mainTabBarController.additionalSafeAreaInsets = .zero
         }
-
-        mainTabBarController.selectedViewController?.view.layoutIfNeeded()
     }
 
     // Disables foreground in-app notifications when Point of Sale is active

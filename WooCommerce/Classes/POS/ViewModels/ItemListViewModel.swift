@@ -34,7 +34,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
-    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { $isHeaderBannerDismissed }
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider
@@ -82,10 +81,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 extension ItemListViewModel {
     enum ItemListState: Equatable {
         case empty
-        // TODO:
-        // Differentiate between loading on entering POS mode and reloading, as the
-        // screens will be different:
-        // https://github.com/woocommerce/woocommerce-ios/issues/13286
         case loading
         case loaded([POSItem])
         case error(ErrorModel)

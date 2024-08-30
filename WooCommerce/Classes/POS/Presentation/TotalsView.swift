@@ -267,6 +267,12 @@ private extension TotalsView {
             topPadding: 40,
             bottomPadding: 40
         )
+
+        static let topAligned = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: 96,
+            bottomPadding: 96
+        )
     }
 
     private var cardReaderViewLayout: CardReaderViewLayout {
@@ -274,8 +280,18 @@ private extension TotalsView {
             return .primary
         }
 
-        if viewModel.paymentState == .validatingOrderError {
+        switch viewModel.paymentState {
+        case .validatingOrderError:
             return .outlined
+        case .paymentError:
+            return .topAligned
+        case .idle,
+                .acceptingCard,
+                .validatingOrder,
+                .preparingReader,
+                .processingPayment,
+                .cardPaymentSuccessful:
+            break
         }
 
         if viewModel.connectionStatus == .disconnected {

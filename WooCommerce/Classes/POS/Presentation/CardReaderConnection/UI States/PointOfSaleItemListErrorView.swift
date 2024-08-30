@@ -10,30 +10,32 @@ struct PointOfSaleItemListErrorView: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            POSHeaderTitleView(foregroundColor: .posSecondaryText)
-            Spacer()
-            VStack(alignment: .center) {
-                POSErrorExclamationMark()
-                    .padding(.bottom)
-                Text(error.title)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posTitleEmphasized)
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
-                Text(error.subtitle)
-                    .foregroundStyle(Color.posPrimaryText)
-                    .font(.posBodyRegular)
-                    .padding([.leading, .trailing])
-                    .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
-                Button(action: {
-                    onRetry?()
-                }, label: {
-                    Text(error.buttonText)
-                })
-                .buttonStyle(POSPrimaryButtonStyle())
-                .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
+        PointOfSaleItemListFullscreenView {
+            VStack {
+                Spacer()
+                VStack(alignment: .center) {
+                    POSErrorExclamationMark()
+                        .padding(.bottom)
+                    Text(error.title)
+                        .accessibilityAddTraits(.isHeader)
+                        .foregroundStyle(Color.posPrimaryText)
+                        .font(.posTitleEmphasized)
+                        .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+                    Text(error.subtitle)
+                        .foregroundStyle(Color.posPrimaryText)
+                        .font(.posBodyRegular)
+                        .padding([.leading, .trailing])
+                        .padding(.bottom, PointOfSaleItemListErrorLayout.verticalPadding)
+                    Button(action: {
+                        onRetry?()
+                    }, label: {
+                        Text(error.buttonText)
+                    })
+                    .buttonStyle(POSPrimaryButtonStyle())
+                    .frame(width: PointOfSaleItemListErrorLayout.buttonWidth)
+                }
+                Spacer()
             }
-            Spacer()
         }
     }
 }

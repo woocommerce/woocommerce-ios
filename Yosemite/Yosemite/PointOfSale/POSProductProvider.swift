@@ -69,9 +69,6 @@ public final class POSProductProvider: POSItemProvider {
                               productType: product.productType)
         }
     }
-
-    // TODO: Mechanism to reload/sync product data.
-    // https://github.com/woocommerce/woocommerce-ios/issues/12837
 }
 
 private extension POSProductProvider {

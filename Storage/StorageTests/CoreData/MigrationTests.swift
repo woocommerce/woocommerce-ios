@@ -2973,6 +2973,15 @@ final class MigrationTests: XCTestCase {
         }
 
         // When
+
+        // Before migrating, confirm that doing lightweight migration is possible
+        // see: https://developer.apple.com/documentation/coredata/migrating_your_data_model_automatically#2903987
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 114")))
+        let destinationModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 115")))
+        let inferredMappingModel = try NSMappingModel.inferredMappingModel(forSourceModel: sourceModel, destinationModel: destinationModel)
+        XCTAssertNotNil(inferredMappingModel, "Failed to infer mapping model. This may indicate that a heavyweight migration is required.")
+
+        // Start migration
         let targetContainer = try migrate(sourceContainer, to: "Model 115")
         let targetContext = targetContainer.viewContext
 

@@ -12,7 +12,14 @@ public protocol POSItem {
 extension POSItem {
     // Equatable conformance
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.itemID == rhs.itemID
+        lhs.itemID == rhs.itemID &&
+        lhs.productID == rhs.productID &&
+        lhs.name == rhs.name &&
+        lhs.price == rhs.price &&
+        lhs.formattedPrice == rhs.formattedPrice &&
+        lhs.itemCategories == rhs.itemCategories &&
+        lhs.productImageSource == rhs.productImageSource &&
+        lhs.productType == rhs.productType
     }
 }
 

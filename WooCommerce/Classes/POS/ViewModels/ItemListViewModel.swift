@@ -82,10 +82,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 extension ItemListViewModel {
     enum ItemListState: Equatable {
         case empty
-        // TODO:
-        // Differentiate between loading on entering POS mode and reloading, as the
-        // screens will be different:
-        // https://github.com/woocommerce/woocommerce-ios/issues/13286
         case loading
         case loaded([POSItem])
         case error(ErrorModel)

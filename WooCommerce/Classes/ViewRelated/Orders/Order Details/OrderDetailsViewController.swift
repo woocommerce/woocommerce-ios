@@ -480,29 +480,37 @@ private extension OrderDetailsViewController {
     }
 
     func navigateToCreateShippingLabelForm() {
-        let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
-        shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
-            if isOrderComplete {
-                self?.markOrderCompleteFromShippingLabels()
-            }
-        }
-        shippingLabelFormVC.onLabelSave = { [weak self] in
-            guard let self = self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
-                // Navigate back to order details when presented from push notification
-                if let orderLoaderVC = self?.parent as? OrderLoaderViewController {
-                    self?.navigationController?.popToViewController(orderLoaderVC, animated: true)
+        guard viewModel.dataSource.isEligibleForWooShipping else {
+            // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
+            let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
+                if isOrderComplete {
+                    self?.markOrderCompleteFromShippingLabels()
                 }
-                return
             }
-            syncEverything()
-            self.dismiss(animated: true)
-        }
-        shippingLabelFormVC.onCancel = { [weak self] in
-            self?.dismiss(animated: true)
+            shippingLabelFormVC.onLabelSave = { [weak self] in
+                guard let self = self, let navigationController = self.navigationController, navigationController.viewControllers.contains(self) else {
+                    // Navigate back to order details when presented from push notification
+                    if let orderLoaderVC = self?.parent as? OrderLoaderViewController {
+                        self?.navigationController?.popToViewController(orderLoaderVC, animated: true)
+                    }
+                    return
+                }
+                syncEverything()
+                self.dismiss(animated: true)
+            }
+            shippingLabelFormVC.onCancel = { [weak self] in
+                self?.dismiss(animated: true)
+            }
+
+            let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
+            navigationController?.present(shippingLabelNavigationController, animated: true)
+            return
         }
 
-        let shippingLabelNavigationController = WooNavigationController(rootViewController: shippingLabelFormVC)
-        navigationController?.present(shippingLabelNavigationController, animated: true)
+        let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController()
+        shippingLabelCreationVC.modalPresentationStyle = .overFullScreen
+        navigationController?.present(shippingLabelCreationVC, animated: true)
     }
 
     func markOrderCompleteWasPressed() {

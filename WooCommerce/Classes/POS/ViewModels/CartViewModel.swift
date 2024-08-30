@@ -46,6 +46,7 @@ final class CartViewModel: CartViewModelProtocol {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.insert(cartItem, at: 0)
+        itemToScrollToWhenCartUpdated = cartItem
 
         analytics.track(.pointOfSaleAddItemToCart)
     }
@@ -58,9 +59,7 @@ final class CartViewModel: CartViewModelProtocol {
         itemsInCart.removeAll()
     }
 
-    var itemToScrollToWhenCartUpdated: CartItem? {
-        return itemsInCart.last
-    }
+    var itemToScrollToWhenCartUpdated: CartItem?
 
     var itemsInCartLabel: String? {
         switch itemsInCart.count {

@@ -84,7 +84,7 @@ final class CartViewModelTests: XCTestCase {
         sut.addItemToCart(item)
         sut.addItemToCart(anotherItem)
         XCTAssertEqual(sut.itemsInCart.count, 2)
-        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [item, anotherItem].map { $0.name })
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [anotherItem, item].map { $0.name })
 
         // When
         let firstCartItem = try XCTUnwrap(sut.itemsInCart.first)
@@ -92,7 +92,7 @@ final class CartViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.itemsInCart.count, 1)
-        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [anotherItem.name])
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [item.name])
     }
 
     func test_cart_when_removeAllItemsFromCart_is_invoked_then_removes_all_items_from_cart() {

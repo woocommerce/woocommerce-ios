@@ -21,6 +21,7 @@ final class MediaPickingCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_showMediaPicker_tracks_correct_event_and_properties() throws {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,
@@ -44,6 +45,7 @@ final class MediaPickingCoordinatorTests: XCTestCase {
         assertEqual(("product_from_image_form"), eventProperties["flow"] as? String)
     }
 
+    @MainActor
     func test_showMediaPicker_tracks_correct_event_and_properties_when_source_is_product_media() throws {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,

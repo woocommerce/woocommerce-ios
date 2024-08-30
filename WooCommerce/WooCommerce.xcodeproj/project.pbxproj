@@ -2665,6 +2665,7 @@
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
 		DECEA4452C8172A400C28C10 /* ProductImagePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECEA4442C8172A400C28C10 /* ProductImagePickerViewModel.swift */; };
 		DECEA4472C81778300C28C10 /* ProductImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECEA4462C81778300C28C10 /* ProductImagePickerView.swift */; };
+		DECEA4492C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECEA4482C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift */; };
 		DED039272BC7934F005D0571 /* StoreStatsChartViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED039262BC7934F005D0571 /* StoreStatsChartViewModelTests.swift */; };
 		DED039292BC7A04B005D0571 /* StorePerformanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED039282BC7A04B005D0571 /* StorePerformanceView.swift */; };
 		DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED0392A2BC7A076005D0571 /* StorePerformanceViewModel.swift */; };
@@ -5688,6 +5689,7 @@
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
 		DECEA4442C8172A400C28C10 /* ProductImagePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagePickerViewModel.swift; sourceTree = "<group>"; };
 		DECEA4462C81778300C28C10 /* ProductImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagePickerView.swift; sourceTree = "<group>"; };
+		DECEA4482C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagePickerViewModelTests.swift; sourceTree = "<group>"; };
 		DED039262BC7934F005D0571 /* StoreStatsChartViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartViewModelTests.swift; sourceTree = "<group>"; };
 		DED039282BC7A04B005D0571 /* StorePerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceView.swift; sourceTree = "<group>"; };
 		DED0392A2BC7A076005D0571 /* StorePerformanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceViewModel.swift; sourceTree = "<group>"; };
@@ -6891,6 +6893,7 @@
 				DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */,
 				02F3A6852A619270004CD2E8 /* WordPressMediaLibraryImagePickerCoordinatorTests.swift */,
 				EE6C6B6D2C65DC4100632BDA /* WordPressMediaLibraryPickerDataSourceTests.swift */,
+				DECEA4482C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -16859,6 +16862,7 @@
 				7E7C5F8B2719AEDA00315B61 /* EditProductCategoryListViewModelTests.swift in Sources */,
 				0247F510286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift in Sources */,
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
+				DECEA4492C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				579CDF01274D811D00E8903D /* StoreStatsUsageTracksEventEmitterTests.swift in Sources */,
 				EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */,

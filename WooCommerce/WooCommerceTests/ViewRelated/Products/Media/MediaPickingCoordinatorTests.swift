@@ -13,6 +13,10 @@ final class MediaPickingCoordinatorTests: XCTestCase {
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = UIViewController()
+        window.makeKeyAndVisible()
+        window.rootViewController = sourceViewController
     }
 
     override func tearDown() {
@@ -69,4 +73,24 @@ final class MediaPickingCoordinatorTests: XCTestCase {
         assertEqual(("blaze_edit_ad_form"), eventProperties["flow"] as? String)
     }
 
+    @MainActor
+    func test_showMediaPicker_present_product_image_picker_when_appropriate() {
+        // Given
+        let coordinator = MediaPickingCoordinator(siteID: siteID,
+                                                  imagesOnly: true,
+                                                  allowsMultipleSelections: true,
+                                                  flow: .blazeEditAdForm,
+                                                  analytics: analytics,
+                                                  onCameraCaptureCompletion: { _, _ in },
+                                                  onDeviceMediaLibraryPickerCompletion: { _ in },
+                                                  onWPMediaPickerCompletion: { _ in })
+
+        // When
+        coordinator.showMediaPicker(source: .productMedia(productID: 321), from: sourceViewController)
+
+        // Then
+        waitUntil { [self] in
+            sourceViewController.presentedViewController is ProductImagePickerViewController
+        }
+    }
 }

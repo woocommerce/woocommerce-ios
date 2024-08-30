@@ -27,7 +27,7 @@ struct CustomFieldsViewModel: Identifiable {
 
     }
 
-    init(metadata: OrderMetaData) {
+    init(metadata: MetaData) {
         // Create a URL out of the metadata value, if it is a valid URL that can be opened on device
         var contentURL: URL?
         if metadata.value.isValidURL(), let url = URL(string: metadata.value), UIApplication.shared.canOpenURL(url) {

@@ -12,7 +12,6 @@ protocol ItemListViewModelProtocol: ObservableObject {
     var selectedItemPublisher: AnyPublisher<POSItem, Never> { get }
     var itemsPublisher: Published<[POSItem]>.Publisher { get }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { get }
-    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { get }
 
     func select(_ item: POSItem)
     func populatePointOfSaleItems() async

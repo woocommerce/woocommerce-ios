@@ -95,9 +95,9 @@ struct CartView: View {
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,
-                           let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
+                           let itemToScrollTo = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                             withAnimation {
-                                proxy.scrollTo(last)
+                                proxy.scrollTo(itemToScrollTo)
                             }
                         }
                     }

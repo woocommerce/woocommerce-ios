@@ -1,6 +1,46 @@
 import Kingfisher
+import Alamofire
 import SwiftUI
 import struct Yosemite.ProductImage
+
+final class ProductImagePickerViewController: UIHostingController<ProductImagePickerView> {
+    private var onSelection: ProductImagePickerView.Completion
+
+    init(viewModel: ProductImagePickerViewModel,
+         onSelection: @escaping ProductImagePickerView.Completion) {
+        self.onSelection = onSelection
+        super.init(rootView: ProductImagePickerView(viewModel: viewModel))
+        rootView.onSelection = { [weak self] image in
+            guard let self else { return }
+            onSelection(image)
+            self.dismiss(animated: true)
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Set presentation delegate to track the user dismiss flow event
+        if let navigationController = navigationController {
+            navigationController.presentationController?.delegate = self
+        } else {
+            presentationController?.delegate = self
+        }
+    }
+
+    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension ProductImagePickerViewController: UIAdaptivePresentationControllerDelegate {
+
+    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+        onSelection(nil)
+    }
+}
 
 /// View to pick an image from an existing product.
 ///
@@ -10,15 +50,11 @@ struct ProductImagePickerView: View {
     @ObservedObject private var viewModel: ProductImagePickerViewModel
     @State private var selectedImage: ProductImage?
 
-    private var onSelection: (ProductImage) -> Void
-    private var onDismiss: () -> Void
+    // To be set in the hosting controller
+    var onSelection: ((ProductImage?) -> Void)?
 
-    init(viewModel: ProductImagePickerViewModel,
-         onSelection: @escaping Completion,
-         onDismiss: @escaping () -> Void) {
+    init(viewModel: ProductImagePickerViewModel) {
         self.viewModel = viewModel
-        self.onSelection = onSelection
-        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -40,7 +76,7 @@ struct ProductImagePickerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
-                        onDismiss()
+                        onSelection?(nil)
                     }
                 }
             }
@@ -69,7 +105,7 @@ private extension ProductImagePickerView {
                     })
                     .onTapGesture {
                         selectedImage = image
-                        onSelection(image)
+                        onSelection?(image)
                     }
             }
         }
@@ -105,7 +141,5 @@ extension ProductImagePickerView {
 }
 
 #Preview {
-    ProductImagePickerView(viewModel: .init(siteID: 123, productID: 2),
-                           onSelection: { _ in },
-                           onDismiss: {})
+    ProductImagePickerView(viewModel: .init(siteID: 123, productID: 2))
 }

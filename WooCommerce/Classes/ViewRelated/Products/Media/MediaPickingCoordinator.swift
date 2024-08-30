@@ -164,13 +164,9 @@ private extension MediaPickingCoordinator {
     @MainActor
     func showProductImagePicker(productID: Int64, from origin: UIViewController) {
         let viewModel = ProductImagePickerViewModel(siteID: siteID, productID: productID)
-        let viewController = UIHostingController(rootView: ProductImagePickerView(viewModel: viewModel, onSelection: { [weak self] selectedImage in
+        let viewController = ProductImagePickerViewController(viewModel: viewModel, onSelection: { [weak self] selectedImage in
             self?.onProductImagePickerCompletion?(selectedImage)
-            origin.dismiss(animated: true)
-        }, onDismiss: { [weak self] in
-            self?.onProductImagePickerCompletion?(nil)
-            origin.dismiss(animated: true)
-        }))
+        })
         origin.present(viewController, animated: true)
         productImagePickerViewModel = viewModel
     }

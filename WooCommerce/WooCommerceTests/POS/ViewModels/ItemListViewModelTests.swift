@@ -310,6 +310,14 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(receivedItems.first?.productID, firstItem.productID)
         XCTAssertEqual(receivedItems.last?.productID, lastItem.productID)
     }
+
+    func test_simpleProductsInfoButtonTapped_when_tapped_then_showSimpleProductsModal_toggled() {
+        XCTAssertFalse(sut.showSimpleProductsModal)
+
+        sut.simpleProductsInfoButtonTapped()
+
+        XCTAssertTrue(sut.showSimpleProductsModal)
+    }
 }
 
 private extension ItemListViewModelTests {

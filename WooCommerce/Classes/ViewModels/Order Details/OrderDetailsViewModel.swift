@@ -242,12 +242,6 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        Task { @MainActor in
-            await syncShippingLabels()
-            group.leave()
-        }
-
-        group.enter()
         syncNotes { _ in
             group.leave()
         }
@@ -267,10 +261,18 @@ extension OrderDetailsViewModel {
 
         group.enter()
         Task { @MainActor in
-            let isEligible = await checkShippingLabelCreationEligibility()
-            dataSource.isEligibleForShippingLabelCreation = isEligible
-            onReloadSections?()
-            group.leave()
+            defer {
+                onReloadSections?()
+                group.leave()
+            }
+            // Check Woo Shipping support first, to ensure correct flows are enabled for shipping labels.
+            dataSource.isEligibleForWooShipping = await isWooShippingSupported()
+
+            // Then sync shipping labels and check creation eligibility concurrently.
+            async let syncShippingLabels: () = syncShippingLabels()
+            async let isEligibleForShippingLabelCreation = checkShippingLabelCreationEligibility()
+            _ = await syncShippingLabels
+            dataSource.isEligibleForShippingLabelCreation = await isEligibleForShippingLabelCreation
         }
 
         group.enter()

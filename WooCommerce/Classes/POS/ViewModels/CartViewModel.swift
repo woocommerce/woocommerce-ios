@@ -45,7 +45,7 @@ final class CartViewModel: CartViewModelProtocol {
 
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.append(cartItem)
+        itemsInCart.insert(cartItem, at: 0)
 
         analytics.track(.pointOfSaleAddItemToCart)
     }

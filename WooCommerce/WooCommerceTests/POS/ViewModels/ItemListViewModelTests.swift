@@ -266,6 +266,50 @@ final class ItemListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(sut.state.isLoaded, false)
     }
+
+    func test_populatePointOfSaleItems_when_no_items_are_loaded_then_itemsPublisher_emits_no_items() async throws {
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+
+        let expectation = XCTestExpectation(description: "Publisher should emit nothing")
+        var receivedItems: [POSItem] = []
+        sut.itemsPublisher.sink { items in
+            receivedItems = items
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertTrue(sut.state == .empty)
+        XCTAssertTrue(receivedItems.isEmpty)
+    }
+
+    func test_populatePointOfSaleItems_when_items_are_loaded_then_itemsPublisher_emits_items() async throws {
+        // Given
+        let items = Self.makeItems()
+        let expectation = XCTestExpectation(description: "Publisher should emit populated items")
+        var receivedItems: [POSItem] = []
+        sut.itemsPublisher.sink { items in
+            receivedItems = items
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+        guard let firstItem = items.first, let lastItem = items.last else {
+            return XCTFail("Expected two items, got \(receivedItems).")
+        }
+
+        // Then
+        XCTAssertTrue(sut.state == .loaded(receivedItems))
+        XCTAssertEqual(receivedItems.first?.productID, firstItem.productID)
+        XCTAssertEqual(receivedItems.last?.productID, lastItem.productID)
+    }
 }
 
 private extension ItemListViewModelTests {

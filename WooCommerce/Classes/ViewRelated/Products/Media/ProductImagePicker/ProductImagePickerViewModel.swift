@@ -44,7 +44,7 @@ private extension ProductImagePickerViewModel {
             productImages = product.toReadOnly().images
         }
     }
-    
+
     @MainActor
     func synchronizeProduct() async {
         await withCheckedContinuation { continuation in

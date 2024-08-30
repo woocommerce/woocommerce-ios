@@ -223,13 +223,14 @@ private extension CartView {
             Spacer()
             // By designs, the text should be vertically centred with the image 40px above it.
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
-            // Instead, we can centre the text, and then put the image in an offset overlay.
+            // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
+            // avoids issues when the text size is changed through dynamic type.
             Text(Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
                 .lineSpacing(Constants.cartEmptyViewTextLineHeight)
                 .foregroundColor(Color.posTertiaryText)
                 .multilineTextAlignment(.center)
-                .overlay(alignment: .center) {
+                .overlay(alignment: .top) {
                     Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize, alignment: .bottom)

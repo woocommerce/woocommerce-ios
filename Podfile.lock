@@ -21,8 +21,6 @@ PODS:
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
-  - ViewControllerPresentationSpy (7.0.0)
-  - ViewInspector (0.9.11)
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
     - WordPress-Aztec-iOS (= 1.19.10)
@@ -68,8 +66,6 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
-  - ViewControllerPresentationSpy (~> 7.0)
-  - ViewInspector
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressAuthenticator (~> 9.0.9)
   - WordPressShared (~> 2.1)
@@ -98,8 +94,6 @@ SPEC REPOS:
     - SVProgressHUD
     - SwiftLint
     - UIDeviceIdentifier
-    - ViewControllerPresentationSpy
-    - ViewInspector
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
     - WordPressShared
@@ -131,8 +125,6 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
-  ViewControllerPresentationSpy: 05d5cd89a485a2be13008fb56d3de8c8aa821d31
-  ViewInspector: f251d90316dce2b58ebe5d7d88bc07643c055c78
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
   WordPressAuthenticator: e0c88dd994799595a4a4fafb801589f650af822c
@@ -150,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: 98a22140d1c85a7f58c5287d4d1502f362674eab
+PODFILE CHECKSUM: 60414588e43bf7bc146dc0c04130e78fdb3f2ece
 
 COCOAPODS: 1.15.2

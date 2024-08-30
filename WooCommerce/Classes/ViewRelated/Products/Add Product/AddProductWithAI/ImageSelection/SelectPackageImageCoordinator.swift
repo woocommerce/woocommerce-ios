@@ -53,7 +53,9 @@ final class SelectPackageImageCoordinator: Coordinator {
             }
         })
         self.mediaPickingCoordinator = mediaPickingCoordinator
-        mediaPickingCoordinator.showMediaPicker(source: mediaSource, from: navigationController)
+        Task { @MainActor in
+            mediaPickingCoordinator.showMediaPicker(source: mediaSource, from: navigationController)
+        }
     }
 }
 

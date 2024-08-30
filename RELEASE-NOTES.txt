@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.3
+-----
+
+
 20.2
 -----
 - [*] Hub Menu: Fixed voiceover issue on the menu items. [https://github.com/woocommerce/woocommerce-ios/pull/13690]

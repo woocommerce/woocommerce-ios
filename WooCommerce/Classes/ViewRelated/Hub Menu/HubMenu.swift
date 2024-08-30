@@ -163,7 +163,7 @@ private extension HubMenu {
                     PointOfSaleEntryPointView(
                         itemProvider: viewModel.posItemProvider,
                         onPointOfSaleModeActiveStateChange: { isEnabled in
-                            AppDelegate.shared.updateSharedConfiguration(isEnabled)
+                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
                         },
                         cardPresentPaymentService: cardPresentPaymentService,
                         orderService: orderService,

@@ -110,6 +110,24 @@
         }
       },
       {
+        "package": "ViewControllerPresentationSpy",
+        "repositoryURL": "https://github.com/jonreid/ViewControllerPresentationSpy",
+        "state": {
+          "branch": null,
+          "revision": "1d7422b88f03065e3f25eeef6cae085cecd94911",
+          "version": "7.0.0"
+        }
+      },
+      {
+        "package": "ViewInspector",
+        "repositoryURL": "https://github.com/nalexn/ViewInspector",
+        "state": {
+          "branch": null,
+          "revision": "7b1732802ffe30e6a67754bda6c7819e5cb0eb70",
+          "version": "0.9.11"
+        }
+      },
+      {
         "package": "XCUITestHelpers",
         "repositoryURL": "https://github.com/Automattic/XCUITestHelpers",
         "state": {

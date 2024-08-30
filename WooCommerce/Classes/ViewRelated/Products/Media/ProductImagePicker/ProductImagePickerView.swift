@@ -23,14 +23,16 @@ struct ProductImagePickerView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            Group {
                 if viewModel.productImages.isNotEmpty {
-                    imageGridView
+                    ScrollView {
+                        imageGridView
+                    }
                 } else if viewModel.loadingData {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                 } else {
-                    EmptyState(title: Localization.emptyStateTitle,
-                               image: UIImage(systemName: Layout.emptyStateImageName))
+                    EmptyState(title: Localization.emptyStateTitle)
+                        .frame(maxHeight: .infinity)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -39,6 +41,13 @@ struct ProductImagePickerView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
                         onDismiss()
+                    }
+                }
+                if let image = selectedImage {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.select) {
+                            onSelection(image)
+                        }
                     }
                 }
             }
@@ -58,19 +67,12 @@ private extension ProductImagePickerView {
             ForEach(viewModel.productImages, id: \.imageID) { image in
                 KFImage(URL(string: image.src)!)
                     .resizable()
-                    .placeholder({
-                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    })
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .clipped()
-                    .aspectRatio(Layout.gridAspectRatio, contentMode: .fit)
+                    .aspectRatio(Layout.gridAspectRatio, contentMode: .fill)
                     .if(selectedImage == image, transform: { view in
                         view.border(Color.accentColor, width: Layout.gridBorderWidth)
                     })
                     .onTapGesture {
                         selectedImage = image
-                        onSelection(image)
                     }
             }
         }
@@ -79,10 +81,10 @@ private extension ProductImagePickerView {
 
 extension ProductImagePickerView {
     enum Layout {
-        static let gridSpacing: CGFloat = 3
+        static let gridSpacing: CGFloat = 2
         static let gridColumnMinimumSize: CGFloat = 100
         static let gridAspectRatio: CGFloat = 1
-        static let gridBorderWidth: CGFloat = 2
+        static let gridBorderWidth: CGFloat = 4
         static let emptyStateImageName = "photo.on.rectangle.angled"
     }
 
@@ -96,6 +98,11 @@ extension ProductImagePickerView {
             "productImagePickerView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the product image picker screen"
+        )
+        static let select = NSLocalizedString(
+            "productImagePickerView.select",
+            value: "Select",
+            comment: "Button to select an item on the product image picker screen"
         )
         static let emptyStateTitle = NSLocalizedString(
             "productImagePickerView.emptyStateTitle",

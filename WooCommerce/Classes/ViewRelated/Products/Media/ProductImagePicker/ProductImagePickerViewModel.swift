@@ -10,7 +10,7 @@ final class ProductImagePickerViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
 
-    @Published private(set) var loadingData = false
+    @Published private(set) var loadingData = true
     @Published private(set) var productImages: [ProductImage] = []
 
     init(siteID: Int64,

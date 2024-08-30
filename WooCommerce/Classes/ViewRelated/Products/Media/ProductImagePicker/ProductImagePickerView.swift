@@ -43,13 +43,6 @@ struct ProductImagePickerView: View {
                         onDismiss()
                     }
                 }
-                if let image = selectedImage {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(Localization.select) {
-                            onSelection(image)
-                        }
-                    }
-                }
             }
         }
         .task {
@@ -67,12 +60,16 @@ private extension ProductImagePickerView {
             ForEach(viewModel.productImages, id: \.imageID) { image in
                 KFImage(URL(string: image.src)!)
                     .resizable()
-                    .aspectRatio(Layout.gridAspectRatio, contentMode: .fill)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                    .clipped()
+                    .aspectRatio(Layout.gridAspectRatio, contentMode: .fit)
                     .if(selectedImage == image, transform: { view in
                         view.border(Color.accentColor, width: Layout.gridBorderWidth)
                     })
                     .onTapGesture {
                         selectedImage = image
+                        onSelection(image)
                     }
             }
         }
@@ -98,11 +95,6 @@ extension ProductImagePickerView {
             "productImagePickerView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the product image picker screen"
-        )
-        static let select = NSLocalizedString(
-            "productImagePickerView.select",
-            value: "Select",
-            comment: "Button to select an item on the product image picker screen"
         )
         static let emptyStateTitle = NSLocalizedString(
             "productImagePickerView.emptyStateTitle",

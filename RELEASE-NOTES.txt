@@ -12,9 +12,9 @@
 - [*] Store picker: fixed the irresponsive Continue button in the site discovery flow. [https://github.com/woocommerce/woocommerce-ios/pull/13766]
 - [*] Products: Fixed a bug where editing the product price did not work as expected, depending on the store's currency settings. [https://github.com/woocommerce/woocommerce-ios/pull/13768]
 - [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
-- [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
 - [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 - [Internal] Custom fields: Renamed the OrderMetaData entity to MetaData [https://github.com/woocommerce/woocommerce-ios/pull/13736]
+- [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
 
 20.1
 -----

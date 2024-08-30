@@ -34,7 +34,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     var itemsPublisher: Published<[POSItem]>.Publisher { $items }
     var statePublisher: Published<ItemListViewModel.ItemListState>.Publisher { $state }
-    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { $isHeaderBannerDismissed }
 
     init(itemProvider: POSItemProvider) {
         self.itemProvider = itemProvider

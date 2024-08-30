@@ -118,7 +118,6 @@ extension ProductImagePickerView {
         static let gridColumnMinimumSize: CGFloat = 100
         static let gridAspectRatio: CGFloat = 1
         static let gridBorderWidth: CGFloat = 4
-        static let emptyStateImageName = "photo.on.rectangle.angled"
     }
 
     enum Localization {

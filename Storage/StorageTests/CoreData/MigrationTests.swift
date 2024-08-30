@@ -2952,6 +2952,71 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(objective.entity.attributesByName["generalDescription"])
         XCTAssertNotNil(objective.entity.attributesByName["suitableForDescription"])
     }
+
+    func test_migrating_from_114_to_115_renames_OrderMetaData_to_MetaData() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 114")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderMetaData = insertOrderMetaData(to: sourceContext)
+        order.setValue(NSSet(array: [orderMetaData]), forKey: "customFields")
+        try sourceContext.save()
+
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "OrderMetaData", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "MetaData", in: sourceContext))
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderMetaData"), 1)
+
+        let originalOrderMetaData = try XCTUnwrap(sourceContext.first(entityName: "OrderMetaData"))
+        let originalAttributes = originalOrderMetaData.entity.attributesByName.keys.reduce(into: [String: Any]()) { result, key in
+            result[key] = originalOrderMetaData.value(forKey: key)
+        }
+
+        // When
+
+        // Before migrating, confirm that doing lightweight migration is possible
+        // see: https://developer.apple.com/documentation/coredata/migrating_your_data_model_automatically#2903987
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 114")))
+        let destinationModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 115")))
+        let inferredMappingModel = try NSMappingModel.inferredMappingModel(forSourceModel: sourceModel, destinationModel: destinationModel)
+        XCTAssertNotNil(inferredMappingModel, "Failed to infer mapping model. This may indicate that a heavyweight migration is required.")
+
+        // Start migration
+        let targetContainer = try migrate(sourceContainer, to: "Model 115")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        // Check that OrderMetaData entity no longer exists
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderMetaData", in: targetContext))
+
+        // Check that MetaData entity exists
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "MetaData", in: targetContext))
+
+        // Check that the data has been migrated
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 1)
+
+        // Check that the relationship with Order is correct and compare migrated data
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let migratedMetaData = try XCTUnwrap(migratedOrder.value(forKey: "customFields") as? NSSet)
+        XCTAssertEqual(migratedMetaData.count, 1)
+
+        let migratedMetaDataObject = try XCTUnwrap(migratedMetaData.anyObject() as? NSManagedObject)
+        XCTAssertTrue(migratedMetaDataObject.entity.name == "MetaData")
+
+        // Compare attribute values
+        for (attribute, originalValue) in originalAttributes {
+            let migratedValue = migratedMetaDataObject.value(forKey: attribute)
+            XCTAssertEqual(originalValue as? NSObject, migratedValue as? NSObject, "Attribute '\(attribute)' mismatch")
+        }
+
+        // Test adding new MetaData
+        let newMetaData = insertMetaData(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "customFields").add(newMetaData)
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 2)
+        XCTAssertEqual((migratedOrder.value(forKey: "customFields") as? NSSet)?.count, 2)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3788,5 +3853,14 @@ private extension MigrationTests {
             "suitableForDescription": "E-commerce, retailers, subscription services."
         ])
         return method
+    }
+
+    @discardableResult
+    func insertMetaData(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "MetaData", properties: [
+            "metadataID": 18149,
+            "key": "New Metadata Key",
+            "value": "New Metadata Value"
+        ])
     }
 }

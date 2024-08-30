@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22758" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -161,6 +161,12 @@
         <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="actions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InboxAction" inverseName="inboxNote" inverseEntity="InboxAction"/>
     </entity>
+    <entity name="MetaData" representedClassName="MetaData" elementID="OrderMetaData" versionHashModifier="1" syncable="YES">
+        <attribute name="key" optional="YES" attributeType="String"/>
+        <attribute name="metadataID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="value" optional="YES" attributeType="String"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="customFields" inverseEntity="Order"/>
+    </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
         <attribute name="body" optional="YES" attributeType="Binary"/>
         <attribute name="deleteInProgress" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -232,7 +238,7 @@
         <relationship name="appliedGiftCards" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderGiftCard" inverseName="order" inverseEntity="OrderGiftCard"/>
         <relationship name="attributionInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderAttributionInfo" inverseName="order" inverseEntity="OrderAttributionInfo"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
-        <relationship name="customFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderMetaData" inverseName="order" inverseEntity="OrderMetaData"/>
+        <relationship name="customFields" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MetaData" inverseName="order" inverseEntity="MetaData"/>
         <relationship name="fees" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote"/>
@@ -338,12 +344,6 @@
         <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="taxes" inverseEntity="OrderItemRefund"/>
-    </entity>
-    <entity name="OrderMetaData" representedClassName="OrderMetaData" syncable="YES">
-        <attribute name="key" optional="YES" attributeType="String"/>
-        <attribute name="metadataID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="value" optional="YES" attributeType="String"/>
-        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="customFields" inverseEntity="Order"/>
     </entity>
     <entity name="OrderNote" representedClassName="OrderNote" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>

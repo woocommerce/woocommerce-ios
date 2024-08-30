@@ -1,7 +1,6 @@
 import Foundation
 
 enum PointOfSaleAssets: CaseIterable {
-    case processingPayment
     case readyForPayment
     case readerConnectionScanning
     case readerConnectionDoYouWantToConnect
@@ -13,8 +12,6 @@ enum PointOfSaleAssets: CaseIterable {
 
     var imageName: String {
         switch self {
-        case .processingPayment:
-            "pos-processing-payment"
         case .readyForPayment:
             "pos-ready-for-payment"
         case .readerConnectionScanning:

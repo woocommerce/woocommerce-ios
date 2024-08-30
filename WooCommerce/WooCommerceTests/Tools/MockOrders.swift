@@ -16,7 +16,7 @@ final class MockOrders {
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
                    taxes: [OrderTaxLine] = [],
-                   customFields: [OrderMetaData] = [],
+                   customFields: [MetaData] = [],
                    giftCards: [OrderGiftCard] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,

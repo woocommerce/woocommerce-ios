@@ -541,7 +541,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
@@ -550,7 +550,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -561,7 +561,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
@@ -572,7 +572,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
     }
 

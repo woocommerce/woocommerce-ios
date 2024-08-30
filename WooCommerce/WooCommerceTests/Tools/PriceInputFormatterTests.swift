@@ -48,6 +48,16 @@ final class PriceInputFormatterTests: XCTestCase {
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
+    func testLeadingMinusSymbolIsValid() {
+        let input = "-"
+        XCTAssertTrue(formatter.isValid(input: input))
+    }
+
+    func testMultipleMinusSymbolsAreInvalid() {
+        let input = "--15"
+        XCTAssertFalse(formatter.isValid(input: input))
+    }
+
     // MARK: test cases for `format(input:)`
 
     func testFormattingEmptyInput() {
@@ -123,6 +133,18 @@ final class PriceInputFormatterTests: XCTestCase {
 
         let input = "189,293,891,203.20"
         XCTAssertEqual(formatter.format(input: input), "189293891203.20")
+    }
+
+    func testFormattingNegativePriceInput() {
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
+        let input = "-12.34"
+        XCTAssertEqual(formatter.format(input: input), "-12.34")
     }
 
     func test_value_is_correct() {

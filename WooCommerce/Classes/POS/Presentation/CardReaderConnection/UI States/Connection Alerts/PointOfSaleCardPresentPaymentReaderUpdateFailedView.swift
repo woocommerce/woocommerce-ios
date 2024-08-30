@@ -8,23 +8,24 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .font(POSFontStyle.posTitleEmphasized)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
 
-            Image(decorative: viewModel.imageName)
-
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                Button(viewModel.retryButtonViewModel.title,
-                       action: viewModel.retryButtonViewModel.actionHandler)
-                .buttonStyle(PrimaryButtonStyle())
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
             }
+            .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
+
+            Button(viewModel.retryButtonViewModel.title,
+                   action: viewModel.retryButtonViewModel.actionHandler)
+            .buttonStyle(POSPrimaryButtonStyle())
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

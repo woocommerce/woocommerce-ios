@@ -107,7 +107,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     }
 
     func didTapApplyDuration(dayCount: Double, since startDate: Date) {
-        analytics.track(event: .Blaze.Budget.changedDuration(Int(dayCount)))
+        analytics.track(event: .Blaze.Budget.changedSchedule(duration: Int(dayCount),
+                                                             hasEndDate: hasEndDate))
         self.dayCount = dayCount
         self.startDate = startDate
     }
@@ -129,7 +130,8 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         let days = Int(dayCount)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: dayCount)
         analytics.track(event: .Blaze.Budget.updateTapped(duration: days,
-                                                          totalBudget: totalBudget))
+                                                          totalBudget: totalBudget,
+                                                          hasEndDate: hasEndDate))
         completionHandler(dailyAmount, !hasEndDate, days, startDate)
     }
 

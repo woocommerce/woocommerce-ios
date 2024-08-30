@@ -13,21 +13,18 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack {
             Text(Localization.headline)
-                .font(.headline)
+                .font(.posTitleEmphasized)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
 
-            List(readerIDs, id: \.self) { readerID in
-                VStack {
-                    readerRow(readerID: readerID)
+            scanningText()
 
-                    if readerID == readerIDs.last {
-                        scanningText()
-                    }
-                }
+            List(readerIDs, id: \.self) { readerID in
+                readerRow(readerID: readerID)
                 .listRowSeparator(.hidden)
+                .listRowBackground(Color.posPrimaryBackground)
             }
             .listStyle(.plain)
 
@@ -36,7 +33,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
             }) {
                 Text(Localization.cancel)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(POSSecondaryButtonStyle())
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
@@ -48,19 +45,23 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
     @ViewBuilder func readerRow(readerID: String) -> some View {
         HStack {
             Text(readerID)
+                .font(.posBodyRegular)
             Spacer()
             Button(Localization.connect) {
                 connect(readerID)
             }
-            .buttonStyle(TextButtonStyle())
+            .buttonStyle(POSTextButtonStyle())
         }
+        .padding(.vertical, Layout.rowVerticalPadding)
     }
 
     @ViewBuilder func scanningText() -> some View {
         HStack(spacing: Layout.horizontalSpacing) {
-            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            Spacer()
+            ProgressView()
+                .progressViewStyle(POSProgressViewStyle(size: 20, lineWidth: 4))
             Text(Localization.scanningLabel)
-                .font(.footnote)
+                .font(.posBodyRegular)
             Spacer()
         }
     }
@@ -100,6 +101,7 @@ private extension PointOfSaleCardPresentPaymentFoundMultipleReadersView {
         static let headerPadding: EdgeInsets = .init(top: 20, leading: 4, bottom: 20, trailing: 4)
         static let buttonPadding: EdgeInsets = .init(top: 16, leading: 0, bottom: 16, trailing: 0)
         static let horizontalSpacing: CGFloat = 16
+        static let rowVerticalPadding: CGFloat = 4
     }
 }
 

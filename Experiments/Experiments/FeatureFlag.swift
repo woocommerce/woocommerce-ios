@@ -183,4 +183,8 @@ public enum FeatureFlag: Int {
     /// Supports evergreen campaigns for Blaze
     ///
     case blazeEvergreenCampaigns
+
+    /// Enables revamped shipping label flow for Woo Shipping extension
+    ///
+    case revampedShippingLabelCreation
 }

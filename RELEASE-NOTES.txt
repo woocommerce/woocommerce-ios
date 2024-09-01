@@ -3,7 +3,7 @@
 
 20.3
 -----
-
+- [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
 
 20.2
 -----
@@ -59,7 +59,6 @@
 -----
 - [*] Enabled Blaze for JCP sites with Blaze plugin [https://github.com/woocommerce/woocommerce-ios/pull/13500]
 - [**] Fixed Collect Payment from the menu on iPads running iOS 16 [https://github.com/woocommerce/woocommerce-ios/pull/13491]
-- [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
 - [Internal] Added missing events for custom range on the stats dashboard card. [https://github.com/woocommerce/woocommerce-ios/pull/13506]
 - [**] Disable focus for order rows on iPadOS 16 and 16.1 to avoid crashes. [https://github.com/woocommerce/woocommerce-ios/pull/13512]
 - [*] Added Universal Link to Create Order: /mobile/orders/create. [https://github.com/woocommerce/woocommerce-ios/pull/13541]

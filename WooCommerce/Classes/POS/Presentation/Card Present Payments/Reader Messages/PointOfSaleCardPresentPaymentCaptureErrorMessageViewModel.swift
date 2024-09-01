@@ -1,7 +1,8 @@
 import Foundation
 import enum Yosemite.CardReaderServiceError
 
-final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: ObservableObject {
+final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: ObservableObject, Equatable {
+    let id = UUID()
     let title = Localization.title
     let message = Localization.message
     let nextStep = Localization.nextStep
@@ -22,6 +23,16 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: Observabl
 
     func onAppear() {
         showsInfoSheet = true
+    }
+
+    static func == (lhs: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel, rhs: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.message == rhs.message  &&
+        lhs.nextStep == rhs.nextStep &&
+        lhs.tryAgainButtonViewModel == rhs.tryAgainButtonViewModel &&
+        lhs.newOrderButtonViewModel == rhs.newOrderButtonViewModel &&
+        lhs.showsInfoSheet == rhs.showsInfoSheet
     }
 }
 

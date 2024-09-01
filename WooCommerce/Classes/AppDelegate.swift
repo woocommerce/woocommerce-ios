@@ -138,6 +138,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             jetpackSetupCoordinator = coordinator
             return coordinator.handleAuthenticationUrl(url)
         }
+        if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
+            universalLinkRouter.handle(url: url)
+            return true
+        }
         return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
@@ -270,27 +274,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         DDLogDebug("Received memory warning: Available memory - \(size)")
     }
 }
-
-// MARK: - Helper method for WooCommerce POS
-//
-extension AppDelegate {
-    func updateSharedConfiguration(_ isPointOfSaleActive: Bool) {
-        // Show/hide app's tab bars
-        guard let tabBarController = AppDelegate.shared.tabBarController else {
-            return
-        }
-        tabBarController.tabBar.isHidden = isPointOfSaleActive
-        tabBarController.selectedViewController?.view.layoutIfNeeded()
-
-        // Enable/disable foreground in-app notifications
-        if isPointOfSaleActive {
-            ServiceLocator.pushNotesManager.disableInAppNotifications()
-        } else {
-            ServiceLocator.pushNotesManager.enableInAppNotifications()
-        }
-    }
-}
-
 
 // MARK: - Initialization Methods
 //

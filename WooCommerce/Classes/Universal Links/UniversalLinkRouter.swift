@@ -9,6 +9,7 @@ struct UniversalLinkRouter {
     private let matcher: RouteMatcher
     private let bouncingURLOpener: URLOpener
     private let analyticsTracker: UniversalLinkRouterAnalyticsTracking?
+    private let routes: [Route]
 
     /// The order of the passed Route array matters, as given two routes that handle a path only the first
     /// will be called to perform its action. If no route matches the path it uses the `bouncingURLOpener` to
@@ -18,8 +19,24 @@ struct UniversalLinkRouter {
          bouncingURLOpener: URLOpener = ApplicationURLOpener(),
          analyticsTracker: UniversalLinkRouterAnalyticsTracking? = UniversalLinkAnalyticsTracker(analytics: ServiceLocator.analytics)) {
         matcher = RouteMatcher(routes: routes)
+        self.routes = routes
         self.bouncingURLOpener = bouncingURLOpener
         self.analyticsTracker = analyticsTracker
+    }
+
+    /// Checks if any of the routes can handle the url
+    func canHandle(url: URL) -> Bool {
+        return canHandle(subPath: url.lastPathComponent)
+    }
+
+    /// Checks if any of the routes can handle the subPath
+    func canHandle(subPath: String) -> Bool {
+        for route in routes {
+            if route.canHandle(subPath: subPath) {
+                return true
+            }
+        }
+        return false
     }
 
     static func defaultUniversalLinkRouter(tabBarController: MainTabBarController) -> UniversalLinkRouter {

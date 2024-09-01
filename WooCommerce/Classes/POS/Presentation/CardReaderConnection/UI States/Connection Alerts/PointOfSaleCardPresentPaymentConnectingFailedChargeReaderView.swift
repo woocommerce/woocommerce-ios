@@ -2,34 +2,48 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel
+    let animation: POSCardPresentPaymentAlertAnimation
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            Image(decorative: viewModel.imageName)
+                VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
+                    Text(viewModel.title)
+                        .font(POSFontStyle.posTitleEmphasized)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                        .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-            Text(viewModel.errorDetails)
-
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                Button(viewModel.retryButtonViewModel.title,
-                       action: viewModel.retryButtonViewModel.actionHandler)
-                .buttonStyle(PrimaryButtonStyle())
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+                    Text(viewModel.errorDetails)
+                        .font(POSFontStyle.posBodyRegular)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
+                }
             }
+            .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
+
+            Button(viewModel.retryButtonViewModel.title,
+                   action: viewModel.retryButtonViewModel.actionHandler)
+            .buttonStyle(POSPrimaryButtonStyle())
+            .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView(
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
             retryButtonAction: {},
-            cancelButtonAction: {}))
+            cancelButtonAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }

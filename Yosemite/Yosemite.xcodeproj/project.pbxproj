@@ -362,7 +362,7 @@
 		CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */; };
 		CC2C0372262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */; };
 		CC379B1429C8B593009747B4 /* ProductCompositeComponent+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC379B1329C8B593009747B4 /* ProductCompositeComponent+ReadOnlyConvertible.swift */; };
-		CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */; };
+		CC6A054628773F75002C144E /* MetaData+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A054528773F75002C144E /* MetaData+ReadOnlyConvertible.swift */; };
 		CC80E40C294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */; };
 		CCCF3A8129C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */; };
 		CCE24F8829F025BB00B416BC /* SubscriptionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE24F8729F025BB00B416BC /* SubscriptionStoreTests.swift */; };
@@ -434,6 +434,7 @@
 		DA3F0E1C2C218EF100B8C2F8 /* POSOrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */; };
 		DAD988C22C491525009DE9E3 /* Order+LocalItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */; };
 		DAD988C42C4A5147009DE9E3 /* LocalIDStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C32C4A5147009DE9E3 /* LocalIDStoreTests.swift */; };
+		DE26D9B82C7C3E2E00EE3439 /* BlazeCampaignObjective+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26D9B72C7C3E2E00EE3439 /* BlazeCampaignObjective+ReadOnlyConvertible.swift */; };
 		DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */; };
 		DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */; };
 		DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */; };
@@ -871,7 +872,7 @@
 		CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		CC379B1329C8B593009747B4 /* ProductCompositeComponent+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductCompositeComponent+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderMetaData+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		CC6A054528773F75002C144E /* MetaData+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetaData+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CC80E40B294B454A00D5FF45 /* SiteSummaryStats+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SiteSummaryStats+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CCCF3A8029C07DD9001D3507 /* ProductBundleItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductBundleItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CCE24F8729F025BB00B416BC /* SubscriptionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionStoreTests.swift; sourceTree = "<group>"; };
@@ -943,6 +944,7 @@
 		DA3F0E1B2C218EF100B8C2F8 /* POSOrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderService.swift; sourceTree = "<group>"; };
 		DAD988C12C491525009DE9E3 /* Order+LocalItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+LocalItems.swift"; sourceTree = "<group>"; };
 		DAD988C32C4A5147009DE9E3 /* LocalIDStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalIDStoreTests.swift; sourceTree = "<group>"; };
+		DE26D9B72C7C3E2E00EE3439 /* BlazeCampaignObjective+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignObjective+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteAction.swift; sourceTree = "<group>"; };
 		DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
 		DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStoreTests.swift; sourceTree = "<group>"; };
@@ -1457,6 +1459,7 @@
 				03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */,
 				EE3D1E912B8EACB80016B132 /* BlazeCampaignListItem+ReadOnlyConvertible.swift */,
 				DEA493912B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift */,
+				DE26D9B72C7C3E2E00EE3439 /* BlazeCampaignObjective+ReadOnlyConvertible.swift */,
 				DEA493932B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift */,
 				DEA493952B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift */,
 				2685C10C263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift */,
@@ -1477,7 +1480,7 @@
 				CE4FD4512350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift */,
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				CE0DB6BF233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift */,
-				CC6A054528773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift */,
+				CC6A054528773F75002C144E /* MetaData+ReadOnlyConvertible.swift */,
 				D8C11A5322DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift */,
 				D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */,
 				D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */,
@@ -2217,7 +2220,7 @@
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				CE606D9C2BE3BCC4001CB424 /* ShippingMethod+ReadOnlyConvertible.swift in Sources */,
 				261F94E4242EFA6D00762B58 /* ProductCategoryAction.swift in Sources */,
-				CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */,
+				CC6A054628773F75002C144E /* MetaData+ReadOnlyConvertible.swift in Sources */,
 				209AD3CC2AC1A68800825D76 /* WooPaymentsDepositService.swift in Sources */,
 				029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */,
 				021EAA5C25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift in Sources */,
@@ -2323,6 +2326,7 @@
 				DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
+				DE26D9B82C7C3E2E00EE3439 /* BlazeCampaignObjective+ReadOnlyConvertible.swift in Sources */,
 				0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
 				DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */,

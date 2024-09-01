@@ -18,7 +18,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_totalAmountText_is_updated_correctly_depending_on_isEvergreen() {
+    func test_formattedAmountAndDuration_is_updated_correctly_depending_on_hasEndDate() {
         // Given
         let initialStartDate = Date(timeIntervalSinceNow: 0)
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
@@ -28,13 +28,30 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
                                                     startDate: initialStartDate) { _, _, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.totalAmountText, "$33 USD") // total spend for 3 days
+        XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$33 USD for 3 days") // total spend for 3 days
 
         // When
-        viewModel.isEvergreen = true
+        viewModel.hasEndDate = false
 
         // Then
-        XCTAssertEqual(viewModel.totalAmountText, "$77 USD") // weekly spend
+        XCTAssertEqual(viewModel.formattedAmountAndDuration.string, "$77 USD weekly spend") // weekly spend
+    }
+
+    func test_formatDayCount_returns_correct_content() {
+        // Given
+        let initialStartDate = Date(timeIntervalSinceNow: 0)
+        let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
+                                                    dailyBudget: 11,
+                                                    isEvergreen: false,
+                                                    duration: 3,
+                                                    startDate: initialStartDate) { _, _, _, _ in }
+
+        // When
+        let content = viewModel.formatDayCount(3).string
+
+        // Then
+        let endDate = initialStartDate.addingDays(3).toString(dateStyle: .medium, timeStyle: .none)
+        XCTAssertEqual(content, "3 days to \(endDate)")
     }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {
@@ -57,7 +74,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.isEvergreen = false
+        viewModel.hasEndDate = true
         viewModel.dailyAmount = 80
         viewModel.didTapApplyDuration(dayCount: 7, since: expectedStartDate)
         viewModel.confirmSettings()
@@ -213,6 +230,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
 
         // When
+        viewModel.hasEndDate = false
         viewModel.confirmSettings()
 
         // Then
@@ -220,9 +238,21 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["duration"] as? Int, 3)
         XCTAssertEqual(eventProperties["total_budget"] as? Double, 45.0)
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "evergreen")
+
+        // When
+        viewModel.hasEndDate = true
+        viewModel.confirmSettings()
+
+        // Then
+        let lastIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_edit_budget_save_tapped"))
+        let lastEventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[lastIndex])
+        XCTAssertEqual(lastEventProperties["duration"] as? Int, 3)
+        XCTAssertEqual(lastEventProperties["total_budget"] as? Double, 45.0)
+        XCTAssertEqual(lastEventProperties["campaign_type"] as? String, "start_end")
     }
 
-    func test_changing_duration_tracks_event_with_correct_properties() throws {
+    func test_changing_schedule_tracks_event_with_correct_properties() throws {
         // Given
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
                                                     dailyBudget: 15,
@@ -240,5 +270,16 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["duration"] as? Int, 7)
+        XCTAssertEqual(eventProperties["campaign_type"] as? String, "evergreen")
+
+        // When
+        viewModel.hasEndDate = true
+        viewModel.didTapApplyDuration(dayCount: 7, since: .now)
+
+        // Then
+        let lastIndex = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_edit_budget_set_duration_applied"))
+        let lastEventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[lastIndex])
+        XCTAssertEqual(lastEventProperties["duration"] as? Int, 7)
+        XCTAssertEqual(lastEventProperties["campaign_type"] as? String, "start_end")
     }
 }

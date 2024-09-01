@@ -11,7 +11,6 @@ class MockItemListViewModel: ItemListViewModelProtocol {
     var statePublisher: Published<WooCommerce.ItemListViewModel.ItemListState>.Publisher { $state }
 
     @Published var isHeaderBannerDismissed: Bool = false
-    var isHeaderBannerDismissedPublisher: Published<Bool>.Publisher { $isHeaderBannerDismissed }
 
     var isEmptyOrError: Bool = false
     var shouldShowHeaderBanner: Bool = false

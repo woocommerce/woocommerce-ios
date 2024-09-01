@@ -34,6 +34,8 @@ protocol TotalsViewModelProtocol {
     func startNewOrder()
     func checkOutTapped(with cartItems: [CartItem], allItems: [POSItem])
     func connectReaderTapped()
-    func cancelReaderPreparation()
     func onTotalsViewDisappearance()
+
+    func startShowingTotalsView()
+    func stopShowingTotalsView()
 }

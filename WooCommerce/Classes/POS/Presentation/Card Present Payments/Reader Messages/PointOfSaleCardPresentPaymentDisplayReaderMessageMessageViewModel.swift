@@ -1,9 +1,8 @@
 import Foundation
 
-struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel {
+struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel: Equatable {
     let title: String = Localization.title
     let message: String
-    let imageName = PointOfSaleAssets.processingPayment.imageName
 }
 
 private extension PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel {

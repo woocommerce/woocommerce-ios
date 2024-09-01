@@ -69,6 +69,7 @@ struct OrderCustomerSection: View {
             Image(systemName: "magnifyingglass")
         })
         .buttonStyle(TextButtonStyle())
+        .accessibilityLabel(Localization.searchCustomerAccessibilityLabel)
     }
 }
 
@@ -91,6 +92,10 @@ private extension OrderCustomerSection {
             value: "Add customer details",
             comment: "Title of the order customer selection screen in the order form.."
         )
+        static let searchCustomerAccessibilityLabel = NSLocalizedString(
+            "customer.search.button.accessibilityLabel",
+            value: "Search customer",
+            comment: "Accessibility title for the search button on the customer section.")
     }
 }
 

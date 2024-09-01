@@ -61,7 +61,7 @@ extension Order {
     @NSManaged public var totalTax: String?
     @NSManaged public var appliedGiftCards: Set<OrderGiftCard>?
     @NSManaged public var coupons: Set<OrderCoupon>?
-    @NSManaged public var customFields: Set<OrderMetaData>?
+    @NSManaged public var customFields: Set<MetaData>?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
@@ -111,10 +111,10 @@ extension Order {
 extension Order {
 
     @objc(addCustomFieldsObject:)
-    @NSManaged public func addToCustomFields(_ value: OrderMetaData)
+    @NSManaged public func addToCustomFields(_ value: MetaData)
 
     @objc(removeCustomFieldsObject:)
-    @NSManaged public func removeFromCustomFields(_ value: OrderMetaData)
+    @NSManaged public func removeFromCustomFields(_ value: MetaData)
 
     @objc(addCustomFields:)
     @NSManaged public func addToCustomFields(_ values: NSSet)

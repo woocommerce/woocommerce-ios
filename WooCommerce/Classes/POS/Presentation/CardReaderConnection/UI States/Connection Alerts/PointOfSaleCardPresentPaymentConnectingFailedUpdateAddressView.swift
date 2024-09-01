@@ -2,25 +2,30 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
+    let animation: POSCardPresentPaymentAlertAnimation
+
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.verticalSpacing) {
-            Text(viewModel.title)
-                .accessibilityAddTraits(.isHeader)
+        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+            VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
+                Image(decorative: viewModel.imageName)
+                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
-            Image(decorative: viewModel.imageName)
+                Text(viewModel.title)
+                    .font(POSFontStyle.posTitleEmphasized)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+            }
 
-            VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
-                if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
-                    Button(primaryButtonViewModel.title,
-                           action: primaryButtonViewModel.actionHandler)
-                    .buttonStyle(PrimaryButtonStyle())
-                }
-
-                Button(viewModel.cancelButtonViewModel.title,
-                       action: viewModel.cancelButtonViewModel.actionHandler)
-                .buttonStyle(SecondaryButtonStyle())
+            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Button(primaryButtonViewModel.title,
+                       action: primaryButtonViewModel.actionHandler)
+                .buttonStyle(POSPrimaryButtonStyle())
+                .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
             }
         }
+        .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
+                             accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
@@ -31,10 +36,13 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
+    @Namespace var namespace
+    return PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,
             showsInAuthenticatedWebView: true,
             retrySearchAction: {},
-            cancelSearchAction: {}))
+            cancelSearchAction: {}),
+        animation: .init(namespace: namespace)
+    )
 }

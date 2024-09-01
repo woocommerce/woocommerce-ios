@@ -13,6 +13,7 @@ public typealias Address = Networking.Address
 public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
+public typealias BlazeCampaignObjective = Networking.BlazeCampaignObjective
 public typealias BlazeCampaignListItem = Networking.BlazeCampaignListItem
 public typealias BlazeCampaignBudget = Networking.BlazeCampaignBudget
 public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImpressionsInput
@@ -74,7 +75,6 @@ public typealias OrderCouponLine = Networking.OrderCouponLine
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderGiftCard = Networking.OrderGiftCard
-public typealias OrderMetaData = Networking.MetaData
 public typealias OrderAttributionInfo = Networking.OrderAttributionInfo
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderTaxLine = Networking.OrderTaxLine
@@ -228,6 +228,7 @@ public typealias WordPressTheme = Networking.WordPressTheme
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
+public typealias StorageBlazeCampaignObjective = Storage.BlazeCampaignObjective
 public typealias StorageBlazeCampaignListItem = Storage.BlazeCampaignListItem
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
@@ -307,6 +308,8 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
+
+public typealias MetaData = Networking.MetaData
 
 // MARK: - Internal ReadOnly Models
 

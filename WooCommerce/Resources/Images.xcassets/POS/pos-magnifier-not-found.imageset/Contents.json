@@ -1,12 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "pos_processing_payment.pdf",
+      "filename" : "pos-magnifier-not-found.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

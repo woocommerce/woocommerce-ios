@@ -42,15 +42,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackSetupWithApplicationPassword:
             return true
-        case .productBundles:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
-            return true
-        case .compositeProducts:
-            return true
-        case .readOnlyGiftCards:
-            return true
-        case .readOnlyMinMaxQuantities:
             return true
         case .euShippingNotification:
             return true
@@ -91,6 +83,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .viewEditCustomFieldsInProductsAndOrders:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeEvergreenCampaigns:
+            return true
+        case .revampedShippingLabelCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

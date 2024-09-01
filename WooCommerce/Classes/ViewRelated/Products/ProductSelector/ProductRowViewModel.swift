@@ -378,12 +378,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             price = product.price
         }
 
-        let productBundlesEnabled = featureFlagService.isFeatureFlagEnabled(.productBundles)
-
         // If product is a product bundle with insufficient bundle stock, use that as the product stock status.
         let stockStatusKey: String = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockStatus) {
-            case (true, .bundle, .insufficientStock):
+            switch (product.productType, product.bundleStockStatus) {
+            case (.bundle, .insufficientStock):
                 return ProductStockStatus.insufficientStock.rawValue
             default:
                 return product.stockStatusKey
@@ -392,8 +390,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         // If product is a product bundle with a bundle stock quantity, use that as the product stock quantity.
         let stockQuantity: Decimal? = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
-            case (true, .bundle, .some(let bundleStockQuantity)):
+            switch (product.productType, product.bundleStockQuantity) {
+            case (.bundle, .some(let bundleStockQuantity)):
                 return Decimal(bundleStockQuantity)
             default:
                 return product.stockQuantity
@@ -402,8 +400,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         // If product is a product bundle with a bundle stock quantity, override product `manageStock` setting.
         let manageStock: Bool = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
-            case (true, .bundle, .some):
+            switch (product.productType, product.bundleStockQuantity) {
+            case (.bundle, .some):
                 return true
             default:
                 return product.manageStock

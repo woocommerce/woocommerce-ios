@@ -3,6 +3,7 @@ import XCTest
 
 @testable import WooCommerce
 @testable import Yosemite
+@testable import Storage
 
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
@@ -89,38 +90,6 @@ final class HubMenuViewModelTests: XCTestCase {
         ])
         let generalElementsIds = Set(viewModel.generalElements.map { $0.self.id })
         XCTAssertTrue(expectedElementsIDs.isSubset(of: generalElementsIds))
-    }
-
-    @MainActor
-    func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
-        // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginIneligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Inbox.id
-        }))
     }
 
     @MainActor
@@ -519,6 +488,95 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_navigateToDestination_replaces_navigationPath_with_specified_destination() throws {
+        // Given
+        let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+        var inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        // Setting site ID is required before setting `Site`.
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
+
+        let navigationPath = NavigationPath(["testPath1", "testPath2"])
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores,
+                                         generalAppSettings: generalAppSettings,
+                                         inboxEligibilityChecker: inboxEligibilityChecker,
+                                         blazeEligibilityChecker: blazeEligibilityChecker,
+                                         googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        viewModel.navigationPath = navigationPath
+        XCTAssertEqual(viewModel.navigationPath.count, 2)
+
+        let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
+            .settings: HubMenuViewModel.Settings(),
+            .payments: HubMenuViewModel.Payments(),
+            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
+            .subscriptions: HubMenuViewModel.Subscriptions(),
+            .blaze: HubMenuViewModel.Blaze(),
+            .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
+            .viewStore: HubMenuViewModel.ViewStore(),
+            .coupons: HubMenuViewModel.Coupons(),
+            .reviews: HubMenuViewModel.Reviews(),
+            .inbox: HubMenuViewModel.Inbox(),
+            .customers: HubMenuViewModel.Customers(),
+            .pointOfSales: HubMenuViewModel.PointOfSaleEntryPoint()
+        ]
+
+        /// Counting the cases to ensure new cases are tested.
+        viewModel.setupMenuElements()
+        waitUntil {
+            expectedMenusAndDestinations.count == viewModel.settingsElements.count + viewModel.generalElements.count
+        }
+
+        for (expected, menuItem) in expectedMenusAndDestinations {
+            // When
+            let destination = menuItem.navigationDestination
+            viewModel.navigateToDestination(destination)
+
+            // Then
+            XCTAssertEqual(destination, expected)
+            XCTAssertEqual(viewModel.navigationPath.count, 1)
+            XCTAssertEqual(viewModel.navigationPath, NavigationPath([expected]))
+        }
+    }
+
+    @MainActor
+    func test_navigateToDestination_without_destination_leaves_navigationPath_intact() {
+        // Given
+        let navigationPath = NavigationPath(["testPath1", "testPath2"])
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = navigationPath
+
+        // When
+        viewModel.navigateToDestination(nil)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 2)
+        XCTAssertEqual(viewModel.navigationPath, navigationPath)
+    }
+
+    @MainActor
+    func test_showReviewDetails_updates_navigationPath_correctly() {
+        // Given
+        let parcel = ProductReviewFromNoteParcel.fake().copy(note: .fake().copy(noteID: 123))
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+
+        // When
+        viewModel.showReviewDetails(using: parcel)
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 1)
+        XCTAssertEqual(viewModel.navigationPath, NavigationPath([HubMenuNavigationDestination.reviewDetails(parcel: parcel)]))
+    }
+
+    @MainActor
     func test_hasGoogleAdsCampaigns_is_false_when_site_has_no_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -591,13 +649,12 @@ final class HubMenuViewModelTests: XCTestCase {
 }
 
 private extension HubMenuViewModelTests {
-    enum PluginName {
-        static let wooCommerce = "WooCommerce"
-    }
-
-    enum Fixtures {
-        // TODO: 6148 - Update the minimum WC version with inbox filtering.
-        static let wcPluginIneligibleForInbox = SystemPlugin.fake().copy(version: "3.0.0", active: true)
-        static let wcPluginEligibleForInbox = SystemPlugin.fake().copy(version: "6.1.0", active: true)
+    func mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: Bool) throws -> GeneralAppSettingsStorage {
+        let fileStorage = MockInMemoryStorage()
+        let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
+        var settings = GeneralAppSettings.default
+        settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
+        try storage.saveSettings(settings)
+        return storage
     }
 }

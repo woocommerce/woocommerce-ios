@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-21 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-26 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -730,9 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Importo (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
-"Amount (%1$@)" = "Importo (%1$@)";
-
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "Importo (%@)";
 
@@ -1127,9 +1124,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "Brunei";
 
-/* Title label for the total budget of a Blaze campaign */
-"Budget" = "Budget";
-
 /* Country option for a site address. */
 "Bulgaria" = "Bulgaria";
 
@@ -1191,9 +1185,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "PACCHETTI PERSONALIZZATI";
-
-/* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "Importo calcolato";
 
 /* Call phone number button title */
 "Call" = "Chiama";
@@ -1583,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Annulla la selezione";
 
-/* Title label for the total clicks of a Blaze ads campaign */
-"Clicks" = "Clic";
-
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1594,7 +1582,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee/Discounts Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "Chiudi";
 
@@ -2429,7 +2416,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee/Discounts Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3560,9 +3546,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Informazioni importanti";
-
-/* Title label for the total impressions of a Blaze ads campaign */
-"Impressions" = "Impressioni";
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "%1$@ - In questo Paese le carte di credito possono essere utilizzate con Tocca per pagare solo per le transazioni fino al limite consentito per il contactless.";
@@ -5170,9 +5153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's pending status */
 "Pending review" = "In attesa di revisione";
-
-/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "Percentuale (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Sconto in percentuale";
@@ -9650,6 +9630,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Aumenta la visibilità e vendi i tuoi prodotti rapidamente.";
 
+/* Title label for the total impressions and clicks of a Blaze ads campaign */
+"blazeCampaignItemView.clickthroughs" = "Click-through";
+
+/* Title of the remaining budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.remainingBudget" = "Rimanente";
+
 /* Status name of an approved Blaze campaign */
 "blazeCampaignListItem.status.active" = "Attivo";
 
@@ -9668,8 +9654,17 @@ which should be translated separately and considered part of this sentence. */
 /* Status name of a scheduled Blaze campaign */
 "blazeCampaignListItem.status.scheduled" = "Pianificato";
 
+/* Status name of a suspended Blaze campaign */
+"blazeCampaignListItem.status.suspended" = "Sospeso";
+
 /* Status name of a Blaze campaign without specified state */
 "blazeCampaignListItem.status.unknown" = "Sconosciuto";
+
+/* Title of the total budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.totalBudget" = "Totale";
+
+/* Title of the budget field of a Blaze campaign without an end date. */
+"blazeCampaignListItem.weeklyBudget" = "Settimanale";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Politica sulla pubblicità";
@@ -10613,6 +10608,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Mi piace";
 
+/* Button to dismiss the confirmation alert on the Inbox screen. */
+"inbox.alert.cancel" = "Annulla";
+
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "Nessun messaggio non letto";
 
@@ -11139,19 +11137,22 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Ricerca del lettore";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "Riprova pagamento";
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Nuovo ordine";
+
+/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "Verifica il pagamento da un dispositivo connesso a una rete funzionante. Se il pagamento non è andato a buon fine, riprova. Se il pagamento è andato a buon fine, crea un nuovo ordine.";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "Prova ancora il pagamento";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.message" = "Non siamo riusciti a caricare le informazioni complete dell'ordine per verificare lo stato del pagamento. Controlla l'ultimo ordine separatamente o riprova.";
-
-/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "Scopri di più";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "Non possiamo confermare l'esito del pagamento a causa di un errore di rete.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.title" = "Stato del pagamento sconosciuto";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "Errore di pagamento";
 
 /* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "Esci dall'ordine";
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "Torna al pagamento";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "Pagamento non riuscito";
@@ -11336,12 +11337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "Aggiornamento del software";
 
-/* Subtitle of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "A causa di un errore nell'acquisizione del pagamento e nell'aggiornamento dell'ordine, non siamo riusciti a caricare le informazioni complete dell'ordine. Per evitare la carica insufficiente o la doppia ricarica, controllare l'ultimo ordine separatamente prima di procedere.";
-
-/* Title of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "Controlla lo stato del pagamento";
-
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "Ho capito";
 
@@ -11396,11 +11391,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Connessione del lettore non riuscita";
 
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Non sappiamo se il pagamento sia andato a buon fine a causa di un errore di rete.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "Verifica l'ordine da un dispositivo connesso alla rete prima di continuare.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Questo ordine potrebbe essere fallito";
+
+/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "Esci da POS";
+
+/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+"pointOfSale.floatingButtons.getSupport.button.title" = "Richiedi assistenza";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "Lettore connesso";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "Connetti al tuo lettore";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Elimina";
+
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.retry" = "Riprova";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "Non è stato possibile caricare i totali";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.done" = "Fatto";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Tocca un prodotto per \n aggiungerlo al carrello";
@@ -11408,8 +11430,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Carrello";
 
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "Pagamento";
+
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "Cancella";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "Nessuna connessione a Internet";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Gli ordini in corso andranno persi.";
@@ -11432,14 +11460,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "Errore durante il caricamento dei prodotti";
 
+/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
+"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "Ignora";
+
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "Altri tipi di prodotti, come quelli variabili e quelli virtuali, saranno disponibili in seguito a futuri aggiornamenti. Scopri di più";
+"pos.itemlistview.headerBanner.hint" = "Altri tipi di prodotti, come quelli variabili e quelli virtuali, saranno disponibili in seguito a futuri aggiornamenti.";
+
+/* Link to more information within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.learnMoreHint" = "Scopri di più";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerSubtitle" = "Al momento sono disponibili con POS solo i prodotti fisici semplici.";
+"pos.itemlistview.headerBanner.subtitle" = "Al momento sono disponibili con POS solo i prodotti fisici semplici.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerTitle" = "Visualizzazione dei soli prodotti semplici";
+"pos.itemlistview.headerBanner.title" = "Visualizzazione dei soli prodotti semplici";
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "Serviamo alcuni clienti";

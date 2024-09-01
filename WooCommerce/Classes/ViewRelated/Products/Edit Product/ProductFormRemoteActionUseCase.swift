@@ -250,9 +250,8 @@ private extension ProductFormRemoteActionUseCase {
 
         // Update the product password using the `updateSitePostPassword` method only if:
         // 1) A password is provided.
-        // 2) The user is authenticated with WPCom.
-        // 3) The store is not eligible for the new `password` field introduced in WC 8.1.
-        // Otherwise, update the password locally in the Product model, introduced in WC 8.1.
+        // 2) The user is not authenticated with WPCom or if the store is not eligible for the new `password` field introduced in WC 8.1.
+        // Otherwise, update the password locally in the Product model.
         guard let updatedPassword = password,
               stores.isAuthenticatedWithoutWPCom == false || !ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint() else {
             onCompletion(.success(password))

@@ -43,13 +43,13 @@ final class ProductPasswordEligibilityUseCase {
     private func getSystemPlugin(siteID: Int64) -> Yosemite.SystemPlugin? {
         return storageManager.viewStorage
             .loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
-            .first(where: { $0.name == Constants.wcPluginName })
+            .first(where: { $0.fileNameWithoutExtension == Constants.wcPluginName })
     }
 }
 
 private extension ProductPasswordEligibilityUseCase {
     enum Constants {
-        static let wcPluginName = "WooCommerce"
+        static let wcPluginName = "woocommerce"
         static let wcPluginMinimumVersion = "8.1.0"
     }
 }

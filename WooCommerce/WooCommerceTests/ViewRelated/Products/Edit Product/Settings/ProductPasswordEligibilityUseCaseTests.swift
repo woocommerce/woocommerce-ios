@@ -9,6 +9,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
 
     private let pluginName = "WooCommerce"
+    private let pluginSlug = "woocommerce"
     private let siteID: Int64 = 1
 
     override func setUp() {
@@ -36,7 +37,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForNewPasswordEndpoint_when_WooCommerce_is_not_active_return_false() {
         // Given
-        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, name: pluginName, version: "9.0", active: false)
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: pluginSlug, name: pluginName, version: "9.0", active: false)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: inactivePlugin)
 
         // When
@@ -48,7 +49,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForNewPasswordEndpoint_when_WooCommerce_version_is_below_minimum_return_false() {
         // Given
-        let oldVersionPlugin = SystemPlugin.fake().copy(siteID: siteID, name: pluginName, version: "7.0", active: true)
+        let oldVersionPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: pluginSlug, name: pluginName, version: "7.0", active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: oldVersionPlugin)
 
         // When
@@ -60,7 +61,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForNewPasswordEndpoint_when_WooCommerce_version_is_equal_to_minimum_return_true() {
         // Given
-        let validPlugin = SystemPlugin.fake().copy(siteID: siteID, name: pluginName, version: "8.1.0", active: true)
+        let validPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: pluginSlug, name: pluginName, version: "8.1.0", active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: validPlugin)
 
         // When
@@ -72,7 +73,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
 
     func test_isEligibleForNewPasswordEndpoint_when_WooCommerce_version_is_above_to_minimum_return_true() {
         // Given
-        let validPlugin = SystemPlugin.fake().copy(siteID: siteID, name: pluginName, version: "9.1.0", active: true)
+        let validPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: pluginSlug, name: pluginName, version: "9.1.0", active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: validPlugin)
 
         // When

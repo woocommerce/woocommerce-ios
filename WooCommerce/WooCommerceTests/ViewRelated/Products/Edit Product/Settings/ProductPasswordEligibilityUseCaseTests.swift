@@ -82,4 +82,40 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
         // Then
         XCTAssertTrue(result)
     }
+
+    func test_editing_product_and_password_when_WooCommerce_version_is_below_8_1_returns_false() {
+        // Given
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              plugin: pluginSlug,
+                                              name: pluginName,
+                                              version: "8.0.0",
+                                              active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+        let sut = ProductPasswordEligibilityUseCase(stores: stores, storageManager: storageManager)
+
+        // When
+        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_editing_product_and_password_when_WooCommerce_version_is_above_8_1_returns_true() {
+        // Given
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              plugin: pluginSlug,
+                                              name: pluginName,
+                                              version: "8.2.0",
+                                              active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+
+        let sut = ProductPasswordEligibilityUseCase(stores: stores, storageManager: storageManager)
+
+        // When
+        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
 }

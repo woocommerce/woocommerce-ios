@@ -9,6 +9,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private let siteID: Int64 = 123
     private let pluginName = "WooCommerce"
+    private let pluginSlug = "woocommerce"
 
     override func setUp() {
         super.setUp()
@@ -106,43 +107,10 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     }
 
     // MARK: - Editing a product (`addProduct`)
-    func test_editing_product_and_password_when_WooCommerce_version_is_below_8_1_returns_false() {
-        // Given
-        let plugin = SystemPlugin.fake().copy(siteID: siteID,
-                                              name: "WooCommerce",
-                                              version: "8.0.0",
-                                              active: true)
-        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
-
-        let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
-
-        // When
-        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_editing_product_and_password_when_WooCommerce_version_is_above_8_1_returns_true() {
-        // Given
-        let plugin = SystemPlugin.fake().copy(siteID: siteID,
-                                              name: "WooCommerce",
-                                              version: "8.2.0",
-                                              active: true)
-        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
-
-        let sut = ProductPasswordEligibilityUseCase(stores: storesManager, storageManager: storageManager)
-
-        // When
-        let isEligible: Bool = sut.isEligibleForWooProductPasswordEndpoint()
-
-        // Then
-        XCTAssertTrue(isEligible)
-    }
-
     func test_editing_product_and_password_without_edits_in_Woo_8_1_and_above_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    plugin: pluginSlug,
                                                     name: pluginName,
                                                     version: "9.0",
                                                     active: true)
@@ -174,6 +142,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     func test_editing_product_and_password_without_edits_in_Woo_below_8_1_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    plugin: pluginSlug,
                                                     name: pluginName,
                                                     version: "8.0",
                                                     active: true)
@@ -205,6 +174,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     func test_editing_product_with_a_password_in_Woo_8_1_and_above_successfully_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    plugin: pluginSlug,
                                                     name: pluginName,
                                                     version: "9.0",
                                                     active: true)
@@ -246,6 +216,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     func test_editing_product_with_a_password_in_Woo_below_8_1_successfully_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+        plugin: pluginSlug,
                                                     name: pluginName,
                                                     version: "8.0",
                                                     active: true)

@@ -93,7 +93,6 @@ extension Note {
                 }
                 ServiceLocator.stores.dispatch(syncAction)
             }
-            print("syncronized note \(syncronizedNote)")
         }
         ServiceLocator.stores.dispatch(action)
     }

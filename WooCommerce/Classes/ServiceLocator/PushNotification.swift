@@ -50,11 +50,13 @@ extension PushNotification {
               }
         let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
         let message = alert.string(forKey: APNSKey.alertMessage)
-        let note: Note? = noteFromNoteData(userInfo.string(forKey: APNSKey.noteFullData))
+        let note: Note? = noteFromCompressedData(userInfo.string(forKey: APNSKey.noteFullData))
         return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message, note: note)
     }
 
-    static func noteFromNoteData(_ noteFulldata: String?) -> Note? {
+    /// Optional `String` passed parameter holds (base64 encoded and zlib compressed) data for the note.
+    /// That data is used to create `Note` object which is returned
+    static func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
         guard let noteFulldata, !noteFulldata.isEmpty, var data = Data(base64Encoded: noteFulldata) else {
             return nil
         }

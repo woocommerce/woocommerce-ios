@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSFloatingControlView: View {
-    @Environment(\.presentationMode) var presentationMode
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
     @Environment(\.colorScheme) var colorScheme

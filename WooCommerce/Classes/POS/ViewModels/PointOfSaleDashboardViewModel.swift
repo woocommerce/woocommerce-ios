@@ -220,9 +220,3 @@ private extension PointOfSaleDashboardViewModel {
             .assign(to: &$showsConnectivityError)
     }
 }
-
-private extension PointOfSaleDashboardViewModel {
-    enum OrderSyncError: Error {
-        case selfDeallocated
-    }
-}

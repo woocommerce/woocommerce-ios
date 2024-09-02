@@ -389,7 +389,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -403,7 +403,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -417,7 +417,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.5")
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -431,7 +431,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.4")
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.4")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When

@@ -757,7 +757,7 @@ extension OrderDetailsViewModel {
     @MainActor
     func isWooShippingSupported() async -> Bool {
         guard featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation),
-              let plugin = await fetchPlugin([SitePlugin.SupportedPlugin.WooShipping]) else {
+              let plugin = await fetchPlugin(SitePlugin.SupportedPlugin.WooShipping) else {
             return false
         }
 
@@ -883,8 +883,13 @@ extension OrderDetailsViewModel {
 private extension OrderDetailsViewModel {
     @MainActor
     func isPluginActive(_ plugin: String) async -> Bool {
+        return await isPluginActive([plugin])
+    }
+
+    @MainActor
+    func isPluginActive(_ pluginNames: [String]) async -> Bool {
         await withCheckedContinuation { continuation in
-            isPluginActive(plugin) { isActive in
+            isPluginActive(pluginNames) { isActive in
                 continuation.resume(returning: isActive)
             }
         }

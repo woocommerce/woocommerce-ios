@@ -66,3 +66,35 @@ private extension Note {
         static let emptyStar    = "\u{2606}"  // Unicode White Star ☆
     }
 }
+
+extension Note {
+    var orderID: Int? {
+        return meta.identifier(forKey: .order)
+    }
+
+    func markOrderNoteAsReadIfNeeded() {
+        // we sync the order notification to see if it is the notification for the last order
+        // we compare this note order id with synced note order id
+        // if they are the same it means that the notification is for the last order
+        // and we can mark it as read
+        guard read == false else {
+            return
+        }
+        let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
+            guard let syncronizedNote = syncronizedNote else {
+                return
+            }
+            if let syncronizedNoteOrderID = syncronizedNote.orderID,
+               let currentNoteOrderID = self.orderID,
+               syncronizedNoteOrderID == currentNoteOrderID {
+                // mark as read
+                let syncAction = NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
+                    DDLogError("⛔️ Error marking single notification as read: \(error)")
+                }
+                ServiceLocator.stores.dispatch(syncAction)
+            }
+            print("syncronized note \(syncronizedNote)")
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}

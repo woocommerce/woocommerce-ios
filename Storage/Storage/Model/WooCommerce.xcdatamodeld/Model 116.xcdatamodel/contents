@@ -35,6 +35,7 @@
         <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="spentBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="targetUrl" optional="YES" attributeType="String"/>
         <attribute name="textSnippet" attributeType="String" defaultValueString=""/>
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

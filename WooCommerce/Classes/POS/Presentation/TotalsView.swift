@@ -357,10 +357,6 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
-        static let calculateAmounts = NSLocalizedString(
-            "pos.totalsView.calculateAmounts",
-            value: "Calculate amounts",
-            comment: "Button title for calculate amounts button")
     }
 }
 

@@ -749,7 +749,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
 
-        // TODO: encode Custom fields (meta data) and merge them with metaDataValuePairs
+        // TODO: encode Custom fields (meta data) and merge them with metaDataValuePairs after implementing yosemite/storage layer
         // try container.encode(customFields, forKey: .metadata)
 
         // Metadata

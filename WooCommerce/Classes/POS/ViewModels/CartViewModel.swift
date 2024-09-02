@@ -15,8 +15,6 @@ final class CartViewModel: CartViewModelProtocol {
     @Published private(set) var itemsInCart: [CartItem] = []
     var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
 
-    private var cancellables = Set<AnyCancellable>()
-
     @Published var canDeleteItemsFromCart: Bool = true
     @Published private(set) var shouldShowClearCartButton: Bool = false
 

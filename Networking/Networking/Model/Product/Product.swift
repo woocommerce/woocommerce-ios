@@ -749,8 +749,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
 
-        // Custom fields (meta data)
-        try container.encode(customFields, forKey: .metadata)
+        // TODO: encode Custom fields (meta data) and merge them with metaDataValuePairs
+        // try container.encode(customFields, forKey: .metadata)
 
         // Metadata
         let metaDataValuePairs = buildMetaDataValuePairs()

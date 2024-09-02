@@ -1967,7 +1967,8 @@ extension Networking.Product {
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
-        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
+        customFields: CopiableProp<[MetaData]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -2045,6 +2046,7 @@ extension Networking.Product {
         let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
+        let customFields = customFields ?? self.customFields
 
         return Networking.Product(
             siteID: siteID,
@@ -2122,7 +2124,8 @@ extension Networking.Product {
             minAllowedQuantity: minAllowedQuantity,
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
-            combineVariationQuantities: combineVariationQuantities
+            combineVariationQuantities: combineVariationQuantities,
+            customFields: customFields
         )
     }
 }

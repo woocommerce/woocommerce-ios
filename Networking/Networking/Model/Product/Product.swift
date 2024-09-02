@@ -134,6 +134,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Applicable with variable products and Min/Max Quantities extension only.
     public let combineVariationQuantities: Bool?
 
+    public let customFields: [MetaData]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -261,7 +263,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 minAllowedQuantity: String?,
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
-                combineVariationQuantities: Bool?) {
+                combineVariationQuantities: Bool?,
+                customFields: [MetaData]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -338,6 +341,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
+        self.customFields = customFields
     }
 
     /// The public initializer for Product.
@@ -521,6 +525,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
+        // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
+        let customFields = (try? container.decode([MetaData].self, forKey: .metadata).filter({ !$0.key.hasPrefix("_")})) ?? []
+
         // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
@@ -632,7 +639,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   minAllowedQuantity: minAllowedQuantity,
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
-                  combineVariationQuantities: combineVariationQuantities)
+                  combineVariationQuantities: combineVariationQuantities,
+                  customFields: customFields)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -740,6 +748,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Custom fields (meta data)
+        try container.encode(customFields, forKey: .metadata)
 
         // Metadata
         let metaDataValuePairs = buildMetaDataValuePairs()

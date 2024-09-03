@@ -72,7 +72,7 @@ extension PushNotification {
               let firstNote = notes.first else {
             return nil
         }
-        guard let note = try? Note(payload: firstNote) else {
+        guard let note = try? Note.createdFrom(firstNote) else {
             return nil
         }
         return note
@@ -104,42 +104,9 @@ extension PushNotification: Identifiable {
     }
 }
 
-#if DEBUG
-extension PushNotification {
-    static func scheduleTestingOrderNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "[Testing] You have a new order! 🎉"
-        content.body = "New order for $2.00 on the store"
-        content.sound = UNNotificationSound.default
-        content.userInfo = [
-            "blog": "205617935",
-            // swiftlint:disable line_length
-            "note_full_data": "eNqVkc1O6zAQhV/FjNiRH+enTZqHgA0bdI0qN522hsSx4jEFobz7nYRSwZJN7MjnfDpn5hPsQOih+fcJZg9NXUgpiyyrygjowyE04GkYcTuMexwhgmBH1Cy0oesi8NY4h/T92yNpaGaSnw9viAG5XK2zalOsIviCNIVcTxF0xr7+kMGJyPlGpSp1YdeZNtbOJGe2uBG9T9qhVynfSKVvmUpnk1fpFQ5X+h9Bi4tJHAomjuVJU/DXgmH3gi0t8yF85ws8DUGc9BsKLSyexeK/ESrs66Ll76HewBRd1fffEnEYRnGbJ1KKwQo6oVgGC9MzT9r0nEf3jg25zMtYVnG+fswkj6opizspGylh1lGHF+jDZSGmHeyv0j45u6+SZxfzI6Hlqn2IXReOxnLVZeUqNb0+zmdwe00YO/3RszTO3xNnj0xm2QWuwqEsqyVqpz1tPaLdzqH5Lavysi7qzaqYLaHfzTvIpv+sG8QM",
-            "aps": [
-                "category": "store_order",
-                "badge": 1,
-                "sound": "o.caf",
-                "content-available": 1,
-                "mutable-content": 1,
-                "thread-id": "205617935 - store_order",
-                "alert": [
-                    "body": "New order for $2.00 on the store",
-                    "title": "You have a new order! 🎉"
-                    ]
-            ],
-            "type": "store_order",
-            "blog_id": "205617935",
-            "note_id": "8326526386",
-            "user": "212589093",
-            "title": "You have a new order! 🎉",
-            "content-available": 1,
-            "mutable-content": 1
-        ]
-        // Deliver the notification in five seconds.
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: "FiveSecondNewOrdeTestingNotification", content: content, trigger: trigger) // Schedule the notification.
-        let center = UNUserNotificationCenter.current()
-        center.add(request)
+extension Note {
+    static func createdFrom(_ payload: [String: Any]) throws -> Note? {
+        let data = try JSONSerialization.data(withJSONObject: payload)
+        return try JSONDecoder().decode(Note.self, from: data)
     }
 }
-#endif

@@ -267,7 +267,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
         let actionButton = UIButton(type: .detailDisclosure)
         actionButton.applyIconButtonStyle(icon: UIImage(named: "icon-scan")!)
         actionButton.on(.touchUpInside) { [weak self] sender in
-            self?.present(ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+            self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
+                                                         instructionText: Localization.instructionText,
+                                                         onBarcodeScanned: { barcode in
                 cell.value.text = barcode.payloadStringValue
                 self?.dismiss()
             }), animated: true)
@@ -644,5 +646,16 @@ private struct Constants {
 extension ManualTrackingViewController {
     func getTable() -> UITableView {
         return table
+    }
+}
+
+private extension ManualTrackingViewController {
+    enum Localization {
+        static let title = NSLocalizedString("ManualTrackingViewController.scanView.titleView",
+                                             value: "Scan barcode or QR Code with tracking number",
+                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as an order tracking number.")
+        static let instructionText = NSLocalizedString("ManualTrackingViewController.scanView.instructionText",
+                                                       value: "Scan tracking barcode or QR Code",
+                                                       comment: "The instruction text below the scan area in the barcode scanner for order tracking number.")
     }
 }

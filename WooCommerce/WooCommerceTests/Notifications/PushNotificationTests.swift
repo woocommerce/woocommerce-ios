@@ -1,4 +1,5 @@
 import XCTest
+import struct Networking.Note
 @testable import WooCommerce
 
 final class PushNotificationTests: XCTestCase {

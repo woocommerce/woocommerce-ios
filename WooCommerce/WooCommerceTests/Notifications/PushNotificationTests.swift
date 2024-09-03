@@ -1,7 +1,4 @@
-//import Combine
-import Experiments
 import XCTest
-import Yosemite
 @testable import WooCommerce
 
 final class PushNotificationTests: XCTestCase {

@@ -97,7 +97,7 @@ private extension POSEligibilityChecker {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled.
         // These can be found at D159901-code
         Future<Bool, Never> { [weak self] promise in
-            guard let self else { 
+            guard let self else {
                 promise(.success(false))
                 return
             }

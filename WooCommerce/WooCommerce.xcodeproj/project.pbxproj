@@ -2769,6 +2769,7 @@
 		EE19058E2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */; };
 		EE1905902B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */; };
 		EE1905942B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905932B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift */; };
+		EE1B07F32C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B07F22C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift */; };
 		EE28CF852B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */; };
 		EE2A57D729E399CC009F61E1 /* CaseIterable+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */; };
 		EE2A57D929E39A9C009F61E1 /* CaseIterable+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */; };
@@ -2804,6 +2805,8 @@
 		EE4C457F2C368BE3001A3D94 /* ProductDetailPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C457B2C368BE3001A3D94 /* ProductDetailPreviewView.swift */; };
 		EE4C45812C36E769001A3D94 /* ViewPackagePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45802C36E769001A3D94 /* ViewPackagePhoto.swift */; };
 		EE4C45842C381BAA001A3D94 /* PackagePhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C45832C381BAA001A3D94 /* PackagePhotoView.swift */; };
+		EE4C75DF2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C75DE2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift */; };
+		EE4C75E12C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4C75E02C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift */; };
 		EE505DDD2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */; };
 		EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */; };
 		EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */; };
@@ -5790,6 +5793,7 @@
 		EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModel.swift; sourceTree = "<group>"; };
 		EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModelTests.swift; sourceTree = "<group>"; };
 		EE1905932B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModelTests.swift; sourceTree = "<group>"; };
+		EE1B07F22C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLocalNotificationScheduler.swift; sourceTree = "<group>"; };
 		EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAISurveyConfirmationViewModelTests.swift; sourceTree = "<group>"; };
 		EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Helpers.swift"; sourceTree = "<group>"; };
 		EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+HelpersTests.swift"; sourceTree = "<group>"; };
@@ -5825,6 +5829,8 @@
 		EE4C457B2C368BE3001A3D94 /* ProductDetailPreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDetailPreviewView.swift; sourceTree = "<group>"; };
 		EE4C45802C36E769001A3D94 /* ViewPackagePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPackagePhoto.swift; sourceTree = "<group>"; };
 		EE4C45832C381BAA001A3D94 /* PackagePhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackagePhotoView.swift; sourceTree = "<group>"; };
+		EE4C75DE2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLocalNotificationSchedulerSpy.swift; sourceTree = "<group>"; };
+		EE4C75E02C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLocalNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 		EE505DDC2B3C2690006E3323 /* BlazeCreateCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroView.swift; sourceTree = "<group>"; };
 		EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLearnHowView.swift; sourceTree = "<group>"; };
 		EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModel.swift; sourceTree = "<group>"; };
@@ -6519,6 +6525,7 @@
 			children = (
 				021EBB352A3054BE003634CA /* BlazeEligibilityChecker.swift */,
 				867644A52B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift */,
+				EE1B07F22C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -6542,6 +6549,7 @@
 				EE1905932B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift */,
 				8697AFBC2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift */,
 				8697AFBE2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift */,
+				EE4C75E02C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -9425,6 +9433,7 @@
 				204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */,
 				DE7B17F82C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift */,
 				DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */,
+				EE4C75DE2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -14680,6 +14689,7 @@
 				029D025E2C231F2A00CB1E75 /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView.swift in Sources */,
 				B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
+				EE1B07F32C81CB4B006D9769 /* BlazeLocalNotificationScheduler.swift in Sources */,
 				DE02ABBE2B578D0E008E0AC4 /* CreditCardType.swift in Sources */,
 				020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */,
 				EEB4E2DE29B61AAD00371C3C /* CouponInputTransformer.swift in Sources */,
@@ -16669,6 +16679,7 @@
 				0277AE9B256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift in Sources */,
 				B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
+				EE4C75E12C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift in Sources */,
 				EE28CF852B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift in Sources */,
 				31AD0B1326E95998000B6391 /* CardPresentModalConnectingFailedTests.swift in Sources */,
 				E16715CD2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift in Sources */,
@@ -16737,6 +16748,7 @@
 				023BD5882BFDCF3100A10D7B /* MockInMemoryStorage.swift in Sources */,
 				DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */,
 				45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */,
+				EE4C75DF2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift in Sources */,
 				028E1F722833E954001F8829 /* DashboardViewModelTests.swift in Sources */,
 				02BC5AA424D27F8900C43326 /* ProductVariationFormViewModel+ObservablesTests.swift in Sources */,
 				CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */,

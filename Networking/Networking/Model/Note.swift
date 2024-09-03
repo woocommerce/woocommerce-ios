@@ -152,8 +152,7 @@ extension Note: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let noteID = try container.decode(Int64.self, forKey: .noteID)
-        let hashDecoded = try? container.decode(Int64.self, forKey: .hash)
-        let hash = hashDecoded ?? Int64.min
+        let hash = container.failsafeDecodeIfPresent(Int64.self, forKey: .hash) ?? Int64.min
 
         let read = container.failsafeDecodeIfPresent(booleanForKey: .read) ?? false
         let icon = container.failsafeDecodeIfPresent(String.self, forKey: .icon)

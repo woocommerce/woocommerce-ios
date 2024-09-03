@@ -270,7 +270,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
             self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
                                                          instructionText: Localization.instructionText,
                                                          onBarcodeScanned: { barcode in
-                cell.value.text = barcode.payloadStringValue
+                cell.updateValue(with: barcode.payloadStringValue)
                 self?.dismiss()
             }), animated: true)
         }

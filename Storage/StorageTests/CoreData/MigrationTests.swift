@@ -3026,6 +3026,8 @@ final class MigrationTests: XCTestCase {
         let campaign = insertBlazeCampaignListItem(to: sourceContext)
         try sourceContext.save()
 
+        XCTAssertEqual(try sourceContext.count(entityName: "BlazeCampaignListItem"), 1)
+
         // Confidence check: new startTime attribute is not present
         XCTAssertNil(campaign.entity.attributesByName["startTime"])
 

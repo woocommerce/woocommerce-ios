@@ -4,6 +4,7 @@
 20.3
 -----
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Blaze: Schedule a reminder local notification asking to promote products. [https://github.com/woocommerce/woocommerce-ios/pull/13816]
 
 20.2
 -----

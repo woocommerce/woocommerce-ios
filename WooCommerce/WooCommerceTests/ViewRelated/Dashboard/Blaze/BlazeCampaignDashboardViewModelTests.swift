@@ -893,6 +893,17 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["type"], "blaze")
     }
+
+    @MainActor
+    func test_local_notification_scheduler_starts_upon_init() throws {
+        // Given
+        let scheduler = MockBlazeLocalNotificationScheduler()
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: 123,
+                                                        localNotificationScheduler: scheduler)
+
+        // Then
+        XCTAssertTrue(scheduler.scheduleNotificationsCalled)
+    }
 }
 
 private extension BlazeCampaignDashboardViewModelTests {

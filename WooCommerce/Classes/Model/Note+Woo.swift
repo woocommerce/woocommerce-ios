@@ -77,23 +77,9 @@ extension Note {
         // we compare this note order id with synced note order id
         // if they are the same it means that the notification is for the last order
         // and we can mark it as read
-        guard read == false else {
+        guard read == false, let orderID = self.orderID else {
             return
         }
-        let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
-            guard let syncronizedNote = syncronizedNote else {
-                return
-            }
-            if let syncronizedNoteOrderID = syncronizedNote.orderID,
-               let currentNoteOrderID = self.orderID,
-               syncronizedNoteOrderID == currentNoteOrderID {
-                // mark as read
-                let syncAction = NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
-                    DDLogError("⛔️ Error marking single notification as read: \(error)")
-                }
-                ServiceLocator.stores.dispatch(syncAction)
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
+        MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: noteID, orderID: orderID)
     }
 }

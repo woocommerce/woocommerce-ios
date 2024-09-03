@@ -388,16 +388,15 @@ final class SessionManagerTests: XCTestCase {
     ///
     func test_blazeNoCampaignReminderOpened_is_set_to_nil_upon_reset() throws {
         // Given
-        let siteID: Int64 = 123
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[.blazeNoCampaignReminderOpened] = ["\(siteID)": true]
+        defaults[.blazeNoCampaignReminderOpened] = true
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults.blazeNoCampaignReminderOpened(for: siteID)))
+        XCTAssertTrue(try XCTUnwrap(defaults.blazeNoCampaignReminderOpened()))
 
         // When
         sut.reset()

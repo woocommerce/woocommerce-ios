@@ -222,7 +222,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
     func test_notification_is_not_scheduled_when_notification_already_has_been_interacted_with() throws {
         // Given
         let campaignStartDate = Date.now.addingDays(1)
-        defaults[.blazeNoCampaignReminderOpened] = ["\(siteID)": true]
+        defaults[.blazeNoCampaignReminderOpened] = true
         let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: siteID,
                                                                   budgetCurrency: "USD",
                                                                   isEvergreen: false,

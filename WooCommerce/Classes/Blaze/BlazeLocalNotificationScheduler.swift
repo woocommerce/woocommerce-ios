@@ -51,7 +51,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
                     return
                 }
 
-                userDefaults.setBlazeNoCampaignReminderOpened(true, for: siteID)
+                userDefaults.setBlazeNoCampaignReminderOpened(true)
             }
             .store(in: &subscriptions)
     }
@@ -76,7 +76,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
     }
 
     func scheduleLocalNotificationIfNeeded() {
-        guard !userDefaults.blazeNoCampaignReminderOpened(for: siteID) else {
+        guard !userDefaults.blazeNoCampaignReminderOpened() else {
             DDLogDebug("Blaze: User interacted with a previously scheduled no campaign local notification. Don't schedule again.")
             return
         }
@@ -130,26 +130,18 @@ private extension DefaultBlazeLocalNotificationScheduler {
 // MARK: - User defaults helpers
 //
 extension UserDefaults {
-    /// Returns Notification opened bool value for the site ID
+    /// Returns Blaze no campaign reminder Notification opened bool value
     ///
-    func blazeNoCampaignReminderOpened(for siteID: Int64) -> Bool {
-        let blazeNoCampaignReminderOpened = self[.blazeNoCampaignReminderOpened] as? [String: Bool]
-        let idAsString = "\(siteID)"
-        guard let value = blazeNoCampaignReminderOpened?[idAsString] else {
+    func blazeNoCampaignReminderOpened() -> Bool {
+        guard let value = self[.blazeNoCampaignReminderOpened] as? Bool else {
             return false
         }
         return value
     }
 
-    /// Stores the notification opened Bool value for the given site ID
+    /// Stores the Blaze no campaign reminder Notification opened bool value
     ///
-    func setBlazeNoCampaignReminderOpened(_ shown: Bool, for siteID: Int64) {
-        let idAsString = "\(siteID)"
-        if var blazeNoCampaignReminderOpenedDictionary = self[.blazeNoCampaignReminderOpened] as? [String: Bool] {
-            blazeNoCampaignReminderOpenedDictionary[idAsString] = shown
-            self[.blazeNoCampaignReminderOpened] = blazeNoCampaignReminderOpenedDictionary
-        } else {
-            self[.blazeNoCampaignReminderOpened] = [idAsString: shown]
-        }
+    func setBlazeNoCampaignReminderOpened(_ shown: Bool) {
+        self[.blazeNoCampaignReminderOpened] = shown
     }
 }

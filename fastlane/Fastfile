@@ -538,9 +538,9 @@ platform :ios do
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
   #
   # @example Running the lane
-  #          bundle exec fastlane publish_release_and_cleanup skip_confirm:true
+  #          bundle exec fastlane publish_release skip_confirm:true
   #
-  lane :publish_release_and_cleanup do |skip_confirm: false|
+  lane :publish_release do |skip_confirm: false|
     ensure_git_status_clean
     ensure_git_branch_is_release_branch
 
@@ -561,7 +561,7 @@ platform :ios do
 
     UI.important "Publishing release #{version_number} on GitHub"
 
-    publish_release(
+    publish_github_release(
       repository: GITHUB_REPO,
       name: version_number
     )

@@ -210,7 +210,8 @@ extension Networking.BlazeCampaignListItem {
         budgetAmount: CopiableProp<Double> = .copy,
         budgetCurrency: CopiableProp<String> = .copy,
         isEvergreen: CopiableProp<Bool> = .copy,
-        durationDays: CopiableProp<Int64> = .copy
+        durationDays: CopiableProp<Int64> = .copy,
+        startTime: NullableCopiableProp<Date> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -229,6 +230,7 @@ extension Networking.BlazeCampaignListItem {
         let budgetCurrency = budgetCurrency ?? self.budgetCurrency
         let isEvergreen = isEvergreen ?? self.isEvergreen
         let durationDays = durationDays ?? self.durationDays
+        let startTime = startTime ?? self.startTime
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -247,7 +249,8 @@ extension Networking.BlazeCampaignListItem {
             budgetAmount: budgetAmount,
             budgetCurrency: budgetCurrency,
             isEvergreen: isEvergreen,
-            durationDays: durationDays
+            durationDays: durationDays,
+            startTime: startTime
         )
     }
 }

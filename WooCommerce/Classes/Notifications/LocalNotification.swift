@@ -89,3 +89,20 @@ extension LocalNotification {
                   userInfo: userInfo)
     }
 }
+
+extension LocalNotification {
+    enum Localization {
+        enum BlazeNoCampaignReminder {
+            static let title = NSLocalizedString(
+                "localNotification.BlazeNoCampaignReminder.title",
+                value: "Boost your sales",
+                comment: "Title of the local notification to remind scheduling a Blaze campaign."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.BlazeNoCampaignReminder.body",
+                value: "Promote your products with Blaze Ads and increase your sales now.",
+                comment: "Message on the local notification to remind scheduling a Blaze campaign."
+            )
+        }
+    }
+}

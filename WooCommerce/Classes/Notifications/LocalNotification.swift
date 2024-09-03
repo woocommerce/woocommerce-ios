@@ -19,10 +19,13 @@ struct LocalNotification {
     /// The scenario for the local notification.
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
     enum Scenario {
+        case blazeNoCampaignReminder
         case unknown(siteID: Int64)
 
         var identifier: String {
             switch self {
+            case .blazeNoCampaignReminder:
+                return "blaze_no_campaign_reminder"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -77,6 +80,9 @@ extension LocalNotification {
         let actions: CategoryActions? = nil
 
         switch scenario {
+        case .blazeNoCampaignReminder:
+            title = Localization.BlazeNoCampaignReminder.title
+            body = String.localizedStringWithFormat(Localization.BlazeNoCampaignReminder.body, name)
         case .unknown:
             title = ""
             body = ""

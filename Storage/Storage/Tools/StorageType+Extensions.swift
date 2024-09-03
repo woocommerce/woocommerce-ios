@@ -752,10 +752,18 @@ public extension StorageType {
 
     // MARK: - Meta Data
 
-    /// Retrieves the Stored Metadata.
+    /// Retrieves the Stored Metadata for Order.
     ///
-    func loadMetaData(siteID: Int64, metadataID: Int64) -> MetaData? {
+    func loadOrderMetaData(siteID: Int64, metadataID: Int64) -> MetaData? {
         let predicate = \MetaData.order?.siteID == siteID && \MetaData.metadataID == metadataID
         return firstObject(ofType: MetaData.self, matching: predicate)
     }
+
+    /// Retrieves the Stored Metadata for Order.
+    ///
+    func loadProductMetaData(siteID: Int64, metadataID: Int64) -> MetaData? {
+        let predicate = \MetaData.product?.siteID == siteID && \MetaData.metadataID == metadataID
+        return firstObject(ofType: MetaData.self, matching: predicate)
+    }
+
 }

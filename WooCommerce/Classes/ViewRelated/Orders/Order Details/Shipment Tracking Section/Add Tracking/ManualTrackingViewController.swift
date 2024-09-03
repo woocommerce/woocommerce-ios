@@ -263,7 +263,17 @@ extension ManualTrackingViewController: UITableViewDataSource {
             hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
-        cell.accessoryType = .none
+
+        let actionButton = UIButton(type: .detailDisclosure)
+        actionButton.applyIconButtonStyle(icon: UIImage(named: "icon-scan")!)
+        actionButton.on(.touchUpInside) { [weak self] sender in
+            self?.present(ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+                cell.value.text = barcode.payloadStringValue
+                self?.dismiss()
+            }), animated: true)
+        }
+        cell.accessoryView = actionButton
+
 
         cellViewModel.$value.sink { [weak self] in
             self?.didChangeTrackingNumber(value: $0)

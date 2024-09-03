@@ -54,7 +54,7 @@ extension PushNotification {
 
     /// Optional `String` passed parameter holds (base64 encoded and zlib compressed) data for the note.
     /// That data is used to create `Note` object which is returned
-    static func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
+    static private func noteFromCompressedData(_ noteFulldata: String?) -> Note? {
         guard let noteFulldata, !noteFulldata.isEmpty, var data = Data(base64Encoded: noteFulldata) else {
             return nil
         }
@@ -102,7 +102,7 @@ extension PushNotification: Identifiable {
     }
 }
 
-extension Note {
+private extension Note {
     static func createdFrom(_ payload: [String: Any]) throws -> Note? {
         let data = try JSONSerialization.data(withJSONObject: payload)
         return try JSONDecoder().decode(Note.self, from: data)

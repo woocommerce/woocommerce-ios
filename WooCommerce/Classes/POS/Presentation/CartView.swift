@@ -69,20 +69,7 @@ struct CartView: View {
             .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
             .if(shouldApplyHeaderBottomShadow, transform: { $0.applyBottomShadow() })
 
-            if cartViewModel.isCartEmpty {
-                VStack(spacing: Constants.cartEmptyViewSpacing) {
-                    Spacer()
-                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
-                        .resizable()
-                        .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize)
-                        .aspectRatio(contentMode: .fit)
-                    Text(Localization.addItemsToCartHint)
-                        .font(Constants.secondaryFont)
-                        .foregroundColor(Color.posTertiaryText)
-                        .multilineTextAlignment(.center)
-                    Spacer()
-                }
-            } else {
+            if !cartViewModel.isCartEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
@@ -108,9 +95,9 @@ struct CartView: View {
                     .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
                     .onChange(of: cartViewModel.itemToScrollToWhenCartUpdated?.id) { _ in
                         if viewModel.orderStage == .building,
-                           let last = cartViewModel.itemToScrollToWhenCartUpdated?.id {
+                           let itemToScrollTo = cartViewModel.itemToScrollToWhenCartUpdated?.id {
                             withAnimation {
-                                proxy.scrollTo(last)
+                                proxy.scrollTo(itemToScrollTo)
                             }
                         }
                     }
@@ -133,6 +120,11 @@ struct CartView: View {
         }
         .animation(Constants.cartAnimation, value: cartViewModel.isCartEmpty)
         .frame(maxWidth: .infinity)
+        .background(content: {
+            if cartViewModel.isCartEmpty {
+                cartEmptyView
+            }
+        })
         .background(backgroundColor.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
     }
@@ -161,6 +153,7 @@ private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posTitleEmphasized
         static let secondaryFont: POSFontStyle = .posBodyRegular
+        static let cartEmptyViewTextLineHeight: CGFloat = 12
         static let itemsFont: POSFontStyle = .posDetailRegular
         static let clearButtonFont: POSFontStyle = .posDetailEmphasized
         static let clearButtonCornerRadius: CGFloat = 4
@@ -169,7 +162,7 @@ private extension CartView {
         static let itemHorizontalPadding: CGFloat = 8
         static let shoppingBagImageSize: CGFloat = 104
         static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
-        static let cartEmptyViewSpacing: CGFloat = 40
+        static let emptyViewImageTextSpacing: CGFloat = 30 // This should be 40 by designs, but the overlay technique means we have to tweak it
         static let cartHeaderSpacing: CGFloat = 8
         static let backButtonSymbol: String = "chevron.backward"
         static let cartHeaderElementSpacing: CGFloat = 16
@@ -223,6 +216,30 @@ private extension CartView {
                     .foregroundColor(.primary)
             }
         }
+    }
+
+    var cartEmptyView: some View {
+        VStack {
+            Spacer()
+            // By designs, the text should be vertically centred with the image 40px above it.
+            // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
+            // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
+            // avoids issues when the text size is changed through dynamic type.
+            Text(Localization.addItemsToCartHint)
+                .font(Constants.secondaryFont)
+                .lineSpacing(Constants.cartEmptyViewTextLineHeight)
+                .foregroundColor(Color.posTertiaryText)
+                .multilineTextAlignment(.center)
+                .overlay(alignment: .top) {
+                    Image(decorative: PointOfSaleAssets.shoppingBags.imageName)
+                        .resizable()
+                        .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize, alignment: .bottom)
+                        .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
+                        .aspectRatio(contentMode: .fit)
+                }
+            Spacer()
+        }
+        .background(backgroundColor.ignoresSafeArea(.all))
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-20 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-08-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -730,9 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "금액(%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
-"Amount (%1$@)" = "금액(%1$@)";
-
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "금액(%@)";
 
@@ -1127,9 +1124,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "브루나이";
 
-/* Title label for the total budget of a Blaze campaign */
-"Budget" = "예산";
-
 /* Country option for a site address. */
 "Bulgaria" = "불가리아";
 
@@ -1191,9 +1185,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "사용자 정의 패키지";
-
-/* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "계산한 금액";
 
 /* Call phone number button title */
 "Call" = "전화";
@@ -1583,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "선택 지우기";
 
-/* Title label for the total clicks of a Blaze ads campaign */
-"Clicks" = "클릭";
-
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1594,7 +1582,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee/Discounts Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
@@ -2429,7 +2416,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee/Discounts Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3560,9 +3546,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "중요 정보";
-
-/* Title label for the total impressions of a Blaze ads campaign */
-"Impressions" = "노출 수";
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "%1$@의 경우 카드로 비접촉 한도까지의 거래에만 Tap to Pay를 사용 가능할 수 있습니다.";
@@ -5170,9 +5153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's pending status */
 "Pending review" = "검토 대기 중";
-
-/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "비율(%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "비율(%) 할인";
@@ -9650,6 +9630,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "가시성을 높이고 상품 판매 속도를 단축하세요.";
 
+/* Title label for the total impressions and clicks of a Blaze ads campaign */
+"blazeCampaignItemView.clickthroughs" = "클릭 통과";
+
+/* Title of the remaining budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.remainingBudget" = "나머지";
+
 /* Status name of an approved Blaze campaign */
 "blazeCampaignListItem.status.active" = "활성";
 
@@ -9668,8 +9654,17 @@ which should be translated separately and considered part of this sentence. */
 /* Status name of a scheduled Blaze campaign */
 "blazeCampaignListItem.status.scheduled" = "예약됨";
 
+/* Status name of a suspended Blaze campaign */
+"blazeCampaignListItem.status.suspended" = "중지됨";
+
 /* Status name of a Blaze campaign without specified state */
 "blazeCampaignListItem.status.unknown" = "알 수 없음";
+
+/* Title of the total budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.totalBudget" = "합계";
+
+/* Title of the budget field of a Blaze campaign without an end date. */
+"blazeCampaignListItem.weeklyBudget" = "매주";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "광고 정책";
@@ -10613,6 +10608,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "좋아요";
 
+/* Button to dismiss the confirmation alert on the Inbox screen. */
+"inbox.alert.cancel" = "취소";
+
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "읽지 않은 메시지 없음";
 
@@ -11139,19 +11137,22 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "리더 스캔 중";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "결제 다시 시도";
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "새 주문";
+
+/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "네트워크가 제대로 연결된 기기에서 결제를 확인하세요. 실패한 경우 결제를 다시 시도하세요. 성공한 경우 새 주문을 시작하세요.";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "다시 결제 시도";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.message" = "결제 상태를 확인하는 데 전체 주문 정보를 로드할 수 없습니다. 최근 주문을 별도로 확인하거나 다시 시도하세요.";
-
-/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "더 알아보기";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "네트워크 오류로 인해 결제가 성공했는지 확인할 수 없습니다.";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.title" = "결제 상태 알 수 없음";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "결제 오류";
 
 /* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "주문 종료";
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "체크아웃으로 돌아가기";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "결제 실패";
@@ -11336,12 +11337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "소프트웨어 업데이트 중";
 
-/* Subtitle of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "결제를 캡처하고 주문을 새로 고치는 중에 발생한 오류로 인해 전체 주문 정보를 로드할 수 없습니다. 과소 청구 또는 이중 청구를 방지하려면 진행하기 전에 최근 주문을 별도로 확인하세요.";
-
-/* Title of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "주문 결제 상태를 확인하세요.";
-
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "이해했습니다.";
 
@@ -11396,11 +11391,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "리더를 연결하지 못했음";
 
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "네트워크 오류로 인해 결제 성공 여부를 알 수 없습니다.";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "계속하기 전에 네트워크에 연결된 기기에서 주문을 다시 확인하세요.";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "이 주문은 실패했을 수 있습니다.";
+
+/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "POS 종료";
+
+/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+"pointOfSale.floatingButtons.getSupport.button.title" = "고객 지원";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "리더 연결됨";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "리더 연결";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
+
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.retry" = "다시 시도";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "합계를 로드할 수 없음";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.done" = "완료";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "상품을 눌러 \n 장바구니에 추가";
@@ -11408,8 +11430,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "장바구니";
 
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "체크아웃";
+
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "지우기";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "인터넷에 연결되지 않음";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "진행 중인 주문이 모두 손실됩니다.";
@@ -11432,14 +11460,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "상품 로드 오류";
 
+/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
+"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "해제";
+
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "변형 상품, 가상 상품 등의 다른 상품 유형은 향후 업데이트를 통해 지원될 예정입니다. 더 알아보기";
+"pos.itemlistview.headerBanner.hint" = "변형 상품, 가상 상품 등의 다른 상품 유형은 향후 업데이트를 통해 지원될 예정입니다.";
+
+/* Link to more information within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.learnMoreHint" = "더 알아보기";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerSubtitle" = "현재 POS에는 단순 실물 상품만 지원됩니다.";
+"pos.itemlistview.headerBanner.subtitle" = "현재 POS에는 단순 실물 상품만 지원됩니다.";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerTitle" = "단순 상품만 표시";
+"pos.itemlistview.headerBanner.title" = "단순 상품만 표시";
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "고객에게 서비스 제공하기";

@@ -4,6 +4,7 @@
 20.3
 -----
 - [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
+- [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
 
 20.2
 -----

@@ -3017,6 +3017,36 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 2)
         XCTAssertEqual((migratedOrder.value(forKey: "customFields") as? NSSet)?.count, 2)
     }
+
+    func test_migrating_from_115_to_116_adds_new_startTime_attribute_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 115")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "BlazeCampaignListItem"), 1)
+
+        // Confidence check: new startTime attribute is not present
+        XCTAssertNil(campaign.entity.attributesByName["startTime"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 116")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        XCTAssertNil(migratedEntity.value(forKey: "startTime") as? Date, "Confirm expected property exists and is nil by default.")
+
+        let startTimeDate = Date(timeIntervalSince1970: 1603250786)
+        migratedEntity.setValue(startTimeDate, forKey: "startTime")
+        try targetContext.save()
+
+        let startTime = try XCTUnwrap(migratedEntity.value(forKey: "startTime") as? Date)
+        XCTAssertEqual(startTime, startTimeDate, "Confirm expected property exists, and has expected date.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

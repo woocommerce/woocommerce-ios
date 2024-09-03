@@ -16,10 +16,6 @@ struct PointOfSaleDashboardView: View {
         self.itemListViewModel = itemListViewModel
     }
 
-    private var isCartShown: Bool {
-        !viewModel.itemListViewModel.isEmptyOrError
-    }
-
     @State private var floatingSize: CGSize = .zero
 
     var body: some View {
@@ -141,7 +137,6 @@ private extension PointOfSaleDashboardView {
         // For the moment we're just considering landscape for the POS mode
         // https://github.com/woocommerce/woocommerce-ios/issues/13251
         static let cartWidth: CGFloat = 0.35
-        static let buttonImageAndTextSpacing: CGFloat = 12
         static let floatingControlHorizontalOffset: CGFloat = 24
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
@@ -170,19 +165,6 @@ private extension PointOfSaleDashboardView {
 
     var productListView: some View {
         ItemListView(viewModel: itemListViewModel)
-    }
-}
-
-fileprivate extension CardPresentPaymentEvent {
-    var temporaryEventDescription: String {
-        switch self {
-        case .idle:
-            return "Idle"
-        case .show:
-            return "Event"
-        case .showOnboarding(let onboardingViewModel):
-            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        }
     }
 }
 

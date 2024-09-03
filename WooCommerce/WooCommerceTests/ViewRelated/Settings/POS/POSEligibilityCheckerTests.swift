@@ -35,6 +35,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
         setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
@@ -45,6 +46,23 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(isEligible)
+    }
+
+    func test_is_eligible_when_account_not_whitelisted_in_backend_then_returns_false() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(false)
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            cardPresentPaymentsOnboarding: onboardingUseCase,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertFalse(isEligible)
     }
 
     func test_is_eligible_when_non_iPad_device_then_returns_false() throws {
@@ -121,6 +139,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
         setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
                                             siteSettings: siteSettings,
@@ -181,6 +200,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
         setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
 
         // Supported WooCommerce version
         setupWooCommerceVersion("6.6.0")
@@ -219,6 +239,15 @@ private extension POSEligibilityCheckerTests {
                 completion(SystemPlugin.fake().copy(name: "WooCommerce", version: version, active: true))
             default:
                 break
+            }
+        }
+    }
+
+    func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
+                completion(isAllowed)
             }
         }
     }

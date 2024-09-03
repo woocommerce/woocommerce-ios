@@ -370,12 +370,11 @@ extension MainTabBarController {
     ///
     static func presentNotificationDetails(for noteID: Int64) {
         let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
-            guard let note = note else {
+            guard let note = note,
+                  let siteID = note.meta.identifier(forKey: .site) else {
                 return
             }
-            let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-
-            showStore(with: siteID, onCompletion: { _ in
+            showStore(with: Int64(siteID), onCompletion: { _ in
                 presentNotificationDetails(for: note)
             })
         }
@@ -383,12 +382,12 @@ extension MainTabBarController {
     }
 
     static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
-        guard let note = notification.note else {
+        guard let note = notification.note,
+              let siteID = note.meta.identifier(forKey: .site) else {
             presentNotificationDetails(for: notification.noteID)
             return
         }
-        let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-        showStore(with: siteID, onCompletion: { _ in
+        showStore(with: Int64(siteID), onCompletion: { _ in
             presentNotificationDetails(for: note)
         })
     }

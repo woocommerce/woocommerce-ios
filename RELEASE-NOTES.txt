@@ -4,6 +4,7 @@
 20.3
 -----
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Blaze: Changes on the schedule setting screen should only be applied after tapping the Apply button. [https://github.com/woocommerce/woocommerce-ios/pull/13846]
 
 20.2
 -----

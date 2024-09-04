@@ -96,7 +96,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
     ///
-    private let didSelectSave: ((String?) -> Void)
+    private let didSelectSave: ((_ discount: Decimal?) -> Void)
 
     /// Helper to format price field input.
     ///
@@ -120,7 +120,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     private var finalAmountDecimal: Decimal {
         let inputString = feeOrDiscountType == .fixed ? amount : percentage
-        guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
+        guard let decimalInput = Decimal(string: inputString) else {
             return .zero
         }
 
@@ -141,10 +141,10 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
     func calculatePriceAfterDiscount(_ price: String) -> String {
-        guard let price = currencyFormatter.convertToDecimal(price),
-              let discount = currencyFormatter.convertToDecimal(finalAmountString ?? "") else {
+        guard let price = currencyFormatter.convertToDecimal(price) else {
             return ""
         }
+        let discount = NSDecimalNumber(decimal: finalAmountDecimal)
         let priceAfterDiscount = price.subtracting(discount)
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
@@ -219,12 +219,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
-         initialTotal: String,
+         initialTotal: Decimal,
          lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         didSelectSave: @escaping ((String?) -> Void)) {
+         didSelectSave: @escaping ((Decimal?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
@@ -235,12 +235,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
-
-        if let initialAmount = currencyFormatter.convertToDecimal(initialTotal) {
-            self.initialAmount = initialAmount as Decimal
-        } else {
-            self.initialAmount = .zero
-        }
+        self.initialAmount = initialTotal as Decimal
 
         if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
@@ -260,15 +255,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     }
 
     func saveData() {
-        guard let finalAmountString = finalAmountString else {
-            return
-        }
-
         if let event = lineTypeViewModel.addValueEvent(with: feeOrDiscountType) {
             analytics.track(event: event)
         }
 
-        didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))
+        didSelectSave(finalAmountDecimal)
     }
 }
 

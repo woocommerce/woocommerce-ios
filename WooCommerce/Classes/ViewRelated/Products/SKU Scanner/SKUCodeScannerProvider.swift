@@ -1,7 +1,7 @@
 import Foundation
 
 /// Provides a `ScannerContainerViewController` customized to find Product SKU strings
-/// 
+///
 class SKUCodeScannerProvider {
     static func SKUCodeScanner(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) -> ScannerContainerViewController {
         ScannerContainerViewController(navigationTitle: Localization.title,

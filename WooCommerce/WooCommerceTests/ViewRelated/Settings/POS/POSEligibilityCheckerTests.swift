@@ -33,7 +33,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_all_conditions_satisfied_then_returns_true() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -50,7 +50,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_account_not_whitelisted_in_backend_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -67,7 +67,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_non_iPad_device_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         [UIUserInterfaceIdiom.phone, UIUserInterfaceIdiom.mac, UIUserInterfaceIdiom.tv, UIUserInterfaceIdiom.carPlay]
             .forEach { userInterfaceIdiom in
@@ -86,7 +86,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_non_us_site_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         [Country.ca, Country.es, Country.gb].forEach { country in
             // When
             setupCountry(country: country)
@@ -105,7 +105,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_non_usd_currency_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
@@ -121,7 +121,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_feature_flag_is_disabled_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: false)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
         setupCountry(country: .us)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
                                             cardPresentPaymentsOnboarding: onboardingUseCase,
@@ -137,7 +137,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_onboarding_state_is_not_completed_wcpay_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
@@ -177,7 +177,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_WooCommerce_version_is_below_6_6_then_returns_false() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
 
         // Unsupported WooCommerce version
@@ -198,7 +198,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
 
     func test_is_eligible_when_WooCommerce_version_is_above_6_6_then_returns_true() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isDisplayPointOfSaleToggleEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 

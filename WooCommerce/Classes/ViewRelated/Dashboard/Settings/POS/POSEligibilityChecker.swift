@@ -19,7 +19,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
-        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
+        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSale)
         guard isTablet && isFeatureFlagEnabled else {
             return Just(false)
                 .eraseToAnyPublisher()

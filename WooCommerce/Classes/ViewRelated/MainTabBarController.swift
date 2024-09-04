@@ -382,7 +382,7 @@ extension MainTabBarController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Presents the order details if the `note` is for an order push notification.
+    /// Presents the details  of a push notification.
     ///
     private static func presentNotificationDetails(for note: Note) {
         switch note.kind {
@@ -390,6 +390,8 @@ extension MainTabBarController {
             switchToOrdersTab {
                 ordersTabSplitViewWrapper()?.presentDetails(for: note)
             }
+        case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
+           navigateToBlazeCampaignDetails(using: note)
         default:
             break
         }
@@ -440,8 +442,37 @@ extension MainTabBarController {
                     return
                 }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
+                }
+            }
+        })
+    }
+
+    static func navigateToBlazeCampaignDetails(using note: Note) {
+        guard note.kind.isBlaze else {
+            return
+        }
+
+        guard let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its site ID!")
+            return
+        }
+
+        guard let campaignID = note.meta.identifier(forKey: .campaignID) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its campaign ID!")
+            return
+        }
+
+        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+            // It failed to show the campaign's store.
+            guard storeIsShown else {
+                return
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                switchToHubMenuTab() { hubMenuViewController in
+                    hubMenuViewController?.showBlazeCampaign("\(campaignID)")
                 }
             }
         })
@@ -764,6 +795,7 @@ private extension MainTabBarController {
         // to ensure that the first transition is finished. Without this delay
         // the second one might not happen.
         static let screenTransitionsDelay = 0.3
+        static let blazeScreenTransitionsDelay = 1.0
     }
 }
 

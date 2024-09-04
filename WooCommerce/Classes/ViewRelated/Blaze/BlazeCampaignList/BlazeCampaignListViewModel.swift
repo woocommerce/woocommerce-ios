@@ -94,11 +94,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
         }
     }
 
-    func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+    func didSelectCampaignDetails(_ campaignID: String) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
-                          campaign.campaignID,
+                          campaignID,
                           siteURL.trimHTTPScheme(),
                           BlazeCampaignDetailSource.campaignList.rawValue)
         selectedCampaignURL = URL(string: path)

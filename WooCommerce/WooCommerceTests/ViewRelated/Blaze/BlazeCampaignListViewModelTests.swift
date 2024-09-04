@@ -352,7 +352,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedCampaignURL)
 
         // When
-        viewModel.didSelectCampaignDetails(campaign)
+        viewModel.didSelectCampaignDetails(campaign.campaignID)
 
         // Then
         XCTAssertEqual(viewModel.selectedCampaignURL?.absoluteString, "https://wordpress.com/advertising/campaigns/123/example.com?source=campaign_list")
@@ -382,7 +382,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
 
         // When
-        viewModel.didSelectCampaignDetails(.fake())
+        viewModel.didSelectCampaignDetails("123")
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))

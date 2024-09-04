@@ -99,7 +99,7 @@ struct BlazeCampaignListView: View {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
-                                viewModel.didSelectCampaignDetails(item)
+                                viewModel.didSelectCampaignDetails(item.campaignID)
                             }
                     }
                 }

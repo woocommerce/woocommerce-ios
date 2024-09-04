@@ -277,14 +277,12 @@ platform :ios do
   # bundle exec fastlane complete_code_freeze skip_confirm:true
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
-  lane :complete_code_freeze do |options|
+  lane :complete_code_freeze do |skip_confirm: false|
     ensure_git_status_clean
     ensure_git_branch_is_release_branch!
 
     UI.important("Completing code freeze for: #{release_version_current}")
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     update_app_store_strings
 

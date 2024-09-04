@@ -4,7 +4,7 @@ import XCTest
 
 /// NoteListMapperTests Unit Tests
 ///
-class NoteListMapperTests: XCTestCase {
+final class NoteListMapperTests: XCTestCase {
 
     /// Sample Notes: 99 Entries!
     ///
@@ -24,7 +24,7 @@ class NoteListMapperTests: XCTestCase {
     /// Verifies that all of the Sample Notifications are properly parsed.
     ///
     func test_sample_notifications_are_properly_decoded() {
-        XCTAssertEqual(sampleNotes.count, 40)
+        XCTAssertEqual(sampleNotes.count, 43)
     }
 
     /// Verifies that the Broken Notification documents are properly parsed.
@@ -251,7 +251,6 @@ class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(commentNote?.body[1].kind, .comment)
     }
 
-
     /// Verifies that the Notification's subtype is properly parsed.
     ///
     func test_store_review_subtype_is_properly_parsed() {
@@ -259,6 +258,55 @@ class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(storeReview?.subtype, "store_review")
         XCTAssertEqual(storeReview?.subkind, .storeReview)
     }
+
+    // MARK: Blaze
+
+    /// Verifies that the Blaze approved notification is properly parsed.
+    ///
+    func test_blaze_approved_notification_is_properly_parsed() throws {
+        let note = try XCTUnwrap(sampleNotes.first(where: { $0.noteID == 8401476681 }))
+
+        XCTAssertEqual(note.hash, 3124)
+        XCTAssertEqual(note.read, false)
+        XCTAssertEqual(note.icon, "https://gravatar.tld/blaze-icon@3x.png")
+        XCTAssertEqual(note.timestamp, "2024-09-04T07:17:18+00:00")
+        XCTAssertEqual(note.kind, .blazeApprovedNote)
+        XCTAssertEqual(note.url, "https://wordpress.com/advertising/123?blazepress-widget=post-0#get-started")
+        XCTAssertEqual(note.title, "Blaze")
+        XCTAssertEqual(note.meta.identifier(forKey: .campaignID), 12345)
+    }
+
+    /// Verifies that the Blaze rejected notification is properly parsed.
+    ///
+    func test_blaze_rejected_notification_is_properly_parsed() throws {
+        let note = try XCTUnwrap(sampleNotes.first(where: { $0.noteID == 324533 }))
+
+        XCTAssertEqual(note.hash, 1234)
+        XCTAssertEqual(note.read, false)
+        XCTAssertEqual(note.icon, "https://gravatar.tld/blaze-icon@3x.png")
+        XCTAssertEqual(note.timestamp, "2024-09-04T06:47:49+00:00")
+        XCTAssertEqual(note.kind, .blazeRejectedNote)
+        XCTAssertEqual(note.url, "https://gravatar.tld?blazepress-widget=post-0#get-started")
+        XCTAssertEqual(note.title, "Blaze")
+        XCTAssertEqual(note.meta.identifier(forKey: .campaignID), 1242324)
+    }
+
+    /// Verifies that the Blaze cancelled notification is properly parsed.
+    ///
+    func test_blaze_cancelled_notification_is_properly_parsed() throws {
+        let note = try XCTUnwrap(sampleNotes.first(where: { $0.noteID == 8401493284 }))
+
+        XCTAssertEqual(note.hash, 1919079084)
+        XCTAssertEqual(note.read, false)
+        XCTAssertEqual(note.icon, "https://s0.wp.com/wp-content/mu-plugins/notes/images/blaze-icon@3x.png")
+        XCTAssertEqual(note.timestamp, "2024-09-04T07:27:52+00:00")
+        XCTAssertEqual(note.kind, .blazeCancelledNote)
+        XCTAssertEqual(note.url, "https://wordpress.com/advertising/campaigns/112182/210109692")
+        XCTAssertEqual(note.title, "Blaze")
+        XCTAssertEqual(note.meta.identifier(forKey: .campaignID), 112182)
+    }
+
+    // TODO: 13477 Add unit tests for Blaze performed notification
 }
 
 

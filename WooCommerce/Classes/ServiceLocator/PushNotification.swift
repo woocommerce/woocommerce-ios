@@ -32,16 +32,29 @@ struct PushNotification {
 
 extension PushNotification {
     static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
+        guard let aps = userInfo.dictionary(forKey: APNSKey.aps) else {
+            return nil
+        }
+
+        let title: String? = {
+            if let alert = aps.dictionary(forKey: APNSKey.alert) {
+                return alert.string(forKey: APNSKey.alertTitle)
+            } else {
+                return aps.string(forKey: APNSKey.alert)
+            }
+        }()
+
         guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
               let siteID = userInfo.integer(forKey: APNSKey.siteID),
-              let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
-              let title = alert.string(forKey: APNSKey.alertTitle),
+              let title,
               let type = userInfo.string(forKey: APNSKey.type),
               let noteKind = Note.Kind(rawValue: type) else {
-                  return nil
-              }
-        let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
-        let message = alert.string(forKey: APNSKey.alertMessage)
+            return nil
+        }
+
+        let alert = aps.dictionary(forKey: APNSKey.alert)
+        let subtitle = alert?.string(forKey: APNSKey.alertSubtitle)
+        let message = alert?.string(forKey: APNSKey.alertMessage)
         return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
     }
 }

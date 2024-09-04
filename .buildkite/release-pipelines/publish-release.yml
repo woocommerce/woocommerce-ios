@@ -1,6 +1,3 @@
-agents:
-  queue: "android"
-
 steps:
   - label: "Publish Release"
     plugins:

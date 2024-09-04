@@ -568,7 +568,9 @@ platform :ios do
 
     create_backmerge_pr
 
-    # Now that an eventual backmerge PR has created an intermediate branch, we can delete the `release/*` branch
+    # At this point, an intermediate branch has been created by creating a backmerge PR to a hotfix or the next version release branch.
+    # This allows us to safely delete the `release/*` branch.
+    # Note that if a hotfix or new release branches haven't been created, the backmerge PR won't be created as well.
     delete_remote_git_branch!(current_branch)
   end
 
@@ -1491,6 +1493,7 @@ def create_backmerge_pr
 rescue StandardError => e
   error_message = <<-MESSAGE
     Error creating backmerge pull request:
+
     ```
     #{e.message}
     ```
@@ -1525,7 +1528,7 @@ end
 def delete_remote_git_branch!(branch_name)
   remove_branch_protection(repository: GITHUB_REPO, branch: branch_name)
 
-  Git.open('.').push('origin', branch_name, delete: true)
+  Git.open(Dir.pwd).push('origin', branch_name, delete: true)
 end
 
 def report_milestone_error(error_title:)

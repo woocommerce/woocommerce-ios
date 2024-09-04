@@ -3,7 +3,7 @@
 
 20.3
 -----
-
+- [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
 
 20.2
 -----
@@ -18,6 +18,7 @@
 - [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
 - [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 - [Internal] Custom fields: Renamed the OrderMetaData entity to MetaData [https://github.com/woocommerce/woocommerce-ios/pull/13736]
+- [Internal] Tooling: updated Sentry to avoid potential crash [https://github.com/woocommerce/woocommerce-ios/pull/13828]
 
 20.1
 -----

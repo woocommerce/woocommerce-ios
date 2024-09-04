@@ -6,7 +6,6 @@ protocol ItemListViewModelProtocol: ObservableObject {
     var items: [POSItem] { get }
     var state: ItemListViewModel.ItemListState { get }
     var isHeaderBannerDismissed: Bool { get }
-    var isEmptyOrError: Bool { get }
     var shouldShowHeaderBanner: Bool { get }
 
     var selectedItemPublisher: AnyPublisher<POSItem, Never> { get }

@@ -382,12 +382,70 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 1)
         assertThat(storesManager.receivedActions.first, isAnInstanceOf: ShipmentAction.self)
     }
+
+    // MARK: - `isWooShippingSupported`
+
+    func test_isWooShippingSupported_returns_true_with_expected_feature_flag_and_version() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
+        whenFetchingSystemPlugin(thenReturn: plugin)
+
+        // When
+        let isWooShippingSupported = await viewModel.isWooShippingSupported()
+
+        // Then
+        XCTAssertTrue(isWooShippingSupported)
+    }
+
+    func test_isWooShippingSupported_returns_false_when_feature_flag_disabled() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: true, version: "1.0.5")
+        whenFetchingSystemPlugin(thenReturn: plugin)
+
+        // When
+        let isWooShippingSupported = await viewModel.isWooShippingSupported()
+
+        // Then
+        XCTAssertFalse(isWooShippingSupported)
+    }
+
+    func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_not_active() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.5")
+        whenFetchingSystemPlugin(thenReturn: plugin)
+
+        // When
+        let isWooShippingSupported = await viewModel.isWooShippingSupported()
+
+        // Then
+        XCTAssertFalse(isWooShippingSupported)
+    }
+
+    func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_is_not_minimum_version() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WooShipping[0], siteID: order.siteID, isActive: false, version: "1.0.4")
+        whenFetchingSystemPlugin(thenReturn: plugin)
+
+        // When
+        let isWooShippingSupported = await viewModel.isWooShippingSupported()
+
+        // Then
+        XCTAssertFalse(isWooShippingSupported)
+    }
 }
 
 private extension OrderDetailsViewModelTests {
     @discardableResult
-    func insertSystemPlugin(name: String, siteID: Int64, isActive: Bool) -> SystemPlugin {
-        let plugin = SystemPlugin.fake().copy(siteID: siteID, name: name, active: isActive)
+    func insertSystemPlugin(name: String, siteID: Int64, isActive: Bool, version: String? = nil) -> SystemPlugin {
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, name: name, version: version, active: isActive)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
         return plugin
     }

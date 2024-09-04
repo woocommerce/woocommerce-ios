@@ -31,7 +31,6 @@ final class TotalsViewModelTests: XCTestCase {
     func test_formattedPrice() {}
     func test_formattedOrderTotalPrice() {}
     func test_formattedOrderTotalTaxPrice() {}
-    func test_areAmountsFullyCalculated() {}
     func test_clearOrder() {
         // When
         sut.clearOrder()

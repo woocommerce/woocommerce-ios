@@ -30,6 +30,7 @@ final class BlazeCampaignListItemsMapperTests: XCTestCase {
         XCTAssertEqual(item.budgetCurrency, "USD")
         XCTAssertEqual(item.isEvergreen, true)
         XCTAssertEqual(item.durationDays, 364)
+        XCTAssertEqual(item.startTime, Date(timeIntervalSince1970: 1725253083))
     }
 }
 

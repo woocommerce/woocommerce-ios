@@ -602,7 +602,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_local_notification_scheduler_starts_upon_init() throws {
+    func test_local_notification_scheduler_starts_upon_init() async throws {
         // Given
         let scheduler = MockBlazeLocalNotificationScheduler()
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -610,6 +610,9 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            localNotificationScheduler: scheduler)
+
+        // When
+        await viewModel.onViewAppear()
 
         // Then
         waitUntil {

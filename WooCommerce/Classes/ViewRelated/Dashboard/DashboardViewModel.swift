@@ -79,7 +79,7 @@ final class DashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
-    private let localNotificationScheduler: BlazeLocalNotificationScheduler
+    private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -142,14 +142,11 @@ final class DashboardViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        self.localNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+        self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
                                                                                                                stores: stores,
                                                                                                                storageManager: storageManager,
                                                                                                                userDefaults: userDefaults,
                                                                                                                blazeEligibilityChecker: blazeEligibilityChecker)
-        Task { @MainActor [weak self]  in
-            await self?.localNotificationScheduler.scheduleNotifications()
-        }
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -181,6 +178,8 @@ final class DashboardViewModel: ObservableObject {
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
+
+        await blazeLocalNotificationScheduler.scheduleNotifications()
     }
 
     func handleCustomizationDismissal() {

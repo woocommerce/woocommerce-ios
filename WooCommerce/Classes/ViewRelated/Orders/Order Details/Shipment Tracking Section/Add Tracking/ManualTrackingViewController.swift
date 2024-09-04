@@ -662,7 +662,7 @@ private extension ManualTrackingViewController {
                                              value: "Scan barcode or QR Code with tracking number",
                                              comment: "Navigation bar title for scanning a barcode or QR Code to use as an order tracking number.")
         static let instructionText = NSLocalizedString("ManualTrackingViewController.scanView.instructionText",
-                                                       value: "Scan tracking barcode or QR Code",
+                                                       value: "Scan Tracking Barcode or QR Code",
                                                        comment: "The instruction text below the scan area in the barcode scanner for order tracking number.")
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-26 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-02 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "Hesap kapatılırken bir hata oluştu.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Bluetooth'a erişimde bir hata oluştu - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Bluetooth'a erişimde bir hata oluştu - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Menü oluşturulurken bir hata oluştu.";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Fotoğraf taranırken hata oluştu. Lütfen başka bir ambalaj fotoğrafı seçin veya ürün ayrıntılarını manuel olarak girin.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Yakın zamanda benzer bir işlem gönderildi. Devam etmek istiyorsanız başka bir ödeme yöntemi deneyin";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Yakın zamanda benzer bir işlem gönderildi. Devam etmek istiyorsanız başka bir ödeme yöntemi deneyin";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "Bir görsel yüklenemedi";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "Birçok kez yanlış PIN girildi. Başka bir ödeme yöntemi deneyin";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "Birçok kez yanlış PIN girildi. Başka bir ödeme yöntemi deneyin";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "Yanlış PIN girildi. Yeniden deneyin veya başka bir ödeme yöntemi kullanın";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "Yanlış PIN girildi. Yeniden deneyin veya başka bir ödeme yöntemi kullanın";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Satın alma işleminden sonra müşteriye göndermek için isteğe bağlı not";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "Kart okuyucu kılavuzları";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Kart okuyucuda kaldı - lütfen kartı çıkarıp yeniden takın";
+"Card was left in reader - please remove and reinsert card." = "Kart okuyucuda kaldı - lütfen kartı çıkarıp yeniden takın";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Kart çok erken çıkarıldı - lütfen işlemi tekrar deneyin";
+"Card was removed too soon - please try transaction again." = "Kart çok erken çıkarıldı - lütfen işlemi tekrar deneyin";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "İptal Et";
@@ -1775,7 +1775,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "Okuyucuya bağlanılıyor";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Kart okuyucuya bağlanma işlemi zaman aşımına uğradı - yakında olduğundan ve şarj edildiğinden emin olduktan sonra tekrar deneyin";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "Kart okuyucuya bağlanma işlemi zaman aşımına uğradı - yakında olduğundan ve şarj edildiğinden emin olduktan sonra tekrar deneyin";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Hesabınıza bağlanılıyor";
@@ -4603,7 +4603,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "Henüz kampanya yok";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "Bağlı kart okuyucu yok - bir okuyucu bağlayın ve tekrar deneyin";
+"No card reader is connected - connect a reader and try again." = "Bağlı kart okuyucu yok - bir okuyucu bağlayın ve tekrar deneyin";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "Kategori seçilmedi";
@@ -4615,7 +4615,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "Bağlantı sorunu yok";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "İnternet bağlantısı yok - lütfen İnternete bağlanın ve tekrar deneyin";
+"No connection to the Internet - please connect to the Internet and try again." = "İnternet bağlantısı yok - lütfen İnternete bağlanın ve tekrar deneyin";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Kupon bulunamadı";
@@ -5114,7 +5114,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "Ödeme Toplamı";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Ödeme yetersiz bakiye nedeniyle reddedildi. Başka bir ödeme yöntemi deneyin";
+"Payment declined due to insufficient funds. Try another means of payment." = "Ödeme yetersiz bakiye nedeniyle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Ödeme başarısız";
@@ -5130,10 +5130,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "Ödeme başarılı";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Ödeme bilinmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
+"Payment was declined for an unknown reason. Try another means of payment." = "Ödeme bilinmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Ödeme belirtilmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
+"Payment was declined for an unspecified reason. Try another means of payment." = "Ödeme belirtilmeyen bir nedenle reddedildi. Başka bir ödeme yöntemi deneyin";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5219,7 +5219,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "Lütfen hediye kartında kalan bakiyeyi kontrol edin.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Lütfen Apple Kimliğinizin geçerliliğini kontrol edin ve tekrar deneyin. Apple'ın Hizmet Koşullarını kabul etmek için geçerli bir Apple Kimliği gereklidir.";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Lütfen Apple Kimliğinizin geçerliliğini kontrol edin ve tekrar deneyin. Apple'ın Hizmet Koşullarını kabul etmek için geçerli bir Apple Kimliği gereklidir.";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Lütfen bir tarayıcıdan yönetici sayfanız aracılığıyla Jetpack'i bağlayın veya destek ile iletişime geçin.";
@@ -5231,7 +5231,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "Yardım için lütfen destek birimine başvurun.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "Lütfen destekle iletişime geçin. Tap to Pay on iPhone özelliği başlatılırken bir sorun oluştu";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5325,7 +5325,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "Lütfen bir paket seçin";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Tap to Pay on iPhone özelliğini kullanmak için lütfen bu cihazda iCloud'a giriş yapın";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Tap to Pay on iPhone özelliğini kullanmak için lütfen bu cihazda iCloud'a giriş yapın";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Lütfen daha sonra tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız.";
@@ -5340,7 +5340,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Lütfen tekrar deneyin veya bize ulaşın, size yardımcı olmaktan memnuniyet duyarız!";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Lütfen tekrar deneyin ve Tap to Pay on iPhone özelliğini kullanabilmeniz için Apple'ın Hizmet Koşullarını kabul edin";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Lütfen tekrar deneyin ve Tap to Pay on iPhone özelliğini kullanabilmeniz için Apple'ın Hizmet Koşullarını kabul edin";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Lütfen tekrar deneyin veya yardım için destek birimine başvurun";
@@ -6791,8 +6791,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "Üzgünüz, ödemeniz işleme alınamadı";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "Üzgünüz, ödemeniz işleme alınamadı.";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "Maalesef bu geri ödeme iptal edilemedi";
+"Sorry, this refund could not be canceled." = "Maalesef bu geri ödeme iptal edilemedi";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "Maalesef bu geri ödeme işlenemedi";
@@ -7023,7 +7026,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "Sistem durum raporu panoya kopyalandı";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "Sistem test kartlarına ödeme yapılmasına izin verilmiyor. Başka bir ödeme yöntemi deneyin";
+"System test cards are not permitted for payment. Try another means of payment." = "Sistem test kartlarına ödeme yapılmasına izin verilmiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé ve Príncipe";
@@ -7271,7 +7274,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "%1$@ uzantısı mağazanızda yüklü, ancak Şahsen Ödemeler için güncellenmesi gerekiyor. Lütfen en son sürüme güncelleyin.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "Kart okuyucuyla Bluetooth bağlantısı beklenmedik şekilde kesildi";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "Kart okuyucuyla Bluetooth bağlantısı beklenmedik şekilde kesildi";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google hesabı \"%@\" WordPress.com'daki hiçbir hesapla eşleşmiyor";
@@ -7295,46 +7298,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "Özellik kaydedilemedi.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
+"The card does not support this currency. Try another means of payment." = "Kart bu para birimini desteklemiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "Kart bu satın alma türünü desteklemiyor. Başka bir ödeme yöntemi deneyin";
+"The card does not support this type of purchase. Try another means of payment." = "Kart bu satın alma türünü desteklemiyor. Başka bir ödeme yöntemi deneyin";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "Kartın süresi bitmiş. Başka bir ödeme yöntemi deneyin";
+"The card has expired. Try another means of payment." = "Kartın süresi bitmiş. Başka bir ödeme yöntemi deneyin";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "Kart veya kart hesabı geçersiz. Başka bir ödeme yöntemi deneyin";
+"The card or card account is invalid. Try another means of payment." = "Kart veya kart hesabı geçersiz. Başka bir ödeme yöntemi deneyin";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "Kart okuyucu başka bir komut yürütmekle meşgul - lütfen tekrar deneyin";
+"The card reader is busy executing another command - please try again." = "Kart okuyucu başka bir komut yürütmekle meşgul - lütfen tekrar deneyin";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Kart okuyucu bu uygulamayla uyumlu değil - lütfen uygulamayı güncellemeyi veya farklı bir okuyucu kullanmayı deneyin";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "Kart okuyucu bu uygulamayla uyumlu değil - lütfen uygulamayı güncellemeyi veya farklı bir okuyucu kullanmayı deneyin";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "Kart okuyucu oturumunun süresi doldu - lütfen kart okuyucunun bağlantısını kesip yeniden bağlayın ve ardından tekrar deneyin";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "Kart okuyucu oturumunun süresi doldu - lütfen kart okuyucunun bağlantısını kesip yeniden bağlayın ve ardından tekrar deneyin";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Kart okuyucu yazılımı güncel değil - lütfen ödemeleri işleme koymadan önce kart okuyucu yazılımını güncelleyin";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "Kart okuyucu yazılımı güncel değil, lütfen ödemeleri işleme koymadan önce kart okuyucu yazılımını güncelleyin.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "Kart okuyucu yazılımı güncel değil; lütfen geri ödemeleri işleme koymadan önce kart okuyucu yazılımını güncelleyin";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "Kart okuyucu yazılım güncellemesi bir iletişim hatası nedeniyle başarısız oldu - lütfen tekrar deneyin";
+"The card reader software update failed due to a communication error - please try again." = "Kart okuyucu yazılım güncellemesi bir iletişim hatası nedeniyle başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "Güncelleme sunucusundaki bir sorun nedeniyle kart okuyucu yazılım güncellemesi başarısız oldu - lütfen tekrar deneyin";
+"The card reader software update failed due to a problem with the update server - please try again." = "Güncelleme sunucusundaki bir sorun nedeniyle kart okuyucu yazılım güncellemesi başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "Kart okuyucu yazılım güncellemesi beklenmedik bir şekilde başarısız oldu - lütfen tekrar deneyin";
+"The card reader software update failed unexpectedly - please try again." = "Kart okuyucu yazılım güncellemesi beklenmedik bir şekilde başarısız oldu - lütfen tekrar deneyin";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "Kart okuyucu yazılım güncellemesi tamamlanamadan kesintiye uğradı - lütfen tekrar deneyin";
+"The card reader software update was interrupted before it could complete - please try again." = "Kart okuyucu yazılım güncellemesi tamamlanamadan kesintiye uğradı - lütfen tekrar deneyin";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "Kart, kart okuyucusu tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "Kart, kart okuyucusu tarafından reddedildi. Lütfen başka bir ödeme yöntemi deneyin.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Kart, kart okuyucusu tarafından reddedildi; lütfen başka bir geri ödeme yöntemi deneyin";
@@ -7343,7 +7352,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "Kart, iPhone kart okuyucu tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin.";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "Kart, ödeme işlemcisi tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin";
+"The card was declined by the payment processor - please try another means of payment." = "Kart, ödeme işlemcisi tarafından reddedildi - lütfen başka bir ödeme yöntemi deneyin.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Bu sunucunun sertifikası geçersiz. “%@” taklidi yapan bir siteye bağlanıyor olabilirsiniz ki bu kişisel bilgilerinizin ele geçirilebilmesi açısından büyük bir risktir.\n\nSertifikaya güvenip devam etmek istiyor musunuz?";
@@ -7400,7 +7409,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Ödeme yöntemi, otomatik iadeyi desteklemiyor. Parayı müşteriye elle aktararak iadeyi tamamlayın.";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "Ödeme, okuyucu üzerinden iptal edildi";
+"The payment was canceled on the reader." = "Ödeme, okuyucu üzerinden iptal edildi";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "Ödeme iptal edildi.";
@@ -7433,7 +7442,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "Geri ödeme, ödeme işlemcisi tarafından işlenemiyor. ";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "İstek zaman aşımına uğradı - lütfen tekrar deneyin";
+"The request timed out - please try again." = "İstek zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "Uygulama şifresi oluşturma talebi yetkisi yok.";
@@ -7490,16 +7499,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "Mağaza posta kodu geçersiz veya eksik, lütfen devam etmeden önce kodu güncelleyin.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "Sistem komutu beklenmedik bir şekilde iptal etti - lütfen tekrar deneyin";
+"The system canceled the command unexpectedly - please try again." = "Sistem komutu beklenmedik bir şekilde iptal etti - lütfen tekrar deneyin";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "Sistem beklenmeyen bir yazılım hatasıyla karşılaştı";
+"The system experienced an unexpected software error." = "Sistem beklenmeyen bir yazılım hatasıyla karşılaştı";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Sitenizin sistem durum raporu şu anda alınamıyor. Lütfen yeniden deneyin.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "İşlem posta kodu ile kart posta kodu eşleşmiyor Başka bir ödeme yöntemi deneyin";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "İşlem posta kodu ile kart posta kodu eşleşmiyor Başka bir ödeme yöntemi deneyin";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "Deneme ödemesi başlatılamadı, lütfen tekrar deneyin veya bu sorun devam ederse destekle iletişime geçin.";
@@ -7618,7 +7627,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Bu uygulama yalnızca Yönetici ve Mağaza Yöneticisi kullanıcı rollerini destekler. Rolünüzü yükseltmek için lütfen mağazanızın sahibiyle iletişime geçin.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Bu kart bir PIN kodu gerektirdiğinden işleme alınamıyor. Başka bir ödeme yöntemi deneyin";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Bu kart bir PIN kodu gerektirdiğinden işleme alınamıyor. Başka bir ödeme yöntemi deneyin";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Bunun sebebi mağazanızda bazı ekstra güvenlik adımlarının olması olabilir.";
@@ -7912,7 +7921,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "Pano sayfasıyla tekrar deneyin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Başka bir ödeme yöntemi deneyin";
+"Try another means of payment." = "Başka bir ödeme yöntemi deneyin";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Mağazanıza erişmek için tekrar bağlanmayı deneyin.";
@@ -7927,7 +7936,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "Site adresi ile deneyin";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Tekrar denerseniz başarılı olabilir veya başka bir ödeme yöntemini deneyebilirsiniz";
+"Trying again may succeed, or try another means of payment." = "Tekrar denerseniz başarılı olabilir veya başka bir ödeme yöntemini deneyebilirsiniz";
 
 /* Country option for a site address. */
 "Tunisia" = "Tunus";
@@ -7985,10 +7994,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "Bağlanılamıyor";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Bluetooth'a erişilemiyor - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "Bluetooth'a erişilemiyor - lütfen Bluetooth'u etkinleştirin ve tekrar deneyin";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Konum Hizmetlerine erişilemiyor - lütfen Konum Hizmetlerini etkinleştirin ve tekrar deneyin";
+"Unable to access Location Services - please enable Location Services and try again." = "Konum Hizmetlerine erişilemiyor - lütfen Konum Hizmetlerini etkinleştirin ve tekrar deneyin";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "Kupon eklenemiyor.";
@@ -8003,13 +8012,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "%1$d no'lu siparişin durumu değiştirilemiyor";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Okuyucuyla iletişim kurulamıyor - lütfen tekrar deneyin";
+"Unable to communicate with reader - please try again." = "Okuyucuyla iletişim kurulamıyor - lütfen tekrar deneyin";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Kart okuyucuya bağlanılamıyor - kart okuyucu zaten kullanılıyor";
+"Unable to connect to card reader - the card reader is already in use." = "Kart okuyucuya bağlanılamıyor - kart okuyucu zaten kullanılıyor";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Okuyucuya bağlanılamıyor - başka bir okuyucu zaten bağlı";
+"Unable to connect to reader - another reader is already connected." = "Okuyucuya bağlanılamıyor - başka bir okuyucu zaten bağlı";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Okuyucuya bağlanılamıyor - okuyucunun pili kritik düzeyde - okuyucuyu şarj edin ve tekrar deneyin.";
@@ -8099,13 +8108,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "%@ olarak işaretlenemedi";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Bağlı okuyucuyla ilgili istek gerçekleştirilemiyor - desteklenmeyen özellik - lütfen başka bir okuyucuyla tekrar deneyin";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "Bağlı okuyucuyla ilgili istek gerçekleştirilemiyor - desteklenmeyen özellik - lütfen başka bir okuyucuyla tekrar deneyin";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Yazılım isteği gerçekleştirilemiyor - lütfen bu uygulamayı güncelleyin ve tekrar deneyin";
+"Unable to perform software request - please update this application and try again." = "Yazılım isteği gerçekleştirilemiyor - lütfen bu uygulamayı güncelleyin ve tekrar deneyin";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Geçersiz veriler nedeniyle ödeme işlenemiyor - lütfen tekrar deneyin";
+"Unable to process payment due to invalid data - please try again." = "Geçersiz veriler nedeniyle ödeme işlenemiyor - lütfen tekrar deneyin";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Ödeme işlenemiyor. Sipariş toplam tutarı, tahsil edebileceğiniz minimum tutarın altında (%1$@)";
@@ -8126,13 +8135,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Ödeme işlenemiyor. En yeni sipariş ayrıntılarını alamadık. Lütfen ağ bağlantınızı kontrol edip tekrar deneyin. Temeldeki hata: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Kart okunamıyor - sistem zaman aşımına uğradı - lütfen tekrar deneyin";
+"Unable to read card - the system timed out - please try again." = "Kart okunamıyor - sistem zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Takılan kart okunamıyor - lütfen kartı çıkarıp tekrar takmayı deneyin";
+"Unable to read inserted card - please try removing and inserting card again." = "Takılan kart okunamıyor - lütfen kartı çıkarıp tekrar takmayı deneyin";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Kullanılan kart okunamıyor - lütfen kartı tekrar geçirmeyi deneyin";
+"Unable to read swiped card - please try swiping again." = "Kullanılan kart okunamıyor - lütfen kartı tekrar geçirmeyi deneyin";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Bu URL'deki WordPress sitesi okunamıyor. SSS'yi görüntülemek için 'Yardıma mı ihtiyacınız var?' ifadesine dokunun.";
@@ -8157,10 +8166,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "Değişiklikler kaydedilemiyor. Lütfen tekrar deneyin.";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Kart okuyucular aranamıyor - Bluetooth Low Energy bu cihazda desteklenmiyor - lütfen farklı bir cihaz kullanın";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "Kart okuyucular aranamıyor - Bluetooth Low Energy bu cihazda desteklenmiyor - lütfen farklı bir cihaz kullanın";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Kart okuyucular aranamıyor - Bluetooth zaman aşımına uğradı - lütfen tekrar deneyin";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "Kart okuyucular aranamıyor - Bluetooth zaman aşımına uğradı - lütfen tekrar deneyin";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Müşteri ayrıntıları ayarlanamadı.";
@@ -8169,7 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "Adres güncellenemiyor.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Kart okuyucu yazılımı güncellenemiyor - Okuyucu pili çok düşük";
+"Unable to update card reader software - the reader battery is too low." = "Kart okuyucu yazılımı güncellenemiyor - Okuyucu pili çok düşük";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Fiyat güncellenemiyor";
@@ -8978,7 +8987,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "Ürününüzün parolayla korunmasını sağlamak için bir parola eklemelisiniz";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Tap to Pay on iPhone özelliğini kullanmak için bir kilit ekranı parolası ayarlamanız gerekir";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Tap to Pay on iPhone özelliğini kullanmak için bir kilit ekranı parolası ayarlamanız gerekir";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "DudaMobilden uygulamanın bloğunuza bağlanmasını engelleyen bir eklenti yüklemiş görünüyorsunuz ";
@@ -9395,20 +9404,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "İptal et";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "Günlük harcama";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "Kampanyanızda ne kadar harcama yapmak istersiniz ve bu ne kadar süre çalışmalı?";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Tamam";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "Süre";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Düzenle";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "Gün başına ulaşılan tahmini insan sayısı";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "Tahmini gösterim sayısı hakkında daha fazla bilgi edinmek için dokunun";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "Ben durdurana kadar çalıştır";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "Tahmini toplam gösterim sayısı";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "Kampanya siz durdurana kadar çalışır.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "İzlenimler tahmin edilemedi. Tekrar dene";
@@ -9419,14 +9437,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "İzlenimler";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "Süre ayarlayın";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "Zamanla";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "Süreyi belirle";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "Başlangıç Tarihi";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "Ürün tanıtım kampayanıza ne kadar harcamak istiyorsunuz?";
+"blazeBudgetSettingView.startDate" = "Başlangıç tarihi";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Bütçenizi oluşturun";
@@ -9437,29 +9455,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "Günlük %1$@";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "%1$@ tarihinden itibaren";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%2$@ tarihine kadar %1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d gün";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "%1$@ tarihinden itibaren devam eden";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d gün";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%2$d gün için %1$@";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%2$d gün için %1$@";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$%.0f ABD doları";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "%1$d gün için";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d gün için";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "Toplam harcama";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "Haftalık harcama";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "%1$@ haftalık harcama";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "İptal et";
@@ -10008,6 +10026,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Değişken abonelik";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "Devam ediyor";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "İptal et";
 
@@ -10170,6 +10191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Tutarı düzenleyin";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "Müşterileri ara";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Misafir";
@@ -10583,6 +10607,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Tüm kampanyaları görüntüle";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "İncelemeler";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Müşteriler";
@@ -11319,11 +11347,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Okuyucuya Bağlan";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Bu okuyucuya bağlanmak istiyor musunuz?";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Aramaya Devam Et";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "%1$@ okuyucusuna bağlanmak istiyor musunuz?";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@ bulundu";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "İptal Et";
@@ -11391,6 +11422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Okuyucuya bağlanılamadı";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Kapat";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Bir ağ hatasından dolayı ödemenin başarılı olup olmadığını bilmiyoruz.";
 
@@ -11399,6 +11433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Bu sipariş başarısız olabilir";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Okuyucunun Bağlantısını Kes";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS'tan çık";
@@ -11411,6 +11448,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "Okuyucunuzu bağlayın";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Bağlantı kesiliyor";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Kaldır";

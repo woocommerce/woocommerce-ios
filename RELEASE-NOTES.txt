@@ -4,7 +4,9 @@
 20.3
 -----
 - [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
+- [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Order Tracking in HACK Week: Allow users to scan their order tracking number [https://github.com/woocommerce/woocommerce-ios/pull/13850]
 
 20.2
 -----
@@ -19,6 +21,7 @@
 - [*] Products: Products can now be created and edited with negative prices. [https://github.com/woocommerce/woocommerce-ios/pull/13776]
 - [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 - [Internal] Custom fields: Renamed the OrderMetaData entity to MetaData [https://github.com/woocommerce/woocommerce-ios/pull/13736]
+- [Internal] Tooling: updated Sentry to avoid potential crash [https://github.com/woocommerce/woocommerce-ios/pull/13828]
 
 20.1
 -----

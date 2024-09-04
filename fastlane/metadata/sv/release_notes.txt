@@ -1,2 +1,4 @@
-I den här uppdateringen har vi förbättrat flödena för beställningsskapande, korrigerat flertalet buggar i flödena för beställningsredigering och åtgärdat ett problem som uppstod när en betalning startades med Tryck för att betala på iPhone.
-Vi har också gjort det enklare att förstå budgetarna för dina Blaze-annonskampanjer och lagt till stöd för att skapa Blaze-annonser på platser som inte använder västarabiska siffror.
+I den här versionen har Blaze-annonser fått stöd för evergreen-kampanjer. Vi har åtgärdat ett antal i produktredigeringen, särskilt kring priser, och det finns nu stöd för produkter med negativa priser.
+
+Vi har åtgärdat ett problem som uppstod vid användning av menyn med VoiceOver och hjälpmedelsteknik, samt ett antal buggar som gjorde att rubriker försvann och knappar slutade svara.
+

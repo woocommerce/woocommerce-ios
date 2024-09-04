@@ -235,7 +235,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
-        self.initialAmount = initialTotal as Decimal
+        self.initialAmount = initialTotal
 
         if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)

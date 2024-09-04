@@ -125,7 +125,7 @@ struct DiscountLineDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         let feeOrDiscountViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                                        baseAmountForPercentage: 10.0,
-                                                                       initialTotal: NSDecimalNumber(string: "100").decimalValue,
+                                                                       initialTotal: Decimal(string: "100"),
                                                                        lineType: .discount,
                                                                        didSelectSave: { _ in })
         DiscountLineDetailsView(viewModel: feeOrDiscountViewModel)

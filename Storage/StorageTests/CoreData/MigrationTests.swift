@@ -3048,12 +3048,12 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(startTime, startTimeDate, "Confirm expected property exists, and has expected date.")
     }
 
-    func test_migrating_from_115_to_116_adds_customFields_property_to_Product() throws {
+    func test_migrating_from_116_to_117_adds_customFields_property_to_Product() throws {
         // Given
-        let sourceContainer = try startPersistentContainer("Model 115")
+        let sourceContainer = try startPersistentContainer("Model 116")
         let sourceContext = sourceContainer.viewContext
 
-        let product = insertProduct(to: sourceContext, forModel: 115)
+        let product = insertProduct(to: sourceContext, forModel: 116)
         try sourceContext.save()
 
         // `customFields` should not be present before migration
@@ -3063,7 +3063,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
 
         // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 116")
+        let targetContainer = try migrate(sourceContainer, to: "Model 117")
         let targetContext = targetContainer.viewContext
 
         // Confidence check

@@ -94,7 +94,10 @@ private extension ProductImagePickerView {
                                   spacing: Layout.gridSpacing)],
                   spacing: Layout.gridSpacing) {
             ForEach(viewModel.productImages, id: \.imageID) { image in
-                KFImage(URL(string: image.src)!)
+                KFImage(URL(string: image.src))
+                    .placeholder {
+                        Image(uiImage: .productPlaceholderImage)
+                    }
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)

@@ -759,7 +759,7 @@ public extension StorageType {
         return firstObject(ofType: MetaData.self, matching: predicate)
     }
 
-    /// Retrieves the Stored Metadata for Order.
+    /// Retrieves the Stored Metadata for a Product.
     ///
     func loadProductMetaData(siteID: Int64, metadataID: Int64) -> MetaData? {
         let predicate = \MetaData.product?.siteID == siteID && \MetaData.metadataID == metadataID

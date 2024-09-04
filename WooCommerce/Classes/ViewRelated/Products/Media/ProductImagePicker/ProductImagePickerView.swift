@@ -37,7 +37,7 @@ final class ProductImagePickerViewController: UIHostingController<ProductImagePi
 ///
 extension ProductImagePickerViewController: UIAdaptivePresentationControllerDelegate {
 
-    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         onSelection(nil)
     }
 }

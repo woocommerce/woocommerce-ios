@@ -2,7 +2,6 @@ import SwiftUI
 import protocol Yosemite.POSItem
 
 struct ItemListView: View {
-    @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
 
@@ -134,12 +133,10 @@ private extension ItemListView {
     enum Constants {
         static let bannerTitleFont: POSFontStyle = .posBodyEmphasized
         static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
-        static let bannerHeight: CGFloat = 164
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
         static let bannerTextSpacing: CGFloat = 2
         static let bannerTitleSpacing: CGFloat = 8
-        static let infoIconSize: CGFloat = 36
         static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44
         static let iconPadding: CGFloat = 26

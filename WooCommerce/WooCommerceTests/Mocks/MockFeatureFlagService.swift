@@ -19,6 +19,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isProductCreationAIv2M1Enabled: Bool
     private let googleAdsCampaignCreationOnWebView: Bool
     private let blazeEvergreenCampaigns: Bool
+    private let revampedShippingLabelCreation: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -36,7 +37,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isDisplayPointOfSaleToggleEnabled: Bool = false,
          isProductCreationAIv2M1Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
-         blazeEvergreenCampaigns: Bool = false) {
+         blazeEvergreenCampaigns: Bool = false,
+         revampedShippingLabelCreation: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -54,6 +56,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
+        self.revampedShippingLabelCreation = revampedShippingLabelCreation
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -92,6 +95,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return googleAdsCampaignCreationOnWebView
         case .blazeEvergreenCampaigns:
             return blazeEvergreenCampaigns
+        case .revampedShippingLabelCreation:
+            return revampedShippingLabelCreation
         default:
             return false
         }

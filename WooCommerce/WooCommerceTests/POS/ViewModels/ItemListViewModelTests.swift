@@ -212,40 +212,6 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
-    func test_isEmptyOrError_when_itemListViewModel_loaded_normally_then_returns_false() async {
-        // Given/When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, false)
-    }
-
-    func test_isEmptyOrError_when_itemListViewModel_is_empty_then_returns_true() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldReturnZeroItems = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, true)
-    }
-
-    func test_isEmptyOrError_when_itemListViewModel_throws_error_then_returns_true() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, true)
-    }
-
     func test_state_when_itemListViewModel_loaded_normally_then_returns_isLoaded_true() async {
         // Given/When
         await sut.populatePointOfSaleItems()

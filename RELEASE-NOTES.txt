@@ -4,6 +4,7 @@
 20.3
 -----
 - [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
+- [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
 
 20.2
 -----

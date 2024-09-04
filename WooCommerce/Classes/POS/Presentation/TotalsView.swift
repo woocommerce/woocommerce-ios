@@ -337,7 +337,7 @@ private extension TotalsView {
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
-        static let totalsFieldsHideAnimationDelay: CGFloat = 0.8
+        static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
     }
 
     enum Localization {
@@ -357,10 +357,6 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
-        static let calculateAmounts = NSLocalizedString(
-            "pos.totalsView.calculateAmounts",
-            value: "Calculate amounts",
-            comment: "Button title for calculate amounts button")
     }
 }
 

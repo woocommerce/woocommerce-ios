@@ -15,7 +15,7 @@ struct POSConnectivityView: View {
         .padding(.horizontal, Constants.horizontalPadding)
         .frame(minHeight: Constants.height)
         .background(Color(.systemGray6.inverted))
-        .cornerRadius(16)
+        .cornerRadius(Constants.cornerRadius)
         .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 2)
     }
 }

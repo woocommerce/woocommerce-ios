@@ -74,6 +74,12 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Called when view first appears.
     func onViewAppear() {
         analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
+
+        // Clears application icon badge
+        let kind: [Note.Kind] = [.blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote]
+        kind.forEach { kind in
+            ServiceLocator.pushNotesManager.resetBadgeCount(type: kind)
+        }
     }
 
     /// Called when loading the first page of campaigns.

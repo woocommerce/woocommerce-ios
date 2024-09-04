@@ -3,18 +3,20 @@ import protocol Storage.StorageManagerType
 import Combine
 
 protocol BlazeLocalNotificationScheduler {
-    func scheduleNotifications()
+    func scheduleNotifications() async
 }
 
 /// Handles the scheduling of Blaze local notifications.
 ///
 final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationScheduler {
     private let siteID: Int64
+    private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let scheduler: LocalNotificationScheduler
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []
+    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -28,19 +30,28 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     }()
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
+        self.stores = stores
         self.storageManager = storageManager
         self.pushNotesManager = pushNotesManager
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
+        self.blazeEligibilityChecker = blazeEligibilityChecker
     }
 
     /// Starts observing campaigns from storage and schedules local notification
     ///
-    func scheduleNotifications() {
+    func scheduleNotifications() async {
+        guard await isEligibleForBlaze() else {
+            DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")
+            return
+        }
+
         observeStorageAndScheduleNotifications()
 
         pushNotesManager.localNotificationUserResponses
@@ -58,6 +69,13 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
+    func isEligibleForBlaze() async -> Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return await blazeEligibilityChecker.isSiteEligible(site)
+    }
+
     /// Performs initial fetch from storage and updates results.
     func observeStorageAndScheduleNotifications() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in

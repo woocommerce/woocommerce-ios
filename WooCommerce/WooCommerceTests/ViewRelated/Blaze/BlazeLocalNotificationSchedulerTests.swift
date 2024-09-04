@@ -84,7 +84,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         let fakeBlazeCampaign3 = BlazeCampaignListItem.fake().copy(siteID: siteID,
                                                                   budgetCurrency: "USD",
                                                                   isEvergreen: false,
-                                                                  durationDays: 15,
+                                                                  durationDays: 7,
                                                                   startTime: campaignStartDate3)
         let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
                                                          storageManager: storageManager,
@@ -105,7 +105,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
         let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNCalendarNotificationTrigger)
         let notificationTriggerDate = try XCTUnwrap(trigger.nextTriggerDate())
-        let campaignEndTime = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: Int(fakeBlazeCampaign3.durationDays), to: campaignStartDate3))
+        let campaignEndTime = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: Int(fakeBlazeCampaign2.durationDays), to: campaignStartDate2))
         XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))
     }
 

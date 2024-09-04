@@ -3,6 +3,7 @@
 
 20.3
 -----
+- [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
 
 20.2

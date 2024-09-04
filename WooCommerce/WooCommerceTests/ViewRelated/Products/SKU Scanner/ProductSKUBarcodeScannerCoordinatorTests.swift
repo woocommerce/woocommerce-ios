@@ -39,7 +39,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         coordinator.start()
 
         // Then
-        assertThat(navigationController.presentedViewController, isAnInstanceOf: ProductSKUInputScannerViewController.self)
+        assertThat(navigationController.presentedViewController, isAnInstanceOf: ScannerContainerViewController.self)
     }
 
     func test_coordinator_does_nothing_after_denying_camera_access() {
@@ -69,7 +69,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         coordinator.start()
 
         // Then
-        assertThat(navigationController.presentedViewController, isAnInstanceOf: ProductSKUInputScannerViewController.self)
+        assertThat(navigationController.presentedViewController, isAnInstanceOf: ScannerContainerViewController.self)
     }
 
     func test_coordinator_shows_alert_when_permission_is_denied() {

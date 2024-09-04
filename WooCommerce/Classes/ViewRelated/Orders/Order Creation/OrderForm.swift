@@ -1019,17 +1019,17 @@ private extension ProductsSection {
 // MARK: - SKU scanning
 
 private struct ProductSKUInputScannerView: UIViewControllerRepresentable {
-    typealias UIViewControllerType = ProductSKUInputScannerViewController
+    typealias UIViewControllerType = ScannerContainerViewController
 
     let onBarcodeScanned: ((ScannedBarcode) -> Void)?
 
-    func makeUIViewController(context: Context) -> ProductSKUInputScannerViewController {
-        ProductSKUInputScannerViewController(onBarcodeScanned: { barcode in
+    func makeUIViewController(context: Context) -> ScannerContainerViewController {
+        SKUCodeScannerProvider.SKUCodeScanner(onBarcodeScanned: { barcode in
             onBarcodeScanned?(barcode)
         })
     }
 
-    func updateUIViewController(_ uiViewController: ProductSKUInputScannerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: ScannerContainerViewController, context: Context) {
         // no-op
     }
 }

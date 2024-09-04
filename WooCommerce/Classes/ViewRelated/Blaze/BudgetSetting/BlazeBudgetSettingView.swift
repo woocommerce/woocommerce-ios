@@ -3,8 +3,8 @@ import SwiftUI
 /// View to set budget for a new Blaze campaign
 struct BlazeBudgetSettingView: View {
 
-    @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false

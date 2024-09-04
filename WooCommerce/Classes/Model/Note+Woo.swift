@@ -72,11 +72,9 @@ extension Note {
         return meta.identifier(forKey: .order)
     }
 
+    /// Helper method that calls `MarkOrderAsReadUseCase` `markOrderNoteAsReadIfNeeded` method
+    /// which performs 2 network requests, one for syncronizing notification and one for updating the read status
     func markOrderNoteAsReadIfNeeded() {
-        // we sync the order notification to see if it is the notification for the last order
-        // we compare this note order id with synced note order id
-        // if they are the same it means that the notification is for the last order
-        // and we can mark it as read
         guard read == false, let orderID = self.orderID else {
             return
         }

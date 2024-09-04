@@ -5,6 +5,7 @@
 -----
 - [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Order Tracking in HACK Week: Allow users to scan their order tracking number [https://github.com/woocommerce/woocommerce-ios/pull/13850]
 
 20.2
 -----

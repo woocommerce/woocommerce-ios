@@ -177,7 +177,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          pushNotesManager: pushNotesManager)
         sut.scheduleNotifications()
 
-        waitForExpectation(timeout: 0.1) { exp in
+        waitForExpectation(timeout: 0.5) { exp in
             exp.isInverted = true
 
             // When
@@ -205,7 +205,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          pushNotesManager: pushNotesManager)
         sut.scheduleNotifications()
 
-        waitForExpectation(timeout: 0.1) { exp in
+        waitForExpectation(timeout: 0.5) { exp in
             exp.isInverted = true
 
             // When
@@ -234,7 +234,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          pushNotesManager: pushNotesManager)
         sut.scheduleNotifications()
 
-        waitForExpectation(timeout: 0.1) { exp in
+        waitForExpectation(timeout: 0.5) { exp in
             exp.isInverted = true
 
             // When

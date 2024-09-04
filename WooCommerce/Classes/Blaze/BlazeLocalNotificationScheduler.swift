@@ -120,9 +120,12 @@ private extension DefaultBlazeLocalNotificationScheduler {
             .max()
 
         guard let latestEndTime,
-              let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime),
-              notificationTime > Date.now else {
-            return
+              let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime) else {
+            return DDLogDebug("Blaze: Failed calculating notification time from latest campaign end time.")
+        }
+
+        guard notificationTime > Date.now else {
+            return DDLogDebug("Blaze: Calculated notification time already passed.")
         }
 
         Task { @MainActor in

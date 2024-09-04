@@ -609,7 +609,9 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            localNotificationScheduler: scheduler)
+        mockReloadingData()
 
         // When
         await viewModel.onViewAppear()

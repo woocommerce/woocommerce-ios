@@ -1,2 +1,4 @@
-Dalam pembaruan ini, kami menyempurnakan alur pembuatan pesanan, mengatasi beberapa bug dalam alur sunting pesanan, dan mengatasi masalah yang terjadi ketika memulai pembayaran Ketuk untuk Bayar di iPhone.
-Kami juga memudahkan Anda dalam memahami anggaran untuk kampanye iklan Blaze, dan menambahkan dukungan untuk pembuatan iklan Blaze di wilayah yang tidak menggunakan angka Arab Barat.
+Di versi ini, iklan Blaze didukung kampanye yang terus aktif. Kami telah memperbaiki beberapa bug dalam pengeditan produk, terutama seputar harga, dan kini mendukung produk berharga negatif.
+
+Kami telah memperbaiki masalah penggunaan menu dengan VoiceOver atau teknologi bantuan, dan beberapa bug yang membuat judul hilang dan tombol tidak responsif.
+

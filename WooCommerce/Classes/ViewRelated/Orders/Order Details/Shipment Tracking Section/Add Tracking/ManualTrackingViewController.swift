@@ -263,23 +263,30 @@ extension ManualTrackingViewController: UITableViewDataSource {
             hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
-
-        let actionButton = UIButton(type: .detailDisclosure)
-        actionButton.applyIconButtonStyle(icon: UIImage(named: "icon-scan")!)
-        actionButton.on(.touchUpInside) { [weak self] sender in
-            self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
-                                                         instructionText: Localization.instructionText,
-                                                         onBarcodeScanned: { barcode in
-                cell.updateValue(with: barcode.payloadStringValue)
-                self?.dismiss()
-            }), animated: true)
-        }
-        cell.accessoryView = actionButton
-
+        configureTrackingNumberScanAction(on: cell)
 
         cellViewModel.$value.sink { [weak self] in
             self?.didChangeTrackingNumber(value: $0)
         }.store(in: &valueSubscriptions)
+    }
+
+    private func configureTrackingNumberScanAction(on cell: TitleAndEditableValueTableViewCell) {
+        guard let icon = UIImage(named: "icon-scan") else {
+            return
+        }
+
+        let actionButton = UIButton(type: .detailDisclosure)
+        actionButton.applyIconButtonStyle(icon: icon)
+        actionButton.on(.touchUpInside) { [weak self, weak cell] sender in
+            self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
+                                                         instructionText: Localization.instructionText,
+                                                         onBarcodeScanned: { barcode in
+                cell?.updateValue(with: barcode.payloadStringValue)
+                self?.dismiss()
+            }), animated: true)
+        }
+
+        cell.accessoryView = actionButton
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {

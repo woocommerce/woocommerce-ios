@@ -60,7 +60,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         let scenario = pushNotesManager.requestedLocalNotifications.first?.scenario
         XCTAssertEqual(scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
 
-        let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNTimeIntervalNotificationTrigger)
+        let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNCalendarNotificationTrigger)
         let notificationTriggerDate = try XCTUnwrap(trigger.nextTriggerDate())
         let campaignEndTime = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: Int(fakeBlazeCampaign.durationDays), to: campaignStartDate))
         XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))
@@ -103,7 +103,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         let scenario = pushNotesManager.requestedLocalNotifications.first?.scenario
         XCTAssertEqual(scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
 
-        let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNTimeIntervalNotificationTrigger)
+        let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNCalendarNotificationTrigger)
         let notificationTriggerDate = try XCTUnwrap(trigger.nextTriggerDate())
         let campaignEndTime = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: Int(fakeBlazeCampaign3.durationDays), to: campaignStartDate3))
         XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))

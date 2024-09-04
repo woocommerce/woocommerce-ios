@@ -113,7 +113,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
-                                     trigger: UNTimeIntervalNotificationTrigger(timeInterval: notificationTime.timeIntervalSince(Date.now),
+                                     trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
                                                                                 repeats: false),
                                      remoteFeatureFlag: nil)
         }

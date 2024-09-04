@@ -82,7 +82,7 @@ struct BlazeCampaignCreationForm: View {
                 detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
                     isShowingBudgetSetting = true
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
                 .padding(.bottom, Layout.contentMargin)
 
@@ -117,7 +117,7 @@ struct BlazeCampaignCreationForm: View {
                         isShowingTopicPicker = true
                     }
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
@@ -127,7 +127,7 @@ struct BlazeCampaignCreationForm: View {
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
-                    .background(Constants.cellColor)
+                    .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
             }
@@ -336,6 +336,11 @@ private extension BlazeCampaignCreationForm {
         Divider()
             .frame(height: Layout.strokeWidth)
             .foregroundColor(Color(uiColor: .separator))
+    }
+
+    var rowBackground: some View {
+        Constants.cellColor
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
     }
 
     var roundedRectangleBorder: some View {

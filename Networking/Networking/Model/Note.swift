@@ -229,7 +229,18 @@ extension Note {
         case post
         case storeOrder = "store_order"
         case user
+
+        /// Blaze
+        case blazePerformedNote = "blaze_performed_note"
+        case blazeCancelledNote = "blaze_cancelled_note"
+        case blazeRejectedNote = "blaze_rejected_note"
+        case blazeApprovedNote = "blaze_approved_note"
+
         case unknown
+
+        public var isBlaze: Bool {
+            self == .blazePerformedNote || self == .blazeCancelledNote || self == .blazeRejectedNote || self == .blazeApprovedNote
+        }
     }
 
     /// Known Notification Subkind(s)

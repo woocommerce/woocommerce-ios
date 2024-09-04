@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-28 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-03 15:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "关闭账户时发生错误";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "连接蓝牙时出现错误，请启用蓝牙并重试";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "连接蓝牙时出现错误，请启用蓝牙并重试";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "创建菜单时出错。";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "扫描照片时出错。 请选择其他包装照片或手动输入产品详细信息。";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "近期提交过一笔相同的交易。 如果您想继续，请尝试其他付款方式";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "近期提交过一笔相同的交易。 如果您想继续，请尝试其他付款方式";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "图像上传失败";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "输入错误 PIN 次数过多。 请尝试其他付款方式";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "输入错误 PIN 次数过多。 请尝试其他付款方式";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "输入的 PIN 错误。 再次尝试，或使用另一种付款方式";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "输入的 PIN 错误。 再次尝试，或使用另一种付款方式";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "在顾客购买后发给他们的可选备注";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "读卡器手册";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "银行留在读卡器中，请取出并重新插入卡";
+"Card was left in reader - please remove and reinsert card." = "银行留在读卡器中，请取出并重新插入卡";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "银行卡取出速度过快，请重新尝试交易";
+"Card was removed too soon - please try transaction again." = "银行卡取出速度过快，请重新尝试交易";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "取消";
@@ -1775,7 +1775,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "正在连接阅读器";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "连接读卡器时超时，请确保读卡器位于附近并且电量充足，然后重试";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "连接读卡器时超时，请确保读卡器位于附近并且电量充足，然后重试";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "连接到您的帐户";
@@ -4603,7 +4603,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "尚无广告活动";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "未连接读卡器，请连接读卡器并重试";
+"No card reader is connected - connect a reader and try again." = "未连接读卡器，请连接读卡器并重试";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "未选择分类";
@@ -4615,7 +4615,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "无连接问题";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "未连接互联网，请连接到互联网并重试";
+"No connection to the Internet - please connect to the Internet and try again." = "未连接互联网，请连接到互联网并重试";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "没有找到优惠券";
@@ -5114,7 +5114,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "付款总额";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "付款因余额不足被拒。 请尝试其他付款方式";
+"Payment declined due to insufficient funds. Try another means of payment." = "付款因余额不足被拒。 请尝试其他付款方式";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "付款失败";
@@ -5130,10 +5130,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "付款成功";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "付款因未知原因被拒。 请尝试其他付款方式";
+"Payment was declined for an unknown reason. Try another means of payment." = "付款因未知原因被拒。 请尝试其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "付款因不明原因被拒。 请尝试其他付款方式";
+"Payment was declined for an unspecified reason. Try another means of payment." = "付款因不明原因被拒。 请尝试其他付款方式";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5219,7 +5219,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "请检查礼品卡的余额。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "请检查您的 Apple ID 是否有效，然后重试。 接受 Apple 的服务条款时需要使用一个有效的 Apple ID";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "请检查您的 Apple ID 是否有效，然后重试。 接受 Apple 的服务条款时需要使用一个有效的 Apple ID";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "请在浏览器中通过管理页面连接 Jetpack，或联系支持人员。";
@@ -5231,7 +5231,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "请联系支持人员以获取帮助。";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "请联系支持人员 – 在 iPhone 上启动“点按付款”时出现问题";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5325,7 +5325,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "请选择包裹";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "请稍后再试或与我们联系，我们很乐意为您提供帮助！";
@@ -5340,7 +5340,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "请重试或与我们联系，我们很乐意为您提供帮助！";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "请重试或联系支持人员寻求帮助";
@@ -6791,8 +6791,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "抱歉，我们无法处理本次付款";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "很抱歉，我们无法处理这笔付款。";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "抱歉，此退款无法取消";
+"Sorry, this refund could not be canceled." = "抱歉，此退款无法取消";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "抱歉，无法处理本次退款";
@@ -7023,7 +7026,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "已将系统状态报告复制到剪贴板";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "不允许使用系统测试卡付款。 请尝试其他付款方式";
+"System test cards are not permitted for payment. Try another means of payment." = "不允许使用系统测试卡付款。 请尝试其他付款方式";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "圣多美和普林西比";
@@ -7271,7 +7274,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "您的商店中已安装 %1$@ 扩展程序，但需要更新才能支持现场付款。 请将其更新至最新版本。";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "与读卡器的蓝牙连接意外断开";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "与读卡器的蓝牙连接意外断开";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google 帐户“%@”与 WordPress.com 上的任何帐户均不匹配";
@@ -7295,46 +7298,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "无法保存属性。";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "银行卡不支持当前币种。 请尝试其他付款方式";
+"The card does not support this currency. Try another means of payment." = "银行卡不支持当前币种。 请尝试其他付款方式";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "银行卡不支持用于当前购买类型。 请尝试其他付款方式";
+"The card does not support this type of purchase. Try another means of payment." = "银行卡不支持用于当前购买类型。 请尝试其他付款方式";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "银行卡已过期。 请尝试其他付款方式";
+"The card has expired. Try another means of payment." = "银行卡已过期。 请尝试其他付款方式";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "银行卡或银行卡账户无效。 请尝试其他付款方式";
+"The card or card account is invalid. Try another means of payment." = "银行卡或银行卡账户无效。 请尝试其他付款方式";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "读卡器正在处理其他命令，请重试";
+"The card reader is busy executing another command - please try again." = "读卡器正在处理其他命令，请重试";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "读卡器不兼容此应用程序，请尝试更新应用程序或使用其他读卡器";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "读卡器不兼容此应用程序，请尝试更新应用程序或使用其他读卡器";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "读卡器会话已过期，请断开连接并重新连接读卡器，然后重试";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "读卡器会话已过期，请断开连接并重新连接读卡器，然后重试";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款。";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理退款";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "由于通信错误，读卡器软件更新失败，请重试";
+"The card reader software update failed due to a communication error - please try again." = "由于通信错误，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "由于更新服务器出现问题，读卡器软件更新失败，请重试";
+"The card reader software update failed due to a problem with the update server - please try again." = "由于更新服务器出现问题，读卡器软件更新失败，请重试";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "读卡器软件更新出现意外故障，请重试";
+"The card reader software update failed unexpectedly - please try again." = "读卡器软件更新出现意外故障，请重试";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "读卡器软件更新在完成前中断，请重试";
+"The card reader software update was interrupted before it could complete - please try again." = "读卡器软件更新在完成前中断，请重试";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡，请尝试其他付款方式";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "读卡器已拒绝该卡，请尝试其他付款方式。";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "读卡器已拒绝该卡，请尝试其他退款方式";
@@ -7343,7 +7352,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "iPhone 读卡器已拒绝该卡 - 请尝试其他付款方式";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "付款处理器已拒绝该卡，请尝试其他付款方式";
+"The card was declined by the payment processor - please try another means of payment." = "付款处理器已拒绝该卡，请尝试其他付款方式。";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此服务器的证书无效。您所连接的服务器伪装成了“%@”，这可能会给您的凭证信息带来危险。\n\n仍然信任此证书吗？";
@@ -7400,7 +7409,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "此付款方式不支持自动退款。 通过手动向客户转账的方式完成退款。";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "已在阅读器上取消付款";
+"The payment was canceled on the reader." = "已在阅读器上取消付款";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "付款已取消。";
@@ -7433,7 +7442,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "付款处理器无法处理该退款。";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "请求超时，请重试";
+"The request timed out - please try again." = "请求超时，请重试";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "生成应用密码的请求未获得授权。";
@@ -7490,16 +7499,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "商店邮政编码无效或缺失，请更新后再继续。";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "系统意外取消了命令，请重试";
+"The system canceled the command unexpectedly - please try again." = "系统意外取消了命令，请重试";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "系统遇到了意外软件错误";
+"The system experienced an unexpected software error." = "系统遇到了意外软件错误";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "目前无法获取您站点的系统状态报告。 请重试。";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "交易邮政编码与卡片邮政编码不匹配。 请尝试其他付款方式";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "交易邮政编码与卡片邮政编码不匹配。 请尝试其他付款方式";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "无法开始试用付款，请重试，如果此问题仍然存在，请联系支持部门。";
@@ -7618,7 +7627,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此应用程序仅支持管理员和商店经理用户角色。 请联系商店所有者，升级角色。";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "此卡需要 PIN 码，因此无法处理。 请尝试其他付款方式";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "此卡需要 PIN 码，因此无法处理。 请尝试其他付款方式";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "这可能是因为您的商店采取了一些额外的安全措施。";
@@ -7912,7 +7921,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "使用 WP-Admin 页面重试";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "请尝试其他付款方式";
+"Try another means of payment." = "请尝试其他付款方式";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "请尝试再次连接以访问您的商店。";
@@ -7927,7 +7936,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "试试站点地址";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "重试可能会成功，或者您可以使用其他付款方式";
+"Trying again may succeed, or try another means of payment." = "重试可能会成功，或者您可以使用其他付款方式";
 
 /* Country option for a site address. */
 "Tunisia" = "突尼斯";
@@ -7985,10 +7994,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "无法连接";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "无法访问蓝牙，请启用蓝牙并重试";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "无法访问蓝牙，请启用蓝牙并重试";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "无法访问位置服务，请启用位置服务并重试";
+"Unable to access Location Services - please enable Location Services and try again." = "无法访问位置服务，请启用位置服务并重试";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "无法添加优惠券。";
@@ -8003,13 +8012,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "无法更改订单号 %1$d 的状态";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "无法与读卡器通信，请重试";
+"Unable to communicate with reader - please try again." = "无法与读卡器通信，请重试";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "无法连接到读卡器，读卡器已在使用中";
+"Unable to connect to card reader - the card reader is already in use." = "无法连接到读卡器，读卡器已在使用中";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "无法连接到读卡器，已连接另一个读卡器";
+"Unable to connect to reader - another reader is already connected." = "无法连接到读卡器，已连接另一个读卡器";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器，读卡器电量过低，请为读卡器充电并重试。";
@@ -8099,13 +8108,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "无法将评论标记为%@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "无法执行已连接读卡器的请求，不支持的功能，请使用其他读卡器重试";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "无法执行已连接读卡器的请求，不支持的功能，请使用其他读卡器重试";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "无法执行软件请求，请更新此应用程序并重试";
+"Unable to perform software request - please update this application and try again." = "无法执行软件请求，请更新此应用程序并重试";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "由于数据无效，无法处理支付，请重试";
+"Unable to process payment due to invalid data - please try again." = "由于数据无效，无法处理支付，请重试";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "无法处理付款。 订单总金额低于您可以收取的最低金额，即 %1$@";
@@ -8126,13 +8135,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "无法处理付款。 无法获取最新订单详细信息。 请检查您的网络连接，然后重试。 潜在错误：%1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "无法读取卡，系统超时，请重试";
+"Unable to read card - the system timed out - please try again." = "无法读取卡，系统超时，请重试";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "无法读取插入的卡，请尝试移除卡并重新插入";
+"Unable to read inserted card - please try removing and inserting card again." = "无法读取插入的卡，请尝试移除卡并重新插入";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "无法读取所刷的卡，请尝试重新刷卡";
+"Unable to read swiped card - please try swiping again." = "无法读取所刷的卡，请尝试重新刷卡";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
@@ -8157,10 +8166,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "无法保存更改。 请重试。";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "搜索不到读卡器，此设备不支持蓝牙低能耗模式，请使用其他设备";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "搜索不到读卡器，此设备不支持蓝牙低能耗模式，请使用其他设备";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "无法搜索读卡器，蓝牙超时，请重试";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "无法搜索读卡器，蓝牙超时，请重试";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "无法设置客户详细信息。";
@@ -8169,7 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "无法更新地址。";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "无法更新读卡器软件 - 读卡器电量过低";
+"Unable to update card reader software - the reader battery is too low." = "无法更新读卡器软件 - 读卡器电量过低";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "无法更新价格";
@@ -8978,7 +8987,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";
@@ -9395,20 +9404,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "取消";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "每日支出";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "您希望在广告活动上投入多少资金？活动应持续多长时间？";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "完成";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "时长";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "编辑";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "每天的预计受众人数";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "轻点以了解有关预计展示次数的更多信息";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "在手动停止前保持运行";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "预计总展示次数";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "活动将持续进行，直到您手动将其停止。";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "预估展示次数失败。 重试？";
@@ -9419,14 +9437,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "展示次数";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "设置时长";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "安排";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "指定时长";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "开始";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "您愿意在产品推广活动上花费多少资金？";
+"blazeBudgetSettingView.startDate" = "开始日期";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "设置您的预算";
@@ -9437,29 +9455,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "每天 %1$@";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "从 %1$@ 起";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ 至 %2$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d 天";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "从 %1$@ 起持续进行";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d 天";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%2$d 天 %1$@";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%2$d 天 %1$@";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$%.0f 美元";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "共计 %1$d 天";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "共计 %1$d 天";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "总支出";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "每周支出";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "每周支出 %1$@";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "取消";
@@ -10008,6 +10026,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "可变订阅";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "进行中";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
 
@@ -10170,6 +10191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "编辑金额";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "搜索客户";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "访客";
@@ -10583,6 +10607,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "查看所有广告活动";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "评论";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "客户";
@@ -11319,11 +11347,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "连接读卡器";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "是否要连接此读卡器？";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "继续搜索";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "是否要连接读卡器 %1$@？";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "找到 %1$@";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "取消";
@@ -11391,6 +11422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "连接读卡器失败";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "关闭";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "由于网络错误，我们无法得知付款是否成功。";
 
@@ -11399,6 +11433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "该订单可能已失败";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "断开读卡器连接";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "退出 POS 机";
@@ -11411,6 +11448,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "连接您的读卡器";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "正在断开连接";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";

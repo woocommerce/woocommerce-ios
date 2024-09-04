@@ -59,6 +59,19 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.value, "Ut ullam itaque")
     }
+
+    func test_updateValue_then_updates_view_model() {
+        // Given
+        let newValue = "test"
+        let viewModel = TitleAndEditableValueTableViewCellViewModel(title: "Test")
+
+        // When
+        cell.update(viewModel: viewModel)
+        cell.updateValue(with: newValue)
+
+        // Then
+        XCTAssertEqual(viewModel.value, newValue)
+    }
 }
 
 private extension TitleAndEditableValueTableViewCellTests {

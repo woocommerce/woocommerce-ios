@@ -106,23 +106,18 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private var syncingError: Error?
 
-    private let localNotificationScheduler: BlazeLocalNotificationScheduler
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         localNotificationScheduler: BlazeLocalNotificationScheduler? = nil) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
-
-        self.localNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID)
-        self.localNotificationScheduler.scheduleNotifications()
 
         observeSectionVisibility()
         configureResultsController()

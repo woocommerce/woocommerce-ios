@@ -5,7 +5,6 @@ import protocol WooFoundation.WooAnalyticsEventPropertyType
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case inAppPurchases
-    case pointOfSale
 }
 
 extension BetaFeature {
@@ -15,8 +14,6 @@ extension BetaFeature {
             return Localization.viewAddOnsTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
-        case .pointOfSale:
-            return Localization.pointOfSaleTitle
         }
     }
 
@@ -26,8 +23,6 @@ extension BetaFeature {
             return Localization.viewAddOnsDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
-        case .pointOfSale:
-            return Localization.pointOfSaleDescription
         }
     }
 
@@ -37,8 +32,6 @@ extension BetaFeature {
             return \.isViewAddOnsSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
-        case .pointOfSale:
-            return \.isPointOfSaleEnabled
         }
     }
 
@@ -108,14 +101,5 @@ private extension BetaFeature {
         static let inAppPurchasesManagementDescription = NSLocalizedString(
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
-
-        static let pointOfSaleTitle = NSLocalizedString(
-            "betaFeature.pointOfSale.title",
-            value: "Point Of Sale",
-            comment: "Cell title on beta features screen to enable the Point Of Sale feature")
-        static let pointOfSaleDescription = NSLocalizedString(
-            "betaFeature.pointOfSale.description",
-            value: "Test out Point Of Sale as we get ready to launch",
-            comment: "Cell description on beta features screen to enable the Point Of Sale feature")
     }
 }

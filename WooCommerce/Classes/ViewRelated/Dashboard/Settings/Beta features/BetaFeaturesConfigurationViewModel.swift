@@ -40,8 +40,6 @@ private extension BetaFeaturesConfigurationViewModel {
                             return true
                         case .inAppPurchases:
                             return self.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
-                        case .pointOfSale:
-                            return isEligibleForPOS
                     }
                 }
             }

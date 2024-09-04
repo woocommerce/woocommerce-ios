@@ -273,15 +273,14 @@ private extension HubMenuViewModel {
 
     func setupPOSElement() {
         cardPresentPaymentsOnboarding.refreshIfNecessary()
-        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
-            .map { isBetaFeatureEnabled, isEligibleForPOS in
-                if isBetaFeatureEnabled && isEligibleForPOS {
-                    return PointOfSaleEntryPoint()
-                } else {
-                    return nil
-                }
+        posEligibilityChecker.isEligible.map { isEligibleForPOS in
+            if isEligibleForPOS {
+                return PointOfSaleEntryPoint()
+            } else {
+                return nil
             }
-            .assign(to: &$posElement)
+        }
+        .assign(to: &$posElement)
     }
 
     func setupSettingsElements() {

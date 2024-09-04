@@ -38,13 +38,13 @@ final class OrderNotificationDataService {
 
     @MainActor
     func loadOrderFrom(notification: PushNotification) async throws -> (Note, Order) {
-        let note: Note
-        if let notificationNote = notification.note {
-            note = notificationNote
-        }
-        else {
-            note = try await loadNotification(noteID: notification.noteID)
-        }
+        let note: Note = try await {
+            if let notificationNote = notification.note {
+                return notificationNote
+            } else {
+                return try await loadNotification(noteID: notification.noteID)
+            }
+        }()
         let order = try await loadOrder(from: note)
         return (note, order)
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-27 16:54:15+0000 */
+/* Translation-Revision-Date: 2024-09-03 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "Ha ocurrido un error al cerrar la cuenta.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Se ha producido un error al acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Se ha producido un error al acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Ha habido un error creando el menú.";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Se ha producido un error al explorar la foto. Elige otra foto del embalaje o introduce los detalles del producto manualmente.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Recientemente, se ha emitido una transacción idéntica. Si quieres continuar, prueba otro método de pago.";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Recientemente, se ha emitido una transacción idéntica. Si quieres continuar, prueba otro método de pago.";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "No se ha podido subir la imagen";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "Se ha introducido un PIN incorrecto demasiadas veces. Prueba otro método de pago.";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "Se ha introducido un PIN incorrecto demasiadas veces. Prueba otro método de pago.";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "Se ha introducido un PIN incorrecto. Inténtalo de nuevo o utiliza otro método de pago";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "Se ha introducido un PIN incorrecto. Inténtalo de nuevo o utiliza otro método de pago";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Una nota opcional para enviarla al cliente después de la compra";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "Manuales del lector de tarjetas";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "La tarjeta se ha dejado en el lector. Retírala y vuelve a introducirla.";
+"Card was left in reader - please remove and reinsert card." = "La tarjeta se ha dejado en el lector. Retírala y vuelve a introducirla.";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "La tarjeta se he retirado demasiado pronto. Prueba a realizar la transacción de nuevo.";
+"Card was removed too soon - please try transaction again." = "La tarjeta se he retirado demasiado pronto. Prueba a realizar la transacción de nuevo.";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Cancelar";
@@ -1775,7 +1775,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "Conectando con el lector";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "El tiempo de conexión al lector de tarjetas se ha agotado. Asegúrate de que está cerca y cargado e inténtalo de nuevo.";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "El tiempo de conexión al lector de tarjetas se ha agotado. Asegúrate de que está cerca y cargado e inténtalo de nuevo.";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Conectando con tu cuenta";
@@ -4603,7 +4603,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "Todavía no hay campañas";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "No se ha conectado ningún lector de tarjetas. Conecta un lector e inténtalo de nuevo.";
+"No card reader is connected - connect a reader and try again." = "No se ha conectado ningún lector de tarjetas. Conecta un lector e inténtalo de nuevo.";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "No se ha seleccionado ninguna categoría";
@@ -4615,7 +4615,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "No hay problemas de conexión";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "Sin conexión a Internet. Conéctate a Internet e inténtalo de nuevo.";
+"No connection to the Internet - please connect to the Internet and try again." = "Sin conexión a Internet. Conéctate a Internet e inténtalo de nuevo.";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "No se han encontrado cupones";
@@ -5114,7 +5114,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "Cantidad total del pago";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Se ha rechazado el pago porque no hay fondos suficientes. Prueba otro método de pago.";
+"Payment declined due to insufficient funds. Try another means of payment." = "Se ha rechazado el pago porque no hay fondos suficientes. Prueba otro método de pago.";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Error de pago";
@@ -5130,10 +5130,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "Pago correcto";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Se ha rechazado el pago por motivos desconocidos. Prueba otro método de pago.";
+"Payment was declined for an unknown reason. Try another means of payment." = "Se ha rechazado el pago por motivos desconocidos. Prueba otro método de pago.";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Se ha rechazado el pago por motivos que no se han especificado. Prueba otro método de pago.";
+"Payment was declined for an unspecified reason. Try another means of payment." = "Se ha rechazado el pago por motivos que no se han especificado. Prueba otro método de pago.";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5219,7 +5219,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "Comprueba el saldo restante de la tarjeta regalo.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Comprueba que tu ID de Apple sea válido e inténtalo de nuevo. Para aceptar las Condiciones del servicio de Apple, se requiere un ID de Apple válido.";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Comprueba que tu ID de Apple sea válido e inténtalo de nuevo. Para aceptar las Condiciones del servicio de Apple, se requiere un ID de Apple válido.";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Conecta Jetpack a través de la página de administración en un navegador o ponte en contacto con el soporte técnico.";
@@ -5231,7 +5231,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "Por favor, contacta con soporte para obtener ayuda.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "Se ha producido un error al iniciar Tap to Pay on iPhone; ponte en contacto con el servicio de soporte.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5325,7 +5325,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "Por favor, elige un paquete";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Inicia sesión en iCloud en este dispositivo para utilizar Tap to Pay on iPhone.";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Inicia sesión en iCloud en este dispositivo para utilizar Tap to Pay on iPhone.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
@@ -5340,7 +5340,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Inténtalo de nuevo y acepta las Condiciones del servicio de Apple para poder utilizar Tap to Pay on iPhone.";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Inténtalo de nuevo y acepta las Condiciones del servicio de Apple para poder utilizar Tap to Pay on iPhone.";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Inténtalo de nuevo o ponte en contacto con el equipo de soporte si necesitas ayuda";
@@ -6791,8 +6791,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "No se ha podido procesar este pago.";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "No se ha podido procesar este pago.";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "Lo sentimos, este reembolso no se ha podido cancelar";
+"Sorry, this refund could not be canceled." = "Lo sentimos, este reembolso no se ha podido cancelar";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "No se ha podido procesar el reembolso";
@@ -7023,7 +7026,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "Se ha copiado el informe de estado del sistema en el portapapeles.";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "No se pueden realizar pagos con las tarjetas de prueba del sistema. Prueba otro método de pago.";
+"System test cards are not permitted for payment. Try another means of payment." = "No se pueden realizar pagos con las tarjetas de prueba del sistema. Prueba otro método de pago.";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "Santo Tomé y Príncipe";
@@ -7271,7 +7274,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "La extensión %1$@ está instalada en tu tienda, pero se debe actualizar para los Pagos en persona. Actualízala a la versión más reciente.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "La conexión entre el Bluetooth y el lector de tarjetas se ha perdido inesperadamente.";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "La conexión entre el Bluetooth y el lector de tarjetas se ha perdido inesperadamente.";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "La cuenta de Google \"%@\" no coincide con ninguna cuenta de WordPress.com";
@@ -7295,46 +7298,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "No se ha podido guardar el atributo.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "La tarjeta no admite esta moneda. Prueba otro método de pago.";
+"The card does not support this currency. Try another means of payment." = "La tarjeta no admite esta moneda. Prueba otro método de pago.";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "La tarjeta no admite este tipo de compras. Prueba otro método de pago.";
+"The card does not support this type of purchase. Try another means of payment." = "La tarjeta no admite este tipo de compras. Prueba otro método de pago.";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "La tarjeta ha caducado. Prueba otro método de pago.";
+"The card has expired. Try another means of payment." = "La tarjeta ha caducado. Prueba otro método de pago.";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "La tarjeta o la cuenta de la tarjeta no es válida. Prueba otro método de pago.";
+"The card or card account is invalid. Try another means of payment." = "La tarjeta o la cuenta de la tarjeta no es válida. Prueba otro método de pago.";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "El lector de tarjetas está ocupado ejecutando otro comando. Inténtalo de nuevo.";
+"The card reader is busy executing another command - please try again." = "El lector de tarjetas está ocupado ejecutando otro comando. Inténtalo de nuevo.";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "El lector de tarjetas no es compatible con esta aplicación. Prueba a actualizar la aplicación o usar otro lector.";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "El lector de tarjetas no es compatible con esta aplicación. Prueba a actualizar la aplicación o usar otro lector.";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "La sesión del lector de tarjetas ha caducado. Desconéctalo y vuelve a conectarlo y, después, inténtalo de nuevo.";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "La sesión del lector de tarjetas ha caducado. Desconéctalo y vuelve a conectarlo y, después, inténtalo de nuevo.";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "El software del lector de tarjetas está obsoleto. Actualízalo antes de intentar procesar pagos.";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "El software del lector de tarjetas está obsoleto. Actualízalo antes de intentar procesar pagos.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "El software del lector de tarjetas no está actualizado. Actualízalo antes de intentar procesar reembolsos.";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "La actualización del software del lector de tarjetas ha fallado debido a un error de comunicación. Inténtalo de nuevo.";
+"The card reader software update failed due to a communication error - please try again." = "La actualización del software del lector de tarjetas ha fallado debido a un error de comunicación. Inténtalo de nuevo.";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "La actualización del software del lector de tarjetas ha fallado debido a un problema con el servidor de la actualización. Inténtalo de nuevo.";
+"The card reader software update failed due to a problem with the update server - please try again." = "La actualización del software del lector de tarjetas ha fallado debido a un problema con el servidor de la actualización. Inténtalo de nuevo.";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "La actualización del software del lector de tarjetas ha fallado inesperadamente. Inténtalo de nuevo.";
+"The card reader software update failed unexpectedly - please try again." = "La actualización del software del lector de tarjetas ha fallado inesperadamente. Inténtalo de nuevo.";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "La actualización del software del lector de tarjetas se ha interrumpido antes de completarse. Inténtalo de nuevo.";
+"The card reader software update was interrupted before it could complete - please try again." = "La actualización del software del lector de tarjetas se ha interrumpido antes de completarse. Inténtalo de nuevo.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "El lector de tarjetas ha rechazado la tarjeta. Prueba otro método de pago.";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "El lector de tarjetas ha rechazado la tarjeta. Prueba otro método de pago.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "El lector de tarjetas ha rechazado la tarjeta. Prueba con otro método de reembolso.";
@@ -7343,7 +7352,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "El lector de tarjetas del iPhone ha rechazado la tarjeta. Prueba con otro método de pago.";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "El procesador de pagos ha rechazado la tarjeta. Prueba otro método de pago.";
+"The card was declined by the payment processor - please try another means of payment." = "El procesador de pagos ha rechazado la tarjeta. Prueba otro método de pago.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
@@ -7400,7 +7409,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "El método de pago no admite reembolsos automáticos. Para realizar el reembolso, transfiere manualmente el dinero al cliente.";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "Se ha cancelado el pago a través del lector";
+"The payment was canceled on the reader." = "Se ha cancelado el pago a través del lector";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "Se ha cancelado el pago.";
@@ -7433,7 +7442,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "El procesador de pagos no puede procesar el reembolso.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "Se ha agotado el tiempo de espera de la solicitud. Inténtalo de nuevo.";
+"The request timed out - please try again." = "Se ha agotado el tiempo de espera de la solicitud. Inténtalo de nuevo.";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "La solicitud para generar una contraseña de aplicación no se ha autorizado.";
@@ -7490,16 +7499,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "Falta el código postal de la tienda o no es válido. Actualízalo antes de continuar.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "El sistema ha cancelado el comando inesperadamente. Inténtalo de nuevo.";
+"The system canceled the command unexpectedly - please try again." = "El sistema ha cancelado el comando inesperadamente. Inténtalo de nuevo.";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "Se ha producido un error de software inesperado en el sistema.";
+"The system experienced an unexpected software error." = "Se ha producido un error de software inesperado en el sistema.";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "En este momento, no puedes obtener el informe de estado del sistema para tu sitio. Inténtalo de nuevo.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "El código postal de la transacción y el de la tarjeta no coinciden. Prueba otro método de pago.";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "El código postal de la transacción y el de la tarjeta no coinciden. Prueba otro método de pago.";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "No se ha podido iniciar el pago de la prueba, inténtalo de nuevo más tarde o, si el problema continúa, ponte en contacto con el servicio de soporte.";
@@ -7618,7 +7627,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Esta aplicación solo es compatible con los roles de usuario de administrador y gestor de tienda. Contacta con el propietario de la tienda para actualizar tu rol.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Esta tarjeta necesita un código PIN y, por lo tanto, no se puede procesar. Prueba otro método de pago.";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Esta tarjeta necesita un código PIN y, por lo tanto, no se puede procesar. Prueba otro método de pago.";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Podría deberse a que en tu tienda haya que seguir algunos pasos de seguridad adicionales.";
@@ -7912,7 +7921,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "Inténtalo de nuevo con la página WP-Admin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Prueba otro método de pago.";
+"Try another means of payment." = "Prueba otro método de pago.";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Prueba a conectarte de nuevo para acceder a tu tienda.";
@@ -7927,7 +7936,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "Prueba con la dirección del sitio";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Probar otra vez, o intentar usar otro método de pago, puede solucionar el problema.";
+"Trying again may succeed, or try another means of payment." = "Probar otra vez, o intentar usar otro método de pago, puede solucionar el problema.";
 
 /* Country option for a site address. */
 "Tunisia" = "Túnez";
@@ -7985,10 +7994,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "No fue posible conectar";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "No se ha podido acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "No se ha podido acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "No se ha podido acceder a los servicios de ubicación. Actívalos e inténtalo de nuevo.";
+"Unable to access Location Services - please enable Location Services and try again." = "No se ha podido acceder a los servicios de ubicación. Actívalos e inténtalo de nuevo.";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "No se ha podido añadir el cupón.";
@@ -8003,13 +8012,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "No se ha podido cambiar el estado del pedido n.º %1$d";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "No se ha podido comunicar con el lector. Inténtalo de nuevo.";
+"Unable to communicate with reader - please try again." = "No se ha podido comunicar con el lector. Inténtalo de nuevo.";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "No se ha podido conectar al lector de tarjetas. Este todavía está en uso.";
+"Unable to connect to card reader - the card reader is already in use." = "No se ha podido conectar al lector de tarjetas. Este todavía está en uso.";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "No se ha podido conectar al lector. Hay otro lector conectado.";
+"Unable to connect to reader - another reader is already connected." = "No se ha podido conectar al lector. Hay otro lector conectado.";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "No se ha podido conectar al lector. El nivel de batería del lector es demasiado bajo. Cárgalo e inténtalo de nuevo.";
@@ -8099,13 +8108,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "No se ha podido marcar la reseña como %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "No se ha podido ejecutar la solicitud con el lector conectado. Función no admitida. Inténtalo de nuevo con otro lector.";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "No se ha podido ejecutar la solicitud con el lector conectado. Función no admitida. Inténtalo de nuevo con otro lector.";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "No se ha podido ejecutar la solicitud del software. Actualiza esta aplicación e inténtalo de nuevo.";
+"Unable to perform software request - please update this application and try again." = "No se ha podido ejecutar la solicitud del software. Actualiza esta aplicación e inténtalo de nuevo.";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "No se ha podido procesar el pago debido al uso de datos no válidos. Inténtalo de nuevo.";
+"Unable to process payment due to invalid data - please try again." = "No se ha podido procesar el pago debido al uso de datos no válidos. Inténtalo de nuevo.";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "No se puede procesar el pago. El importe total del pedido es inferior al importe mínimo que puedes cobrar, que es %1$@.";
@@ -8126,13 +8135,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "No se puede procesar el pago. No hemos podido obtener los últimos detalles del pedido. Comprueba tu conexión a la red e inténtalo de nuevo. Error subyacente: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "No se ha podido leer la tarjeta. Se ha agotado el tiempo de espera del sistema. Inténtalo de nuevo.";
+"Unable to read card - the system timed out - please try again." = "No se ha podido leer la tarjeta. Se ha agotado el tiempo de espera del sistema. Inténtalo de nuevo.";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "No se ha podido leer la tarjeta. Prueba a retirarla e introducirla de nuevo.";
+"Unable to read inserted card - please try removing and inserting card again." = "No se ha podido leer la tarjeta. Prueba a retirarla e introducirla de nuevo.";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "No se ha podido leer la tarjeta. Prueba a pasarla de nuevo.";
+"Unable to read swiped card - please try swiping again." = "No se ha podido leer la tarjeta. Prueba a pasarla de nuevo.";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "No se ha podido leer el sitio de WordPress en esa dirección URL. Toca \"¿Necesitas más ayuda?\" para ver las Preguntas frecuentes.";
@@ -8157,10 +8166,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "No se pueden guardar los cambios. Inténtalo de nuevo.";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "No se han podido buscar lectores de tarjetas. El Bluetooth de baja energía no es compatible con este dispositivo. Usa otro dispositivo.";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "No se han podido buscar lectores de tarjetas. El Bluetooth de baja energía no es compatible con este dispositivo. Usa otro dispositivo.";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "No se han podido buscar lectores de tarjetas. Se ha agotado el tiempo de espera del Bluetooth. Inténtalo de nuevo.";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "No se han podido buscar lectores de tarjetas. Se ha agotado el tiempo de espera del Bluetooth. Inténtalo de nuevo.";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "No se han podido establecer los datos del cliente.";
@@ -8169,7 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "No se puede actualizar la dirección.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "No se ha podido actualizar el software del lector de tarjetas. El lector tiene poca batería.";
+"Unable to update card reader software - the reader battery is too low." = "No se ha podido actualizar el software del lector de tarjetas. El lector tiene poca batería.";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "No se puede actualizar el precio";
@@ -8978,7 +8987,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "Tienes que añadir una contraseña para proteger el producto";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Es necesario que establezcas un código de acceso en la pantalla de bloqueo para utilizar Tap to Pay on iPhone.";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Es necesario que establezcas un código de acceso en la pantalla de bloqueo para utilizar Tap to Pay on iPhone.";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que tienes instalado el plugin móvil de DudaMobile y está impidiendo a la aplicación conectarse a tu blog";
@@ -9395,20 +9404,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "Cancelar";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "Gasto diario";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "¿Cuánto te gustaría gastar en tu campaña y cuánto tiempo debería durar?";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Hecho";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "Duración";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Editar";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "Estimación diaria del número de personas a la que has llegado";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "Toca para obtener más información sobre las impresiones estimadas";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "Ejecutar hasta que yo lo detenga";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "Total de impresiones estimadas";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "La campaña continuará hasta que la detengas.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "No se han podido estimar las impresiones. ¿Reintentar?";
@@ -9419,14 +9437,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "Impresiones";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "Fijar duración";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "Programar";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "Especificar la duración";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "Empieza";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "¿Cuánto te gustaría gastar en la campaña de promoción de tu producto?";
+"blazeBudgetSettingView.startDate" = "Fecha de inicio";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Fija tu presupuesto";
@@ -9437,29 +9455,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ diariamente";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "A partir del %1$@";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ hasta el %2$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d días";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "En curso a partir del %1$@";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d día";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%1$@ por %2$d días";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%1$@ por %2$d día";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$%.0f de USD";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "durante %1$d días";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "durante %1$d día";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "Gasto total";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "Gasto semanal";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "%1$@ de gasto semanal";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Cancelar";
@@ -10008,6 +10026,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Suscripción variable";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "En curso";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Cancelar";
 
@@ -10170,6 +10191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Editar cantidad";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "Buscar cliente";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Invitado";
@@ -10583,6 +10607,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Ver todas las campañas";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "Reseñas";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Clientes";
@@ -11319,11 +11347,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Conectar con el lector";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "¿Quieres conectarte a este lector?";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Seguir buscando";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "¿Quieres conectarte al lector %1$@?";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Se ha encontrado %1$@";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Cancelar";
@@ -11391,6 +11422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "La conexión del lector ha fallado";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Cerrar";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Debido a un error de red, no sabemos si el pago se ha realizado correctamente.";
 
@@ -11399,6 +11433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Es posible que el pedido no se haya realizado correctamente";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Desconectar lector";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Salir del punto de venta";
@@ -11411,6 +11448,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "Conectar con tu lector";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Desconectando";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Eliminar";

@@ -4,6 +4,7 @@
 20.3
 -----
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Cash payments and discounts: Improve handling of numbers with grouping separators, e.g. $1,000.00 [https://github.com/woocommerce/woocommerce-ios/pull/13854]
 
 20.2
 -----

@@ -83,6 +83,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .viewEditCustomFieldsInProductsAndOrders:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeEvergreenCampaigns:
+            return true
+        case .revampedShippingLabelCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

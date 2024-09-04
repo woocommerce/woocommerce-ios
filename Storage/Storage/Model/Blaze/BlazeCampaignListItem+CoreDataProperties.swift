@@ -25,6 +25,7 @@ extension BlazeCampaignListItem {
     @NSManaged public var budgetMode: String
     @NSManaged public var isEvergreen: Bool
     @NSManaged public var durationDays: Int64
+    @NSManaged public var startTime: Date?
 
 }
 

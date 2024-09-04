@@ -56,14 +56,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         formattedPrice(order?.totalTax, currency: order?.currency)
     }
 
-    var showRecalculateButton: Bool {
-        !areAmountsFullyCalculated && orderState.isSyncing == false
-    }
-
-    var areAmountsFullyCalculated: Bool {
-        orderState.isSyncing == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
-    }
-
     var isShimmering: Bool {
         orderState.isSyncing
     }

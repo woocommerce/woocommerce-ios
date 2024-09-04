@@ -43,7 +43,7 @@ final class CartViewModelTests: XCTestCase {
         sut.submitCart()
     }
 
-    func test_cart_when_addItemToCart_is_invoked_then_adds_item_to_cart() {
+    func test_addItemToCart_then_cart_is_not_empty() {
         // Given
         XCTAssertTrue(sut.itemsInCart.isEmpty, "Initial state")
         let item = Self.makeItem()
@@ -53,6 +53,19 @@ final class CartViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.itemsInCart.isNotEmpty)
+    }
+
+    func test_addItemToCart_when_multiple_items_added_then_latest_item_is_first() {
+        // Given
+        XCTAssertTrue(sut.itemsInCart.isEmpty, "Initial state")
+        let items = [Self.makeItem(), Self.makeItem(), Self.makeItem()]
+
+        // When
+        items.forEach(sut.addItemToCart)
+
+        // Then
+        XCTAssertEqual(sut.itemsInCart.map(\.item.itemID), items.reversed().map(\.itemID))
+        XCTAssertNotEqual(sut.itemsInCart.map(\.item.itemID), items.map(\.itemID))
     }
 
     func test_removeItemFromCart() {
@@ -71,7 +84,7 @@ final class CartViewModelTests: XCTestCase {
         sut.addItemToCart(item)
         sut.addItemToCart(anotherItem)
         XCTAssertEqual(sut.itemsInCart.count, 2)
-        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [item, anotherItem].map { $0.name })
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [anotherItem, item].map { $0.name })
 
         // When
         let firstCartItem = try XCTUnwrap(sut.itemsInCart.first)
@@ -79,7 +92,7 @@ final class CartViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.itemsInCart.count, 1)
-        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [anotherItem.name])
+        XCTAssertEqual(sut.itemsInCart.map { $0.item.name }, [item.name])
     }
 
     func test_cart_when_removeAllItemsFromCart_is_invoked_then_removes_all_items_from_cart() {

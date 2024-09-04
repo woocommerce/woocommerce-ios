@@ -1,1 +1,2 @@
-En yeni güncellememizle WooCommerce yönetiminizi geliştirin! Mevcut ürünler için kolaylaştırılmış ortam seçimiyle Blaze reklamları oluşturmak artık daha sorunsuz. Sipariş oluşturmadan destekle iletişime geçmeye kadar her yerdeki kusurları düzelterek daha güvenilir bir deneyim sağladık. Çeşitli düzeltmeler ve iyileştirmelerle daha uyumlu bir uygulama ortamının keyfini çıkarın.
+Bu güncellemede sipariş oluşturma akışlarını iyileştirdik, siparişi düzenleme akışlarında birden fazla hatayı düzelttik ve Tap to Pay on iPhone ödemesi başlatırken gerçekleşen bir sorunu düzelttik.
+Ayrıca Blaze reklam kampanyalarınızın bütçesini anlamanızı kolaylaştırdık ve Batı Arap numaralarını kullanmayan diller için Blaze reklamı oluşturma desteği ekledik.

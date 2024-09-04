@@ -214,8 +214,51 @@ final class HubMenuViewModel: ObservableObject {
         }
     }
 
+    func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
+        updateTabBarVisibility(isPointOfSaleActive)
+        updateInAppNotifications(isPointOfSaleActive)
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
+
+// MARK: - Helper method for WooCommerce POS
+//
+private extension HubMenuViewModel {
+    // Hides the app's tab bars when Point of Sale is active
+    //
+    func updateTabBarVisibility(_ isPointOfSaleActive: Bool) {
+        guard let mainTabBarController = AppDelegate.shared.tabBarController else {
+            return
+        }
+        mainTabBarController.tabBar.isHidden = isPointOfSaleActive
+
+        /*
+         When hidding the app's tab bar on POS initialization, we've observed a recurring issue with the UI not being updated appropiately,
+         leaving additional padding in the bottom rather than re-positioning components taking all the available space.
+         In order to address this issue we have to explicitely call for an update to the safeAreaInsets in order to trigger the layout update we need,
+         so that the view controller's view can occupy the space left by the hidden tab bar.
+         Updating the bottom UIEdgeInset to a non-zero value seems to be enough to trigger the UI layout refresh we need.
+         Ref: gh-13785
+         */
+        if mainTabBarController.tabBar.isHidden {
+            let bottomInset = CGFloat.leastNonzeroMagnitude
+            mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        } else {
+            mainTabBarController.additionalSafeAreaInsets = .zero
+        }
+    }
+
+    // Disables foreground in-app notifications when Point of Sale is active
+    //
+    func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
+        if isPointOfSaleActive {
+            ServiceLocator.pushNotesManager.disableInAppNotifications()
+        } else {
+            ServiceLocator.pushNotesManager.enableInAppNotifications()
+        }
     }
 }
 

@@ -212,40 +212,6 @@ final class ItemListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
     }
 
-    func test_isEmptyOrError_when_itemListViewModel_loaded_normally_then_returns_false() async {
-        // Given/When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, false)
-    }
-
-    func test_isEmptyOrError_when_itemListViewModel_is_empty_then_returns_true() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldReturnZeroItems = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, true)
-    }
-
-    func test_isEmptyOrError_when_itemListViewModel_throws_error_then_returns_true() async {
-        // Given
-        let itemProvider = MockPOSItemProvider()
-        itemProvider.shouldThrowError = true
-        let sut = ItemListViewModel(itemProvider: itemProvider)
-
-        // When
-        await sut.populatePointOfSaleItems()
-
-        // Then
-        XCTAssertEqual(sut.isEmptyOrError, true)
-    }
-
     func test_state_when_itemListViewModel_loaded_normally_then_returns_isLoaded_true() async {
         // Given/When
         await sut.populatePointOfSaleItems()
@@ -265,6 +231,105 @@ final class ItemListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.state.isLoaded, false)
+    }
+
+    func test_populatePointOfSaleItems_when_no_items_are_loaded_then_itemsPublisher_emits_no_items() async throws {
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+
+        let expectation = XCTestExpectation(description: "Publisher should emit nothing")
+        var receivedItems: [POSItem] = []
+        sut.itemsPublisher.sink { items in
+            receivedItems = items
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertTrue(sut.state == .empty)
+        XCTAssertTrue(receivedItems.isEmpty)
+    }
+
+    func test_populatePointOfSaleItems_when_items_are_loaded_then_itemsPublisher_emits_items() async throws {
+        // Given
+        let items = Self.makeItems()
+        let expectation = XCTestExpectation(description: "Publisher should emit populated items")
+        var receivedItems: [POSItem] = []
+        sut.itemsPublisher.sink { items in
+            receivedItems = items
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+        guard let firstItem = items.first, let lastItem = items.last else {
+            return XCTFail("Expected two items, got \(receivedItems).")
+        }
+
+        // Then
+        XCTAssertTrue(sut.state == .loaded(receivedItems))
+        XCTAssertEqual(receivedItems.first?.productID, firstItem.productID)
+        XCTAssertEqual(receivedItems.last?.productID, lastItem.productID)
+    }
+
+    func test_populatePointOfSaleItems_when_no_items_are_loaded_then_statePublisher_emits_expected_empty_state() async throws {
+        // Given
+        XCTAssertEqual(sut.state, .loading, "Initial state")
+
+        let itemProvider = MockPOSItemProvider()
+        itemProvider.shouldReturnZeroItems = true
+        let sut = ItemListViewModel(itemProvider: itemProvider)
+        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
+
+        var receivedStates: [ItemListViewModel.ItemListState] = []
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+                expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, [.loading, .empty])
+    }
+
+    func test_populatePointOfSaleItems_when_items_are_loaded_then_statePublisher_emits_expected_loaded_state() async throws {
+        // Given
+        XCTAssertEqual(sut.state, .loading, "Initial state")
+        let expectation = XCTestExpectation(description: "Publisher should emit state changes")
+        let items = Self.makeItems()
+
+        var receivedStates: [ItemListViewModel.ItemListState] = []
+        sut.statePublisher
+            .removeDuplicates()
+            .sink { state in
+                receivedStates.append(state)
+                expectation.fulfill()
+        }
+        .store(in: &cancellables)
+
+        // When
+        await sut.populatePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(receivedStates, [.loading, .loaded(items)])
+    }
+
+    func test_simpleProductsInfoButtonTapped_when_tapped_then_showSimpleProductsModal_toggled() {
+        XCTAssertFalse(sut.showSimpleProductsModal)
+
+        sut.simpleProductsInfoButtonTapped()
+
+        XCTAssertTrue(sut.showSimpleProductsModal)
     }
 }
 

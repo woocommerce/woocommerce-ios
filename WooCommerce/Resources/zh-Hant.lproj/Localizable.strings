@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-21 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-08-28 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -730,9 +730,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "金額 (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
-"Amount (%1$@)" = "金額 (%1$@)";
-
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "金額 (%@)";
 
@@ -1127,9 +1124,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "文萊";
 
-/* Title label for the total budget of a Blaze campaign */
-"Budget" = "預算";
-
 /* Country option for a site address. */
 "Bulgaria" = "保加利亞";
 
@@ -1191,9 +1185,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header for the Custom Packages section in Shipping Label Package listing */
 "CUSTOM PACKAGES" = "自訂包裹";
-
-/* Title for the helper field describing calculated amount for given percentage */
-"Calculated amount" = "已計金額";
 
 /* Call phone number button title */
 "Call" = "致電";
@@ -1583,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "清除選取項目";
 
-/* Title label for the total clicks of a Blaze ads campaign */
-"Clicks" = "點擊率";
-
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1594,7 +1582,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
-   Text for the close button in the Fee/Discounts Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "關閉";
 
@@ -2429,7 +2416,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   Text for the done button in the Fee/Discounts Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3560,9 +3546,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "重要資訊";
-
-/* Title label for the total impressions of a Blaze ads campaign */
-"Impressions" = "曝光數";
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "在 %1$@，與「卡緊收」搭配使用的卡片交易限額為感應交易上限。";
@@ -5170,9 +5153,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's pending status */
 "Pending review" = "待審中";
-
-/* Title for the amount field on the Fee/Discounts Details screen during order creationParameters: %1$@ - percent sign */
-"Percentage (%1$@)" = "百分比 (%1$@)";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "百分比折扣";
@@ -9650,6 +9630,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "提升能見度，加速商品銷售。";
 
+/* Title label for the total impressions and clicks of a Blaze ads campaign */
+"blazeCampaignItemView.clickthroughs" = "點擊率";
+
+/* Title of the remaining budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.remainingBudget" = "剩餘";
+
 /* Status name of an approved Blaze campaign */
 "blazeCampaignListItem.status.active" = "使用中";
 
@@ -9668,8 +9654,17 @@ which should be translated separately and considered part of this sentence. */
 /* Status name of a scheduled Blaze campaign */
 "blazeCampaignListItem.status.scheduled" = "已排程";
 
+/* Status name of a suspended Blaze campaign */
+"blazeCampaignListItem.status.suspended" = "已暫停";
+
 /* Status name of a Blaze campaign without specified state */
 "blazeCampaignListItem.status.unknown" = "未知";
+
+/* Title of the total budget field of a Blaze campaign with an end date. */
+"blazeCampaignListItem.totalBudget" = "總計";
+
+/* Title of the budget field of a Blaze campaign without an end date. */
+"blazeCampaignListItem.weeklyBudget" = "每週";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "廣告政策";
@@ -10613,6 +10608,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "我很喜歡";
 
+/* Button to dismiss the confirmation alert on the Inbox screen. */
+"inbox.alert.cancel" = "取消";
+
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "沒有未讀訊息";
 
@@ -11139,19 +11137,22 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "掃瞄讀卡機";
 
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.cancel.button.title" = "重試付款";
+"pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "新訂單";
+
+/* Next steps hint for what to do after seeing a payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.nextSteps" = "透過具網路連線的裝置驗證付款。 若失敗，請重新嘗試付款。 若成功，請開啟新訂單。";
+
+/* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title" = "再次嘗試付款";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.message" = "我們無法載入檢查付款狀態所需的完整訂單資訊。 請個別檢查最新的訂單或重試。";
-
-/* Button to learn more about the payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.moreInfo.button.title" = "深入了解";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message" = "由於網路錯誤，我們無法確認是否付款成功。";
 
 /* Error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentCaptureError.title" = "不明的付款狀態";
+"pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.title" = "付款錯誤";
 
 /* Button to leave the order when a card payment fails. Presented to users after collecting a payment fails on the Point of Sale Checkout */
-"pointOfSale.cardPresent.paymentError.exitOrder.button.title" = "結束訂單";
+"pointOfSale.cardPresent.paymentError.backToCheckout.button.title" = "返回結帳";
 
 /* Error message. Presented to users after collecting a payment fails on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentError.title" = "付款失敗";
@@ -11336,12 +11337,6 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a software update is being installed */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.title" = "正在更新軟體";
 
-/* Subtitle of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.errorDetails" = "由於請領款項和重新整理訂單時發生錯誤，所以我們無法載入完整的訂單資訊。 為避免少收款項或重覆收款，請先個別檢查最新的訂單，然後再繼續。";
-
-/* Title of the alert presented when payment capture fails. */
-"pointOfSale.cardPresentPayment.alert.paymentCaptureError.title" = "請檢查訂單付款狀態";
-
 /* Button to dismiss the alert presented when payment capture fails. */
 "pointOfSale.cardPresentPayment.alert.paymentCaptureError.understand.button.title" = "我了解";
 
@@ -11396,11 +11391,38 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "連線至讀卡機失敗";
 
+/* Message drawing attention to issue of payment capture maybe failing. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "由於網路錯誤，我們不知道是否付款成功。";
+
+/* No comment provided by engineer. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.nextSteps" = "請在繼續操作前，透過具網路連線的裝置再次檢查訂單。";
+
+/* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
+"pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "此訂單可能失敗";
+
+/* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
+"pointOfSale.floatingButtons.exit.button.title" = "結束 POS";
+
+/* The title of the floating button to get support for Point of Sale, shown in a popover menu. */
+"pointOfSale.floatingButtons.getSupport.button.title" = "取得支援";
+
+/* The title of the floating button to indicate that reader is connected. */
+"pointOfSale.floatingButtons.readerConnected.title" = "已連結讀卡機";
+
+/* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
+"pointOfSale.floatingButtons.readerDisconnected.title" = "連結你的讀卡機";
+
+/* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";
+
 /* Button title to retry synchronizing order and calculating order totals */
 "pointOfSale.orderSync.error.retry" = "重試";
 
 /* Title of the error when failing to synchronize order and calculate order totals */
 "pointOfSale.orderSync.error.title" = "無法載入總金額";
+
+/* Button to dismiss the support form from the POS dashboard. */
+"pointOfSaleDashboard.support.done" = "完成";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "點選商品即可\n 新增至購物車";
@@ -11408,8 +11430,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "購物車";
 
+/* Title for the 'Checkout' button to process the Order. */
+"pos.cartView.checkoutButtonTitle" = "結帳";
+
 /* Title for the 'Clear' button to remove all products from the Cart. */
 "pos.cartView.clearButtonTitle" = "清除";
+
+/* Title shown on a toast view that appears when there's no internet connection */
+"pos.connectivity.title" = "沒有網際網路連線";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "任何進行中的訂單將會遺失。";
@@ -11432,14 +11460,20 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the item list screen when there's an error loading products. */
 "pos.itemList.failedToLoadTitle" = "載入商品時發生錯誤";
 
+/* Accessibility label for button to dismiss the product selector header banner. The banner explains current POS limitations. Tapping the button prevents it being shown again. */
+"pos.itemListView.headerBanner.dismiss.button.accessibiltyLabel" = "關閉";
+
 /* Additional text within the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerHint" = "待未來更新後，將可提供多款式與虛擬商品等其他商品種類的資訊。 深入了解";
+"pos.itemlistview.headerBanner.hint" = "待未來更新後，將可提供多款式與虛擬商品等其他商品種類的資訊。";
+
+/* Link to more information within the product selector header banner, which explains current POS limitations */
+"pos.itemlistview.headerBanner.learnMoreHint" = "深入了解";
 
 /* Subtitle of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerSubtitle" = "現在透過 POS 僅能查看簡單實體商品。";
+"pos.itemlistview.headerBanner.subtitle" = "現在透過 POS 僅能查看簡單實體商品。";
 
 /* Title of the product selector header banner, which explains current POS limitations */
-"pos.itemlistview.headerBannerTitle" = "僅顯示簡單商品";
+"pos.itemlistview.headerBanner.title" = "僅顯示簡單商品";
 
 /* Subtitle of the Point of Sale entry point loading */
 "pos.itemlistview.loading.subtitle" = "開始為客戶提供服務";

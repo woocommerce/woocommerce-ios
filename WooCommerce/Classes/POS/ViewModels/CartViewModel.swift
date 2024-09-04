@@ -15,8 +15,6 @@ final class CartViewModel: CartViewModelProtocol {
     @Published private(set) var itemsInCart: [CartItem] = []
     var itemsInCartPublisher: Published<[CartItem]>.Publisher { $itemsInCart }
 
-    private var cancellables = Set<AnyCancellable>()
-
     @Published var canDeleteItemsFromCart: Bool = true
     @Published private(set) var shouldShowClearCartButton: Bool = false
 
@@ -45,7 +43,8 @@ final class CartViewModel: CartViewModelProtocol {
 
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.append(cartItem)
+        itemsInCart.insert(cartItem, at: 0)
+        itemToScrollToWhenCartUpdated = cartItem
 
         analytics.track(.pointOfSaleAddItemToCart)
     }
@@ -58,9 +57,7 @@ final class CartViewModel: CartViewModelProtocol {
         itemsInCart.removeAll()
     }
 
-    var itemToScrollToWhenCartUpdated: CartItem? {
-        return itemsInCart.last
-    }
+    var itemToScrollToWhenCartUpdated: CartItem?
 
     var itemsInCartLabel: String? {
         switch itemsInCart.count {

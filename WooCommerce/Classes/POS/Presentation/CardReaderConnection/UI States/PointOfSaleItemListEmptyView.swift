@@ -2,28 +2,27 @@ import SwiftUI
 
 struct PointOfSaleItemListEmptyView: View {
     var body: some View {
-        VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
-            POSHeaderTitleView(foregroundColor: .posSecondaryText)
-            Spacer()
-            Image(systemName: Constants.iconSystemName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posSecondaryText)
-                .scaleEffect(x: -1, y: 1)
-                .accessibilityHidden(true)
-            Text(Localization.emptyProductsTitle)
-                .foregroundStyle(Color.posSecondaryText)
-                .font(.posTitleEmphasized)
-            Text(Localization.emptyProductsSubtitle)
-                .foregroundStyle(Color.posSecondaryText)
-                .font(.posBodyRegular)
-                .padding([.leading, .trailing])
-            Text(Localization.emptyProductsHint)
-                .foregroundStyle(Color.posSecondaryText)
-                .font(.posBodyRegular)
-                .padding([.leading, .trailing])
-            Spacer()
+        PointOfSaleItemListFullscreenView {
+            VStack(alignment: .center, spacing: PointOfSaleItemListErrorLayout.headerSpacing) {
+                Spacer()
+                Image(decorative: PointOfSaleAssets.magnifierNotFound.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
+                    .foregroundColor(.posSecondaryText)
+                Text(Localization.emptyProductsTitle)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(.posTitleEmphasized)
+                Text(Localization.emptyProductsSubtitle)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(.posBodyRegular)
+                    .padding([.leading, .trailing])
+                Text(Localization.emptyProductsHint)
+                    .foregroundStyle(Color.posSecondaryText)
+                    .font(.posBodyRegular)
+                    .padding([.leading, .trailing])
+                Spacer()
+            }
         }
     }
 }

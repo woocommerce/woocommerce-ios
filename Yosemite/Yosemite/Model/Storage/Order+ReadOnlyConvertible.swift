@@ -77,7 +77,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
         let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
         let orderTaxLines = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderTaxLine]()
-        let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.OrderMetaData]()
+        let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
         let orderGiftCards = appliedGiftCards?.map { $0.toReadOnly() } ?? [Yosemite.OrderGiftCard]()
 
         return Order(siteID: siteID,

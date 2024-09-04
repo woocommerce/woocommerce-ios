@@ -123,8 +123,6 @@ target 'WooCommerce' do
   #
   target 'WooCommerceTests' do
     inherit! :search_paths
-    pod 'ViewControllerPresentationSpy', '~> 7.0'
-    pod 'ViewInspector'
   end
 end
 

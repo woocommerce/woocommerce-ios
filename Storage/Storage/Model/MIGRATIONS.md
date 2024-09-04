@@ -2,9 +2,15 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 116 (Release 20.3.0.0)
+- @selanthiraiyan 2024-09-03
+    - Added `startTime` attribute to `BlazeCampaignListItem` entity.
+    
 ## Model 115 (Release 20.2.0.0)
 - @itsmeichigo 2024-08-26
     - Added `BlazeCampaignObjective` entity.
+- @hafizrahman 2024-08-26
+    - Rename `OrderMetaData` entity to `MetaData` while migrating existing data. The migration is done using automatic data migration (a.k.a lightweight migration) as outlined in https://developer.apple.com/documentation/coredata/migrating_your_data_model_automatically#2903979 . A visual guide for the steps taken is available on https://stackoverflow.com/a/68693108
 
 ## Model 114 (Release 20.0.0.0)
 - @itsmeichigo 2024-08-13

@@ -267,6 +267,12 @@ private extension TotalsView {
             topPadding: 40,
             bottomPadding: 40
         )
+
+        static let topAligned = CardReaderViewLayout(
+            backgroundColor: .clear,
+            topPadding: 96,
+            bottomPadding: 96
+        )
     }
 
     private var cardReaderViewLayout: CardReaderViewLayout {
@@ -274,8 +280,18 @@ private extension TotalsView {
             return .primary
         }
 
-        if viewModel.paymentState == .validatingOrderError {
+        switch viewModel.paymentState {
+        case .validatingOrderError:
             return .outlined
+        case .paymentError:
+            return .topAligned
+        case .idle,
+                .acceptingCard,
+                .validatingOrder,
+                .preparingReader,
+                .processingPayment,
+                .cardPaymentSuccessful:
+            break
         }
 
         if viewModel.connectionStatus == .disconnected {
@@ -321,7 +337,7 @@ private extension TotalsView {
         static let matchedGeometryTaxId: String = "pos_totals_view_tax_matched_geometry_id"
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
-        static let totalsFieldsHideAnimationDelay: CGFloat = 0.8
+        static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
     }
 
     enum Localization {
@@ -341,10 +357,6 @@ private extension TotalsView {
             "pos.totalsView.newOrder",
             value: "New order",
             comment: "Button title for new order button")
-        static let calculateAmounts = NSLocalizedString(
-            "pos.totalsView.calculateAmounts",
-            value: "Calculate amounts",
-            comment: "Button title for calculate amounts button")
     }
 }
 

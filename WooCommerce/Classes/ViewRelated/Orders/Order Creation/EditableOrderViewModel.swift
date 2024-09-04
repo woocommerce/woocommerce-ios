@@ -936,6 +936,7 @@ final class EditableOrderViewModel: ObservableObject {
             siteID: siteID,
             orderID: order.orderID,
             paymentLink: order.paymentURL,
+            total: order.total,
             formattedTotal: formattedTotal,
             flow: .orderCreation)
 

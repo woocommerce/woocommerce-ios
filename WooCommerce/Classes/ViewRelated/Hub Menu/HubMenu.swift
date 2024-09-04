@@ -390,12 +390,12 @@ private extension HubMenu {
             comment: "Title of the view containing a single Product Review"
         )
         static let reviews = NSLocalizedString(
-            "hubMenu.coupons",
+            "hubMenu.reviewsList",
             value: "Reviews",
             comment: "Title of the view containing Reviews list"
         )
         static let coupons = NSLocalizedString(
-            "hubMenu.coupons",
+            "hubMenu.couponsList",
             value: "Coupons",
             comment: "Title of the view containing Coupons list"
         )

@@ -56,6 +56,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         selectedCampaignID: String? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
@@ -69,6 +70,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
         configureResultsController()
         configurePaginationTracker()
+
+        if let selectedCampaignID {
+            didSelectCampaignDetails(selectedCampaignID)
+        }
     }
 
     /// Called when view first appears.

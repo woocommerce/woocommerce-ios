@@ -222,7 +222,8 @@ private extension DashboardViewHostingController {
             guard let self, let navigationController else { return }
             ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
 
-            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
+            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID,
+                                                                                 selectedCampaignID: nil))
             navigationController.show(controller, sender: self)
         }
 

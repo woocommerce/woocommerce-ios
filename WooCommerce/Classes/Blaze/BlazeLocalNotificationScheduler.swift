@@ -57,8 +57,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         pushNotesManager.localNotificationUserResponses
             .sink { [weak self] response in
                 guard let self,
-                      response.notification.request.identifier == LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
-                      let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
+                      response.notification.request.identifier == LocalNotification.Scenario.blazeNoCampaignReminder.identifier else {
                     return
                 }
 
@@ -130,7 +129,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
-                                                 userInfo: [Constants.siteIDKey: siteID])
+                                                 userInfo: [:])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
@@ -144,7 +143,6 @@ private extension DefaultBlazeLocalNotificationScheduler {
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
         static let daysDurationNoCampaignReminderNotification = 30
-        static let siteIDKey = "site_id"
     }
 }
 

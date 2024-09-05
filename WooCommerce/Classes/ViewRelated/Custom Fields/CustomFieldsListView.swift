@@ -4,7 +4,7 @@ struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
 
     let isEditable: Bool
-    let customFields: [CustomFieldsViewModel]
+    let customFields: [CustomFieldViewModel]
 
     var body: some View {
         NavigationView {
@@ -139,8 +139,8 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
         CustomFieldsListView(
             isEditable: false,
             customFields: [
-            CustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
-            CustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+            CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
+            CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
         ])
     }
 }

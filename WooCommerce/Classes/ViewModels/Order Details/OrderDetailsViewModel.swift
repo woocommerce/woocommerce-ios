@@ -482,7 +482,7 @@ extension OrderDetailsViewModel {
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
             let customFields = order.customFields.map {
-                CustomFieldsViewModel(metadata: $0)
+                CustomFieldViewModel(metadata: $0)
             }
             let customFieldsView = UIHostingController(
                 rootView: CustomFieldsListView(

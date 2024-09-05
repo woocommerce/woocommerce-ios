@@ -171,15 +171,15 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
     @Published private(set) var campaignObjectiveText: String?
-    @Published private(set) var budgetDetailText = ""
-    @Published private(set) var targetLanguageText = ""
-    @Published private(set) var targetDeviceText = ""
-    @Published private(set) var targetTopicText = ""
-    @Published private(set) var targetLocationText = ""
+    @Published private(set) var budgetDetailText: String = ""
+    @Published private(set) var targetLanguageText: String = ""
+    @Published private(set) var targetDeviceText: String = ""
+    @Published private(set) var targetTopicText: String = ""
+    @Published private(set) var targetLocationText: String = ""
 
     // Ad destination URL
-    @Published private var targetUrl = ""
-    @Published private var urlParams = ""
+    @Published private var targetUrl: String = ""
+    @Published private var urlParams: String = ""
     var finalDestinationURL: String {
         guard urlParams.isNotEmpty else {
             return targetUrl

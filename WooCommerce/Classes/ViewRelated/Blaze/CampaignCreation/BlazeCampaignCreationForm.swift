@@ -56,6 +56,7 @@ struct BlazeCampaignCreationForm: View {
     @Environment(\.colorScheme) var colorScheme
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    @State private var isShowingCampaignObjectivePicker = false
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
@@ -83,7 +84,7 @@ struct BlazeCampaignCreationForm: View {
                         // Objective - hidden behind a feature flag
                         detailView(title: Localization.objective,
                                    content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
-                            // TODO: show objective screen
+                            isShowingCampaignObjectivePicker = true
                         }
                         divider
                     }
@@ -197,6 +198,11 @@ struct BlazeCampaignCreationForm: View {
         .sheet(isPresented: $isShowingLocationPicker) {
             BlazeTargetLocationPickerView(viewModel: viewModel.targetLocationViewModel) {
                 isShowingLocationPicker = false
+            }
+        }
+        .sheet(isPresented: $isShowingCampaignObjectivePicker) {
+            BlazeCampaignObjectivePickerView(viewModel: viewModel.campaignObjectiveViewModel) {
+                isShowingCampaignObjectivePicker = false
             }
         }
         .onChange(of: viewModel.error) { newValue in

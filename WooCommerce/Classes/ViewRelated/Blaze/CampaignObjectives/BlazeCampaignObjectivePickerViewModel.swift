@@ -8,6 +8,8 @@ import protocol WooFoundation.Analytics
 final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
 
     @Published var selectedObjective: BlazeCampaignObjective?
+    @Published var saveSelectionForFutureCampaigns = true
+
     @Published private(set) var fetchedData: [BlazeCampaignObjective] = []
     @Published private(set) var isSyncingData: Bool = false
     @Published private(set) var syncError: Error?

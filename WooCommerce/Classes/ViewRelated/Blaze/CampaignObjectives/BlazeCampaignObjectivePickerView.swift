@@ -38,13 +38,9 @@ struct BlazeCampaignObjectivePickerView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButtonTitle, action: onDismiss)
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.saveButtonTitle) {
-                        viewModel.confirmSelection()
-                        onDismiss()
-                    }
-                    .disabled(viewModel.shouldDisableSaveButton)
-                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                footerView
             }
         }
         .task {
@@ -91,6 +87,25 @@ private extension BlazeCampaignObjectivePickerView {
             }
             .padding(Layout.contentMargin)
         }
+    }
+
+    var footerView: some View {
+        VStack(alignment: .center, spacing: Layout.contentMargin) {
+            Divider()
+            // Toggle to save the selection
+            Toggle(Localization.saveSelection, isOn: $viewModel.saveSelectionForFutureCampaigns)
+                .padding(.horizontal, Layout.contentMargin)
+
+            // CTA to confirm the selection
+            Button(Localization.saveButtonTitle) {
+                viewModel.confirmSelection()
+                onDismiss()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(viewModel.shouldDisableSaveButton)
+            .padding([.horizontal, .bottom], Layout.contentMargin)
+        }
+        .background(Color(.systemBackground))
     }
 
     func isItemSelected(_ item: BlazeCampaignObjective) -> Bool {
@@ -141,6 +156,11 @@ private extension BlazeCampaignObjectivePickerView {
             "blazeCampaignObjectivePickerView.goodFor",
             value: "Good for:",
             comment: "Title for the explanation of a Blaze campaign objective."
+        )
+        static let saveSelection = NSLocalizedString(
+            "blazeCampaignObjectivePickerView.saveSelection",
+            value: "Save my selection for future campaigns",
+            comment: "Toggle to save the selection of a Blaze campaign objective for future campaigns."
         )
     }
 }

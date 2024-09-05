@@ -531,7 +531,7 @@ platform :ios do
     end
   end
 
-  # This lane publishes a release on GitHub, tagging it on git, and backmerges the current release branch into the next release/ branch
+  # This lane publishes a release on GitHub and creates a PR to backmerge the current release branch into the next release/ branch
   #
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
   #

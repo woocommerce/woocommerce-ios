@@ -99,11 +99,11 @@ private struct CustomFieldRow: View {
                                 openURL(url) // Open in associated app for URL scheme
                             }
                         }
-                        .lineLimit(isEditable ? 3 : nil)
+                        .lineLimit(isEditable ? 2 : nil)
                 } else { // Display content as plain text
                     Text(content)
                         .footnoteStyle()
-                        .lineLimit(isEditable ? 3 : nil)
+                        .lineLimit(isEditable ? 2 : nil)
                 }
             }.padding([.leading, .trailing], Constants.vStackPadding)
 

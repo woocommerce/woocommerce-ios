@@ -12,10 +12,22 @@ struct CustomFieldsListView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ForEach(customFields) { customField in
-                            CustomFieldRow(isEditable: isEditable,
-                                           title: customField.title,
-                                           content: customField.content,
-                                           contentURL: customField.contentURL)
+                            if isEditable {
+                                NavigationLink(destination: CustomFieldEditorView(key: customField.title,
+                                                                                  value: customField.content)
+                                ) {
+                                    CustomFieldRow(isEditable: true,
+                                                   title: customField.title,
+                                                   content: customField.content,
+                                                   contentURL: customField.contentURL)
+                                }
+                            }
+                            else {
+                                CustomFieldRow(isEditable: false,
+                                               title: customField.title,
+                                               content: customField.content,
+                                               contentURL: customField.contentURL)
+                            }
 
                             Divider()
                                 .padding(.leading)
@@ -139,9 +151,9 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
         CustomFieldsListView(
             isEditable: false,
             customFields: [
-            CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
-            CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-        ])
+                CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
+                CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+            ])
     }
 }
 

@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// ApplicationAdapter: Wraps UIApplication's API. Meant for Unit Testing Purposes.
 ///
 protocol ApplicationAdapter: AnyObject {
@@ -24,18 +23,17 @@ protocol ApplicationAdapter: AnyObject {
 
     /// Presents the Details for the specified Notification.
     ///
-    func presentNotificationDetails(for noteID: Int64)
+    func presentNotificationDetails(notification: WooCommerce.PushNotification)
 }
 
 
 /// UIApplication: ApplicationAdapter Conformance.
 ///
 extension UIApplication: ApplicationAdapter {
-
-    /// Presents the Details for the specified Notification ID
+    /// Presents the Details for the specified Notification
     ///
-    func presentNotificationDetails(for noteID: Int64) {
-        MainTabBarController.presentNotificationDetails(for: noteID)
+    func presentNotificationDetails(notification: WooCommerce.PushNotification) {
+        MainTabBarController.switchStoreIfNeededAndPresentNotificationDetails(notification: notification)
     }
 
     /// Presents a given Message with an "In App" notification

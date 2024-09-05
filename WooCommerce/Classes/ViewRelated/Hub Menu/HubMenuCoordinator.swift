@@ -75,7 +75,7 @@ final class HubMenuCoordinator {
         }
     }
 
-    private func handleNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: WooCommerce.PushNotification) {
         guard notification.kind == .comment else {
             return
         }

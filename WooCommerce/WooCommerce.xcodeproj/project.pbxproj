@@ -1707,6 +1707,7 @@
 		86DE68822B4BA47A00B437A6 /* BlazeAdDestinationSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */; };
 		86E40AED2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */; };
 		86F0896F2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */; };
+		86F9D3642C897FFE00B1835B /* CustomFieldEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		933A27372222354600C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
 		934CB123224EAB150005CCB9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934CB122224EAB150005CCB9 /* main.swift */; };
@@ -4694,6 +4695,7 @@
 		86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingViewModel.swift; sourceTree = "<group>"; };
 		86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinatorTests.swift; sourceTree = "<group>"; };
 		86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModelTests.swift; sourceTree = "<group>"; };
+		86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldEditorView.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -10494,6 +10496,7 @@
 			children = (
 				B626C71A287659D60083820C /* CustomFieldsDetailsView.swift */,
 				B6C838DD28793B3A003AB786 /* CustomFieldsViewModel.swift */,
+				86F9D3632C897FFE00B1835B /* CustomFieldEditorView.swift */,
 			);
 			path = "Custom Fields";
 			sourceTree = "<group>";
@@ -14667,6 +14670,7 @@
 				026826932BF59D830036F959 /* PointOfSaleDashboardViewModel.swift in Sources */,
 				DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
+				86F9D3642C897FFE00B1835B /* CustomFieldEditorView.swift in Sources */,
 				45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */,
 				203163AB2C1B5DEE001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertView.swift in Sources */,
 				DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */,

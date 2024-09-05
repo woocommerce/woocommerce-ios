@@ -26,8 +26,13 @@ struct AztecEditorView: UIViewControllerRepresentable {
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
-    let isReadOnlyValue: Bool
+    @State private var isModified: Bool = false
     @State private var showRichTextEditor: Bool = false
+
+    private let initialKey: String
+    private let initialValue: String
+    private let isReadOnlyValue: Bool
+
 
     /// Initializer for custom field editor
     /// - Parameters:
@@ -35,9 +40,11 @@ struct CustomFieldEditorView: View {
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     init(key: String, value: String, isReadOnlyValue: Bool = false) {
-        self.isReadOnlyValue = isReadOnlyValue
         self._key = State(initialValue: key)
         self._value = State(initialValue: value)
+        self.initialKey = key
+        self.initialValue = value
+        self.isReadOnlyValue = isReadOnlyValue
     }
 
     var body: some View {
@@ -46,22 +53,25 @@ struct CustomFieldEditorView: View {
                 VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                     // Key Input
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                        Text("Key")
+                        Text("Key") // todo-13493: set String to be translatable
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
 
-                        TextField("Enter key", text: $key)
+                        TextField("Enter key", text: $key) // todo-13493: set String to be translatable
                             .bodyStyle()
                             .padding(insets: Layout.inputInsets)
                             .background(Color(.listForeground(modal: false)))
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .onChange(of: key) { _ in
+                                checkForModifications()
+                            }
                     }
 
                     // Value Input
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                        Text("Value")
+                        Text("Value") // todo-13493: set String to be translatable
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
 
@@ -73,6 +83,9 @@ struct CustomFieldEditorView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .onChange(of: value) { _ in
+                                checkForModifications()
+                            }
                     }
                 }
                 .padding()
@@ -86,7 +99,7 @@ struct CustomFieldEditorView: View {
                     Button(action: {
                         showRichTextEditor = true
                     }) {
-                        Text("Edit Value in Rich Text Editor")
+                        Text("Edit Value in Rich Text Editor") // todo-13493: set String to be translatable
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding()
@@ -96,16 +109,33 @@ struct CustomFieldEditorView: View {
 
         }
         .background(Color(.listBackground))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    saveChanges()
+                }) {
+                    Text("Save") // todo-13493: set String to be translatable
+                }
+                .disabled(!isModified)
+            }
+        }
         .sheet(isPresented: $showRichTextEditor) {
-            // todo: do data handling in Aztec
+            // todo-13493: Aztec needs toolbar and change handling
             AztecEditorView(html: $value)
                 .onDisappear {
-                    // Handle any updates from rich text editor here
+                    checkForModifications()
                 }
         }
     }
-}
 
+    private func checkForModifications() {
+        isModified = key != initialKey || value != initialValue
+    }
+
+    private func saveChanges() {
+        // todo-13493: add save logic
+    }
+}
 
 // MARK: Constants
 private extension CustomFieldEditorView {

@@ -3,6 +3,7 @@
 
 20.3
 -----
+- [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
 - [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
 - [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]

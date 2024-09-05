@@ -1349,6 +1349,8 @@
 		4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */; };
 		4580BA7523F192D400B5F764 /* ProductSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */; };
 		4580BA7723F19D4A00B5F764 /* ProductSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */; };
+		458BAC6E2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */; };
+		458BAC702C57E38F009440EA /* ProductPasswordEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAC6F2C57E38F009440EA /* ProductPasswordEligibilityUseCaseTests.swift */; };
 		459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */; };
 		4590B64C261C673B00A6FCE0 /* WeightFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B64B261C673B00A6FCE0 /* WeightFormatter.swift */; };
 		4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */; };
@@ -4343,6 +4345,8 @@
 		4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewController.swift; sourceTree = "<group>"; };
 		4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSettingsViewController.xib; sourceTree = "<group>"; };
 		4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModel.swift; sourceTree = "<group>"; };
+		458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPasswordEligibilityUseCase.swift; sourceTree = "<group>"; };
+		458BAC6F2C57E38F009440EA /* ProductPasswordEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPasswordEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Helpers.swift"; sourceTree = "<group>"; };
 		4590B64B261C673B00A6FCE0 /* WeightFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatter.swift; sourceTree = "<group>"; };
 		4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
@@ -8622,6 +8626,7 @@
 		453770CF2431FEC400AC718D /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				458BAC6F2C57E38F009440EA /* ProductPasswordEligibilityUseCaseTests.swift */,
 				453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */,
 				455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */,
 				450C2CB224D0803000D570DD /* ProductSettingsRowsTests.swift */,
@@ -8799,6 +8804,7 @@
 			children = (
 				4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */,
 				4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */,
+				458BAC6D2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift */,
 				4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */,
 				451C77722404534000413F73 /* ProductSettingsSections.swift */,
 				451C77702404518600413F73 /* ProductSettingsRows.swift */,
@@ -16107,6 +16113,7 @@
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */,
+				458BAC6E2C57CDA6009440EA /* ProductPasswordEligibilityUseCase.swift in Sources */,
 				0388E1A829E04687007DF84D /* DeepLinkNavigator.swift in Sources */,
 				B6A10E9C292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift in Sources */,
 				02B60DF72A586C7F004C47FF /* AddProductFromImageFormImageView.swift in Sources */,
@@ -16941,6 +16948,7 @@
 				6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */,
 				4569D3C925DC065B00CDC3E2 /* SiteAddressTests.swift in Sources */,
 				CC4D1E7925EE415D00B6E4E7 /* RenameAttributesViewModelTests.swift in Sources */,
+				458BAC702C57E38F009440EA /* ProductPasswordEligibilityUseCaseTests.swift in Sources */,
 				DE2FE59029261DED0018040A /* SiteCredentialLoginViewModelTests.swift in Sources */,
 				4520A1612722D495001FA573 /* FilterOrderListViewModelTests.swift in Sources */,
 				02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */,

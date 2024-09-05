@@ -79,6 +79,7 @@ final class DashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -110,7 +111,8 @@ final class DashboardViewModel: ObservableObject {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
-         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker()) {
+         googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         localNotificationScheduler: BlazeLocalNotificationScheduler? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -139,6 +141,12 @@ final class DashboardViewModel: ObservableObject {
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+                                                                                                               stores: stores,
+                                                                                                               storageManager: storageManager,
+                                                                                                               userDefaults: userDefaults,
+                                                                                                               blazeEligibilityChecker: blazeEligibilityChecker)
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -170,6 +178,8 @@ final class DashboardViewModel: ObservableObject {
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
+
+        await blazeLocalNotificationScheduler.scheduleNotifications()
     }
 
     func handleCustomizationDismissal() {

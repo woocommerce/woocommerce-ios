@@ -44,6 +44,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private(set) var requestedLocalNotifications: [LocalNotification] = []
+    private(set) var triggersForRequestedLocalNotifications: [UNNotificationTrigger] = []
     private(set) var requestedLocalNotificationsIfNeeded: [LocalNotification] = []
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
@@ -95,6 +96,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
         await MainActor.run {
             requestedLocalNotifications.append(notification)
+            if let trigger {
+                triggersForRequestedLocalNotifications.append(trigger)
+            }
         }
     }
 
@@ -112,6 +116,7 @@ final class MockPushNotificationsManager: PushNotesManager {
             canceledLocalNotificationScenarios.append(scenarios)
             requestedLocalNotifications.removeAll()
             requestedLocalNotificationsIfNeeded.removeAll()
+            triggersForRequestedLocalNotifications.removeAll()
             triggersForRequestedLocalNotificationsIfNeeded.removeAll()
         }
     }
@@ -120,6 +125,7 @@ final class MockPushNotificationsManager: PushNotesManager {
         await MainActor.run {
             requestedLocalNotifications.removeAll()
             requestedLocalNotificationsIfNeeded.removeAll()
+            triggersForRequestedLocalNotifications.removeAll()
             triggersForRequestedLocalNotificationsIfNeeded.removeAll()
         }
     }

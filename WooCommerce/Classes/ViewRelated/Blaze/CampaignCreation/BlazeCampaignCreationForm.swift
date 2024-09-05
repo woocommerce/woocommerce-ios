@@ -82,7 +82,7 @@ struct BlazeCampaignCreationForm: View {
                     VStack(spacing: 0) {
                         // Objective - hidden behind a feature flag
                         detailView(title: Localization.objective,
-                                   content: Localization.chooseObjective) {
+                                   content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
                             // TODO: show objective screen
                         }
                         divider

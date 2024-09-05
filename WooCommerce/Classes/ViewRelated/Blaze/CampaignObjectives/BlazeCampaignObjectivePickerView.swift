@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.BlazeCampaignObjective
 
 /// View for picking campaign objective for Blaze campaign creation
 ///
@@ -55,28 +56,55 @@ struct BlazeCampaignObjectivePickerView: View {
 private extension BlazeCampaignObjectivePickerView {
     var optionList: some View {
         List {
-            ForEach(viewModel.fetchedData, id: \.id) { item in
-                HStack {
-                    Text(item.title)
-                    Spacer()
-                    Image(uiImage: .checkmarkStyledImage)
-                        .renderedIf(viewModel.selectedObjective == item)
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if viewModel.selectedObjective == item {
-                        viewModel.selectedObjective = nil
-                    } else {
+            Section {
+                ForEach(viewModel.fetchedData, id: \.id) { item in
+                    HStack(alignment: .center, spacing: Layout.padding) {
+                        Image(uiImage: isItemSelected(item) ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
+                            .if(isItemSelected(item)) { view in
+                                view.foregroundStyle(Color.accentColor)
+                            }
+                        Text(item.title)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .multilineTextAlignment(.leading)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
                         viewModel.selectedObjective = item
                     }
+                }
+            } footer: {
+                if let item = viewModel.selectedObjective {
+                    VStack(alignment: .leading) {
+                        Text(item.title)
+                            .headlineStyle()
+                        VStack(alignment: .leading) {
+                            Text(item.description)
+                                .secondaryBodyStyle()
+                            Text(Localization.goodFor)
+                                .bodyStyle()
+                                .padding(.top, Layout.padding)
+                            Text(item.suitableForDescription)
+                                .secondaryBodyStyle()
+                        }
+                    }
+                    .padding(.top, Layout.padding)
                 }
             }
         }
         .listStyle(.grouped)
     }
+
+    func isItemSelected(_ item: BlazeCampaignObjective) -> Bool{
+        item == viewModel.selectedObjective
+    }
 }
 
 private extension BlazeCampaignObjectivePickerView {
+    enum Layout {
+        static let padding: CGFloat = 8
+        static let explanationPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "blazeCampaignObjectivePickerView.title",
@@ -107,6 +135,11 @@ private extension BlazeCampaignObjectivePickerView {
             "blazeCampaignObjectivePickerView.tryAgain",
             value: "Try Again",
             comment: "Button to retry syncing data on the campaign objective picker for campaign creation"
+        )
+        static let goodFor = NSLocalizedString(
+            "blazeCampaignObjectivePickerView.goodFor",
+            value: "Good for:",
+            comment: "Title for the explanation of a Blaze campaign objective."
         )
     }
 }

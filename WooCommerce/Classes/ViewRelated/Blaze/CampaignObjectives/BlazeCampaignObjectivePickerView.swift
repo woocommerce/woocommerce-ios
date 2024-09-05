@@ -21,7 +21,7 @@ struct BlazeCampaignObjectivePickerView: View {
                     optionList
                 } else if viewModel.isSyncingData {
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                } else if let error = viewModel.syncError {
+                } else if viewModel.syncError != nil {
                     ErrorStateView(title: Localization.errorMessage,
                                    image: .errorImage,
                                    actionTitle: Localization.tryAgain,
@@ -55,46 +55,45 @@ struct BlazeCampaignObjectivePickerView: View {
 
 private extension BlazeCampaignObjectivePickerView {
     var optionList: some View {
-        List {
-            Section {
-                ForEach(viewModel.fetchedData, id: \.id) { item in
-                    HStack(alignment: .center, spacing: Layout.padding) {
+        ScrollView {
+            ForEach(viewModel.fetchedData, id: \.id) { item in
+                Button {
+                    viewModel.selectedObjective = item
+                } label: {
+                    HStack(alignment: .top, spacing: Layout.padding) {
                         Image(uiImage: isItemSelected(item) ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
                             .if(isItemSelected(item)) { view in
                                 view.foregroundStyle(Color.accentColor)
                             }
-                        Text(item.title)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .multilineTextAlignment(.leading)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        viewModel.selectedObjective = item
-                    }
-                }
-            } footer: {
-                if let item = viewModel.selectedObjective {
-                    VStack(alignment: .leading) {
-                        Text(item.title)
-                            .headlineStyle()
                         VStack(alignment: .leading) {
+                            Text(item.title)
+                                .headlineStyle()
                             Text(item.description)
-                                .secondaryBodyStyle()
-                            Text(Localization.goodFor)
+                                .bodyStyle()
+                            // Good for text
+                            (Text(Localization.goodFor).bold() + Text(" ") + Text(item.suitableForDescription))
                                 .bodyStyle()
                                 .padding(.top, Layout.padding)
-                            Text(item.suitableForDescription)
-                                .secondaryBodyStyle()
+                                .renderedIf(isItemSelected(item))
                         }
+
+                        Spacer()
                     }
-                    .padding(.top, Layout.padding)
+                    .multilineTextAlignment(.leading)
+                    .padding(Layout.contentMargin)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                            .stroke(Color(uiColor: isItemSelected(item) ? .accent : .separator),
+                                    lineWidth: Layout.strokeWidth)
+                    }
                 }
+                .buttonStyle(.plain)
             }
+            .padding(Layout.contentMargin)
         }
-        .listStyle(.grouped)
     }
 
-    func isItemSelected(_ item: BlazeCampaignObjective) -> Bool{
+    func isItemSelected(_ item: BlazeCampaignObjective) -> Bool {
         item == viewModel.selectedObjective
     }
 }
@@ -102,7 +101,9 @@ private extension BlazeCampaignObjectivePickerView {
 private extension BlazeCampaignObjectivePickerView {
     enum Layout {
         static let padding: CGFloat = 8
-        static let explanationPadding: CGFloat = 16
+        static let contentMargin: CGFloat = 16
+        static let cornerRadius: CGFloat = 8
+        static let strokeWidth: CGFloat = 1
     }
 
     enum Localization {

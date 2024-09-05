@@ -118,8 +118,11 @@ private extension DefaultBlazeLocalNotificationScheduler {
             .compactMap { $0 }
             .max()
 
-        guard let latestEndTime,
-              let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime) else {
+        guard let latestEndTime else {
+            return DDLogDebug("Blaze: Failed calculating latest campaign end time.")
+        }
+
+        guard let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime) else {
             return DDLogDebug("Blaze: Failed calculating notification time from latest campaign end time.")
         }
 
@@ -134,7 +137,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
             DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
                                      trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
-                                                                                repeats: false),
+                                                                            repeats: false),
                                      remoteFeatureFlag: nil)
         }
     }

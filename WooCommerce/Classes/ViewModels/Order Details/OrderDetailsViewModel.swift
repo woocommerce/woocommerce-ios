@@ -485,7 +485,7 @@ extension OrderDetailsViewModel {
                 CustomFieldsViewModel(metadata: $0)
             }
             let customFieldsView = UIHostingController(
-                rootView: CustomFieldsDetailsView(
+                rootView: CustomFieldsListView(
                     isEditable: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
                     customFields: customFields))
             viewController.present(customFieldsView, animated: true)

@@ -48,9 +48,26 @@ final class POSEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_is_eligible_when_account_not_whitelisted_in_backend_then_returns_false() throws {
+    func test_is_eligible_when_account_not_whitelisted_in_backend_and_enabled_via_local_feature_flag_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(false)
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            cardPresentPaymentsOnboarding: onboardingUseCase,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_is_eligible_when_account_not_whitelisted_in_backend_and_not_enabled_via_local_feature_flag_then_returns_false() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,

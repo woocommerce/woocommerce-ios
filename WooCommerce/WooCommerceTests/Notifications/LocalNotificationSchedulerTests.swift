@@ -109,6 +109,10 @@ extension LocalNotification.Scenario: Equatable {
         switch (lhs, rhs) {
         case (.unknown, .unknown):
             return true
+        case (.blazeNoCampaignReminder, .blazeNoCampaignReminder):
+            return true
+        default:
+            return false
         }
     }
 }

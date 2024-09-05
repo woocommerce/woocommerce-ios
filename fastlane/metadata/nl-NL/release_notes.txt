@@ -1,2 +1,4 @@
-In deze update hebben we de flows voor het aanmaken van bestellingen verbeterd, een aantal bugs opgelost in de flows voor het aanpassen van bestellingen, en een probleem opgelost bij het starten van een Tap to Pay-betaling op iPhone.
-We hebben het ook makkelijker gemaakt om de budgets voor je Blaze-advertentiecampagnes te begrijpen, en we hebben ondersteuning toegevoegd voor het maken van Blaze-advertenties in locaties die geen West-Arabische getallen gebruiken.
+In deze versie krijgen Blaze-advertenties ondersteuning voor evergreen-campagnes. We hebben een aantal bugs opgelost bij productbewerking, vooral wat betreft prijzen, en ondersteunen nu producten met een negatieve prijs!
+
+We hebben een probleem opgelost bij het gebruiken van het menu met VoiceOver en hulptechnologie, en een aantal bugs waardoor titels verdwenen en knoppen niet reageerden.
+

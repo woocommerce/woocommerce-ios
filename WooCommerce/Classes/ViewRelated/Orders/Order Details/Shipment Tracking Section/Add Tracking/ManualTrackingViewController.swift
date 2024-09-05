@@ -263,11 +263,30 @@ extension ManualTrackingViewController: UITableViewDataSource {
             hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
-        cell.accessoryType = .none
+        configureTrackingNumberScanAction(on: cell)
 
         cellViewModel.$value.sink { [weak self] in
             self?.didChangeTrackingNumber(value: $0)
         }.store(in: &valueSubscriptions)
+    }
+
+    private func configureTrackingNumberScanAction(on cell: TitleAndEditableValueTableViewCell) {
+        guard let icon = UIImage(named: "icon-scan") else {
+            return
+        }
+
+        let actionButton = UIButton(type: .detailDisclosure)
+        actionButton.applyIconButtonStyle(icon: icon)
+        actionButton.on(.touchUpInside) { [weak self, weak cell] sender in
+            self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
+                                                         instructionText: Localization.instructionText,
+                                                         onBarcodeScanned: { barcode in
+                cell?.updateValue(with: barcode.payloadStringValue)
+                self?.dismiss()
+            }), animated: true)
+        }
+
+        cell.accessoryView = actionButton
     }
 
     private func configureTrackingLink(cell: TitleAndEditableValueTableViewCell) {
@@ -634,5 +653,16 @@ private struct Constants {
 extension ManualTrackingViewController {
     func getTable() -> UITableView {
         return table
+    }
+}
+
+private extension ManualTrackingViewController {
+    enum Localization {
+        static let title = NSLocalizedString("ManualTrackingViewController.scanView.titleView",
+                                             value: "Scan barcode or QR Code with tracking number",
+                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as an order tracking number.")
+        static let instructionText = NSLocalizedString("ManualTrackingViewController.scanView.instructionText",
+                                                       value: "Scan Tracking Barcode or QR Code",
+                                                       comment: "The instruction text below the scan area in the barcode scanner for order tracking number.")
     }
 }

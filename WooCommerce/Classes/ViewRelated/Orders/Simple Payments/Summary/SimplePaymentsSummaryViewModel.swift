@@ -56,6 +56,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let providedAmount: String
 
+    private let unformattedProvidedAmount: String
+
     /// Store tax lines.
     ///
     let taxLines: [TaxLine]
@@ -87,6 +89,10 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         enableTaxes ? totalWithTaxes : providedAmount
     }
 
+    var unformattedTotal: String {
+        enableTaxes ? unformattedTotalWithTaxes : unformattedProvidedAmount
+    }
+
     /// Accessor for the note content of the `noteViewModel`
     ///
     var noteContent: String {
@@ -102,6 +108,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     /// Total to charge with taxes.
     ///
     private let totalWithTaxes: String
+
+    private let unformattedTotalWithTaxes: String
 
     /// Formatter to properly format the provided amount.
     ///
@@ -175,7 +183,9 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.analytics = analytics
         self.flow = analyticsFlow
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
+        self.unformattedProvidedAmount = providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
+        self.unformattedTotalWithTaxes = totalWithTaxes
 
         if taxLines.isNotEmpty {
             self.taxLines = taxLines
@@ -271,6 +281,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         PaymentMethodsViewModel(siteID: siteID,
                                 orderID: orderID,
                                 paymentLink: paymentLink,
+                                total: unformattedTotal,
                                 formattedTotal: total,
                                 flow: flow,
                                 dependencies: .init(

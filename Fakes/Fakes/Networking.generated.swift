@@ -1259,7 +1259,8 @@ extension Networking.Product {
             minAllowedQuantity: .fake(),
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
-            combineVariationQuantities: .fake()
+            combineVariationQuantities: .fake(),
+            customFields: .fake()
         )
     }
 }

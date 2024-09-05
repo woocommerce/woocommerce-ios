@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-29 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-03 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "Ett fel inträffade när kontot skulle avslutas.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Ett fel uppstod vid skapandet av menyn.";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Det uppstod ett fel när fotot skannades. Välj ett annat förpackningsfoto eller ange produktinformationen manuellt.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "En identisk transaktion skickades nyligen. Om du vill fortsätta, prova en annan betalningsmetod";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "En identisk transaktion skickades nyligen. Om du vill fortsätta, prova en annan betalningsmetod";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "En bild kunde inte laddas upp";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "En felaktig PIN-kod har angetts för många gånger. Prova en annan betalningsmetod";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "En felaktig PIN-kod har angetts för många gånger. Prova en annan betalningsmetod";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "En felaktig PIN-kod har angetts. Försök igen eller använd en annan betalningsmetod";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "En felaktig PIN-kod har angetts. Försök igen eller använd en annan betalningsmetod";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Ett valfritt meddelande som kan skickas till kunden efter köpet";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "Kortläsarmanualer";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Kortet lämnades i läsaren – avlägsna kortet och för in det igen";
+"Card was left in reader - please remove and reinsert card." = "Kortet lämnades i läsaren – avlägsna kortet och för in det igen";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Kortet togs bort för snabbt – försök genomföra transaktionen igen";
+"Card was removed too soon - please try transaction again." = "Kortet togs bort för snabbt – försök genomföra transaktionen igen";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Avbryt";
@@ -1775,7 +1775,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "Ansluter till läsare";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Tidsgränsen för anslutningen till kortläsaren uppnåddes – se till att enheten finns i närheten och är laddad och försök sedan igen";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "Tidsgränsen för anslutningen till kortläsaren uppnåddes – se till att enheten finns i närheten och är laddad och försök sedan igen";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Ansluter till ditt konto";
@@ -4603,7 +4603,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "Inga kampanjer ännu";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "Ingen kortläsare är ansluten – anslut en läsare och försök igen";
+"No card reader is connected - connect a reader and try again." = "Ingen kortläsare är ansluten – anslut en läsare och försök igen";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "Ingen kategori vald";
@@ -4615,7 +4615,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "Inga anslutningsproblem";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "Ingen anslutning till Internet – anslut till Internet och försök igen";
+"No connection to the Internet - please connect to the Internet and try again." = "Ingen anslutning till Internet – anslut till Internet och försök igen";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Inga rabattkoder hittades";
@@ -5114,7 +5114,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "Betalning totalt";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Betalningen avvisades på grund av otillräckliga medel. Prova en annan betalningsmetod";
+"Payment declined due to insufficient funds. Try another means of payment." = "Betalningen avvisades på grund av otillräckliga medel. Prova en annan betalningsmetod";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Betalning misslyckades";
@@ -5130,10 +5130,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "Betalning lyckades";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Betalningen avvisades av okänd anledning. Prova en annan betalningsmetod";
+"Payment was declined for an unknown reason. Try another means of payment." = "Betalningen avvisades av okänd anledning. Prova en annan betalningsmetod";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Betalningen avvisades av ospecificerad anledning. Prova en annan betalningsmetod";
+"Payment was declined for an unspecified reason. Try another means of payment." = "Betalningen avvisades av ospecificerad anledning. Prova en annan betalningsmetod";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5219,7 +5219,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "Kontrollera den återstående balansen på presentkortet.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Kontrollera att ditt Apple-ID är giltigt och försök sedan igen. Ett giltigt Apple-ID krävs för att godkänna Apples användarvillkor";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Kontrollera att ditt Apple-ID är giltigt och försök sedan igen. Ett giltigt Apple-ID krävs för att godkänna Apples användarvillkor";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Anslut Jetpack via din adminsida i en webbläsare eller kontakta supporten.";
@@ -5231,7 +5231,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "Kontakta supporten för hjälp.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "Kontakta supporten – det uppstod ett problem med att starta Tryck för att betala på iPhone";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5325,7 +5325,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "Välj ett paket";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Logga in i iCloud på den här enheten för att använda Tryck för att betala på iPhone";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Logga in i iCloud på den här enheten för att använda Tryck för att betala på iPhone";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
@@ -5340,7 +5340,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Försök igen eller kontakta oss så hjälper vi dig gärna!";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Försök igen, och godkänn Apples användarvillkor så att du kan använda Tryck för att betala på iPhone";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Försök igen, och godkänn Apples användarvillkor så att du kan använda Tryck för att betala på iPhone";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Försök igen eller kontakta support för hjälp";
@@ -6791,8 +6791,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "Denna betalning kunde inte behandlas";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "Denna betalning kunde inte behandlas.";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "Denna återbetalning kan inte avbrytas";
+"Sorry, this refund could not be canceled." = "Denna återbetalning kan inte avbrytas";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "Det gick inte att behandla återbetalningen.";
@@ -7023,7 +7026,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "Systemstatusrapport kopierad till urklipp";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "Systemtestkort är inte tillåtna för betalning. Prova en annan betalningsmetod";
+"System test cards are not permitted for payment. Try another means of payment." = "Systemtestkort är inte tillåtna för betalning. Prova en annan betalningsmetod";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "São Tomé och Príncipe";
@@ -7271,7 +7274,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "%1$@-utökningen är installerad för din butik, men behöver uppdateras för att ta emot personliga betalningar. Uppdatera den till den senaste versionen.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "Bluetooth-anslutningen till kortläsaren kopplades oväntat från";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "Bluetooth-anslutningen till kortläsaren kopplades oväntat från";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google-kontot ”%@” matchar inte något konto på WordPress.com";
@@ -7295,46 +7298,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "Attributet kunde inte sparas.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "Kortet stöder inte denna valuta. Prova en annan betalningsmetod";
+"The card does not support this currency. Try another means of payment." = "Kortet stöder inte denna valuta. Prova en annan betalningsmetod";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "Kortet stöder inte denna typ av köp. Prova en annan betalningsmetod";
+"The card does not support this type of purchase. Try another means of payment." = "Kortet stöder inte denna typ av köp. Prova en annan betalningsmetod";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "Kortet har löpt ut. Prova en annan betalningsmetod";
+"The card has expired. Try another means of payment." = "Kortet har löpt ut. Prova en annan betalningsmetod";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "Kortet eller kortkontot är ogiltigt. Prova en annan betalningsmetod";
+"The card or card account is invalid. Try another means of payment." = "Kortet eller kortkontot är ogiltigt. Prova en annan betalningsmetod";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "Kortläsaren är upptagen med att utföra ett annat kommando – försök igen";
+"The card reader is busy executing another command - please try again." = "Kortläsaren är upptagen med att utföra ett annat kommando – försök igen";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "Kortläsaren är inte kompatibel med denna applikation – försök att uppdatera applikationen eller använd en annan läsare";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "Kortläsaren är inte kompatibel med denna applikation – försök att uppdatera applikationen eller använd en annan läsare";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "Kortläsarens sessions har löpt ut – koppla från kortläsaren, återanslut den och försök sedan igen";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "Kortläsarens sessions har löpt ut – koppla från kortläsaren, återanslut den och försök sedan igen";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "Kortläsarens programvara behöver uppdateras – uppdatera kortläsarens programvara innan du försöker behandla betalningar";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "Kortläsarens programvara behöver uppdateras – uppdatera kortläsarens programvara innan du försöker behandla betalningar.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "Kortläsarens programvara behöver uppdateras – uppdatera kortläsarens programvara innan du försöker behandla återbetalningar";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett kommunikationsfel – försök igen";
+"The card reader software update failed due to a communication error - please try again." = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett kommunikationsfel – försök igen";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett problem med uppdateringsservern – försök igen";
+"The card reader software update failed due to a problem with the update server - please try again." = "Uppdateringen av kortläsarens programvara misslyckades på grund av ett problem med uppdateringsservern – försök igen";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "Uppdateringen av kortläsarens programvara misslyckades oväntat – försök igen";
+"The card reader software update failed unexpectedly - please try again." = "Uppdateringen av kortläsarens programvara misslyckades oväntat – försök igen";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "Uppdateringen av kortläsarens programvara avbröts innan den kunde slutföras – försök igen";
+"The card reader software update was interrupted before it could complete - please try again." = "Uppdateringen av kortläsarens programvara avbröts innan den kunde slutföras – försök igen";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "Kortet avvisades av kortläsaren – prova en annan betalningsmetod";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "Kortet avvisades av kortläsaren – prova en annan betalningsmetod.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "Kortet avvisades av kortläsaren – prova en annan återbetalningsmetod";
@@ -7343,7 +7352,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "Kortet avvisades av iPhone-kortläsaren – prova en annan betalningsmetod";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "Kortet avvisades av betalningsbehandlaren – prova en annan betalningsmetod";
+"The card was declined by the payment processor - please try another means of payment." = "Kortet avvisades av betalningsbehandlaren – prova en annan betalningsmetod.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
@@ -7400,7 +7409,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Betalningsmetoden stöder inte automatiska återbetalningar. Slutför återbetalningen genom att överföra pengarna till kunden manuellt.";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "Betalningen avbröts på läsaren";
+"The payment was canceled on the reader." = "Betalningen avbröts på läsaren";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "Betalningen har avbrutits.";
@@ -7433,7 +7442,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "Återbetalningen kan inte behandlas av betalningsbehandlaren.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "Tidsgränsen för begäran uppnåddes – försök igen";
+"The request timed out - please try again." = "Tidsgränsen för begäran uppnåddes – försök igen";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "Begäran om att generera applikationslösenord är inte auktoriserad.";
@@ -7490,16 +7499,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "Butikens postnummer är ogiltigt eller saknas, uppdatera det innan du fortsätter.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "Systemet avbröt oväntat kommandot – försök igen";
+"The system canceled the command unexpectedly - please try again." = "Systemet avbröt oväntat kommandot – försök igen";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "Systemet stötte på ett oväntat programvarufel";
+"The system experienced an unexpected software error." = "Systemet stötte på ett oväntat programvarufel";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Systemstatusrapporten för din webbplats kan inte hämtas för tillfället. Försök igen.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "Transaktionens postnummer och kortets postnummer matchar inte. Prova en annan betalningsmetod";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "Transaktionens postnummer och kortets postnummer matchar inte. Prova en annan betalningsmetod";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "Provperiodsbetalningen kunde inte initieras. Försök igen, eller kontakta supporten om det här problemet kvarstår.";
@@ -7618,7 +7627,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Den här appen har endast stöd för användarrollerna Administratör och Butikschef. Kontakta butiksägaren för att uppgradera din roll.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Detta kort kräver en PIN-kod och kan därför inte behandlas. Prova en annan betalningsmetod";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Detta kort kräver en PIN-kod och kan därför inte behandlas. Prova en annan betalningsmetod";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Detta kan bero på att din butik har några extra säkerhetssteg på plats.";
@@ -7912,7 +7921,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "Prova igen med WP-adminsida";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Prova en annan betalningsmetod";
+"Try another means of payment." = "Prova en annan betalningsmetod";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Försök att ansluta igen för att komma åt din butik.";
@@ -7927,7 +7936,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "Prova med webbplatsens adress";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Det kan fungera att försöka igen, eller så kan du prova en annan betalningsmetod";
+"Trying again may succeed, or try another means of payment." = "Det kan fungera att försöka igen, eller så kan du prova en annan betalningsmetod";
 
 /* Country option for a site address. */
 "Tunisia" = "Tunisien";
@@ -7985,10 +7994,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "Kan inte ansluta";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "Det gick inte att komma åt Bluetooth – aktivera Bluetooth och försök igen";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Det gick inte att komma åt Platstjänster – aktivera Platstjänster och försök igen";
+"Unable to access Location Services - please enable Location Services and try again." = "Det gick inte att komma åt Platstjänster – aktivera Platstjänster och försök igen";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "Kan inte lägga till rabattkod.";
@@ -8003,13 +8012,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "Det gick inte att ändra status på order nummer%1$d";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Kan inte kommunicera med läsare – försök igen";
+"Unable to communicate with reader - please try again." = "Kan inte kommunicera med läsare – försök igen";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Kan inte ansluta till kortläsare – kortläsaren används redan";
+"Unable to connect to card reader - the card reader is already in use." = "Kan inte ansluta till kortläsare – kortläsaren används redan";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Kan inte ansluta till läsare – en annan läsare är redan ansluten";
+"Unable to connect to reader - another reader is already connected." = "Kan inte ansluta till läsare – en annan läsare är redan ansluten";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Kan inte ansluta till läsare – läsaren har ett kritiskt lågt batteri – ladda läsaren och försök igen.";
@@ -8099,13 +8108,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "Kan inte markera recension som %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Begäran kunde inte utföras med den anslutna läsaren – funktionen stöds inte – försök igen med en annan läsare";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "Begäran kunde inte utföras med den anslutna läsaren – funktionen stöds inte – försök igen med en annan läsare";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Programvarubegäran kunde inte utföras – uppdatera applikationen och försök igen";
+"Unable to perform software request - please update this application and try again." = "Programvarubegäran kunde inte utföras – uppdatera applikationen och försök igen";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Kan inte behandla betalning på grund av ogiltig data – försök igen";
+"Unable to process payment due to invalid data - please try again." = "Kan inte behandla betalning på grund av ogiltig data – försök igen";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Det gick inte att bearbeta betalningen. Det totala beloppet för beställningen understiger minimibeloppet för debitering, vilket är %1$@";
@@ -8126,13 +8135,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Det gick inte att behandla betalningen. Vi kunde inte hämta den senaste beställningsinformationen. Kontrollera din nätverksanslutning och försök igen. Underliggande fel: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Det gick inte att läsa kortet – systemets tidsgräns uppnåddes – försök igen";
+"Unable to read card - the system timed out - please try again." = "Det gick inte att läsa kortet – systemets tidsgräns uppnåddes – försök igen";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Kan inte att läsa det isatta kortet – försök att ta bort och sätta i kortet igen";
+"Unable to read inserted card - please try removing and inserting card again." = "Kan inte att läsa det isatta kortet – försök att ta bort och sätta i kortet igen";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Det gick inte att läsa det använda kortet – försök använda kortet igen";
+"Unable to read swiped card - please try swiping again." = "Det gick inte att läsa det använda kortet – försök använda kortet igen";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kunde inte läsa WordPress-webbplatsen på denna URL. Tryck på \"Behöver du hjälp?\" för att visa Vanliga frågor.";
@@ -8157,10 +8166,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "Det gick inte att spara ändringarna. Försök igen.";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Det gick inte att söka efter kortläsare – Bluetooth Low Energy stöds inte på den här enheten – använd en annan enhet";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "Det gick inte att söka efter kortläsare – Bluetooth Low Energy stöds inte på den här enheten – använd en annan enhet";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Det gick inte att söka efter kortläsare – Bluetooth-tidsgränsen uppnåddes – försök igen";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "Det gick inte att söka efter kortläsare – Bluetooth-tidsgränsen uppnåddes – försök igen";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Det går inte att ange kundinformation.";
@@ -8169,7 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "Kan inte uppdatera adress.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "Det gick inte att uppdatera kortläsarprogramvaran – batterinivån i läsaren är för låg";
+"Unable to update card reader software - the reader battery is too low." = "Det gick inte att uppdatera kortläsarprogramvaran – batterinivån i läsaren är för låg";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Kan inte uppdatera pris";
@@ -8978,7 +8987,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "Du måste lägga till ett lösenord för att göra produkten lösenordsskyddad";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Du behöver ställa in en låsskärmslösenkod för att använda Tryck för att betala på iPhone";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Du behöver ställa in en låsskärmslösenkod för att använda Tryck för att betala på iPhone";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Det verkar som att du har installerat ett mobiltillägg från DudaMobile som förhindrar att appen ansluter till din blogg";
@@ -9395,20 +9404,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "Avbryt";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "Dagligt belopp";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "Hur mycket vill du spendera på din kampanj, och hur länge ska den köras?";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Klar";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "Varaktighet";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Redigera";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "Uppskattat antal personer som nås per dag";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "Tryck för mer information om uppskattade visningar";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "Kör tills jag stoppar det";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "Uppskattat totalt antal visningar";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "Kampanjen körs tills du stoppar den.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Det gick inte att uppskatta antalet visningar. Försök igen?";
@@ -9419,14 +9437,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "Visningar";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "Ställ in varaktighet";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "Schema";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "Ange varaktigheten";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "Startar";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "Hur mycket vill du spendera på din produktmarknadsföringskampanj?";
+"blazeBudgetSettingView.startDate" = "Startdatum";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Ställ in din budget";
@@ -9437,29 +9455,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ per dag";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "Från och med %1$@";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ till %2$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d dagar";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "Från och med %1$@";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d dag";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%1$@ för %2$d dagar";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%1$@ för %2$d dag";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$%.0f USD";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "för %1$d dagar";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "för %1$d dag";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "Totalt spenderat";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "Veckobelopp";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "Veckobelopp: %1$@";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Avbryt";
@@ -10008,6 +10026,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel prenumeration";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "Pågår";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Avbryt";
 
@@ -10170,6 +10191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Redigera belopp";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "Sök kund";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Gäst";
@@ -10583,6 +10607,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Visa alla kampanjer";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "Recensioner";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Kunder";
@@ -11319,11 +11347,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Anslut till läsare";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Vill du ansluta till denna läsare?";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Fortsätt söka";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "Vill du ansluta till läsare %1$@?";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "Hittade %1$@";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Avbryt";
@@ -11391,6 +11422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Det gick inte att ansluta läsaren";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Stäng";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "På grund av ett nätverksfel vet vi inte om betalningen lyckades.";
 
@@ -11399,6 +11433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Denna beställning kan ha misslyckats";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Koppla från läsare";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Avsluta POS";
@@ -11411,6 +11448,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "Anslut din läsare";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Kopplar ifrån";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Ta bort";

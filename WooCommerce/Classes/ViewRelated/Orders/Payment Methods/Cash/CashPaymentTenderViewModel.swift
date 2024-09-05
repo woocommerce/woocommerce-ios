@@ -21,6 +21,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
     /// Whether the change due amount is positive (i.e. whether the merchant needs to give change).
     @Published private(set) var hasChangeDue: Bool = false
 
+    let total: String
     let formattedTotal: String
     let formattableAmountViewModel: FormattableAmountTextFieldViewModel
 
@@ -31,11 +32,13 @@ final class CashPaymentTenderViewModel: ObservableObject {
     private let onOrderPaid: OrderPaidByCashCallback
     private let analytics: Analytics
 
-    init(formattedTotal: String,
+    init(total: String,
+         formattedTotal: String,
          onOrderPaid: @escaping OrderPaidByCashCallback,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.total = total
         self.formattedTotal = formattedTotal
         self.formattableAmountViewModel = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.onOrderPaid = onOrderPaid
@@ -66,7 +69,7 @@ private extension CashPaymentTenderViewModel {
         // The value is non-nil when the change due amount is not negative.
         let changeDueAmount: AnyPublisher<Decimal?, Never> = formattableAmountViewModel.$amount.map { [weak self] in
             guard let self else { return nil }
-            guard let totalAmount = currencyFormatter.convertToDecimal(formattedTotal) as? Decimal,
+            guard let totalAmount = currencyFormatter.convertToDecimal(total) as? Decimal,
                   let customerPaidAmount = currencyFormatter.convertToDecimal($0) as? Decimal,
                   customerPaidAmount >= totalAmount else {
                 return nil

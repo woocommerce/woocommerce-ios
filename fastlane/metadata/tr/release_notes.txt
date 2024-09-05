@@ -1,2 +1,4 @@
-Bu güncellemede sipariş oluşturma akışlarını iyileştirdik, siparişi düzenleme akışlarında birden fazla hatayı düzelttik ve Tap to Pay on iPhone ödemesi başlatırken gerçekleşen bir sorunu düzelttik.
-Ayrıca Blaze reklam kampanyalarınızın bütçesini anlamanızı kolaylaştırdık ve Batı Arap numaralarını kullanmayan diller için Blaze reklamı oluşturma desteği ekledik.
+Bu sürümde Blaze reklamlarına Evergreen kampanya desteği geliyor. Ürün düzenleme, özellikle fiyatlar bölümünde bazı hataları düzelttik ve artık negatif fiyatlandırılmış ürünleri destekliyoruz!
+
+VoiceOver ve yardımcı teknoloji ile menüyü kullanmakla ilgili bir sorunu ve başlıkların yok olup düğmelerin yanıt vermez hale gelmesine neden olan bazı hataları düzelttik.
+

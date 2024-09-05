@@ -1,2 +1,0 @@
-Dans cette mise à jour, nous avons amélioré les flux de création de commande, corrigé plusieurs bugs dans les flux de modification de commande et corrigé un problème lors de l’initiation d’un paiement Appuyer pour payer sur iPhone.
-Nous avons également simplifié les budgets pour vos campagnes Blaze et ajouté la prise en charge pour la création de publicités Blaze pour les langues qui n’utilisent pas les chiffres arabes.

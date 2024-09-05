@@ -242,7 +242,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         useCase.upsert([order])
 
         // Then
-        let storageCustomField = try XCTUnwrap(viewStorage.loadMetaData(siteID: 3, metadataID: 1))
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: order.orderID, metadataID: 1))
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
@@ -258,7 +258,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         useCase.upsert([order.copy(customFields: [customField])])
 
         // Then
-        let storageCustomField = try XCTUnwrap(viewStorage.loadMetaData(siteID: 3, metadataID: 1))
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: order.orderID, metadataID: 1))
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 

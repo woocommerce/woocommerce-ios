@@ -259,16 +259,7 @@ private extension OrderLoaderViewController {
     /// Marks a specific Notification as read.
     ///
     func markNotificationAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
-            return
-        }
-
-        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking single notification as read: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
+        note.markOrderNoteAsReadIfNeeded()
     }
 }
 

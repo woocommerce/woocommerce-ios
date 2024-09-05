@@ -278,6 +278,27 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
             }
         }
     }
+
+    func test_previous_notification_is_cancelled_when_site_is_not_eligible_for_blaze() async throws {
+        // Given
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
+        let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         userDefaults: defaults,
+                                                         pushNotesManager: pushNotesManager,
+                                                         blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // When
+        await sut.scheduleNotifications()
+
+        waitUntil {
+            self.pushNotesManager.canceledLocalNotificationScenarios.isNotEmpty
+        }
+
+        // Then
+        XCTAssertTrue(pushNotesManager.canceledLocalNotificationScenarios.contains([LocalNotification.Scenario.blazeNoCampaignReminder]))
+    }
 }
 
 private extension BlazeLocalNotificationSchedulerTests {

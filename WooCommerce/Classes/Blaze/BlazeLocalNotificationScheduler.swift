@@ -49,6 +49,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     func scheduleNotifications() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")
+            await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             return
         }
 

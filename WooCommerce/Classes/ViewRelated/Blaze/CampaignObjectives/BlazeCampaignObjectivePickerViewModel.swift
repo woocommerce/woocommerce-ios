@@ -8,9 +8,9 @@ import protocol WooFoundation.Analytics
 final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
 
     @Published var selectedObjective: BlazeCampaignObjective?
-    @Published private var fetchedData: [BlazeCampaignObjective] = []
-    @Published private var isSyncingData: Bool = false
-    @Published private var syncError: Error?
+    @Published private(set) var fetchedData: [BlazeCampaignObjective] = []
+    @Published private(set) var isSyncingData: Bool = false
+    @Published private(set) var syncError: Error?
 
     var shouldDisableSaveButton: Bool {
         selectedObjective == nil || isSyncingData || syncError != nil

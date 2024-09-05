@@ -1,2 +1,4 @@
-Nessa atualização, nós aprimoramos o fluxo de criação de pedidos, corrigimos vários bugs na edição de pedidos e resolvemos um problema que ocorria ao pagar com o Tap to Pay no iPhone.
-Também facilitamos a compreensão dos orçamentos das suas campanhas no Blaze e adicionamos um suporte para a criação de anúncios do Blaze em locais que não usam os numerais arábicos ocidentais.
+Nesta versão, os anúncios do Blaze passam a ser compatíveis com campanhas contínuas. Corrigimos alguns bugs na edição de produtos, principalmente quanto aos preços, e agora preços negativos são aceitos!
+
+Corrigimos um problema no uso do menu com VoiceOver e tecnologia assistiva, além de alguns bugs que faziam os títulos desaparecerem e os botões pararem de funcionar.
+

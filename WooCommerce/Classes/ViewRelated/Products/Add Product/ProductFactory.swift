@@ -107,6 +107,7 @@ private extension ProductFactory {
                 minAllowedQuantity: nil,
                 maxAllowedQuantity: nil,
                 groupOfQuantity: nil,
-                combineVariationQuantities: nil)
+                combineVariationQuantities: nil,
+                customFields: [])
     }
 }

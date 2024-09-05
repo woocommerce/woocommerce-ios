@@ -1,2 +1,4 @@
-In questo aggiornamento, abbiamo migliorato i flussi di creazione degli ordini, risolto diversi bug nei flussi di modifica degli ordini e risolto un problema di avvio di Tap to Pay nei pagamenti iPhone.
-Abbiamo inoltre semplificato la comprensione dei budget per le campagne di annunci Blaze e aggiunto il supporto per la creazione di annunci Blaze per le lingue che non utilizzano i numeri arabi occidentali.
+In questa versione, gli annunci Blaze ricevono il supporto delle campagne evergreen. Abbiamo corretto alcuni bug che interessavano la modifica del prodotto, soprattutto riguardanti i prezzi, e ora sono supportati i prodotti con prezzi negativi.
+
+Abbiamo risolto un problema nell'utilizzo del menu con VoiceOver e con la tecnologia assistiva, oltre ad alcuni bug che facevano sparire i titoli e impedivano ai pulsanti di rispondere.
+

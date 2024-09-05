@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-28 13:54:05+0000 */
+/* Translation-Revision-Date: 2024-09-03 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "Fout bij het sluiten van account.";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Er is een fout opgetreden bij het openen van Bluetooth - schakel Bluetooth in en probeer het opnieuw";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Er is een fout opgetreden bij het openen van Bluetooth - schakel Bluetooth in en probeer het opnieuw";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Fout bij aanmaken van het menu.";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Er is een fout opgetreden bij het scannen van de afbeelding. Kies een andere foto van de verpakking of voer de productgegevens handmatig in.";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "Er is recent een identieke transactie ingediend. Als je door wilt gaan, probeer een andere betaalmethode";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Er is recent een identieke transactie ingediend. Als je door wilt gaan, probeer een andere betaalmethode";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "Uploaden van een afbeelding mislukt";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "Er is te vaak een onjuiste pincode ingevoerd. Probeer een andere betaalmethode";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "Er is te vaak een onjuiste pincode ingevoerd. Probeer een andere betaalmethode";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "Er is een onjuiste pincode ingevoerd. Probeer het opnieuw of probeer een andere betaalmethode";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "Er is een onjuiste pincode ingevoerd. Probeer het opnieuw of probeer een andere betaalmethode";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "Handleidingen kaartlezer";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "Kaart is in de lezer gelaten - verwijder de kaart en voer hem opnieuw in";
+"Card was left in reader - please remove and reinsert card." = "Kaart is in de lezer gelaten - verwijder de kaart en voer hem opnieuw in";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "Kaart is te vroeg verwijderd - probeer de transactie opnieuw";
+"Card was removed too soon - please try transaction again." = "Kaart is te vroeg verwijderd - probeer de transactie opnieuw";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Annuleren";
@@ -1772,7 +1772,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "Er wordt verbinding gemaakt met lezer";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "Er heeft een time-out plaatsgevonden tijdens het verbinden met de kaartlezer - controleer dat de kaartlezer nabij en opgeladen is en probeer het dan opnieuw";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "Er heeft een time-out plaatsgevonden tijdens het verbinden met de kaartlezer - controleer dat de kaartlezer nabij en opgeladen is en probeer het dan opnieuw";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Je account koppelen";
@@ -4600,7 +4600,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "Nog geen campagnes";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "Er is geen kaartlezer verbonden - verbind een kaartlezer en probeer het opnieuw";
+"No card reader is connected - connect a reader and try again." = "Er is geen kaartlezer verbonden - verbind een kaartlezer en probeer het opnieuw";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "Geen categorie geselecteerd";
@@ -4612,7 +4612,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "Geen verbindingsproblemen";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "Geen verbinding met het internet - verbind met het internet en probeer het opnieuw";
+"No connection to the Internet - please connect to the Internet and try again." = "Geen verbinding met het internet - verbind met het internet en probeer het opnieuw";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Geen waardebonnen gevonden";
@@ -5111,7 +5111,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "Totaalbedrag betaling";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "Betaling geweigerd vanwege onvoldoende saldo. Probeer een andere betaalmethode";
+"Payment declined due to insufficient funds. Try another means of payment." = "Betaling geweigerd vanwege onvoldoende saldo. Probeer een andere betaalmethode";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Betaling mislukt";
@@ -5127,10 +5127,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "Betaling gelukt";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "Betaling geweigerd om onbekende reden. Probeer een andere betaalmethode";
+"Payment was declined for an unknown reason. Try another means of payment." = "Betaling geweigerd om onbekende reden. Probeer een andere betaalmethode";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "Betaling geweigerd om niet nader gespecificeerde reden. Probeer een andere betaalmethode";
+"Payment was declined for an unspecified reason. Try another means of payment." = "Betaling geweigerd om niet nader gespecificeerde reden. Probeer een andere betaalmethode";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5216,7 +5216,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "Controleer het resterende bedrag op de cadeaubon.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Controleer of je Apple-ID geldig is en probeer het nog eens. Een geldig Apple-ID is nodig om akkoord te gaan met de servicevoorwaarden van Apple";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Controleer of je Apple-ID geldig is en probeer het nog eens. Een geldig Apple-ID is nodig om akkoord te gaan met de servicevoorwaarden van Apple";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Maak verbinding met Jetpack via je beheerderspagina in een browser of neem contact op met de klantenservice.";
@@ -5228,7 +5228,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "Neem contact op met ondersteuning voor assistentie.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "Er is een fout opgetreden bij het starten van Tap to Pay on iPhone, neem contact op met de klantenservice";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5322,7 +5322,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "Selecteer een pakket";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Meld je op dit apparaat aan bij iCloud om Tap to Pay on iPhone te gebruiken";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Meld je op dit apparaat aan bij iCloud om Tap to Pay on iPhone te gebruiken";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Probeer het later opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
@@ -5337,7 +5337,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Probeer het opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "Probeer het opnieuw en ga akkoord met de servicevoorwaarden van Apple, zodat je Tap to Pay on iPhone kunt gebruiken";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Probeer het opnieuw en ga akkoord met de servicevoorwaarden van Apple, zodat je Tap to Pay on iPhone kunt gebruiken";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Probeer het nog eens of neem contact met ons op voor ondersteuning";
@@ -6788,8 +6788,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "Deze betaling kon niet worden verwerkt";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "Deze betaling kon niet worden verwerkt.";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "Deze restitutie kon helaas niet worden geannuleerd";
+"Sorry, this refund could not be canceled." = "Deze restitutie kon helaas niet worden geannuleerd";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "Deze restitutie kon niet worden verwerkt";
@@ -7020,7 +7023,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "Systeemstatusrapport gekopieerd naar klembord";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "Er mag niet worden betaald met systeemtestkaarten. Probeer een andere betaalmethode";
+"System test cards are not permitted for payment. Try another means of payment." = "Er mag niet worden betaald met systeemtestkaarten. Probeer een andere betaalmethode";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "Sao Tomé en Principe";
@@ -7268,7 +7271,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "De %1$@-extensie is geïnstalleerd in je winkel, maar moet worden bijgewerkt voor fysieke betalingen. Werk deze bij naar de meest recente versie.";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "De Bluetooth-verbinding met de kaartlezer is onverwachts verbroken";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "De Bluetooth-verbinding met de kaartlezer is onverwachts verbroken";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Het Google-account \"%@\" komt niet overeen met een account op WordPress.com";
@@ -7292,46 +7295,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "De eigenschap kon niet worden opgeslagen.";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "De kaart ondersteunt deze valuta niet. Probeer een andere betaalmethode";
+"The card does not support this currency. Try another means of payment." = "De kaart ondersteunt deze valuta niet. Probeer een andere betaalmethode";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "De kaart ondersteunt dit type aankoop niet. Probeer een andere betaalmethode";
+"The card does not support this type of purchase. Try another means of payment." = "De kaart ondersteunt dit type aankoop niet. Probeer een andere betaalmethode";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "De kaart is vervallen. Probeer een andere betaalmethode";
+"The card has expired. Try another means of payment." = "De kaart is vervallen. Probeer een andere betaalmethode";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "De kaart of het account van de kaart is ongeldig. Probeer een andere betaalmethode";
+"The card or card account is invalid. Try another means of payment." = "De kaart of het account van de kaart is ongeldig. Probeer een andere betaalmethode";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "De kaartlezer voert al een andere opdracht uit - probeer het opnieuw";
+"The card reader is busy executing another command - please try again." = "De kaartlezer voert al een andere opdracht uit - probeer het opnieuw";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "De kaartlezer is niet compatibel met deze applicatie - werk de applicatie bij of probeer een andere lezer";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "De kaartlezer is niet compatibel met deze applicatie - werk de applicatie bij of probeer een andere lezer";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "De sessie van de kaartlezer is verlopen - probeer het opnieuw nadat je de verbinding hebt verbroken en de kaartlezer opnieuw hebt verbonden";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "De sessie van de kaartlezer is verlopen - probeer het opnieuw nadat je de verbinding hebt verbroken en de kaartlezer opnieuw hebt verbonden";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "De software van de kaartlezer is verouderd - werk de software van de kaartlezer bij voordat je een betaling probeert te verwerken";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "De software van de kaartlezer is verouderd - werk de software van de kaartlezer bij voordat je een betaling probeert te verwerken.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "De software van de restitutie verouderd - werk de software van de kaartlezer bij voordat je een restitutie probeert te verwerken";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "De software-update van de kaartlezer is mislukt vanwege een communicatiefout - probeer het opnieuw";
+"The card reader software update failed due to a communication error - please try again." = "De software-update van de kaartlezer is mislukt vanwege een communicatiefout - probeer het opnieuw";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "De software-update van de kaartlezer is mislukt vanwege een probleem met de updateserver - probeer het opnieuw";
+"The card reader software update failed due to a problem with the update server - please try again." = "De software-update van de kaartlezer is mislukt vanwege een probleem met de updateserver - probeer het opnieuw";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "De software-update van de kaartlezer is onverwachts mislukt - probeer het opnieuw";
+"The card reader software update failed unexpectedly - please try again." = "De software-update van de kaartlezer is onverwachts mislukt - probeer het opnieuw";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "De software-update van de kaartlezer is onderbroken voordat deze kon worden voltooid - probeer het opnieuw";
+"The card reader software update was interrupted before it could complete - please try again." = "De software-update van de kaartlezer is onderbroken voordat deze kon worden voltooid - probeer het opnieuw";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "De kaart is geweigerd door de kaartlezer - probeer een andere betaalmethode";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "De kaart is geweigerd door de kaartlezer - probeer een andere betaalmethode.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "De kaart is geweigerd door de kaartlezer - probeer een andere restitutiemethode";
@@ -7340,7 +7349,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "De kaart is geweigerd door de kaartlezer van de iPhone - probeer een andere betaalmethode";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "De kaart is geweigerd door de betaalverwerker - probeer een andere betaalmethode";
+"The card was declined by the payment processor - please try another means of payment." = "De kaart is geweigerd door de betalingsverwerker - probeer een andere betaalmethode.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
@@ -7397,7 +7406,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "De betaalmethode ondersteunt geen automatische terugbetalingen. Voltooi de terugbetaling door het bedrag handmatig over te maken naar de klant.";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "De betaling is geannuleerd op de lezer";
+"The payment was canceled on the reader." = "De betaling is geannuleerd op de lezer";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "De betaling was geannuleerd.";
@@ -7430,7 +7439,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "De restitutie kan niet worden verwerkt door de betalingsverwerker.";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "Er heeft een time-out plaatsgevonden tijdens het verzoek - probeer het opnieuw";
+"The request timed out - please try again." = "Er heeft een time-out plaatsgevonden tijdens het verzoek - probeer het opnieuw";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "Je verzoek om een applicatiewachtwoord te genereren, is niet ingewilligd.";
@@ -7487,16 +7496,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "De postcode van de winkel is ongeldig of ontbreekt. Werk het bij voordat je verder gaat.";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "Het systeem heeft de opdracht onverwachts geannuleerd - probeer het opnieuw";
+"The system canceled the command unexpectedly - please try again." = "Het systeem heeft de opdracht onverwachts geannuleerd - probeer het opnieuw";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "Het systeem ondervindt een onverwachte softwarefout";
+"The system experienced an unexpected software error." = "Het systeem ondervindt een onverwachte softwarefout";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Het systeemstatusrapport voor je site kan momenteel niet opgehaald worden. Probeer het nog eens.";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "De postcode van de transactie en de postcode van de kaart komen niet overeen. Probeer een andere betaalmethode";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "De postcode van de transactie en de postcode van de kaart komen niet overeen. Probeer een andere betaalmethode";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "De proefbetaling kon niet worden gestart. Probeer het opnieuw of neem contact op met de ondersteuning als het probleem aanhoud.";
@@ -7615,7 +7624,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Deze app ondersteunt alleen de gebruikersrollen Beheerder en Winkelmanager. Neem contact op met je winkeleigenaar voor het upgraden van je rol.";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Deze kaart vereist een PIN-code en kan daarom niet worden verwerkt. Probeer een andere betaalmethode";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Deze kaart vereist een PIN-code en kan daarom niet worden verwerkt. Probeer een andere betaalmethode";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Misschien komt dit doordat er extra beveiligingsmaatregelen actief zijn in je winkel.";
@@ -7909,7 +7918,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "Probeer het opnieuw met de pagina WP-Admin";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "Probeer een andere betaalmethode";
+"Try another means of payment." = "Probeer een andere betaalmethode";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Probeer opnieuw verbinding te maken om toegang te krijgen tot je winkel.";
@@ -7924,7 +7933,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "Probeer met het site-adres";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "Het opnieuw proberen kan helpen, of probeer een andere betaalmethode";
+"Trying again may succeed, or try another means of payment." = "Het opnieuw proberen kan helpen, of probeer een andere betaalmethode";
 
 /* Country option for a site address. */
 "Tunisia" = "Tunesië";
@@ -7982,10 +7991,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "Verbinding niet mogelijk";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Kan Bluetooth niet openen - schakel Bluetooth in en probeer het opnieuw";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "Kan Bluetooth niet openen - schakel Bluetooth in en probeer het opnieuw";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "Kan locatiediensten niet openen - schakel locatiediensten in en probeer het opnieuw";
+"Unable to access Location Services - please enable Location Services and try again." = "Kan locatiediensten niet openen - schakel locatiediensten in en probeer het opnieuw";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "Kan kortingsbon niet toevoegen.";
@@ -8000,13 +8009,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "Kan status niet wijzigen voor bestelnr.%1$d";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "Kan niet communiceren met de lezer - probeer het opnieuw";
+"Unable to communicate with reader - please try again." = "Kan niet communiceren met de lezer - probeer het opnieuw";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "Kan geen verbinding maken met de kaartlezer - de kaartlezer is al in gebruik";
+"Unable to connect to card reader - the card reader is already in use." = "Kan geen verbinding maken met de kaartlezer - de kaartlezer is al in gebruik";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "Kan geen verbinding maken met de lezer - een andere lezer is al verbonden";
+"Unable to connect to reader - another reader is already connected." = "Kan geen verbinding maken met de lezer - een andere lezer is al verbonden";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Kan geen verbinding maken met de lezer - de batterij van de lezer is bijna leeg - laad de lezer op en probeer het opnieuw.";
@@ -8096,13 +8105,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "Kan beoordeling niet markeren als %@";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "Kan de aanvraag niet uitvoeren met de verbonden lezer - niet-ondersteunde functie - probeer het opnieuw met een andere lezer";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "Kan de aanvraag niet uitvoeren met de verbonden lezer - niet-ondersteunde functie - probeer het opnieuw met een andere lezer";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "Kan de software-aanvraag niet uitvoeren - werk deze applicatie bij en probeer het opnieuw";
+"Unable to perform software request - please update this application and try again." = "Kan de software-aanvraag niet uitvoeren - werk deze applicatie bij en probeer het opnieuw";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "Kan de betaling niet verwerken vanwege ongeldige gegevens - probeer het opnieuw";
+"Unable to process payment due to invalid data - please try again." = "Kan de betaling niet verwerken vanwege ongeldige gegevens - probeer het opnieuw";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Kan betaling niet verwerken. Totaalbedrag bestelling is minder dan het minimumbedrag dat je kunt vragen. Dit minimumbedrag is %1$@";
@@ -8123,13 +8132,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Kan betaling niet verwerken. We konden de nieuwste bestellingsgegevens niet ophalen. Controleer je verbinding en probeer het nogmaals. Onderliggende fout: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "Kan de kaart niet lezen - er heeft een time-out van het systeem plaatsgevonden - probeer het opnieuw";
+"Unable to read card - the system timed out - please try again." = "Kan de kaart niet lezen - er heeft een time-out van het systeem plaatsgevonden - probeer het opnieuw";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "Kan de ingevoerde kaart niet lezen - verwijder de kaart en voer hem opnieuw in";
+"Unable to read inserted card - please try removing and inserting card again." = "Kan de ingevoerde kaart niet lezen - verwijder de kaart en voer hem opnieuw in";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "Kan de geveegde kaart niet lezen - haal de kaart opnieuw langs de lezer";
+"Unable to read swiped card - please try swiping again." = "Kan de geveegde kaart niet lezen - haal de kaart opnieuw langs de lezer";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Kon geen WordPress-site lezen op deze URL. Tik op ‘Meer hulp nodig?’ om de veelgestelde vragen te bekijken.";
@@ -8154,10 +8163,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "Opslaan van wijzigingen mislukt. Probeer het nog eens.";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "Kan niet zoeken naar kaartlezers - Bluetooth Low Energy wordt niet ondersteund op dit apparaat - gebruik een ander apparaat";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "Kan niet zoeken naar kaartlezers - Bluetooth Low Energy wordt niet ondersteund op dit apparaat - gebruik een ander apparaat";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Kan niet zoeken naar kaartlezers - er heeft een time-out van bluetooth plaatsgevonden - probeer het opnieuw";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "Kan niet zoeken naar kaartlezers - er heeft een time-out van bluetooth plaatsgevonden - probeer het opnieuw";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Kan klantgegevens niet instellen.";
@@ -8166,7 +8175,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "Kan adres niet bijwerken.";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "De software van de kaartlezer kan niet worden bijgewerkt - de lezer heeft te weinig batterij";
+"Unable to update card reader software - the reader battery is too low." = "De software van de kaartlezer kan niet worden bijgewerkt - de lezer heeft te weinig batterij";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Prijs bijwerken mislukt";
@@ -8975,7 +8984,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "Je moet een wachtwoord toevoegen om je product met een wachtwoord te beschermen";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Je moet een toegangscode instellen op je vergrendelscherm om Tap to Pay on iPhone te kunnen gebruiken";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Je moet een toegangscode instellen op je vergrendelscherm om Tap to Pay on iPhone te kunnen gebruiken";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Het lijkt erop dat je een mobiele plugin van DudaMobile hebt geïnstalleerd die voorkomt dat de app zich kan verbinden met je blog";
@@ -9392,20 +9401,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "Annuleren";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "Dagelijkse uitgaven";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "Hoeveel wil je uitgeven aan je campagne, en hoelang wil je dat deze loopt?";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Gereed";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "Duur";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Bewerken";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "Geschatte aantal mensen dat per dag bereikt wordt";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "Tik voor meer informatie over geschatte weergaven";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "Uitvoeren tot ik dit zelf stopzet";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "Geschatte totale weergaven";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "De campagne loopt totdat je deze stopzet.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Het schatten van het aantal impressies is mislukt. Opnieuw?";
@@ -9416,14 +9434,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "Impressies";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "Tijdsduur instellen";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "Inplannen";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "Stel de duur in";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "Begint";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "Hoeveel wil je uitgeven aan de promotiecampagne voor je product?";
+"blazeBudgetSettingView.startDate" = "Startdatum";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Stel je budget in";
@@ -9434,29 +9452,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "%1$@ dagelijks";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "Vanaf %1$@";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ tot %2$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d dagen";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "Doorgaand vanaf %1$@";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d dag";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%1$@ voor %2$d dagen";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%1$@ voor %2$d dag";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$ %.0f USD";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "voor %1$d dagen";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "voor %1$d dag";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "Totale uitgaven";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "Wekelijkse uitgaven";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "%1$@ wekelijkse uitgaven";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Annuleren";
@@ -10005,6 +10023,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "Variabel abonnement";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "Bezig";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuleren";
 
@@ -10167,6 +10188,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Bedrag bewerken";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "Klant zoeken";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Gast";
@@ -10580,6 +10604,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Alle campagnes weergeven";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "Beoordelingen";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Klanten";
@@ -11313,11 +11341,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "Verbinding maken met lezer";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "Wil je verbinding maken met deze lezer?";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "Verder zoeken";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "Wil je verbinding maken met lezer %1$@?";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@ gevonden";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "Annuleren";
@@ -11385,6 +11416,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "Verbinding maken met lezer mislukt";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "Sluiten";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "Vanwege een netwerkfout weten we niet of de betaling voltooid is.";
 
@@ -11393,6 +11427,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Deze bestelling is mogelijk mislukt";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Lezer loskoppelen";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS afsluiten";
@@ -11405,6 +11442,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "Verbind je lezer";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "Verbinding verbreken ...";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Verwijderen";

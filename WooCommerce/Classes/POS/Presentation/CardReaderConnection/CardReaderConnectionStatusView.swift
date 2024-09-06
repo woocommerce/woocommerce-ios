@@ -10,7 +10,6 @@ struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.colorScheme) var colorScheme
 
     init(connectionViewModel: CardReaderConnectionViewModel) {
         self.connectionViewModel = connectionViewModel

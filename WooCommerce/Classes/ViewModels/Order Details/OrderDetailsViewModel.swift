@@ -177,6 +177,7 @@ final class OrderDetailsViewModel {
         return PaymentMethodsViewModel(siteID: order.siteID,
                                        orderID: order.orderID,
                                        paymentLink: order.paymentURL,
+                                       total: order.total,
                                        formattedTotal: formattedTotal,
                                        flow: .orderPayment)
     }
@@ -242,12 +243,6 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
-        Task { @MainActor in
-            await syncShippingLabels()
-            group.leave()
-        }
-
-        group.enter()
         syncNotes { _ in
             group.leave()
         }
@@ -267,10 +262,18 @@ extension OrderDetailsViewModel {
 
         group.enter()
         Task { @MainActor in
-            let isEligible = await checkShippingLabelCreationEligibility()
-            dataSource.isEligibleForShippingLabelCreation = isEligible
-            onReloadSections?()
-            group.leave()
+            defer {
+                onReloadSections?()
+                group.leave()
+            }
+            // Check Woo Shipping support first, to ensure correct flows are enabled for shipping labels.
+            dataSource.isEligibleForWooShipping = await isWooShippingSupported()
+
+            // Then sync shipping labels and check creation eligibility concurrently.
+            async let syncShippingLabels: () = syncShippingLabels()
+            async let isEligibleForShippingLabelCreation = checkShippingLabelCreationEligibility()
+            _ = await syncShippingLabels
+            dataSource.isEligibleForShippingLabelCreation = await isEligibleForShippingLabelCreation
         }
 
         group.enter()
@@ -750,6 +753,20 @@ extension OrderDetailsViewModel {
         return await isPluginActive(SitePlugin.SupportedPlugin.WooShipping)
     }
 
+    /// Checks if the Woo Shipping extension is active, with the minimum version required for its shipping label flow.
+    ///
+    @MainActor
+    func isWooShippingSupported() async -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation),
+              let plugin = await fetchPlugin(SitePlugin.SupportedPlugin.WooShipping) else {
+            return false
+        }
+
+        let isVersionSupported = VersionHelpers.isVersionSupported(version: plugin.version, minimumRequired: Constants.wooShippingMinimumVersion)
+
+        return plugin.active && isVersionSupported
+    }
+
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
         let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
             self?.dataSource.showAddOns = (try? result.get()) ?? false
@@ -816,17 +833,29 @@ extension OrderDetailsViewModel {
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     /// Useful for when a plugin has had many names.
     ///
-    private func isPluginActive(_ plugins: [String], completion: @escaping (Bool) -> (Void)) {
-        guard arePluginsSynced() else {
-            DDLogError("⚠️ SystemPlugins acceded without being in sync.")
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
-            return completion(false)
-        }
-
-        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: plugins) { plugin in
+    private func isPluginActive(_ pluginNames: [String], completion: @escaping (Bool) -> (Void)) {
+        Task { @MainActor in
+            let plugin = await fetchPlugin(pluginNames)
             completion(plugin?.active == true)
         }
-        stores.dispatch(action)
+    }
+
+    /// Fetches a plugin from storage, based on the provided list of plugin names.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
+    ///
+    @MainActor
+    private func fetchPlugin(_ pluginNames: [String]) async -> SystemPlugin? {
+        guard arePluginsSynced() else {
+            DDLogError("⚠️ SystemPlugins accessed without being in sync.")
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: pluginNames, onCompletion: { plugin in
+                continuation.resume(returning: plugin)
+            }))
+        }
     }
 
     /// Function that checks for any existing system plugin in the order's store.
@@ -855,8 +884,13 @@ extension OrderDetailsViewModel {
 private extension OrderDetailsViewModel {
     @MainActor
     func isPluginActive(_ plugin: String) async -> Bool {
+        return await isPluginActive([plugin])
+    }
+
+    @MainActor
+    func isPluginActive(_ pluginNames: [String]) async -> Bool {
         await withCheckedContinuation { continuation in
-            isPluginActive(plugin) { isActive in
+            isPluginActive(pluginNames) { isActive in
                 continuation.resume(returning: isActive)
             }
         }
@@ -892,5 +926,14 @@ private extension OrderDetailsViewModel {
             "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice",
             value: "Unable to retrieve receipt.",
             comment: "Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view.")
+    }
+}
+
+// MARK: - Constants
+private extension OrderDetailsViewModel {
+    enum Constants {
+        /// Minimum version of Woo Shipping extension required for app support.
+        /// This should be updated to 1.0.6 once that version is released.
+        static let wooShippingMinimumVersion = "1.0.5"
     }
 }

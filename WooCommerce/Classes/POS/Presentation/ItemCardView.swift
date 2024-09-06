@@ -56,7 +56,6 @@ private extension ItemCardView {
         static let productCardSize: CGFloat = 112
         static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
         static let productCardCornerRadius: CGFloat = 8
-        static let productImageCornerRadius: CGFloat = 0
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
         // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
         static let nilOutline: CGFloat = 0

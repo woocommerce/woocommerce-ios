@@ -7,6 +7,7 @@ import Combine
 protocol ProductUIImageLoader {
     /// Requests an image given a remote Product image asynchronously.
     ///
+    @MainActor
     func requestImage(productImage: ProductImage) async throws -> UIImage
 
     /// Requests an image given a `PHAsset` asynchronously, with a target size for optimization.

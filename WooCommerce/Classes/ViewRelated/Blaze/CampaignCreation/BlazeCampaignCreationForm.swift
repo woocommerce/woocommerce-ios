@@ -78,11 +78,23 @@ struct BlazeCampaignCreationForm: View {
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
 
-                // Budget
-                detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
-                    isShowingBudgetSetting = true
+                VStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        // Objective - hidden behind a feature flag
+                        detailView(title: Localization.objective,
+                                   content: Localization.chooseObjective) {
+                            // TODO: show objective screen
+                        }
+                        divider
+                    }
+                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective))
+
+                    // Budget
+                    detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
+                        isShowingBudgetSetting = true
+                    }
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
                 .padding(.bottom, Layout.contentMargin)
 
@@ -117,7 +129,7 @@ struct BlazeCampaignCreationForm: View {
                         isShowingTopicPicker = true
                     }
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
@@ -127,7 +139,7 @@ struct BlazeCampaignCreationForm: View {
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
-                    .background(Constants.cellColor)
+                    .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
             }
@@ -338,6 +350,11 @@ private extension BlazeCampaignCreationForm {
             .foregroundColor(Color(uiColor: .separator))
     }
 
+    var rowBackground: some View {
+        Constants.cellColor
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+    }
+
     var roundedRectangleBorder: some View {
         RoundedRectangle(cornerRadius: Layout.cornerRadius)
             .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
@@ -409,6 +426,16 @@ private extension BlazeCampaignCreationForm {
             "blazeCampaignCreationForm.details",
             value: "Details",
             comment: "Section title on the Blaze campaign creation screen"
+        )
+        static let objective = NSLocalizedString(
+            "blazeCampaignCreationForm.objective",
+            value: "Campaign objective",
+            comment: "Title of the Campaign objective field on the Blaze campaign creation screen"
+        )
+        static let chooseObjective = NSLocalizedString(
+            "blazeCampaignCreationForm.chooseObjective",
+            value: "Choose campaign objective",
+            comment: "Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified"
         )
         static let budget = NSLocalizedString(
             "blazeCampaignCreationForm.budget",

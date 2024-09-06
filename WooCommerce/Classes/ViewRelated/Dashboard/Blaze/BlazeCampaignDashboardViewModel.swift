@@ -106,6 +106,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private var syncingError: Error?
 
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -117,6 +118,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
+
         observeSectionVisibility()
         configureResultsController()
     }

@@ -210,7 +210,8 @@ extension Networking.BlazeCampaignListItem {
         budgetAmount: CopiableProp<Double> = .copy,
         budgetCurrency: CopiableProp<String> = .copy,
         isEvergreen: CopiableProp<Bool> = .copy,
-        durationDays: CopiableProp<Int64> = .copy
+        durationDays: CopiableProp<Int64> = .copy,
+        startTime: NullableCopiableProp<Date> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -229,6 +230,7 @@ extension Networking.BlazeCampaignListItem {
         let budgetCurrency = budgetCurrency ?? self.budgetCurrency
         let isEvergreen = isEvergreen ?? self.isEvergreen
         let durationDays = durationDays ?? self.durationDays
+        let startTime = startTime ?? self.startTime
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -247,7 +249,8 @@ extension Networking.BlazeCampaignListItem {
             budgetAmount: budgetAmount,
             budgetCurrency: budgetCurrency,
             isEvergreen: isEvergreen,
-            durationDays: durationDays
+            durationDays: durationDays,
+            startTime: startTime
         )
     }
 }
@@ -1967,7 +1970,8 @@ extension Networking.Product {
         minAllowedQuantity: NullableCopiableProp<String> = .copy,
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
-        combineVariationQuantities: NullableCopiableProp<Bool> = .copy
+        combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
+        customFields: CopiableProp<[MetaData]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -2045,6 +2049,7 @@ extension Networking.Product {
         let maxAllowedQuantity = maxAllowedQuantity ?? self.maxAllowedQuantity
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
+        let customFields = customFields ?? self.customFields
 
         return Networking.Product(
             siteID: siteID,
@@ -2122,7 +2127,8 @@ extension Networking.Product {
             minAllowedQuantity: minAllowedQuantity,
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
-            combineVariationQuantities: combineVariationQuantities
+            combineVariationQuantities: combineVariationQuantities,
+            customFields: customFields
         )
     }
 }

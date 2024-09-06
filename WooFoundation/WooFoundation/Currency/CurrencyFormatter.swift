@@ -9,11 +9,27 @@ public class CurrencyFormatter {
         self.currencySettings = currencySettings
     }
 
-    /// Returns a decimal value from a given string.
+    /// Returns a decimal value from a given API amount string.
     /// - Parameters:
     ///   - stringValue: the string received from the API
     ///   - locale: the locale that the currency string is based on.
     ///
+    /// Caution – this function is flawed, and should not be used for user input, or any string other than an API amount.
+    /// It may appear to work (e.g. removing the currency symbol, using `.` as the decimal separator, but it can't cope with arbitrary currency strings.
+    ///
+    /// For example, this will fail:
+    ///
+    /// ```
+    /// let input = "$1,000.00"
+    /// let formatted = currencyFormatter.convertToDecimal(input)
+    ///
+    /// print(String(decimal: formatted)) // 1
+    /// ```
+    ///
+    /// or, if done for a store which doesn't use `$`, it will print nil.
+    ///
+    /// Fixing this will take time to do correctly. For more correctness, rely on built-in formatters, which are less convenient but more correct.
+    /// See https://github.com/woocommerce/woocommerce-ios/issues/13829 for discussion and further work to fix this.
     public func convertToDecimal(_ stringValue: String, locale: Locale = .current) -> NSDecimalNumber? {
 
         let latinValue = stringValue.applyingTransform(StringTransform.toLatin, reverse: false) ?? stringValue

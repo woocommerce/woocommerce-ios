@@ -19,15 +19,6 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
 
     let dailyAmountSliderRange = Constants.minimumDailyAmount...Constants.maximumDailyAmount
 
-    /// Using Double because Slider doesn't work with Int
-    let dayCountSliderRange = Double(Constants.minimumDayCount)...Double(Constants.maximumDayCount)
-
-    let minDayAllowedInPickerSelection = Date.now + 60 * 60 * 24 // Current date + 1 day
-
-    // Start date needs to be inside the accepted range that is max 60 days from today
-    // (internally, we validate 61 to simplify the logic related to timezones).
-    let maxDayAllowedInPickerSelection = Calendar.current.date(byAdding: .day, value: 61, to: Date())!
-
     private var totalAmountText: String {
         let duration = hasEndDate ? dayCount : Double(Constants.dayCountInWeek)
         let totalBudget = calculateTotalBudget(dailyBudget: dailyAmount, dayCount: duration)
@@ -229,8 +220,6 @@ extension BlazeBudgetSettingViewModel {
         static let minimumDailyAmount: Double = 5
         static let maximumDailyAmount: Double = 50
         static let dailyAmountSliderStep: Double = 1
-        static let minimumDayCount = 1
-        static let maximumDayCount = 28
         static let defaultDayCount = 7
         static let dayCountInWeek = 7
         static let dayCountSliderStep = 1

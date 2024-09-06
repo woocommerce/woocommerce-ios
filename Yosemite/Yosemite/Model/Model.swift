@@ -222,6 +222,7 @@ public typealias WCAnalyticsStatsInterval = Networking.WCAnalyticsStatsInterval
 public typealias WCAnalyticsStatsTotals = Networking.WCAnalyticsStatsTotals
 public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
+public typealias MetaData = Networking.MetaData
 
 // MARK: - Exported Storage Symbols
 
@@ -308,8 +309,6 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias AnalyticsCard = Storage.AnalyticsCard
 public typealias DashboardCard = Storage.DashboardCard
-
-public typealias MetaData = Networking.MetaData
 
 // MARK: - Internal ReadOnly Models
 

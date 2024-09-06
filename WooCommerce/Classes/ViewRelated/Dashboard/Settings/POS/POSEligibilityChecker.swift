@@ -7,6 +7,7 @@ import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import enum Yosemite.SystemStatusAction
+import enum Yosemite.FeatureFlagAction
 
 protocol POSEligibilityCheckerProtocol {
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
@@ -24,8 +25,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest(isOnboardingComplete, isWooCommerceVersionSupported)
-            .map { $0 && $1 }
+        return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isAccountWhitelistedInBackend)
+            .map { $0 && $1 && $2 }
             .eraseToAnyPublisher()
     }
 
@@ -87,6 +88,23 @@ private extension POSEligibilityChecker {
                                                                     minimumRequired: Constants.wcPluginMinimumVersion)
                 promise(.success(isSupported))
             }
+            self.stores.dispatch(action)
+        }
+        .eraseToAnyPublisher()
+    }
+
+    var isAccountWhitelistedInBackend: AnyPublisher<Bool, Never> {
+        // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled.
+        // These can be found at D159901-code
+        Future<Bool, Never> { [weak self] promise in
+            guard let self else {
+                promise(.success(false))
+                return
+            }
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false, completion: { result in
+                promise(.success(result))
+                return
+            })
             self.stores.dispatch(action)
         }
         .eraseToAnyPublisher()

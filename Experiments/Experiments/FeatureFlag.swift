@@ -156,9 +156,10 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationCustomers
 
-    /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
+    /// Enables the Point Of Sale entry point under the Menu tab, if all requirements pass.
+    /// Please check the `POSEligibilityChecker` class for additional requirements in order to enable the feature.
     ///
-    case displayPointOfSaleToggle
+    case pointOfSale
 
     /// Enables M1 updates of product creation AI version 2
     ///

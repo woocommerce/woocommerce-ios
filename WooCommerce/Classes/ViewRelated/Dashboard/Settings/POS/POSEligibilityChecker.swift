@@ -19,13 +19,12 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     var isEligible: AnyPublisher<Bool, Never> {
         // Conditions that are fixed for its lifetime.
         let isTablet = userInterfaceIdiom == .pad
-        let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
-        guard isTablet && isFeatureFlagEnabled else {
+        guard isTablet else {
             return Just(false)
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isAccountWhitelistedInBackend)
+        return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
             .map { $0 && $1 && $2 }
             .eraseToAnyPublisher()
     }
@@ -93,17 +92,24 @@ private extension POSEligibilityChecker {
         .eraseToAnyPublisher()
     }
 
-    var isAccountWhitelistedInBackend: AnyPublisher<Bool, Never> {
-        // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled.
-        // These can be found at D159901-code
+    var isPointOfSaleFeatureFlagEnabled: AnyPublisher<Bool, Never> {
+        // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
+        // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
         Future<Bool, Never> { [weak self] promise in
             guard let self else {
                 promise(.success(false))
                 return
             }
             let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false, completion: { result in
-                promise(.success(result))
-                return
+                switch result {
+                case true:
+                    // The site is whitelisted
+                    return promise(.success(true))
+                case false:
+                    // When the site is not whitelisted, check the local feature flag configuration
+                    let localFeatureFlag = self.featureFlagService.isFeatureFlagEnabled(.pointOfSale)
+                    return promise(.success(localFeatureFlag))
+                }
             })
             self.stores.dispatch(action)
         }

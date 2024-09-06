@@ -28,7 +28,8 @@ final class ProductFormRemoteActionUseCase {
                     successEventName: WooAnalyticsStat = .addProductSuccess,
                     failureEventName: WooAnalyticsStat = .addProductFailed,
                     onCompletion: @escaping AddProductCompletion) {
-        addProductRemotely(product: product) { productResult in
+        let updatedProduct = EditableProductModel(product: product.product.copy(password: password))
+        addProductRemotely(product: updatedProduct) { productResult in
             switch productResult {
             case .failure(let error):
                 ServiceLocator.analytics.track(failureEventName, withError: error)
@@ -62,7 +63,8 @@ final class ProductFormRemoteActionUseCase {
                 productID: 0,
                 name: newName,
                 statusKey: ProductStatus.draft.rawValue,
-                sku: .some(nil) // just resetting SKU to nil for simplicity
+                sku: .some(nil), // just resetting SKU to nil for simplicity
+                password: password
             )
             return EditableProductModel(product: copiedProduct)
         }()
@@ -117,14 +119,16 @@ final class ProductFormRemoteActionUseCase {
         var productResult: Result<EditableProductModel, ProductUpdateError>?
         var passwordResult: Result<String?, Error>?
 
+        let updatedProduct = EditableProductModel(product: product.product.copy(password: password))
+
         group.enter()
-        editProductRemotely(product: product, originalProduct: originalProduct) { result in
+        editProductRemotely(product: updatedProduct, originalProduct: originalProduct) { result in
             productResult = result
             group.leave()
         }
 
         group.enter()
-        updatePasswordRemotely(product: product, password: password, originalPassword: originalPassword) { result in
+        updatePasswordRemotely(product: updatedProduct, password: password, originalPassword: originalPassword) { result in
             passwordResult = result
             group.leave()
         }
@@ -137,9 +141,11 @@ final class ProductFormRemoteActionUseCase {
             }
 
             do {
-                let product = try productResult.get()
                 let password = try passwordResult.get()
-                onCompletion(.success(ResultData(product: product, password: password)))
+                // Update the product with the new password
+                var updatedProduct = try productResult.get()
+                updatedProduct = EditableProductModel(product: updatedProduct.product.copy(password: password))
+                onCompletion(.success(ResultData(product: updatedProduct, password: password)))
             } catch {
                 if let productError = productResult.failure {
                     onCompletion(.failure(productError))
@@ -241,9 +247,13 @@ private extension ProductFormRemoteActionUseCase {
     func updatePasswordRemotely(product: EditableProductModel,
                                 password: String?,
                                 onCompletion: @escaping (Result<String?, Error>) -> Void) {
-        // Only update product password if available and user is authenticated with WPCom.
+
+        // Update the product password using the `updateSitePostPassword` method only if:
+        // 1) A password is provided.
+        // 2) The user is not authenticated with WPCom or if the store is not eligible for the new `password` field introduced in WC 8.1.
+        // Otherwise, update the password locally in the Product model.
         guard let updatedPassword = password,
-              stores.isAuthenticatedWithoutWPCom == false else {
+              stores.isAuthenticatedWithoutWPCom == false || !ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint() else {
             onCompletion(.success(password))
             return
         }

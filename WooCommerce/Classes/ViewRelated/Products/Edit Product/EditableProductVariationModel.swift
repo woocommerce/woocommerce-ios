@@ -202,6 +202,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         nil
     }
 
+    var password: String? {
+        nil
+    }
+
     var compositeComponents: [ProductCompositeComponent] {
         []
     }

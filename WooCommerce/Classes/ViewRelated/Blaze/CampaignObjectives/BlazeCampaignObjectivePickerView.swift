@@ -5,6 +5,7 @@ import struct Yosemite.BlazeCampaignObjective
 ///
 struct BlazeCampaignObjectivePickerView: View {
     @ObservedObject private var viewModel: BlazeCampaignObjectivePickerViewModel
+    @ScaledMetric private var scale = 1
 
     private let onDismiss: () -> Void
 
@@ -56,27 +57,44 @@ private extension BlazeCampaignObjectivePickerView {
                 Button {
                     viewModel.selectedObjective = item
                 } label: {
-                    HStack(alignment: .top, spacing: Layout.padding) {
-                        Image(uiImage: isItemSelected(item) ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
-                            .if(isItemSelected(item)) { view in
-                                view.foregroundStyle(Color.accentColor)
-                            }
-                        VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                        HStack(spacing: Layout.contentMargin) {
+                            Image(uiImage: isItemSelected(item) ? .checkCircleImage.withRenderingMode(.alwaysTemplate) : .checkEmptyCircleImage)
+                                .resizable()
+                                .frame(width: Layout.radioButtonSize * scale,
+                                       height: Layout.radioButtonSize * scale)
+                                .if(isItemSelected(item)) { view in
+                                    view.foregroundStyle(Color.accentColor)
+                                }
                             Text(item.title)
                                 .headlineStyle()
-                            Text(item.description)
-                                .bodyStyle()
-                            // Good for text
-                            (Text(Localization.goodFor).bold() + Text(" ") + Text(item.suitableForDescription))
-                                .bodyStyle()
-                                .padding(.top, Layout.padding)
-                                .renderedIf(isItemSelected(item))
+                            Spacer()
                         }
 
-                        Spacer()
+                        HStack(spacing: Layout.contentMargin) {
+                            Spacer()
+                                .frame(width: Layout.radioButtonSize * scale,
+                                       height: Layout.radioButtonSize * scale)
+
+                            VStack(alignment: .leading, spacing: Layout.contentMargin) {
+                                Text(item.description)
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.primary)
+                                // Good for text
+                                (Text(Localization.goodFor).bold() + Text(" ") + Text(item.suitableForDescription))
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.primary)
+                                    .renderedIf(isItemSelected(item))
+                            }
+                            Spacer()
+                        }
                     }
                     .multilineTextAlignment(.leading)
                     .padding(Layout.contentMargin)
+                    .background(
+                        (isItemSelected(item) ? Layout.selectedBackgroundColor : Color(uiColor: .listForeground(modal: false)))
+                        .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                    )
                     .overlay {
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
                             .stroke(Color(uiColor: isItemSelected(item) ? .accent : .separator),
@@ -115,10 +133,15 @@ private extension BlazeCampaignObjectivePickerView {
 
 private extension BlazeCampaignObjectivePickerView {
     enum Layout {
-        static let padding: CGFloat = 8
+        static let contentSpacing: CGFloat = 8
         static let contentMargin: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let strokeWidth: CGFloat = 1
+        static let radioButtonSize: CGFloat = 24
+        static let selectedBackgroundColor = Color(
+            light: .withColorStudio(name: .wooCommercePurple, shade: .shade0),
+            dark: .withColorStudio(name: .wooCommercePurple, shade: .shade80)
+        )
     }
 
     enum Localization {

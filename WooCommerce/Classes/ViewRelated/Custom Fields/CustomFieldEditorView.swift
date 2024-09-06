@@ -28,6 +28,7 @@ struct CustomFieldEditorView: View {
     @State private var value: String
     @State private var isModified: Bool = false
     @State private var showRichTextEditor: Bool = false
+    @State private var showingActionSheet: Bool = false
 
     private let initialKey: String
     private let initialValue: String
@@ -107,12 +108,24 @@ struct CustomFieldEditorView: View {
         .background(Color(.listBackground))
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    saveChanges()
-                } label: {
-                    Text("Save") // todo-13493: set String to be translatable
+                HStack {
+                    Button {
+                        saveChanges()
+                    } label: {
+                        Text("Save") // todo-13493: set String to be translatable
+                    }
+                    .disabled(!isModified)
+
+                    Button(action: {
+                        showingActionSheet = true
+                    }, label: {
+                        Image(systemName: "ellipsis")
+                            .renderingMode(.template)
+                    })
+                    .confirmationDialog("More Options", isPresented: $showingActionSheet) {
+                        actionSheetContent
+                    }
                 }
-                .disabled(!isModified)
             }
         }
         .sheet(isPresented: $showRichTextEditor) {
@@ -120,6 +133,23 @@ struct CustomFieldEditorView: View {
                 .onDisappear {
                     checkForModifications()
                 }
+        }
+    }
+
+    @ViewBuilder
+    private var actionSheetContent: some View {
+        Button("Copy Key") { // todo-13493: set String to be translatable
+            UIPasteboard.general.string = key
+            // todo-13493: Show a notice that the key was copied
+        }
+
+        Button("Copy Value") { // todo-13493: set String to be translatable
+            UIPasteboard.general.string = value
+            // todo-13493: Show a notice that the value was copied
+        }
+
+        Button("Delete Custom Field", role: .destructive) { // todo-13493: set String to be translatable
+            // todo-13493: Implement delete action
         }
     }
 

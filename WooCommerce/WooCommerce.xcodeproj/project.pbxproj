@@ -2706,9 +2706,10 @@
 		DEF36DE92898D3CF00178AC2 /* AuthenticatedWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */; };
 		DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DE72898D3CF00178AC2 /* AuthenticatedWebViewModel.swift */; };
 		DEF36DEC2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF36DEB2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift */; };
+		DEF657A32C88540700ACD61E /* BlazeScheduleSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF657A22C88540700ACD61E /* BlazeScheduleSettingView.swift */; };
 		DEF657A62C895AE900ACD61E /* BlazeCampaignObjectivePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF657A52C895AE900ACD61E /* BlazeCampaignObjectivePickerView.swift */; };
 		DEF657A82C895B0500ACD61E /* BlazeCampaignObjectivePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF657A72C895B0500ACD61E /* BlazeCampaignObjectivePickerViewModel.swift */; };
-		DEF657A32C88540700ACD61E /* BlazeScheduleSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF657A22C88540700ACD61E /* BlazeScheduleSettingView.swift */; };
+		DEF657AA2C8AC25C00ACD61E /* BlazeCampaignObjectivePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF657A92C8AC25C00ACD61E /* BlazeCampaignObjectivePickerViewModelTests.swift */; };
 		DEF8CF0A29A71EE600800A60 /* JetpackSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */; };
 		DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF0C29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift */; };
 		DEF8CF0F29A890E900800A60 /* JetpackBenefitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF8CF0E29A890E900800A60 /* JetpackBenefitsViewModel.swift */; };
@@ -5741,9 +5742,10 @@
 		DEF36DE62898D3CF00178AC2 /* AuthenticatedWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewController.swift; sourceTree = "<group>"; };
 		DEF36DE72898D3CF00178AC2 /* AuthenticatedWebViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewModel.swift; sourceTree = "<group>"; };
 		DEF36DEB2898D64600178AC2 /* JetpackSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupWebViewModelTests.swift; sourceTree = "<group>"; };
+		DEF657A22C88540700ACD61E /* BlazeScheduleSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeScheduleSettingView.swift; sourceTree = "<group>"; };
 		DEF657A52C895AE900ACD61E /* BlazeCampaignObjectivePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignObjectivePickerView.swift; sourceTree = "<group>"; };
 		DEF657A72C895B0500ACD61E /* BlazeCampaignObjectivePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignObjectivePickerViewModel.swift; sourceTree = "<group>"; };
-		DEF657A22C88540700ACD61E /* BlazeScheduleSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeScheduleSettingView.swift; sourceTree = "<group>"; };
+		DEF657A92C8AC25C00ACD61E /* BlazeCampaignObjectivePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignObjectivePickerViewModelTests.swift; sourceTree = "<group>"; };
 		DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupCoordinator.swift; sourceTree = "<group>"; };
 		DEF8CF0C29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupCoordinatorTests.swift; sourceTree = "<group>"; };
 		DEF8CF0E29A890E900800A60 /* JetpackBenefitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackBenefitsViewModel.swift; sourceTree = "<group>"; };
@@ -6575,6 +6577,7 @@
 				8697AFBC2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift */,
 				8697AFBE2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift */,
 				EE4C75E02C86D90400F9D860 /* BlazeLocalNotificationSchedulerTests.swift */,
+				DEF657A92C8AC25C00ACD61E /* BlazeCampaignObjectivePickerViewModelTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -16452,6 +16455,7 @@
 				D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */,
 				26DDA4AB2C49627F005FBEBF /* DashboardTimestampStoreTests.swift in Sources */,
 				573A960324F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift in Sources */,
+				DEF657AA2C8AC25C00ACD61E /* BlazeCampaignObjectivePickerViewModelTests.swift in Sources */,
 				EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */,
 				0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */,
 				DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */,

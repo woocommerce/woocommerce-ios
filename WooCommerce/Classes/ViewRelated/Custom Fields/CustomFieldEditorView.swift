@@ -48,72 +48,68 @@ struct CustomFieldEditorView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-                    // Key Input
-                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                        Text("Key") // todo-13493: set String to be translatable
-                            .foregroundColor(Color(.text))
-                            .subheadlineStyle()
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+                // Key Input
+                VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                    Text("Key") // todo-13493: set String to be translatable
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
 
-                        TextField("Enter key", text: $key) // todo-13493: set String to be translatable
-                            .bodyStyle()
-                            .padding(insets: Layout.inputInsets)
-                            .background(Color(.listForeground(modal: false)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                            )
-                            .onChange(of: key) { _ in
-                                checkForModifications()
-                            }
-                    }
-
-                    // Value Input
-                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                        Text("Value") // todo-13493: set String to be translatable
-                            .foregroundColor(Color(.text))
-                            .subheadlineStyle()
-
-                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
-                            .bodyStyle()
-                            .frame(minHeight: Layout.minimumEditorSize)
-                            .padding(insets: Layout.inputInsets)
-                            .background(Color(.listForeground(modal: false)))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                            )
-                            .onChange(of: value) { _ in
-                                checkForModifications()
-                            }
-                    }
+                    TextField("Enter key", text: $key) // todo-13493: set String to be translatable
+                        .bodyStyle()
+                        .padding(insets: Layout.inputInsets)
+                        .background(Color(.listForeground(modal: false)))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                        )
+                        .onChange(of: key) { _ in
+                            checkForModifications()
+                        }
                 }
-                .padding()
-            }
 
-            // Rich Text Editor Button
-            if !isReadOnlyValue {
-                VStack {
-                    Divider()
+                // Value Input
+                VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                    HStack {
+                         Text("Value") // todo-13493: set String to be translatable
+                             .foregroundColor(Color(.text))
+                             .subheadlineStyle()
 
-                    Button(action: {
-                        showRichTextEditor = true
-                    }) {
-                        Text("Edit Value in Rich Text Editor") // todo-13493: set String to be translatable
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding()
+                         Spacer()
+
+                         if !isReadOnlyValue {
+                             Button(action: {
+                                 showRichTextEditor = true
+                             }) {
+                                 Text("Edit in Rich Text Editor") // todo-13493: set String to be translatable
+                                     .font(.footnote)
+                             }
+                             .buttonStyle(.plain)
+                             .foregroundColor(Color(uiColor: .accent))
+                         }
+                     }
+
+                    TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
+                        .bodyStyle()
+                        .frame(minHeight: Layout.minimumEditorSize)
+                        .padding(insets: Layout.inputInsets)
+                        .background(Color(.listForeground(modal: false)))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                        )
+                        .onChange(of: value) { _ in
+                            checkForModifications()
+                        }
                 }
-                .background(Color(.listForeground(modal: false)))
             }
-
+            .padding()
         }
         .background(Color(.listBackground))
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
+                Button {
                     saveChanges()
-                }) {
+                } label: {
                     Text("Save") // todo-13493: set String to be translatable
                 }
                 .disabled(!isModified)

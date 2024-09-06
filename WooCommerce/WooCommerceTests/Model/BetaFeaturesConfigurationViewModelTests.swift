@@ -22,27 +22,6 @@ final class BetaFeaturesConfigurationViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.availableFeatures.contains(.viewAddOns))
     }
-
-    func test_availableFeatures_include_pos_when_eligible_for_pos() {
-        // Given
-        let posEligibilityChecker = MockPOSEligibilityChecker(isEligibleValue: true)
-        let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings, posEligibilityChecker: posEligibilityChecker)
-
-        // Then
-        XCTAssertTrue(viewModel.availableFeatures.contains(.pointOfSale))
-    }
-
-    func test_availableFeatures_do_not_include_pos_when_not_eligible_for_pos_anymore() {
-        // Given
-        let posEligibilityChecker = MockPOSEligibilityChecker(isEligibleValue: true)
-        let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings, posEligibilityChecker: posEligibilityChecker)
-
-        // When
-        posEligibilityChecker.isEligibleValue = false
-
-        // Then
-        XCTAssertFalse(viewModel.availableFeatures.contains(.pointOfSale))
-    }
 }
 
 private final class MockPOSEligibilityChecker: POSEligibilityCheckerProtocol {

@@ -1,0 +1,4 @@
+Dans cette version, les publicités Blaze bénéficient d’une assistance pour les campagnes persistantes. Nous avons corrigé certains bugs dans l’édition de produits, en particulier au niveau des prix, et dorénavant, nous prenons en charge les produits à prix négatif !
+
+Nous avons corrigé un problème lors de l’utilisation du menu avec VoiceOver et autres technologies d’assistance, ainsi que certains bugs qui provoquaient la disparition de titres et l’absence de réaction des boutons.
+

@@ -13,7 +13,6 @@ steps:
   - label: "🛠 Release Build (App Store Connect)"
     command: ".buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}"
     priority: 1
-    env: *common_env
     plugins: [$CI_TOOLKIT]
     notify:
     - slack: "#build-and-ship"

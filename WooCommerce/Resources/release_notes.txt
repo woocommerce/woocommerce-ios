@@ -1,4 +1,2 @@
-In this version, Blaze ads get evergreen campaign support. We've fixed some bugs in product editing, especially around prices, and now support negative-priced products!
-
-We've fixed a problem using the menu with VoiceOver and assistive technology, and some bugs which caused titles to disappear, and buttons to become unresponsive.
-
+In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
+Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.

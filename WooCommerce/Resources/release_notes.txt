@@ -1,11 +1,2 @@
-- [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
-- [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
-- [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
-- [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
-- [*] Product scanner: Added swap camera button to code scanner https://github.com/woocommerce/woocommerce-ios/pull/13830
-- [*] Blaze: Changes on the schedule setting screen should only be applied after tapping the Apply button. [https://github.com/woocommerce/woocommerce-ios/pull/13846]
-- [*] Blaze: Schedule a reminder local notification asking to promote products. [https://github.com/woocommerce/woocommerce-ios/pull/13816]
-- [*] Cash payments and discounts: Improve handling of numbers with grouping separators, e.g. $1,000.00 [https://github.com/woocommerce/woocommerce-ios/pull/13854]
-- [*] Blaze: Updated the image picker from existing product images. [https://github.com/woocommerce/woocommerce-ios/pull/13796]
-- [*] Order Tracking in HACK Week: Allow users to scan their order tracking number [https://github.com/woocommerce/woocommerce-ios/pull/13850]
-
+In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
+Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.

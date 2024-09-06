@@ -2,7 +2,7 @@
 ---
 
 agents:
-  queue: "mac"
+  queue: mac
 
 env:
   IMAGE_ID: $IMAGE_ID
@@ -13,70 +13,70 @@ steps:
   # Build the app
   #################
   - label: ":pipeline: Build"
-    key: "build"
-    command: ".buildkite/commands/build-for-testing.sh"
+    key: build
+    command: .buildkite/commands/build-for-testing.sh
     plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
-          context: "Build"
+          context: Build
 
   #################
   # Create Prototype Build
   #################
-  - label: "🛠 Prototype Build"
-    command: ".buildkite/commands/prototype-build.sh"
+  - label: 🛠 Prototype Build
+    command: .buildkite/commands/prototype-build.sh
     plugins: [$CI_TOOLKIT]
     if: build.pull_request.id != null
     notify:
       - github_commit_status:
-          context: "Prototype Build"
+          context: Prototype Build
 
   #################
   # Run Unit Tests
   #################
-  - label: "🔬 Unit Tests"
-    command: ".buildkite/commands/run-unit-tests.sh"
-    depends_on: "build"
+  - label: 🔬 Unit Tests
+    command: .buildkite/commands/run-unit-tests.sh
+    depends_on: build
     plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "Unit Tests"
+          context: Unit Tests
 
   #################
   # Linters
   #################
   - group: Linters
     steps:
-      - label: "☢️ Danger - PR Check"
+      - label: ☢️ Danger - PR Check
         command: danger
         key: danger
-        if: "build.pull_request.id != null"
+        if: build.pull_request.id != null
         retry:
           manual:
             permit_on_passed: true
         agents:
-          queue: "linter"
+          queue: linter
 
       - label: ":swift: SwiftLint"
         command: swiftlint
         notify:
           - github_commit_status:
-              context: "SwiftLint"
+              context: SwiftLint
         agents:
-          queue: "linter"
+          queue: linter
 
-      - label: "🧹 Lint Translations"
-        command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
+      - label: 🧹 Lint Translations
+        command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
         plugins:
           - docker#v3.8.0:
-              image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
+              image: public.ecr.aws/automattic/glotpress-validator:1.0.0
         agents:
-          queue: "default"
+          queue: default
         notify:
           - github_commit_status:
-              context: "Lint Translations"
+              context: Lint Translations
 
       - label: ":sleuth_or_spy: Lint Localized Strings Format"
         command: .buildkite/commands/lint-localized-strings-format.sh
@@ -85,22 +85,22 @@ steps:
   #################
   # UI Tests
   #################
-  - label: "🔬 UI Tests (iPhone)"
+  - label: 🔬 UI Tests (iPhone)
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 15'
-    depends_on: "build"
+    depends_on: build
     plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "UI Tests (iPhone)"
+          context: UI Tests (iPhone)
 
-  - label: "🔬 UI Tests (iPad)"
+  - label: 🔬 UI Tests (iPad)
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
-    depends_on: "build"
+    depends_on: build
     plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "UI Tests (iPad)"
+          context: UI Tests (iPad)

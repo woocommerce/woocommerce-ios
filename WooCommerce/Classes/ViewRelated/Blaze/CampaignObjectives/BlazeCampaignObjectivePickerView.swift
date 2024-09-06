@@ -102,6 +102,7 @@ private extension BlazeCampaignObjectivePickerView {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityHint(isItemSelected(item) ? Localization.selected : Localization.unselected)
             }
             .padding(Layout.contentMargin)
         }
@@ -158,22 +159,22 @@ private extension BlazeCampaignObjectivePickerView {
         static let cancelButtonTitle = NSLocalizedString(
             "blazeCampaignObjectivePickerView.cancel",
             value: "Cancel",
-            comment: "Button to dismiss the campaign objective picker for campaign creation"
+            comment: "Button to dismiss the campaign objective picker for Blaze campaign creation"
         )
         static let saveButtonTitle = NSLocalizedString(
             "blazeCampaignObjectivePickerView.save",
             value: "Save",
-            comment: "Button to save the selection on the campaign objective picker for campaign creation"
+            comment: "Button to save the selection on the campaign objective picker for Blaze campaign creation"
         )
         static let errorMessage = NSLocalizedString(
             "blazeCampaignObjectivePickerView.errorMessage",
             value: "Error syncing campaign objectives. Please try again.",
-            comment: "Error message when data syncing fails on the campaign objective picker for campaign creation"
+            comment: "Error message when data syncing fails on the campaign objective picker for Blaze campaign creation"
         )
         static let tryAgain = NSLocalizedString(
             "blazeCampaignObjectivePickerView.tryAgain",
             value: "Try Again",
-            comment: "Button to retry syncing data on the campaign objective picker for campaign creation"
+            comment: "Button to retry syncing data on the campaign objective picker for Blaze campaign creation"
         )
         static let goodFor = NSLocalizedString(
             "blazeCampaignObjectivePickerView.goodFor",
@@ -184,6 +185,16 @@ private extension BlazeCampaignObjectivePickerView {
             "blazeCampaignObjectivePickerView.saveSelection",
             value: "Save my selection for future campaigns",
             comment: "Toggle to save the selection of a Blaze campaign objective for future campaigns."
+        )
+        static let selected = NSLocalizedString(
+            "blazeCampaignObjectivePickerView.accessibilityHintSelected",
+            value: "Selected",
+            comment: "Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation."
+        )
+        static let unselected = NSLocalizedString(
+            "blazeCampaignObjectivePickerView.accessibilityHintUnselected",
+            value: "Unselected",
+            comment: "Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation."
         )
     }
 }

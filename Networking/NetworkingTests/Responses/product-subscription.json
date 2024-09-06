@@ -155,6 +155,16 @@
                 "id": 4222,
                 "key": "_subscription_one_time_shipping",
                 "value": "yes"
+            },
+            {
+                "id": 4223,
+                "key": "customKey1",
+                "value": "customValue1"
+            },
+            {
+                "id": 4224,
+                "key": "customKey2",
+                "value": "customValue2"
             }
         ],
         "stock_status": "outofstock",

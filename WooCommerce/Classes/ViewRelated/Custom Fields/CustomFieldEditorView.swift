@@ -71,23 +71,23 @@ struct CustomFieldEditorView: View {
                 // Value Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                     HStack {
-                         Text("Value") // todo-13493: set String to be translatable
-                             .foregroundColor(Color(.text))
-                             .subheadlineStyle()
+                        Text("Value") // todo-13493: set String to be translatable
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
 
-                         Spacer()
+                        Spacer()
 
-                         if !isReadOnlyValue {
-                             Button(action: {
-                                 showRichTextEditor = true
-                             }) {
-                                 Text("Edit in Rich Text Editor") // todo-13493: set String to be translatable
-                                     .font(.footnote)
-                             }
-                             .buttonStyle(.plain)
-                             .foregroundColor(Color(uiColor: .accent))
-                         }
-                     }
+                        if !isReadOnlyValue {
+                            Button(action: {
+                                showRichTextEditor = true
+                            }) {
+                                Text("Edit in Rich Text Editor") // todo-13493: set String to be translatable
+                                    .font(.footnote)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundColor(Color(uiColor: .accent))
+                        }
+                    }
 
                     TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
                         .bodyStyle()
@@ -116,8 +116,7 @@ struct CustomFieldEditorView: View {
             }
         }
         .sheet(isPresented: $showRichTextEditor) {
-            // todo-13493: Aztec needs toolbar and change handling
-            AztecEditorView(html: $value)
+            RichTextEditor(html: $value)
                 .onDisappear {
                     checkForModifications()
                 }
@@ -130,6 +129,36 @@ struct CustomFieldEditorView: View {
 
     private func saveChanges() {
         // todo-13493: add save logic
+    }
+}
+
+private struct RichTextEditor: View {
+    @Binding var html: String
+    @State private var isModified: Bool = false
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        NavigationView {
+            AztecEditorView(html: $html)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Text("Cancel") // todo-13493: set String to be translatable
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            // todo-13493: implement save action
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Text("Done") // todo-13493: set String to be translatable
+                        }
+                        .disabled(!isModified)
+                    }
+                }
+        }
     }
 }
 

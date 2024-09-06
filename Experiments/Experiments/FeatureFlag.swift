@@ -188,4 +188,8 @@ public enum FeatureFlag: Int {
     /// Enables revamped shipping label flow for Woo Shipping extension
     ///
     case revampedShippingLabelCreation
+
+    /// Enables selecting objectives during Blaze campaign creation.
+    ///
+    case blazeCampaignObjective
 }

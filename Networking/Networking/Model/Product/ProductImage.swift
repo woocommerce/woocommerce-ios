@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductImage entity.
 ///
-public struct ProductImage: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductImage: Codable, Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let imageID: Int64
     public let dateCreated: Date    // gmt
     public let dateModified: Date?  // gmt

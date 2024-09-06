@@ -70,7 +70,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
-        case .displayPointOfSaleToggle:
+        case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productCreationAIv2M1:
             return true

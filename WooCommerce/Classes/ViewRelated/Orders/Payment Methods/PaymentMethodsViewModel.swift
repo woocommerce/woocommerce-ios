@@ -63,6 +63,8 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     let formattedTotal: String
 
+    let total: String
+
     /// Transmits notice presentation intents.
     ///
     private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
@@ -146,12 +148,14 @@ final class PaymentMethodsViewModel: ObservableObject {
     init(siteID: Int64 = 0,
          orderID: Int64 = 0,
          paymentLink: URL? = nil,
+         total: String,
          formattedTotal: String,
          flow: WooAnalyticsEvent.PaymentsFlow.Flow,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
         self.paymentLink = paymentLink
+        self.total = total
         self.formattedTotal = formattedTotal
         self.flow = flow
         self.orderDurationRecorder = dependencies.orderDurationRecorder
@@ -454,7 +458,7 @@ private extension PaymentMethodsViewModel {
     func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
                             cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let amountNormalized = currencyFormatter.convertToDecimal(formattedTotal) ?? 0
+        let amountNormalized = currencyFormatter.convertToDecimal(total) ?? 0
 
         let amountInSmallestUnit = amountNormalized
             .multiplying(by: NSDecimalNumber(value: currencySettings.currencyCode.smallestCurrencyUnitMultiplier))

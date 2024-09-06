@@ -1,9 +1,9 @@
 import UIKit
 
-/// Container view controller of barcode scanner for product SKU input.
-final class ProductSKUInputScannerViewController: UIViewController {
+/// Container view controller of barcode scanner.
+final class ScannerContainerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController: CodeScannerViewController = {
-        return CodeScannerViewController(instructionText: Localization.instructionText,
+        return CodeScannerViewController(instructionText: instructionText,
                                             format: .barcode { [weak self] result in
             guard let self = self else { return }
             guard self.hasDetectedBarcode == false else {
@@ -18,11 +18,16 @@ final class ProductSKUInputScannerViewController: UIViewController {
     }()
 
     private let onBarcodeScanned: (ScannedBarcode) -> Void
+    private let navigationTitle: String
+    private let instructionText: String
+
 
     /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
     private var hasDetectedBarcode: Bool = false
 
-    init(onBarcodeScanned: @escaping (ScannedBarcode) -> Void) {
+    init(navigationTitle: String, instructionText: String, onBarcodeScanned: @escaping (ScannedBarcode) -> Void) {
+        self.navigationTitle = navigationTitle
+        self.instructionText = instructionText
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,9 +44,9 @@ final class ProductSKUInputScannerViewController: UIViewController {
     }
 }
 
-private extension ProductSKUInputScannerViewController {
+private extension ScannerContainerViewController {
     func configureNavigation() {
-        title = Localization.title
+        title = navigationTitle
     }
 
     func configureBarcodeScannerChildViewController() {
@@ -54,16 +59,5 @@ private extension ProductSKUInputScannerViewController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
-    }
-}
-
-private extension ProductSKUInputScannerViewController {
-    enum Localization {
-        static let title = NSLocalizedString("ProductSKUInputScanner.titleView",
-                                             value: "Scan barcode or QR Code to update SKU",
-                                             comment: "Navigation bar title for scanning a barcode or QR Code to use as a product's SKU.")
-        static let instructionText = NSLocalizedString("ProductSKUInputScanner.instructionText",
-                                                       value: "Scan product barcode or QR Code",
-                                                       comment: "The instruction text below the scan area in the barcode scanner for product SKU.")
     }
 }

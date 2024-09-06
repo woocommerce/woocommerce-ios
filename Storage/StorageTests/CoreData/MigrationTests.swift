@@ -3047,6 +3047,49 @@ final class MigrationTests: XCTestCase {
         let startTime = try XCTUnwrap(migratedEntity.value(forKey: "startTime") as? Date)
         XCTAssertEqual(startTime, startTimeDate, "Confirm expected property exists, and has expected date.")
     }
+
+    func test_migrating_from_116_to_117_adds_customFields_property_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 116")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 116)
+        try sourceContext.save()
+
+        // `customFields` should not be present before migration
+        XCTAssertNil(product.entity.relationshipsByName["customFields"])
+
+        // Make sure product exist in model 115
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 117")
+        let targetContext = targetContainer.viewContext
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 0)
+
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        // `customFields` should be present in `migratedProduct`
+        XCTAssertNotNil(migratedProduct.entity.relationshipsByName["customFields"])
+
+        // Test adding custom fields to a migrated `Product`.
+        let customField = insertMetaData(to: targetContext)
+        migratedProduct.mutableSetValue(forKey: "customFields").add(customField)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 1)
+
+        // The relationship between Product and MetaData should be updated.
+        XCTAssertEqual(migratedProduct.value(forKey: "customFields") as? Set<NSManagedObject>, [customField])
+
+        // The MetaData.product inverse relationship should be updated.
+        XCTAssertEqual(customField.value(forKey: "product") as? NSManagedObject, migratedProduct)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

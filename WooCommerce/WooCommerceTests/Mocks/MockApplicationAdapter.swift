@@ -6,7 +6,6 @@ import UIKit
 /// MockApplicationAdapter: UIApplication Mock!
 ///
 final class MockApplicationAdapter: ApplicationAdapter {
-
     /// Badge Count
     ///
     var applicationIconBadgeNumber: Int = .min
@@ -27,8 +26,6 @@ final class MockApplicationAdapter: ApplicationAdapter {
     ///
     var presentDetailsNoteIDs = [Int64]()
 
-
-
     /// Innocuous `registerForRemoteNotifications`
     ///
     func registerForRemoteNotifications() {
@@ -43,8 +40,12 @@ final class MockApplicationAdapter: ApplicationAdapter {
 
     /// Innocuous `displayNotificationDetails`
     ///
-    func presentNotificationDetails(for noteID: Int64) {
-        presentDetailsNoteIDs.append(noteID)
+    func presentNotificationDetails(notification: WooCommerce.PushNotification) {
+        guard let note = notification.note else {
+            presentDetailsNoteIDs.append(notification.noteID)
+            return
+        }
+        presentDetailsNoteIDs.append(note.noteID)
     }
 
     /// Restores the initial state

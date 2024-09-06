@@ -277,14 +277,12 @@ platform :ios do
   # bundle exec fastlane complete_code_freeze skip_confirm:true
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
-  lane :complete_code_freeze do |options|
+  lane :complete_code_freeze do |skip_confirm: false|
     ensure_git_status_clean
     ensure_git_branch_is_release_branch!
 
     UI.important("Completing code freeze for: #{release_version_current}")
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     update_app_store_strings
 
@@ -533,6 +531,47 @@ platform :ios do
     end
   end
 
+  # This lane publishes a release on GitHub and creates a PR to backmerge the current release branch into the next release/ branch
+  #
+  # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
+  #
+  # @example Running the lane
+  #          bundle exec fastlane publish_release skip_confirm:true
+  #
+  lane :publish_release do |skip_confirm: false|
+    ensure_git_status_clean
+    ensure_git_branch_is_release_branch
+
+    version_number = release_version_current
+
+    current_branch = "release/#{version_number}"
+    next_release_branch = "release/#{release_version_next}"
+
+    UI.important <<~PROMPT
+      Publish the #{version_number} release. This will:
+      - Publish the existing draft `#{version_number}` release on GitHub
+      - Which will also have GitHub create the associated git tag, pointing to the tip of the branch
+      - If the release branch for the next version `#{next_release_branch}` already exists, backmerge `#{current_branch}` into it
+      - If needed, backmerge `#{current_branch}` back into `#{DEFAULT_BRANCH}`
+      - Delete the `#{current_branch}` branch
+    PROMPT
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+
+    UI.important "Publishing release #{version_number} on GitHub"
+
+    publish_github_release(
+      repository: GITHUB_REPO,
+      name: version_number
+    )
+
+    create_backmerge_pr
+
+    # At this point, an intermediate branch has been created by creating a backmerge PR to a hotfix or the next version release branch.
+    # This allows us to safely delete the `release/*` branch.
+    # Note that if a hotfix or new release branches haven't been created, the backmerge PR won't be created as well.
+    delete_remote_git_branch!(current_branch)
+  end
+
   lane :check_translation_progress_all do
     check_translation_progress_strings
     check_translation_progress_release_notes
@@ -626,7 +665,7 @@ platform :ios do
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
     version = options[:beta_release] ? build_code_current : release_version_current
-    create_release(
+    create_github_release(
       repository: GITHUB_REPO,
       version: version,
       release_notes_file_path: RELEASE_NOTES_PATH,
@@ -1451,7 +1490,12 @@ def create_backmerge_pr
   )
 rescue StandardError => e
   error_message = <<-MESSAGE
-    Error creating backmerge pull request: #{e.message}
+    Error creating backmerge pull request:
+
+    ```
+    #{e.message}
+    ```
+
     If this is not the first time you are running the release task, the backmerge PR for the version `#{version}` might have already been previously created.
     Please close any previous backmerge PR for `#{version}`, delete the previous merge branch, then run the release task again.
   MESSAGE
@@ -1475,6 +1519,14 @@ def ensure_branch_does_not_exist!(branch_name)
   buildkite_annotate(style: 'error', context: 'error-checking-branch', message: error_message) if is_ci
 
   UI.user_error!(error_message)
+end
+
+# Delete a branch remotely, after having removed any GitHub branch protection
+#
+def delete_remote_git_branch!(branch_name)
+  remove_branch_protection(repository: GITHUB_REPO, branch: branch_name)
+
+  Git.open(Dir.pwd).push('origin', branch_name, delete: true)
 end
 
 def report_milestone_error(error_title:)

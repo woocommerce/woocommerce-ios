@@ -117,7 +117,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     // MARK: Subscription Product properties
 
     /// Subscription settings. Applicable to subscription-type products only.
-    public let subscription: ProductSubscription? //TODO: migrate AddOns to MetaData
+    public let subscription: ProductSubscription? //TODO: migrate subscription to MetaData
 
     // MARK: Min/Max Quantities properties
 

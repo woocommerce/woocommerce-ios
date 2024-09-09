@@ -96,6 +96,7 @@ final class OrderNotificationDataService {
             ordersRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
                 switch (order, error) {
                 case (let order?, nil):
+                    MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: notification.noteID, orderID: orderID)
                     continuation.resume(returning: order)
                 case (_, let error?):
                     continuation.resume(throwing: Error.network(error))

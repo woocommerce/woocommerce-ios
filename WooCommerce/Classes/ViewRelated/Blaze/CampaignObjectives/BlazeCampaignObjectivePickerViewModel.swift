@@ -103,28 +103,3 @@ private extension BlazeCampaignObjectivePickerViewModel {
         fetchedData = resultsController.fetchedObjects
     }
 }
-
-// MARK: - Blaze campaign objective helpers
-//
-private extension UserDefaults {
-    /// Returns objective ID saved for campaign creation
-    ///
-    func savedObjectiveID(for siteID: Int64) -> String? {
-        let campaignObjective = self[.blazeSelectedCampaignObjective] as? [String: String]
-        let idAsString = "\(siteID)"
-        return campaignObjective?[idAsString]
-    }
-
-    /// Saves objective ID for future Blaze campaigns
-    ///
-    func setObjectiveForFutureCampaigns(objectiveID: String,
-                                        for siteID: Int64) {
-        let idAsString = "\(siteID)"
-        if var campaignObjectiveDictionary = self[.blazeSelectedCampaignObjective] as? [String: String] {
-            campaignObjectiveDictionary[idAsString] = objectiveID
-            self[.blazeSelectedCampaignObjective] = campaignObjectiveDictionary
-        } else {
-            self[.blazeSelectedCampaignObjective] = [idAsString: objectiveID]
-        }
-    }
-}

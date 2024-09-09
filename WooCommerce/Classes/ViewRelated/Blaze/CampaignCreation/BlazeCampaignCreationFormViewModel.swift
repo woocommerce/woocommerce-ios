@@ -261,6 +261,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             type: Constants.campaignType)
     }
 
+    private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
 
@@ -271,6 +272,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         locale: Locale = .current,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -280,6 +282,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.productImageLoader = productImageLoader
+        self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
         self.completionHandler = onCompletion
@@ -434,7 +437,7 @@ private extension BlazeCampaignCreationFormViewModel {
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }
-        let objective = storage.viewStorage.retrieveBlazeCampaignObjective(id: savedID, locale: Locale.current.identifier)
+        let objective = storage.viewStorage.retrieveBlazeCampaignObjective(id: savedID, locale: locale.identifier)
         guard let readOnlyObjective = objective?.toReadOnly() else {
             return
         }

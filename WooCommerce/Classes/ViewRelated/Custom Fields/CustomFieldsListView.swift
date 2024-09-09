@@ -3,15 +3,22 @@ import SwiftUI
 struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
 
+    @ObservedObject private var viewModel: CustomFieldsListViewModel
+
     let isEditable: Bool
-    let customFields: [CustomFieldViewModel]
+    
+    init(isEditable: Bool,
+         viewModel: CustomFieldsListViewModel) {
+        self.isEditable = isEditable
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(alignment: .leading) {
-                        ForEach(customFields) { customField in
+                        ForEach(viewModel.customFields) { customField in
                             if isEditable {
                                 NavigationLink(destination: CustomFieldEditorView(key: customField.title,
                                                                                   value: customField.content)
@@ -150,10 +157,12 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         CustomFieldsListView(
             isEditable: false,
-            customFields: [
-                CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
-                CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-            ])
+            viewModel: CustomFieldsListViewModel(
+                customFields: [
+                    CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
+                    CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+                ])
+            )
     }
 }
 

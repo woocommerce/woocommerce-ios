@@ -765,6 +765,7 @@
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
 		2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */; };
 		2026ECE92C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026ECE82C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */; };
+		2027F74F2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2027F74E2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift */; };
 		202C6C562C7F667700413107 /* POSTextButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202C6C552C7F667700413107 /* POSTextButtonStyle.swift */; };
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
 		203163A92C1B5AA7001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163A82C1B5AA7001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel.swift */; };
@@ -3826,6 +3827,7 @@
 		2023E2AD2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentInLineMessage.swift; sourceTree = "<group>"; };
 		202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		2026ECE82C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentInvalidatablePaymentOrchestrator.swift; sourceTree = "<group>"; };
+		2027F74E2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift; sourceTree = "<group>"; };
 		202C6C552C7F667700413107 /* POSTextButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTextButtonStyle.swift; sourceTree = "<group>"; };
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
 		203163A82C1B5AA7001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel.swift; sourceTree = "<group>"; };
@@ -7778,6 +7780,7 @@
 			isa = PBXGroup;
 			children = (
 				2084B7A52C776DA200EFBD2E /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModelTests.swift */,
+				2027F74E2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift */,
 				2084B7A72C776E1000EFBD2E /* PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModelTests.swift */,
 				2084B7A92C776E9700EFBD2E /* PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModelTests.swift */,
 				2084B7AB2C776F0F00EFBD2E /* PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModelTests.swift */,
@@ -16716,6 +16719,7 @@
 				CE606D872BE29E89001CB424 /* ShippingLineSelectionDetailsViewModelTests.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
+				2027F74F2C8F0858004BDF73 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift in Sources */,
 				CC13C0CD278E086D00C0B5B5 /* ProductVariationSelectorViewModelTests.swift in Sources */,
 				DEB387982C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift in Sources */,
 				0371C36A2876DBCA00277E2C /* FeatureAnnouncementCardViewModelTests.swift in Sources */,

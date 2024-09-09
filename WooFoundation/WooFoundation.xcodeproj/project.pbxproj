@@ -20,6 +20,8 @@
 		035BA3A6290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */; };
 		036563D728F93F8D00D84BFD /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 036563D628F93F8D00D84BFD /* TestKit */; };
 		03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8C3882914083F002235B1 /* Bundle+Woo.swift */; };
+		2027F74D2C8F07DF004BDF73 /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2027F74C2C8F07DF004BDF73 /* Scheduler.swift */; };
+		2027F7522C8F0B95004BDF73 /* MockScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2027F7512C8F0B95004BDF73 /* MockScheduler.swift */; };
 		203758752AD55670000E4281 /* CountryCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203758742AD55670000E4281 /* CountryCode.swift */; };
 		20A3AFE92B14BAB20033AF2D /* Color+Adaptivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20A3AFE82B14BAB20033AF2D /* Color+Adaptivity.swift */; };
 		20AD34D32B0CDB8900F38F44 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 20AD34D22B0CDB8900F38F44 /* Codegen */; };
@@ -116,6 +118,8 @@
 		03597A9C28F93409005E4A98 /* WooCommerceComUTMProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceComUTMProviderTests.swift; sourceTree = "<group>"; };
 		035BA3A5290FF98D0056F0AD /* UTMProviderProtocolExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTMProviderProtocolExtensionTests.swift; sourceTree = "<group>"; };
 		03B8C3882914083F002235B1 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
+		2027F74C2C8F07DF004BDF73 /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
+		2027F7512C8F0B95004BDF73 /* MockScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockScheduler.swift; sourceTree = "<group>"; };
 		203758742AD55670000E4281 /* CountryCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCode.swift; sourceTree = "<group>"; };
 		20A3AFE82B14BAB20033AF2D /* Color+Adaptivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Adaptivity.swift"; sourceTree = "<group>"; };
 		264E9E9B2BF4037D009C48FD /* WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -268,6 +272,7 @@
 				686BE911288EE0D300967C86 /* TypedPredicates.swift */,
 				03597A9328F85686005E4A98 /* UTMParameters.swift */,
 				03597A9A28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift */,
+				2027F74C2C8F07DF004BDF73 /* Scheduler.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -300,6 +305,7 @@
 				689D11D22891B7D800F6A83F /* MockCrashLogger.swift */,
 				6896C8292C75D60D002DDAE2 /* MockAnalyticsPreview.swift */,
 				6896C82B2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift */,
+				2027F7512C8F0B95004BDF73 /* MockScheduler.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -697,6 +703,7 @@
 				02427F122BECA23300E2073B /* WooAnalyticsEventPropertyType.swift in Sources */,
 				02427F0E2BECA1D900E2073B /* AnalyticsProvider.swift in Sources */,
 				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
+				2027F7522C8F0B95004BDF73 /* MockScheduler.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
 				B97190D1292CF3BC0065E413 /* Result+Extensions.swift in Sources */,
@@ -710,6 +717,7 @@
 				0331A75B2A3B553A001D2C2C /* Color+ColorStudio.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
 				02427F092BECA12800E2073B /* Analytics.swift in Sources */,
+				2027F74D2C8F07DF004BDF73 /* Scheduler.swift in Sources */,
 				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
 				6896C82C2C75D638002DDAE2 /* MockAnalyticsProviderPreview.swift in Sources */,

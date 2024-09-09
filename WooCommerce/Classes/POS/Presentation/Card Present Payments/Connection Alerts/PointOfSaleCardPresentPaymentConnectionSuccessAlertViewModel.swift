@@ -1,14 +1,42 @@
 import Foundation
+import WooFoundation
 
-struct PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel: Hashable {
+class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel: Hashable {
     let title = Localization.title
     let imageName = PointOfSaleAssets.readerConnectionSuccess.imageName
     let buttonViewModel: CardPresentPaymentsModalButtonViewModel
+    private let scheduler: Scheduler
+    private let autoDismissAction: Cancellable
 
-    init(doneAction: @escaping () -> Void) {
+    init(doneAction: @escaping () -> Void,
+         scheduler: Scheduler = DefaultScheduler()) {
+
+        self.scheduler = scheduler
+        let autoDismissAction = scheduler.schedule(after: 3.0, action: doneAction)
+        self.autoDismissAction = autoDismissAction
+
         self.buttonViewModel = CardPresentPaymentsModalButtonViewModel(
             title: Localization.done,
-            actionHandler: doneAction)
+            actionHandler: {
+                autoDismissAction.cancel()
+                doneAction()
+            })
+    }
+
+    deinit {
+        autoDismissAction.cancel()
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(imageName)
+        hasher.combine(buttonViewModel)
+    }
+
+    static func == (lhs: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel, rhs: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel) -> Bool {
+        return lhs.title == rhs.title &&
+               lhs.imageName == rhs.imageName &&
+               lhs.buttonViewModel == rhs.buttonViewModel
     }
 }
 

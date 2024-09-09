@@ -177,6 +177,45 @@ final class BlazeCampaignObjectivePickerViewModelTests: XCTestCase {
         XCTAssertEqual(selectedItem, expectedItem)
     }
 
+    func test_confirmSelection_does_not_save_selected_objective_if_saveSelectionForFutureCampaigns_is_false() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = BlazeCampaignObjectivePickerViewModel(siteID: sampleSiteID,
+                                                              locale: locale,
+                                                              storageManager: storageManager,
+                                                              userDefaults: userDefaults,
+                                                              onSelection: { _ in })
+        XCTAssertNil(userDefaults[.blazeSelectedCampaignObjective])
+
+        // When
+        viewModel.saveSelectionForFutureCampaigns = false
+        viewModel.selectedObjective = BlazeCampaignObjective(id: "sales", title: "Sales", description: "", suitableForDescription: "", locale: locale.identifier)
+        viewModel.confirmSelection()
+
+        // Then
+        XCTAssertNil(userDefaults[.blazeSelectedCampaignObjective])
+    }
+
+    func test_confirmSelection_saves_selected_objective_if_saveSelectionForFutureCampaigns_is_true() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = BlazeCampaignObjectivePickerViewModel(siteID: sampleSiteID,
+                                                              locale: locale,
+                                                              storageManager: storageManager,
+                                                              userDefaults: userDefaults,
+                                                              onSelection: { _ in })
+        XCTAssertNil(userDefaults[.blazeSelectedCampaignObjective])
+
+        // When
+        viewModel.saveSelectionForFutureCampaigns = true
+        viewModel.selectedObjective = BlazeCampaignObjective(id: "sales", title: "Sales", description: "", suitableForDescription: "", locale: locale.identifier)
+        viewModel.confirmSelection()
+
+        // Then
+        XCTAssertEqual(userDefaults[.blazeSelectedCampaignObjective], ["\(sampleSiteID)": "sales"])
+    }
 }
 
 private extension BlazeCampaignObjectivePickerViewModelTests {

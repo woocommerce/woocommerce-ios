@@ -549,6 +549,49 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(encodedMetadata?[9]["key"] as? String, customFields[1].key)
         XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value)
     }
+
+    /// Test that metadata are properly encoded when id is nil.
+    /// This is a way to create new metadata.
+    ///
+    func test_metadata_without_id_is_properly_encoded() throws {
+        // Given
+        let customFieldWithoutID = MetaData(metadataID: nil, key: "key", value: "value")
+        let product = Product.fake().copy(customFields: [customFieldWithoutID])
+
+        // When
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(product)
+        let encodedJSON = try JSONSerialization.jsonObject(with: encodedData, options: []) as? [String: Any]
+
+        // Then
+        XCTAssertNotNil(encodedJSON)
+        let encodedMetadata = encodedJSON?["meta_data"] as? [[String: Any]]
+        XCTAssertEqual(encodedMetadata?.count, 1)
+        XCTAssertEqual(encodedMetadata?[0]["key"] as? String, customFieldWithoutID.key)
+        XCTAssertEqual(encodedMetadata?[0]["value"] as? String, customFieldWithoutID.value)
+        XCTAssertNil(encodedMetadata?[0]["id"])
+    }
+
+    /// Test that metadata are properly encoded when value is nil.
+    /// This is a way to delete existing metadata.
+    ///
+    func test_metadata_without_value_is_properly_encoded() throws {
+        // Given
+        let customFieldWithoutValue = MetaData(metadataID: 1, key: "key", value: nil)
+        let product = Product.fake().copy(customFields: [customFieldWithoutValue])
+
+        // When
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(product)
+        let encodedJSON = try JSONSerialization.jsonObject(with: encodedData, options: []) as? [String: Any]
+
+        // Then
+        XCTAssertNotNil(encodedJSON)
+        let encodedMetadata = encodedJSON?["meta_data"] as? [[String: Any]]
+        XCTAssertEqual(encodedMetadata?.count, 1)
+        XCTAssertEqual(encodedMetadata?[0]["key"] as? String, customFieldWithoutValue.key)
+        XCTAssertNil(encodedMetadata?[0]["value"])
+    }
 }
 
 

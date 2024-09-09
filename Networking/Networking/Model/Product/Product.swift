@@ -774,7 +774,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     private func buildCustomFields() -> [[String: String]] {
         var customFieldsArray: [[String: String]] = []
         for customField in customFields {
-            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value])
+            var fieldDict: [String: String] = ["key": customField.key]
+            if let metadataID = customField.metadataID {
+                fieldDict["id"] = String(describing: customField.metadataID)
+            }
+            if let value = customField.value {
+                fieldDict["value"] = value
+            }
+            customFieldsArray.append(fieldDict)
         }
         return customFieldsArray
     }

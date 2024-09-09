@@ -112,7 +112,7 @@ struct CustomFieldEditorView: View {
                     Button {
                         saveChanges()
                     } label: {
-                        Text("Save") // todo-13493: set String to be translatable
+                        Text("Done") // todo-13493: set String to be translatable
                     }
                     .disabled(!isModified)
 

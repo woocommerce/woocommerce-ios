@@ -6,7 +6,7 @@ struct CustomFieldsListView: View {
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
-    
+
     init(isEditable: Bool,
          viewModel: CustomFieldsListViewModel) {
         self.isEditable = isEditable
@@ -52,6 +52,23 @@ struct CustomFieldsListView: View {
                         }, label: {
                             Image(uiImage: .closeButton)
                         })
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        HStack {
+                            Button {
+                                // todo-13493: add save handling
+                            } label: {
+                                Text("Save") // todo-13493: set String to be translatable
+                            }
+                            Button(action: {
+                                // todo-13493: add addition handling
+                            }, label: {
+                                Image(systemName: "plus")
+                                    .renderingMode(.template)
+                            })
+
+                        }
+                        .renderedIf(isEditable)
                     }
                 }
                 .navigationTitle(Localization.title)

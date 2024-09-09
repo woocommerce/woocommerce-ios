@@ -5,10 +5,9 @@ struct BlazeBudgetSettingView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.sizeCategory) private var sizeCategory
+
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false
-    @State private var duration: Double = 0
-    @State private var startDate = Date()
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -37,10 +36,6 @@ struct BlazeBudgetSettingView: View {
         }
         .sheet(isPresented: $showingDurationSetting) {
             durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
-        }
-        .onAppear {
-            duration = viewModel.dayCount
-            startDate = viewModel.startDate
         }
     }
 }
@@ -175,69 +170,18 @@ private extension BlazeBudgetSettingView {
     }
 
     var durationSettingView: some View {
-        NavigationView {
-            ScrollableVStack(alignment: .leading, padding: Layout.contentPadding, spacing: Layout.sectionSpacing) {
-
-                // Start date picker
-                AdaptiveStack(horizontalAlignment: .leading) {
-                    Text(Localization.startDate)
-                        .bodyStyle()
-
-                    Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
-
-                    DatePicker(selection: $startDate,
-                               in: viewModel.minDayAllowedInPickerSelection...viewModel.maxDayAllowedInPickerSelection,
-                               displayedComponents: [.date]) {
-                        EmptyView()
-                    }
-                    .datePickerStyle(.compact)
-                }
-
-                // Toggle to switch between evergreen and not. Hidden under a feature flag.
-                Toggle(Localization.specifyDuration, isOn: $viewModel.hasEndDate)
-                    .toggleStyle(.switch)
-                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
-
-                Text(Localization.evergreenDescription)
-                    .secondaryBodyStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(viewModel.hasEndDate == false)
-
-                // Duration slider - available only if the campaign is not evergreen
-                VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
-                    // Duration and end date
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        Text(Localization.duration)
-                            .bodyStyle()
-                        Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
-                        AttributedText(viewModel.formatDayCount(duration))
-                    }
-
-                    Slider(value: $duration,
-                           in: viewModel.dayCountSliderRange,
-                           step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
-                }
-                .renderedIf(viewModel.hasEndDate)
-
-                Spacer()
-
-                // CTA
-                Button(Localization.apply) {
-                    viewModel.didTapApplyDuration(dayCount: duration, since: startDate)
-                    showingDurationSetting = false
-                }
-                .buttonStyle(PrimaryButtonStyle())
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Localization.schedule)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        showingDurationSetting = false
-                    }
-                }
-            }
-        }
+        BlazeScheduleSettingView(startDate: viewModel.startDate,
+                                 hasEndDate: viewModel.hasEndDate,
+                                 duration: viewModel.dayCount,
+                                 durationTextFormatter: { duration in
+            viewModel.formatDayCount(duration)
+        }, onCompletion: { startDate, hasEndDate, duration in
+            viewModel.hasEndDate = hasEndDate
+            viewModel.didTapApplyDuration(dayCount: duration, since: startDate)
+            showingDurationSetting = false
+        }, onDismiss: {
+            showingDurationSetting = false
+        })
     }
 }
 
@@ -308,35 +252,10 @@ private extension BlazeBudgetSettingView {
             value: "Done",
             comment: "Button to dismiss the Blaze impression info screen"
         )
-        static let duration = NSLocalizedString(
-            "blazeBudgetSettingView.duration",
-            value: "Duration",
-            comment: "Title label of the Blaze campaign duration field"
-        )
-        static let startDate = NSLocalizedString(
-            "blazeBudgetSettingView.startDate",
-            value: "Start date",
-            comment: "Label of the start date picker on the Blaze campaign duration setting screen"
-        )
-        static let apply = NSLocalizedString(
-            "blazeBudgetSettingView.apply",
-            value: "Apply",
-            comment: "Button to apply the changes on the Blaze campaign duration setting screen"
-        )
         static let forecastingFailed = NSLocalizedString(
             "blazeBudgetSettingView.forecastingFailed",
             value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
-        )
-        static let specifyDuration = NSLocalizedString(
-            "blazeBudgetSettingView.specifyDuration",
-            value: "Specify the duration",
-            comment: "Switch to enable an end date for a Blaze campaign."
-        )
-        static let evergreenDescription = NSLocalizedString(
-            "blazeBudgetSettingView.evergreenDescription",
-            value: "Campaign will run until you stop it.",
-            comment: "Label to explain when no end date is specified for a Blaze campaign."
         )
         static let estimatedImpressionsAccessibilityHint = NSLocalizedString(
             "blazeBudgetSettingView.estimatedImpressionsAccessibilityHint",

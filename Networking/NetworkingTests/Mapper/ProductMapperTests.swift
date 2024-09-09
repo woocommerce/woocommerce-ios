@@ -476,6 +476,79 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.groupOfQuantity, "2")
         XCTAssertEqual(product.combineVariationQuantities, false)
     }
+
+    /// Test that custom fields are properly parsed.
+    ///
+    func test_custom_fields_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductResponse().first)
+
+        // Then
+        XCTAssertEqual(product.customFields.count, 1)
+        XCTAssertEqual(product.customFields.first?.metadataID, 6000)
+        XCTAssertEqual(product.customFields.first?.key, "just_a_custom_field")
+        XCTAssertEqual(product.customFields.first?.value, "10")
+    }
+
+    /// Test that metadata and subscription are properly encoded.
+    ///
+    func test_metadata_and_subscription_are_properly_encoded() throws {
+        // Given
+        let customFields = [
+            MetaData(metadataID: 4223, key: "customKey1", value: "customValue1"),
+            MetaData(metadataID: 4224, key: "customKey2", value: "customValue2")
+        ]
+
+        let subscription = ProductSubscription(
+            length: "2",
+            period: .month,
+            periodInterval: "1",
+            price: "5",
+            signUpFee: "",
+            trialLength: "1",
+            trialPeriod: .week,
+            oneTimeShipping: true,
+            paymentSyncDate: "1",
+            paymentSyncMonth: "3"
+        )
+
+
+        // Given
+        let product = try XCTUnwrap(mapLoadSubscriptionProductResponse())
+        let subscriptionSettings = try XCTUnwrap(product.subscription)
+
+        // When
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(product)
+        let encodedJSON = try JSONSerialization.jsonObject(with: encodedData, options: []) as? [String: Any]
+
+        // Then
+        XCTAssertNotNil(encodedJSON)
+        let encodedMetadata = encodedJSON?["meta_data"] as? [[String: Any]]
+        XCTAssertEqual(encodedMetadata?.count, customFields.count + subscription.toKeyValuePairs().count) // Including subscription metadata
+        XCTAssertEqual(encodedMetadata?[0]["key"] as? String, "_subscription_length")
+        XCTAssertEqual(encodedMetadata?[0]["value"] as? String, subscription.length)
+        XCTAssertEqual(encodedMetadata?[1]["key"] as? String, "_subscription_period")
+        XCTAssertEqual(encodedMetadata?[1]["value"] as? String, subscription.period.rawValue)
+        XCTAssertEqual(encodedMetadata?[2]["key"] as? String, "_subscription_period_interval")
+        XCTAssertEqual(encodedMetadata?[2]["value"] as? String, subscription.periodInterval)
+        XCTAssertEqual(encodedMetadata?[3]["key"] as? String, "_subscription_price")
+        XCTAssertEqual(encodedMetadata?[3]["value"] as? String, subscription.price)
+        XCTAssertEqual(encodedMetadata?[4]["key"] as? String, "_subscription_sign_up_fee")
+        XCTAssertEqual(encodedMetadata?[4]["value"] as? String, subscription.signUpFee)
+        XCTAssertEqual(encodedMetadata?[5]["key"] as? String, "_subscription_trial_length")
+        XCTAssertEqual(encodedMetadata?[5]["value"] as? String, subscription.trialLength)
+        XCTAssertEqual(encodedMetadata?[6]["key"] as? String, "_subscription_trial_period")
+        XCTAssertEqual(encodedMetadata?[6]["value"] as? String, subscription.trialPeriod.rawValue)
+        XCTAssertEqual(encodedMetadata?[7]["key"] as? String, "_subscription_one_time_shipping")
+        XCTAssertEqual(encodedMetadata?[7]["value"] as? String, subscription.oneTimeShipping ? "yes" : "no")
+        XCTAssertEqual(Int64(encodedMetadata?[8]["id"] as? String ?? ""), customFields[0].metadataID)
+        XCTAssertEqual(encodedMetadata?[8]["key"] as? String, customFields[0].key)
+        XCTAssertEqual(encodedMetadata?[8]["value"] as? String, customFields[0].value)
+        XCTAssertEqual(Int64(encodedMetadata?[9]["id"] as? String ?? ""), customFields[1].metadataID)
+        XCTAssertEqual(encodedMetadata?[9]["key"] as? String, customFields[1].key)
+        XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value)
+    }
 }
 
 

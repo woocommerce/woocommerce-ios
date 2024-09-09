@@ -62,6 +62,14 @@ private extension BlazeEditAdHostingController {
                     let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems)
                     continuation.resume(returning: image)
                 }
+            }, onProductImagePickerCompletion: { [weak self] productImage in
+                guard let self, let productImage else {
+                    return continuation.resume(returning: nil)
+                }
+                Task { @MainActor in
+                    let image = await self.onProductImageCompletion(productImage: productImage)
+                    continuation.resume(returning: image)
+                }
             })
             self.mediaPickingCoordinator = mediaPickingCoordinator
             mediaPickingCoordinator.showMediaPicker(source: source, from: self)
@@ -104,6 +112,19 @@ private extension BlazeEditAdHostingController {
         }
 
         return .init(image: image, source: .media(media: media))
+    }
+}
+
+// MARK: - Action handling for product image
+//
+private extension BlazeEditAdHostingController {
+    @MainActor
+    func onProductImageCompletion(productImage: ProductImage) async -> MediaPickerImage? {
+        guard let image = try? await productImageLoader.requestImage(productImage: productImage) else {
+            return nil
+        }
+
+        return .init(image: image, source: .productImage(image: productImage))
     }
 }
 

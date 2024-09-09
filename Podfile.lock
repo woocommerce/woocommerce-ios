@@ -12,9 +12,9 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (8.33.0):
-    - Sentry/Core (= 8.33.0)
-  - Sentry/Core (8.33.0)
+  - Sentry (8.36.0):
+    - Sentry/Core (= 8.36.0)
+  - Sentry/Core (8.36.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (3.3.1)
@@ -62,7 +62,7 @@ DEPENDENCIES:
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
-  - Sentry (~> 8.33.0)
+  - Sentry (~> 8.36.0)
   - Sourcery (~> 1.0.3)
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
@@ -118,7 +118,7 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 8560050221424aef0bebc8e31eedf00af80f90a6
+  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 369ef0cf0b90d838f42be1a0b371475986f4b79f
@@ -142,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: 60414588e43bf7bc146dc0c04130e78fdb3f2ece
+PODFILE CHECKSUM: d88a80a9b04884efea51b95bc6b622eb3395b207
 
 COCOAPODS: 1.15.2

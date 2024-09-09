@@ -41,9 +41,20 @@ final class ProductSettingsViewModel {
             sections = Self.configureSections(productSettings)
         case .edit:
             sections = Self.configureSections(productSettings)
-            /// If nil, we fetch the password from site post API because it was never fetched
-            /// Skip this if the user is not authenticated with WPCom.
-            if password == nil && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+
+            /// if store has WC 8.1 or above, we use the `password` field in Product model.
+            if ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint() {
+                guard let productPassword = product.password else {
+                    return
+                }
+                self.onPasswordRetrieved?(productPassword)
+                self.password = productPassword
+                self.productSettings.password = productPassword
+                self.sections = Self.configureSections(self.productSettings)
+            }
+            /// If user is not on WC 8.1, and if the password is empty/nil,
+            /// and user is authenticated with WP.com, enter here, otherwise we skip this.
+            else if (product.password == nil || product.password?.isEmpty == true) && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
                 retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
                     guard let self = self else {
                         return

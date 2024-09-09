@@ -83,7 +83,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let menuOrder: Int
 
-    public let addOns: [ProductAddOn]
+    public let addOns: [ProductAddOn] //TODO: migrate AddOns to MetaData
 
     /// Whether the product was added automatically for a trial store
     public let isSampleItem: Bool
@@ -117,7 +117,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     // MARK: Subscription Product properties
 
     /// Subscription settings. Applicable to subscription-type products only.
-    public let subscription: ProductSubscription?
+    public let subscription: ProductSubscription? //TODO: migrate subscription to MetaData
 
     // MARK: Min/Max Quantities properties
 
@@ -133,6 +133,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Combines the quantities of all purchased variations when checking quantity rules.
     /// Applicable with variable products and Min/Max Quantities extension only.
     public let combineVariationQuantities: Bool?
+
+    public let customFields: [MetaData]
 
     /// Computed Properties
     ///
@@ -261,7 +263,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 minAllowedQuantity: String?,
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
-                combineVariationQuantities: Bool?) {
+                combineVariationQuantities: Bool?,
+                customFields: [MetaData]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -338,6 +341,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
+        self.customFields = customFields
     }
 
     /// The public initializer for Product.
@@ -521,6 +525,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
+        // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
+        let customFields = (try? container.decode([MetaData].self, forKey: .metadata).filter({ !$0.key.hasPrefix("_")})) ?? []
+
         // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.
         // https://github.com/woocommerce/woocommerce-ios/issues/4205
@@ -632,7 +639,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   minAllowedQuantity: minAllowedQuantity,
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
-                  combineVariationQuantities: combineVariationQuantities)
+                  combineVariationQuantities: combineVariationQuantities,
+                  customFields: customFields)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -738,25 +746,39 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
         try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
 
-        // Attributes
-        try container.encode(attributes, forKey: .attributes)
+        // Password
+        try container.encode(password, forKey: .password)
 
         // Metadata
-        let metaDataValuePairs = buildMetaDataValuePairs()
+        var metaDataValuePairs = buildMetaDataValuePairs()
+
+        // Add custom fields to metadata
+        let customFields = buildCustomFields()
+        metaDataValuePairs.append(contentsOf: customFields)
+
+        // Encode metadata if it's not empty
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
         }
-
-        // Password
-        try container.encode(password, forKey: .password)
     }
 
-    private func buildMetaDataValuePairs() -> [KeyValuePair] {
+    private func buildMetaDataValuePairs() -> [[String: String]] {
+        var metaDataArray: [[String: String]] = []
         if let subscription {
-            return subscription.toKeyValuePairs()
+            metaDataArray.append(contentsOf: subscription.toKeyValuePairs().map { ["key": $0.key, "value": $0.value] })
         }
-        return []
+        return metaDataArray
     }
+
+    // Function to get the custom fields
+    private func buildCustomFields() -> [[String: String]] {
+        var customFieldsArray: [[String: String]] = []
+        for customField in customFields {
+            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value])
+        }
+        return customFieldsArray
+    }
+
 }
 
 public extension Product {

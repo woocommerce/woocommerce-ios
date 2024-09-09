@@ -12,6 +12,7 @@ extension MetaData {
     @NSManaged public var value: String?
     @NSManaged public var metadataID: Int64
     @NSManaged public var order: Order?
+    @NSManaged public var product: Product?
 
 }
 

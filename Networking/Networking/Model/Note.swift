@@ -142,7 +142,6 @@ extension Note {
     }
 }
 
-
 // MARK: - Decodable Conformance
 //
 extension Note: Decodable {
@@ -153,7 +152,7 @@ extension Note: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let noteID = try container.decode(Int64.self, forKey: .noteID)
-        let hash = try container.decode(Int64.self, forKey: .hash)
+        let hash = container.failsafeDecodeIfPresent(Int64.self, forKey: .hash) ?? Int64.min
 
         let read = container.failsafeDecodeIfPresent(booleanForKey: .read) ?? false
         let icon = container.failsafeDecodeIfPresent(String.self, forKey: .icon)

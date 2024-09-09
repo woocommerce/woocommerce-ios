@@ -37,6 +37,9 @@ final class OrderNotificationViewModel {
         }
 
         let dataService = OrderNotificationDataService(credentials: credentials)
+        if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
+            return try await dataService.loadOrderFrom(notification: notificationData)
+        }
         return try await dataService.loadOrderFrom(noteID: noteID)
     }
 

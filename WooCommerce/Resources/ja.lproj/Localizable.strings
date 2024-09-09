@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-08-28 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-02 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -753,7 +753,7 @@ which should be translated separately and considered part of this sentence. */
 "An error occured while closing account." = "アカウントの閉鎖中にエラーが発生しました。";
 
 /* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again" = "Bluetooth へのアクセス時にエラーが発生しました。Bluetooth を有効にしてから、もう一度お試しください。";
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Bluetooth へのアクセス時にエラーが発生しました。Bluetooth を有効にしてから、もう一度お試しください。";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "メニューを作成する際にエラーが発生しました。";
@@ -774,16 +774,16 @@ which should be translated separately and considered part of this sentence. */
 "An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "写真のスキャン中にエラーが発生しました。 別のパッケージ写真を選択するか、商品の詳細を手動で入力してください。";
 
 /* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment" = "同一の取引が最近送信されています。 続行する場合は、別の支払方法をお試しください";
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "同一の取引が最近送信されています。 続行する場合は、別の支払方法をお試しください";
 
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "画像のアップロードに失敗しました";
 
 /* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment" = "上限回数を超えて誤った PIN が入力されました。 別の支払方法をお試しください";
+"An incorrect PIN has been entered too many times. Try another means of payment." = "上限回数を超えて誤った PIN が入力されました。 別の支払方法をお試しください";
 
 /* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment" = "誤った PIN が入力されました。 再度お試しいただくか、別の支払い方法をお使いください";
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "誤った PIN が入力されました。 再度お試しいただくか、別の支払い方法をお使いください";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "購入後、お客様に送るオプション備考";
@@ -1385,10 +1385,10 @@ which should be translated separately and considered part of this sentence. */
 "Card reader manuals" = "カードリーダーマニュアル";
 
 /* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card" = "カードがリーダーに残っています。カードを取り外して、もう一度挿入してください";
+"Card was left in reader - please remove and reinsert card." = "カードがリーダーに残っています。カードを取り外して、もう一度挿入してください";
 
 /* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again" = "カードの取り外しが早すぎました。取引をもう一度お試しください。";
+"Card was removed too soon - please try transaction again." = "カードの取り外しが早すぎました。取引をもう一度お試しください。";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "キャンセル";
@@ -1775,7 +1775,7 @@ which should be translated separately and considered part of this sentence. */
 "Connecting to reader" = "Reader に接続しています";
 
 /* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again" = "カードリーダーとの接続がタイムアウトしました。充電されたカードリーダーが近くにあることを確認し、もう一度お試しください。";
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "カードリーダーとの接続がタイムアウトしました。充電されたカードリーダーが近くにあることを確認し、もう一度お試しください。";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "アカウントへの接続";
@@ -4603,7 +4603,7 @@ which should be translated separately and considered part of this sentence. */
 "No campaigns yet" = "まだキャンペーンはありません";
 
 /* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again" = "カードリーダーが接続されていません。リーダーを接続してもう一度お試しください。";
+"No card reader is connected - connect a reader and try again." = "カードリーダーが接続されていません。リーダーを接続してもう一度お試しください。";
 
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "カテゴリーが選択されていません";
@@ -4615,7 +4615,7 @@ which should be translated separately and considered part of this sentence. */
 "No connection issues" = "接続の問題なし";
 
 /* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again" = "インターネットに接続されていません。インターネットに接続してもう一度お試しください。";
+"No connection to the Internet - please connect to the Internet and try again." = "インターネットに接続されていません。インターネットに接続してもう一度お試しください。";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "クーポンがありません";
@@ -5114,7 +5114,7 @@ which should be translated separately and considered part of this sentence. */
 "Payment Totals" = "支払総額";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment" = "資金が不足しているため支払いが拒否されました。 別の支払方法をお試しください";
+"Payment declined due to insufficient funds. Try another means of payment." = "資金が不足しているため支払いが拒否されました。 別の支払方法をお試しください";
 
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "支払いに失敗しました";
@@ -5130,10 +5130,10 @@ which should be translated separately and considered part of this sentence. */
 "Payment successful" = "支払いに成功しました";
 
 /* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment" = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
+"Payment was declined for an unknown reason. Try another means of payment." = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
 
 /* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment" = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
+"Payment was declined for an unspecified reason. Try another means of payment." = "不明な理由により支払いが拒否されました。 別の支払方法をお試しください";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -5219,7 +5219,7 @@ which should be translated separately and considered part of this sentence. */
 "Please check the remaining balance of the gift card." = "ギフトカードの残高を確認してください。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID が有効であることを確認してから、もう一度お試しください。 Apple の利用規約に同意するには、有効な Apple ID が必要です";
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Apple ID が有効であることを確認してから、もう一度お試しください。 Apple の利用規約に同意するには、有効な Apple ID が必要です";
 
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "ブラウザーの管理画面から Jetpack を接続するか、サポートにお問い合わせください。";
@@ -5231,7 +5231,7 @@ which should be translated separately and considered part of this sentence. */
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "ヘルプが必要な場合はサポートにご連絡ください。";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device */
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
 "Please contact support – there was an issue starting Tap to Pay on iPhone" = "サポートにお問い合わせください。Tap to Pay on iPhone を開始する際に問題が発生しました";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
@@ -5325,7 +5325,7 @@ which should be translated separately and considered part of this sentence. */
 "Please select a package" = "荷物を選択してください";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Tap to Pay on iPhone を使用するには、この端末で iCloud にログインしてください";
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Tap to Pay on iPhone を使用するには、この端末で iCloud にログインしてください";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "しばらくしてから再度お試しいただくか、サポートをご依頼ください。";
@@ -5340,7 +5340,7 @@ which should be translated separately and considered part of this sentence. */
 "Please try again or reach out to us and we'll be happy to assist you!" = "再度お試しいただくか、サポートをご依頼ください。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone" = "もう一度お試しいただき、Apple の利用規約に同意すると、Tap to Pay on iPhone を使用できるようになります";
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "もう一度お試しいただき、Apple の利用規約に同意すると、Tap to Pay on iPhone を使用できるようになります";
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "もう一度お試しいただくか、ヘルプが必要な場合はサポートにご連絡ください";
@@ -6791,8 +6791,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this payment couldn’t be processed" = "支払いを処理できませんでした";
 
+/* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "この支払いを処理できませんでした。";
+
 /* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled" = "この返金をキャンセルできませんでした";
+"Sorry, this refund could not be canceled." = "この返金をキャンセルできませんでした";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "返金を処理できませんでした";
@@ -7023,7 +7026,7 @@ which should be translated separately and considered part of this sentence. */
 "System status report copied to clipboard" = "システムステータスレポートをクリップボードにコピーしました";
 
 /* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment" = "システムテストカードは支払いを許可されていません。 別の支払方法をお試しください";
+"System test cards are not permitted for payment. Try another means of payment." = "システムテストカードは支払いを許可されていません。 別の支払方法をお試しください";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "サントメ・プリンシペ";
@@ -7271,7 +7274,7 @@ which should be translated separately and considered part of this sentence. */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "ご使用のストアに %1$@ 拡張機能がインストールされていますが、オフラインでの支払いを行うには更新する必要があります。 最新バージョンに更新してください。";
 
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly" = "Bluetooth とカードリーダーの接続が予期せず切断されました";
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "Bluetooth とカードリーダーの接続が予期せず切断されました";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google アカウント「%@」は、WordPress.com のアカウントと一致しません";
@@ -7295,46 +7298,52 @@ which should be translated separately and considered part of this sentence. */
 "The attribute couldn't be saved." = "属性を保存できませんでした。";
 
 /* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment" = "カードはこの通貨をサポートしていません。 別の支払方法をお試しください";
+"The card does not support this currency. Try another means of payment." = "カードはこの通貨をサポートしていません。 別の支払方法をお試しください";
 
 /* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment" = "カードはこの種類の購入をサポートしていません。 別の支払方法をお試しください";
+"The card does not support this type of purchase. Try another means of payment." = "カードはこの種類の購入をサポートしていません。 別の支払方法をお試しください";
 
 /* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment" = "カードの有効期限が過ぎています。 別の支払方法をお試しください";
+"The card has expired. Try another means of payment." = "カードの有効期限が過ぎています。 別の支払方法をお試しください";
 
 /* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment" = "カードまたはカード口座が無効です。 別の支払方法をお試しください";
+"The card or card account is invalid. Try another means of payment." = "カードまたはカード口座が無効です。 別の支払方法をお試しください";
 
 /* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again" = "カードリーダーは別のコマンドを実行中です。もう一度お試しください。";
+"The card reader is busy executing another command - please try again." = "カードリーダーは別のコマンドを実行中です。もう一度お試しください。";
 
 /* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader" = "カードリーダーにこのアプリケーションとの互換性がありません。アプリケーションをアップデートするか、別のリーダーを使用してください。";
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "カードリーダーにこのアプリケーションとの互換性がありません。アプリケーションをアップデートするか、別のリーダーを使用してください。";
 
 /* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again" = "カードリーダーのセッションの期限が切れています。カードリーダーの接続を解除し、接続し直してからもう一度お試しください。";
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "カードリーダーのセッションの期限が切れています。カードリーダーの接続を解除し、接続し直してからもう一度お試しください。";
 
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "カードリーダーのソフトウェアの期限が切れています。カードリーダーのソフトウェアを更新してから、支払いを処理してみてください。";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "カードリーダーのソフトウェアの期限が切れています。カードリーダーのソフトウェアを更新してから支払いを処理してください。";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "カードリーダーのソフトウェアの期限が切れています。カードリーダーのソフトウェアを更新してから、返金を処理してみてください。";
 
 /* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again" = "通信エラーにより、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
+"The card reader software update failed due to a communication error - please try again." = "通信エラーにより、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
 
 /* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again" = "更新サーバーに問題が発生したため、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
+"The card reader software update failed due to a problem with the update server - please try again." = "更新サーバーに問題が発生したため、カードリーダーのソフトウェアの更新に失敗しました。もう一度お試しください。";
 
 /* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again" = "カードリーダーのソフトウェアの更新が予期せずに失敗しました。もう一度お試しください。";
+"The card reader software update failed unexpectedly - please try again." = "カードリーダーのソフトウェアの更新が予期せずに失敗しました。もう一度お試しください。";
 
 /* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again" = "カードリーダーのソフトウェアの更新が完了する前に中断されました。もう一度お試しください。";
+"The card reader software update was interrupted before it could complete - please try again." = "カードリーダーのソフトウェアの更新が完了する前に中断されました。もう一度お試しください。";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "カードがカードリーダーにより拒否されました。別の支払方法をお試しください。";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "カードがカードリーダーによって拒否されました。別の支払い方法をお試しください。";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "カードリーダーでカードが拒否されました。別の支払方法をお試しください。";
@@ -7343,7 +7352,7 @@ which should be translated separately and considered part of this sentence. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "カードが iPhone カードリーダーに拒否されました。別の支払い方法をお試しください";
 
 /* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment" = "カードが決済業者により拒否されました。別の支払方法をお試しください。";
+"The card was declined by the payment processor - please try another means of payment." = "カードが決済業者によって拒否されました。別の支払い方法をお試しください。";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
@@ -7400,7 +7409,7 @@ which should be translated separately and considered part of this sentence. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "この支払い方法は自動返金をサポートしていません。 顧客に手動で送金し、払い戻しを完了してください。";
 
 /* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader" = "リーダーで支払いがキャンセルされました";
+"The payment was canceled on the reader." = "リーダーで支払いがキャンセルされました";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "支払いがキャンセルされました。";
@@ -7433,7 +7442,7 @@ which should be translated separately and considered part of this sentence. */
 "The refund can not be processed by the payment processor." = "決済業者はこの返金を処理できません。";
 
 /* Error message when a request times out. */
-"The request timed out - please try again" = "リクエストがタイムアウトしました。もう一度お試しください。";
+"The request timed out - please try again." = "リクエストがタイムアウトしました。もう一度お試しください。";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "アプリケーションパスワードを生成するリクエストが承認されていません。";
@@ -7490,16 +7499,16 @@ which should be translated separately and considered part of this sentence. */
 "The store postal code is invalid or missing, please update it before continuing." = "ストアの郵便番号が無効または不明です。郵便番号を更新してから続行してください。";
 
 /* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again" = "システムによりコマンドが予期せずキャンセルされました。もう一度お試しください。";
+"The system canceled the command unexpectedly - please try again." = "システムによりコマンドが予期せずキャンセルされました。もう一度お試しください。";
 
 /* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error" = "システムで予期しないソフトウェアエラーが発生しました";
+"The system experienced an unexpected software error." = "システムで予期しないソフトウェアエラーが発生しました";
 
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "現在、サイトのシステムステータスレポートを取得できません。 もう一度お試しください。";
 
 /* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment" = "取引の郵便番号とカードの郵便番号が一致しません。 別の支払方法をお試しください";
+"The transaction postal code and card postal code do not match. Try another means of payment." = "取引の郵便番号とカードの郵便番号が一致しません。 別の支払方法をお試しください";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "お試しの支払いを開始できませんでした。もう一度お試しいただくか、この問題が解決しない場合はサポートにご連絡ください。";
@@ -7618,7 +7627,7 @@ which should be translated separately and considered part of this sentence. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "このアプリでサポートされているユーザー権限グループは、管理者とショップマネージャーのみです。 自分の権限グループを更新するには、ストア所有者に連絡してください。";
 
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment" = "このカードには PIN コードが必要なため、処理できません。 別の支払方法をお試しください";
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "このカードには PIN コードが必要なため、処理できません。 別の支払方法をお試しください";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "ストアに追加のセキュリティ措置が講じられていることが原因の可能性があります。";
@@ -7912,7 +7921,7 @@ which should be translated separately and considered part of this sentence. */
 "Try again with WP-Admin page" = "WP 管理画面ページで再試行";
 
 /* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment" = "別の支払方法をお試しください";
+"Try another means of payment." = "別の支払方法をお試しください";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "ストアにアクセスするには、もう一度接続してみてください。";
@@ -7927,7 +7936,7 @@ which should be translated separately and considered part of this sentence. */
 "Try with the site address" = "サイトアドレスで試す";
 
 /* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment" = "もう一度試すか、別の支払方法をお試しください";
+"Trying again may succeed, or try another means of payment." = "もう一度試すか、別の支払方法をお試しください";
 
 /* Country option for a site address. */
 "Tunisia" = "チュニジア";
@@ -7985,10 +7994,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable To Connect" = "接続できない";
 
 /* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again" = "Bluetooth にアクセスできません。Bluetooth を有効にしてから、もう一度お試しください。";
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "Bluetooth にアクセスできません。Bluetooth を有効にしてから、もう一度お試しください。";
 
 /* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again" = "位置情報サービスにアクセスできません。位置情報サービスを有効にしてから、もう一度お試しください。";
+"Unable to access Location Services - please enable Location Services and try again." = "位置情報サービスにアクセスできません。位置情報サービスを有効にしてから、もう一度お試しください。";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "クーポンを追加できません。";
@@ -8003,13 +8012,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
 
 /* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again" = "リーダーと通信できません。もう一度お試しください。";
+"Unable to communicate with reader - please try again." = "リーダーと通信できません。もう一度お試しください。";
 
 /* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use" = "このカードリーダーは使用中のため接続できません。";
+"Unable to connect to card reader - the card reader is already in use." = "このカードリーダーは使用中のため接続できません。";
 
 /* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected" = "リーダーに接続できません。別のリーダーにすでに接続されています。";
+"Unable to connect to reader - another reader is already connected." = "リーダーに接続できません。別のリーダーにすでに接続されています。";
 
 /* Error message the card reader battery level is too low to connect to the phone or tablet. */
 "Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "リーダーのバッテリー残量が極めて少ないため、リーダーに接続できません。リーダーを充電してからもう一度お試しください。";
@@ -8099,13 +8108,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to mark review as %@" = "レビューを%@に変更できませんでした";
 
 /* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader" = "機能がサポートされていないため、接続されているリーダーではリクエストを実行できません。別のリーダーを使ってもう一度お試しください。";
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "機能がサポートされていないため、接続されているリーダーではリクエストを実行できません。別のリーダーを使ってもう一度お試しください。";
 
 /* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again" = "ソフトウェアのリクエストを実行できません。アプリケーションをアップデートしてから、もう一度お試しください。";
+"Unable to perform software request - please update this application and try again." = "ソフトウェアのリクエストを実行できません。アプリケーションをアップデートしてから、もう一度お試しください。";
 
 /* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again" = "無効なデータのため支払いを処理できません。もう一度お試しください。";
+"Unable to process payment due to invalid data - please try again." = "無効なデータのため支払いを処理できません。もう一度お試しください。";
 
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "支払いを処理できません。 注文の合計金額が請求可能な最低金額 (%1$@) を下回っています。";
@@ -8126,13 +8135,13 @@ which should be translated separately and considered part of this sentence. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "支払いを処理できません。 最新の注文の詳細を取得できませんでした。 ネットワーク接続を確認して、もう一度お試しください。 根本的なエラー: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again" = "システムがタイムアウトしたため、カードの読み取りができません。もう一度お試しください。";
+"Unable to read card - the system timed out - please try again." = "システムがタイムアウトしたため、カードの読み取りができません。もう一度お試しください。";
 
 /* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again" = "カードの読み取りができません。カードを取り外し、もう一度挿入してください。";
+"Unable to read inserted card - please try removing and inserting card again." = "カードの読み取りができません。カードを取り外し、もう一度挿入してください。";
 
 /* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again" = "カードの読み取りができません。もう一度スワイプしてください。";
+"Unable to read swiped card - please try swiping again." = "カードの読み取りができません。もう一度スワイプしてください。";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "その URL の WordPress サイトを読み込めません。 「ヘルプが必要ですか ?」をタップして FAQ を表示してください。";
@@ -8157,10 +8166,10 @@ which should be translated separately and considered part of this sentence. */
 "Unable to save changes. Please try again." = "変更内容を保存できません。 もう一度お試しください。";
 
 /* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device" = "カードリーダーを検索できません。お使いのデバイスでは Bluetooth Low Energy がサポートされていません。別のデバイスをご使用ください。";
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "カードリーダーを検索できません。お使いのデバイスでは Bluetooth Low Energy がサポートされていません。別のデバイスをご使用ください。";
 
 /* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again" = "Bluetooth のタイムアウトにより、カードリーダーを検索できません。もう一度お試しください";
+"Unable to search for card readers - Bluetooth timed out - please try again." = "Bluetooth のタイムアウトにより、カードリーダーを検索できません。もう一度お試しください";
 
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "お客様の詳細を設定できません。";
@@ -8169,7 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 "Unable to update address." = "住所を更新できません。";
 
 /* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low" = "リーダーのバッテリー残量が少ないため、カードリーダーのソフトウェアを更新できません";
+"Unable to update card reader software - the reader battery is too low." = "リーダーのバッテリー残量が少ないため、カードリーダーのソフトウェアを更新できません";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "価格を更新できません";
@@ -8978,7 +8987,7 @@ which should be translated separately and considered part of this sentence. */
 "You need to add a password to make your product password-protected" = "商品をパスワードで保護するには、パスワードを追加する必要があります";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Tap to Pay on iPhone を使用するには、ロック画面のパスコードを設定する必要があります。";
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Tap to Pay on iPhone を使用するには、ロック画面のパスコードを設定する必要があります。";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "アプリがブログに接続するのを防止するモバイルプラグインが DudaMobile からインストールされたようです。";
@@ -9395,20 +9404,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "キャンセル";
 
+/* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpend" = "1日あたりの支出";
+
+/* Subtitle of the Blaze budget setting screen */
+"blazeBudgetSettingView.description" = "キャンペーンに費やす費用はいくらですか ? また、キャンペーンの期間はどの程度ですか ?";
+
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "完了";
 
-/* Label for the campaign duration on the Blaze budget setting screen */
+/* Title label of the Blaze campaign duration field */
 "blazeBudgetSettingView.duration" = "期間";
 
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "編集";
 
-/* Label for the estimated impressions on the Blaze budget setting screen */
-"blazeBudgetSettingView.estimatedImpressions" = "1日あたりの推定リーチ数";
+/* Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen */
+"blazeBudgetSettingView.estimatedImpressionsAccessibilityHint" = "タップして推定インプレッション数の詳細を確認";
 
-/* Switch to toggle evergreen mode on or off for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenCampaign" = "止めるまで実行します";
+/* Label for the estimated impressions on the Blaze budget setting screen */
+"blazeBudgetSettingView.estimatedTotalImpressions" = "推定合計インプレッション数";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeBudgetSettingView.evergreenDescription" = "キャンペーンは停止するまで実行されます。";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "インプレッションを推定できませんでした。 再試行しますか ?";
@@ -9419,14 +9437,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the modal to explain Blaze campaign impressions */
 "blazeBudgetSettingView.impressions" = "インプレッション";
 
-/* Title of the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.setDuration" = "期間を設定する";
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeBudgetSettingView.schedule" = "予約";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeBudgetSettingView.specifyDuration" = "期間を特定";
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.starts" = "開始";
-
-/* Subtitle of the Blaze budget setting screen */
-"blazeBudgetSettingView.subtitle" = "商品プロモーションキャンペーンにいくら使いますか ?";
+"blazeBudgetSettingView.startDate" = "開始日";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "予算を設定する";
@@ -9437,29 +9455,29 @@ which should be translated separately and considered part of this sentence. */
 /* The formatted amount to be spent on a Blaze campaign daily. Reads like: $15 daily */
 "blazeBudgetSettingViewModel.dailyAmount" = "毎日%1$@";
 
-/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
-"blazeBudgetSettingViewModel.evergreenCampaignDate" = "%1$@に開始";
+/* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
+"blazeBudgetSettingViewModel.dayCountToEndDate" = "%2$@まで%1$@";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d日間";
 
+/* The formatted date for an evergreen Blaze campaign, with the starting date in the placeholder. Read as Starting from May 11. */
+"blazeBudgetSettingViewModel.ongoingCampaignDate" = "%1$@から進行中";
+
 /* The duration for a Blaze campaign in singular form. */
 "blazeBudgetSettingViewModel.singleDay" = "%1$d日間";
+
+/* The total amount with duration for a Blaze campaign in plural form. Reads like: $35 USD for 7 days */
+"blazeBudgetSettingViewModel.totalAmountMultipleDays" = "%2$d日間で%1$@";
+
+/* The total amount with duration for a Blaze campaign in singular form. Reads like: $35 USD for 1 day */
+"blazeBudgetSettingViewModel.totalAmountSingleDay" = "%2$d日で%1$@";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeBudgetSettingViewModel.totalBudget" = "$%.0f USD";
 
-/* The total duration for a Blaze campaign in plural form. Reads like: for 10 days */
-"blazeBudgetSettingViewModel.totalDurationMultipleDays" = "%1$d日間";
-
-/* The total duration for a Blaze campaign in singular form. Reads like: for 1 day */
-"blazeBudgetSettingViewModel.totalDurationSingleDay" = "%1$d日間";
-
-/* Label for total spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.totalSpend" = "総支出";
-
-/* Label for weekly spend on the Blaze budget setting screen */
-"blazeBudgetSettingViewModel.weeklySpend" = "週の支出";
+/* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
+"blazeBudgetSettingViewModel.weeklySpendAmount" = "毎週%1$@の支出";
 
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "キャンセル";
@@ -10008,6 +10026,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "bottomSheetProductType.variableSubscriptionProduct.title" = "バリエーションのある定期購入";
 
+/* Default accessibility label for a custom indeterminate progress view, used for card payments. */
+"card.waves.progressView.accessibilityLabel" = "進行中";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
 
@@ -10170,6 +10191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
+
+/* Accessibility title for the search button on the customer section. */
+"customer.search.button.accessibilityLabel" = "お客様を検索";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "ゲスト";
@@ -10583,6 +10607,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "すべてのキャンペーンを表示";
+
+/* Title of the view containing Coupons list
+   Title of the view containing Reviews list */
+"hubMenu.coupons" = "レビュー";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "顧客";
@@ -11319,11 +11347,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a button that when tapped, starts the process of connecting to a card reader */
 "pointOfSale.cardPresentPayment.alert.foundReader.connect.button.title" = "リーダーに接続";
 
+/* Dialog description that asks the user if they want to connect to a specific found card reader. They can instead, keep searching for more readers. */
+"pointOfSale.cardPresentPayment.alert.foundReader.description" = "このリーダーに接続しますか ?";
+
 /* Label for a button that when tapped, continues searching for card readers */
 "pointOfSale.cardPresentPayment.alert.foundReader.keepSearching.button.title" = "検索を続行";
 
 /* Dialog title that displays the name of a found card reader */
-"pointOfSale.cardPresentPayment.alert.foundReader.title" = "リーダー %1$@ に接続しますか ?";
+"pointOfSale.cardPresentPayment.alert.foundReader.title.2" = "%1$@ が見つかりました";
 
 /* Label for a cancel button when an optional software update is happening */
 "pointOfSale.cardPresentPayment.alert.optionalReaderUpdateInProgress.button.cancel.title" = "キャンセル";
@@ -11391,6 +11422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails */
 "pointOfSale.cardPresentPayment.alert.scanningFailed.title" = "リーダーに接続できませんでした";
 
+/* The default accessibility label for an `x` close button on a card reader connection modal. */
+"pointOfSale.cardPresentPayment.connection.modal.close.button.accessibilityLabel.default" = "閉じる";
+
 /* Message drawing attention to issue of payment capture maybe failing. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.message" = "ネットワークエラーにより、支払いが正常に完了したかどうかを確認できません。";
 
@@ -11399,6 +11433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "この注文は失敗した可能性があります";
+
+/* The title of the menu button to disconnect a connected card reader, as confirmation. */
+"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Reader の接続を解除";
 
 /* The title of the floating button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS を終了";
@@ -11411,6 +11448,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is disconnected and prompt connect after tapping. */
 "pointOfSale.floatingButtons.readerDisconnected.title" = "読者とつながる";
+
+/* The title of the floating button to indicate that reader is in the process  of disconnecting. */
+"pointOfSale.floatingButtons.readerDisconnecting.title" = "接続を切断中";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "削除";

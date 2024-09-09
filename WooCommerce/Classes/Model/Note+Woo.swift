@@ -66,3 +66,18 @@ private extension Note {
         static let emptyStar    = "\u{2606}"  // Unicode White Star ☆
     }
 }
+
+extension Note {
+    var orderID: Int? {
+        return meta.identifier(forKey: .order)
+    }
+
+    /// Helper method that calls `MarkOrderAsReadUseCase` `markOrderNoteAsReadIfNeeded` method
+    /// which performs 2 network requests, one for syncronizing notification and one for updating the read status
+    func markOrderNoteAsReadIfNeeded() {
+        guard read == false, let orderID = self.orderID else {
+            return
+        }
+        MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: noteID, orderID: orderID)
+    }
+}

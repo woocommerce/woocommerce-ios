@@ -132,7 +132,8 @@ struct CashPaymentTenderView_Previews: PreviewProvider {
         VStack {}
             .sheet(isPresented: .constant(true), content: {
                 NavigationView {
-                    CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: "$10.6") { _ in })
+                    CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: "10.6",
+                                                                                formattedTotal: "$10.6") { _ in })
                 }
             })
     }

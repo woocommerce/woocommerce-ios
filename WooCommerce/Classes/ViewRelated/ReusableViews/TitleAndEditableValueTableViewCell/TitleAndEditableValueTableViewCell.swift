@@ -45,6 +45,11 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
         applyStyle(style)
     }
+
+    func updateValue(with text: String) {
+        value.text = text
+        updateViewModelValue(sender: value)
+    }
 }
 
 

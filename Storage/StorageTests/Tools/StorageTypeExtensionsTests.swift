@@ -1403,7 +1403,7 @@ final class StorageTypeExtensionsTests: XCTestCase {
         objective2.locale = "vi"
 
         // When
-        let foundObjective = try XCTUnwrap(storage.retrieveBlazeCampaignObjective(id:"sale", locale:"en"))
+        let foundObjective = try XCTUnwrap(storage.retrieveBlazeCampaignObjective(id: "sale", locale: "en"))
 
         // Then
         XCTAssertEqual(foundObjective, objective1)

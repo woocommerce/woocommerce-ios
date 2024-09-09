@@ -10,7 +10,7 @@ env:
   IMAGE_ID: $IMAGE_ID
 
 steps:
-  - label: 🛠 Release Build (App Store Connect)
+  - label: ":hammer_and_wrench: Release Build (App Store Connect)"
     command: .buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}
     priority: 1
     plugins: [$CI_TOOLKIT]

@@ -23,7 +23,7 @@ steps:
   #################
   # Create Prototype Build
   #################
-  - label: 🛠 Prototype Build
+  - label: ":hammer_and_wrench: Prototype Build"
     command: .buildkite/commands/prototype-build.sh
     plugins: [$CI_TOOLKIT]
     if: build.pull_request.id != null
@@ -34,7 +34,7 @@ steps:
   #################
   # Run Unit Tests
   #################
-  - label: 🔬 Unit Tests
+  - label: ":microscope: Unit Tests"
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
     plugins: [$CI_TOOLKIT]
@@ -49,7 +49,7 @@ steps:
   #################
   - group: Linters
     steps:
-      - label: ☢️ Danger - PR Check
+      - label: ":radioactive_sign: Danger - PR Check"
         command: danger
         key: danger
         if: build.pull_request.id != null
@@ -85,7 +85,7 @@ steps:
   #################
   # UI Tests
   #################
-  - label: 🔬 UI Tests (iPhone)
+  - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 15'
     depends_on: build
     plugins: [$CI_TOOLKIT]
@@ -95,7 +95,7 @@ steps:
       - github_commit_status:
           context: UI Tests (iPhone)
 
-  - label: 🔬 UI Tests (iPad)
+  - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
     depends_on: build
     plugins: [$CI_TOOLKIT]

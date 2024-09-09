@@ -32,6 +32,7 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
     private let locale: Locale
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let onSelection: (BlazeCampaignObjective?) -> Void
 
@@ -40,6 +41,7 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
          locale: Locale = .current,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          onSelection: @escaping (BlazeCampaignObjective?) -> Void) {
         self.siteID = siteID
@@ -47,6 +49,7 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
         self.locale = locale
         self.stores = stores
         self.storageManager = storageManager
+        self.userDefaults = userDefaults
         self.analytics = analytics
         self.onSelection = onSelection
 
@@ -77,6 +80,12 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
 
     func confirmSelection() {
         // TODO: add tracking
+        guard let selectedObjective else {
+            return
+        }
+        if saveSelectionForFutureCampaigns {
+            userDefaults.saveObjectiveForFutureCampaigns(objectiveID: selectedObjective.id, for: siteID)
+        }
         onSelection(selectedObjective)
     }
 }

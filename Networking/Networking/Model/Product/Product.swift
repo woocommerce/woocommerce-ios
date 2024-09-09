@@ -83,7 +83,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let menuOrder: Int
 
-    public let addOns: [ProductAddOn]
+    public let addOns: [ProductAddOn] //TODO: migrate AddOns to MetaData
 
     /// Whether the product was added automatically for a trial store
     public let isSampleItem: Bool
@@ -117,7 +117,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     // MARK: Subscription Product properties
 
     /// Subscription settings. Applicable to subscription-type products only.
-    public let subscription: ProductSubscription?
+    public let subscription: ProductSubscription? //TODO: migrate subscription to MetaData
 
     // MARK: Min/Max Quantities properties
 
@@ -746,28 +746,39 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
         try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
 
-        // Attributes
-        try container.encode(attributes, forKey: .attributes)
-
-        // TODO: encode Custom fields (meta data) and merge them with metaDataValuePairs after implementing yosemite/storage layer
-        // try container.encode(customFields, forKey: .metadata)
+        // Password
+        try container.encode(password, forKey: .password)
 
         // Metadata
-        let metaDataValuePairs = buildMetaDataValuePairs()
+        var metaDataValuePairs = buildMetaDataValuePairs()
+
+        // Add custom fields to metadata
+        let customFields = buildCustomFields()
+        metaDataValuePairs.append(contentsOf: customFields)
+
+        // Encode metadata if it's not empty
         if metaDataValuePairs.isEmpty == false {
             try container.encode(metaDataValuePairs, forKey: .metadata)
         }
-
-        // Password
-        try container.encode(password, forKey: .password)
     }
 
-    private func buildMetaDataValuePairs() -> [KeyValuePair] {
+    private func buildMetaDataValuePairs() -> [[String: String]] {
+        var metaDataArray: [[String: String]] = []
         if let subscription {
-            return subscription.toKeyValuePairs()
+            metaDataArray.append(contentsOf: subscription.toKeyValuePairs().map { ["key": $0.key, "value": $0.value] })
         }
-        return []
+        return metaDataArray
     }
+
+    // Function to get the custom fields
+    private func buildCustomFields() -> [[String: String]] {
+        var customFieldsArray: [[String: String]] = []
+        for customField in customFields {
+            customFieldsArray.append(["id": "\(customField.metadataID)", "key": customField.key, "value": customField.value])
+        }
+        return customFieldsArray
+    }
+
 }
 
 public extension Product {

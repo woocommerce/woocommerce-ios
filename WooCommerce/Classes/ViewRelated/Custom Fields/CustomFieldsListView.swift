@@ -18,22 +18,22 @@ struct CustomFieldsListView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(alignment: .leading) {
-                        ForEach(viewModel.customFields) { customField in
+                        ForEach(viewModel.displayedItems) { customField in
                             if isEditable {
-                                NavigationLink(destination: CustomFieldEditorView(key: customField.title,
-                                                                                  value: customField.content)
+                                NavigationLink(destination: CustomFieldEditorView(key: customField.key,
+                                                                                  value: customField.value)
                                 ) {
                                     CustomFieldRow(isEditable: true,
-                                                   title: customField.title,
-                                                   content: customField.content,
-                                                   contentURL: customField.contentURL)
+                                                   title: customField.key,
+                                                   content: customField.value,
+                                                   contentURL: nil)
                                 }
                             }
                             else {
                                 CustomFieldRow(isEditable: false,
-                                               title: customField.title,
-                                               content: customField.content,
-                                               contentURL: customField.contentURL)
+                                               title: customField.key,
+                                               content: customField.value,
+                                               contentURL: nil)
                             }
 
                             Divider()
@@ -60,6 +60,7 @@ struct CustomFieldsListView: View {
                             } label: {
                                 Text("Save") // todo-13493: set String to be translatable
                             }
+                            .disabled(!viewModel.pendingChanges.hasChanges)
                             Button(action: {
                                 // todo-13493: add addition handling
                             }, label: {

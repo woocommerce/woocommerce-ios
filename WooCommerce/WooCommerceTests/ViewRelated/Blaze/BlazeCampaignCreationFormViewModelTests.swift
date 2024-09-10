@@ -149,6 +149,31 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.budgetSettingViewModel.hasEndDate)
     }
 
+    func test_campaignObjectiveText_is_updated_based_on_saved_objective() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let locale = Locale.current
+        let objective = BlazeCampaignObjective(id: "traffic", title: "Traffic", description: "", suitableForDescription: "", locale: locale.identifier)
+        insertCampaignObjective(objective)
+
+        // When
+        userDefaults[.blazeSelectedCampaignObjective] = ["\(sampleSiteID)": objective.id]
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           locale: locale,
+                                                           userDefaults: userDefaults,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertEqual(viewModel.campaignObjectiveText, objective.title)
+        XCTAssertEqual(viewModel.campaignObjectiveViewModel.selectedObjective?.id, objective.id)
+    }
+
     // MARK: On load
     @MainActor
     func test_onLoad_fetches_AI_suggestions() async throws {
@@ -750,6 +775,12 @@ private extension BlazeCampaignCreationFormViewModelTests {
             productImage.update(with: readOnlyImage)
             productImage.product = product
         }
+        storage.saveIfNeeded()
+    }
+
+    func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
+        let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
+        objective.update(with: readOnlyObjective)
         storage.saveIfNeeded()
     }
 }

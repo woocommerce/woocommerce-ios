@@ -579,6 +579,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -586,6 +587,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -608,6 +610,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -615,6 +618,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -641,6 +645,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -648,6 +653,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                             analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -674,6 +680,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -681,6 +688,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -708,6 +716,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -715,6 +724,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -738,6 +748,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -745,6 +756,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -760,6 +772,36 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         let campaignType = try XCTUnwrap(eventProperties["campaign_type"] as? String)
         XCTAssertEqual(campaignType, "start_end")
+    }
+
+    @MainActor
+    func test_tapping_confirm_details_tracks_selected_objective() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set non-evergreen
+        viewModel.campaignObjectiveViewModel.selectedObjective = BlazeCampaignObjective.fake().copy(id: "sales")
+        viewModel.campaignObjectiveViewModel.confirmSelection()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let objective = try XCTUnwrap(eventProperties["objective"] as? String)
+        XCTAssertEqual(objective, "sales")
     }
 }
 

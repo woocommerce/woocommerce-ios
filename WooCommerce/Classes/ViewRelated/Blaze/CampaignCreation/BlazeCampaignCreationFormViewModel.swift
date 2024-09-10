@@ -45,6 +45,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
+    private var campaignObjective: BlazeCampaignObjective?
+
     // Target options
     private(set) var locations: Set<BlazeTargetLocation>?
     private(set) var languages: Set<BlazeTargetLanguage>?
@@ -93,6 +95,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.description = adData.description
         })
     }
+
+    lazy private(set) var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
+        BlazeCampaignObjectivePickerViewModel(siteID: siteID, selectedObjective: campaignObjective) { [weak self] selectedObjective in
+            self?.campaignObjective = selectedObjective
+            self?.campaignObjectiveText = selectedObjective?.title
+        }
+    }()
 
     lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
@@ -161,6 +170,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
     private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
+    @Published private(set) var campaignObjectiveText: String?
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""

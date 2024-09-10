@@ -19,7 +19,7 @@ struct CardReaderConnectionStatusView: View {
     private func circleIcon(with color: Color) -> some View {
         Image(systemName: "circle.fill")
             .resizable()
-            .frame(width: Constants.imageDimension * scale, height: Constants.imageDimension * scale)
+            .frame(width: Constants.imageDimension * min(scale, 1.5), height: Constants.imageDimension * min(scale, 1.5))
             .foregroundColor(color)
             .accessibilityHidden(true)
     }
@@ -64,14 +64,14 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.readerDisconnected)
                             .foregroundColor(disconnectedFontColor)
                     }
-                    .padding(.horizontal, Constants.horizontalPadding / 2)
+                    .padding(.horizontal, Constants.overlayInnerHorizontalPadding)
                     .frame(maxHeight: .infinity)
                     .overlay {
                         RoundedRectangle(cornerRadius: Constants.overlayRadius)
                             .stroke(Constants.overlayColor, lineWidth: Constants.overlayLineWidth)
                     }
-                    .padding(.horizontal, Constants.horizontalPadding / 2)
-                    .padding(.vertical, Constants.verticalPadding)
+                    .padding(.horizontal, Constants.overlayOuterHorizontalPadding)
+                    .padding(.vertical, Constants.overlayOuterVerticalPadding)
                     .frame(maxHeight: .infinity)
                 }
             }
@@ -107,11 +107,13 @@ private extension CardReaderConnectionStatusView {
         static let disconnectingProgressIndicatorDimension: CGFloat = 10
         static let disconnectingProgressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posDetailEmphasized
-        static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 8
+        static let horizontalPadding: CGFloat = 24
         static let overlayRadius: CGFloat = 4
         static let overlayLineWidth: CGFloat = 2
         static let overlayColor: Color = Color.init(uiColor: .wooCommercePurple(.shade60))
+        static let overlayInnerHorizontalPadding: CGFloat =  16 + Self.overlayLineWidth
+        static let overlayOuterHorizontalPadding: CGFloat = 8 + Self.overlayLineWidth
+        static let overlayOuterVerticalPadding: CGFloat = 8 + Self.overlayLineWidth
     }
 }
 

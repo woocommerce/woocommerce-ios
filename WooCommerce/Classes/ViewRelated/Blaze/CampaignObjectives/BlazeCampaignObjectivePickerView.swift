@@ -116,7 +116,7 @@ private extension BlazeCampaignObjectivePickerView {
                 .padding(.horizontal, Layout.contentMargin)
 
             // CTA to confirm the selection
-            Button(Localization.continueButtonTitle) {
+            Button(Localization.saveButtonTitle) {
                 viewModel.confirmSelection()
                 onDismiss()
             }
@@ -161,10 +161,10 @@ private extension BlazeCampaignObjectivePickerView {
             value: "Cancel",
             comment: "Button to dismiss the campaign objective picker for Blaze campaign creation"
         )
-        static let continueButtonTitle = NSLocalizedString(
-            "blazeCampaignObjectivePickerView.continue",
-            value: "Continue",
-            comment: "Button to apply the selection on the campaign objective picker for Blaze campaign creation"
+        static let saveButtonTitle = NSLocalizedString(
+            "blazeCampaignObjectivePickerView.save",
+            value: "Save",
+            comment: "Button to save the selection on the campaign objective picker for Blaze campaign creation"
         )
         static let errorMessage = NSLocalizedString(
             "blazeCampaignObjectivePickerView.errorMessage",

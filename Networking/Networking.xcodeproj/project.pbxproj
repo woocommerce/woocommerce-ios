@@ -450,6 +450,10 @@
 		453305ED2459E1AA00264E50 /* site-post.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305EC2459E1AA00264E50 /* site-post.json */; };
 		453305EF2459E46100264E50 /* SitePostsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */; };
 		453305F52459ED2700264E50 /* site-post-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 453305F42459ED2700264E50 /* site-post-update.json */; };
+		453954CA2C909FDE00A3E64A /* MetaDataRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954C92C909FDE00A3E64A /* MetaDataRemote.swift */; };
+		453954CC2C90D60600A3E64A /* MetaDataMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954CB2C90D60600A3E64A /* MetaDataMapper.swift */; };
+		453954CE2C90D66B00A3E64A /* MetaDataMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954CD2C90D66B00A3E64A /* MetaDataMapperTests.swift */; };
+		453954D22C90D84200A3E64A /* meta-data-products-and-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = 453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */; };
 		45551F122523E7F1007EF104 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
 		45551F142523E7FF007EF104 /* UserAgentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F132523E7FF007EF104 /* UserAgentTests.swift */; };
 		4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2212459ADC60007E478 /* SitePostsRemote.swift */; };
@@ -1592,6 +1596,10 @@
 		453305EC2459E1AA00264E50 /* site-post.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post.json"; sourceTree = "<group>"; };
 		453305EE2459E46000264E50 /* SitePostsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemoteTests.swift; sourceTree = "<group>"; };
 		453305F42459ED2700264E50 /* site-post-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-post-update.json"; sourceTree = "<group>"; };
+		453954C92C909FDE00A3E64A /* MetaDataRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataRemote.swift; sourceTree = "<group>"; };
+		453954CB2C90D60600A3E64A /* MetaDataMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataMapper.swift; sourceTree = "<group>"; };
+		453954CD2C90D66B00A3E64A /* MetaDataMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataMapperTests.swift; sourceTree = "<group>"; };
+		453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "meta-data-products-and-orders.json"; sourceTree = "<group>"; };
 		45551F112523E7F1007EF104 /* UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgent.swift; sourceTree = "<group>"; };
 		45551F132523E7FF007EF104 /* UserAgentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentTests.swift; sourceTree = "<group>"; };
 		4568E2212459ADC60007E478 /* SitePostsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostsRemote.swift; sourceTree = "<group>"; };
@@ -2856,6 +2864,7 @@
 				DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */,
 				DEDA8DA82B183D5D0076BF0F /* WordPressThemeRemote.swift */,
 				DEB3877D2C2A9DE20025256E /* GoogleListingsAndAdsRemote.swift */,
+				453954C92C909FDE00A3E64A /* MetaDataRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -3443,6 +3452,7 @@
 				68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */,
 				CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */,
 				CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */,
+				453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3572,6 +3582,7 @@
 				DEDA8DA22B18323E0076BF0F /* WordPressThemeListMapper.swift */,
 				DEDA8DB42B187DE40076BF0F /* WordPressThemeMapper.swift */,
 				EE3F89832C2AAE00003DEC07 /* JetpackAIQueryResponseMapper.swift */,
+				453954CB2C90D60600A3E64A /* MetaDataMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3754,6 +3765,7 @@
 				EE3F89852C2ACF12003DEC07 /* JetpackAIQueryResponseMapperTests.swift */,
 				DEB3877B2C2A9B600025256E /* GoogleAdsConnectionMapperTests.swift */,
 				DEB387912C2D72160025256E /* GoogleAdsCampaignListMapperTests.swift */,
+				453954CD2C90D66B00A3E64A /* MetaDataMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4538,6 +4550,7 @@
 				68BFF9062B6785C700B15FF2 /* receipt-without-data-envelope.json in Resources */,
 				451A97DE260B59870059D135 /* shipping-label-packages-success.json in Resources */,
 				2676F4D0290B0EC800C7A15B /* product-id-only.json in Resources */,
+				453954D22C90D84200A3E64A /* meta-data-products-and-orders.json in Resources */,
 				31D27C8F2602B553002EDB1D /* plugins.json in Resources */,
 				DE66C55D2977C35A00DAA978 /* shipping-label-packages-success-without-data.json in Resources */,
 				EE078D952AD2FCFA00C1199E /* jwt-token-expired-token.json in Resources */,
@@ -5143,6 +5156,7 @@
 				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
 				E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */,
 				CE71E22F2A4C38C900DB5376 /* ProductsReportItem.swift in Sources */,
+				453954CC2C90D60600A3E64A /* MetaDataMapper.swift in Sources */,
 				314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */,
 				CCF48B282628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
@@ -5251,6 +5265,7 @@
 				EE8A30302B72A3C8001D7C66 /* OrderAttributionInfo.swift in Sources */,
 				028296F7237D588700E84012 /* ProductVariation.swift in Sources */,
 				DE4D23BA29B5FB3E003A4B5D /* AnnouncementsRemote.swift in Sources */,
+				453954CA2C909FDE00A3E64A /* MetaDataRemote.swift in Sources */,
 				DEC51AEF2768A628009F3DF4 /* SystemStatus+Database.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5269,6 +5284,7 @@
 				DE34051D28BDF1C900CF0D97 /* JetpackConnectionURLMapperTests.swift in Sources */,
 				451A9836260B9DF90059D135 /* ShippingLabelPackagesMapperTests.swift in Sources */,
 				CE71E2392A4C594600DB5376 /* ProductsReportsRemoteTests.swift in Sources */,
+				453954CE2C90D66B00A3E64A /* MetaDataMapperTests.swift in Sources */,
 				EE338A0E294AF9BD00183934 /* ApplicationPasswordMapperTests.swift in Sources */,
 				02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */,
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,

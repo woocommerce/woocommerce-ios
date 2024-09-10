@@ -1,7 +1,7 @@
 import Foundation
 
 final class CustomFieldsListViewModel: ObservableObject {
-    private let customFields: [CustomFieldViewModel]
+    private let originalCustomFields: [CustomFieldViewModel]
 
     var shouldShowErrorState: Bool {
         savingError != nil
@@ -9,46 +9,61 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     @Published private(set) var savingError: Error?
     @Published var pendingChanges = PendingChanges()
-    @Published var displayedItems: [CustomFieldUI]
-
+    @Published private(set) var combinedList: [CustomFieldUI] = []
 
     init(customFields: [CustomFieldViewModel]) {
-        self.customFields = customFields
-
-        self.displayedItems = customFields.map { item in
-            CustomFieldUI(key: item.content, value: item.title, id: item.id)
-        }
+        self.originalCustomFields = customFields
+        updateCombinedList()
     }
 }
 
-private extension CustomFieldsListViewModel {
-    func editField(_ field: CustomFieldUI) {
-        if let index = pendingChanges.editedFields.firstIndex(where: { $0.id == field.id }) {
-            pendingChanges.editedFields[index] = field
-            updateDisplayedItems()
+// MARK: - Items actions
+extension CustomFieldsListViewModel {
+    func editField(at index: Int, newField: CustomFieldUI) {
+        let oldField = combinedList[index]
+
+        if newField.id == nil {
+            // If there's no id, it means we're now editing a newly added field.
+            if let addedIndex = pendingChanges.addedFields.firstIndex(where: { $0.key == oldField.key }) {
+                if newField.key == oldField.key {
+                    // If the key hasn't changed, update the existing added field
+                    pendingChanges.addedFields[addedIndex] = newField
+                } else {
+                    // If the key has changed, remove the old field and add the new one
+                    pendingChanges.addedFields.remove(at: addedIndex)
+                    pendingChanges.addedFields.append(newField)
+                }
+            } else {
+                // This case should not happen in normal flow
+                DDLogError("⛔️ Error: Editing a newly updated field that doesn't exist in combinedList")
+
+            }
+        } else {
+            // For when editing an already edited field
+            if let editedIndex = pendingChanges.editedFields.firstIndex(where: { $0.id == oldField.id }) {
+                pendingChanges.editedFields[editedIndex] = newField
+            } else { 
+                // For the first time a field is edited
+                pendingChanges.editedFields.append(newField)
+            }
         }
+
+        updateCombinedList()
     }
 
     func addField(_ field: CustomFieldUI) {
         pendingChanges.addedFields.append(field)
-        updateDisplayedItems()
+        updateCombinedList()
     }
+}
 
-    func updateDisplayedItems() {
-        var updatedItems = displayedItems
-
-        // Apply edits
-        for editedField in pendingChanges.editedFields {
-            if let index = updatedItems.firstIndex(where: { $0.id == editedField.id }) {
-                updatedItems[index] = CustomFieldUI(key: editedField.key, value: editedField.value, id: editedField.id)
+private extension CustomFieldsListViewModel {
+    func updateCombinedList() {
+            let editedList = originalCustomFields.map { field in
+                pendingChanges.editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
             }
+            combinedList = editedList + pendingChanges.addedFields
         }
-
-        // Add new fields
-        updatedItems.append(contentsOf: pendingChanges.addedFields)
-
-        displayedItems = updatedItems
-    }
 }
 
 extension CustomFieldsListViewModel {
@@ -70,6 +85,12 @@ extension CustomFieldsListViewModel {
             self.key = key
             self.value = value
             self.id = id
+        }
+
+        init(customField: CustomFieldViewModel) {
+            self.key = customField.title
+            self.value = customField.content
+            self.id = customField.id
         }
     }
 }

@@ -18,7 +18,7 @@ struct CustomFieldsListView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(alignment: .leading) {
-                        ForEach(viewModel.displayedItems) { customField in
+                        ForEach(viewModel.combinedList) { customField in
                             if isEditable {
                                 NavigationLink(destination: CustomFieldEditorView(key: customField.key,
                                                                                   value: customField.value)

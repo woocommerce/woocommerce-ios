@@ -4,6 +4,7 @@
 20.4
 -----
 
+- [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
 
 20.3
 -----

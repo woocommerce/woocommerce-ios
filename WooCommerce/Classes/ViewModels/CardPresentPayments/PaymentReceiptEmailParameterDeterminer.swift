@@ -11,9 +11,8 @@ protocol ReceiptEmailParameterDeterminer {
 ///
 struct PaymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
-    private static let defaultConfiguration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
 
-    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider(configuration: Self.defaultConfiguration)) {
+    init(cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol = CardPresentPluginsDataProvider.shared) {
         self.cardPresentPluginsDataProvider = cardPresentPluginsDataProvider
     }
 

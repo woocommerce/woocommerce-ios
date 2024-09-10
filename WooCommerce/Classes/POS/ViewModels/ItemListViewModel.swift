@@ -15,7 +15,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
             return false
         }
-        return !isHeaderBannerDismissed && state.isLoaded
+        return !isHeaderBannerDismissed && (state.isLoaded || state.isLoading) && items.isNotEmpty
     }
 
     private let itemProvider: POSItemProvider
@@ -79,6 +79,15 @@ extension ItemListViewModel {
         var isLoaded: Bool {
             switch self {
             case .loaded:
+                return true
+            default:
+                return false
+            }
+        }
+
+        var isLoading: Bool {
+            switch self {
+            case .loading:
                 return true
             default:
                 return false

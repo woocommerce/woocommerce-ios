@@ -4,6 +4,7 @@ import protocol Yosemite.POSItem
 struct ItemListView: View {
     @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -49,9 +50,9 @@ private extension ItemListView {
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
-            if viewModel.shouldShowHeaderBanner {
+            if !dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.bottom, Constants.bannerCardPadding)
+                    .padding(.horizontal, Constants.bannerCardPadding)
             }
         }
     }
@@ -106,13 +107,16 @@ private extension ItemListView {
         .onTapGesture {
             viewModel.simpleProductsInfoButtonTapped()
         }
-        .padding(.horizontal, Constants.bannerCardPadding)
+        .padding(.bottom, Constants.bannerCardPadding)
     }
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
+                if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+                    bannerCardView
+                }
                 ForEach(items, id: \.productID) { item in
                     Button(action: {
                         viewModel.select(item)

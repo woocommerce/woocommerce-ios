@@ -20,6 +20,7 @@ final class ItemListViewModelTests: XCTestCase {
     override func tearDown() {
         itemProvider = nil
         sut = nil
+        UserDefaults.standard.set(nil, forKey: ItemListViewModel.BannerState.isSimpleProductsOnlyBannerDismissedKey)
         super.tearDown()
     }
 
@@ -193,6 +194,26 @@ final class ItemListViewModelTests: XCTestCase {
         // Given/When/Then
         XCTAssertEqual(sut.state, .loading)
         XCTAssertEqual(sut.shouldShowHeaderBanner, false)
+    }
+
+    func test_shouldShowHeaderBanner_when_itemListViewModel_is_loading_has_items_then_returns_true() async {
+        // Given the list is already populated with items
+        await sut.populatePointOfSaleItems()
+        XCTAssertTrue(sut.items.isNotEmpty)
+
+        // When we refresh the list again
+        let expectation = XCTestExpectation(description: "Expected banner to be shown when reloading item list")
+        sut.statePublisher.sink { [unowned self] _ in
+            if self.sut.state == .loading {
+                XCTAssertTrue(sut.shouldShowHeaderBanner)
+                expectation.fulfill()
+            }
+        }
+        .store(in: &cancellables)
+        await sut.populatePointOfSaleItems()
+
+        // Then banner shoud be shown
+        await fulfillment(of: [expectation], timeout: 1)
     }
 
     func test_shouldShowHeaderBanner_when_itemListViewModel_throws_error_then_returns_false() async {

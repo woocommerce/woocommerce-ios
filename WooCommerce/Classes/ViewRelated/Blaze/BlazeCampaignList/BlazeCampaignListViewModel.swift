@@ -32,6 +32,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let pushNotesManager: PushNotesManager
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -60,12 +61,14 @@ final class BlazeCampaignListViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.pushNotesManager = pushNotesManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -80,11 +83,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func onViewAppear() {
         analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
 
-        // Clears application icon badge
-        let kind: [Note.Kind] = [.blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote]
-        kind.forEach { kind in
-            ServiceLocator.pushNotesManager.resetBadgeCount(type: kind)
-        }
+        resetNotificationBadgeCount()
     }
 
     /// Called when loading the first page of campaigns.
@@ -158,6 +157,15 @@ private extension BlazeCampaignListViewModel {
         if !didShowIntroView {
             shouldShowIntroView = syncState == .empty
             didShowIntroView = true
+        }
+    }
+
+    /// Clears application icon badge
+    ///
+    func resetNotificationBadgeCount() {
+        let kind: [Note.Kind] = [.blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote]
+        kind.forEach { kind in
+            pushNotesManager.resetBadgeCount(type: kind)
         }
     }
 }

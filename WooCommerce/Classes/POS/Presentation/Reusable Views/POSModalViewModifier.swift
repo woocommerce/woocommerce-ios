@@ -16,6 +16,11 @@ struct POSRootModalViewModifier: ViewModifier {
             if modalManager.isPresented {
                 Color.posOverlayFill
                     .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        if modalManager.allowsInteractiveDismissal {
+                            modalManager.dismiss()
+                        }
+                    }
                     // Don't scale/fade in the backdrop
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
@@ -65,7 +70,9 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
         content
             .onChange(of: item) { newItem in
                 if let newItem = newItem {
-                    modalManager.present {
+                    modalManager.present(onDismiss: {
+                        item = nil
+                    }) {
                         modalContent(newItem)
                             .animation(.default, value: item)
                     }
@@ -85,7 +92,11 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    modalManager.present { modalContent() }
+                    modalManager.present(onDismiss: {
+                        isPresented = false
+                    }) {
+                        modalContent()
+                    }
                 } else {
                     modalManager.dismiss()
                 }
@@ -130,5 +141,25 @@ extension View {
         self.modifier(
             POSModalViewModifier(item: item,
                                  modalContent: content))
+    }
+}
+
+struct POSInteractiveDismissModifier: ViewModifier {
+    @EnvironmentObject var modalManager: POSModalManager
+
+    let disabled: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                modalManager.setInteractiveDismissal(!disabled)
+            }
+    }
+}
+
+extension View {
+    /// Prevents a POS Modal from being dismissed by tapping on the background.
+    func posInteractiveDismissDisabled(_ disabled: Bool = true) -> some View {
+        self.modifier(POSInteractiveDismissModifier(disabled: disabled))
     }
 }

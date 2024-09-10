@@ -7,17 +7,15 @@ class POSModalManager: ObservableObject {
     private var onDismiss: (() -> Void)?
 
     func present<Content: View>(onDismiss: @escaping () -> Void, content: @escaping () -> Content) {
-        self.contentBuilder = { AnyView(content()) }
+        contentBuilder = { AnyView(content()) }
         self.onDismiss = onDismiss
-        self.isPresented = true
+        isPresented = true
     }
 
     func dismiss() {
-        self.isPresented = false
-        self.onDismiss?()
-        self.allowsInteractiveDismissal = true
-        self.onDismiss = nil
-        self.contentBuilder = nil
+        onDismiss?()
+        isPresented = false
+        reset()
     }
 
     func getContent() -> AnyView {
@@ -26,5 +24,11 @@ class POSModalManager: ObservableObject {
 
     func setInteractiveDismissal(_ allowed: Bool) {
         allowsInteractiveDismissal = allowed
+    }
+
+    private func reset() {
+        onDismiss = nil
+        allowsInteractiveDismissal = true
+        contentBuilder = nil
     }
 }

@@ -3,7 +3,7 @@
 
 20.4
 -----
-
+- [Internal] Mark order notification read if needed on watch app and notification extension https://github.com/woocommerce/woocommerce-ios/pull/13896
 
 20.3
 -----

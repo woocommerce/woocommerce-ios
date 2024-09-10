@@ -60,7 +60,7 @@ struct CustomFieldsListView: View {
                             } label: {
                                 Text("Save") // todo-13493: set String to be translatable
                             }
-                            .disabled(!viewModel.pendingChanges.hasChanges)
+                            .disabled(!viewModel.hasChanges)
                             Button(action: {
                                 // todo-13493: add addition handling
                             }, label: {

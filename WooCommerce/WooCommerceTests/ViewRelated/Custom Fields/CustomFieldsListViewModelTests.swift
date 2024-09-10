@@ -41,12 +41,10 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // When: Editing the field
         viewModel.editField(at: 0, newField: editedField)
 
-        // Then: The pending changes and displayed items should be updated
-        XCTAssertEqual(viewModel.pendingChanges.editedFields.count, 1)
-
-
-        // Check that the number of displayed items are remains the same as before
+        // Then: The number of displayed items are remains the same as before and the value is edited correctly
         XCTAssertEqual(viewModel.combinedList.count, 2)
+        XCTAssertEqual(viewModel.combinedList[0].key, "EditedKey1")
+        XCTAssertEqual(viewModel.combinedList[0].value, "EditedValue1")
     }
 
     func test_given_newField_when_addFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
@@ -57,7 +55,6 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         viewModel.addField(newField)
 
         // Then: The pending changes and displayed items should be updated
-        XCTAssertEqual(viewModel.pendingChanges.addedFields.count, 1)
         XCTAssertEqual(viewModel.combinedList.count, 3)
         XCTAssertEqual(viewModel.combinedList.last?.key, "NewKey")
         XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
@@ -82,26 +79,20 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_variousChanges_when_pendingChangesUpdated_then_hasChangesReflectsCorrectState() {
         // Given: Initial state with no changes
-        XCTAssertFalse(viewModel.pendingChanges.hasChanges)
+        XCTAssertFalse(viewModel.hasChanges)
 
         // When: Editing a field
         let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", id: 1)
         viewModel.editField(at: 0, newField: editedField)
 
         // Then: hasChanges should be true
-        XCTAssertTrue(viewModel.pendingChanges.hasChanges)
-
-        // When: Resetting pending changes
-        viewModel.pendingChanges = CustomFieldsListViewModel.PendingChanges()
-
-        // Then: hasChanges should be false
-        XCTAssertFalse(viewModel.pendingChanges.hasChanges)
+        XCTAssertTrue(viewModel.hasChanges)
 
         // When: Adding a new field
         let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
         viewModel.addField(newField)
 
         // Then: hasChanges should be true
-        XCTAssertTrue(viewModel.pendingChanges.hasChanges)
+        XCTAssertTrue(viewModel.hasChanges)
     }
 }

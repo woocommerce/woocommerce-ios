@@ -8,8 +8,13 @@ final class CustomFieldsListViewModel: ObservableObject {
     }
 
     @Published private(set) var savingError: Error?
-    @Published var pendingChanges = PendingChanges()
     @Published private(set) var combinedList: [CustomFieldUI] = []
+
+    @Published private var editedFields: [CustomFieldUI] = []
+    @Published private var addedFields: [CustomFieldUI] = []
+    var hasChanges: Bool {
+        !editedFields.isEmpty || !addedFields.isEmpty
+    }
 
     init(customFields: [CustomFieldViewModel]) {
         self.originalCustomFields = customFields
@@ -24,14 +29,14 @@ extension CustomFieldsListViewModel {
 
         if newField.id == nil {
             // If there's no id, it means we're now editing a newly added field.
-            if let addedIndex = pendingChanges.addedFields.firstIndex(where: { $0.key == oldField.key }) {
+            if let addedIndex = addedFields.firstIndex(where: { $0.key == oldField.key }) {
                 if newField.key == oldField.key {
                     // If the key hasn't changed, update the existing added field
-                    pendingChanges.addedFields[addedIndex] = newField
+                    addedFields[addedIndex] = newField
                 } else {
                     // If the key has changed, remove the old field and add the new one
-                    pendingChanges.addedFields.remove(at: addedIndex)
-                    pendingChanges.addedFields.append(newField)
+                    addedFields.remove(at: addedIndex)
+                    addedFields.append(newField)
                 }
             } else {
                 // This case should not happen in normal flow
@@ -40,11 +45,11 @@ extension CustomFieldsListViewModel {
             }
         } else {
             // For when editing an already edited field
-            if let editedIndex = pendingChanges.editedFields.firstIndex(where: { $0.id == oldField.id }) {
-                pendingChanges.editedFields[editedIndex] = newField
+            if let editedIndex = editedFields.firstIndex(where: { $0.id == oldField.id }) {
+                editedFields[editedIndex] = newField
             } else { 
                 // For the first time a field is edited
-                pendingChanges.editedFields.append(newField)
+                editedFields.append(newField)
             }
         }
 
@@ -52,7 +57,7 @@ extension CustomFieldsListViewModel {
     }
 
     func addField(_ field: CustomFieldUI) {
-        pendingChanges.addedFields.append(field)
+        addedFields.append(field)
         updateCombinedList()
     }
 }
@@ -60,22 +65,13 @@ extension CustomFieldsListViewModel {
 private extension CustomFieldsListViewModel {
     func updateCombinedList() {
             let editedList = originalCustomFields.map { field in
-                pendingChanges.editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
+                editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
             }
-            combinedList = editedList + pendingChanges.addedFields
+            combinedList = editedList + addedFields
         }
 }
 
 extension CustomFieldsListViewModel {
-    struct PendingChanges {
-        var editedFields: [CustomFieldUI] = []
-        var addedFields: [CustomFieldUI] = []
-
-        var hasChanges: Bool {
-            !editedFields.isEmpty || !addedFields.isEmpty
-        }
-    }
-
     struct CustomFieldUI: Identifiable {
         let key: String
         let value: String

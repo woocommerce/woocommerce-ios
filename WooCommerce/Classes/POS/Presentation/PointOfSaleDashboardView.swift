@@ -35,7 +35,6 @@ struct PointOfSaleDashboardView: View {
             } else {
                 contentView
                     .accessibilitySortPriority(2)
-                    .transition(.push(from: .top))
             }
             POSFloatingControlView(viewModel: viewModel)
                 .shadow(color: Color.black.opacity(0.08), radius: 4)

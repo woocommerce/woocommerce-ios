@@ -578,6 +578,13 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaignObjective.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns Blaze campaign objective with the given ID and locale.
+    ///
+    func retrieveBlazeCampaignObjective(id: String, locale: String) -> BlazeCampaignObjective? {
+        let predicate = \BlazeCampaignObjective.locale == locale && \BlazeCampaignObjective.id == id
+        return firstObject(ofType: BlazeCampaignObjective.self, matching: predicate)
+    }
+
     // MARK: - Coupons
 
     /// Returns a single Coupon given a `siteID` and `CouponID`

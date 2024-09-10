@@ -10,6 +10,7 @@ struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.isEnabled) var isEnabled
 
     init(connectionViewModel: CardReaderConnectionViewModel) {
         self.connectionViewModel = connectionViewModel
@@ -77,6 +78,7 @@ struct CardReaderConnectionStatusView: View {
             }
         }
         .font(Constants.font, maximumContentSizeCategory: .accessibilityLarge)
+        .opacity(isEnabled ? 1 : 0.5)
     }
 }
 

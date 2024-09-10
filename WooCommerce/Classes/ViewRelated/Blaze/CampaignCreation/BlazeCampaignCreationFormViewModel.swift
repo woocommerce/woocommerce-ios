@@ -216,6 +216,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         tagline.isNotEmpty && description.isNotEmpty
     }
 
+    @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
     @Published var isShowingPaymentInfo = false
@@ -265,6 +266,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -286,6 +288,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
@@ -357,6 +360,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         guard finalDestinationURL.isNotEmpty else {
             return isShowingMissingDestinationURLAlert = true
+        }
+
+        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
+           campaignObjective == nil {
+            return isShowingMissingObjectiveAlert = true
         }
 
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }

@@ -108,6 +108,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
         let bundledItemsArray: [StorageProductBundleItem] = bundledItems?.toArray() ?? []
         let compositeComponentsArray: [StorageProductCompositeComponent] = compositeComponents?.toArray() ?? []
+        let productCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
 
         var quantity: Decimal?
         if let stockQuantity = stockQuantity {
@@ -194,7 +195,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
                        combineVariationQuantities: combineVariationQuantities?.boolValue,
-                       customFields: []) //TODO: to be implemented in storage layer
+                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
     }
 
     // MARK: - Private Helpers

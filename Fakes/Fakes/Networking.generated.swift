@@ -752,6 +752,17 @@ extension Networking.Media {
         )
     }
 }
+extension Networking.MetaData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.MetaData {
+        .init(
+            metadataID: .fake(),
+            key: .fake(),
+            value: .fake()
+        )
+    }
+}
 extension Networking.Note {
     /// Returns a "ready to use" type filled with fake values.
     ///

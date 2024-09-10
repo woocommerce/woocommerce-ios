@@ -1146,6 +1146,24 @@ extension Networking.Media {
     }
 }
 
+extension Networking.MetaData {
+    public func copy(
+        metadataID: CopiableProp<Int64> = .copy,
+        key: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> Networking.MetaData {
+        let metadataID = metadataID ?? self.metadataID
+        let key = key ?? self.key
+        let value = value ?? self.value
+
+        return Networking.MetaData(
+            metadataID: metadataID,
+            key: key,
+            value: value
+        )
+    }
+}
+
 extension Networking.Note {
     public func copy(
         noteID: CopiableProp<Int64> = .copy,

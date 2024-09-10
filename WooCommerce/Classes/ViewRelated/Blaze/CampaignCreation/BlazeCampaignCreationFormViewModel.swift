@@ -372,7 +372,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         let isAISuggestedAdContent = taglineMatching || descriptionMatching
         analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(
             isAISuggestedAdContent: isAISuggestedAdContent,
-            isEvergreen: isEvergreen
+            isEvergreen: isEvergreen,
+            objective: campaignObjective?.id
         ))
         isShowingPaymentInfo = true
     }

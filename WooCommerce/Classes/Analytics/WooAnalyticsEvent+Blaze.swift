@@ -1,3 +1,5 @@
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+
 extension WooAnalyticsEvent {
     enum Blaze {
         /// Event property keys.
@@ -77,12 +79,21 @@ extension WooAnalyticsEvent {
 
             /// Tracked upon tapping "Confirm Details" in Blaze creation form
             static func confirmDetailsTapped(isAISuggestedAdContent: Bool,
-                                             isEvergreen: Bool) -> WooAnalyticsEvent {
-                WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
-                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent,
-                                               Key.campaignType: isEvergreen ?
-                                                Values.CampaignType.evergreen :
-                                                Values.CampaignType.startEnd])
+                                             isEvergreen: Bool,
+                                             objective: String?) -> WooAnalyticsEvent {
+                var properties: [String: WooAnalyticsEventPropertyType] = [
+                    Key.isAISuggestedAdContent: isAISuggestedAdContent,
+                    Key.campaignType: isEvergreen ?
+                    Values.CampaignType.evergreen :
+                        Values.CampaignType.startEnd
+                ]
+
+                if let objective {
+                    properties[Key.objective] = objective
+                }
+
+                return WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
+                                         properties: properties)
             }
         }
 

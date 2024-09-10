@@ -248,6 +248,10 @@ private extension HubMenuViewModel {
             mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         } else {
             mainTabBarController.additionalSafeAreaInsets = .zero
+            mainTabBarController.tabBar.alpha = 0
+            UIView.animate(withDuration: 0.5) {
+                mainTabBarController.tabBar.alpha = 1
+            }
         }
     }
 

@@ -61,6 +61,9 @@ extension UserDefaults {
 
         // Blaze Local notification
         case blazeNoCampaignReminderOpened
+
+        // Selected campaign objective saved for future campaigns
+        case blazeSelectedCampaignObjective
     }
 }
 

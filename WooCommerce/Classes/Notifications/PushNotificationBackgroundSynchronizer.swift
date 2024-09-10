@@ -27,22 +27,27 @@ struct PushNotificationBackgroundSynchronizer {
     ///
     @MainActor
     func sync() async -> UIBackgroundFetchResult {
-
         guard let pushNotification = PushNotification.from(userInfo: userInfo) else {
             return .noData
         }
 
         do {
-
             let startTime = Date.now
+            let orderID: Int64
 
-            // I'm not sure why we need to sync all notifications instead of only the current one.
-            // This is legacy code copied from PushNotificationsManager
-            try await synchronizeNotifications()
+            if let note = pushNotification.note,
+               let noteOrderID = note.meta.identifier(forKey: .order) {
+                orderID = Int64(noteOrderID)
+            } else {
+                // I'm not sure why we need to sync all notifications instead of only the current one.
+                // This is legacy code copied from PushNotificationsManager
+                try await synchronizeNotifications()
 
-            // Find the orderID from the previously synced notification.
-            guard let orderID = getOrderID(noteID: pushNotification.noteID) else {
-                return .newData
+                // Find the orderID from the previously synced notification.
+                guard let pushNotificationOrderID = getOrderID(noteID: pushNotification.noteID) else {
+                    return .newData
+                }
+                orderID = pushNotificationOrderID
             }
 
             // Sync the order list data
@@ -58,7 +63,6 @@ struct PushNotificationBackgroundSynchronizer {
             ServiceLocator.analytics.track(event: .BackgroundUpdates.orderPushNotificationSynced(timeTaken: timeTaken))
 
             return .newData
-
         } catch {
             DDLogError("⛔️ Error synchronizing notification dependencies: \(error)")
             ServiceLocator.analytics.track(event: .BackgroundUpdates.orderPushNotificationSyncError(error))

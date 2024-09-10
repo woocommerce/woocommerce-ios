@@ -21,7 +21,13 @@ public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
     public func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: String]]) async throws -> [MetaData] {
 
         let parameters: [String: Any] = [ParameterKey.metaData: metadata, ParameterKey.fields: "meta_data"]
-        let path = "\(Path.products)/\(parentID)"
+        let path: String
+        switch type {
+        case .order:
+            path = "\(Path.orders)/\(parentID)"
+        case .product:
+            path = "\(Path.products)/\(parentID)"
+        }
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = MetaDataMapper()
 

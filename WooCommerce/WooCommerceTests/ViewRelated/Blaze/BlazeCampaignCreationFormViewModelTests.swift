@@ -516,6 +516,57 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
     }
 
+    func test_it_shows_error_if_confirm_without_objective_when_feature_flag_for_objective_is_on() async {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        XCTAssertNil(viewModel.campaignObjectiveViewModel.selectedObjective)
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.isShowingMissingObjectiveAlert)
+    }
+
+    func test_it_does_not_show_error_if_confirm_with_objective_when_feature_flag_for_objective_is_on() async {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        viewModel.campaignObjectiveViewModel.selectedObjective = .fake().copy(id: "sales")
+        viewModel.campaignObjectiveViewModel.confirmSelection()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.isShowingMissingObjectiveAlert)
+    }
+
     // MARK: Analytics
     @MainActor
     func test_event_is_tracked_on_appear() async throws {

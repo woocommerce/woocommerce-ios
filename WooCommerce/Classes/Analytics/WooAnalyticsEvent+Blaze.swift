@@ -8,6 +8,7 @@ extension WooAnalyticsEvent {
             static let totalBudget = "total_budget"
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
             static let campaignType = "campaign_type"
+            static let objective = "objective"
         }
 
         private enum Values {
@@ -55,6 +56,12 @@ extension WooAnalyticsEvent {
         /// Tracked upon tapping "Learn how Blaze works" in Intro screen
         static func introLearnMoreTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeIntroLearnMoreTapped, properties: [:])
+        }
+
+        /// Tracked upon tapping Save on the campaign objective picker.
+        static func campaignObjectiveSaved(_ objective: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignObjectiveSaved,
+                              properties: [Key.objective: objective])
         }
 
         enum CreationForm {

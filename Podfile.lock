@@ -67,7 +67,7 @@ DEPENDENCIES:
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
   - WordPress-Editor-iOS (~> 1.19)
-  - WordPressAuthenticator (~> 9.0.9)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `0c8a006e8c4441dd2b1860d298d7e2e752a0d232`)
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
@@ -76,7 +76,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/wordpress-mobile/cocoapods-specs.git:
-    - WordPressAuthenticator
     - WordPressKit
   trunk:
     - Alamofire
@@ -109,6 +108,16 @@ SPEC REPOS:
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
 
+EXTERNAL SOURCES:
+  WordPressAuthenticator:
+    :commit: 0c8a006e8c4441dd2b1860d298d7e2e752a0d232
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: 0c8a006e8c4441dd2b1860d298d7e2e752a0d232
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   Automattic-Tracks-iOS: 2d4bee68ff9db4d51f2f6c9fc85857dc69a008a4
@@ -127,7 +136,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
-  WordPressAuthenticator: e0c88dd994799595a4a4fafb801589f650af822c
+  WordPressAuthenticator: f8dcccf4661255208fb54e5558b5175e1f5bdda9
   WordPressKit: de44094b3be8998504a3a57700bc3e96e3b46f57
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
@@ -142,6 +151,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: d88a80a9b04884efea51b95bc6b622eb3395b207
+PODFILE CHECKSUM: 815f911ce2a89a2d1dd01f190f160dc23e297273
 
 COCOAPODS: 1.15.2

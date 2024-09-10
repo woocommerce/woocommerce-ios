@@ -7791,6 +7791,125 @@
             "note_hash": 3124
         },
         {
+            "id": 8401476682,
+            "type": "blaze_performed_note",
+            "subtype": "product",
+            "read": 0,
+            "noticon": "",
+            "timestamp": "2024-09-04T07:17:18+00:00",
+            "icon": "https://gravatar.tld/blaze-icon@3x.png",
+            "url": "https://wordpress.com/advertising/123?blazepress-widget=post-0#get-started",
+            "subject": [
+                {
+                    "text": "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed."
+                }
+            ],
+            "body": [
+                {
+                    "text": "",
+                    "media": [
+                        {
+                            "type": "badge",
+                            "indices": [
+                                0,
+                                0
+                            ],
+                            "height": "207",
+                            "width": "120",
+                            "url": "https://gravatar.tld/blaze-big-icon@3x.png"
+                        }
+                    ]
+                },
+                {
+                    "text": "Campaign Approved",
+                    "ranges": [
+                        {
+                            "type": "h3",
+                            "indices": [
+                                0,
+                                17
+                            ],
+                            "id": "2",
+                            "parent": null,
+                            "style": "text-align:center"
+                        }
+                    ]
+                },
+                {
+                    "text": "Your campaign \"Fly High\" ended on 21 Mar 2024.",
+                    "ranges": [
+                        {
+                            "type": "p",
+                            "indices": [
+                                0,
+                                72
+                            ],
+                            "id": "4",
+                            "parent": null,
+                            "style": "text-align:center"
+                        }
+                    ]
+                },
+                {
+                    "text": "View Campaign",
+                    "ranges": [
+                        {
+                            "url": "https://wordpress.com/advertising/campaigns/112182/210109692",
+                            "indices": [
+                                0,
+                                13
+                            ],
+                            "id": "6",
+                            "parent": null,
+                            "type": "button",
+                            "context": "blaze_performed_note_view_click"
+                        }
+                    ],
+                    "meta": {
+                        "is_mobile_button": true
+                    }
+                },
+                {
+                    "text": "Create new campaign",
+                    "ranges": [
+                        {
+                            "type": "p",
+                            "indices": [
+                                0,
+                                19
+                            ],
+                            "id": "8",
+                            "parent": null,
+                            "style": "text-align:center"
+                        },
+                        {
+                            "url": "https://wordpress.com/advertising/210109692?blazepress-widget=post-0#get-started",
+                            "indices": [
+                                0,
+                                19
+                            ],
+                            "id": "9",
+                            "parent": "8",
+                            "type": "a",
+                            "context": "blaze_performed_note_view_click"
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "ids": {
+                    "site": 1234,
+                    "campaign_id": 12345
+                },
+                "links": {
+                    "site": "https://public-api.wordpress.com/rest/v1/sites/210109692",
+                    "campaign_id": "https://public-api.wordpress.com/rest/v1/campaign_ids/112182"
+                }
+            },
+            "title": "Blaze",
+            "note_hash": 3124
+        },
+        {
             "id": 324533,
             "type": "blaze_rejected_note",
             "subtype": "product",

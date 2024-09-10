@@ -60,9 +60,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeIntroLearnMoreTapped, properties: [:])
         }
 
-        /// Tracked upon tapping Continue on the campaign objective picker.
-        static func campaignObjectiveContinueTapped(_ objective: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeCampaignObjectiveContinueTapped,
+        /// Tracked upon tapping Save on the campaign objective picker.
+        static func campaignObjectiveSaved(_ objective: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignObjectiveSaved,
                               properties: [Key.objective: objective])
         }
 

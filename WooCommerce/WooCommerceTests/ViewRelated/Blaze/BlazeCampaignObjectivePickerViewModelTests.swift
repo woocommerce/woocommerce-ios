@@ -232,7 +232,7 @@ final class BlazeCampaignObjectivePickerViewModelTests: XCTestCase {
         viewModel.confirmSelection()
 
         // Then
-        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_campaign_objective_continue_tapped"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_campaign_objective_saved"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         let objective = try XCTUnwrap(eventProperties["objective"] as? String)
         XCTAssertEqual(objective, expectedItem.id)

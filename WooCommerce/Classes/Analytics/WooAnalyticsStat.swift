@@ -218,7 +218,7 @@ enum WooAnalyticsStat: String {
     case blazeIntroLearnMoreTapped = "blaze_intro_learn_more_tapped"
     case blazeCreationFormDisplayed = "blaze_creation_form_displayed"
     case blazeEditAdTapped = "blaze_creation_edit_ad_tapped"
-    case blazeCampaignObjectiveContinueTapped = "blaze_campaign_objective_continue_tapped"
+    case blazeCampaignObjectiveSaved = "blaze_campaign_objective_saved"
     case blazeCreationConfirmDetailsTapped = "blaze_creation_confirm_details_tapped"
     case blazeEditAdSaveTapped = "blaze_creation_edit_ad_save_tapped"
     case blazeEditAdAISuggestionTapped = "blaze_creation_edit_ad_ai_suggestion_tapped"

@@ -47,6 +47,42 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(note.title, "New Order")
         XCTAssertEqual(note.meta.identifier(forKey: .order), 306)
     }
+
+    // MARK: Blaze
+    //
+    func test_blaze_rejected_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeRejectedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8326526386))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Sorry, your ad campaign \"Stylish Linen Pants\" was rejected and no payment will be charged.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeRejectedNote)
+    }
+
+    func test_blaze_cancelled_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeCancelledNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414834454))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Campaign \"Sleek Bronze Seat\" was cancelled.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeCancelledNote)
+    }
+
+    func test_blaze_approved_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeApprovedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414840070))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Congratulations! Your ad campaign \"Fly High\" was approved.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeApprovedNote)
+    }
+
+    func test_blaze_performed_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazePerformedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414840071))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazePerformedNote)
+    }
+}
+
 // MARK: Blaze - push notification payloads
 //
 private extension PushNotificationTests {

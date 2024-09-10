@@ -404,6 +404,24 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
+
+    // MARK: - Blaze Push notification badge
+
+    func test_it_resets_blaze_push_notifications_badge_count_on_appear() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID,
+                                                   pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazePerformedNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeCancelledNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeRejectedNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeApprovedNote))
+    }
 }
 
 private extension BlazeCampaignListViewModelTests {

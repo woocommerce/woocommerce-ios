@@ -78,7 +78,7 @@ struct ProductSelectorView: View {
     private var navigationTitle: String {
         let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-              narrowView else {
+              narrowView, configuration.multipleSelectionEnabled else {
             return configuration.title
         }
         return viewModel.selectProductsTitle
@@ -171,6 +171,9 @@ struct ProductSelectorView: View {
             }
         }
         .onAppear {
+            if !configuration.multipleSelectionEnabled {
+                viewModel.clearSelection()
+            }
             viewModel.onLoadTrigger.send()
             updateSyncApproach(for: horizontalSizeClass)
         }

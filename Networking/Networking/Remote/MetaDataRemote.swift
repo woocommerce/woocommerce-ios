@@ -1,5 +1,7 @@
 import Foundation
 
+/// Interface for remote requests to Product and Orders meta data.
+///
 public protocol MetaDataRemoteProtocol {
     func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: String]]) async throws -> [MetaData]
 }

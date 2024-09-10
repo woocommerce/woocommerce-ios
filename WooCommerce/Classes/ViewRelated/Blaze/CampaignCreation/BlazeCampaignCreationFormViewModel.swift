@@ -258,7 +258,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
-                            type: Constants.campaignType)
+                            type: Constants.campaignType,
+                            objective: campaignObjective?.id)
     }
 
     private let locale: Locale

@@ -93,7 +93,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
 
     /// Selected objective ID for the campaign.
     ///
-    public let objective: String
+    public let objective: String?
 
     public init(origin: String,
                 originVersion: String,
@@ -111,7 +111,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 targeting: BlazeTargetOptions?,
                 targetUrn: String,
                 type: String,
-                objective: String) {
+                objective: String?) {
         self.origin = origin
         self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID

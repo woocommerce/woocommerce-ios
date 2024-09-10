@@ -579,7 +579,7 @@ extension Networking.CreateBlazeCampaign {
         targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
         targetUrn: CopiableProp<String> = .copy,
         type: CopiableProp<String> = .copy,
-        objective: CopiableProp<String> = .copy
+        objective: NullableCopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
         let origin = origin ?? self.origin
         let originVersion = originVersion ?? self.originVersion

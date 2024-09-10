@@ -233,8 +233,6 @@ private extension HubMenuViewModel {
         guard let mainTabBarController = AppDelegate.shared.tabBarController else {
             return
         }
-        mainTabBarController.tabBar.isHidden = isPointOfSaleActive
-
         /*
          When hidding the app's tab bar on POS initialization, we've observed a recurring issue with the UI not being updated appropiately,
          leaving additional padding in the bottom rather than re-positioning components taking all the available space.
@@ -243,10 +241,16 @@ private extension HubMenuViewModel {
          Updating the bottom UIEdgeInset to a non-zero value seems to be enough to trigger the UI layout refresh we need.
          Ref: gh-13785
          */
-        if mainTabBarController.tabBar.isHidden {
-            let bottomInset = CGFloat.leastNonzeroMagnitude
-            mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        if isPointOfSaleActive {
+            UIView.animate(withDuration: 0.5) {
+                mainTabBarController.tabBar.alpha = 0
+            } completion: { _ in
+                mainTabBarController.tabBar.isHidden = isPointOfSaleActive
+                let bottomInset = CGFloat.leastNonzeroMagnitude
+                mainTabBarController.additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+            }
         } else {
+            mainTabBarController.tabBar.isHidden = isPointOfSaleActive
             mainTabBarController.additionalSafeAreaInsets = .zero
             mainTabBarController.tabBar.alpha = 0
             UIView.animate(withDuration: 0.5) {

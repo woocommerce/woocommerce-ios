@@ -436,7 +436,8 @@ extension Networking.CreateBlazeCampaign {
             mainImage: .fake(),
             targeting: .fake(),
             targetUrn: .fake(),
-            type: .fake()
+            type: .fake(),
+            objective: .fake()
         )
     }
 }

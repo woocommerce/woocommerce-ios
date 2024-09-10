@@ -578,7 +578,8 @@ extension Networking.CreateBlazeCampaign {
         mainImage: CopiableProp<CreateBlazeCampaign.Image> = .copy,
         targeting: NullableCopiableProp<BlazeTargetOptions> = .copy,
         targetUrn: CopiableProp<String> = .copy,
-        type: CopiableProp<String> = .copy
+        type: CopiableProp<String> = .copy,
+        objective: CopiableProp<String> = .copy
     ) -> Networking.CreateBlazeCampaign {
         let origin = origin ?? self.origin
         let originVersion = originVersion ?? self.originVersion
@@ -596,6 +597,7 @@ extension Networking.CreateBlazeCampaign {
         let targeting = targeting ?? self.targeting
         let targetUrn = targetUrn ?? self.targetUrn
         let type = type ?? self.type
+        let objective = objective ?? self.objective
 
         return Networking.CreateBlazeCampaign(
             origin: origin,
@@ -613,7 +615,8 @@ extension Networking.CreateBlazeCampaign {
             mainImage: mainImage,
             targeting: targeting,
             targetUrn: targetUrn,
-            type: type
+            type: type,
+            objective: objective
         )
     }
 }

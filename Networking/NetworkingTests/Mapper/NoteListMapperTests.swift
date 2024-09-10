@@ -24,7 +24,7 @@ final class NoteListMapperTests: XCTestCase {
     /// Verifies that all of the Sample Notifications are properly parsed.
     ///
     func test_sample_notifications_are_properly_decoded() {
-        XCTAssertEqual(sampleNotes.count, 43)
+        XCTAssertEqual(sampleNotes.count, 44)
     }
 
     /// Verifies that the Broken Notification documents are properly parsed.
@@ -306,7 +306,20 @@ final class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(note.meta.identifier(forKey: .campaignID), 112182)
     }
 
-    // TODO: 13477 Add unit tests for Blaze performed notification
+    /// Verifies that the Blaze performed notification is properly parsed.
+    ///
+    func test_blaze_performed_notification_is_properly_parsed() throws {
+        let note = try XCTUnwrap(sampleNotes.first(where: { $0.noteID == 8401476682 }))
+
+        XCTAssertEqual(note.hash, 3124)
+        XCTAssertEqual(note.read, false)
+        XCTAssertEqual(note.icon, "https://gravatar.tld/blaze-icon@3x.png")
+        XCTAssertEqual(note.timestamp, "2024-09-04T07:17:18+00:00")
+        XCTAssertEqual(note.kind, .blazePerformedNote)
+        XCTAssertEqual(note.url, "https://wordpress.com/advertising/123?blazepress-widget=post-0#get-started")
+        XCTAssertEqual(note.title, "Blaze")
+        XCTAssertEqual(note.meta.identifier(forKey: .campaignID), 12345)
+    }
 }
 
 

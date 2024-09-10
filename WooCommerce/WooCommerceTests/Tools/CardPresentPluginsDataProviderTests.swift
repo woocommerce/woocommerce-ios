@@ -6,7 +6,7 @@ final class CardPresentPluginsDataProviderTests: XCTestCase {
     private var sut: CardPresentPluginsDataProvider!
     private var storageManager: MockStorageManager!
     private var stores: MockStoresManager!
-    let configuration = CardPresentConfigurationLoader(stores: ServiceLocator.stores).configuration
+    private let configurationLoader = CardPresentConfigurationLoader(stores: ServiceLocator.stores)
 
     override func setUp() {
         super.setUp()
@@ -16,7 +16,7 @@ final class CardPresentPluginsDataProviderTests: XCTestCase {
 
         sut = CardPresentPluginsDataProvider(storageManager: storageManager,
                                              stores: stores,
-                                             configuration: configuration)
+                                             configurationLoader: configurationLoader)
     }
 
     override func tearDown() {

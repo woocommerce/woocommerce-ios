@@ -82,7 +82,7 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
         guard let selectedObjective else {
             return
         }
-        analytics.track(event: .Blaze.campaignObjectiveSaved(selectedObjective.id))
+        analytics.track(event: .Blaze.campaignObjectiveContinueTapped(selectedObjective.id))
         if saveSelectionForFutureCampaigns {
             userDefaults.saveObjectiveForFutureCampaigns(objectiveID: selectedObjective.id, for: siteID)
         }

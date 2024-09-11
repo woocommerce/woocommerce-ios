@@ -4,6 +4,9 @@
 20.3
 -----
 
+20.2.1
+-----
+- [***] Login: Fix an issue with login using magic link [https://github.com/woocommerce/woocommerce-ios/pull/13926]
 
 20.2
 -----
@@ -19,7 +22,6 @@
 - [**] Blaze: Support evergreen campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13684]
 - [Internal] Custom fields: Renamed the OrderMetaData entity to MetaData [https://github.com/woocommerce/woocommerce-ios/pull/13736]
 - [Internal] Tooling: updated Sentry to avoid potential crash [https://github.com/woocommerce/woocommerce-ios/pull/13828]
-- [***] Login: Fix an issue with login using magic link [https://github.com/woocommerce/woocommerce-ios/pull/13926]
 
 20.1
 -----

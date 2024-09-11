@@ -26,12 +26,10 @@ struct OrderDetailLoader: View {
                     .redacted(reason: .placeholder)
             case .loaded(let order):
                 OrderDetailView(order: order)
-                    .onAppear {
-                        Task {
-                            await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network,
-                                                                                     noteID: pushNotification.noteID,
-                                                                                     orderID: Int(order.orderID))
-                        }
+                    .task {
+                        _ = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network,
+                                                                                 noteID: pushNotification.noteID,
+                                                                                 orderID: Int(order.orderID))
                     }
             case .error:
                 Text(AppLocalizedString(

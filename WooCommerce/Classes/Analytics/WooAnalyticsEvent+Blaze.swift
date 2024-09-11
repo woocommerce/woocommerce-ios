@@ -1,3 +1,5 @@
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+
 extension WooAnalyticsEvent {
     enum Blaze {
         /// Event property keys.
@@ -8,6 +10,7 @@ extension WooAnalyticsEvent {
             static let totalBudget = "total_budget"
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
             static let campaignType = "campaign_type"
+            static let objective = "objective"
         }
 
         private enum Values {
@@ -57,6 +60,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeIntroLearnMoreTapped, properties: [:])
         }
 
+        /// Tracked upon tapping Save on the campaign objective picker.
+        static func campaignObjectiveSaved(_ objective: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignObjectiveSaved,
+                              properties: [Key.objective: objective])
+        }
+
         enum CreationForm {
             /// Tracked when Blaze creation form is displayed
             static func creationFormDisplayed() -> WooAnalyticsEvent {
@@ -70,12 +79,21 @@ extension WooAnalyticsEvent {
 
             /// Tracked upon tapping "Confirm Details" in Blaze creation form
             static func confirmDetailsTapped(isAISuggestedAdContent: Bool,
-                                             isEvergreen: Bool) -> WooAnalyticsEvent {
-                WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
-                                  properties: [Key.isAISuggestedAdContent: isAISuggestedAdContent,
-                                               Key.campaignType: isEvergreen ?
-                                                Values.CampaignType.evergreen :
-                                                Values.CampaignType.startEnd])
+                                             isEvergreen: Bool,
+                                             objective: String?) -> WooAnalyticsEvent {
+                var properties: [String: WooAnalyticsEventPropertyType] = [
+                    Key.isAISuggestedAdContent: isAISuggestedAdContent,
+                    Key.campaignType: isEvergreen ?
+                    Values.CampaignType.evergreen :
+                        Values.CampaignType.startEnd
+                ]
+
+                if let objective {
+                    properties[Key.objective] = objective
+                }
+
+                return WooAnalyticsEvent(statName: .blazeCreationConfirmDetailsTapped,
+                                         properties: properties)
             }
         }
 

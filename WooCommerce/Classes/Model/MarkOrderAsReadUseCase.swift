@@ -15,65 +15,103 @@ struct MarkOrderAsReadUseCase {
     ///
     enum Error: Swift.Error {
         case failure(Swift.Error)
-        case updateReadStatus(Swift.Error)
         case unavailableNote
+        case noNeedToMarkAsRead
     }
-    /// Method that marks the order note as read if it is the notification for the last order.
+    /// Async method that marks the order note as read if it is the notification for the last order.
     /// We do it in a way that first we syncronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
-    /// We pass syncronized note and error in the `onCompletion` completion block
+    /// Returns syncronized note if marking was successful and error if some error happened
 #if canImport(Yosemite)
-    static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int, onCompletion: ((Note?, Error?) -> Void)? = nil) {
-        let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
-            guard let syncronizedNote = syncronizedNote else {
-                onCompletion?(nil, MarkOrderAsReadUseCase.Error.unavailableNote)
-                return
+    static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
+        let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
+            let action = Yosemite.NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
+                guard let syncronizedNote = syncronizedNote else {
+                    continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.unavailableNote))
+                    return
+                }
+                continuation.resume(returning: .success(syncronizedNote))
             }
-            if let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
-               syncronizedNoteOrderID == orderID {
-                // mark as read
-                let syncAction = NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
+            stores.dispatch(action)
+        }
+
+        switch syncronizedNoteResult {
+        case .success(let syncronizedNote):
+            guard let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
+                  syncronizedNoteOrderID == orderID else {
+                return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
+            }
+
+            let updateNoteStatusResult: Result<Note, Error> = await withCheckedContinuation { continuation in
+                let syncAction = Yosemite.NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
                     if let error {
-                        onCompletion?(nil, MarkOrderAsReadUseCase.Error.failure(error))
+                        continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
                     } else {
-                        onCompletion?(syncronizedNote, nil)
+                        continuation.resume(returning: .success(syncronizedNote))
                     }
                 }
                 stores.dispatch(syncAction)
             }
+
+            switch updateNoteStatusResult {
+            case .success(let note):
+                return .success(note)
+            case .failure(let error):
+                return .failure(error)
+            }
+        case .failure(let error):
+            return .failure(error)
         }
-        stores.dispatch(action)
     }
 #endif
-    /// Method that marks the order note as read if it is the notification for the last order.
+    /// Async method that marks the order note as read if it is the notification for the last order.
     /// We do it in a way that first we syncronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
-    /// We pass syncronized note id and error in the `onCompletion` completion block
-    static func markOrderNoteAsReadIfNeeded(network: Network, noteID: Int64, orderID: Int, onCompletion: ((Int64?, Error?) -> Void)? = nil) {
-        // use notifications remote
+    /// Returns syncronized note id if marking was successful and error if some error happened
+    static func markOrderNoteAsReadIfNeeded(network: Network, noteID: Int64, orderID: Int) async -> Result<Int64, Error> {
         let notesRemote = NotificationsRemote(network: network)
-        notesRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { result in
-            switch result {
-            case .success(let notes):
-                if let note = notes.first {
-                    if let syncronizedNoteOrderID = note.meta.identifier(forKey: .order),
-                       syncronizedNoteOrderID == orderID {
-                        notesRemote.updateReadStatus(noteIDs: [noteID], read: true) { error in
-                            if let error {
-                                onCompletion?(nil, MarkOrderAsReadUseCase.Error.updateReadStatus(error))
-                            } else {
-                                onCompletion?(noteID, nil)
-                            }
-                        }
-                    }
-                } else {
-                    onCompletion?(nil, MarkOrderAsReadUseCase.Error.unavailableNote)
+
+        let loadedNotes: Result<[Note], Error> = await withCheckedContinuation { continuation in
+            notesRemote.loadNotes(noteIDs: [noteID], pageSize: nil) { result in
+                switch result {
+                case .success(let notes):
+                    continuation.resume(returning: .success(notes))
+                case .failure(let error):
+                    continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
                 }
-            case .failure(let error):
-                onCompletion?(nil, MarkOrderAsReadUseCase.Error.failure(error))
             }
+        }
+
+        switch loadedNotes {
+        case .success(let notes):
+            guard let note = notes.first else {
+                return .failure(MarkOrderAsReadUseCase.Error.unavailableNote)
+            }
+            guard let syncronizedNoteOrderID = note.meta.identifier(forKey: .order),
+               syncronizedNoteOrderID == orderID else {
+                return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
+            }
+
+            let updatedStatus: Result<Int64, Error> = await withCheckedContinuation { continuation in
+                notesRemote.updateReadStatus(noteIDs: [noteID], read: true) { error in
+                    if let error {
+                        continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
+                    } else {
+                        continuation.resume(returning: .success(noteID))
+                    }
+                }
+            }
+
+            switch updatedStatus {
+            case .success(let noteID):
+                return .success(noteID)
+            case .failure(let error):
+                return .failure(error)
+            }
+        case .failure(let error):
+            return .failure(error)
         }
     }
 }

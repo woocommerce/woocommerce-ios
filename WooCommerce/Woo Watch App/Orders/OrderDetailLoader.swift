@@ -27,7 +27,11 @@ struct OrderDetailLoader: View {
             case .loaded(let order):
                 OrderDetailView(order: order)
                     .onAppear {
-                        MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: pushNotification.noteID, orderID: Int(order.orderID))
+                        Task {
+                            await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network,
+                                                                                     noteID: pushNotification.noteID,
+                                                                                     orderID: Int(order.orderID))
+                        }
                     }
             case .error:
                 Text(AppLocalizedString(

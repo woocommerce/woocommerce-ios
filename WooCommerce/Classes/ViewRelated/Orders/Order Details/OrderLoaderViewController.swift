@@ -262,8 +262,13 @@ private extension OrderLoaderViewController {
               let orderID = note.meta.identifier(forKey: .order) else {
             return
         }
-        MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: note.noteID, orderID: orderID) { noteID, error in
-            if let error {
+
+        Task {
+            let markReadResult = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: note.noteID, orderID: orderID)
+            switch markReadResult {
+            case .success:
+                return
+            case .failure(let error):
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }

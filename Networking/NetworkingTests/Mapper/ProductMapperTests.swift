@@ -476,6 +476,19 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.groupOfQuantity, "2")
         XCTAssertEqual(product.combineVariationQuantities, false)
     }
+
+    /// Test that custom fields are properly parsed.
+    ///
+    func test_custom_fields_are_properly_parsed() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductResponse().first)
+
+        // Then
+        XCTAssertEqual(product.customFields.count, 1)
+        XCTAssertEqual(product.customFields.first?.metadataID, 6000)
+        XCTAssertEqual(product.customFields.first?.key, "just_a_custom_field")
+        XCTAssertEqual(product.customFields.first?.value, "10")
+    }
 }
 
 

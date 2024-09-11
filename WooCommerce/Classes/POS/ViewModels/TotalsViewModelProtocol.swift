@@ -28,7 +28,6 @@ protocol TotalsViewModelProtocol {
     var isSubtotalFieldRedacted: Bool { get }
     var isTaxFieldRedacted: Bool { get }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    var showRecalculateButton: Bool { get }
     var order: Order? { get }
 
     func startNewOrder()

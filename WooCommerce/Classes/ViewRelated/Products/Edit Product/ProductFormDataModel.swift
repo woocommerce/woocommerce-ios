@@ -72,6 +72,9 @@ protocol ProductFormDataModel {
     var bundleStockStatus: ProductStockStatus? { get }
     var bundleStockQuantity: Int64? { get }
 
+    // Password
+    var password: String? { get }
+
     // Composite Products
     var compositeComponents: [ProductCompositeComponent] { get }
 

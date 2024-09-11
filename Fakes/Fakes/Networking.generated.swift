@@ -205,7 +205,8 @@ extension Networking.BlazeCampaignListItem {
             budgetAmount: .fake(),
             budgetCurrency: .fake(),
             isEvergreen: .fake(),
-            durationDays: .fake()
+            durationDays: .fake(),
+            startTime: .fake()
         )
     }
 }
@@ -1258,7 +1259,8 @@ extension Networking.Product {
             minAllowedQuantity: .fake(),
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
-            combineVariationQuantities: .fake()
+            combineVariationQuantities: .fake(),
+            customFields: .fake()
         )
     }
 }

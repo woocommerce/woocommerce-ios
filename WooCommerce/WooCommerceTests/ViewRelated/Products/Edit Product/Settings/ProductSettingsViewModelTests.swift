@@ -4,6 +4,24 @@ import XCTest
 
 final class ProductSettingsViewModelTests: XCTestCase {
 
+    private var storesManager: MockStoresManager!
+    private var storageManager: MockStorageManager!
+    private let siteID: Int64 = 123
+    private let pluginName = "WooCommerce"
+
+    override func setUp() {
+        super.setUp()
+        storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        storesManager.sessionManager.setStoreId(siteID)
+        storageManager = MockStorageManager()
+    }
+
+    override func tearDown() {
+        storesManager = nil
+        storageManager = nil
+        super.tearDown()
+    }
+
     func testOnReloadClosure() {
 
         let product = Product.fake().copy(slug: "this-is-a-slug",
@@ -39,7 +57,14 @@ final class ProductSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.5, handler: nil)
     }
 
-    func testHasUnsavedChanges() {
+    func test_HasUnsavedChanges_with_WC_below_8_1() {
+        // Given
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "8.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
@@ -47,14 +72,47 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
 
+        // When
         viewModel.productSettings.status = .pending
         viewModel.productSettings.featured = false
         viewModel.productSettings.catalogVisibility = .search
 
+        // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testHasUnsavedChangesWithOnlyThePasswordChanged() {
+    func test_hasUnsavedChanges_with_WC_above_8_1() {
+        // Given
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "9.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
+                                          featured: false,
+                                          catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
+        let viewModel = ProductSettingsViewModel(product: product, password: "12345")
+
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+
+        // When
+        viewModel.productSettings.status = .pending
+        viewModel.productSettings.featured = false
+        viewModel.productSettings.catalogVisibility = .search
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_hasUnsavedChanges_with_only_the_password_changed_with_WC_below_8_1() {
+        // Given
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "8.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
                                           featured: false,
                                           catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
@@ -62,10 +120,36 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
 
+        // When
         viewModel.productSettings.status = .pending
         viewModel.productSettings.featured = false
         viewModel.productSettings.password = "12345"
 
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_hasUnsavedChanges_with_only_the_password_changed_with_WC_above_8_1() {
+        // Given
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                    name: pluginName,
+                                                    version: "9.0",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
+        let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue,
+                                          featured: false,
+                                          catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
+        let viewModel = ProductSettingsViewModel(product: product, password: nil)
+
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+
+        // When
+        viewModel.productSettings.status = .pending
+        viewModel.productSettings.featured = false
+        viewModel.productSettings.password = "12345"
+
+        // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 }

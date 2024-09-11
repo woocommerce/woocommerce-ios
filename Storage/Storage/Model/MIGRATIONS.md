@@ -2,6 +2,14 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 117 (Release 20.3.0.0)
+- @pmusolino 2024-09-04
+    - Added `customFields` to-many relationship from `Product` to `MetaData`.
+    
+## Model 116 (Release 20.3.0.0)
+- @selanthiraiyan 2024-09-03
+    - Added `startTime` attribute to `BlazeCampaignListItem` entity.
+    
 ## Model 115 (Release 20.2.0.0)
 - @itsmeichigo 2024-08-26
     - Added `BlazeCampaignObjective` entity.

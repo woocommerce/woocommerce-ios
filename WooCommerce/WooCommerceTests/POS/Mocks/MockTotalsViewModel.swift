@@ -55,14 +55,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         nil
     }
 
-    var showRecalculateButton: Bool {
-        !areAmountsFullyCalculated && isSyncingOrder == false
-    }
-
-    var areAmountsFullyCalculated: Bool {
-        formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && isSyncingOrder == false
-    }
-
     func startNewOrder() {
         paymentState = .acceptingCard
     }

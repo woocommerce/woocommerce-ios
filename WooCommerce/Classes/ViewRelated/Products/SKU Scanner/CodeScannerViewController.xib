@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,6 +15,7 @@
                 <outlet property="cancelButton" destination="wCb-QS-xTf" id="JVx-sG-Ov0"/>
                 <outlet property="instructionLabel" destination="WDY-yE-Pa7" id="lA1-tM-wwa"/>
                 <outlet property="scanAreaView" destination="h26-0r-6H1" id="WNx-bS-KMX"/>
+                <outlet property="swapCameraButton" destination="uYb-k2-4wm" id="Na8-Rn-Uo6"/>
                 <outlet property="topDimmingView" destination="6Ui-xi-Quc" id="oPy-7r-UvD"/>
                 <outlet property="videoOutputImageView" destination="kZd-Wy-O48" id="siZ-UV-Oho"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -39,9 +40,16 @@
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                 </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYb-k2-4wm">
+                                    <rect key="frame" x="338.5" y="20" width="55.5" height="34"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="arrow.triangle.2.circlepath.camera" catalog="system"/>
+                                </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
+                                <constraint firstItem="uYb-k2-4wm" firstAttribute="top" secondItem="6Ui-xi-Quc" secondAttribute="top" constant="20" id="ACy-rd-LpH"/>
+                                <constraint firstAttribute="trailing" secondItem="uYb-k2-4wm" secondAttribute="trailing" constant="20" id="Bex-f3-q0z"/>
                                 <constraint firstItem="wCb-QS-xTf" firstAttribute="top" secondItem="6Ui-xi-Quc" secondAttribute="top" constant="20" id="aDv-QY-Sew"/>
                                 <constraint firstItem="wCb-QS-xTf" firstAttribute="leading" secondItem="6Ui-xi-Quc" secondAttribute="leading" constant="20" id="edO-za-6W1"/>
                             </constraints>
@@ -86,6 +94,7 @@
         </view>
     </objects>
     <resources>
+        <image name="arrow.triangle.2.circlepath.camera" catalog="system" width="128" height="93"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -2,7 +2,6 @@ import SwiftUI
 import Kingfisher
 
 struct ItemRowView: View {
-    private let cartItem: CartItem
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -11,8 +10,7 @@ struct ItemRowView: View {
 
     @ObservedObject private var viewModel: CartItemRowViewModel
 
-    init(cartItem: CartItem, viewModel: CartItemRowViewModel, onItemRemoveTapped: (() -> Void)? = nil) {
-        self.cartItem = cartItem
+    init(viewModel: CartItemRowViewModel, onItemRemoveTapped: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onItemRemoveTapped = onItemRemoveTapped
     }
@@ -22,12 +20,12 @@ struct ItemRowView: View {
             productImage
 
             VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
-                Text(cartItem.item.name)
+                Text(viewModel.cartItem.item.name)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
                     .padding(.top, Constants.verticalPadding)
-                Text(cartItem.item.formattedPrice)
+                Text(viewModel.cartItem.item.formattedPrice)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
@@ -63,7 +61,7 @@ struct ItemRowView: View {
     private var productImage: some View {
         if dynamicTypeSize >= .accessibility3 {
             EmptyView()
-        } else if let imageSource = cartItem.item.productImageSource {
+        } else if let imageSource = viewModel.cartItem.item.productImageSource {
             if let hasImageInCache = viewModel.cachedImage {
                 Image(uiImage: hasImageInCache)
                     .resizable()
@@ -71,7 +69,6 @@ struct ItemRowView: View {
                     .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                            height: Constants.productCardSize * scale)
                     .clipped()
-                    .border(.red, width: 5.0)
             } else {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardSize,
@@ -132,8 +129,7 @@ private extension ItemRowView {
     let cartItem = CartItem(id: UUID(),
                             item: POSItemProviderPreview().providePointOfSaleItem(),
                             quantity: 2)
-    return ItemRowView(cartItem: cartItem,
-                       viewModel: CartItemRowViewModel(cartItem),
+    return ItemRowView(viewModel: CartItemRowViewModel(cartItem),
                        onItemRemoveTapped: { })
 }
 #endif

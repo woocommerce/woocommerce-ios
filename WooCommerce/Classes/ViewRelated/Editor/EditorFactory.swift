@@ -9,7 +9,7 @@ protocol Editor {
 ///
 final class EditorFactory {
     struct EditorContext {
-        let initialContent: String
+        let initialContent: String?
         let navigationTitle: String
         let placeholderText: String
         let showSaveChangesActionSheet: Bool
@@ -23,7 +23,7 @@ final class EditorFactory {
                                   isAIGenerationEnabled: Bool,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let context = EditorContext(
-            initialContent: product.description ?? "",
+            initialContent: product.description,
             navigationTitle: Localization.productDescriptionTitle,
             placeholderText: Localization.placeholderText(product: product),
             showSaveChangesActionSheet: true,
@@ -31,13 +31,13 @@ final class EditorFactory {
             isAIGenerationEnabled: isAIGenerationEnabled
         )
 
-        return createEditor(context: context, onContentSave: onContentSave)
+        return createEditor(context: context, product: product, onContentSave: onContentSave)
     }
 
     func productShortDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let context = EditorContext(
-            initialContent: product.shortDescription ?? "",
+            initialContent: product.shortDescription,
             navigationTitle: Localization.productShortDescriptionTitle,
             placeholderText: Localization.placeholderText(product: product),
             showSaveChangesActionSheet: true,
@@ -45,10 +45,12 @@ final class EditorFactory {
             isAIGenerationEnabled: false
         )
 
-        return createEditor(context: context, onContentSave: onContentSave)
+        return createEditor(context: context, product: product, onContentSave: onContentSave)
     }
 
-    func createEditor(context: EditorContext, onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+    func createEditor(context: EditorContext,
+                      product: ProductFormDataModel? = nil,
+                      onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let viewProperties = EditorViewProperties(
             navigationTitle: context.navigationTitle,
             placeholderText: context.placeholderText,
@@ -57,6 +59,7 @@ final class EditorFactory {
 
         let editor = AztecEditorViewController(
             content: context.initialContent,
+            product: product,
             viewProperties: viewProperties,
             isAIGenerationEnabled: context.isAIGenerationEnabled
         )

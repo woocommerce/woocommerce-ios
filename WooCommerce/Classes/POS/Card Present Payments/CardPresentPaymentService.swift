@@ -71,6 +71,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                 }
             })
             .compactMap { $0 }
+            .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -92,6 +93,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             })))
             return .connected(connectedReader)
         case .canceled:
+            readerConnectionStatusSubject.send(.disconnected)
             paymentEventSubject.send(.idle)
             return .canceled
         }

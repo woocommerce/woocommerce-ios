@@ -39,17 +39,9 @@ struct CardReaderConnectionStatusView: View {
                     .frame(maxHeight: .infinity)
                 }
             case .disconnecting:
-                HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                    ProgressView()
-                        .progressViewStyle(POSProgressViewStyle(
-                            size: Constants.disconnectingProgressIndicatorDimension * scale,
-                            lineWidth: Constants.disconnectingProgressIndicatorLineWidth * scale
-                        ))
-                    Text(Localization.readerDisconnecting)
-                        .foregroundColor(connectedFontColor)
-                }
-                .padding(.horizontal, Constants.horizontalPadding)
-                .frame(maxHeight: .infinity)
+                progressIndicatingCardReaderStatus(title: Localization.readerDisconnecting)
+            case .cancellingConnection:
+                progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
                 Button {
                     connectionViewModel.connectReader()
@@ -77,6 +69,23 @@ struct CardReaderConnectionStatusView: View {
 }
 
 private extension CardReaderConnectionStatusView {
+    @ViewBuilder
+    func progressIndicatingCardReaderStatus(title: String) -> some View {
+        HStack(spacing: Constants.buttonImageAndTextSpacing) {
+            ProgressView()
+                .progressViewStyle(POSProgressViewStyle(
+                    size: Constants.progressIndicatorDimension * scale,
+                    lineWidth: Constants.progressIndicatorLineWidth * scale
+                ))
+            Text(title)
+                .foregroundColor(connectedFontColor)
+        }
+        .padding(.horizontal, Constants.horizontalPadding)
+        .frame(maxHeight: .infinity)
+    }
+}
+
+private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
         case .primary:
@@ -100,8 +109,8 @@ private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = 12
         static let imageDimension: CGFloat = 12
-        static let disconnectingProgressIndicatorDimension: CGFloat = 10
-        static let disconnectingProgressIndicatorLineWidth: CGFloat = 2
+        static let progressIndicatorDimension: CGFloat = 10
+        static let progressIndicatorLineWidth: CGFloat = 2
         static let font = POSFontStyle.posDetailEmphasized
         static let horizontalPadding: CGFloat = 24
         static let overlayRadius: CGFloat = 4
@@ -137,7 +146,15 @@ private extension CardReaderConnectionStatusView {
         static let disconnectCardReader = NSLocalizedString(
             "pointOfSale.floatingButtons.disconnectCardReader.button.title",
             value: "Disconnect Reader",
-            comment: "The title of the menu button to disconnect a connected card reader, as confirmation.")
+            comment: "The title of the menu button to disconnect a connected card reader, as confirmation."
+        )
+
+        static let pleaseWait = NSLocalizedString(
+            "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title",
+            value: "Please wait",
+            comment: "The title of the floating button to indicate that the reader is not ready for another " +
+            "connection, usually because a connection has just been cancelled" 
+        )
     }
 }
 

@@ -253,7 +253,7 @@ private extension TotalsViewModel {
                 }
 
                 switch connectionStatus {
-                case .connected, .disconnecting:
+                case .connected, .disconnecting, .cancellingConnection:
                     return message != nil
                 case .disconnected:
                     // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -280,7 +280,7 @@ private extension TotalsViewModel {
                     switch status {
                     case .connected:
                         return true
-                    case .disconnected, .disconnecting:
+                    case .disconnected, .disconnecting, .cancellingConnection:
                         return false
                     }
                 }

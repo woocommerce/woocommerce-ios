@@ -35,19 +35,19 @@ struct WooShippingItemRow: View {
                           backgroundShape: badgeStyle)
                 .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
             }
-            AdaptiveStack(verticalAlignment: .lastTextBaseline) {
-                VStack(alignment: .leading) {
-                    Text(name)
-                        .bodyStyle()
-                    Text(detailsLabel)
-                        .subheadlineStyle()
+            VStack(alignment: .leading) {
+                Text(name)
+                    .bodyStyle()
+                Text(detailsLabel)
+                    .subheadlineStyle()
+                AdaptiveStack(verticalAlignment: .lastTextBaseline) {
                     Text(weightLabel)
                         .subheadlineStyle()
+                    Spacer()
+                    Text(priceLabel)
+                        .font(.subheadline)
+                        .foregroundStyle(Color(.text))
                 }
-                Spacer()
-                Text(priceLabel)
-                    .font(.subheadline)
-                    .foregroundStyle(Color(.text))
             }
         }
         .frame(maxWidth: .infinity)

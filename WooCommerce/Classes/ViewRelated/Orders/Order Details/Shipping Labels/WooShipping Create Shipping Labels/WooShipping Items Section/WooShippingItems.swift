@@ -15,7 +15,7 @@ struct WooShippingItems: View {
         CollapsibleView(isCollapsed: $isCollapsed,
                         shouldShowDividers: false,
                         label: {
-            HStack {
+            AdaptiveStack {
                 Text(itemsCountLabel)
                     .headlineStyle()
                 Spacer()

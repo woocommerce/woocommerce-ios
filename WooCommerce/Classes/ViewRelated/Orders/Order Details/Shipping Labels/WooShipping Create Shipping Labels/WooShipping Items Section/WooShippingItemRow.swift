@@ -23,7 +23,7 @@ struct WooShippingItemRow: View {
     @ScaledMetric private var scale: CGFloat = 1
 
     var body: some View {
-        HStack(alignment: .lastTextBaseline) {
+        AdaptiveStack(spacing: Layout.horizontalSpacing) {
             ProductImageThumbnail(productImageURL: imageUrl,
                                   productImageSize: Layout.imageSize,
                                   scale: scale,
@@ -35,20 +35,22 @@ struct WooShippingItemRow: View {
                           backgroundShape: badgeStyle)
                 .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
             }
-            Spacer()
-            VStack(alignment: .leading) {
-                Text(name)
-                    .bodyStyle()
-                Text(detailsLabel)
-                    .subheadlineStyle()
-                Text(weightLabel)
-                    .subheadlineStyle()
+            AdaptiveStack(verticalAlignment: .lastTextBaseline) {
+                VStack(alignment: .leading) {
+                    Text(name)
+                        .bodyStyle()
+                    Text(detailsLabel)
+                        .subheadlineStyle()
+                    Text(weightLabel)
+                        .subheadlineStyle()
+                }
+                Spacer()
+                Text(priceLabel)
+                    .font(.subheadline)
+                    .foregroundStyle(Color(.text))
             }
-            Spacer()
-            Text(priceLabel)
-                .font(.subheadline)
-                .foregroundStyle(Color(.text))
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -64,6 +66,7 @@ private extension WooShippingItemRow {
     }
 
     enum Layout {
+        static let horizontalSpacing: CGFloat = 16
         static let imageSize: CGFloat = 56.0
         static let imageCornerRadius: CGFloat = 4.0
         static let badgeOffset: CGFloat = 8.0

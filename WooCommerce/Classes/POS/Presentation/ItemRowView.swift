@@ -91,7 +91,7 @@ private extension ItemRowView {
 
 private extension ItemRowView {
     enum Constants {
-        static let productCardSize: CGFloat = 72
+        static let productCardSize: CGFloat = 76
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
         static let productCardCornerRadius: CGFloat = 8
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,

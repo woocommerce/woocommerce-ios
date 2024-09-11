@@ -5,6 +5,7 @@ struct ItemCardView: View {
     private let item: POSItem
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     init(item: POSItem) {
         self.item = item
@@ -28,7 +29,9 @@ struct ItemCardView: View {
             }
 
             DynamicHStack(spacing: Constants.textSpacing) {
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
                 Text(item.name)
+                    .lineLimit(2)
                     .foregroundStyle(Color.posPrimaryText)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemNameFont)
@@ -36,8 +39,10 @@ struct ItemCardView: View {
                 Text(item.formattedPrice)
                     .foregroundStyle(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
             }
-            .padding(Constants.textPadding)
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
@@ -61,7 +66,8 @@ private extension ItemCardView {
         static let nilOutline: CGFloat = 0
         static let cardSpacing: CGFloat = 0
         static let textSpacing: CGFloat = 8
-        static let textPadding: CGFloat = 32
+        static let horizontalTextPadding: CGFloat = 32
+        static let verticalTextPadding: CGFloat = 8
         static let itemNameFont: POSFontStyle = .posBodyEmphasized
         static let itemPriceFont: POSFontStyle = .posBodyRegular
     }

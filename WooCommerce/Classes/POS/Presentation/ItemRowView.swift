@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct ItemRowView: View {
     private let cartItem: CartItem
@@ -8,6 +9,9 @@ struct ItemRowView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
+    @State private var cachedImage: UIImage? = nil
+    private let cache: ImageCache = ImageCache.default
+
     init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self.onItemRemoveTapped = onItemRemoveTapped
@@ -15,7 +19,15 @@ struct ItemRowView: View {
 
     var body: some View {
         HStack(spacing: Constants.horizontalCardSpacing) {
-            productImage
+            if let cachedImage {
+                Image(uiImage: cachedImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 112, height: 112)
+                    .cornerRadius(10)
+            } else {
+                productImage
+            }
 
             VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
                 Text(cartItem.item.name)
@@ -53,6 +65,35 @@ struct ItemRowView: View {
         .padding(.horizontal, Constants.horizontalPadding)
         .padding(.vertical, Constants.verticalPadding)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
+        .onAppear {
+            if let imageSource = cartItem.item.productImageSource {
+                loadImageFromCache(imageKey: imageSource)
+            }
+        }
+    }
+
+    func loadImageFromCache(imageKey: String) {
+        let productImageKey = imageKey
+        // This is the identifier used within ResizingIamageProcessor, in ProductImageThumbnail.
+        // We need it to handle the image from cache
+        let cacheKey = "com.onevcat.Kingfisher.ResizingImageProcessor((112.0, 112.0), aspectFill)"
+
+        if cache.isCached(forKey: productImageKey, processorIdentifier: cacheKey) {
+            cache.retrieveImage(forKey: cacheKey) { result in
+                switch result {
+                case .success(let imageInCache):
+                    switch imageInCache {
+                    case .memory(let image):
+                        cachedImage = image
+                    case .disk, .none:
+                        break
+                    }
+                    break
+                case .failure:
+                    break
+                }
+            }
+        }
     }
 
     @ViewBuilder
@@ -64,12 +105,10 @@ struct ItemRowView: View {
                                   productImageSize: Constants.productCardSize,
                                   scale: scale,
                                   foregroundColor: .clear)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize), 
                    height: Constants.productCardSize * scale)
             .clipped()
         } else {
-            // TODO:
-            // Handle what we'll show when there's lack of images:
             Rectangle()
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)

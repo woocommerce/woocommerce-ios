@@ -58,6 +58,9 @@ steps:
             permit_on_passed: true
         agents:
           queue: linter
+        notify:
+          - github_commit_status:
+              context: Danger - PR Check
 
       - label: ":swift: SwiftLint"
         command: swiftlint
@@ -81,6 +84,9 @@ steps:
       - label: ":sleuth_or_spy: Lint Localized Strings Format"
         command: .buildkite/commands/lint-localized-strings-format.sh
         plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Lint Localized Strings Format
 
   #################
   # UI Tests

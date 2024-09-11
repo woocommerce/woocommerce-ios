@@ -10,16 +10,16 @@ final class BlazeCampaignDetailWebViewModel: AuthenticatedWebViewModel {
 
     private let siteURL: String
     private let onDismiss: () -> Void
-    private let onCampaignCreation: (Int64) -> Void
+    private let onCreateCampaign: (Int64) -> Void
 
     init(initialURL: URL,
          siteURL: String,
          onDismiss: @escaping () -> Void,
-         onCampaignCreation: @escaping (Int64) -> Void) {
+         onCreateCampaign: @escaping (Int64) -> Void) {
         self.initialURL = initialURL
         self.siteURL = siteURL
         self.onDismiss = onDismiss
-        self.onCampaignCreation = onCampaignCreation
+        self.onCreateCampaign = onCreateCampaign
     }
 
     func handleDismissal() {
@@ -32,7 +32,7 @@ final class BlazeCampaignDetailWebViewModel: AuthenticatedWebViewModel {
         }
 
         if let productID = retrieveProductIDForCampaignCreation(from: url, baseURL: initialURL) {
-            onCampaignCreation(productID)
+            onCreateCampaign(productID)
         } else if checkCampaignListURL(for: url, siteURL: siteURL) {
             onDismiss()
         }

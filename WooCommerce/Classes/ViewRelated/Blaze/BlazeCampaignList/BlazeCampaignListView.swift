@@ -148,7 +148,7 @@ private extension BlazeCampaignListView {
                 isPresented: .constant(true),
                 viewModel: BlazeCampaignDetailWebViewModel(initialURL: url, siteURL: viewModel.siteURL, onDismiss: {
                     viewModel.selectedCampaignURL = nil
-                }, onCampaignCreation: { productID in
+                }, onCreateCampaign: { productID in
                     viewModel.selectedCampaignURL = nil
                     onCreateCampaign(productID)
                 }))

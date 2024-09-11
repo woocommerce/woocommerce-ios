@@ -50,6 +50,7 @@ struct POSFloatingControlView: View {
         }
         .frame(height: Constants.size)
         .background(Color.clear)
+        .animation(.default, value: backgroundAppearance)
     }
 }
 

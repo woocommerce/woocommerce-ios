@@ -1537,6 +1537,7 @@
 		68A905012ACCFC13004C71D3 /* CollapsibleProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */; };
 		68AC9D292ACE598B0042F784 /* ProductImageThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */; };
 		68B6F22B2ADE7ED500D171FC /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B6F22A2ADE7ED500D171FC /* TooltipView.swift */; };
+		68C1D02F2C91A2B50010E17E /* CartItemRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C1D02E2C91A2B50010E17E /* CartItemRowViewModel.swift */; };
 		68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */; };
 		68C53CBE2C1FE59B00C6D80B /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */; };
 		68C7E5C42C69B3CD00856513 /* PointOfSaleItemListErrorLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C7E5C32C69B3CD00856513 /* PointOfSaleItemListErrorLayout.swift */; };
@@ -4534,6 +4535,7 @@
 		68A905002ACCFC13004C71D3 /* CollapsibleProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCard.swift; sourceTree = "<group>"; };
 		68AC9D282ACE598B0042F784 /* ProductImageThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageThumbnail.swift; sourceTree = "<group>"; };
 		68B6F22A2ADE7ED500D171FC /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
+		68C1D02E2C91A2B50010E17E /* CartItemRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemRowViewModel.swift; sourceTree = "<group>"; };
 		68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewModel.swift; sourceTree = "<group>"; };
 		68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		68C7E5C32C69B3CD00856513 /* PointOfSaleItemListErrorLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListErrorLayout.swift; sourceTree = "<group>"; };
@@ -6742,6 +6744,7 @@
 				6885E2CB2C32B14B004C8D70 /* TotalsViewModel.swift */,
 				016BCAFE2C4F907F009D8367 /* CartViewModelProtocol.swift */,
 				6837631B2C2E847D00AD51D0 /* CartViewModel.swift */,
+				68C1D02E2C91A2B50010E17E /* CartItemRowViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -15330,6 +15333,7 @@
 				205E79462C204387001BA266 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel.swift in Sources */,
 				029D025C2C231A1F00CB1E75 /* PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel.swift in Sources */,
 				01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */,
+				68C1D02F2C91A2B50010E17E /* CartItemRowViewModel.swift in Sources */,
 				021125A52578E5730075AD2A /* BoldableTextView.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */,

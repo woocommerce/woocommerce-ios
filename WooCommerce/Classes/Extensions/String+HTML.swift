@@ -42,16 +42,4 @@ extension String {
         let string = replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
         return string
     }
-
-    /// Indicates whether the string contains HTML content.
-    ///
-    /// This property uses the `strippedHTML` method to determine if the string contains HTML.
-    /// If the stripped version is different from the original string, it's considered to contain HTML.
-    ///
-    /// NOTE: This can be slow ⏳ — using it in a background thread is strongly recommended.
-    ///
-    var containsHTML: Bool {
-        let stripped = self.strippedHTML
-        return stripped != self
-    }
 }

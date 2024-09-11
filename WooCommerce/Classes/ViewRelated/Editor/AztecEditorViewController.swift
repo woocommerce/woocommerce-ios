@@ -155,6 +155,10 @@ final class AztecEditorViewController: UIViewController, Editor {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
     }
+
+    func getLatestContent() -> String {
+        return getHTML()
+    }
 }
 
 private extension AztecEditorViewController {

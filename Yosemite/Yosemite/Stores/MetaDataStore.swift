@@ -75,7 +75,7 @@ private extension MetaDataStore {
     func updateOrderMetaData(siteID: Int64,
                              orderID: Int64,
                              metadata: [[String: Any]],
-                             onCompletion: @escaping (Result<[MetaData], Error>) -> Void){
+                             onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let results = try await self.remote.updateMetaData(for: siteID, for: orderID, type: .order, metadata: metadata)
@@ -132,7 +132,7 @@ private extension MetaDataStore {
         newStorageMetaData.order = storageOrder
         storageOrder.addToCustomFields(newStorageMetaData)
     }
-    
+
     /// Updates product metadata in the local database.
     /// - Parameters:
     ///   - siteID: Site id of the product.
@@ -143,7 +143,7 @@ private extension MetaDataStore {
     func updateProductMetaData(siteID: Int64,
                                productID: Int64,
                                metadata: [[String: Any]],
-                               onCompletion: @escaping (Result<[MetaData], Error>) -> Void){
+                               onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let results = try await self.remote.updateMetaData(for: siteID, for: productID, type: .product, metadata: metadata)

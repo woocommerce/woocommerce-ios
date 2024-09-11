@@ -16,7 +16,7 @@ public enum MetaDataAction: Action {
                              orderID: Int64,
                              metadata: [[String: Any]],
                              onCompletion: (Result<[MetaData], Error>) -> Void)
-    
+
     /// Update product metadata in the local database.
     ///
     /// - Parameter siteID: Site id of the product.

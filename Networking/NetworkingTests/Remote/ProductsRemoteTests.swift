@@ -867,6 +867,18 @@ final class ProductsRemoteTests: XCTestCase {
         }
     }
 
+    func test_loadAllSimpleProductsForPointOfSale_called_with_menu_order() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+        let _ = try await remote.loadAllSimpleProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        XCTAssertTrue((network.queryParameters ?? []).contains("orderby=menu_order"))
+    }
+
     func test_loadAllSimpleProductsForPointOfSale_relays_networking_error() async throws {
         // Given
         let remote = ProductsRemote(network: network)

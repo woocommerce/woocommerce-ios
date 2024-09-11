@@ -1,4 +1,5 @@
 import SwiftUI
+import NetworkingWatchOS
 
 @main
 struct Woo_Watch_AppApp: App {
@@ -28,7 +29,9 @@ struct Woo_Watch_AppApp: App {
                         }
                     }
                     .sheet(item: $appBindings.orderNotification, content: { orderNotification in
-                        OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
+                        OrderDetailLoader(dependencies: dependencies,
+                                          pushNotification: orderNotification,
+                                          network: AlamofireNetwork(credentials: dependencies.credentials))
                     })
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)

@@ -6,9 +6,14 @@ import NetworkingWatchOS
 struct OrderDetailLoader: View {
 
     @StateObject var viewModel: OrderDetailLoaderViewModel
+    private let pushNotification: PushNotification
+    private let network: Network
 
-    init(dependencies: WatchDependencies, pushNotification: PushNotification) {
+    init(dependencies: WatchDependencies, pushNotification: PushNotification,
+         network: Network) {
         _viewModel = StateObject(wrappedValue: OrderDetailLoaderViewModel(dependencies: dependencies, pushNotification: pushNotification))
+        self.pushNotification = pushNotification
+        self.network = network
     }
 
     var body: some View {
@@ -21,6 +26,9 @@ struct OrderDetailLoader: View {
                     .redacted(reason: .placeholder)
             case .loaded(let order):
                 OrderDetailView(order: order)
+                    .onAppear {
+                        MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: pushNotification.noteID, orderID: Int(order.orderID))
+                    }
             case .error:
                 Text(AppLocalizedString(
                     "watch.notification.order.error",

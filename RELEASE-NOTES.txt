@@ -5,6 +5,7 @@
 -----
 
 - [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
+- [*] Blaze: Open blaze campaign detail page upon tapping push notification. [https://github.com/woocommerce/woocommerce-ios/pull/13843]
 
 20.3
 -----

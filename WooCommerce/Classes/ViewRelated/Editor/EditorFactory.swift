@@ -45,6 +45,20 @@ final class EditorFactory {
         return createEditor(context: context, product: product, onContentSave: onContentSave)
     }
 
+    func customFieldRichTextEditor(initialValue: String,
+                                   isReadOnlyValue: Bool,
+                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+        let context = EditorContext(
+            initialContent: initialValue,
+            navigationTitle: Localization.customFieldsValueTitle,
+            placeholderText: Localization.customFieldsValuePlaceholder,
+            showSaveChangesActionSheet: true,
+            isAIGenerationEnabled: false
+        )
+
+        return createEditor(context: context, onContentSave: onContentSave)
+    }
+
     func createEditor(context: EditorContext,
                       product: ProductFormDataModel? = nil,
                       onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
@@ -84,5 +98,16 @@ private extension EditorFactory {
             }
             return String(format: Localization.placeholderFormat, product.name)
         }
+
+        static let customFieldsValueTitle = NSLocalizedString(
+            "editorFactory.customFieldsValueTitle",
+            value: "Value",
+            comment: "The value of custom field to be edited.")
+
+        static let customFieldsValuePlaceholder = NSLocalizedString(
+            "editorFactory.customFieldsValuePlaceholder",
+            value: "Enter custom field value",
+            comment: "Placeholder text inside the editor's text field.")
+
     }
 }

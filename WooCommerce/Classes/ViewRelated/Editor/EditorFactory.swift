@@ -13,7 +13,6 @@ final class EditorFactory {
         let navigationTitle: String
         let placeholderText: String
         let showSaveChangesActionSheet: Bool
-        let additionalInfo: String
         let isAIGenerationEnabled: Bool
     }
 
@@ -27,7 +26,6 @@ final class EditorFactory {
             navigationTitle: Localization.productDescriptionTitle,
             placeholderText: Localization.placeholderText(product: product),
             showSaveChangesActionSheet: true,
-            additionalInfo: product.name,
             isAIGenerationEnabled: isAIGenerationEnabled
         )
 
@@ -41,7 +39,6 @@ final class EditorFactory {
             navigationTitle: Localization.productShortDescriptionTitle,
             placeholderText: Localization.placeholderText(product: product),
             showSaveChangesActionSheet: true,
-            additionalInfo: product.name,
             isAIGenerationEnabled: false
         )
 
@@ -64,10 +61,7 @@ final class EditorFactory {
             isAIGenerationEnabled: context.isAIGenerationEnabled
         )
 
-        editor.onContentSave = { content, _ in
-            onContentSave(content, context.additionalInfo)
-        }
-
+        editor.onContentSave = onContentSave
         return editor
     }
 }

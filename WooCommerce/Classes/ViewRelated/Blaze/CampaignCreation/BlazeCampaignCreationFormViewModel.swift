@@ -444,6 +444,9 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func initializeCampaignObjective() {
+        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
+            return
+        }
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }

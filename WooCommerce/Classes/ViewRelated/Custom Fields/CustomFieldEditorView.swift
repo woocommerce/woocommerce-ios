@@ -1,28 +1,5 @@
 import SwiftUI
 
-struct AztecEditorView: UIViewControllerRepresentable {
-    @Binding var html: String
-
-    func makeUIViewController(context: Context) -> AztecEditorViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: "Navigation title", /* todo replace string */
-                                                  placeholderText: "placeholder text", /* todo replace string */
-                                                  showSaveChangesActionSheet: true)
-
-        let controller = AztecEditorViewController(
-            content: html,
-            product: nil,
-            viewProperties: viewProperties,
-            isAIGenerationEnabled: false
-        )
-
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: AztecEditorViewController, context: Context) {
-        // Update the view controller if needed
-    }
-}
-
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
@@ -169,7 +146,7 @@ private struct RichTextEditor: View {
 
     var body: some View {
         NavigationView {
-            AztecEditorView(html: $html)
+            AztecEditorView(initialValue: html)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {

@@ -45,9 +45,10 @@ final class EditorFactory {
         return createEditor(context: context, product: product, onContentSave: onContentSave)
     }
 
+    // onContentSave is optional because this can be used in SwiftUI with `UIViewControllerRepresentable` and the
+    // saving callback is to be managed separately there.
     func customFieldRichTextEditor(initialValue: String,
-                                   isReadOnlyValue: Bool,
-                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+                                   onContentSave: Editor.OnContentSave? = nil) -> Editor & UIViewController {
         let context = EditorContext(
             initialContent: initialValue,
             navigationTitle: Localization.customFieldsValueTitle,
@@ -61,7 +62,7 @@ final class EditorFactory {
 
     func createEditor(context: EditorContext,
                       product: ProductFormDataModel? = nil,
-                      onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+                      onContentSave: Editor.OnContentSave?) -> Editor & UIViewController {
         let viewProperties = EditorViewProperties(
             navigationTitle: context.navigationTitle,
             placeholderText: context.placeholderText,

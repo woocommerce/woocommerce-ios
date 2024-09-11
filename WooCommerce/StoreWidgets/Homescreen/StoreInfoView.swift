@@ -97,15 +97,14 @@ private struct StatsCard: View {
 
             // Orders & Conversion
             HStack {
-                Link(destination: WooConstants.URLs.ordersScreen.asURL()) {
-                    VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
-                        Text(StoreInfoView.Localization.orders)
-                            .statTitleStyle()
-                        Text(entryData.orders)
-                            .statValueStyle()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
+                    Text(StoreInfoView.Localization.orders)
+                        .statTitleStyle()
+
+                    Text(entryData.orders)
+                        .statValueStyle()
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .leading, spacing: StoreInfoView.Layout.cardSpacing) {
                     Text(StoreInfoView.Localization.conversion)
                         .statTitleStyle()

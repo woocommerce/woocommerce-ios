@@ -4,6 +4,8 @@
 20.4
 -----
 - [Internal] Mark order notification read if needed on watch app and notification extension https://github.com/woocommerce/woocommerce-ios/pull/13896
+- [*] Fixed the incorrect navigation title of the product selector in the Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13903]
+- [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
 
 20.3
 -----

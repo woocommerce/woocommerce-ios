@@ -144,6 +144,18 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.
+    ///
+    func testDeauthenticate_invalidates_card_present_payment_onboarding_state_cache() {
+        let cardPresentPaymentOnboardingStateCache = MockCardPresentPaymentOnboardingStateCache()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: MockNotificationCenter.testingInstance,
+                                           cardPresentPaymentOnboardingStateCache: cardPresentPaymentOnboardingStateCache)
+
+        manager.deauthenticate()
+
+        XCTAssertTrue(cardPresentPaymentOnboardingStateCache.invalidateCalled)
+    }
 
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
@@ -530,4 +542,12 @@ final class MockSessionManager: SessionManagerProtocol {
 
 private class MockNotificationCenter: NotificationCenter {
     static var testingInstance = MockNotificationCenter()
+}
+
+final class MockCardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache {
+    var invalidateCalled: Bool = false
+
+    override func invalidate() {
+        invalidateCalled = true
+    }
 }

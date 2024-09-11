@@ -30,16 +30,18 @@ protocol CardPresentPluginsDataProviderProtocol {
 struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
-    private let configuration: CardPresentPaymentsConfiguration
+    private let configurationLoader: CardPresentConfigurationLoader
+
+    static let shared = CardPresentPluginsDataProvider(configurationLoader: CardPresentConfigurationLoader(stores: ServiceLocator.stores))
 
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        configuration: CardPresentPaymentsConfiguration
+        configurationLoader: CardPresentConfigurationLoader
     ) {
         self.storageManager = storageManager
         self.stores = stores
-        self.configuration = configuration
+        self.configurationLoader = configurationLoader
     }
 
     private var siteID: Int64? {
@@ -80,7 +82,7 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
 
     private func isPluginVersionSupported(plugin: Yosemite.SystemPlugin,
                                           paymentPlugin: CardPresentPaymentsPlugin) -> Bool {
-        guard let pluginSupport = configuration.supportedPluginVersions.first(where: { support in
+        guard let pluginSupport = configurationLoader.configuration.supportedPluginVersions.first(where: { support in
             support.plugin == paymentPlugin
         }) else {
             return false

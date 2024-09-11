@@ -41,6 +41,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private let notificationCenter: NotificationCenter
 
+    /// Card present payment onboarding state
+    ///
+    private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -120,11 +124,13 @@ class DefaultStoresManager: StoresManager {
     ///
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
+        self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
         isLoggedIn = isAuthenticated
     }
@@ -251,6 +257,8 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.productImageUploader.reset()
 
         updateAndReloadWidgetInformation(with: nil)
+
+        cardPresentPaymentOnboardingStateCache.invalidate()
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 

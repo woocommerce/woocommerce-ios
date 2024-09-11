@@ -26,7 +26,7 @@ struct AztecEditorView: UIViewControllerRepresentable {
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
-    @State private var isModified: Bool = false
+    @State private var hasUnsavedChanges: Bool = false
     @State private var showRichTextEditor: Bool = false
     @State private var showingActionSheet: Bool = false
 
@@ -114,7 +114,7 @@ struct CustomFieldEditorView: View {
                     } label: {
                         Text("Save") // todo-13493: set String to be translatable
                     }
-                    .disabled(!isModified)
+                    .disabled(!hasUnsavedChanges)
 
                     Button(action: {
                         showingActionSheet = true
@@ -154,7 +154,7 @@ struct CustomFieldEditorView: View {
     }
 
     private func checkForModifications() {
-        isModified = key != initialKey || value != initialValue
+        hasUnsavedChanges = key != initialKey || value != initialValue
     }
 
     private func saveChanges() {

@@ -207,8 +207,14 @@ private extension BlazeCampaignDashboardView {
 
     func campaignDetailView(url: URL) -> some View {
         NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
+            AuthenticatedWebView(
+                isPresented: .constant(true),
+                viewModel: BlazeCampaignDetailWebViewModel(initialURL: url, siteURL: viewModel.siteURL, onDismiss: {
+                    viewModel.selectedCampaignURL = nil
+                }, onCampaignCreation: { productID in
+                    viewModel.selectedCampaignURL = nil
+                    createCampaignTapped?(productID)
+                }))
             .navigationTitle(Localization.detailTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

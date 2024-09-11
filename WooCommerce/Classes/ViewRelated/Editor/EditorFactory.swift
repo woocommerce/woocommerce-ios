@@ -1,40 +1,70 @@
 import Yosemite
 
 protocol Editor {
-    typealias OnContentSave = (_ content: String, _ productName: String?) -> Void
+    typealias OnContentSave = (_ content: String, _ additionalInfo: String?) -> Void
     var onContentSave: OnContentSave? { get }
 }
 
 /// This class takes care of instantiating the editor.
 ///
 final class EditorFactory {
+    struct EditorContext {
+        let initialContent: String
+        let navigationTitle: String
+        let placeholderText: String
+        let showSaveChangesActionSheet: Bool
+        let additionalInfo: String
+        let isAIGenerationEnabled: Bool
+    }
 
     // MARK: - Editor: Instantiation
 
     func productDescriptionEditor(product: ProductFormDataModel,
                                   isAIGenerationEnabled: Bool,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: Localization.productDescriptionTitle,
-                                                  placeholderText: Localization.placeholderText(product: product),
-                                                  showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.description,
-                                               product: product,
-                                               viewProperties: viewProperties,
-                                               isAIGenerationEnabled: isAIGenerationEnabled)
-        editor.onContentSave = onContentSave
-        return editor
+        let context = EditorContext(
+            initialContent: product.description ?? "",
+            navigationTitle: Localization.productDescriptionTitle,
+            placeholderText: Localization.placeholderText(product: product),
+            showSaveChangesActionSheet: true,
+            additionalInfo: product.name,
+            isAIGenerationEnabled: isAIGenerationEnabled
+        )
+
+        return createEditor(context: context, onContentSave: onContentSave)
     }
 
     func productShortDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: Localization.productShortDescriptionTitle,
-                                                  placeholderText: Localization.placeholderText(product: product),
-                                                  showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.shortDescription,
-                                               product: product,
-                                               viewProperties: viewProperties,
-                                               isAIGenerationEnabled: false)
-        editor.onContentSave = onContentSave
+        let context = EditorContext(
+            initialContent: product.shortDescription ?? "",
+            navigationTitle: Localization.productShortDescriptionTitle,
+            placeholderText: Localization.placeholderText(product: product),
+            showSaveChangesActionSheet: true,
+            additionalInfo: product.name,
+            isAIGenerationEnabled: false
+        )
+
+        return createEditor(context: context, onContentSave: onContentSave)
+    }
+
+    func createEditor(context: EditorContext, onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+        let viewProperties = EditorViewProperties(
+            navigationTitle: context.navigationTitle,
+            placeholderText: context.placeholderText,
+            showSaveChangesActionSheet: context.showSaveChangesActionSheet
+        )
+
+        let editor = AztecEditorViewController(
+            content: context.initialContent,
+            viewProperties: viewProperties,
+            isAIGenerationEnabled: context.isAIGenerationEnabled
+        )
+
+        editor.onContentSave = { content, _ in
+            onContentSave(content, context.additionalInfo)
+        }
+
         return editor
     }
 }

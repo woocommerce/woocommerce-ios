@@ -5,6 +5,7 @@
 -----
 
 - [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
+- [*] Blaze: Handle links on the campaign detail web view natively. [https://github.com/woocommerce/woocommerce-ios/pull/13922]
 
 20.3
 -----

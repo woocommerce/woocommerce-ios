@@ -2640,6 +2640,7 @@
 		DEA88F522AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F512AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift */; };
 		DEA90D352C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D342C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift */; };
 		DEA90D392C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */; };
+		DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */; };
 		DEACB8852A64F74A00253F0F /* MediaPickingCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */; };
 		DEACB8872A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */; };
 		DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */; };
@@ -5681,6 +5682,7 @@
 		DEA88F512AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModelTests.swift; sourceTree = "<group>"; };
 		DEA90D342C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+BlazeCampaignObjective.swift"; sourceTree = "<group>"; };
 		DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModel.swift; sourceTree = "<group>"; };
+		DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModelTests.swift; sourceTree = "<group>"; };
 		DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinatorTests.swift; sourceTree = "<group>"; };
 		DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AddProductFromImage.swift"; sourceTree = "<group>"; };
 		DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
@@ -13381,6 +13383,7 @@
 			isa = PBXGroup;
 			children = (
 				EEC5C8D92ADE2FD80071E852 /* BlazeCampaignDashboardViewModelTests.swift */,
+				DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -16888,6 +16891,7 @@
 				EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,
+				DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */,
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,

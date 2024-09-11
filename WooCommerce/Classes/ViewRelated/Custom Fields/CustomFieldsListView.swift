@@ -118,11 +118,6 @@ private struct CustomFieldRow: View {
         }
         .padding(Constants.hStackPadding)
         .frame(minHeight: Constants.height)
-        .onTapGesture {
-            if isEditable {
-                // todo-13493 add tap handling
-            }
-        }
     }
 }
 

@@ -12,7 +12,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
@@ -22,7 +22,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { $connectionStatus }
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }

@@ -1,11 +1,5 @@
 import SwiftUI
 
-enum CardReaderConnectionStatus {
-    case connected
-    case disconnecting
-    case disconnected
-}
-
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @ObservedObject private var connectionViewModel: CardReaderConnectionViewModel

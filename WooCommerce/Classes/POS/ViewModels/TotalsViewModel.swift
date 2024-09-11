@@ -32,7 +32,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var paymentState: PaymentState
 
-    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 
     @Published var formattedCartTotalPrice: String?
     @Published var formattedOrderTotalPrice: String?
@@ -96,7 +96,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { $connectionStatus }
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
@@ -238,11 +238,7 @@ private extension TotalsViewModel {
 
 private extension TotalsViewModel {
     func observeConnectedReaderForStatus() {
-        cardPresentPaymentService.connectedReaderPublisher
-            .map { connectedReader in
-                // Note that this does not cover when a reader is disconnecting
-                connectedReader == nil ? .disconnected: .connected
-            }
+        cardPresentPaymentService.readerConnectionStatusPublisher
             .assign(to: &$connectionStatus)
 
         Publishers.CombineLatest4($connectionStatus, $orderState, $cardPresentPaymentInlineMessage, $order)
@@ -278,8 +274,16 @@ private extension TotalsViewModel {
     }
 
     func startPaymentWhenReaderConnected() async {
-        guard connectionStatus == .connected else {
-            return startPaymentOnReaderConnection = $connectionStatus.filter { $0 == .connected }
+        guard case .connected = connectionStatus else {
+            return startPaymentOnReaderConnection = $connectionStatus
+                .filter { status in
+                    switch status {
+                    case .connected:
+                        return true
+                    case .disconnected, .disconnecting:
+                        return false
+                    }
+                }
                 .removeDuplicates()
                 .sink { _ in
                     Task { @MainActor [weak self] in

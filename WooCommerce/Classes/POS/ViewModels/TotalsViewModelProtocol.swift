@@ -6,7 +6,7 @@ protocol TotalsViewModelProtocol {
     var paymentState: TotalsViewModel.PaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get }
     var cardPresentPaymentEvent: CardPresentPaymentEvent { get }
-    var connectionStatus: CardReaderConnectionStatus { get }
+    var connectionStatus: CardPresentPaymentReaderConnectionStatus { get }
     var formattedCartTotalPrice: String? { get }
     var formattedOrderTotalPrice: String? { get }
     var formattedOrderTotalTaxPrice: String? { get }
@@ -15,7 +15,7 @@ protocol TotalsViewModelProtocol {
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { get }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { get }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { get }
+    var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { get }
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { get }

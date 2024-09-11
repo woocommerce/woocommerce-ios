@@ -138,19 +138,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             jetpackSetupCoordinator = coordinator
             return coordinator.handleAuthenticationUrl(url)
         }
-
-        /// prioritize handling login deep link
-        if ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController) {
-            return true
-        }
-
-        /// if all the above fail, ask universal link router to handle the URL if possible.
         if let universalLinkRouter, universalLinkRouter.canHandle(url: url) {
             universalLinkRouter.handle(url: url)
             return true
         }
-
-        return false
+        return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

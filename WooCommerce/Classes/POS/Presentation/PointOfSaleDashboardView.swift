@@ -23,6 +23,7 @@ struct PointOfSaleDashboardView: View {
             if viewModel.isInitialLoading {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
+                    .ignoresSafeArea()
             } else if viewModel.isError {
                 let errorContents = viewModel.itemListViewModel.state.hasError
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {

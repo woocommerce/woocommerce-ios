@@ -364,7 +364,8 @@ private extension BlazeConfirmPaymentView {
                             mainImage: .init(url: "https://example.com", mimeType: "png"),
                             targeting: nil,
                             targetUrn: "",
-                            type: "product"),
+                            type: "product",
+                            objective: "sales"),
         image: .init(image: .iconBolt, source: .asset(asset: PHAsset())),
         onCompletion: {}))
 }

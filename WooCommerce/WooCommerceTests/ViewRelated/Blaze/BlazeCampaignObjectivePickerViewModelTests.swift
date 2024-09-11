@@ -216,6 +216,27 @@ final class BlazeCampaignObjectivePickerViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(userDefaults[.blazeSelectedCampaignObjective], ["\(sampleSiteID)": "sales"])
     }
+
+    func test_confirmSelection_tracks_selected_objective() throws {
+        // Given
+        let sales = BlazeCampaignObjective(id: "sales", title: "Sales", description: "", suitableForDescription: "", locale: locale.identifier)
+        let viewModel = BlazeCampaignObjectivePickerViewModel(siteID: sampleSiteID,
+                                                              locale: locale,
+                                                              storageManager: storageManager,
+                                                              analytics: analytics,
+                                                              onSelection: { _ in })
+
+        // When
+        let expectedItem = sales
+        viewModel.selectedObjective = expectedItem
+        viewModel.confirmSelection()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_campaign_objective_saved"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let objective = try XCTUnwrap(eventProperties["objective"] as? String)
+        XCTAssertEqual(objective, expectedItem.id)
+    }
 }
 
 private extension BlazeCampaignObjectivePickerViewModelTests {

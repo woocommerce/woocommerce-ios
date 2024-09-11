@@ -47,7 +47,7 @@ extension CustomFieldsListViewModel {
             // For when editing an already edited field
             if let editedIndex = editedFields.firstIndex(where: { $0.id == oldField.id }) {
                 editedFields[editedIndex] = newField
-            } else { 
+            } else {
                 // For the first time a field is edited
                 editedFields.append(newField)
             }

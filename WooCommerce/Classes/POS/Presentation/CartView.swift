@@ -74,7 +74,9 @@ struct CartView: View {
                     ScrollView {
                         VStack(spacing: 0) {
                             ForEach(cartViewModel.itemsInCart, id: \.id) { cartItem in
+                                let cartItemViewModel = CartItemRowViewModel(cartItem)
                                 ItemRowView(cartItem: cartItem,
+                                            viewModel: cartItemViewModel,
                                             onItemRemoveTapped: cartViewModel.canDeleteItemsFromCart ? {
                                     cartViewModel.removeItemFromCart(cartItem)
                                 } : nil)

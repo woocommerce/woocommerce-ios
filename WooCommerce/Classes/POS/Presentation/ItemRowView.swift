@@ -1,6 +1,41 @@
 import SwiftUI
 import Kingfisher
 
+final class CartItemRowViewModel: ObservableObject {
+    private let cache: ImageCache = ImageCache.default
+    private let cartItem: CartItem
+    @Published var cachedImage: UIImage? = nil
+
+    init(_ cartItem: CartItem) {
+        self.cartItem = cartItem
+
+        cache.memoryStorage.config.countLimit = 100
+        if let imageSource = cartItem.item.productImageSource {
+            loadImageFromCache(imageCacheKey: imageSource)
+        }
+    }
+
+    func loadImageFromCache(imageCacheKey: String) {
+        let processorID = "com.onevcat.Kingfisher.ResizingImageProcessor((112.0, 112.0), aspectFill)"
+
+        if cache.isCached(forKey: imageCacheKey, processorIdentifier: processorID) {
+            cache.retrieveImage(forKey: imageCacheKey) { [weak self] result in
+                switch result {
+                case .success(let imageInCache):
+                    switch imageInCache {
+                    case .memory(let image), .disk(let image):
+                        self?.cachedImage = image
+                    case .none:
+                        break
+                    }
+                case .failure:
+                    DDLogError("Error retrieving image from cache")
+                }
+            }
+        }
+    }
+}
+
 struct ItemRowView: View {
     private let cartItem: CartItem
     private let onItemRemoveTapped: (() -> Void)?
@@ -9,25 +44,17 @@ struct ItemRowView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
-    @State private var cachedImage: UIImage? = nil
-    private let cache: ImageCache = ImageCache.default
+    @ObservedObject private var viewModel: CartItemRowViewModel
 
-    init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: CartItem, viewModel: CartItemRowViewModel, onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
+        self.viewModel = viewModel
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
     var body: some View {
         HStack(spacing: Constants.horizontalCardSpacing) {
-            if let cachedImage {
-                Image(uiImage: cachedImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 112, height: 112)
-                    .cornerRadius(10)
-            } else {
-                productImage
-            }
+            productImage
 
             VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
                 Text(cartItem.item.name)
@@ -65,35 +92,6 @@ struct ItemRowView: View {
         .padding(.horizontal, Constants.horizontalPadding)
         .padding(.vertical, Constants.verticalPadding)
         .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
-        .onAppear {
-            if let imageSource = cartItem.item.productImageSource {
-                loadImageFromCache(imageKey: imageSource)
-            }
-        }
-    }
-
-    func loadImageFromCache(imageKey: String) {
-        let productImageKey = imageKey
-        // This is the identifier used within ResizingIamageProcessor, in ProductImageThumbnail.
-        // We need it to handle the image from cache
-        let cacheKey = "com.onevcat.Kingfisher.ResizingImageProcessor((112.0, 112.0), aspectFill)"
-
-        if cache.isCached(forKey: productImageKey, processorIdentifier: cacheKey) {
-            cache.retrieveImage(forKey: cacheKey) { result in
-                switch result {
-                case .success(let imageInCache):
-                    switch imageInCache {
-                    case .memory(let image):
-                        cachedImage = image
-                    case .disk, .none:
-                        break
-                    }
-                    break
-                case .failure:
-                    break
-                }
-            }
-        }
     }
 
     @ViewBuilder
@@ -101,13 +99,22 @@ struct ItemRowView: View {
         if dynamicTypeSize >= .accessibility3 {
             EmptyView()
         } else if let imageSource = cartItem.item.productImageSource {
-            ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                  productImageSize: Constants.productCardSize,
-                                  scale: scale,
-                                  foregroundColor: .clear)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize), 
-                   height: Constants.productCardSize * scale)
-            .clipped()
+            if let hasImageInCache = viewModel.cachedImage {
+                Image(uiImage: hasImageInCache)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                           height: Constants.productCardSize * scale)
+                    .clipped()
+            } else {
+                ProductImageThumbnail(productImageURL: URL(string: imageSource),
+                                      productImageSize: Constants.productCardSize,
+                                      scale: scale,
+                                      foregroundColor: .clear)
+                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                       height: Constants.productCardSize * scale)
+                .clipped()
+            }
         } else {
             Rectangle()
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
@@ -156,9 +163,11 @@ private extension ItemRowView {
 
 #if DEBUG
 #Preview {
-    ItemRowView(cartItem: CartItem(id: UUID(),
-                                   item: POSItemProviderPreview().providePointOfSaleItem(),
-                                   quantity: 2),
-                onItemRemoveTapped: { })
+    let cartItem = CartItem(id: UUID(),
+                            item: POSItemProviderPreview().providePointOfSaleItem(),
+                            quantity: 2)
+    return ItemRowView(cartItem: cartItem,
+                       viewModel: CartItemRowViewModel(cartItem),
+                       onItemRemoveTapped: { })
 }
 #endif

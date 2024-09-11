@@ -23,7 +23,7 @@ struct ProductImageThumbnail: View {
         }
     }
 
-    init(productImageURL: URL?, 
+    init(productImageURL: URL?,
          productImageSize: CGFloat,
          scale: CGFloat,
          productImageCornerRadius: CGFloat = 0,

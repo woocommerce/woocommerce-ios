@@ -16,9 +16,7 @@ final class CartItemRowViewModel: ObservableObject {
     }
 
     func loadImageFromCache(imageCacheKey: String) {
-        let processorID = "com.onevcat.Kingfisher.ResizingImageProcessor((112.0, 112.0), aspectFill)"
-
-        if cache.isCached(forKey: imageCacheKey, processorIdentifier: processorID) {
+        if cache.isCached(forKey: imageCacheKey, processorIdentifier: DefaultImageProcessor().identifier) {
             cache.retrieveImage(forKey: imageCacheKey) { [weak self] result in
                 switch result {
                 case .success(let imageInCache):

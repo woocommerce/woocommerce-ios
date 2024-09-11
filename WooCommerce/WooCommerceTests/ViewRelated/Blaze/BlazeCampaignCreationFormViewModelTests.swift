@@ -155,6 +155,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let uuid = UUID().uuidString
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         let locale = Locale.current
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
         let objective = BlazeCampaignObjective(id: "traffic", title: "Traffic", description: "", suitableForDescription: "", locale: locale.identifier)
         insertCampaignObjective(objective)
 
@@ -167,6 +168,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            productImageLoader: imageLoader,
                                                            locale: locale,
                                                            userDefaults: userDefaults,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // Then

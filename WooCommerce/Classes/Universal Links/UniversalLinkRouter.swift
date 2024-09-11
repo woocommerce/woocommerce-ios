@@ -26,6 +26,13 @@ struct UniversalLinkRouter {
 
     /// Checks if any of the routes can handle the url
     func canHandle(url: URL) -> Bool {
+        /// Ensure that the URL is not related to login
+        ///
+        guard url.absoluteString.hasPrefix(WooConstants.appLoginURLPrefix) == false,
+              url.absoluteString.hasPrefix(WooConstants.appMagicLoginURLPrefix) == false else {
+            return false
+        }
+
         return canHandle(subPath: url.lastPathComponent)
     }
 

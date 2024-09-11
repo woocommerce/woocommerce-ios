@@ -4,6 +4,9 @@
 20.3
 -----
 
+20.2.1
+-----
+- [***] Login: Fix an issue with login using magic link [https://github.com/woocommerce/woocommerce-ios/pull/13926]
 
 20.2
 -----

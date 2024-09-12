@@ -66,9 +66,9 @@ struct BlazeCampaignItemView: View {
                         .subheadlineStyle()
                         .lineLimit(1)
 
-                    (Text("\(campaign.impressions) ").font(.title2).fontWeight(.semibold) +
+                    (Text("\(campaign.humanReadableImpressions) ").font(.title2).fontWeight(.semibold) +
                      Text(Image(systemName: "arrow.forward")) +
-                     Text(" \(campaign.clicks)").font(.title2).fontWeight(.semibold))
+                     Text(" \(campaign.humanReadableClicks)").font(.title2).fontWeight(.semibold))
                         .foregroundStyle(Color(.text))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

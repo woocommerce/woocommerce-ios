@@ -1,10 +1,21 @@
 import SwiftUI
+import WooFoundation
 import struct Yosemite.BlazeCampaignListItem
 
 /// Helpers for displaying campaign details
 extension BlazeCampaignListItem {
     var isActive: Bool {
         status == .pending || status == .scheduled || status == .active
+    }
+
+    var humanReadableImpressions: String {
+        let doubleValue = Double(impressions)
+        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true)
+    }
+
+    var humanReadableClicks: String {
+        let doubleValue = Double(clicks)
+        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true)
     }
 
     var budgetToDisplay: String {

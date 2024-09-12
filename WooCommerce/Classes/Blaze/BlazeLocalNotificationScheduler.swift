@@ -64,9 +64,14 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
                 userDefaults.setBlazeNoCampaignReminderOpened(true)
 
-                let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64
-                if let siteID {
-                    // TODO: switch site if needed then open campaign creation
+                guard let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
+                    return
+                }
+                Task { @MainActor [weak self] in
+                    guard let self, await isEligibleForBlaze() else {
+                        return
+                    }
+                    MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
                 }
             }
             .store(in: &subscriptions)

@@ -63,6 +63,11 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
                 }
 
                 userDefaults.setBlazeNoCampaignReminderOpened(true)
+
+                let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64
+                if let siteID {
+                    // TODO: switch site if needed then open campaign creation
+                }
             }
             .store(in: &subscriptions)
     }
@@ -133,7 +138,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
-                                                 userInfo: [:])
+                                                 userInfo: [Constants.siteIDKey: siteID])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
@@ -147,6 +152,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
         static let daysDurationNoCampaignReminderNotification = 30
+        static let siteIDKey = "site_id"
     }
 }
 

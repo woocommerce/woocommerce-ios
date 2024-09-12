@@ -65,7 +65,6 @@ struct BlazeCampaignItemView: View {
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.clickthroughs)
                         .subheadlineStyle()
-                        .fixedSize()
 
                     (Text("\(campaign.humanReadableImpressions) ").font(.title2).fontWeight(.semibold) +
                      Text(Image(systemName: "arrow.forward")) +
@@ -138,8 +137,8 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        uiStatus: BlazeCampaignListItem.Status.suspended.rawValue,
                                                        imageURL: nil,
                                                        targetUrl: nil,
-                                                       impressions: 112,
-                                                       clicks: 22,
+                                                       impressions: 11200000,
+                                                       clicks: 2200,
                                                        totalBudget: 35,
                                                        spentBudget: 4,
                                                        budgetMode: .total,

@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 final class WooShippingItemsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let weightFormatter: WeightFormatter
+    private let dimensionUnit: String
 
     /// Data source for items to be shipped.
     private var dataSource: WooShippingItemsDataSource
@@ -27,6 +28,7 @@ final class WooShippingItemsViewModel: ObservableObject {
         self.dataSource = dataSource
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.weightFormatter = WeightFormatter(weightUnit: shippingSettingsService.weightUnit ?? "")
+        self.dimensionUnit = shippingSettingsService.dimensionUnit ?? ""
 
         configureSectionHeader()
         configureItemRows()
@@ -90,7 +92,20 @@ private extension WooShippingItemsViewModel {
     /// Generates a details label for an item row.
     ///
     func generateItemRowDetailsLabel(for item: OrderItem) -> String {
-        let formattedDimensions: String? = nil // TODO-13550: Get the product/variation dimensions
+        let dimensions: ProductDimensions? = {
+            let (product, productVariation) = getProductAndVariation(for: item)
+            if let productVariation {
+                return productVariation.dimensions
+            } else {
+                return product?.dimensions
+            }
+        }()
+        let formattedDimensions: String? = {
+            guard let dimensions else {
+                return nil
+            }
+            return String(format: Localization.dimensionsFormat, dimensions.length, dimensions.width, dimensions.height, dimensionUnit)
+        }()
 
         let attributes: String? = {
             guard item.attributes.isNotEmpty else {
@@ -102,7 +117,7 @@ private extension WooShippingItemsViewModel {
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
     }
 
-    /// Calculates the weight of the given item.
+    /// Calculates the weight of the given item based on the item quantity and the product or variation weight.
     ///
     func calculateWeight(for item: OrderItem) -> Double {
         let itemWeight = {
@@ -135,7 +150,11 @@ private extension WooShippingItemsViewModel {
         }
         static let itemsCountFormat = NSLocalizedString("wooShipping.createLabels.items.count",
                                                         value: "%1$@ items",
-                                                        comment: "Total number of items to ship during shipping label creation.")
+                                                        comment: "Total number of items to ship during shipping label creation. Reads like: '3 items'")
+        static let dimensionsFormat = NSLocalizedString("wooShipping.createLabels.items.dimensions",
+                                                        value: "%1$@ x %2$@ x %3$@ %4$@",
+                                                        comment: "Length, width, and height dimensions with the unit for an item to ship. "
+                                                        + "Reads like: '20 x 35 x 5 cm'")
     }
 }
 

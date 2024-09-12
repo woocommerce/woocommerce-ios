@@ -43,12 +43,14 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_populates_item_data_from_products_and_variations() {
         // Given
-        let product = Product.fake().copy(productID: 1, weight: "5")
-        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, weight: "3")
+        let dimensions = ProductDimensions(length: "20", width: "35", height: "5")
+        let product = Product.fake().copy(productID: 1, weight: "5", dimensions: dimensions)
+        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, weight: "3", dimensions: dimensions)
         let orderItems = [OrderItem.fake().copy(productID: product.productID, quantity: 2),
                           OrderItem.fake().copy(productID: variation.productID,
                                                 variationID: variation.productVariationID,
-                                                quantity: 1)]
+                                                quantity: 1,
+                                                attributes: [OrderItemAttribute.fake().copy(value: "Red")])]
         let dataSource = MockDataSource(orderItems: orderItems, products: [product], productVariations: [variation])
 
         // When
@@ -62,7 +64,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         let productRow = viewModel.itemRows[0]
         let variationRow = viewModel.itemRows[1]
         assertEqual("10 oz", productRow.weightLabel)
+        assertEqual("20 x 35 x 5 in", productRow.detailsLabel)
         assertEqual("3 oz", variationRow.weightLabel)
+        assertEqual("20 x 35 x 5 in • Red", variationRow.detailsLabel)
     }
 
     func test_total_items_count_handles_items_with_quantity_greater_than_one() {

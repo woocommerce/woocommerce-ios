@@ -17,12 +17,15 @@ struct BlazeCampaignObjectivePickerView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
+            VStack {
                 if viewModel.fetchedData.isNotEmpty {
                     optionList
                 } else if viewModel.isSyncingData {
+                    Spacer()
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    Spacer()
                 } else if viewModel.syncError != nil {
+                    Spacer()
                     ErrorStateView(title: Localization.errorMessage,
                                    image: .errorImage,
                                    actionTitle: Localization.tryAgain,
@@ -31,6 +34,7 @@ struct BlazeCampaignObjectivePickerView: View {
                             await viewModel.syncData()
                         }
                     })
+                    Spacer()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

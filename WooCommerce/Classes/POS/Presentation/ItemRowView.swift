@@ -2,16 +2,15 @@ import SwiftUI
 import Kingfisher
 
 struct ItemRowView: View {
+    private let cartItem: CartItem
     private let onItemRemoveTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.colorScheme) var colorScheme
 
-    @ObservedObject private var viewModel: CartItemRowViewModel
-
-    init(viewModel: CartItemRowViewModel, onItemRemoveTapped: (() -> Void)? = nil) {
-        self.viewModel = viewModel
+    init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
+        self.cartItem = cartItem
         self.onItemRemoveTapped = onItemRemoveTapped
     }
 
@@ -20,12 +19,12 @@ struct ItemRowView: View {
             productImage
 
             VStack(alignment: .leading, spacing: Constants.itemNameAndPriceSpacing) {
-                Text(viewModel.cartItem.item.name)
+                Text(cartItem.item.name)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemNameFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
                     .padding(.top, Constants.verticalPadding)
-                Text(viewModel.cartItem.item.formattedPrice)
+                Text(cartItem.item.formattedPrice)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
                     .padding(.horizontal, Constants.horizontalElementSpacing)
@@ -61,7 +60,7 @@ struct ItemRowView: View {
     private var productImage: some View {
         if dynamicTypeSize >= .accessibility3 {
             EmptyView()
-        } else if let imageSource = viewModel.cartItem.item.productImageSource {
+        } else if let imageSource = cartItem.item.productImageSource {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: Constants.productCardSize,
                                   scale: scale,
@@ -118,10 +117,9 @@ private extension ItemRowView {
 
 #if DEBUG
 #Preview {
-    let cartItem = CartItem(id: UUID(),
-                            item: POSItemProviderPreview().providePointOfSaleItem(),
-                            quantity: 2)
-    return ItemRowView(viewModel: CartItemRowViewModel(cartItem),
-                       onItemRemoveTapped: { })
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                   item: POSItemProviderPreview().providePointOfSaleItem(),
+                                   quantity: 2),
+                onItemRemoveTapped: { })
 }
 #endif

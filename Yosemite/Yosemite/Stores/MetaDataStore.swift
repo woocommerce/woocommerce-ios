@@ -159,7 +159,7 @@ private extension MetaDataStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly ProductNote Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified ReadOnly `MetaData` Entities for given product ID into the Storage Layer.
     /// - Parameters:
     ///   - readOnlyProductMetaDatas: Array of read-only product metadata.
     ///   - productID: ID of the product.

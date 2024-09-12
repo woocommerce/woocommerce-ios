@@ -20,7 +20,8 @@ struct WooShippingCreateLabelsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                // TODO-13550: Add main UI for new shipping labels flow.
+                WooShippingItems(itemsCountLabel: "6 items", itemsDetailLabel: "825g  ·  $135.00")
+                    .padding()
             }
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)

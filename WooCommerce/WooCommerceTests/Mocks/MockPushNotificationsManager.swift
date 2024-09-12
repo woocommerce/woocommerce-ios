@@ -48,9 +48,10 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var requestedLocalNotificationsIfNeeded: [LocalNotification] = []
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
+    private(set) var resetBadgeCountKinds: [Note.Kind] = []
 
     func resetBadgeCount(type: Note.Kind) {
-
+        resetBadgeCountKinds.append(type)
     }
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {

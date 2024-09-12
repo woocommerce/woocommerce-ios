@@ -6,9 +6,11 @@ import Yosemite
 final class WooShippingItemsViewModelTests: XCTestCase {
 
     private var currencySettings: CurrencySettings!
+    private var shippingSettingsService: MockShippingSettingsService!
 
     override func setUp() {
         currencySettings = CurrencySettings()
+        shippingSettingsService = MockShippingSettingsService()
     }
 
     func test_inits_with_expected_values_from_order_items() throws {
@@ -21,12 +23,14 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         let dataSource = MockDataSource(orderItems: orderItems)
 
         // When
-        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
+                                                  currencySettings: currencySettings,
+                                                  shippingSettingsService: shippingSettingsService)
 
         // Then
         // Section header labels have expected values
         assertEqual("2 items", viewModel.itemsCountLabel)
-        assertEqual("1 kg • $12.50", viewModel.itemsDetailLabel)
+        assertEqual("0 oz • $12.50", viewModel.itemsDetailLabel)
 
         // Section rows have expected values
         assertEqual(2, viewModel.itemRows.count)
@@ -35,6 +39,30 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         assertEqual("1", firstItem.quantityLabel)
         assertEqual("$10.00", firstItem.priceLabel)
         assertEqual("Red", firstItem.detailsLabel)
+    }
+
+    func test_populates_item_data_from_products_and_variations() {
+        // Given
+        let product = Product.fake().copy(productID: 1, weight: "5")
+        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, weight: "3")
+        let orderItems = [OrderItem.fake().copy(productID: product.productID, quantity: 2),
+                          OrderItem.fake().copy(productID: variation.productID,
+                                                variationID: variation.productVariationID,
+                                                quantity: 1)]
+        let dataSource = MockDataSource(orderItems: orderItems, products: [product], productVariations: [variation])
+
+        // When
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
+                                                  currencySettings: currencySettings,
+                                                  shippingSettingsService: shippingSettingsService)
+
+        // Then
+        assertEqual("23 oz • $0.00", viewModel.itemsDetailLabel)
+
+        let productRow = viewModel.itemRows[0]
+        let variationRow = viewModel.itemRows[1]
+        assertEqual("10 oz", productRow.weightLabel)
+        assertEqual("3 oz", variationRow.weightLabel)
     }
 
     func test_total_items_count_handles_items_with_quantity_greater_than_one() {
@@ -55,10 +83,12 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         let dataSource = MockDataSource(orderItems: orderItems)
 
         // When
-        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
+                                                  currencySettings: currencySettings,
+                                                  shippingSettingsService: shippingSettingsService)
 
         // Then
-        assertEqual("1 kg • $22.50", viewModel.itemsDetailLabel)
+        assertEqual("0 oz • $22.50", viewModel.itemsDetailLabel)
     }
 
     func test_item_row_details_label_handles_items_with_multiple_attributes() throws {

@@ -7,6 +7,7 @@ import protocol Storage.StorageManagerType
 ///
 final class WooShippingItemsViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
+    private let weightFormatter: WeightFormatter
 
     /// Data source for items to be shipped.
     private var dataSource: WooShippingItemsDataSource
@@ -21,9 +22,11 @@ final class WooShippingItemsViewModel: ObservableObject {
     @Published var itemRows: [WooShippingItemRowViewModel] = []
 
     init(dataSource: WooShippingItemsDataSource,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
         self.dataSource = dataSource
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.weightFormatter = WeightFormatter(weightUnit: shippingSettingsService.weightUnit ?? "")
 
         configureSectionHeader()
         configureItemRows()
@@ -55,7 +58,15 @@ private extension WooShippingItemsViewModel {
     /// This includes the total weight and total price of all items.
     ///
     func generateItemsDetailLabel() -> String {
-        let formattedWeight = "1 kg" // TODO-13550: Get the total weight (each product/variation * item quantity) and weight unit
+        let totalWeight = dataSource.orderItems
+                    .map { item -> Double in
+                        let itemWeight = calculateWeight(for: item)
+                        let itemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
+                        return itemWeight * itemQuantity
+                    }
+                    .reduce(0, +)
+                let formattedWeight = weightFormatter.formatWeight(weight: totalWeight)
+
         let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
 
@@ -65,13 +76,14 @@ private extension WooShippingItemsViewModel {
     /// Generates an item row view model for each order item.
     ///
     func generateItemRows() -> [WooShippingItemRowViewModel] {
-        dataSource.orderItems.map { item in
-            WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
-                                        quantityLabel: item.quantity.description,
-                                        name: item.name,
-                                        detailsLabel: generateItemRowDetailsLabel(for: item),
-                                        weightLabel: "",  // TODO-13550: Get the product/variation weight
-                                        priceLabel: currencyFormatter.formatAmount(item.price.decimalValue) ?? item.price.description)
+            dataSource.orderItems.map { item in
+            let itemWeight = calculateWeight(for: item)
+            return WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
+                                               quantityLabel: item.quantity.description,
+                                               name: item.name,
+                                               detailsLabel: generateItemRowDetailsLabel(for: item),
+                                               weightLabel: weightFormatter.formatWeight(weight: itemWeight),
+                                               priceLabel: currencyFormatter.formatAmount(item.price.decimalValue) ?? item.price.description)
         }
     }
 
@@ -88,6 +100,29 @@ private extension WooShippingItemsViewModel {
         }()
 
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
+    }
+
+    /// Calculates the weight of the given item.
+    ///
+    func calculateWeight(for item: OrderItem) -> Double {
+        let itemWeight = {
+            let (product, productVariation) = getProductAndVariation(for: item)
+            if let productVariation {
+                return NumberFormatter.double(from: productVariation.weight ?? "") ?? .zero
+            } else {
+                return NumberFormatter.double(from: product?.weight ?? "") ?? .zero
+            }
+        }()
+        let quantity = Double(truncating: item.quantity as NSDecimalNumber)
+        return itemWeight * quantity
+    }
+
+    /// Finds the corresponding product and variation for the given item.
+    ///
+    func getProductAndVariation(for item: OrderItem) -> (Product?, ProductVariation?) {
+        let product = dataSource.products.first(where: { $0.productID == item.productID })
+        let productVariation = dataSource.productVariations.first(where: { $0.productVariationID == item.variationID })
+        return (product, productVariation)
     }
 }
 

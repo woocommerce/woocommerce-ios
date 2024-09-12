@@ -53,6 +53,7 @@ extension MetaContainer {
         case comment
         case home
         case order
+        case campaignID = "campaign_id"
         case post
         case reply  = "reply_comment"
         case site

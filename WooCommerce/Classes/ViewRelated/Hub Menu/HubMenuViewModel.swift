@@ -17,6 +17,7 @@ enum HubMenuNavigationDestination: Hashable {
     case payments
     case settings
     case blaze
+    case blazeCampaignDetails(campaignID: String)
     case wooCommerceAdmin
     case viewStore
     case inbox

@@ -183,6 +183,9 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
         let scenario = pushNotesManager.requestedLocalNotifications.first?.scenario
         XCTAssertEqual(scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
+        let userInfo = try XCTUnwrap(pushNotesManager.requestedLocalNotifications.first?.userInfo)
+        let siteIDFromNotification = try XCTUnwrap(userInfo["site_id"] as? Int64)
+        XCTAssertEqual(siteID, siteIDFromNotification)
     }
 
     func test_notification_is_not_scheduled_when_only_evergreen_campaign_exists_in_storage() async throws {
@@ -298,6 +301,36 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(pushNotesManager.canceledLocalNotificationScenarios.contains([LocalNotification.Scenario.blazeNoCampaignReminder]))
+    }
+
+    func test_notification_has_siteID_in_user_info() async throws {
+        // Given
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let campaignStartDate = Date.now.addingDays(1)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: siteID,
+                                                                  budgetCurrency: "USD",
+                                                                  isEvergreen: false,
+                                                                  durationDays: 15,
+                                                                  startTime: campaignStartDate)
+        let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         userDefaults: defaults,
+                                                         pushNotesManager: pushNotesManager,
+                                                         blazeEligibilityChecker: blazeEligibilityChecker)
+        await sut.scheduleNotifications()
+
+        // When
+        insertCampaigns([fakeBlazeCampaign])
+
+        // Then
+        waitUntil {
+            self.pushNotesManager.requestedLocalNotifications.isNotEmpty
+        }
+
+        let userInfo = try XCTUnwrap(pushNotesManager.requestedLocalNotifications.first?.userInfo)
+        let siteIDFromNotification = try XCTUnwrap(userInfo["site_id"] as? Int64)
+        XCTAssertEqual(siteID, siteIDFromNotification)
     }
 }
 

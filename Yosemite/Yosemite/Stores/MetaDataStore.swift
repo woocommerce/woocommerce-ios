@@ -88,7 +88,7 @@ private extension MetaDataStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly OrderNote Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified ReadOnly `MetaData` Entities into the Storage Layer.
     /// - Parameters:
     ///   - readOnlyOrderMetaDatas: Array of read-only order metadata.
     ///   - orderID: ID of the order.

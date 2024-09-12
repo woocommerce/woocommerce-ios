@@ -2,13 +2,13 @@
 ---
 
 agents:
-  queue: "mac"
+  queue: mac
 
 env:
   IMAGE_ID: $IMAGE_ID
 
 steps:
-  - label: "Update Metadata on App Store Connect"
+  - label: Update Metadata on App Store Connect
     plugins: [$CI_TOOLKIT]
     command: |
       .buildkite/commands/configure-environment.sh

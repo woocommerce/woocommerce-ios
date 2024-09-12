@@ -76,7 +76,8 @@ final class BlazeRemoteTests: XCTestCase {
                                                        mainImage: mainImage,
                                                        targeting: targeting,
                                                        targetUrn: "urn:wpcom:post:191174658:47",
-                                                       type: "product")
+                                                       type: "product",
+                                                       objective: nil)
 
         // When
         _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
@@ -113,6 +114,23 @@ final class BlazeRemoteTests: XCTestCase {
 
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
         XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
+        XCTAssertNil(request.parameters?["objective"])
+    }
+
+    func test_createCampaign_sends_objective_if_not_nil() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns"
+
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-create-campaign-success")
+        let campaign = CreateBlazeCampaign.fake().copy(objective: "sales")
+
+        // When
+        _ = try await remote.createCampaign(campaign, siteID: sampleSiteID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["objective"] as? String, campaign.objective)
     }
 
     func test_createCampaign_sends_correctly_formatted_dates_regardless_of_locale() async throws {

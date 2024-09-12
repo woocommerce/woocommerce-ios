@@ -87,7 +87,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .revampedShippingLabelCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeCampaignObjective:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

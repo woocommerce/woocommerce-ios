@@ -42,8 +42,10 @@ extension PushNotification {
             return nil
         }
 
+        let alert = aps.dictionary(forKey: APNSKey.alert)
+
         let title: String? = {
-            if let alert = aps.dictionary(forKey: APNSKey.alert) {
+            if let alert {
                 return alert.string(forKey: APNSKey.alertTitle)
             } else {
                 return aps.string(forKey: APNSKey.alert)
@@ -58,7 +60,6 @@ extension PushNotification {
             return nil
         }
 
-        let alert = aps.dictionary(forKey: APNSKey.alert)
         let subtitle = alert?.string(forKey: APNSKey.alertSubtitle)
         let message = alert?.string(forKey: APNSKey.alertMessage)
         let note: Note? = noteFromCompressedData(userInfo.string(forKey: APNSKey.noteFullData))

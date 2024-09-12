@@ -59,7 +59,7 @@ struct BlazeCampaignItemView: View {
                               spacing: Layout.contentSpacing) {
 
                 Spacer()
-                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
+                    .frame(width: Layout.imageSize * scale)
 
                 // campaign total impressions -> clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {

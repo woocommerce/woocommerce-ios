@@ -216,6 +216,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         tagline.isNotEmpty && description.isNotEmpty
     }
 
+    @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
     @Published var isShowingPaymentInfo = false
@@ -258,12 +259,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
-                            type: Constants.campaignType)
+                            type: Constants.campaignType,
+                            objective: campaignObjective?.id)
     }
 
     private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -285,6 +288,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
@@ -358,12 +362,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingDestinationURLAlert = true
         }
 
+        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
+           campaignObjective == nil {
+            return isShowingMissingObjectiveAlert = true
+        }
+
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }
         let descriptionMatching = suggestions.map { $0.textSnippet }.contains { $0 == description }
         let isAISuggestedAdContent = taglineMatching || descriptionMatching
         analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(
             isAISuggestedAdContent: isAISuggestedAdContent,
-            isEvergreen: isEvergreen
+            isEvergreen: isEvergreen,
+            objective: campaignObjective?.id
         ))
         isShowingPaymentInfo = true
     }
@@ -434,6 +444,9 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func initializeCampaignObjective() {
+        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
+            return
+        }
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }

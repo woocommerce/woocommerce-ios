@@ -79,10 +79,10 @@ final class BlazeCampaignObjectivePickerViewModel: ObservableObject {
     }
 
     func confirmSelection() {
-        // TODO: add tracking
         guard let selectedObjective else {
             return
         }
+        analytics.track(event: .Blaze.campaignObjectiveSaved(selectedObjective.id))
         if saveSelectionForFutureCampaigns {
             userDefaults.saveObjectiveForFutureCampaigns(objectiveID: selectedObjective.id, for: siteID)
         }

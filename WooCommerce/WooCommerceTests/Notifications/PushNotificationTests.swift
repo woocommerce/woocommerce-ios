@@ -47,4 +47,118 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(note.title, "New Order")
         XCTAssertEqual(note.meta.identifier(forKey: .order), 306)
     }
+
+    // MARK: Blaze
+    //
+    func test_blaze_rejected_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeRejectedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8326526386))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Sorry, your ad campaign \"Stylish Linen Pants\" was rejected and no payment will be charged.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeRejectedNote)
+    }
+
+    func test_blaze_cancelled_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeCancelledNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414834454))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Campaign \"Sleek Bronze Seat\" was cancelled.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeCancelledNote)
+    }
+
+    func test_blaze_approved_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazeApprovedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414840070))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Congratulations! Your ad campaign \"Fly High\" was approved.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazeApprovedNote)
+    }
+
+    func test_blaze_performed_note_user_info_is_parsed_correctly() throws {
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: blazePerformedNote()))
+        XCTAssertEqual(notification.noteID, Int64(8414840071))
+        XCTAssertEqual(notification.siteID, Int64(236807409))
+        XCTAssertEqual(notification.title, "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed.")
+        XCTAssertEqual(notification.kind, Note.Kind.blazePerformedNote)
+    }
+}
+
+// MARK: Blaze - push notification payloads
+//
+private extension PushNotificationTests {
+    func blazeRejectedNote() -> [AnyHashable: Any] {
+        [
+            "blog": 236807409,
+            "aps": [
+                "category": "blaze_rejected_note",
+                "badge": 1,
+                "sound": "n.caf",
+                "content-available": 1,
+                "mutable-content": 1,
+                "alert": "Sorry, your ad campaign \"Stylish Linen Pants\" was rejected and no payment will be charged."
+            ],
+            "ad_type": "product",
+            "type": "blaze_rejected_note",
+            "campaign_id": 112908,
+            "blog_id": 205617935,
+            "note_id": 8326526386,
+        ]
+    }
+
+    func blazeCancelledNote() -> [AnyHashable: Any] {
+        [
+            "blog": 236807409,
+            "aps": [
+                "category": "blaze_cancelled_note",
+                "badge": 1,
+                "sound": "n.caf",
+                "content-available": 1,
+                "mutable-content": 1,
+                "alert": "Campaign \"Sleek Bronze Seat\" was cancelled."
+            ],
+            "ad_type": "product",
+            "type": "blaze_cancelled_note",
+            "campaign_id": 112910,
+            "blog_id": 205617935,
+            "note_id": 8414834454,
+        ]
+    }
+
+    func blazeApprovedNote() -> [AnyHashable: Any] {
+        [
+            "blog": 236807409,
+            "aps": [
+                "category": "blaze_approved_note",
+                "badge": 1,
+                "sound": "n.caf",
+                "content-available": 1,
+                "mutable-content": 1,
+                "alert": "Congratulations! Your ad campaign \"Fly High\" was approved.",
+            ],
+            "ad_type": "product",
+            "type": "blaze_approved_note",
+            "campaign_id": 112910,
+            "blog_id": 205617935,
+            "note_id": 8414840070,
+        ]
+    }
+
+    func blazePerformedNote() -> [AnyHashable: Any] {
+        [
+            "blog": 236807409,
+            "aps": [
+                "category": "blaze_performed_note",
+                "badge": 1,
+                "sound": "n.caf",
+                "content-available": 1,
+                "mutable-content": 1,
+                "alert": "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed.",
+            ],
+            "ad_type": "product",
+            "type": "blaze_performed_note",
+            "campaign_id": 112910,
+            "blog_id": 205617935,
+            "note_id": 8414840071,
+        ]
+    }
 }

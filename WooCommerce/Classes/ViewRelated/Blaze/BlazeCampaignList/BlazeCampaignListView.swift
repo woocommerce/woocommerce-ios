@@ -24,8 +24,12 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     /// View model for the list.
     private let viewModel: BlazeCampaignListViewModel
 
-    init(viewModel: BlazeCampaignListViewModel) {
+    private var startsCampaignCreationOnAppear: Bool
+
+    init(viewModel: BlazeCampaignListViewModel,
+         startsCampaignCreationOnAppear: Bool = false) {
         self.viewModel = viewModel
+        self.startsCampaignCreationOnAppear = startsCampaignCreationOnAppear
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
@@ -36,6 +40,14 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if startsCampaignCreationOnAppear {
+            startsCampaignCreationOnAppear = false
+            startCampaignCreation()
+        }
     }
 }
 
@@ -65,17 +77,21 @@ private extension BlazeCampaignListHostingController {
 struct BlazeCampaignListHostingControllerRepresentable: UIViewControllerRepresentable {
     private let siteID: Int64
     private let selectedCampaignID: String?
+    private let startsCampaignCreationOnAppear: Bool
 
     init(siteID: Int64,
-         selectedCampaignID: String? = nil) {
+         selectedCampaignID: String? = nil,
+         startsCampaignCreationOnAppear: Bool = false) {
         self.siteID = siteID
         self.selectedCampaignID = selectedCampaignID
+        self.startsCampaignCreationOnAppear = startsCampaignCreationOnAppear
     }
     func makeUIViewController(context: Context) -> BlazeCampaignListHostingController {
 
         let viewModel = BlazeCampaignListViewModel(siteID: siteID,
                                                    selectedCampaignID: selectedCampaignID ?? nil)
-        return BlazeCampaignListHostingController(viewModel: viewModel)
+        return BlazeCampaignListHostingController(viewModel: viewModel,
+                                                  startsCampaignCreationOnAppear: startsCampaignCreationOnAppear)
     }
 
     func updateUIViewController(_ uiViewController: BlazeCampaignListHostingController, context: Context) {

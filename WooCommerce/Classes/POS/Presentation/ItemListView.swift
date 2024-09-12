@@ -78,6 +78,7 @@ private extension ItemListView {
                     bannerHintAndLearnMoreText
                 }
                 .font(Constants.bannerSubtitleFont)
+                .lineSpacing(Constants.bannerTextSpacing)
                 .accessibilityElement(children: .combine)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -140,7 +141,7 @@ private extension ItemListView {
         static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTextSpacing: CGFloat = 2
+        static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44

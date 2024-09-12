@@ -34,6 +34,7 @@ struct BlazeCampaignObjectivePickerView: View {
                             await viewModel.syncData()
                         }
                     })
+                    .multilineTextAlignment(.center)
                     Spacer()
                 }
             }

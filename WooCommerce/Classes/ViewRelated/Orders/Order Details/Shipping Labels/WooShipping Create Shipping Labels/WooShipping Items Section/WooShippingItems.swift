@@ -8,6 +8,9 @@ struct WooShippingItems: View {
     /// Label for the total item details
     let itemsDetailLabel: String
 
+    /// View models for items to ship
+    let items: [WooShippingItemRowViewModel]
+
     /// Whether the item list is collapsed
     @State private var isCollapsed: Bool = true
 
@@ -25,22 +28,11 @@ struct WooShippingItems: View {
         },
                         content: {
             VStack {
-                WooShippingItemRow(imageUrl: nil,
-                                   quantityLabel: "3",
-                                   name: "Little Nap Brazil 250g",
-                                   detailsLabel: "15×10×8cm • Espresso",
-                                   weightLabel: "275g",
-                                   priceLabel: "$60.00")
-                .padding()
-                .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
-                WooShippingItemRow(imageUrl: nil,
-                                   quantityLabel: "3",
-                                   name: "Little Nap Brazil 250g",
-                                   detailsLabel: "15×10×8cm • Espresso",
-                                   weightLabel: "275g",
-                                   priceLabel: "$60.00")
-                .padding()
-                .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
+                ForEach(items) { item in
+                    WooShippingItemRow(viewModel: item)
+                        .padding()
+                        .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
+                }
             }
         })
         .padding()
@@ -60,5 +52,18 @@ private extension WooShippingItems {
 }
 
 #Preview {
-    WooShippingItems(itemsCountLabel: "6 items", itemsDetailLabel: "825g  ·  $135.00")
+    WooShippingItems(itemsCountLabel: "6 items",
+                     itemsDetailLabel: "825g  ·  $135.00",
+                     items: [WooShippingItemRowViewModel(imageUrl: nil,
+                                                         quantityLabel: "3",
+                                                         name: "Little Nap Brazil 250g",
+                                                         detailsLabel: "15×10×8cm • Espresso",
+                                                         weightLabel: "275g",
+                                                         priceLabel: "$60.00"),
+                             WooShippingItemRowViewModel(imageUrl: nil,
+                                                         quantityLabel: "3",
+                                                         name: "Little Nap Brazil 250g",
+                                                         detailsLabel: "15×10×8cm • Espresso",
+                                                         weightLabel: "275g",
+                                                         priceLabel: "$60.00")])
 }

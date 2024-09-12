@@ -75,9 +75,7 @@ private extension ItemListView {
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
                     Text(Localization.headerBannerSubtitle)
-                    Text(Localization.headerBannerHint)
-                    Text(Localization.headerBannerLearnMoreHint)
-                        .linkStyle()
+                    bannerHintAndLearnMoreText
                 }
                 .font(Constants.bannerSubtitleFont)
                 .accessibilityElement(children: .combine)
@@ -107,6 +105,13 @@ private extension ItemListView {
             viewModel.simpleProductsInfoButtonTapped()
         }
         .padding(.horizontal, Constants.bannerCardPadding)
+    }
+
+    private var bannerHintAndLearnMoreText: Text {
+        Text(Localization.headerBannerHint + " ") +
+        Text(Localization.headerBannerLearnMoreHint)
+            .font(.body)
+            .foregroundColor(Color(.accent))
     }
 
     @ViewBuilder

@@ -63,13 +63,12 @@ struct ItemRowView: View {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: Constants.productCardSize,
                                   scale: scale,
-                                  foregroundColor: .clear)
+                                  foregroundColor: .clear,
+                                  cachesOriginalImage: true)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
             .clipped()
         } else {
-            // TODO:
-            // Handle what we'll show when there's lack of images:
             Rectangle()
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)

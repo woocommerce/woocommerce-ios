@@ -13,9 +13,10 @@ public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
     /// Updates metadata for a specific item.
     ///
     /// - Parameters:
-    ///     - site: Site for which we'll update the metadata.
-    ///     - request: The request containing metadata to be updated.
+    ///     - siteID: The ID of the site for which we'll update the metadata.
+    ///     - parentID: The ID of the parent item (order or product) for which we'll update the metadata.
     ///     - type: The type of item (order or product) for which we'll update the metadata.
+    ///     - metadata: The metadata to be updated.
     /// - Returns: An array of updated MetaData.
     ///
     public func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any]]) async throws -> [MetaData] {

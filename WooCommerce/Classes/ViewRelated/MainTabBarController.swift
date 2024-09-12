@@ -453,7 +453,7 @@ extension MainTabBarController {
                     return
                 }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
                 }
             }
@@ -481,7 +481,7 @@ extension MainTabBarController {
                 return
             }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaign("\(campaignID)")
                 }

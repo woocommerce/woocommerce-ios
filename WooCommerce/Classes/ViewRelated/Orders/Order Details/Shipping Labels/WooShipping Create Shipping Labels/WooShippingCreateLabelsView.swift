@@ -21,20 +21,20 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 // TODO-13550: Add view model to provide real data
-                WooShippingItems(itemsCountLabel: "6 items",
-                                 itemsDetailLabel: "825g  ·  $135.00",
-                                 items: [WooShippingItemRowViewModel(imageUrl: nil,
-                                                                     quantityLabel: "3",
-                                                                     name: "Little Nap Brazil 250g",
-                                                                     detailsLabel: "15×10×8cm • Espresso",
-                                                                     weightLabel: "275g",
-                                                                     priceLabel: "$60.00"),
-                                         WooShippingItemRowViewModel(imageUrl: nil,
-                                                                     quantityLabel: "30",
-                                                                     name: "Little Nap Brazil 250g",
-                                                                     detailsLabel: "15×10×8cm • Espresso",
-                                                                     weightLabel: "275g",
-                                                                     priceLabel: "$60.00")])
+                WooShippingItems(viewModel: WooShippingItemsViewModel(itemsCountLabel: "6 items",
+                                                                      itemsDetailLabel: "825g  ·  $135.00",
+                                                                      items: [WooShippingItemRowViewModel(imageUrl: nil,
+                                                                                                          quantityLabel: "3",
+                                                                                                          name: "Little Nap Brazil 250g",
+                                                                                                          detailsLabel: "15×10×8cm • Espresso",
+                                                                                                          weightLabel: "275g",
+                                                                                                          priceLabel: "$60.00"),
+                                                                              WooShippingItemRowViewModel(imageUrl: nil,
+                                                                                                          quantityLabel: "3",
+                                                                                                          name: "Little Nap Brazil 250g",
+                                                                                                          detailsLabel: "15×10×8cm • Espresso",
+                                                                                                          weightLabel: "275g",
+                                                                                                          priceLabel: "$60.00")]))
                     .padding()
             }
             .navigationTitle(Localization.title)

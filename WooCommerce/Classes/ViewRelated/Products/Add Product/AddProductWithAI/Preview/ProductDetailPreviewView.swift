@@ -388,21 +388,11 @@ private extension ProductDetailPreviewView {
 
 // MARK: - Rounded rect overlay
 //
-private struct RoundedBorder: ViewModifier {
-    let strokeColor: Color
-
-    func body(content: Content) -> some View {
-        content
-            .overlay(
-                RoundedRectangle(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius)
-                    .stroke(strokeColor, lineWidth: ProductDetailPreviewView.Layout.borderWidth)
-            )
-    }
-}
-
 private extension View {
     func roundedRectBorderStyle(strokeColor: Color = ProductDetailPreviewView.Constants.separatorColor) -> some View {
-        modifier(RoundedBorder(strokeColor: strokeColor))
+        modifier(RoundedBorder(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius,
+                               lineColor: strokeColor,
+                               lineWidth: ProductDetailPreviewView.Layout.borderWidth))
     }
 }
 

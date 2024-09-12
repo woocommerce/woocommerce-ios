@@ -119,7 +119,7 @@ private extension MetaDataStore {
     ///   - orderID: ID of the order.
     ///   - siteID: Site id of the order.
     ///
-    private func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, orderID: Int64, siteID: Int64) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, orderID: Int64, siteID: Int64) {
         if let existingStorageMetaData = storage.loadOrderMetaData(siteID: siteID, orderID: orderID, metadataID: readOnlyMetaData.metadataID) {
             existingStorageMetaData.update(with: readOnlyMetaData)
             return
@@ -190,7 +190,7 @@ private extension MetaDataStore {
     ///   - productID: ID of the product.
     ///   - siteID: Site id of the product.
     ///
-    private func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, productID: Int64, siteID: Int64) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, productID: Int64, siteID: Int64) {
         if let existingStorageMetaData = storage.loadProductMetaData(siteID: siteID, productID: productID, metadataID: readOnlyMetaData.metadataID) {
             existingStorageMetaData.update(with: readOnlyMetaData)
             return

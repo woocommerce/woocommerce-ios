@@ -487,6 +487,7 @@
 		45B204B82489095100FE6526 /* ProductCategoryMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B72489095100FE6526 /* ProductCategoryMapper.swift */; };
 		45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */; };
 		45B204BC24890B1200FE6526 /* category.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B204BB24890B1200FE6526 /* category.json */; };
+		45B79AC62C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B79AC52C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json */; };
 		45C6D0E429B9F327009CE29C /* CookieNonceAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C6D0E329B9F327009CE29C /* CookieNonceAuthenticatorTests.swift */; };
 		45CCFCE227A2C9BF0012E8CB /* InboxNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CCFCE127A2C9BF0012E8CB /* InboxNote.swift */; };
 		45CCFCE427A2DC270012E8CB /* InboxAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CCFCE327A2DC270012E8CB /* InboxAction.swift */; };
@@ -1635,6 +1636,7 @@
 		45B204B72489095100FE6526 /* ProductCategoryMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapper.swift; sourceTree = "<group>"; };
 		45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryMapperTests.swift; sourceTree = "<group>"; };
 		45B204BB24890B1200FE6526 /* category.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = category.json; sourceTree = "<group>"; };
+		45B79AC52C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "meta-data-products-and-orders_nested_in_data.json"; sourceTree = "<group>"; };
 		45C6D0E329B9F327009CE29C /* CookieNonceAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieNonceAuthenticatorTests.swift; sourceTree = "<group>"; };
 		45CCFCE127A2C9BF0012E8CB /* InboxNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNote.swift; sourceTree = "<group>"; };
 		45CCFCE327A2DC270012E8CB /* InboxAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxAction.swift; sourceTree = "<group>"; };
@@ -3457,6 +3459,7 @@
 				68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */,
 				CE21FB132C2AC87000303832 /* google-ads-reports-programs-without-data.json */,
 				CE21FB232C2C16DA00303832 /* google-ads-reports-programs.json */,
+				45B79AC52C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json */,
 				453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */,
 				453954D52C9193BC00A3E64A /* meta-data-products-orders-update.json */,
 			);
@@ -4440,6 +4443,7 @@
 				029B86902A6FBBE000E944D1 /* wcpay-account-null-isLive.json in Resources */,
 				02AED9D82AA03F3F006DC460 /* order-with-all-addon-types.json in Resources */,
 				CEF2DD9D2B56E04F00A3DD0B /* jetpack-settings-invalid-module.json in Resources */,
+				45B79AC62C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json in Resources */,
 				DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */,

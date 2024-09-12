@@ -95,7 +95,7 @@ private extension MetaDataStore {
     ///   - siteID: Site id of the order.
     ///   - onCompletion: Callback called when the action is finished.
     ///
-    func upsertStoredOrderMetaDataInBackground(readOnlyOrderMetaDatas: [Networking.MetaData], 
+    func upsertStoredOrderMetaDataInBackground(readOnlyOrderMetaDatas: [Networking.MetaData],
                                                orderID: Int64,
                                                siteID: Int64,
                                                onCompletion: @escaping () -> Void) {
@@ -166,7 +166,7 @@ private extension MetaDataStore {
     ///   - siteID: Site id of the product.
     ///   - onCompletion: Callback called when the action is finished.
     ///
-    func upsertStoredProductMetaDataInBackground(readOnlyProductMetaDatas: [Networking.MetaData], 
+    func upsertStoredProductMetaDataInBackground(readOnlyProductMetaDatas: [Networking.MetaData],
                                                  productID: Int64,
                                                  siteID: Int64,
                                                  onCompletion: @escaping () -> Void) {

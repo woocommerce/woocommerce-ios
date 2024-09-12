@@ -285,6 +285,7 @@ private extension HubMenu {
         var chevronAccessibilityID: String?
 
         @Environment(\.sizeCategory) private var sizeCategory
+        @ScaledMetric private var scale: CGFloat = 1.0
 
         var body: some View {
             HStack(spacing: HubMenu.Constants.padding) {
@@ -351,7 +352,8 @@ private extension HubMenu {
                 // Tap Indicator
                 Image(uiImage: chevron.asset)
                     .resizable()
-                    .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: HubMenu.Constants.chevronSize * scale, height: HubMenu.Constants.chevronSize * scale)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")

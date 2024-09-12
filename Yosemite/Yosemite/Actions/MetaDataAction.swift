@@ -5,7 +5,7 @@ import Networking
 ///
 public enum MetaDataAction: Action {
 
-    /// Update order metadata in the local database.
+    /// Updates order metadata both remotely and in the local database.
     ///
     /// - Parameter siteID: Site id of the order.
     /// - Parameter orderID: ID of the order.
@@ -17,7 +17,7 @@ public enum MetaDataAction: Action {
                              metadata: [[String: Any]],
                              onCompletion: (Result<[MetaData], Error>) -> Void)
 
-    /// Update product metadata in the local database.
+    /// Updates product metadata both remotely and in the local database.
     ///
     /// - Parameter siteID: Site id of the product.
     /// - Parameter productID: ID of the product.

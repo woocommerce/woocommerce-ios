@@ -57,7 +57,7 @@ private extension ItemListView {
     }
 
     var bannerCardView: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
                 Image(systemName: "info.circle")

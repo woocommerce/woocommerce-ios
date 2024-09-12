@@ -62,22 +62,14 @@ struct ItemRowView: View {
         if dynamicTypeSize >= .accessibility3 {
             EmptyView()
         } else if let imageSource = viewModel.cartItem.item.productImageSource {
-            if let hasImageInCache = viewModel.cachedImage {
-                Image(uiImage: hasImageInCache)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                           height: Constants.productCardSize * scale)
-                    .clipped()
-            } else {
-                ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: Constants.productCardSize,
-                                      scale: scale,
-                                      foregroundColor: .clear)
-                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                       height: Constants.productCardSize * scale)
-                .clipped()
-            }
+            ProductImageThumbnail(productImageURL: URL(string: imageSource),
+                                  productImageSize: Constants.productCardSize,
+                                  scale: scale,
+                                  foregroundColor: .clear,
+                                  cachesOriginalImage: true)
+            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                   height: Constants.productCardSize * scale)
+            .clipped()
         } else {
             Rectangle()
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),

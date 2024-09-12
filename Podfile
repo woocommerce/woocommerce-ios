@@ -93,7 +93,7 @@ target 'WooCommerce' do
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   # pod 'WordPressAuthenticator', '~> 9.0.9'
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
-  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: '0c8a006e8c4441dd2b1860d298d7e2e752a0d232'
+  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: '10ea63efb3dfe50e4e5f6fa570130dd18d359739'
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
 
   wordpress_shared

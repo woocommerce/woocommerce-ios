@@ -10,12 +10,12 @@ extension BlazeCampaignListItem {
 
     var humanReadableImpressions: String {
         let doubleValue = Double(impressions)
-        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true)
+        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true).uppercased()
     }
 
     var humanReadableClicks: String {
         let doubleValue = Double(clicks)
-        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true)
+        return doubleValue.humanReadableString(shouldHideDecimalsForIntegerAbbreviatedValue: true).uppercased()
     }
 
     var budgetToDisplay: String {

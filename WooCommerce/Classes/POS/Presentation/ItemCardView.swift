@@ -16,7 +16,8 @@ struct ItemCardView: View {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: Constants.productCardSize * scale,
                                       scale: scale,
-                                      foregroundColor: .clear)
+                                      foregroundColor: .clear,
+                                      cachesOriginalImage: true)
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)
                 .clipped()

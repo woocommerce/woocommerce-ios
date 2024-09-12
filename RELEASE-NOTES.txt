@@ -6,6 +6,7 @@
 - [*] Fixed the incorrect navigation title of the product selector in the Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13903]
 - [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
 - [*] Blaze: Handle links on the campaign detail web view natively. [https://github.com/woocommerce/woocommerce-ios/pull/13922]
+- [*] Blaze: Open blaze campaign detail page upon tapping push notification. [https://github.com/woocommerce/woocommerce-ios/pull/13843]
 - [internal] Updated dependencies for Xcode 16 Support [https://github.com/woocommerce/woocommerce-ios/pull/13911]
 
 20.3

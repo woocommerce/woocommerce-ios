@@ -1,5 +1,4 @@
 import SwiftUI
-import Kingfisher
 
 struct ItemRowView: View {
     private let cartItem: CartItem

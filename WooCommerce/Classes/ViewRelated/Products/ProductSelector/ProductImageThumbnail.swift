@@ -7,13 +7,12 @@ struct ProductImageThumbnail: View {
     private let scale: CGFloat
     private let productImageCornerRadius: CGFloat
     private let foregroundColor: Color
-    private let cache: ImageCache = ImageCache.default
     private let cachesOriginalImage: Bool
 
     /// Image processor to resize images in a background thread to avoid blocking the UI
     ///
     private var imageProcessor: ImageProcessor {
-        ResizingImageProcessor(referenceSize: 
+        ResizingImageProcessor(referenceSize:
                 .init(width: productImageSize * scale,
                       height: productImageSize * scale),
                                mode: .aspectFill)

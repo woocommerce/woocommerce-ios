@@ -17,15 +17,12 @@ struct BlazeCampaignObjectivePickerView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
+            Group {
                 if viewModel.fetchedData.isNotEmpty {
                     optionList
                 } else if viewModel.isSyncingData {
-                    Spacer()
                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                    Spacer()
                 } else if viewModel.syncError != nil {
-                    Spacer()
                     ErrorStateView(title: Localization.errorMessage,
                                    image: .errorImage,
                                    actionTitle: Localization.tryAgain,
@@ -35,9 +32,9 @@ struct BlazeCampaignObjectivePickerView: View {
                         }
                     })
                     .multilineTextAlignment(.center)
-                    Spacer()
                 }
             }
+            .frame(maxHeight: .infinity)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {

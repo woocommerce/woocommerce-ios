@@ -82,8 +82,8 @@ private extension ItemListView {
                 .font(Constants.bannerSubtitleFont)
                 .accessibilityElement(children: .combine)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, Constants.bannerVerticalPadding)
-            Spacer()
             VStack {
                 Button(action: {
                     viewModel.dismissBanner()

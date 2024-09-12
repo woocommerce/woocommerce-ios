@@ -2,13 +2,13 @@
 ---
 
 agents:
-  queue: "mac"
+  queue: mac
 
 env:
   IMAGE_ID: $IMAGE_ID
 
 steps:
-  - label: "Complete Code Freeze"
+  - label: Complete Code Freeze
     plugins: [$CI_TOOLKIT]
     command: |
       .buildkite/commands/configure-environment.sh

@@ -210,7 +210,7 @@ struct BlazeCampaignCreationForm: View {
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
         .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
-            Button(Localization.AISuggestionsErrorAlert.cancel, role: .cancel) { }
+            Button(Localization.cancel, role: .cancel) { }
 
             Button(Localization.AISuggestionsErrorAlert.retry) {
                 Task {
@@ -219,17 +219,23 @@ struct BlazeCampaignCreationForm: View {
             }
         }
         .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
-            Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
+            Button(Localization.cancel, role: .cancel) { }
 
             Button(Localization.NoImageErrorAlert.addImage) {
                 viewModel.didTapEditAd()
             }
         }
         .alert(Localization.NoDestinationURLAlert.noURLFound, isPresented: $viewModel.isShowingMissingDestinationURLAlert) {
-            Button(Localization.NoDestinationURLAlert.cancel, role: .cancel) { }
+            Button(Localization.cancel, role: .cancel) { }
 
             Button(Localization.NoDestinationURLAlert.selectURL) {
                 isShowingAdDestinationScreen = true
+            }
+        }
+        .alert(Localization.MissingObjectiveAlert.title, isPresented: $viewModel.isShowingMissingObjectiveAlert) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.MissingObjectiveAlert.selectObjective) {
+                isShowingCampaignObjectivePicker = true
             }
         }
         .onAppear() {
@@ -496,11 +502,6 @@ private extension BlazeCampaignCreationForm {
                 value: "Failed to load suggestions for tagline and description",
                 comment: "Error message indicating that loading suggestions for tagline and description failed"
             )
-            static let cancel = NSLocalizedString(
-                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel",
-                value: "Cancel",
-                comment: "Dismiss button on the error alert displayed on the Blaze campaign creation screen"
-            )
             static let retry = NSLocalizedString(
                 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry",
                 value: "Retry",
@@ -513,11 +514,6 @@ private extension BlazeCampaignCreationForm {
                 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
                 value: "Please add an image for the Blaze campaign",
                 comment: "Message asking to select an image for the Blaze campaign"
-            )
-            static let cancel = NSLocalizedString(
-                "blazeCampaignCreationForm.noImageErrorAlert.cancel",
-                value: "Cancel",
-                comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
             )
             static let addImage = NSLocalizedString(
                 "blazeCampaignCreationForm.noImageErrorAlert.addImage",
@@ -532,17 +528,31 @@ private extension BlazeCampaignCreationForm {
                 value: "Please select a destination URL for the Blaze campaign",
                 comment: "Message asking to select a destination URL for the Blaze campaign"
             )
-            static let cancel = NSLocalizedString(
-                "blazeCampaignCreationForm.noDestinationURLAlert.cancel",
-                value: "Cancel",
-                comment: "Dismiss button on the alert asking to select a destination URL for the Blaze campaign"
-            )
             static let selectURL = NSLocalizedString(
                 "blazeCampaignCreationForm.noDestinationURLAlert.selectURL",
                 value: "Select URL",
                 comment: "Button on the alert to select a destination URL for the Blaze campaign"
             )
         }
+
+        enum MissingObjectiveAlert {
+            static let title = NSLocalizedString(
+                "blazeCampaignCreationForm.missingObjectiveAlert.title",
+                value: "Please select an objective for the Blaze campaign",
+                comment: ""
+            )
+            static let selectObjective = NSLocalizedString(
+                "blazeCampaignCreationForm.missingObjectiveAlert.selectObjective",
+                value: "Select objective",
+                comment: "Button on the alert to select an objective for the Blaze campaign"
+            )
+        }
+
+        static let cancel = NSLocalizedString(
+            "blazeCampaignCreationForm.cancel",
+            value: "Cancel",
+            comment: "Dismiss button on an error alert on the Blaze campaign creation form"
+        )
 
         static let help = NSLocalizedString(
             "blazeCampaignCreationForm.help",

@@ -1,12 +1,23 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// Provides view data for `WooShippingItems`.
 ///
 final class WooShippingItemsViewModel: ObservableObject {
+    private let siteID: Int64
     private let orderItems: [OrderItem]
     private let currencyFormatter: CurrencyFormatter
+    private let storageManager: StorageManagerType
+
+    private var resultsControllers: WooShippingItemsResultsControllers?
+
+    /// Stored products in the order.
+    @Published private var products: [Product] = []
+
+    /// Stored product variations in the order.
+    @Published private var productVariations: [ProductVariation] = []
 
     /// Label with the total number of items to ship.
     @Published var itemsCountLabel: String = ""
@@ -17,11 +28,16 @@ final class WooShippingItemsViewModel: ObservableObject {
     /// View models for rows of items to ship.
     @Published var itemRows: [WooShippingItemRowViewModel] = []
 
-    init(orderItems: [OrderItem],
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(siteID: Int64,
+         orderItems: [OrderItem],
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+        self.siteID = siteID
         self.orderItems = orderItems
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.storageManager = storageManager
 
+        configureResultsControllers()
         configureSectionHeader()
         configureItemRows()
     }
@@ -85,6 +101,25 @@ private extension WooShippingItemsViewModel {
         }()
 
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
+    }
+}
+
+// MARK: Storage helpers
+private extension WooShippingItemsViewModel {
+    func configureResultsControllers() {
+        resultsControllers = WooShippingItemsResultsControllers(siteID: siteID,
+                                                                orderItems: orderItems,
+                                                                storageManager: storageManager,
+                                                                onProductReload: { [weak self] products in
+            guard let self else { return }
+            self.products = products
+        },
+                                                                onProductVariationsReload: { [weak self] variations in
+            guard let self else { return }
+            self.productVariations = variations
+        })
+        products = resultsControllers?.products ?? []
+        productVariations = resultsControllers?.productVariations ?? []
     }
 }
 

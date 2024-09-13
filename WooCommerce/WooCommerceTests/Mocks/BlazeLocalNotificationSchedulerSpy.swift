@@ -1,9 +1,14 @@
 @testable import WooCommerce
 
 final class MockBlazeLocalNotificationScheduler: BlazeLocalNotificationScheduler {
-    private(set) var scheduleNotificationsCalled = false
+    private(set) var scheduleNoCampaignReminderCalled = false
+    private(set) var scheduleAbandonedCreationReminderCalled = false
 
-    func scheduleNotifications() {
-        scheduleNotificationsCalled = true
+    func scheduleNoCampaignReminder() async {
+        scheduleNoCampaignReminderCalled = true
+    }
+
+    func scheduleAbandonedCreationReminder() async {
+        scheduleAbandonedCreationReminderCalled = true
     }
 }

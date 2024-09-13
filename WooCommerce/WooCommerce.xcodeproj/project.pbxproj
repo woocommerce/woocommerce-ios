@@ -1227,6 +1227,7 @@
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
+		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
 		3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF22489267073AE008FFA87 /* ScreenObject */; };
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4246,6 +4247,7 @@
 		3F587037281B9C50004F7556 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F587038281B9C52004F7556 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3FA96DF32C94043200CDA78F /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314D626FC55DE0012E68E /* ScreenObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenObject+Extension.swift"; sourceTree = "<group>"; };
 		3FF314DE26FC74450012E68E /* UITestsFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UITestsFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314E026FC74450012E68E /* UITestsFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITestsFoundation.h; sourceTree = "<group>"; };
@@ -6009,6 +6011,7 @@
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
 				048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */,
+				3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9777,6 +9780,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FA96DF32C94043200CDA78F /* Yosemite.framework */,
 				26B0FDE12BFFBAC500A0D937 /* Contacts.framework */,
 				269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,

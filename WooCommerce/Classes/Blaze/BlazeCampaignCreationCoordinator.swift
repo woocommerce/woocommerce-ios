@@ -203,6 +203,11 @@ private extension BlazeCampaignCreationCoordinator {
                 onCloseButtonTapped: { [weak self] in
                     guard let self else { return }
 
+                    Task { @MainActor in
+                        let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
+                        await scheduler.scheduleAbandonedCreationReminder()
+                    }
+
                     navigationController.dismiss(animated: true, completion: nil)
                 }
             )

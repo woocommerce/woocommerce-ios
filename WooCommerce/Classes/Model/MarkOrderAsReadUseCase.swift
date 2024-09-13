@@ -26,47 +26,44 @@ struct MarkOrderAsReadUseCase {
     /// If they match we mark it as read.
     /// Returns syncronized note if marking was successful and error if some error happened
     static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
-        // All code disabled to see if build compiles
-        //
-        return .failure(.unavailableNote)
-//        let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
-//            let action = Yosemite.NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
-//                guard let syncronizedNote = syncronizedNote else {
-//                    continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.unavailableNote))
-//                    return
-//                }
-//                continuation.resume(returning: .success(syncronizedNote))
-//            }
-//            stores.dispatch(action)
-//        }
-//
-//        switch syncronizedNoteResult {
-//        case .success(let syncronizedNote):
-//            guard let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
-//                  syncronizedNoteOrderID == orderID else {
-//                return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
-//            }
-//
-//            let updateNoteStatusResult: Result<Note, Error> = await withCheckedContinuation { continuation in
-//                let syncAction = Yosemite.NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
-//                    if let error {
-//                        continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
-//                    } else {
-//                        continuation.resume(returning: .success(syncronizedNote))
-//                    }
-//                }
-//                stores.dispatch(syncAction)
-//            }
-//
-//            switch updateNoteStatusResult {
-//            case .success(let note):
-//                return .success(note)
-//            case .failure(let error):
-//                return .failure(error)
-//            }
-//        case .failure(let error):
-//            return .failure(error)
-//        }
+        let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
+            let action = Yosemite.NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
+                guard let syncronizedNote = syncronizedNote else {
+                    continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.unavailableNote))
+                    return
+                }
+                continuation.resume(returning: .success(syncronizedNote))
+            }
+            stores.dispatch(action)
+        }
+
+        switch syncronizedNoteResult {
+        case .success(let syncronizedNote):
+            guard let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
+                  syncronizedNoteOrderID == orderID else {
+                return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
+            }
+
+            let updateNoteStatusResult: Result<Note, Error> = await withCheckedContinuation { continuation in
+                let syncAction = Yosemite.NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
+                    if let error {
+                        continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
+                    } else {
+                        continuation.resume(returning: .success(syncronizedNote))
+                    }
+                }
+                stores.dispatch(syncAction)
+            }
+
+            switch updateNoteStatusResult {
+            case .success(let note):
+                return .success(note)
+            case .failure(let error):
+                return .failure(error)
+            }
+        case .failure(let error):
+            return .failure(error)
+        }
     }
 #endif
 

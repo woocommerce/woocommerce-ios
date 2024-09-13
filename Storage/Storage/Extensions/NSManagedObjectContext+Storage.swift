@@ -50,7 +50,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             result = try count(for: request)
         } catch {
-            DDLogError("Error counting objects [\(T.entityName)]: \(error)")
+            DDLogError("countObjects failed. Error counting objects [\(T.entityName)]: \(error)")
         }
 
         return result
@@ -60,7 +60,10 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func deleteObject<T: Object>(_ object: T) {
         guard let object = object as? NSManagedObject else {
-            DDLogError("Invalid Object Kind")
+            let errorMessage = "deleteObject failed. Invalid Object Kind \(type(of: object)) " +
+                               "for object type: \(T.self). This error is related to NSManagedObject " +
+                               "and CoreData."
+            DDLogError(errorMessage)
             return
         }
 
@@ -115,14 +118,19 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T? {
         guard let objectID = objectID as? NSManagedObjectID else {
-            DDLogError("Invalid ObjectID Kind: \(objectID), for object type: \(T.self). This error is related to NSManagedObject and CoreData.")
+            let errorMessage = "loadObject failed. Invalid ObjectID Kind: \(objectID), " +
+                               "for object type: \(T.self). This error is related to " +
+                               "NSManagedObject and CoreData."
+            DDLogError(errorMessage)
             return nil
         }
 
         do {
             return try existingObject(with: objectID) as? T
         } catch {
-            DDLogError("Error loading Object [\(T.entityName)] in context: \(self). This error is related to NSManagedObject and CoreData.")
+            let errorMessage = "loadObject failed. Error loading Object [\(T.entityName)] in context: " +
+                               "\(self). This error is related to NSManagedObject and CoreData."
+            DDLogError(errorMessage)
         }
 
         return nil
@@ -139,7 +147,10 @@ extension NSManagedObjectContext: StorageType {
             try save()
         } catch {
             let nserror = error as NSError
-            DDLogError("Unresolved error \(nserror), \(nserror.userInfo) in context: \(self). This error is related to NSManagedObject and CoreData.")
+            let errorMessage = "saveIfNeeded failed. Error \(nserror), " +
+                               "\(nserror.userInfo) in context: \(self). " +
+                               "This error is related to NSManagedObject and CoreData."
+            DDLogError(errorMessage)
         }
     }
 
@@ -164,7 +175,9 @@ extension NSManagedObjectContext: StorageType {
         do {
             objects = try fetch(request) as? [T]
         } catch {
-            DDLogError("Error loading Objects [\(T.entityName)] in context: \(self). This error is related to NSManagedObject and CoreData.")
+            let errorMessage = "loadObjects failed. Error loading Objects [\(T.entityName)] in context: " +
+                               "\(self). This error is related to NSManagedObject and CoreData."
+            DDLogError(errorMessage)
         }
 
         return objects ?? []

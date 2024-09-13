@@ -1,12 +1,15 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// Provides view data for `WooShippingItems`.
 ///
 final class WooShippingItemsViewModel: ObservableObject {
-    private let orderItems: [OrderItem]
     private let currencyFormatter: CurrencyFormatter
+
+    /// Data source for items to be shipped.
+    private var dataSource: WooShippingItemsDataSource
 
     /// Label with the total number of items to ship.
     @Published var itemsCountLabel: String = ""
@@ -17,9 +20,9 @@ final class WooShippingItemsViewModel: ObservableObject {
     /// View models for rows of items to ship.
     @Published var itemRows: [WooShippingItemRowViewModel] = []
 
-    init(orderItems: [OrderItem],
+    init(dataSource: WooShippingItemsDataSource,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.orderItems = orderItems
+        self.dataSource = dataSource
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         configureSectionHeader()
@@ -44,7 +47,7 @@ private extension WooShippingItemsViewModel {
     /// Generates a label with the total number of items to ship.
     ///
     func generateItemsCountLabel() -> String {
-        let itemsCount = orderItems.map(\.quantity).reduce(0, +)
+        let itemsCount = dataSource.orderItems.map(\.quantity).reduce(0, +)
         return Localization.itemsCount(itemsCount)
     }
 
@@ -53,7 +56,7 @@ private extension WooShippingItemsViewModel {
     ///
     func generateItemsDetailLabel() -> String {
         let formattedWeight = "1 kg" // TODO-13550: Get the total weight (each product/variation * item quantity) and weight unit
-        let itemsTotal = orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
+        let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
 
         return "\(formattedWeight) • \(formattedPrice)"
@@ -62,7 +65,7 @@ private extension WooShippingItemsViewModel {
     /// Generates an item row view model for each order item.
     ///
     func generateItemRows() -> [WooShippingItemRowViewModel] {
-        orderItems.map { item in
+        dataSource.orderItems.map { item in
             WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
                                         quantityLabel: item.quantity.description,
                                         name: item.name,

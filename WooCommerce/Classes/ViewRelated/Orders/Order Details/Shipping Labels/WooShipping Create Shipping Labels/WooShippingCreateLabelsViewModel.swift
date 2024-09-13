@@ -8,6 +8,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private(set) var items: WooShippingItemsViewModel
 
     init(order: Order) {
-        self.items = WooShippingItemsViewModel(orderItems: order.items)
+        self.items = WooShippingItemsViewModel(dataSource: DefaultWooShippingItemsDataSource(order: order))
     }
 }

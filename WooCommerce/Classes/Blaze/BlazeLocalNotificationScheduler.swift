@@ -3,6 +3,7 @@ import protocol Storage.StorageManagerType
 import Combine
 
 protocol BlazeLocalNotificationScheduler {
+    func observeNotificationUserResponse()
     func scheduleNoCampaignReminder() async
     func scheduleAbandonedCreationReminder() async
     func cancelAbandonedCreationReminder() async
@@ -44,8 +45,27 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
         self.blazeEligibilityChecker = blazeEligibilityChecker
+    }
 
-        observeNotificationUserResponse()
+    /// Observes user responses to local notification and updates user defaults
+    ///
+    func observeNotificationUserResponse() {
+        pushNotesManager.localNotificationUserResponses
+            .sink { [weak self] response in
+                guard let self else {
+                    return
+                }
+
+                switch response.notification.request.identifier {
+                case LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder.identifier:
+                    userDefaults.setBlazeAbandonedCampaignCreationReminderOpened(true)
+                case LocalNotification.Scenario.blazeNoCampaignReminder.identifier:
+                    userDefaults.setBlazeNoCampaignReminderOpened(true)
+                default:
+                    break
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Starts observing campaigns from storage and schedules no campaign local notification
@@ -100,27 +120,6 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
-    /// Observes user responses to local notification and updates user defaults
-    ///
-    func observeNotificationUserResponse() {
-        pushNotesManager.localNotificationUserResponses
-            .sink { [weak self] response in
-                guard let self else {
-                    return
-                }
-
-                switch response.notification.request.identifier {
-                case LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder.identifier:
-                    userDefaults.setBlazeAbandonedCampaignCreationReminderOpened(true)
-                case LocalNotification.Scenario.blazeNoCampaignReminder.identifier:
-                    userDefaults.setBlazeNoCampaignReminderOpened(true)
-                default:
-                    break
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
     func isEligibleForBlaze() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false

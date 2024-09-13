@@ -51,6 +51,7 @@ private extension WooShippingItemsViewModel {
     }
 
     /// Generates a label with the details of the items to ship.
+    /// This includes the total weight and total price of all items.
     ///
     func generateItemsDetailLabel() -> String {
         let formattedWeight = "1 kg" // TODO-13550: Get the total weight (each product/variation * item quantity) and weight unit

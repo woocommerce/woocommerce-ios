@@ -46,7 +46,7 @@ private extension BlazeCampaignCreationFormHostingController {
     }
 }
 
-private extension BlazeCampaignCreationFormHostingController {
+extension BlazeCampaignCreationFormHostingController {
     enum Localization {
         static let title = NSLocalizedString(
             "blazeCampaignCreationForm.title",
@@ -55,7 +55,7 @@ private extension BlazeCampaignCreationFormHostingController {
         )
     }
 
-    enum Constants {
+    private enum Constants {
         static let supportTag = "origin:blaze-native-campaign-creation"
     }
 }
@@ -173,6 +173,7 @@ struct BlazeCampaignCreationForm: View {
             }
             .background(Constants.backgroundViewColor)
         }
+        .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(Localization.help) {

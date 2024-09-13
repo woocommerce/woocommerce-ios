@@ -31,8 +31,10 @@ struct BlazeCampaignObjectivePickerView: View {
                             await viewModel.syncData()
                         }
                     })
+                    .multilineTextAlignment(.center)
                 }
             }
+            .frame(maxHeight: .infinity)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(Localization.title)
             .toolbar {

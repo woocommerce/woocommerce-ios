@@ -5,6 +5,7 @@
 -----
 - [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
 
+
 20.4
 -----
 - [Internal] Mark order notification read if needed on watch app and notification extension https://github.com/woocommerce/woocommerce-ios/pull/13896

@@ -179,7 +179,7 @@ final class DashboardViewModel: ObservableObject {
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
 
-        await blazeLocalNotificationScheduler.scheduleNotifications()
+        await blazeLocalNotificationScheduler.scheduleNoCampaignReminder()
     }
 
     func handleCustomizationDismissal() {

@@ -407,11 +407,12 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                    userDefaults: defaults,
                                                    pushNotesManager: pushNotesManager,
                                                    blazeEligibilityChecker: blazeEligibilityChecker)
+        sut.observeNotificationUserResponse()
+
+        // When
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: "",
                                                               requestIdentifier: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder.identifier,
                                                               notificationUserInfo: [:]))
-
-        // When
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
@@ -429,11 +430,12 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                    userDefaults: defaults,
                                                    pushNotesManager: pushNotesManager,
                                                    blazeEligibilityChecker: blazeEligibilityChecker)
+        sut.observeNotificationUserResponse()
+
+        // When
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: "",
                                                               requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
                                                               notificationUserInfo: [:]))
-
-        // When
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then

@@ -27,7 +27,7 @@ struct MarkOrderAsReadUseCase {
     /// Returns syncronized note if marking was successful and error if some error happened
     static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
         let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
-            let action = Yosemite.NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
+            let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
                 guard let syncronizedNote = syncronizedNote else {
                     continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.unavailableNote))
                     return
@@ -45,7 +45,7 @@ struct MarkOrderAsReadUseCase {
             }
 
             let updateNoteStatusResult: Result<Note, Error> = await withCheckedContinuation { continuation in
-                let syncAction = Yosemite.NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
+                let syncAction = NotificationAction.updateReadStatus(noteID: noteID, read: true) { error in
                     if let error {
                         continuation.resume(returning: .failure(MarkOrderAsReadUseCase.Error.failure(error)))
                     } else {

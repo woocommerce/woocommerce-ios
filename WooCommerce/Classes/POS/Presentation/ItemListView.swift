@@ -111,7 +111,7 @@ private extension ItemListView {
     private var bannerHintAndLearnMoreText: Text {
         Text(Localization.headerBannerHint + " ") +
         Text(Localization.headerBannerLearnMoreHint)
-            .font(.body)
+            .font(POSFontStyle.posDetailEmphasized.font())
             .foregroundColor(Color(.accent))
     }
 

@@ -1017,7 +1017,6 @@
 		269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		269FFA482BF516BA004E6B86 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
 		269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269FFA4A2BF544C9004E6B86 /* MyStoreViewModel.swift */; };
-		26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26A0B2D32BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D62BFBA536002E9620 /* OrdersListView.swift */; };
@@ -14512,7 +14511,6 @@
 				26A52EEC2C69B480000B1CFB /* CrashLoggingDataProvider.swift in Sources */,
 				26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
-				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,
 				26373E2C2BFD13E0008E6735 /* OrdersDataService.swift in Sources */,
 				26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */,
 				26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */,

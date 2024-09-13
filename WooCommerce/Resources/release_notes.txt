@@ -1,2 +1,9 @@
-In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
-Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+- [Internal] Mark order notification read if needed on watch app and notification extension https://github.com/woocommerce/woocommerce-ios/pull/13896
+- [*] Blaze: Enhanced the layout of the campaign list item. [https://github.com/woocommerce/woocommerce-ios/pull/13934]
+- [*] Fixed the incorrect navigation title of the product selector in the Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13903]
+- [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
+- [*] Blaze: Handle links on the campaign detail web view natively. [https://github.com/woocommerce/woocommerce-ios/pull/13922]
+- [*] Blaze: Open blaze campaign detail page upon tapping push notification. [https://github.com/woocommerce/woocommerce-ios/pull/13843]
+- [internal] Updated dependencies for Xcode 16 Support [https://github.com/woocommerce/woocommerce-ios/pull/13911]
+
+

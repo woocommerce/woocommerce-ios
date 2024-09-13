@@ -6,18 +6,10 @@ import protocol Storage.StorageManagerType
 /// Provides view data for `WooShippingItems`.
 ///
 final class WooShippingItemsViewModel: ObservableObject {
-    private let siteID: Int64
-    private let orderItems: [OrderItem]
     private let currencyFormatter: CurrencyFormatter
-    private let storageManager: StorageManagerType
 
-    private var resultsControllers: WooShippingItemsResultsControllers?
-
-    /// Stored products in the order.
-    @Published private var products: [Product] = []
-
-    /// Stored product variations in the order.
-    @Published private var productVariations: [ProductVariation] = []
+    /// Data source for items to be shipped.
+    private var dataSource: WooShippingItemsDataSource
 
     /// Label with the total number of items to ship.
     @Published var itemsCountLabel: String = ""
@@ -28,16 +20,11 @@ final class WooShippingItemsViewModel: ObservableObject {
     /// View models for rows of items to ship.
     @Published var itemRows: [WooShippingItemRowViewModel] = []
 
-    init(siteID: Int64,
-         orderItems: [OrderItem],
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
-        self.siteID = siteID
-        self.orderItems = orderItems
+    init(dataSource: WooShippingItemsDataSource,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.dataSource = dataSource
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.storageManager = storageManager
 
-        configureResultsControllers()
         configureSectionHeader()
         configureItemRows()
     }
@@ -60,7 +47,7 @@ private extension WooShippingItemsViewModel {
     /// Generates a label with the total number of items to ship.
     ///
     func generateItemsCountLabel() -> String {
-        let itemsCount = orderItems.map(\.quantity).reduce(0, +)
+        let itemsCount = dataSource.orderItems.map(\.quantity).reduce(0, +)
         return Localization.itemsCount(itemsCount)
     }
 
@@ -69,7 +56,7 @@ private extension WooShippingItemsViewModel {
     ///
     func generateItemsDetailLabel() -> String {
         let formattedWeight = "1 kg" // TODO-13550: Get the total weight (each product/variation * item quantity) and weight unit
-        let itemsTotal = orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
+        let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
 
         return "\(formattedWeight) • \(formattedPrice)"
@@ -78,7 +65,7 @@ private extension WooShippingItemsViewModel {
     /// Generates an item row view model for each order item.
     ///
     func generateItemRows() -> [WooShippingItemRowViewModel] {
-        orderItems.map { item in
+        dataSource.orderItems.map { item in
             WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
                                         quantityLabel: item.quantity.description,
                                         name: item.name,
@@ -101,25 +88,6 @@ private extension WooShippingItemsViewModel {
         }()
 
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
-    }
-}
-
-// MARK: Storage helpers
-private extension WooShippingItemsViewModel {
-    func configureResultsControllers() {
-        resultsControllers = WooShippingItemsResultsControllers(siteID: siteID,
-                                                                orderItems: orderItems,
-                                                                storageManager: storageManager,
-                                                                onProductReload: { [weak self] products in
-            guard let self else { return }
-            self.products = products
-        },
-                                                                onProductVariationsReload: { [weak self] variations in
-            guard let self else { return }
-            self.productVariations = variations
-        })
-        products = resultsControllers?.products ?? []
-        productVariations = resultsControllers?.productVariations ?? []
     }
 }
 

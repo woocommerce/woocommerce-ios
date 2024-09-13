@@ -791,7 +791,7 @@ platform :ios do
   # bundle exec fastlane build_for_testing
   #####################################################################################
   desc 'Build for Testing'
-  lane :build_for_testing do |options|
+  lane :build_for_testing do |device: nil, ios_version: nil| # with nil, Fastlane will find the first best compatible match
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     run_tests(
@@ -799,8 +799,8 @@ platform :ios do
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
-      device: options[:device],
-      deployment_target_version: options[:ios_version]
+      device: device,
+      deployment_target_version: ios_version
     )
   end
 

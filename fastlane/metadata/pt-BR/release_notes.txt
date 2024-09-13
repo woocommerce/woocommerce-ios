@@ -1,4 +1,2 @@
-Nesta versão, os anúncios do Blaze passam a ser compatíveis com campanhas contínuas. Corrigimos alguns bugs na edição de produtos, principalmente quanto aos preços, e agora preços negativos são aceitos!
-
-Corrigimos um problema no uso do menu com VoiceOver e tecnologia assistiva, além de alguns bugs que faziam os títulos desaparecerem e os botões pararem de funcionar.
-
+Nesta versão, você pode escanear números de rastreio de pedidos. Também aprimoramos a gestão de senhas de produtos e fizemos melhorias nos descontos, escaneamento de produtos e pagamentos em dinheiro.
+Desfrute de uma experiência melhor nas configurações de orçamento e seleção de imagens durante a criação de campanhas de anúncios do Blaze.

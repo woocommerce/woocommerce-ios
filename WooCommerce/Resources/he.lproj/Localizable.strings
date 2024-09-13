@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-02 19:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-10 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -4268,6 +4268,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "החזר כספי ידני";
+
+/* The instruction text below the scan area in the barcode scanner for order tracking number. */
+"ManualTrackingViewController.scanView.instructionText" = "יש לסרוק את הברקוד או קוד ה-QR של המעקב";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
+"ManualTrackingViewController.scanView.titleView" = "יש לסרוק את הברקוד או קוד ה-QR עם מספר המעקב";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "דומיין ממופה";
@@ -9305,12 +9311,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
 
-/* Cell description on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.description" = "כדאי לבדוק את האפשרות 'נקודת מכירה' בזמן שאנחנו מתכוננים להשקה";
-
-/* Cell title on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.title" = "נקודת מכירה";
-
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "לשלוח הודעת Telegram";
 
@@ -9398,9 +9398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that will be displayed after adding a new Blaze payment method */
 "blazeAddPaymentWebView.paymentMethodAddedNotice" = "אמצעי התשלום נוסף";
 
-/* Button to apply the changes on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.apply" = "להחיל";
-
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "ביטול";
 
@@ -9413,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "סיימתי";
 
-/* Title label of the Blaze campaign duration field */
-"blazeBudgetSettingView.duration" = "משך זמן";
-
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "לערוך";
 
@@ -9424,9 +9418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedTotalImpressions" = "סך כל החשיפות המשוערות";
-
-/* Label to explain when no end date is specified for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenDescription" = "הקמפיין יהיה פעיל עד שיושבת על ידיך.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "לא הצלחנו לשער את הצפיות. לנסות שנית?";
@@ -9439,12 +9430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "תזמון";
-
-/* Switch to enable an end date for a Blaze campaign. */
-"blazeBudgetSettingView.specifyDuration" = "יש לציין משך";
-
-/* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.startDate" = "תאריך התחלה";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "להגדיר את תקציב שלך";
@@ -9555,6 +9540,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "תקציב";
 
+/* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
+"blazeCampaignCreationForm.chooseObjective" = "יש לבחור את מטרת הקמפיין";
+
 /* Button to confirm ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.confirmDetails" = "לאשר את הפרטים";
 
@@ -9599,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "יש להוסיף תמונה לקמפיין של Blaze";
+
+/* Title of the Campaign objective field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.objective" = "מטרת הקמפיין";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "לרכישה כעת";
@@ -9887,6 +9878,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "כל העסקאות מאובטחות ומוצפנות";
+
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.apply" = "להחיל";
+
+/* Button to dismiss the Blaze schedule setting screen */
+"blazeScheduleSettingView.cancel" = "ביטול";
+
+/* Title label of the Blaze campaign duration field */
+"blazeScheduleSettingView.duration" = "משך זמן";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeScheduleSettingView.evergreenDescription" = "הקמפיין יהיה פעיל עד שיושבת על ידיך.";
+
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeScheduleSettingView.schedule" = "תזמון";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeScheduleSettingView.specifyDuration" = "יש לציין משך";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDate" = "תאריך התחלה";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "כל המכשירים";
@@ -10608,9 +10620,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "להציג את כל הקמפיינים";
 
-/* Title of the view containing Coupons list
-   Title of the view containing Reviews list */
-"hubMenu.coupons" = "ביקורות";
+/* Title of the view containing Coupons list */
+"hubMenu.couponsList" = "קופונים";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "לקוחות";
@@ -10620,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "חוות דעת על מוצר";
+
+/* Title of the view containing Reviews list */
+"hubMenu.reviewsList" = "ביקורות";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google ל-WooCommerce";
@@ -10719,6 +10733,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
+
+/* Message on the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.body" = "לקדם מוצרים עם פרסומות של Blaze כדי להגדיל את המכירות שלך עכשיו.";
+
+/* Title of the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.title" = "לשפר את המכירות";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
@@ -11548,9 +11568,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "למה המוצרים שלי לא מופיעים?";
 
-/* Button title for calculate amounts button */
-"pos.totalsView.calculateAmounts" = "סכומים מחושבים";
-
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "הזמנה חדשה";
 
@@ -11766,6 +11783,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "התמונות לא זמינות מאחר שהאתר שלך מסומן כ'פרטי'. אפשר לשנות את ההגדרה הזאת על ידי מעבר למצב 'בקרוב'.";
+
+/* Button to dismiss the product image picker screen */
+"productImagePickerView.cancel" = "ביטול";
+
+/* Title for the empty state of the product image picker screen */
+"productImagePickerView.emptyStateTitle" = "לא נמצאו תמונות";
+
+/* Title of the product image picker screen */
+"productImagePickerView.title" = "תמונות";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "יש להמתין שכל ההעלאות יסתיימו לפני שינוי סדר התמונות.";

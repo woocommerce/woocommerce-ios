@@ -106,7 +106,7 @@ struct CustomFieldEditorView: View {
             }
         }
         .sheet(isPresented: $showRichTextEditor) {
-            RichTextEditor(value: $value)
+            RichTextEditor(html: $value)
                 .onDisappear {
                     checkForModifications()
                 }
@@ -140,14 +140,13 @@ struct CustomFieldEditorView: View {
 }
 
 private struct RichTextEditor: View {
-    @Binding var value: String
-    @State private var aztecViewController: AztecEditorViewController?
+    @Binding var html: String
     @State private var isModified: Bool = false
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         NavigationView {
-            AztecEditorView(value: $value, viewController: $aztecViewController)
+            AztecEditorView(initialValue: html)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button {
@@ -158,13 +157,12 @@ private struct RichTextEditor: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            if let controller = aztecViewController {
-                                value = controller.getLatestContent()
-                                presentationMode.wrappedValue.dismiss()
-                            }
+                            // todo-13493: implement save action
+                            presentationMode.wrappedValue.dismiss()
                         } label: {
                             Text("Done") // todo-13493: set String to be translatable
                         }
+                        .disabled(!isModified)
                     }
                 }
         }

@@ -72,9 +72,10 @@ private extension WooShippingItemsViewModel {
     /// Generates an item row view model for each order item.
     ///
     func generateItemRows() -> [WooShippingItemRowViewModel] {
-            dataSource.orderItems.map { item in
+        dataSource.orderItems.map { item in
+            let (product, variation) = getProductAndVariation(for: item)
             let itemWeight = calculateWeight(for: item)
-            return WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
+            return WooShippingItemRowViewModel(imageUrl: variation?.imageURL ?? product?.imageURL,
                                                quantityLabel: item.quantity.description,
                                                name: item.name,
                                                detailsLabel: generateItemRowDetailsLabel(for: item),

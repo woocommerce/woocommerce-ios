@@ -44,8 +44,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
     func test_populates_item_data_from_products_and_variations() {
         // Given
         let dimensions = ProductDimensions(length: "20", width: "35", height: "5")
-        let product = Product.fake().copy(productID: 1, weight: "5", dimensions: dimensions)
-        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, weight: "3", dimensions: dimensions)
+        let image = ProductImage.fake().copy(src: "http://woocommerce.com/image.jpg")
+        let product = Product.fake().copy(productID: 1, weight: "5", dimensions: dimensions, images: [image])
+        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, image: image, weight: "3", dimensions: dimensions)
         let orderItems = [OrderItem.fake().copy(productID: product.productID, quantity: 1),
                           OrderItem.fake().copy(productID: variation.productID,
                                                 variationID: variation.productVariationID,
@@ -62,9 +63,12 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         assertEqual("8 oz • $0.00", viewModel.itemsDetailLabel)
 
         let productRow = viewModel.itemRows[0]
-        let variationRow = viewModel.itemRows[1]
+        XCTAssertNotNil(productRow.imageUrl)
         assertEqual("5 oz", productRow.weightLabel)
         assertEqual("20 x 35 x 5 in", productRow.detailsLabel)
+
+        let variationRow = viewModel.itemRows[1]
+        XCTAssertNotNil(variationRow.imageUrl)
         assertEqual("3 oz", variationRow.weightLabel)
         assertEqual("20 x 35 x 5 in • Red", variationRow.detailsLabel)
     }

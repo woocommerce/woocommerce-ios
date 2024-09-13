@@ -1017,7 +1017,6 @@
 		269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		269FFA482BF516BA004E6B86 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
 		269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269FFA4A2BF544C9004E6B86 /* MyStoreViewModel.swift */; };
-		26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26A0B2D32BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D62BFBA536002E9620 /* OrdersListView.swift */; };
@@ -1228,6 +1227,7 @@
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
+		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
 		3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF22489267073AE008FFA87 /* ScreenObject */; };
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4247,6 +4247,7 @@
 		3F587037281B9C50004F7556 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F587038281B9C52004F7556 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3FA96DF32C94043200CDA78F /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314D626FC55DE0012E68E /* ScreenObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenObject+Extension.swift"; sourceTree = "<group>"; };
 		3FF314DE26FC74450012E68E /* UITestsFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UITestsFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314E026FC74450012E68E /* UITestsFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITestsFoundation.h; sourceTree = "<group>"; };
@@ -6010,6 +6011,7 @@
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
 				048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */,
+				3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6238,13 +6240,6 @@
 				0242CFB729F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift */,
 			);
 			path = "Edit Product";
-			sourceTree = "<group>";
-		};
-		020C7947244E90D80098CEB2 /* Vendors */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Vendors;
 			sourceTree = "<group>";
 		};
 		020C908224C84638001E2BEB /* Product */ = {
@@ -9785,6 +9780,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FA96DF32C94043200CDA78F /* Yosemite.framework */,
 				26B0FDE12BFFBAC500A0D937 /* Contacts.framework */,
 				269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,
@@ -10106,7 +10102,6 @@
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
-				020C7947244E90D80098CEB2 /* Vendors */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				F997170323DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,
@@ -14520,7 +14515,6 @@
 				26A52EEC2C69B480000B1CFB /* CrashLoggingDataProvider.swift in Sources */,
 				26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
-				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,
 				26373E2C2BFD13E0008E6735 /* OrdersDataService.swift in Sources */,
 				26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */,
 				26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */,

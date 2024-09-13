@@ -271,12 +271,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
     }
 
     private func configureTrackingNumberScanAction(on cell: TitleAndEditableValueTableViewCell) {
-        guard let icon = UIImage(named: "icon-scan") else {
-            return
-        }
-
         let actionButton = UIButton(type: .detailDisclosure)
-        actionButton.applyIconButtonStyle(icon: icon)
+        actionButton.applyIconButtonStyle(icon: .scanImage)
         actionButton.on(.touchUpInside) { [weak self, weak cell] sender in
             self?.present(ScannerContainerViewController(navigationTitle: Localization.title,
                                                          instructionText: Localization.instructionText,

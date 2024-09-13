@@ -91,6 +91,10 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let type: String
 
+    /// Selected objective ID for the campaign.
+    ///
+    public let objective: String?
+
     public init(origin: String,
                 originVersion: String,
                 paymentMethodID: String,
@@ -106,7 +110,8 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 mainImage: Image,
                 targeting: BlazeTargetOptions?,
                 targetUrn: String,
-                type: String) {
+                type: String,
+                objective: String?) {
         self.origin = origin
         self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID
@@ -123,5 +128,6 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.targeting = targeting
         self.targetUrn = targetUrn
         self.type = type
+        self.objective = objective
     }
 }

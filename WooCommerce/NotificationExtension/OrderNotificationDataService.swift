@@ -36,6 +36,13 @@ final class OrderNotificationDataService {
         notesRemote = NotificationsRemote(network: network)
     }
 
+    ///  Marks a notification as read when the given `orderID` matches `orderID` of the provided notification.
+    ///
+    @MainActor
+    func markOrderNoteAsReadIfNeeded(noteID: Int64, orderID: Int) async -> Result<Int64, MarkOrderAsReadUseCase.Error> {
+        return await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: network, noteID: noteID, orderID: orderID)
+    }
+
     @MainActor
     func loadOrderFrom(notification: PushNotification) async throws -> (Note, Order) {
         let note: Note = try await {

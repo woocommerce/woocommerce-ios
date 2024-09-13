@@ -21,6 +21,34 @@ final class BlazeCampaignListItemCustomizationsTests: XCTestCase {
         }
     }
 
+    func test_humanReadableImpressions_is_correct() {
+        // Given
+        let campaign = BlazeCampaignListItem.fake().copy(impressions: 12_000_000)
+
+        // Then
+        XCTAssertEqual(campaign.humanReadableImpressions, "12M")
+
+        // Given
+        let campaign2 = BlazeCampaignListItem.fake().copy(impressions: 350)
+
+        // Then
+        XCTAssertEqual(campaign2.humanReadableImpressions, "350")
+    }
+
+    func test_humanReadableClicks_is_correct() {
+        // Given
+        let campaign = BlazeCampaignListItem.fake().copy(clicks: 1200)
+
+        // Then
+        XCTAssertEqual(campaign.humanReadableClicks, "1.2K")
+
+        // Given
+        let campaign2 = BlazeCampaignListItem.fake().copy(clicks: 35)
+
+        // Then
+        XCTAssertEqual(campaign2.humanReadableClicks, "35")
+    }
+
     func test_budgetToDisplay_is_total_budget_for_inactive_non_evergreen_campaign() {
         // Given
         let campaign = BlazeCampaignListItem.fake().copy(uiStatus: "cancelled", totalBudget: 120, isEvergreen: false, durationDays: 6)

@@ -605,12 +605,12 @@ final class DashboardViewModelTests: XCTestCase {
     func test_local_notification_scheduler_starts_observing_user_responses_upon_init() async throws {
         // Given
         let scheduler = MockBlazeLocalNotificationScheduler()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
-                                           localNotificationScheduler: scheduler)
+        _ = DashboardViewModel(siteID: sampleSiteID,
+                               stores: stores,
+                               storageManager: storageManager,
+                               blazeEligibilityChecker: blazeEligibilityChecker,
+                               inboxEligibilityChecker: inboxEligibilityChecker,
+                               localNotificationScheduler: scheduler)
 
         // Then
         XCTAssertTrue(scheduler.observeNotificationUserResponseCalled)

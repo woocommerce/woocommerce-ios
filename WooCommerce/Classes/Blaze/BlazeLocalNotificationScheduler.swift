@@ -42,6 +42,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
         self.blazeEligibilityChecker = blazeEligibilityChecker
+
+        observeNotificationUserResponse()
     }
 
     /// Starts observing campaigns from storage and schedules local notification
@@ -55,14 +57,24 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
         observeStorageAndScheduleNotifications()
 
+private extension DefaultBlazeLocalNotificationScheduler {
+    /// Observes user responses to local notification and updates user defaults
+    ///
+    func observeNotificationUserResponse() {
         pushNotesManager.localNotificationUserResponses
             .sink { [weak self] response in
-                guard let self,
-                      response.notification.request.identifier == LocalNotification.Scenario.blazeNoCampaignReminder.identifier else {
+                guard let self else {
                     return
                 }
 
-                userDefaults.setBlazeNoCampaignReminderOpened(true)
+                switch response.notification.request.identifier {
+                case LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder.identifier:
+                    userDefaults.setBlazeAbandonedCampaignCreationReminderOpened(true)
+                case LocalNotification.Scenario.blazeNoCampaignReminder.identifier:
+                    userDefaults.setBlazeNoCampaignReminderOpened(true)
+                default:
+                    break
+                }
             }
             .store(in: &subscriptions)
     }

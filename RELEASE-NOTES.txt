@@ -11,6 +11,7 @@
 - [*] Blaze: Open blaze campaign detail page upon tapping push notification. [https://github.com/woocommerce/woocommerce-ios/pull/13843]
 - [internal] Updated dependencies for Xcode 16 Support [https://github.com/woocommerce/woocommerce-ios/pull/13911]
 
+
 20.3
 -----
 - [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.

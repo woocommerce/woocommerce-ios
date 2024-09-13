@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-02 10:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-10 09:54:12+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -4268,6 +4268,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "手動返金";
+
+/* The instruction text below the scan area in the barcode scanner for order tracking number. */
+"ManualTrackingViewController.scanView.instructionText" = "追跡バーコードまたは QR コードをスキャン";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
+"ManualTrackingViewController.scanView.titleView" = "追跡番号付きのバーコードまたは QR コードをスキャン";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "マッピング済みドメイン";
@@ -9305,12 +9311,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "新しいストアを始めますか ?";
 
-/* Cell description on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.description" = "発売準備をしながら販売時点管理を試行";
-
-/* Cell title on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.title" = "販売時点管理";
-
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram メッセージを送信";
 
@@ -9398,9 +9398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that will be displayed after adding a new Blaze payment method */
 "blazeAddPaymentWebView.paymentMethodAddedNotice" = "支払い方法が追加されました";
 
-/* Button to apply the changes on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.apply" = "適用";
-
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "キャンセル";
 
@@ -9413,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "完了";
 
-/* Title label of the Blaze campaign duration field */
-"blazeBudgetSettingView.duration" = "期間";
-
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "編集";
 
@@ -9424,9 +9418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedTotalImpressions" = "推定合計インプレッション数";
-
-/* Label to explain when no end date is specified for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenDescription" = "キャンペーンは停止するまで実行されます。";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "インプレッションを推定できませんでした。 再試行しますか ?";
@@ -9439,12 +9430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "予約";
-
-/* Switch to enable an end date for a Blaze campaign. */
-"blazeBudgetSettingView.specifyDuration" = "期間を特定";
-
-/* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.startDate" = "開始日";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "予算を設定する";
@@ -9555,6 +9540,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "予算";
 
+/* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
+"blazeCampaignCreationForm.chooseObjective" = "キャンペーンの目的を選択";
+
 /* Button to confirm ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.confirmDetails" = "詳細を確認";
 
@@ -9599,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Blaze キャンペーンの画像を追加してください";
+
+/* Title of the Campaign objective field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.objective" = "キャンペーンの目的";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "今すぐ購入";
@@ -9887,6 +9878,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "すべてのトランザクションは安全で暗号化されています";
+
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.apply" = "適用";
+
+/* Button to dismiss the Blaze schedule setting screen */
+"blazeScheduleSettingView.cancel" = "キャンセル";
+
+/* Title label of the Blaze campaign duration field */
+"blazeScheduleSettingView.duration" = "期間";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeScheduleSettingView.evergreenDescription" = "キャンペーンは停止するまで実行されます。";
+
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeScheduleSettingView.schedule" = "予約";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeScheduleSettingView.specifyDuration" = "期間を特定";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDate" = "開始日";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "すべての端末";
@@ -10608,9 +10620,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "すべてのキャンペーンを表示";
 
-/* Title of the view containing Coupons list
-   Title of the view containing Reviews list */
-"hubMenu.coupons" = "レビュー";
+/* Title of the view containing Coupons list */
+"hubMenu.couponsList" = "クーポン";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "顧客";
@@ -10620,6 +10631,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "製品のレビュー";
+
+/* Title of the view containing Reviews list */
+"hubMenu.reviewsList" = "レビュー";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -10719,6 +10733,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "数量限定の陸送便パッケージ - エアゾール、スプレー消毒剤、スプレー塗料、ヘアスプレー、プロパン、ブタン、洗浄剤など - フレグランス、マニキュア、除光液、溶剤、手指消毒剤、消毒用アルコール、エタノールベース製品など - その他数量限定の陸送物質 (化粧品、洗浄剤、塗料など)";
+
+/* Message on the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.body" = "Blaze 広告で商品を宣伝し、今すぐ売上を伸ばしましょう。";
+
+/* Title of the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.title" = "売上を伸ばす";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "はじめての販売から数百万ドルの収益まで、Woo はあなたと共にあります。 Woo がなぜマーチャントから支持され、390万にのぼるオンラインストアに利用されているかがおわかりいただけます。";
@@ -11548,9 +11568,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "商品が表示されないのはなぜですか ?";
 
-/* Button title for calculate amounts button */
-"pos.totalsView.calculateAmounts" = "金額を算出";
-
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "新しい注文";
 
@@ -11766,6 +11783,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "サイトが「非公開」として設定されているため、画像が利用できません。 これは、「近日公開」モードに切り替えることで変更できます。";
+
+/* Button to dismiss the product image picker screen */
+"productImagePickerView.cancel" = "キャンセル";
+
+/* Title for the empty state of the product image picker screen */
+"productImagePickerView.emptyStateTitle" = "写真が見つかりませんでした";
+
+/* Title of the product image picker screen */
+"productImagePickerView.title" = "写真";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";

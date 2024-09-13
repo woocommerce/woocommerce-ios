@@ -782,14 +782,6 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # build_for_testing
-  # -----------------------------------------------------------------------------------
-  # This lane builds the app for testing
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane build_for_testing
-  #####################################################################################
   desc 'Build for Testing'
   lane :build_for_testing do |device: nil, ios_version: nil| # with nil, Fastlane will find the first best compatible match
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file

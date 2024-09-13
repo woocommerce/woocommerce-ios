@@ -5,7 +5,7 @@ import WooFoundation
 /// Provides view data for `WooShippingItems`.
 ///
 final class WooShippingItemsViewModel: ObservableObject {
-    private let order: Order
+    private let orderItems: [OrderItem]
     private let currencyFormatter: CurrencyFormatter
 
     /// Label with the total number of items to ship.
@@ -17,9 +17,9 @@ final class WooShippingItemsViewModel: ObservableObject {
     /// View models for rows of items to ship.
     @Published var itemRows: [WooShippingItemRowViewModel] = []
 
-    init(order: Order,
+    init(orderItems: [OrderItem],
          currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.order = order
+        self.orderItems = orderItems
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         configureSectionHeader()
@@ -44,9 +44,7 @@ private extension WooShippingItemsViewModel {
     /// Generates a label with the total number of items to ship.
     ///
     func generateItemsCountLabel() -> String {
-        let itemsCount = order.items
-            .map { $0.quantity }
-            .reduce(0, +)
+        let itemsCount = orderItems.map(\.quantity).reduce(0, +)
         return Localization.itemsCount(itemsCount)
     }
 
@@ -55,7 +53,8 @@ private extension WooShippingItemsViewModel {
     ///
     func generateItemsDetailLabel() -> String {
         let formattedWeight = "1 kg" // TODO-13550: Get the total weight (each product/variation * item quantity) and weight unit
-        let formattedPrice = currencyFormatter.formatAmount(order.total) ?? order.total
+        let itemsTotal = orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
+        let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
 
         return "\(formattedWeight) • \(formattedPrice)"
     }
@@ -63,13 +62,13 @@ private extension WooShippingItemsViewModel {
     /// Generates an item row view model for each order item.
     ///
     func generateItemRows() -> [WooShippingItemRowViewModel] {
-        order.items.map { item in
-            return WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
-                                               quantityLabel: item.quantity.description,
-                                               name: item.name,
-                                               detailsLabel: generateItemRowDetailsLabel(for: item),
-                                               weightLabel: "",  // TODO-13550: Get the product/variation weight
-                                               priceLabel: currencyFormatter.formatAmount(item.total) ?? item.total)
+        orderItems.map { item in
+            WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
+                                        quantityLabel: item.quantity.description,
+                                        name: item.name,
+                                        detailsLabel: generateItemRowDetailsLabel(for: item),
+                                        weightLabel: "",  // TODO-13550: Get the product/variation weight
+                                        priceLabel: currencyFormatter.formatAmount(item.price.decimalValue) ?? item.price.description)
         }
     }
 

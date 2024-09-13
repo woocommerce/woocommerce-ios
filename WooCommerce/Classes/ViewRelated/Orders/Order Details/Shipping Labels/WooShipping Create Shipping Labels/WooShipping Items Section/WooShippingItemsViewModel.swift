@@ -67,10 +67,25 @@ private extension WooShippingItemsViewModel {
             return WooShippingItemRowViewModel(imageUrl: nil, // TODO-13550: Get the product/variation imageURL
                                                quantityLabel: item.quantity.description,
                                                name: item.name,
-                                               detailsLabel: "", // TODO-13550: Get the product details
+                                               detailsLabel: generateItemRowDetailsLabel(for: item),
                                                weightLabel: "",  // TODO-13550: Get the product/variation weight
                                                priceLabel: currencyFormatter.formatAmount(item.total) ?? item.total)
         }
+    }
+
+    /// Generates a details label for an item row.
+    ///
+    func generateItemRowDetailsLabel(for item: OrderItem) -> String {
+        let formattedDimensions: String? = nil // TODO-13550: Get the product/variation dimensions
+
+        let attributes: String? = {
+            guard item.attributes.isNotEmpty else {
+                return nil
+            }
+            return item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }.map(\.nameOrValue).joined(separator: ", ")
+        }()
+
+        return [formattedDimensions, attributes].compacted().joined(separator: " • ")
     }
 }
 

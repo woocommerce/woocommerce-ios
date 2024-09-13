@@ -1,4 +1,5 @@
 import SwiftUI
+import NetworkingWatchOS
 
 @main
 struct Woo_Watch_AppApp: App {

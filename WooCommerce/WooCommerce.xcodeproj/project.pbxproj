@@ -1017,7 +1017,6 @@
 		269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		269FFA482BF516BA004E6B86 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A27362222354600C2143A /* Logging.swift */; };
 		269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269FFA4A2BF544C9004E6B86 /* MyStoreViewModel.swift */; };
-		26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26A0B2D32BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D22BF9A78C002E9620 /* StoreInfoFormatter.swift */; };
 		26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A0B2D62BFBA536002E9620 /* OrdersListView.swift */; };
@@ -1228,6 +1227,7 @@
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
+		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF2247326706AA3008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF2247226706AA3008FFA87 /* ScreenObject */; };
 		3FF2248A267073AE008FFA87 /* ScreenObject in Frameworks */ = {isa = PBXBuildFile; productRef = 3FF22489267073AE008FFA87 /* ScreenObject */; };
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2440,6 +2440,9 @@
 		DA706BF92C8063B600E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
 		DA706BFB2C80663800E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
+		DA81B4332C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
+		DA81B4342C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
+		DA81B4362C8F2BB8000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
 		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
@@ -2642,8 +2645,11 @@
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
 		DEA88F522AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F512AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift */; };
 		DEA90D352C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D342C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift */; };
+		DEA90D392C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */; };
+		DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */; };
 		DEACB8852A64F74A00253F0F /* MediaPickingCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */; };
 		DEACB8872A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */; };
+		DEB2D2E82C92B00400ACD75D /* CollapsibleHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB2D2E72C92B00400ACD75D /* CollapsibleHStack.swift */; };
 		DEB387952C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */; };
 		DEB387982C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */; };
 		DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */; };
@@ -4241,6 +4247,7 @@
 		3F587037281B9C50004F7556 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F587038281B9C52004F7556 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3FA96DF32C94043200CDA78F /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314D626FC55DE0012E68E /* ScreenObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenObject+Extension.swift"; sourceTree = "<group>"; };
 		3FF314DE26FC74450012E68E /* UITestsFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UITestsFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314E026FC74450012E68E /* UITestsFoundation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITestsFoundation.h; sourceTree = "<group>"; };
@@ -5685,8 +5692,11 @@
 		DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModel.swift; sourceTree = "<group>"; };
 		DEA88F512AAAC1180037273B /* AddEditProductCategoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModelTests.swift; sourceTree = "<group>"; };
 		DEA90D342C8EE55D0021ABC3 /* UserDefaults+BlazeCampaignObjective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+BlazeCampaignObjective.swift"; sourceTree = "<group>"; };
+		DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModel.swift; sourceTree = "<group>"; };
+		DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignDetailWebViewModelTests.swift; sourceTree = "<group>"; };
 		DEACB8842A64F74A00253F0F /* MediaPickingCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinatorTests.swift; sourceTree = "<group>"; };
 		DEACB8862A65020A00253F0F /* WooAnalyticsEvent+AddProductFromImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AddProductFromImage.swift"; sourceTree = "<group>"; };
+		DEB2D2E72C92B00400ACD75D /* CollapsibleHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleHStack.swift; sourceTree = "<group>"; };
 		DEB387942C2E7A7C0025256E /* GoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DEB387972C2E803A0025256E /* DefaultGoogleAdsEligibilityCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultGoogleAdsEligibilityCheckTests.swift; sourceTree = "<group>"; };
 		DEB387992C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockGoogleAdsEligibilityChecker.swift; sourceTree = "<group>"; };
@@ -6001,6 +6011,7 @@
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
 				048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */,
+				3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6229,13 +6240,6 @@
 				0242CFB729F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift */,
 			);
 			path = "Edit Product";
-			sourceTree = "<group>";
-		};
-		020C7947244E90D80098CEB2 /* Vendors */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Vendors;
 			sourceTree = "<group>";
 		};
 		020C908224C84638001E2BEB /* Product */ = {
@@ -9009,6 +9013,7 @@
 				26C6E8E926E8FD3900C7BB0F /* LazyView.swift */,
 				26C6E8EB26E8FF4800C7BB0F /* LazyNavigationLink.swift */,
 				AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */,
+				DEB2D2E72C92B00400ACD75D /* CollapsibleHStack.swift */,
 				AEACCB6C2785FF4A000D01F0 /* NavigationRow.swift */,
 				CCF87BBD279047BC00461C43 /* InfiniteScrollList.swift */,
 				CC770C8927B1497700CE6ABC /* SearchHeader.swift */,
@@ -9775,6 +9780,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3FA96DF32C94043200CDA78F /* Yosemite.framework */,
 				26B0FDE12BFFBAC500A0D937 /* Contacts.framework */,
 				269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,
@@ -10096,7 +10102,6 @@
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
-				020C7947244E90D80098CEB2 /* Vendors */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				F997170323DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,
@@ -13339,6 +13344,7 @@
 			children = (
 				EEBA02A22ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift */,
 				EEBA02A42ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift */,
+				DEA90D382C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -13395,6 +13401,7 @@
 			isa = PBXGroup;
 			children = (
 				EEC5C8D92ADE2FD80071E852 /* BlazeCampaignDashboardViewModelTests.swift */,
+				DEA90D3A2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift */,
 			);
 			path = Blaze;
 			sourceTree = "<group>";
@@ -14450,6 +14457,7 @@
 				26CA2BC62AAA1773003B16C2 /* OrderNotificationView.swift in Sources */,
 				26CA2BC42AA92CA9003B16C2 /* AppLocalizedString.swift in Sources */,
 				2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */,
+				DA81B4342C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */,
 				26CFDEE52C038C39005ABC31 /* OrderNotificationDataService.swift in Sources */,
 				DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */,
 				26EE79602AA795EC00857293 /* WooConstants.swift in Sources */,
@@ -14507,10 +14515,10 @@
 				26A52EEC2C69B480000B1CFB /* CrashLoggingDataProvider.swift in Sources */,
 				26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
-				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,
 				26373E2C2BFD13E0008E6735 /* OrdersDataService.swift in Sources */,
 				26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */,
 				26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */,
+				DA81B4332C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */,
 				26CA471F2BFD81E900E54348 /* String+Helpers.swift in Sources */,
 				26CA47242BFE4C1C00E54348 /* OrderDetailView.swift in Sources */,
 				261C21552C08D8E20051AF19 /* WatchTracksProvider.swift in Sources */,
@@ -14610,6 +14618,7 @@
 				02E4908929AE49B9005942AE /* TopPerformersEmptyView.swift in Sources */,
 				4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */,
 				D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */,
+				DEB2D2E82C92B00400ACD75D /* CollapsibleHStack.swift in Sources */,
 				D8815ADF26383EE700EDAD62 /* CardPresentPaymentsModalViewController.swift in Sources */,
 				03EF24FC28BF996F006A033E /* InPersonPaymentsCashOnDeliveryPaymentGatewayHelpers.swift in Sources */,
 				57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */,
@@ -14806,6 +14815,7 @@
 				02B2829027C352DA004A332A /* RefreshableScrollView.swift in Sources */,
 				DE6D84A92C3D07850014FBFF /* WooAnalyticsEvent+GoogleAds.swift in Sources */,
 				683DF5FF2C6AF46500A5CDC6 /* POSHeaderTitleView.swift in Sources */,
+				DEA90D392C9156A20021ABC3 /* BlazeCampaignDetailWebViewModel.swift in Sources */,
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
 				019C5EB02C516F7B005B82D3 /* ItemListViewModelProtocol.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
@@ -16812,6 +16822,7 @@
 				CC07860526736B6500BA9AC1 /* ErrorTopBannerFactoryTests.swift in Sources */,
 				02490D1E284F3226002096EF /* ProductImagesSaverTests.swift in Sources */,
 				DE5746382B479CB80034B10D /* BlazeBudgetSettingViewModelTests.swift in Sources */,
+				DA81B4362C8F2BB8000F3466 /* MarkOrderAsReadUseCase.swift in Sources */,
 				02A9A496244D84AB00757B99 /* ProductsSortOrderBottomSheetListSelectorCommandTests.swift in Sources */,
 				B9B6DEF1283F8EB100901FB7 /* SitePluginsURLTests.swift in Sources */,
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,
@@ -16904,6 +16915,7 @@
 				EE66BB122B29D65400518DAF /* MockThemeInstaller.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,
+				DEA90D3B2C915DB50021ABC3 /* BlazeCampaignDetailWebViewModelTests.swift in Sources */,
 				0248042D2887C92A00991319 /* MockLoggedOutAppSettings.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				02A275C023FE58F6005C560F /* MockImageCache.swift in Sources */,

@@ -81,7 +81,8 @@ final class OrdersListViewModel: ObservableObject {
                                         status: orderViewModel.statusString.capitalized,
                                         email: order.billingAddress?.email ?? "",
                                         address: order.shippingAddress?.formattedPostalAddress ?? "",
-                                        items: items)
+                                        items: items,
+                                        orderID: order.orderID)
         }
     }
 
@@ -122,6 +123,7 @@ extension OrdersListView {
         let email: String
         let address: String
         let items: [OrderItem]
+        let orderID: Int64
 
         // SwiftUI ID
         var id: String {
@@ -142,7 +144,8 @@ extension OrdersListView {
                                               status: "------- ------",
                                               email: "-----",
                                               address: "-----",
-                                              items: [])
+                                              items: [],
+                                              orderID: Int64.min)
     }
 
     /// Represents an order item.

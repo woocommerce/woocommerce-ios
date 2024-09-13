@@ -21,13 +21,13 @@ struct ItemRowView: View {
                 Text(cartItem.item.name)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemNameFont)
-                    .padding(.horizontal, Constants.horizontalElementSpacing)
-                    .padding(.top, Constants.verticalPadding)
+                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
+                    .padding(.top, Constants.verticalPadding * (1 / scale))
                 Text(cartItem.item.formattedPrice)
                     .foregroundColor(Color.posPrimaryText)
                     .font(Constants.itemPriceFont)
-                    .padding(.horizontal, Constants.horizontalElementSpacing)
-                    .padding(.bottom, Constants.verticalPadding)
+                    .padding(.leading, Constants.horizontalElementSpacing * (1 / scale))
+                    .padding(.bottom, Constants.verticalPadding * (1 / scale))
             }
             .accessibilityElement(children: .combine)
             Spacer()
@@ -90,7 +90,7 @@ private extension ItemRowView {
 
 private extension ItemRowView {
     enum Constants {
-        static let productCardSize: CGFloat = 72
+        static let productCardSize: CGFloat = 76
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
         static let productCardCornerRadius: CGFloat = 8
         // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,

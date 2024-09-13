@@ -21,6 +21,17 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
         super.viewDidLoad()
         configureNavigation()
         view.backgroundColor = .listBackground
+
+        navigationItem.backAction = UIAction { [weak self] _ in
+            guard let self else { return }
+
+            Task { @MainActor in
+                let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.viewModel.siteID)
+                await scheduler.scheduleAbandonedCreationReminder()
+            }
+
+            navigationController?.popViewController(animated: true)
+        }
     }
 }
 

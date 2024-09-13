@@ -3,7 +3,8 @@ import protocol Storage.StorageManagerType
 import Combine
 
 protocol BlazeLocalNotificationScheduler {
-    func scheduleNotifications() async
+    func scheduleNoCampaignReminder() async
+    func scheduleAbandonedCreationReminder() async
 }
 
 /// Handles the scheduling of Blaze local notifications.
@@ -46,9 +47,9 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         observeNotificationUserResponse()
     }
 
-    /// Starts observing campaigns from storage and schedules local notification
+    /// Starts observing campaigns from storage and schedules no campaign local notification
     ///
-    func scheduleNotifications() async {
+    func scheduleNoCampaignReminder() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
@@ -56,6 +57,39 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         }
 
         observeStorageAndScheduleNotifications()
+    }
+
+    /// Schedules abandoned Blaze campaign creation local notification if applicable
+    ///
+    @MainActor
+    func scheduleAbandonedCreationReminder() async {
+        guard await isEligibleForBlaze() else {
+            DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule abandoned campaign creation local notification.")
+            await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
+            return
+        }
+
+        guard !userDefaults.blazeAbandonedCampaignCreationReminderOpened() else {
+            DDLogDebug("Blaze: User interacted with a previously scheduled abandoned campaign creation local notification. Don't schedule again.")
+            return
+        }
+
+        guard let notificationTime = Calendar.current.date(byAdding: .hour,
+                                                           value: Constants.AbandonedCampaignCreationReminder.hoursDurationForNotification,
+                                                           to: Date.now) else {
+            return DDLogDebug("Blaze: Failed calculating notification time for abandoned campaign creation local notification.")
+        }
+
+        let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder,
+                                             userInfo: [:])
+        await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
+        DDLogDebug("Blaze: Schedule abandoned campaign creation local notification for date \(notificationTime).")
+        await scheduler.schedule(notification: notification,
+                                 trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
+                                                                        repeats: false),
+                                 remoteFeatureFlag: nil)
+    }
+}
 
 private extension DefaultBlazeLocalNotificationScheduler {
     /// Observes user responses to local notification and updates user defaults
@@ -78,9 +112,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
             }
             .store(in: &subscriptions)
     }
-}
 
-private extension DefaultBlazeLocalNotificationScheduler {
     func isEligibleForBlaze() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
@@ -116,7 +148,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
             Task { @MainActor in
                 await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             }
-            return DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a local notification.")
+            return DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a no campaign local notification.")
         }
 
         let latestEndTime = campaigns
@@ -135,19 +167,21 @@ private extension DefaultBlazeLocalNotificationScheduler {
             return DDLogDebug("Blaze: Failed calculating latest campaign end time.")
         }
 
-        guard let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime) else {
-            return DDLogDebug("Blaze: Failed calculating notification time from latest campaign end time.")
+        guard let notificationTime = Calendar.current.date(byAdding: .day,
+                                                           value: Constants.NoCampaignReminder.daysDurationForNotification,
+                                                           to: latestEndTime) else {
+            return DDLogDebug("Blaze: Failed calculating no campaign notification time from latest campaign end time.")
         }
 
         guard notificationTime > Date.now else {
-            return DDLogDebug("Blaze: Calculated notification time already passed.")
+            return DDLogDebug("Blaze: Calculated no campaign notification time already passed.")
         }
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
                                                  userInfo: [:])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
-            DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
+            DDLogDebug("Blaze: Schedule no campaign local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
                                      trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
                                                                             repeats: false),
@@ -158,7 +192,13 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
-        static let daysDurationNoCampaignReminderNotification = 30
+        enum NoCampaignReminder {
+            static let daysDurationForNotification = 30
+        }
+
+        enum AbandonedCampaignCreationReminder {
+            static let hoursDurationForNotification = 24
+        }
     }
 }
 

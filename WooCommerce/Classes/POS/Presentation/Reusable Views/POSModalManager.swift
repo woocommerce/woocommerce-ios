@@ -2,7 +2,7 @@ import SwiftUI
 
 class POSModalManager: ObservableObject {
     @Published private(set) var isPresented: Bool = false
-    @Published var allowsInteractiveDismissal: Bool = true
+    @Published private(set) var allowsInteractiveDismissal: Bool = true
     private var contentBuilder: (() -> AnyView)?
     private var onDismiss: (() -> Void)?
 

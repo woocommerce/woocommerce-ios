@@ -18,12 +18,13 @@ struct MarkOrderAsReadUseCase {
         case unavailableNote
         case noNeedToMarkAsRead
     }
+
+#if canImport(Yosemite)
     /// Async method that marks the order note as read if it is the notification for the last order.
     /// We do it in a way that first we syncronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
     /// Returns syncronized note if marking was successful and error if some error happened
-#if canImport(Yosemite)
     static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
         let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
             let action = Yosemite.NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
@@ -65,6 +66,7 @@ struct MarkOrderAsReadUseCase {
         }
     }
 #endif
+
     /// Async method that marks the order note as read if it is the notification for the last order.
     /// We do it in a way that first we syncronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.

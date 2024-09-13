@@ -167,4 +167,19 @@ extension UserDefaults {
     func setBlazeNoCampaignReminderOpened(_ shown: Bool) {
         self[.blazeNoCampaignReminderOpened] = shown
     }
+
+    /// Returns Blaze abandoned campaign creation Notification opened bool value
+    ///
+    func blazeAbandonedCampaignCreationReminderOpened() -> Bool {
+        guard let value = self[.blazeAbandonedCampaignCreationReminderOpened] as? Bool else {
+            return false
+        }
+        return value
+    }
+
+    /// Stores the Blaze abandoned campaign creation Notification opened bool value
+    ///
+    func setBlazeAbandonedCampaignCreationReminderOpened(_ shown: Bool) {
+        self[.blazeAbandonedCampaignCreationReminderOpened] = shown
+    }
 }

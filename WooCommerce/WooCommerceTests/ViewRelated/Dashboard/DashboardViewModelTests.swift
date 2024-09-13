@@ -618,7 +618,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            scheduler.scheduleNotificationsCalled == true
+            scheduler.scheduleNoCampaignReminderCalled == true
         }
     }
 }

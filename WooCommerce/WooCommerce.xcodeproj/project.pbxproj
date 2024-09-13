@@ -6240,13 +6240,6 @@
 			path = "Edit Product";
 			sourceTree = "<group>";
 		};
-		020C7947244E90D80098CEB2 /* Vendors */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Vendors;
-			sourceTree = "<group>";
-		};
 		020C908224C84638001E2BEB /* Product */ = {
 			isa = PBXGroup;
 			children = (
@@ -10106,7 +10099,6 @@
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				B56DB3F12049C0B800D4AA8E /* Classes */,
 				B56DB3F22049C0C000D4AA8E /* Resources */,
-				020C7947244E90D80098CEB2 /* Vendors */,
 				B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */,
 				F997170323DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49CB23FFFFF4003166BA /* WooCommerceUITests */,

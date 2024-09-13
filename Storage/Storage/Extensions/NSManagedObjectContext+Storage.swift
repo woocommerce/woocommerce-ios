@@ -51,7 +51,6 @@ extension NSManagedObjectContext: StorageType {
             result = try count(for: request)
         } catch {
             DDLogError("Error counting objects [\(T.entityName)]: \(error)")
-            assertionFailure()
         }
 
         return result
@@ -61,7 +60,8 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func deleteObject<T: Object>(_ object: T) {
         guard let object = object as? NSManagedObject else {
-            logErrorAndExit("Invalid Object Kind")
+            DDLogError("Invalid Object Kind")
+            return
         }
 
         delete(object)
@@ -115,13 +115,14 @@ extension NSManagedObjectContext: StorageType {
     ///
     public func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T? {
         guard let objectID = objectID as? NSManagedObjectID else {
-            logErrorAndExit("Invalid ObjectID Kind")
+            DDLogError("Invalid ObjectID Kind: \(objectID), for object type: \(T.self). This error is related to NSManagedObject and CoreData.")
+            return nil
         }
 
         do {
             return try existingObject(with: objectID) as? T
         } catch {
-            DDLogError("Error loading Object [\(T.entityName)]")
+            DDLogError("Error loading Object [\(T.entityName)] in context: \(self). This error is related to NSManagedObject and CoreData.")
         }
 
         return nil
@@ -138,7 +139,7 @@ extension NSManagedObjectContext: StorageType {
             try save()
         } catch {
             let nserror = error as NSError
-            logErrorAndExit("Unresolved error \(nserror), \(nserror.userInfo)")
+            DDLogError("Unresolved error \(nserror), \(nserror.userInfo) in context: \(self). This error is related to NSManagedObject and CoreData.")
         }
     }
 
@@ -163,8 +164,7 @@ extension NSManagedObjectContext: StorageType {
         do {
             objects = try fetch(request) as? [T]
         } catch {
-            DDLogError("Error loading Objects [\(T.entityName)")
-            assertionFailure()
+            DDLogError("Error loading Objects [\(T.entityName)] in context: \(self). This error is related to NSManagedObject and CoreData.")
         }
 
         return objects ?? []

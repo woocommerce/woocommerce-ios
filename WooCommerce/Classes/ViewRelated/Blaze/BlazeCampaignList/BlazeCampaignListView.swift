@@ -28,8 +28,8 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         self.viewModel = viewModel
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
-        rootView.onCreateCampaign = { [weak self] in
-            self?.startCampaignCreation()
+        rootView.onCreateCampaign = { [weak self] productID in
+            self?.startCampaignCreation(productID: productID)
         }
     }
 
@@ -41,13 +41,14 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
 
 /// Private helper
 private extension BlazeCampaignListHostingController {
-    func startCampaignCreation() {
+    func startCampaignCreation(productID: Int64?) {
         guard let navigationController else {
             return
         }
         let coordinator = BlazeCampaignCreationCoordinator(
             siteID: viewModel.siteID,
             siteURL: viewModel.siteURL,
+            productID: productID,
             source: .campaignList,
             shouldShowIntro: viewModel.shouldShowIntroView,
             navigationController: navigationController,
@@ -87,7 +88,7 @@ struct BlazeCampaignListHostingControllerRepresentable: UIViewControllerRepresen
 struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
 
-    var onCreateCampaign: () -> Void = {}
+    var onCreateCampaign: (Int64?) -> Void = { _ in }
 
 
     init(viewModel: BlazeCampaignListViewModel) {
@@ -126,7 +127,7 @@ struct BlazeCampaignListView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.create) {
-                    onCreateCampaign()
+                    onCreateCampaign(nil)
                     viewModel.didSelectCreateCampaign(source: .campaignList)
                 }
             }
@@ -140,7 +141,7 @@ struct BlazeCampaignListView: View {
         }
         .onChange(of: viewModel.shouldShowIntroView) { shouldShow in
             if shouldShow {
-                onCreateCampaign()
+                onCreateCampaign(nil)
                 viewModel.shouldShowIntroView = false
             }
         }
@@ -151,8 +152,14 @@ private extension BlazeCampaignListView {
 
     func detailView(url: URL) -> some View {
         NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
+            AuthenticatedWebView(
+                isPresented: .constant(true),
+                viewModel: BlazeCampaignDetailWebViewModel(initialURL: url, siteURL: viewModel.siteURL, onDismiss: {
+                    viewModel.selectedCampaignURL = nil
+                }, onCreateCampaign: { productID in
+                    viewModel.selectedCampaignURL = nil
+                    onCreateCampaign(productID)
+                }))
             .navigationTitle(Localization.detailTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -11,4 +11,8 @@ final class MockBlazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     func scheduleAbandonedCreationReminder() async {
         scheduleAbandonedCreationReminderCalled = true
     }
+
+    func cancelAbandonedCreationReminder() async {
+
+    }
 }

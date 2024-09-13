@@ -5,6 +5,7 @@ import Combine
 protocol BlazeLocalNotificationScheduler {
     func scheduleNoCampaignReminder() async
     func scheduleAbandonedCreationReminder() async
+    func cancelAbandonedCreationReminder() async
 }
 
 /// Handles the scheduling of Blaze local notifications.
@@ -88,6 +89,13 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
                                  trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
                                                                         repeats: false),
                                  remoteFeatureFlag: nil)
+    }
+
+    /// Cancels abandoned Blaze campaign creation local notification
+    ///
+    @MainActor
+    func cancelAbandonedCreationReminder() async {
+        await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
     }
 }
 

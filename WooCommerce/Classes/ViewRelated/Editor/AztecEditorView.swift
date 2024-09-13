@@ -2,19 +2,25 @@ import SwiftUI
 /// A SwiftUI wrapper for the Aztec rich text editor.
 /// Because `AztecViewController` has its own navigation bar that does not appear when shown with `UIViewControllerRepresentable`,
 /// this view wraps Aztec in a `UINavigationController` to make the bar appear. This is especially needed to ensure that
-/// Aztec's "Done" button is shown.
+/// Aztec's "Done" button is available, as otherwise it won't be possible to add a callback to it.
 ///
 /// - Parameter initialValue: The initial value of the editor.
-/// - Parameter onCancel: Optional closure to add to call when the user cancels the editor. Adds a "Cancel" button to the
-///                       navigation bar.
+/// - Parameter onDone: Closure to call when the user saves the content. Receives the updated content and additional info.
+/// - Parameter onCancel: If showing this View in a modal, supply this closure to add a "Cancel" button and have it be called
+///                       when the button is tapped.
 ///
 struct AztecEditorView: UIViewControllerRepresentable {
     let initialValue: String
+    let onDone: Editor.OnContentSave
     let onCancel: (() -> Void)?
 
     func makeUIViewController(context: Context) -> UINavigationController {
         let controller = EditorFactory().customFieldRichTextEditor(initialValue: initialValue)
         let navigationController = UINavigationController(rootViewController: controller)
+
+        if let aztecController = controller as? AztecEditorViewController {
+              aztecController.onContentSave = onDone
+          }
 
         if onCancel != nil {
             let cancelButton = UIBarButtonItem(title: Localization.cancel,

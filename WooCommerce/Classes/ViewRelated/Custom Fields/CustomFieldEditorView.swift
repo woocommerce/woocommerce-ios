@@ -144,9 +144,16 @@ private struct RichTextEditor: View {
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        AztecEditorView(initialValue: html) {
-            presentationMode.wrappedValue.dismiss()
-        }
+        AztecEditorView(
+            initialValue: html,
+            onDone: { content, _ in
+                html = content
+                presentationMode.wrappedValue.dismiss()
+            },
+            onCancel: {
+                presentationMode.wrappedValue.dismiss()
+            }
+        )
     }
 }
 

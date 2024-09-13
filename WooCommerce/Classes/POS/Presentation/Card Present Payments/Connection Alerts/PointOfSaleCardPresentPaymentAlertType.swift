@@ -26,7 +26,7 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
     case connectingFailedUpdatePostalCode(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
     case connectionSuccess(viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel)
 
-    var isNonDismissable: Bool {
+    var isDismissDisabled: Bool {
         if case .connectionSuccess = self {
             return false
         } else {

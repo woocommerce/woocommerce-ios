@@ -22,6 +22,17 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
         configureNavigation()
         view.backgroundColor = .listBackground
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if isBeingDismissedInAnyWay {
+            Task { @MainActor in
+                let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.viewModel.siteID)
+                await scheduler.scheduleAbandonedCreationReminder()
+            }
+        }
+    }
 }
 
 private extension BlazeCampaignCreationFormHostingController {

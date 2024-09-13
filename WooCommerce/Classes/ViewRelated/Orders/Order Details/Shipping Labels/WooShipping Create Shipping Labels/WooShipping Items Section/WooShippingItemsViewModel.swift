@@ -60,14 +60,8 @@ private extension WooShippingItemsViewModel {
     /// This includes the total weight and total price of all items.
     ///
     func generateItemsDetailLabel() -> String {
-        let totalWeight = dataSource.orderItems
-                    .map { item -> Double in
-                        let itemWeight = calculateWeight(for: item)
-                        let itemQuantity = Double(truncating: item.quantity as NSDecimalNumber)
-                        return itemWeight * itemQuantity
-                    }
-                    .reduce(0, +)
-                let formattedWeight = weightFormatter.formatWeight(weight: totalWeight)
+        let totalWeight = dataSource.orderItems.map { calculateWeight(for: $0) }.reduce(0, +)
+        let formattedWeight = weightFormatter.formatWeight(weight: totalWeight)
 
         let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description

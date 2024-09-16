@@ -92,6 +92,7 @@ private extension OrderStatusFilterViewController {
                 break
             }
         }
+        rows.append(.trash)
     }
 
     func selectOrDelesectRow(_ row: Row) {
@@ -160,6 +161,7 @@ private extension OrderStatusFilterViewController {
         case cancelled
         case refunded
         case failed
+        case trash
         case custom(OrderStatus)
 
         var status: OrderStatusEnum? {
@@ -180,6 +182,8 @@ private extension OrderStatusFilterViewController {
                 return .completed
             case .refunded:
                 return .refunded
+            case .trash:
+                return .trash
             case .custom(let value):
                 return value.status
             }

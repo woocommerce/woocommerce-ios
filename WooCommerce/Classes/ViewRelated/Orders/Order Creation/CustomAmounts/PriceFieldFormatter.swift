@@ -60,6 +60,7 @@ class PriceFieldFormatter {
         let formatter = NumberFormatter()
         formatter.decimalSeparator = storeCurrencySettings.decimalSeparator
         formatter.maximumFractionDigits = storeCurrencySettings.fractionDigits
+        formatter.minimumFractionDigits = storeCurrencySettings.fractionDigits
         formatter.usesGroupingSeparator = false
         formatter.numberStyle = .decimal
         return formatter

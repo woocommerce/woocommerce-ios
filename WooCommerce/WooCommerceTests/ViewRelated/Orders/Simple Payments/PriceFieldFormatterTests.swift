@@ -181,7 +181,7 @@ final class PriceFieldFormatterTests: XCTestCase {
         _ = priceFieldFormatter.formatAmount(1000.4)
 
         // Then
-        XCTAssertEqual(priceFieldFormatter.formattedAmount, "$1000.4")
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "$1000.40")
     }
 
     func test_formatAmount_works_with_negative_numbers() {
@@ -189,9 +189,9 @@ final class PriceFieldFormatterTests: XCTestCase {
         let priceFieldFormatter = PriceFieldFormatter(locale: usLocale, storeCurrencySettings: usStoreSettings, allowNegativeNumber: true)
 
         // When
-        _ = priceFieldFormatter.formatAmount(-12)
+        _ = priceFieldFormatter.formatAmount(-12.00)
 
         // Then
-        XCTAssertEqual(priceFieldFormatter.formattedAmount, "-$12")
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "-$12.00")
     }
 }

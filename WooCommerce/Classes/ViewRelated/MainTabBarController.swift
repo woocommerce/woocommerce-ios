@@ -489,6 +489,21 @@ extension MainTabBarController {
         })
     }
 
+    static func navigateToBlazeCampaignCreation(for siteID: Int64) {
+        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+            // It failed to show the campaign's store.
+            guard storeIsShown else {
+                return
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                switchToHubMenuTab() { hubMenuViewController in
+                    hubMenuViewController?.showBlazeCampaignCreation()
+                }
+            }
+        })
+    }
+
     static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
         switchToOrdersTab {
             let tabBar = AppDelegate.shared.tabBarController

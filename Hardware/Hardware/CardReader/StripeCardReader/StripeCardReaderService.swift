@@ -1056,9 +1056,10 @@ private extension StripeCardReaderService {
             if let underlyingError = error as? UnderlyingError {
                 return underlyingError
             }
-        case is CardReaderConfigError, is CardReaderServiceError:
+        case is CardReaderServiceError:
             DDLogError("💳 Card Reader Service Error: \(error)")
-            break
+        case is CardReaderConfigError:
+            DDLogError("💳 Card Reader Config Error: \(error)")
         default:
             let nsError = error as NSError
             let errorCode = ErrorCode(_nsError: error as NSError)

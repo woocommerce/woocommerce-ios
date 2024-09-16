@@ -107,7 +107,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
 
 
     @MainActor
-    func test_order_statuses_are_loaded_from_storage_when_available_with_additional_any_and_trash_statuses() async {
+    func test_order_statuses_are_loaded_from_storage_when_available() async {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -125,7 +125,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
             .sorted()
 
         // Then
-        XCTAssertEqual(viewModel.allStatuses.map { $0.id }, (["any"] + statusSlugs + ["trash"]))
+        XCTAssertEqual(viewModel.allStatuses.map { $0.id }, (["any"] + statusSlugs))
     }
 
     @MainActor

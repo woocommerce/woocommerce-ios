@@ -20,6 +20,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private var switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -64,6 +65,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
                 default:
                     break
                 }
+
+                navigateToCampaignCreation(from: response)
             }
             .store(in: &subscriptions)
     }
@@ -120,6 +123,25 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
+    func navigateToCampaignCreation(from response: UNNotificationResponse) {
+        guard let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
+            DDLogDebug("Blaze: no site ID found in location notification user info to navigate to campaign creation")
+            return
+        }
+
+        /// Switching store is needed for Blaze eligibility check.
+        let switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, await isEligibleForBlaze() else {
+                    return
+                }
+                MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
+            }
+        }
+        self.switchStoreUseCase = switchStoreUseCase
+    }
+
     func isEligibleForBlaze() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false

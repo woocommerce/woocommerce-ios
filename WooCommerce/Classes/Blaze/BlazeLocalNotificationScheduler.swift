@@ -130,21 +130,21 @@ private extension DefaultBlazeLocalNotificationScheduler {
     /// Performs initial fetch from storage and updates results.
     func observeStorageAndScheduleNotifications() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
 
         do {
             try blazeCampaignResultsController.performFetch()
-            scheduleLocalNotificationIfNeeded()
+            scheduleNoCampaignReminderIfNeeded()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
-    func scheduleLocalNotificationIfNeeded() {
+    func scheduleNoCampaignReminderIfNeeded() {
         guard !userDefaults.blazeNoCampaignReminderOpened() else {
             DDLogDebug("Blaze: User interacted with a previously scheduled no campaign local notification. Don't schedule again.")
             return

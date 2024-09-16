@@ -495,7 +495,7 @@ extension MainTabBarController {
             guard storeIsShown else {
                 return
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
                 switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaignCreation()

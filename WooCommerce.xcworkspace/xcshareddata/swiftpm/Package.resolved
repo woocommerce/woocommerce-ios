@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
           "branch": null,
-          "revision": "14b10de6d21b0d2e9ee41fc63b1cffc840d73003",
-          "version": "1.1.3"
+          "revision": "31045d654bcc1f2b56c85dd658f160fad5b50a29",
+          "version": "1.1.4"
         }
       },
       {
@@ -107,6 +107,24 @@
           "branch": null,
           "revision": "77c7f492f5c1c9ca159f73d18f56bbd1186390b0",
           "version": "0.3.0"
+        }
+      },
+      {
+        "package": "ViewControllerPresentationSpy",
+        "repositoryURL": "https://github.com/jonreid/ViewControllerPresentationSpy",
+        "state": {
+          "branch": null,
+          "revision": "1d7422b88f03065e3f25eeef6cae085cecd94911",
+          "version": "7.0.0"
+        }
+      },
+      {
+        "package": "ViewInspector",
+        "repositoryURL": "https://github.com/nalexn/ViewInspector",
+        "state": {
+          "branch": null,
+          "revision": "7b1732802ffe30e6a67754bda6c7819e5cb0eb70",
+          "version": "0.9.11"
         }
       },
       {

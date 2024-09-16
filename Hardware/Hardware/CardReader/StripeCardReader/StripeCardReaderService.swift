@@ -1053,6 +1053,8 @@ private extension StripeCardReaderService {
     static func logAndDecodeError(_ error: Error) -> UnderlyingError {
         switch error {
         case is UnderlyingError:
+            // It's possible for errors to pass through this function more than once.
+            // In that scenario, we don't want to log them a second time, so we can just return.
             if let underlyingError = error as? UnderlyingError {
                 return underlyingError
             }

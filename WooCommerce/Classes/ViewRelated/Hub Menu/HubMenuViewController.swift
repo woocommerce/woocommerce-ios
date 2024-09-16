@@ -58,6 +58,10 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.navigateToDestination(.blazeCampaignDetails(campaignID: campaignID))
     }
 
+    func showBlazeCampaignCreation() {
+        viewModel.navigateToDestination(.blazeCampaignCreation)
+    }
+
     /// Pushes the Settings & Privacy screen onto the navigation stack.
     ///
     func showPrivacySettings() {

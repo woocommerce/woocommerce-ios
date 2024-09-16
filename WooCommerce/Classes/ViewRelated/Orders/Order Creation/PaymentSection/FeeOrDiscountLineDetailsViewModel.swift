@@ -230,16 +230,16 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyPosition = storeCurrencySettings.currencyPosition
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
-        self.amountPlaceholder = priceFieldFormatter.formatAmount("0")
+        self.amountPlaceholder = priceFieldFormatter.formatAmount(0)
         self.analytics = analytics
 
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
         self.initialAmount = initialTotal
 
-        if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
-            self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
-            self.percentage = priceFieldFormatter.formatAmount("\(initialAmount / baseAmountForPercentage * 100)")
+        if initialAmount != 0 {
+            self.amount = priceFieldFormatter.formatAmount(initialAmount)
+            self.percentage = priceFieldFormatter.formatAmount(initialAmount / baseAmountForPercentage * 100)
         }
 
         self.didSelectSave = didSelectSave
@@ -293,6 +293,6 @@ extension FeeOrDiscountLineDetailsViewModel {
     }
 
     func updateAmount(_ amountInput: String) {
-        self.amount = priceFieldFormatter.formatAmount(amountInput)
+        self.amount = priceFieldFormatter.formatUserInput(amountInput)
     }
 }

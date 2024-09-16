@@ -235,9 +235,8 @@ extension StripeCardReaderService: CardReaderService {
                         return promise(.success(()))
                     }
 
-                    self?.internalError(error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     discoveryLock.unlock()
-                    let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.discovery(underlyingError: underlyingError)))
                 }
             }
@@ -245,7 +244,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func disconnect() -> Future<Void, Error> {
-        return Future() { promise in
+        return Future() { [weak self] promise in
             // Throw an error if the SDK has not been initialized.
             // This prevent a crash when logging out or switching stores before
             // the SDK has been initialized.
@@ -271,12 +270,12 @@ extension StripeCardReaderService: CardReaderService {
             Terminal.shared.disconnectReader { error in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     if let error = error {
-                        let underlyingError = UnderlyingError(with: error)
+                        let underlyingError = Self.logAndDecodeError(error)
                         promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
                     }
 
                     if error == nil {
-                        self.connectedReadersSubject.send([])
+                        self?.connectedReadersSubject.send([])
                         promise(.success(()))
                     }
                 }
@@ -407,7 +406,7 @@ extension StripeCardReaderService: CardReaderService {
             let cancelPaymentIntent = { [weak self] in
                 Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
                     if let error = error {
-                        let underlyingError = UnderlyingError(with: error)
+                        let underlyingError = Self.logAndDecodeError(error)
                         promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
                     }
 
@@ -473,7 +472,7 @@ extension StripeCardReaderService: CardReaderService {
                         let config = try buildConfig.build()
                         return promise(.success(config))
                     } catch {
-                        let underlyingError = UnderlyingError(with: error)
+                        let underlyingError = Self.logAndDecodeError(error)
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
@@ -505,7 +504,7 @@ extension StripeCardReaderService: CardReaderService {
                         let config = try localMobileConfig.build()
                         return promise(.success(config))
                     } catch {
-                        let underlyingError = UnderlyingError(with: error)
+                        let underlyingError = Self.logAndDecodeError(error)
                         return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                     }
                 case .failure(let error):
@@ -537,7 +536,7 @@ extension StripeCardReaderService: CardReaderService {
                 self.discoveredStripeReadersCache.clear()
 
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
                     let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
@@ -577,7 +576,7 @@ extension StripeCardReaderService: CardReaderService {
                 self.discoveredStripeReadersCache.clear()
 
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
                     let serviceError: CardReaderServiceError = underlyingError.isSoftwareUpdateError ?
@@ -641,7 +640,7 @@ private extension StripeCardReaderService {
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
 
@@ -661,7 +660,7 @@ private extension StripeCardReaderService {
             /// to this cancellable if we want to cancel
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 if let error = error {
-                    var underlyingError = UnderlyingError(with: error)
+                    var underlyingError = Self.logAndDecodeError(error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
                     /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)collectPaymentMethod:delegate:completion:
@@ -695,7 +694,7 @@ private extension StripeCardReaderService {
             Terminal.shared.confirmPaymentIntent(intent) { (intent, error) in
                 guard let self = self else { return }
                 if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
+                    let underlyingError = Self.logAndDecodeError(error)
 
                     guard let paymentIntent = error.paymentIntent else {
                         return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
@@ -766,8 +765,9 @@ extension StripeCardReaderService {
             self?.refundCancellable = Terminal.shared.collectRefundPaymentMethod(parameters) { [weak self] collectError in
                 if let error = collectError {
                     self?.refundCancellable = nil
+                    let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.refundPayment(
-                        underlyingError: UnderlyingError(with: error),
+                        underlyingError: underlyingError,
                         shouldRetry: true
                     )))
                 } else {
@@ -834,7 +834,8 @@ extension StripeCardReaderService {
 
             refundCancellable.cancel({ error in
                 if let error = error {
-                    promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: UnderlyingError(with: error))))
+                    let underlyingError = Self.logAndDecodeError(error)
+                    promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: underlyingError)))
                 }
                 promise(.success(()))
             })
@@ -874,8 +875,9 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         if let error = error {
+            let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(
-                error: CardReaderServiceError.softwareUpdate(underlyingError: UnderlyingError(with: error),
+                error: CardReaderServiceError.softwareUpdate(underlyingError: underlyingError,
                                                              batteryLevel: reader.batteryLevel?.doubleValue))
             )
             if let requiredDate = update?.requiredAt,
@@ -966,8 +968,9 @@ extension StripeCardReaderService: LocalMobileReaderDelegate {
 
     public func localMobileReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         if let error = error {
+            let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(
-                error: CardReaderServiceError.softwareUpdate(underlyingError: UnderlyingError(with: error),
+                error: CardReaderServiceError.softwareUpdate(underlyingError: underlyingError,
                                                              batteryLevel: reader.batteryLevel?.doubleValue))
             )
             if let requiredDate = update?.requiredAt,
@@ -1011,7 +1014,7 @@ private extension StripeCardReaderService {
 
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
-            let underlyingError = UnderlyingError(with: error)
+            let underlyingError = Self.logAndDecodeError(error)
             discoveredReadersSubject.send(completion:
                     .failure(CardReaderServiceError.discovery(underlyingError: underlyingError))
             )
@@ -1047,8 +1050,21 @@ private extension StripeCardReaderService {
 
 
 private extension StripeCardReaderService {
-    func internalError(_ error: Error) {
-        // Empty for now. Will be implemented later
+    static func logAndDecodeError(_ error: Error) -> UnderlyingError {
+        switch error {
+        case is UnderlyingError:
+            if let underlyingError = error as? UnderlyingError {
+                return underlyingError
+            }
+        case is CardReaderConfigError, is CardReaderServiceError:
+            DDLogError("💳 Card Reader Service Error: \(error)")
+            break
+        default:
+            let nsError = error as NSError
+            let errorCode = ErrorCode(_nsError: error as NSError)
+            DDLogError("💳 Stripe Error Code: \(errorCode.code)")
+        }
+        return UnderlyingError(with: error)
     }
 }
 

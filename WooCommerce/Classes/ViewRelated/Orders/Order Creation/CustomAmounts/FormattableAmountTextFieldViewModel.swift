@@ -65,9 +65,9 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         amount = ""
     }
 
-    func presetAmount(_ newAmount: String) {
+    func presetAmount(_ newAmount: Decimal) {
         resetAmountWithNewValue = false
-        updateAmount(newAmount)
+        amount = priceFieldFormatter.formatAmount(newAmount)
         resetAmountWithNewValue = true
     }
 

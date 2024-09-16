@@ -43,7 +43,8 @@ struct FixedAmountAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInput
     }
 
     func preset(with fee: OrderFeeLine) {
-        viewModel?.formattableAmountTextFieldViewModel?.presetAmount(fee.total)
+        let feeDecimal = viewModel?.currencyFormatter.convertToDecimal(fee.total)?.decimalValue ?? 0
+        viewModel?.formattableAmountTextFieldViewModel?.presetAmount(feeDecimal)
     }
 }
 

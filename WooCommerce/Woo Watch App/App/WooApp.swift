@@ -29,9 +29,7 @@ struct Woo_Watch_AppApp: App {
                         }
                     }
                     .sheet(item: $appBindings.orderNotification, content: { orderNotification in
-                        OrderDetailLoader(dependencies: dependencies,
-                                          pushNotification: orderNotification,
-                                          network: AlamofireNetwork(credentials: dependencies.credentials))
+                        OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
                     })
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)

@@ -7,13 +7,10 @@ struct OrderDetailLoader: View {
 
     @StateObject var viewModel: OrderDetailLoaderViewModel
     private let pushNotification: PushNotification
-    private let network: Network
 
-    init(dependencies: WatchDependencies, pushNotification: PushNotification,
-         network: Network) {
+    init(dependencies: WatchDependencies, pushNotification: PushNotification) {
         _viewModel = StateObject(wrappedValue: OrderDetailLoaderViewModel(dependencies: dependencies, pushNotification: pushNotification))
         self.pushNotification = pushNotification
-        self.network = network
     }
 
     var body: some View {
@@ -27,8 +24,7 @@ struct OrderDetailLoader: View {
             case .loaded(let order):
                 OrderDetailView(order: order)
                     .task {
-                        _ = await viewModel.markOrderNoteAsReadIfNeeded(noteID: pushNotification.noteID,
-                                                                        orderID: Int(order.orderID))
+                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: pushNotification.noteID, orderID: Int(order.orderID))
                     }
             case .error:
                 Text(AppLocalizedString(
@@ -71,8 +67,10 @@ final class OrderDetailLoaderViewModel: ObservableObject {
         self.dataService = OrderNotificationDataService(credentials: dependencies.credentials)
     }
 
-    func markOrderNoteAsReadIfNeeded(noteID: Int64, orderID: Int) async -> Result<Int64, MarkOrderAsReadUseCase.Error> {
-        return await dataService.markOrderNoteAsReadIfNeeded(noteID: noteID, orderID: orderID)
+    ///  Marks a notification as read when the given `orderID` matches `orderID` of the provided notification.
+    ///
+    func markOrderNoteAsReadIfNeeded(noteID: Int64, orderID: Int) async {
+        _ = await dataService.markOrderNoteAsReadIfNeeded(noteID: noteID, orderID: orderID)
     }
 
     /// Fetch order based on the provided push notification. Updates the view state as needed.

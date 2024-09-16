@@ -10,7 +10,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     @Published var orderState: TotalsViewModel.OrderState = .loaded
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
-    @Published var showsCardReaderSheet: Bool = false
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
@@ -21,7 +20,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
-    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
     var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }

@@ -19,6 +19,7 @@ struct SimpleProductsOnlyInformation: View {
                 Group {
                     Text(Localization.simpleProductsOnlyIssueMessage)
                     Text(Localization.simpleProductsOnlyFutureMessage)
+                        .padding(.bottom, Constants.textToModalBottomPadding)
                 }
                 .font(.posBodyRegular)
 
@@ -63,6 +64,7 @@ private extension SimpleProductsOnlyInformation {
         static let hintBackgroundCornerRadius: CGFloat = 8
         static let contentBlockSpacing: CGFloat = 40
         static let textSpacing: CGFloat = 16
+        static let textToModalBottomPadding: CGFloat = 8
     }
 
     enum Localization {

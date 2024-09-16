@@ -1,4 +1,2 @@
-En esta versión, los anuncios de Blaze reciben apoyo de la campaña Evergreen. Hemos corregido algunos errores presentes en la edición de productos, especialmente en lo que respecta a los precios.
-
-Hemos corregido un problema que aparecía al utilizar el menú con VoiceOver y tecnología asistencial, así como algunos errores que hacían que los títulos desaparecieran y que los botones dejaran de responder.
-
+En esta versión, hemos habilitado el escaneo de números de seguimiento de pedidos y mejorado la gestión de contraseñas de productos. También hemos añadido mejoras para el escáner de productos, los pagos en efectivo y los descuentos.
+La creación de campañas de Blaze Ads se ha actualizado con una mejor experiencia para la selección de imágenes y los ajustes del presupuesto.

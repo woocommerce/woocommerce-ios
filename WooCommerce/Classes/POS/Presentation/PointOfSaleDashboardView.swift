@@ -91,6 +91,7 @@ struct PointOfSaleDashboardView: View {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
+                        .ignoresSafeArea(edges: .bottom)
                 }
 
                 if viewModel.orderStage == .finalizing {

@@ -50,7 +50,6 @@ protocol ProductFormDataModel {
     var manageStock: Bool { get }
     var stockStatus: ProductStockStatus { get }
     var stockQuantity: Decimal? { get }
-    var hasIntegerStockQuantity: Bool { get }
     var backordersKey: String { get }
     var soldIndividually: Bool? { get }
     // Whether stock status is available for the product.
@@ -72,6 +71,9 @@ protocol ProductFormDataModel {
     var bundledItems: [ProductBundleItem] { get }
     var bundleStockStatus: ProductStockStatus? { get }
     var bundleStockQuantity: Int64? { get }
+
+    // Password
+    var password: String? { get }
 
     // Composite Products
     var compositeComponents: [ProductCompositeComponent] { get }

@@ -3,7 +3,7 @@ import Codegen
 
 /// Order's attribution info helps to know the source of the order
 ///
-public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderAttributionInfo: Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let sourceType: String?
     public let campaign: String?
     public let source: String?
@@ -25,7 +25,7 @@ public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopia
         self.sessionPageViews = sessionPageViews
     }
 
-    public init(metaData: [OrderMetaData]) {
+    public init(metaData: [MetaData]) {
         var sourceType: String?
         var campaign: String?
         var source: String?

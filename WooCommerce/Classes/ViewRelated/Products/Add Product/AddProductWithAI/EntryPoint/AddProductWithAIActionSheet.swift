@@ -68,13 +68,13 @@ struct AddProductWithAIActionSheet: View {
                         .padding(.top, Constants.productIconTopSpacing)
 
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                        Text(Localization.aiTitle)
+                        Text(Localization.CreateProductWithAI.aiTitle)
                             .bodyStyle()
-                        Text(Localization.aiDescription)
+                        Text(Localization.CreateProductWithAI.aiDescription)
                             .subheadlineStyle()
                         AdaptiveStack(horizontalAlignment: .leading) {
-                            Text(Localization.legalText)
-                            Text(.init(Localization.learnMore)).underline()
+                            Text(Localization.CreateProductWithAI.legalText)
+                            Text(.init(Localization.CreateProductWithAI.learnMore)).underline()
                         }
                         .environment(\.openURL, OpenURLAction { url in
                             legalURL = url
@@ -150,27 +150,29 @@ private extension AddProductWithAIActionSheet {
             value: "Select a product type",
             comment: "Subitle on the action sheet to select an option for adding new product"
         )
-        static let aiTitle = NSLocalizedString(
-            "addProductWithAIActionSheet.aiTitle",
-            value: "Create a product with AI",
-            comment: "Title of the option to add new product with AI assistance"
-        )
-        static let aiDescription = NSLocalizedString(
-            "addProductWithAIActionSheet.aiDescription",
-            value: "Quickly generate details for you",
-            comment: "Description of the option to add new product with AI assistance"
-        )
-        static let legalText = NSLocalizedString(
-            "addProductWithAIActionSheet.legalText",
-            value: "Powered by AI.",
-            comment: "Label to indicate AI-generated content on the product creation action sheet."
-        )
-        static let learnMore = NSLocalizedString(
-            "addProductWithAIActionSheet.learnMore",
-            value: "[Learn more.](https://automattic.com/ai-guidelines/)",
-            comment: "Markdown content learn more link on the product creation action sheet. " +
-            "Please translate the words while keeping the markdown format and URL."
-        )
+        enum CreateProductWithAI {
+            static let aiTitle = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.aiTitle",
+                value: "Create a product with AI",
+                comment: "Title of the option to add new product with AI assistance"
+            )
+            static let aiDescription = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.aiDescription",
+                value: "Let us generate product details for you",
+                comment: "Description of the option to add new product with AI assistance"
+            )
+            static let legalText = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.legalText",
+                value: "Powered by AI.",
+                comment: "Label to indicate AI-generated content on the product creation action sheet."
+            )
+            static let learnMore = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.learnMore",
+                value: "[Learn more.](https://automattic.com/ai-guidelines/)",
+                comment: "Markdown content learn more link on the product creation action sheet. " +
+                "Please translate the words while keeping the markdown format and URL."
+            )
+        }
         static let manualTitle = NSLocalizedString(
             "addProductWithAIActionSheet.manualTitle",
             value: "Add manually",

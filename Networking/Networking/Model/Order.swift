@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order Entity.
 ///
-public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
+public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let orderID: Int64
     public let parentID: Int64
@@ -47,7 +47,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
     public let fees: [OrderFeeLine]
     public let taxes: [OrderTaxLine]
 
-    public let customFields: [OrderMetaData]
+    public let customFields: [MetaData]
 
     /// Subscription ID if this is a subscription renewal order (Subscriptions extension only)
     ///
@@ -97,7 +97,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
                 refunds: [OrderRefundCondensed],
                 fees: [OrderFeeLine],
                 taxes: [OrderTaxLine],
-                customFields: [OrderMetaData],
+                customFields: [MetaData],
                 renewalSubscriptionID: String?,
                 appliedGiftCards: [OrderGiftCard],
                 attributionInfo: OrderAttributionInfo?) {
@@ -184,7 +184,7 @@ public struct Order: Decodable, GeneratedCopiable, GeneratedFakeable {
         // "payment_url" is only available on stores stores with version >= 6.4
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
-        let allOrderMetaData = try? container.decode([OrderMetaData].self, forKey: .metadata)
+        let allOrderMetaData = try? container.decode([MetaData].self, forKey: .metadata)
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value
 

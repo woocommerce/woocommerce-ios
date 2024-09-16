@@ -19,7 +19,8 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
                                                     endDate: endDate,
                                                     timeZone: timeZone,
                                                     totalBudget: totalBudget,
-                                                    targeting: targetOptions)
+                                                    targeting: targetOptions,
+                                                    isEvergreen: true)
 
         // When
         let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
@@ -29,6 +30,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
         XCTAssertEqual(parameters["end_date"] as? String, "2023-12-11")
         XCTAssertEqual(parameters["total_budget"] as? Double, 35.00)
         XCTAssertEqual(parameters["time_zone"] as? String, timeZone)
+        XCTAssertEqual(parameters["is_evergreen"] as? Bool, true)
 
         let targetingsParams = try XCTUnwrap(parameters["targeting"] as? [String: Any])
         XCTAssertEqual(targetingsParams["locations"] as? [Int64], [29211, 42546])

@@ -5,17 +5,13 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let productVariation: EditableProductVariationModel
     private let editable: Bool
 
-    private let isMinMaxQuantitiesEnabled: Bool
-
     private let stores: StoresManager
 
     init(productVariation: EditableProductVariationModel,
          editable: Bool,
-         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          stores: StoresManager = ServiceLocator.stores) {
         self.productVariation = productVariation
         self.editable = editable
-        self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
         self.stores = stores
     }
 
@@ -60,7 +56,7 @@ private extension ProductVariationFormActionsFactory {
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
-        let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
+        let canEditInventorySettingsRow = editable
         let subscriptionOrPriceRow: ProductFormEditAction? = {
             if shouldShowPriceSettingsRow {
                 return .priceSettings(editable: editable, hideSeparator: shouldShowNoPriceWarningRow)
@@ -68,7 +64,7 @@ private extension ProductVariationFormActionsFactory {
                 return nil
             }
         }()
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.canEditQuantityRules
+        let shouldShowQuantityRulesRow = productVariation.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,

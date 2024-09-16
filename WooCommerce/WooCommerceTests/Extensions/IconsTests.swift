@@ -494,8 +494,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.print)
     }
 
-    func test_playSquareImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.playSquareImage)
+    func test_switchingModeImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.switchingModeImage)
     }
 
     func testPlusImageIconIsNotNil() {
@@ -827,6 +827,10 @@ final class IconsTests: XCTestCase {
 
     func test_circular_time_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.circularTimeIcon)
+    }
+
+    func test_google_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.googleLogo)
     }
 
     func test_lock_icon_is_not_nil() {

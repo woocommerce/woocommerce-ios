@@ -97,7 +97,7 @@ struct PaymentMethodsView: View {
                     }.padding(.horizontal)
 
                     NavigationLink(isActive: $showingCashAlert) {
-                        CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(formattedTotal: viewModel.formattedTotal) { info in
+                        CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total, formattedTotal: viewModel.formattedTotal) { info in
                             Task { @MainActor in
                                 await viewModel.markOrderAsPaidByCash(with: info)
                                 dismiss()
@@ -243,21 +243,21 @@ extension PaymentMethodsView {
 struct PaymentMethodsView_Preview: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .light)
         .previewDisplayName("Light")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            PaymentMethodsView(viewModel: .init(formattedTotal: "$15.99", flow: .orderPayment))
+            PaymentMethodsView(viewModel: .init(total: "15.99", formattedTotal: "$15.99", flow: .orderPayment))
                 .navigationBarTitleDisplayMode(.inline)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)

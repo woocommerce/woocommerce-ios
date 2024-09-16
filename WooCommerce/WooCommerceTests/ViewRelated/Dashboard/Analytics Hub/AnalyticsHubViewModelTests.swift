@@ -27,7 +27,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
+                             SitePlugin.SupportedPlugin.WCGiftCards.first],
+                            to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -87,7 +89,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingBundlesSoldCardRedacted: Bool = false
         var loadingGiftCardsCardRedacted: Bool = false
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
+                             SitePlugin.SupportedPlugin.WCGiftCards.first],
+                            to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -300,7 +304,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                              AnalyticsCard(type: .products, enabled: false),
                              AnalyticsCard(type: .sessions, enabled: false),
                              AnalyticsCard(type: .bundles, enabled: true),
-                             AnalyticsCard(type: .giftCards, enabled: true)]
+                             AnalyticsCard(type: .giftCards, enabled: true),
+                             AnalyticsCard(type: .googleCampaigns, enabled: true)]
         assertEqual(expectedCards, storedAnalyticsCards)
     }
 
@@ -552,6 +557,21 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(vm.enabledCards.contains(.giftCards))
+    }
+
+    @MainActor
+    func test_google_campaigns_card_not_displayed_when_plugin_inactive() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
+                                                                            active: false))
+
+        // When
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.googleCampaigns))
     }
 }
 

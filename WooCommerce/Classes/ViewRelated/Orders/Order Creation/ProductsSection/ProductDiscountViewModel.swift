@@ -15,8 +15,8 @@ final class ProductDiscountViewModel: Identifiable {
     /// Product name
     let name: String
 
-    /// Product price
-    let price: String?
+    /// Total product price with quantity excluding discount
+    let totalPricePreDiscount: String?
 
     /// View model for `CollapsibleProductCardPriceSummary`
     let priceSummary: CollapsibleProductCardPriceSummaryViewModel
@@ -27,7 +27,7 @@ final class ProductDiscountViewModel: Identifiable {
     struct DiscountConfiguration {
         let addedDiscount: Decimal
         let baseAmountForDiscountPercentage: Decimal
-        let onSaveFormattedDiscount: (String?) -> Void
+        let onSave: (_ discount: Decimal?) -> Void
     }
 
     /// Whether there is already a discount on the product
@@ -45,7 +45,7 @@ final class ProductDiscountViewModel: Identifiable {
     }
 
     /// Closure to perform when the formatted discount is saved
-    let onSaveFormattedDiscount: (String?) -> Void
+    let onSave: (_ discount: Decimal?) -> Void
 
     /// Publisher to fire when the view is dismissed
     var viewDismissPublisher = PassthroughSubject<(), Never>()
@@ -55,19 +55,19 @@ final class ProductDiscountViewModel: Identifiable {
     init(id: Int64,
          imageURL: URL?,
          name: String,
-         price: String?,
+         totalPricePreDiscount: String?,
          priceSummary: CollapsibleProductCardPriceSummaryViewModel,
          discountConfiguration: DiscountConfiguration?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.id = id
         self.imageURL = imageURL
         self.name = name
-        self.price = price
+        self.totalPricePreDiscount = totalPricePreDiscount
         self.priceSummary = priceSummary
         addedDiscount = discountConfiguration?.addedDiscount ?? .zero
         hasDiscount = addedDiscount != 0
         baseAmountForDiscountPercentage = discountConfiguration?.baseAmountForDiscountPercentage ?? .zero
-        onSaveFormattedDiscount = discountConfiguration?.onSaveFormattedDiscount ?? { _ in }
+        onSave = discountConfiguration?.onSave ?? { _ in }
         self.currencyFormatter = currencyFormatter
     }
 
@@ -75,10 +75,10 @@ final class ProductDiscountViewModel: Identifiable {
     private(set) lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
         FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount != 0,
                                           baseAmountForPercentage: baseAmountForDiscountPercentage,
-                                          initialTotal: formattedDiscount ?? "0",
+                                          initialTotal: addedDiscount,
                                           lineType: .discount,
-                                          didSelectSave: { [weak self] formattedAmount in
-            self?.onSaveFormattedDiscount(formattedAmount)
+                                          didSelectSave: { [weak self] discount in
+            self?.onSave(discount)
             self?.viewDismissPublisher.send(())
         })
     }()

@@ -8,6 +8,8 @@ final class CardPresentPaymentsConnectionControllerManager {
                                                                             CardPresentPaymentsAlertPresenterAdaptor>
     let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
+    let knownReaderProvider: CardReaderSettingsKnownReaderProvider
+
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor) {
@@ -16,9 +18,11 @@ final class CardPresentPaymentsConnectionControllerManager {
             siteID: siteID,
             connectionType: .userInitiated)
         self.analyticsTracker = analyticsTracker
+        let knownReaderProvider = CardReaderSettingsKnownReaderStorage()
+        self.knownReaderProvider = knownReaderProvider
         self.externalReaderConnectionController = CardReaderConnectionController(
             forSiteID: siteID,
-            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+            knownReaderProvider: knownReaderProvider,
             alertsPresenter: alertsPresenter,
             alertsProvider: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,

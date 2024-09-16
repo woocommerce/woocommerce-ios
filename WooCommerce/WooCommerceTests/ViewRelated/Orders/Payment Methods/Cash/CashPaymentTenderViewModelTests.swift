@@ -22,10 +22,12 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
     func test_when_amount_is_not_sufficient_it_handles_invalid_input() {
         // Given
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "10.00", onOrderPaid: { _ in })
+        let viewModel = CashPaymentTenderViewModel(total: "10.00",
+                                                   formattedTotal: "$10.00",
+                                                   onOrderPaid: { _ in })
 
         // When
-        viewModel.formattableAmountViewModel.amount = "5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
 
         // Then
         XCTAssertFalse(viewModel.tenderButtonIsEnabled)
@@ -35,12 +37,15 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
     func test_when_amount_is_sufficient_it_handles_valid_input() {
         // Given
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$10.00", onOrderPaid: { _ in }, storeCurrencySettings: usStoreSettings)
+        let viewModel = CashPaymentTenderViewModel(total: "10.00",
+                                                   formattedTotal: "$10.00",
+                                                   onOrderPaid: { _ in },
+                                                   storeCurrencySettings: usStoreSettings)
 
         // When
         // Formattable input amount needs to be entered one digit at a time.
-        viewModel.formattableAmountViewModel.amount = "1"
-        viewModel.formattableAmountViewModel.amount = "15"
+        viewModel.formattableAmountViewModel.updateAmount("1")
+        viewModel.formattableAmountViewModel.updateAmount("15")
 
         // Then
         XCTAssertTrue(viewModel.tenderButtonIsEnabled)
@@ -51,15 +56,18 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
     func test_when_onMarkOrderAsCompleteButtonTapped_it_calls_callback_with_right_info() {
         // Given
         var onOrderPaidInfo: OrderPaidByCashInfo?
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$5.00", onOrderPaid: { info in
+        let viewModel = CashPaymentTenderViewModel(total: "5.00",
+                                                   formattedTotal: "$5.00",
+                                                   onOrderPaid: { info in
             onOrderPaidInfo = info
-        }, storeCurrencySettings: usStoreSettings)
+        },
+                                                   storeCurrencySettings: usStoreSettings)
 
         // When
         // Formattable input amount needs to be entered one digit at a time.
-        viewModel.formattableAmountViewModel.amount = "5"
-        viewModel.formattableAmountViewModel.amount = "5."
-        viewModel.formattableAmountViewModel.amount = "5.5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
+        viewModel.formattableAmountViewModel.updateAmount("5.")
+        viewModel.formattableAmountViewModel.updateAmount("5.5")
         viewModel.addNote = true
         viewModel.onMarkOrderAsCompleteButtonTapped()
 
@@ -73,10 +81,14 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
     func test_when_change_due_is_positive_and_note_is_added_it_tracks_event_with_expected_properties() throws {
         // Given
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$1.00", onOrderPaid: { _ in }, storeCurrencySettings: usStoreSettings, analytics: analytics)
+        let viewModel = CashPaymentTenderViewModel(total: "1.00",
+                                                   formattedTotal: "$1.00",
+                                                   onOrderPaid: { _ in },
+                                                   storeCurrencySettings: usStoreSettings,
+                                                   analytics: analytics)
 
         // When
-        viewModel.formattableAmountViewModel.amount = "5"
+        viewModel.formattableAmountViewModel.updateAmount("5")
         viewModel.addNote = true
         viewModel.onMarkOrderAsCompleteButtonTapped()
 
@@ -91,7 +103,11 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
 
     func test_when_change_due_is_not_calculated_and_note_is_not_added_it_tracks_event_with_expected_properties() throws {
         // Given
-        let viewModel = CashPaymentTenderViewModel(formattedTotal: "$1.00", onOrderPaid: { _ in }, storeCurrencySettings: usStoreSettings, analytics: analytics)
+        let viewModel = CashPaymentTenderViewModel(total: "1.00",
+                                                   formattedTotal: "$1.00",
+                                                   onOrderPaid: { _ in },
+                                                   storeCurrencySettings: usStoreSettings,
+                                                   analytics: analytics)
 
         // When
         viewModel.onMarkOrderAsCompleteButtonTapped()
@@ -103,5 +119,26 @@ final class CashPaymentTenderViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["change_due_was_calculated"] as? Bool, false)
         XCTAssertEqual(eventProperties["add_note"] as? Bool, false)
+    }
+
+    func test_when_an_amount_with_thousand_separators_is_used_the_change_is_calculated_correctly() {
+        // Given
+        // The interface for this is to use the API-provided `total`, which should not have grouping separators.
+        let viewModel = CashPaymentTenderViewModel(total: "1000.00",
+                                                   formattedTotal: "$1,000.00",
+                                                   onOrderPaid: { _ in },
+                                                   storeCurrencySettings: usStoreSettings)
+
+        // When
+        // Formattable input amount needs to be entered one digit at a time.
+        viewModel.formattableAmountViewModel.updateAmount("1")
+        viewModel.formattableAmountViewModel.updateAmount("15")
+        viewModel.formattableAmountViewModel.updateAmount("150")
+        viewModel.formattableAmountViewModel.updateAmount("1500")
+
+        // Then
+        XCTAssertTrue(viewModel.tenderButtonIsEnabled)
+        XCTAssertTrue(viewModel.hasChangeDue)
+        XCTAssertEqual(viewModel.changeDue, "$500.00")
     }
 }

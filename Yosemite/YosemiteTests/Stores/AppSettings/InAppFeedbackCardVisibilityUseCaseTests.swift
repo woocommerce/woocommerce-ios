@@ -242,12 +242,10 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
-            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false,
-            localAnnouncementDismissed: [:])
+            isEUShippingNoticeDismissed: false)
         return settings
     }
 }

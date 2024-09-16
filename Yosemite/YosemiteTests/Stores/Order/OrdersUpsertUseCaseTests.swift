@@ -234,7 +234,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
     func test_it_persists_order_custom_field_in_storage() throws {
         // Given
-        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
         let order = makeOrder().copy(siteID: 3, customFields: [customField])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
@@ -242,23 +242,23 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         useCase.upsert([order])
 
         // Then
-        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: order.orderID, metadataID: 1))
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
     func test_it_replaces_existing_order_custom_field_in_storage() throws {
         // Given
-        let originalCustomField = OrderMetaData(metadataID: 1, key: "Key", value: "Value")
+        let originalCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
         let order = makeOrder().copy(siteID: 3, customFields: [originalCustomField])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
         useCase.upsert([order])
 
         // When
-        let customField = OrderMetaData(metadataID: 1, key: "Key", value: "New Value")
+        let customField = MetaData(metadataID: 1, key: "Key", value: "New Value")
         useCase.upsert([order.copy(customFields: [customField])])
 
         // Then
-        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, metadataID: 1))
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: order.orderID, metadataID: 1))
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
@@ -374,6 +374,24 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertNil(viewStorage.loadOrderAttributionInfo(siteID: siteID, orderID: orderID))
         let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: siteID, orderID: orderID))
         XCTAssertNil(storageOrder.attributionInfo)
+    }
+
+    func test_it_removes_existing_order_items_from_storage_if_removed_in_remote() throws {
+        // Given
+        let orderID: Int64 = 11
+        let itemID: Int64 = 22
+        let item = makeOrderItem(itemID: itemID)
+        let order = makeOrder().copy(orderID: orderID, items: [item])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(items: [])])
+
+        // Then
+        XCTAssertNil(viewStorage.loadOrderItem(siteID: defaultSiteID, orderID: orderID, itemID: itemID))
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: orderID))
+        XCTAssertEqual(0, storageOrder.items?.count)
     }
 }
 

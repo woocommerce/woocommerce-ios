@@ -12,7 +12,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
 
         switch featureFlag {
         case .inbox:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
+        case .showInboxCTA:
+            return true
         case .sideBySideViewForOrderForm:
             return true
         case .updateOrderOptimistically:
@@ -40,29 +42,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackSetupWithApplicationPassword:
             return true
-        case .productBundles:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
-        case .compositeProducts:
-            return true
-        case .productDescriptionAI:
-            return true
-        case .productDescriptionAIFromStoreOnboarding:
-            return !isUITesting
-        case .readOnlyGiftCards:
-            return true
-        case .readOnlyMinMaxQuantities:
-            return true
         case .euShippingNotification:
-            return true
-        case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:
             return true
         case .hazmatShipping:
-            return true
-        case .productCreationAI:
             return true
         case .giftCardInOrderForm:
             return true
@@ -76,8 +62,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .blazei3NativeCampaignCreation:
-            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
@@ -86,9 +70,23 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
-        case .displayPointOfSaleToggle:
+        case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .dynamicDashboardM2:
+        case .productCreationAIv2M1:
+            return true
+        case .productCreationAIv2M3:
+            return true
+        case .googleAdsCampaignCreationOnWebView:
+            return true
+        case .backgroundTasks:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .viewEditCustomFieldsInProductsAndOrders:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .blazeEvergreenCampaigns:
+            return true
+        case .revampedShippingLabelCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .blazeCampaignObjective:
             return true
         case .favoriteProducts:
             return buildConfig == .localDeveloper || buildConfig == .alpha

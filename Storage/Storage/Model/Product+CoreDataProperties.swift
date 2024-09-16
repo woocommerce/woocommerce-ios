@@ -84,9 +84,10 @@ extension Product {
     @NSManaged public var bundleStockStatus: String?
     @NSManaged public var bundledItems: NSOrderedSet?
     @NSManaged public var compositeComponents: NSOrderedSet?
+    @NSManaged public var customFields: Set<MetaData>?
     @NSManaged public var subscription: ProductSubscription?
     @NSManaged public var isSampleItem: Bool
-
+    @NSManaged public var password: String?
 }
 
 // MARK: Generated accessors for attributes
@@ -363,5 +364,22 @@ extension Product {
 
     @objc(removeCompositeComponents:)
     @NSManaged public func removeFromCompositeComponents(_ values: NSOrderedSet)
+
+}
+
+// MARK: Generated accessors for customFields
+extension Product {
+
+    @objc(addCustomFieldsObject:)
+    @NSManaged public func addToCustomFields(_ value: MetaData)
+
+    @objc(removeCustomFieldsObject:)
+    @NSManaged public func removeFromCustomFields(_ value: MetaData)
+
+    @objc(addCustomFields:)
+    @NSManaged public func addToCustomFields(_ values: NSSet)
+
+    @objc(removeCustomFields:)
+    @NSManaged public func removeFromCustomFields(_ values: NSSet)
 
 }

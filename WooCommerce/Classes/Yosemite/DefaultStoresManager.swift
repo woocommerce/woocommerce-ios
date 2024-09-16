@@ -41,6 +41,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private let notificationCenter: NotificationCenter
 
+    /// Card present payment onboarding state
+    ///
+    private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -120,11 +124,13 @@ class DefaultStoresManager: StoresManager {
     ///
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
-         defaults: UserDefaults = .standard) {
+         defaults: UserDefaults = .standard,
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
+        self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
         isLoggedIn = isAuthenticated
     }
@@ -252,6 +258,8 @@ class DefaultStoresManager: StoresManager {
 
         updateAndReloadWidgetInformation(with: nil)
 
+        cardPresentPaymentOnboardingStateCache.invalidate()
+
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 
         return self
@@ -271,6 +279,8 @@ class DefaultStoresManager: StoresManager {
         defaults[.usedProductDescriptionAI] = nil
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
+        defaults[.latestBackgroundOrderSyncDate] = nil
+        DashboardTimestampStore.resetStore()
         restoreSessionSiteIfPossible()
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
@@ -290,6 +300,16 @@ class DefaultStoresManager: StoresManager {
     ///
     func updateDefaultRoles(_ roles: [User.Role]) {
         sessionManager.defaultRoles = roles
+    }
+
+    func shouldAuthenticateAdminPage(for site: Site) -> Bool {
+        /// If the site is self-hosted and user is authenticated with WPCom,
+        /// `AuthenticatedWebView` will attempt to authenticate and redirect to the admin page and fails.
+        /// This should be prevented 💀⛔️
+        guard site.isWordPressComStore || isAuthenticatedWithoutWPCom else {
+            return false
+        }
+        return true
     }
 }
 

@@ -58,7 +58,8 @@ private extension BlazeCampaignDashboardViewHostingController {
     /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
     ///
     func showCampaignList() {
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID,
+                                                                             selectedCampaignID: nil))
         parentNavigationController.show(controller, sender: self)
     }
 }
@@ -97,7 +98,7 @@ struct BlazeCampaignDashboardView: View {
                         createCampaignTapped?(product.productID)
                     }
             case .showCampaign(let campaign):
-                BlazeCampaignItemView(campaign: campaign, showBudget: false)
+                BlazeCampaignItemView(campaign: campaign)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         viewModel.didSelectCampaignDetails(campaign)
@@ -207,8 +208,14 @@ private extension BlazeCampaignDashboardView {
 
     func campaignDetailView(url: URL) -> some View {
         NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
+            AuthenticatedWebView(
+                isPresented: .constant(true),
+                viewModel: BlazeCampaignDetailWebViewModel(initialURL: url, siteURL: viewModel.siteURL, onDismiss: {
+                    viewModel.selectedCampaignURL = nil
+                }, onCreateCampaign: { productID in
+                    viewModel.selectedCampaignURL = nil
+                    createCampaignTapped?(productID)
+                }))
             .navigationTitle(Localization.detailTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

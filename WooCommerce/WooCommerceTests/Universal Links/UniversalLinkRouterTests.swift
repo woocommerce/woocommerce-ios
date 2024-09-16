@@ -160,6 +160,45 @@ final class UniversalLinkRouterTests: XCTestCase {
         // Then
         XCTAssertEqual(bouncingURL, url)
     }
+
+    func test_defaultUniversalLinkRouter_includes_expected_routes() {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+
+        // When
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+
+        // Then
+        assertEqual(4, routes.count)
+
+        XCTAssert(routes.contains { $0 is OrderDetailsRoute })
+        XCTAssert(routes.contains { $0 is MyStoreRoute })
+        XCTAssert(routes.contains { $0 is PaymentsRoute })
+        XCTAssert(routes.contains { $0 is OrdersRoute })
+    }
+
+    func test_canHandle_returns_false_for_magic_link_url() throws {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+        let sut = UniversalLinkRouter(routes: routes)
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login?token=23easdcasd&flow=login&source=default"))
+
+        // Then
+        XCTAssertFalse(sut.canHandle(url: url))
+    }
+
+
+    func test_canHandle_returns_false_for_login_link_url() throws {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+        let sut = UniversalLinkRouter(routes: routes)
+        let url = try XCTUnwrap(URL(string: "woocommerce://app-login?token=cawe212m&flow=login&source=default"))
+
+        // Then
+        XCTAssertFalse(sut.canHandle(url: url))
+    }
 }
 
 private extension UniversalLinkRouterTests {

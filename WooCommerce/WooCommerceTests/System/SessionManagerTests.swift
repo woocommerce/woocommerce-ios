@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import KeychainAccess
 @testable import Networking
+import Storage
 
 /// SessionManager Unit Tests
 ///
@@ -383,6 +384,70 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
     }
 
+    /// Verifies that `blazeNoCampaignReminderOpened` is set to `nil` upon reset
+    ///
+    func test_blazeNoCampaignReminderOpened_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.blazeNoCampaignReminderOpened] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults.blazeNoCampaignReminderOpened()))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.blazeNoCampaignReminderOpened])
+    }
+
+    /// Verifies that `blazeAbandonedCampaignCreationReminderOpened` is set to `nil` upon reset
+    ///
+    func test_blazeAbandonedCampaignCreationReminderOpened_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.blazeAbandonedCampaignCreationReminderOpened] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults.blazeAbandonedCampaignCreationReminderOpened()))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.blazeAbandonedCampaignCreationReminderOpened])
+    }
+
+    /// Verifies that `blazeSelectedCampaignObjective` is set to `nil` upon reset
+    ///
+    func test_blazeSelectedCampaignObjective_is_set_to_nil_upon_reset() throws {
+        // Given
+        let siteID: Int64 = 13
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.blazeSelectedCampaignObjective] = ["\(siteID)": "sales"]
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.blazeSelectedCampaignObjective] as? [String: String]), ["13": "sales"])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.blazeSelectedCampaignObjective])
+    }
+
     /// Verifies that image cache is cleared upon reset
     ///
     func test_image_cache_is_cleared_upon_reset() throws {
@@ -444,6 +509,33 @@ final class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(sut.defaultCredentials, Settings.wpcomCredentials)
+    }
+
+    func test_core_data_reset_clears_timestamps_stores() throws {
+
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+
+        // Preload info
+        defaults[UserDefaults.Key.latestBackgroundOrderSyncDate] = Date.now
+        for card in DashboardTimestampStore.Card.allCases {
+            for range in DashboardTimestampStore.TimeRange.allCases {
+                DashboardTimestampStore.saveTimestamp(Date.now, for: card, at: range, store: defaults)
+            }
+        }
+
+        // When
+        let sut = SessionManager(defaults: defaults, keychainServiceName: uuid)
+        NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: nil)
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.latestBackgroundOrderSyncDate])
+        for card in DashboardTimestampStore.Card.allCases {
+            for range in DashboardTimestampStore.TimeRange.allCases {
+                XCTAssertNil(DashboardTimestampStore.loadTimestamp(for: card, at: range, store: defaults))
+            }
+        }
     }
 }
 

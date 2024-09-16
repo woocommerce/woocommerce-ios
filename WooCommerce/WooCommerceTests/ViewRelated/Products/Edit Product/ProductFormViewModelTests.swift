@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 
 final class ProductFormViewModelTests: XCTestCase {
 
+    private let siteID: Int64 = 123
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var sessionManager: SessionManager!
@@ -184,9 +185,10 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_canPromoteWithBlaze_is_true_when_product_is_eligible_for_blaze() {
         // Given
+        sessionManager.defaultSite = .fake().copy(siteID: siteID)
         let product = Product.fake()
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
-        let viewModel = createViewModel(product: product, formType: .edit, blazeEligibilityChecker: blazeEligibilityChecker)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores, blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
         waitUntil {
@@ -839,7 +841,8 @@ private extension ProductFormViewModelTests {
                          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
                          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let siteID: Int64 = 123
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,

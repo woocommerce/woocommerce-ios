@@ -8,6 +8,8 @@ private extension ProductStatus {
             return .wooBlue
         case .pending:
             return .orange
+        case .privateStatus:
+            return .wooBlue
         default:
             assertionFailure("Color for \(self) is not specified")
             return .textSubtle
@@ -32,16 +34,14 @@ struct ProductsTabProductViewModel {
          isSelected: Bool = false,
          isDraggable: Bool = false,
          isSKUShown: Bool = false,
-         imageService: ImageService = ServiceLocator.imageService,
-         productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) {
+         imageService: ImageService = ServiceLocator.imageService) {
 
         imageUrl = product.images.first?.src
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
-        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown,
-                                                                                                       productBundlesEnabled: productBundlesEnabled)
+        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown)
 
         self.imageService = imageService
     }
@@ -60,9 +60,9 @@ struct ProductsTabProductViewModel {
 }
 
 private extension EditableProductModel {
-    func createDetailsAttributedString(isSKUShown: Bool, productBundlesEnabled: Bool) -> NSAttributedString {
+    func createDetailsAttributedString(isSKUShown: Bool) -> NSAttributedString {
         let statusText = createStatusText()
-        let stockText = createStockText(productBundlesEnabled: productBundlesEnabled)
+        let stockText = createStockText()
         let variationsText = createVariationsText()
 
         let detailsText = [statusText, stockText, variationsText]
@@ -85,7 +85,7 @@ private extension EditableProductModel {
 
     func createStatusText() -> String? {
         switch status {
-        case .pending, .draft:
+        case .pending, .draft, .privateStatus:
             return status.description
         default:
             return nil

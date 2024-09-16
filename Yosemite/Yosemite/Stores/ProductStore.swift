@@ -118,8 +118,6 @@ public class ProductStore: Store {
             replaceProductLocally(product: product, onCompletion: onCompletion)
         case let .checkIfStoreHasProducts(siteID, status, onCompletion):
             checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
-        case let .createTemplateProduct(siteID, template, onCompletion):
-            createTemplateProduct(siteID: siteID, template: template, onCompletion: onCompletion)
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
@@ -592,21 +590,6 @@ private extension ProductStore {
         }
     }
 
-    /// Creates a product using the provided template type.
-    /// The created product is not stored locally.
-    ///
-    func createTemplateProduct(siteID: Int64, template: ProductsRemote.TemplateType, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        remote.createTemplateProduct(for: siteID, template: template) { [remote] result in
-            switch result {
-            case .success(let productID):
-                remote.loadProduct(for: siteID, productID: productID, completion: onCompletion)
-
-            case .failure(let error):
-                onCompletion(.failure(error))
-            }
-        }
-    }
-
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
@@ -917,6 +900,7 @@ extension ProductStore {
             handleProductBundledItems(readOnlyProduct, storageProduct, storage)
             handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
             handleProductSubscription(readOnlyProduct, storageProduct, storage)
+            handleProductCustomFields(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -1168,6 +1152,31 @@ extension ProductStore {
             let newStorageSubscription = storage.insertNewObject(ofType: Storage.ProductSubscription.self)
             newStorageSubscription.update(with: readOnlySubscription)
             storageProduct.subscription = newStorageSubscription
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
+    ///
+    private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Upsert the `customFields` from the `readOnlyProduct`
+        readOnlyProduct.customFields.forEach { readOnlyCustomField in
+            if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
+                                                                         productID: storageProduct.productID,
+                                                                         metadataID: readOnlyCustomField.metadataID) {
+                existingStorageMetaData.update(with: readOnlyCustomField)
+            } else {
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
+                newStorageMetaData.update(with: readOnlyCustomField)
+                storageProduct.addToCustomFields(newStorageMetaData)
+            }
+        }
+
+        // Now, remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
+        storageProduct.customFields?.forEach { storageCustomField in
+            if readOnlyProduct.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+                storageProduct.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
+            }
         }
     }
 }

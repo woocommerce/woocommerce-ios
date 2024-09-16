@@ -140,10 +140,6 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
-        case .setPointOfSaleSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-            setPointOfSaleSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .loadPointOfSaleSwitchState(onCompletion: let onCompletion):
-            loadPointOfSaleSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -204,10 +200,6 @@ public class AppSettingsStore: Store {
             setEUShippingNoticeDismissState(isDismissed: true, onCompletion: onCompletion)
         case .loadEUShippingNoticeDismissState(let onCompletion):
             loadEUShippingNoticeDismissState(onCompletion: onCompletion)
-        case .getLocalAnnouncementVisibility(let announcement, let onCompletion):
-            getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
-        case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
-            setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
         case .setSelectedTaxRateID(let taxRateId, let siteID):
             setSelectedTaxRateID(with: taxRateId, siteID: siteID)
         case .loadSelectedTaxRateID(let siteID, let onCompletion):
@@ -318,23 +310,6 @@ private extension AppSettingsStore {
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
-    }
-
-    /// Sets the current Point Of Sale beta feature switch state into `GeneralAppSettings`
-    ///
-    func setPointOfSaleSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
-        do {
-            try generalAppSettings.setValue(isEnabled, for: \.isPointOfSaleEnabled)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
-        }
-    }
-
-    /// Loads the current Point Of Sale beta feature switch state from `GeneralAppSettings`
-    ///
-    func loadPointOfSaleSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
-        onCompletion(.success(generalAppSettings.value(for: \.isPointOfSaleEnabled)))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
@@ -673,29 +648,6 @@ private extension AppSettingsStore {
         } catch {
             let error = AppSettingsStoreErrors.deletePreselectedProvider
             onCompletion?(error)
-        }
-    }
-}
-
-// MARK: - Local Announcement Visibility
-//
-private extension AppSettingsStore {
-    func getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> Void) {
-        guard let isDismissed = generalAppSettings.value(for: \.localAnnouncementDismissed)[announcement] else {
-            // If the announcement hasn't been dismissed, it is visible.
-            return onCompletion(true)
-        }
-        onCompletion(isDismissed == false)
-    }
-
-    func setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> ()) {
-        do {
-            let settings = generalAppSettings.settings
-            let settingsToSave = settings.updatingAsDismissed(localAnnouncement: announcement)
-            try generalAppSettings.saveSettings(settingsToSave)
-            onCompletion(.success(()))
-        } catch {
-            onCompletion(.failure(error))
         }
     }
 }

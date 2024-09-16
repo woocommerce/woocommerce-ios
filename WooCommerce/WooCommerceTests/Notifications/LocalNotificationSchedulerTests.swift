@@ -106,9 +106,6 @@ extension LocalNotification: Equatable {
 
 extension LocalNotification.Scenario: Equatable {
     public static func ==(lhs: LocalNotification.Scenario, rhs: LocalNotification.Scenario) -> Bool {
-        switch (lhs, rhs) {
-        case (.unknown, .unknown):
-            return true
-        }
+        lhs.identifier == rhs.identifier
     }
 }

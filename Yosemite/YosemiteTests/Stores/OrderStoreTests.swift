@@ -448,6 +448,86 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedOrder, fetchedOrder)
     }
 
+    // MARK: - OrderAction.retrieveOrderRemotely
+
+    /// Verifies that OrderAction.retrieveOrderRemotely returns the expected Order.
+    ///
+    func test_retrieveOrderRemotely_returns_expected_fields() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result = waitFor { promise in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(try? result.get(), remoteOrder)
+    }
+
+    /// Verifies that `OrderAction.retrieveOrderRemotely` effectively persists all of the remote order fields
+    /// correctly across all of the related `Order` objects (items, coupons, etc).
+    ///
+    func test_retrieveOrderRemotely_effectively_persists_order_fields_and_related_objects() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteOrder = sampleOrder()
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+
+        // When
+        let result = waitFor { promise in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
+        let storedOrder = viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
+        XCTAssertEqual(storedOrder?.toReadOnly(), remoteOrder)
+    }
+
+    func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() throws {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // Inserting an order without related objects for simpler testing.
+        // The status is different from the remote order in the simulated response.
+        let existingOrder = sampleOrder().copy(status: .autoDraft)
+        storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
+        viewStorage.saveIfNeeded()
+
+        let predicate = NSPredicate(format: "orderID = %ld", existingOrder.orderID)
+        let existingOrderFromStorage = viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
+        assertEqual(existingOrder.status, existingOrderFromStorage?.status)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+
+        // When
+        let result = waitFor { promise in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let retrievedOrder = try XCTUnwrap(result.get())
+        XCTAssertFalse(retrievedOrder == existingOrder)
+        XCTAssertFalse(retrievedOrder.status == existingOrder.status)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+        let orderFromStorage = viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
+        assertEqual(retrievedOrder, orderFromStorage)
+    }
 
     // MARK: - OrderStore.upsertStoredOrder
 
@@ -461,7 +541,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
@@ -470,7 +550,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -481,7 +561,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
@@ -492,7 +572,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 0)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderMetaData.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
     }
 
@@ -1837,13 +1917,13 @@ private extension OrderStoreTests {
          Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 
-    func sampleCustomFields() -> [Networking.OrderMetaData] {
-        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
+    func sampleCustomFields() -> [Networking.MetaData] {
+        return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
     }
 
-    func sampleCustomFieldsMutated() -> [Networking.OrderMetaData] {
-        return [Networking.OrderMetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
-                Networking.OrderMetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
+    func sampleCustomFieldsMutated() -> [Networking.MetaData] {
+        return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
+                Networking.MetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
     }
 
     func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {

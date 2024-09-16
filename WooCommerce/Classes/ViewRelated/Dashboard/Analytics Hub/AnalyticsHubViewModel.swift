@@ -9,11 +9,11 @@ import protocol WooFoundation.Analytics
 ///
 final class AnalyticsHubViewModel: ObservableObject {
 
-    private let siteID: Int64
-    private let stores: StoresManager
+    let siteID: Int64
+    let stores: StoresManager
     private let storage: StorageManagerType
     private let timeZone: TimeZone
-    private let analytics: Analytics
+    let analytics: Analytics
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -47,6 +47,10 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        self.googleCampaignsCard = GoogleAdsCampaignReportCardViewModel(siteID: siteID,
+                                                                        timeRange: selectedType,
+                                                                        usageTracksEventEmitter: usageTracksEventEmitter)
 
         bindViewModelsWithData()
         bindCardSettingsWithData()
@@ -126,6 +130,10 @@ final class AnalyticsHubViewModel: ObservableObject {
                                      usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
+    /// Google Campaigns Card ViewModel
+    ///
+    var googleCampaignsCard: GoogleAdsCampaignReportCardViewModel
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -159,6 +167,8 @@ final class AnalyticsHubViewModel: ObservableObject {
             isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
         case .giftCards:
             isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+        case .googleCampaigns:
+            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce) && googleCampaignsCard.isEligibleForGoogleAds
         default:
             true
         }
@@ -326,6 +336,12 @@ private extension AnalyticsHubViewModel {
                     return
                 }
                 await self.retrieveGiftCardStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
+            group.addTask {
+                guard cards.contains(.googleCampaigns) else {
+                    return
+                }
+                await self.googleCampaignsCard.reload()
             }
         }
     }
@@ -571,6 +587,10 @@ private extension AnalyticsHubViewModel {
         self.previousOrderStats = nil
         self.itemsSoldStats = nil
         self.siteStats = nil
+        self.currentBundleStats = nil
+        self.previousBundleStats = nil
+        self.currentGiftCardStats = nil
+        self.previousGiftCardStats = nil
     }
 
     func bindViewModelsWithData() {
@@ -583,6 +603,10 @@ private extension AnalyticsHubViewModel {
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
+
+                self.googleCampaignsCard = GoogleAdsCampaignReportCardViewModel(siteID: siteID,
+                                                                                timeRange: newSelectionType,
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
 
                 // Update data on range selection change
                 Task.init {

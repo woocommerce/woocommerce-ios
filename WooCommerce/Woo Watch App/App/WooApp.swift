@@ -1,4 +1,5 @@
 import SwiftUI
+import NetworkingWatchOS
 
 @main
 struct Woo_Watch_AppApp: App {
@@ -43,6 +44,9 @@ struct Woo_Watch_AppApp: App {
             }
             .environmentObject(tracksProvider)
             .task {
+                // Create the crash logging stack with the known account to properly identify crashes
+                delegate.crashLoggingStack = WatchCrashLoggingStack(account: phoneDependencySynchronizer.dependencies?.account)
+
                 // For some reason I can't use the bindings directly from our AppDelegate.
                 // We need to store them in this type assign them to the delegate for further modification.
                 delegate.appBindings = appBindings
@@ -54,6 +58,10 @@ struct Woo_Watch_AppApp: App {
                 // Tracks
                 tracksProvider.sendTracksEvent(.watchAppOpened)
             }
+            .onChange(of: phoneDependencySynchronizer.dependencies, perform: { newDependencies in
+                // Make sure the app delegate performs any update needed when we find new dependencies.
+                delegate.onUpdateDependencies(dependencies: newDependencies)
+            })
         }
     }
 }

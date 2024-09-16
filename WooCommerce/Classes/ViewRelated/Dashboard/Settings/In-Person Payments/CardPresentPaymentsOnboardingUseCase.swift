@@ -77,7 +77,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.storageManager = storageManager
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
-        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
+        self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configurationLoader: configurationLoader)
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.analytics = analytics
 
@@ -390,9 +390,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .stripeAccountUnderReview(plugin: plugin)
         }
         guard !isStripeAccountOverdueRequirements(account: account) else {
+            logMissingRequirements(for: account)
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
         guard !shouldShowPendingRequirements(account: account) else {
+            logMissingRequirements(for: account)
             return .stripeAccountPendingRequirement(plugin: plugin, deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
@@ -527,8 +529,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isCashOnDeliverySetUp() -> Bool {
+        let gatewayID = PaymentGateway.Constants.cashOnDeliveryGatewayID
         guard let siteID = siteID,
-              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID, gatewayID: "cod")?.toReadOnly()
+              let codGateway = storageManager.viewStorage.loadPaymentGateway(siteID: siteID,
+                                                                             gatewayID: gatewayID)?.toReadOnly()
         else {
             return false
         }
@@ -539,7 +543,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     func accountStatusAllowedForCardPresentPayments(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .complete ||
         account.wcpayStatus == .enabled ||
-        account.wcpayStatus == .restrictedSoon
+        account.wcpayStatus == .restrictedSoon ||
+        account.wcpayStatus == .pendingVerification
     }
 
     func isNetworkError(_ error: Error) -> Bool {
@@ -559,6 +564,19 @@ private extension CardPresentPaymentsOnboardingUseCase {
                                                                                 countryCode: storeCountryCode,
                                                                                 error: error,
                                                                                 gatewayID: preferredPluginLocal?.gatewayID))
+    }
+
+    func logMissingRequirements(for account: PaymentGatewayAccount) {
+        let log = """
+            ❌ Account has missing requirements:
+            Gateway ID: \(account.gatewayID)
+            Account status: \(account.status)
+            WCPay status: \(account.wcpayStatus)
+            Has pending requirements? \(account.hasPendingRequirements)
+            Has overdue requirements? \(account.hasOverdueRequirements)
+            Deadline: \(String(describing: account.currentDeadline))
+            """
+        DDLogError(log)
     }
 }
 

@@ -7,6 +7,7 @@ struct ProductImageThumbnail: View {
     private let scale: CGFloat
     private let productImageCornerRadius: CGFloat
     private let foregroundColor: Color
+    private let cachesOriginalImage: Bool
 
     /// Image processor to resize images in a background thread to avoid blocking the UI
     ///
@@ -14,20 +15,27 @@ struct ProductImageThumbnail: View {
         ResizingImageProcessor(referenceSize:
                 .init(width: productImageSize * scale,
                       height: productImageSize * scale),
-                               mode: .aspectFill
-        )
+                               mode: .aspectFill)
     }
 
-    init(productImageURL: URL?, productImageSize: CGFloat, scale: CGFloat, productImageCornerRadius: CGFloat, foregroundColor: Color) {
+    init(productImageURL: URL?,
+         productImageSize: CGFloat,
+         scale: CGFloat,
+         productImageCornerRadius: CGFloat = 0,
+         foregroundColor: Color,
+         cachesOriginalImage: Bool = false) {
         self.productImageURL = productImageURL
         self.productImageSize = productImageSize
         self.scale = scale
         self.productImageCornerRadius = productImageCornerRadius
         self.foregroundColor = foregroundColor
+        self.cachesOriginalImage = cachesOriginalImage
     }
 
     var body: some View {
-        KFImage.url(productImageURL)
+        KFImage
+            .url(productImageURL)
+            .cacheOriginalImage(cachesOriginalImage)
             .placeholder {
                 Image(uiImage: .productPlaceholderImage)
             }

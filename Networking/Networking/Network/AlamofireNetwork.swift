@@ -29,6 +29,7 @@ public class AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
+    ///
     public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))

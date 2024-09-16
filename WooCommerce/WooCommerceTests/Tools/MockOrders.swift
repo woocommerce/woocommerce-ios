@@ -16,7 +16,7 @@ final class MockOrders {
                    refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = [],
                    taxes: [OrderTaxLine] = [],
-                   customFields: [OrderMetaData] = [],
+                   customFields: [MetaData] = [],
                    giftCards: [OrderGiftCard] = []) -> Order {
         return Order.fake().copy(siteID: siteID,
                                  orderID: orderID,
@@ -50,6 +50,10 @@ final class MockOrders {
 
     func sampleOrder() -> Order {
         makeOrder()
+    }
+
+    func sampleOrderWithItems() -> Order {
+        makeOrder(items: sampleOrderItems())
     }
 
     func orderWithFees() -> Order {
@@ -106,6 +110,12 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
+    }
+
+    func sampleOrderItems() -> [OrderItem] {
+        [
+            OrderItem.fake().copy(itemID: 1, name: "Sample Item", productID: 12, quantity: 2, price: 123)
+        ]
     }
 
     func sampleFeeLines() -> [OrderFeeLine] {

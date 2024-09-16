@@ -52,6 +52,10 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let budget: BlazeCampaignBudget
 
+    /// Whether the campaign duration is unlimited.
+    ///
+    public let isEvergreen: Bool
+
     /// Tagline of the campaign
     ///
     public let siteName: String
@@ -87,6 +91,10 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let type: String
 
+    /// Selected objective ID for the campaign.
+    ///
+    public let objective: String?
+
     public init(origin: String,
                 originVersion: String,
                 paymentMethodID: String,
@@ -94,6 +102,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 endDate: Date,
                 timeZone: String,
                 budget: BlazeCampaignBudget,
+                isEvergreen: Bool,
                 siteName: String,
                 textSnippet: String,
                 targetUrl: String,
@@ -101,7 +110,8 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 mainImage: Image,
                 targeting: BlazeTargetOptions?,
                 targetUrn: String,
-                type: String) {
+                type: String,
+                objective: String?) {
         self.origin = origin
         self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID
@@ -109,6 +119,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.endDate = endDate
         self.timeZone = timeZone
         self.budget = budget
+        self.isEvergreen = isEvergreen
         self.siteName = siteName
         self.textSnippet = textSnippet
         self.targetUrl = targetUrl
@@ -117,5 +128,6 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.targeting = targeting
         self.targetUrn = targetUrn
         self.type = type
+        self.objective = objective
     }
 }

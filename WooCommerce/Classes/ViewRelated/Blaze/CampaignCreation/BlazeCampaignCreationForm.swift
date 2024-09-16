@@ -22,6 +22,17 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
         configureNavigation()
         view.backgroundColor = .listBackground
     }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if isBeingDismissedInAnyWay {
+            Task { @MainActor in
+                let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.viewModel.siteID)
+                await scheduler.scheduleAbandonedCreationReminder()
+            }
+        }
+    }
 }
 
 private extension BlazeCampaignCreationFormHostingController {
@@ -35,7 +46,7 @@ private extension BlazeCampaignCreationFormHostingController {
     }
 }
 
-private extension BlazeCampaignCreationFormHostingController {
+extension BlazeCampaignCreationFormHostingController {
     enum Localization {
         static let title = NSLocalizedString(
             "blazeCampaignCreationForm.title",
@@ -44,7 +55,7 @@ private extension BlazeCampaignCreationFormHostingController {
         )
     }
 
-    enum Constants {
+    private enum Constants {
         static let supportTag = "origin:blaze-native-campaign-creation"
     }
 }
@@ -54,7 +65,9 @@ struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @Environment(\.colorScheme) var colorScheme
+    @ScaledMetric private var scale: CGFloat = 1.0
 
+    @State private var isShowingCampaignObjectivePicker = false
     @State private var isShowingBudgetSetting = false
     @State private var isShowingLanguagePicker = false
     @State private var isShowingAdDestinationScreen = false
@@ -77,12 +90,29 @@ struct BlazeCampaignCreationForm: View {
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
 
-                // Budget
-                detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
-                    isShowingBudgetSetting = true
+                VStack(spacing: 0) {
+                    VStack(spacing: 0) {
+                        // Objective - hidden behind a feature flag
+                        detailView(title: Localization.objective,
+                                   content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
+                            isShowingCampaignObjectivePicker = true
+                        }
+                        divider
+                    }
+                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective))
+
+                    // Budget
+                    detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
+                        isShowingBudgetSetting = true
+                    }
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
+                .padding(.bottom, Layout.contentMargin)
+
+                Text(Localization.audience)
+                    .subheadlineStyle()
+                    .foregroundColor(.init(uiColor: .text))
 
                 VStack(spacing: 0) {
                     // Language
@@ -111,17 +141,17 @@ struct BlazeCampaignCreationForm: View {
                         isShowingTopicPicker = true
                     }
                 }
-                .background(Constants.cellColor)
+                .background(rowBackground)
                 .overlay { roundedRectangleBorder }
 
                 // Ad destination
                 if viewModel.adDestinationViewModel != nil {
                     detailView(title: Localization.adDestination,
-                               content: viewModel.finalDestinationURL,
+                               content: viewModel.finalDestinationURL.isNotEmpty ? viewModel.finalDestinationURL : Localization.adDestinationEmpty,
                                isContentSingleLine: true) {
                         isShowingAdDestinationScreen = true
                     }
-                    .background(Constants.cellColor)
+                    .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
             }
@@ -143,6 +173,7 @@ struct BlazeCampaignCreationForm: View {
             }
             .background(Constants.backgroundViewColor)
         }
+        .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(Localization.help) {
@@ -181,11 +212,16 @@ struct BlazeCampaignCreationForm: View {
                 isShowingLocationPicker = false
             }
         }
+        .sheet(isPresented: $isShowingCampaignObjectivePicker) {
+            BlazeCampaignObjectivePickerView(viewModel: viewModel.campaignObjectiveViewModel) {
+                isShowingCampaignObjectivePicker = false
+            }
+        }
         .onChange(of: viewModel.error) { newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
         .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
-            Button(Localization.AISuggestionsErrorAlert.cancel, role: .cancel) { }
+            Button(Localization.cancel, role: .cancel) { }
 
             Button(Localization.AISuggestionsErrorAlert.retry) {
                 Task {
@@ -194,10 +230,23 @@ struct BlazeCampaignCreationForm: View {
             }
         }
         .alert(Localization.NoImageErrorAlert.noImageFound, isPresented: $viewModel.isShowingMissingImageErrorAlert) {
-            Button(Localization.NoImageErrorAlert.cancel, role: .cancel) { }
+            Button(Localization.cancel, role: .cancel) { }
 
             Button(Localization.NoImageErrorAlert.addImage) {
                 viewModel.didTapEditAd()
+            }
+        }
+        .alert(Localization.NoDestinationURLAlert.noURLFound, isPresented: $viewModel.isShowingMissingDestinationURLAlert) {
+            Button(Localization.cancel, role: .cancel) { }
+
+            Button(Localization.NoDestinationURLAlert.selectURL) {
+                isShowingAdDestinationScreen = true
+            }
+        }
+        .alert(Localization.MissingObjectiveAlert.title, isPresented: $viewModel.isShowingMissingObjectiveAlert) {
+            Button(Localization.cancel, role: .cancel) {}
+            Button(Localization.MissingObjectiveAlert.selectObjective) {
+                isShowingCampaignObjectivePicker = true
             }
         }
         .onAppear() {
@@ -252,6 +301,22 @@ private extension BlazeCampaignCreationForm {
                         .background(Color(uiColor: .systemGray6))
                         .cornerRadius(Layout.adButtonCornerRadius)
                 }
+
+                // Label "Suggested by AI"
+                HStack {
+                    HStack(spacing: 0) {
+                        Image(uiImage: .sparklesImage)
+                            .renderingMode(.template)
+                            .resizable()
+                            .foregroundColor(Color(uiColor: .textSubtle))
+                            .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
+
+                        Text(Localization.suggestedByAI)
+                            .subheadlineStyle()
+                    }
+                    Spacer()
+                }
+                .renderedIf(viewModel.isUsingAISuggestions)
             }
             .padding(Layout.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -309,6 +374,11 @@ private extension BlazeCampaignCreationForm {
             .foregroundColor(Color(uiColor: .separator))
     }
 
+    var rowBackground: some View {
+        Constants.cellColor
+            .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+    }
+
     var roundedRectangleBorder: some View {
         RoundedRectangle(cornerRadius: Layout.cornerRadius)
             .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
@@ -343,6 +413,7 @@ private extension BlazeCampaignCreationForm {
         static let shadowRadius: CGFloat = 2
         static let shadowYOffset: CGFloat = 2
         static let maxWidth: CGFloat = 525
+        static let sparkleIconSize: CGFloat = 24
     }
 
     enum Constants {
@@ -365,6 +436,11 @@ private extension BlazeCampaignCreationForm {
             value: "Shop Now",
             comment: "Button to shop on the Blaze ad preview"
         )
+        static let suggestedByAI = NSLocalizedString(
+            "blazeCampaignCreationForm.suggestedByAI",
+            value: "Suggested by AI",
+            comment: "Suggested by AI title in the Blaze Campaign Creation Form."
+        )
         static let editAd = NSLocalizedString(
             "blazeCampaignCreationForm.editAd",
             value: "Edit ad",
@@ -375,10 +451,25 @@ private extension BlazeCampaignCreationForm {
             value: "Details",
             comment: "Section title on the Blaze campaign creation screen"
         )
+        static let objective = NSLocalizedString(
+            "blazeCampaignCreationForm.objective",
+            value: "Campaign objective",
+            comment: "Title of the Campaign objective field on the Blaze campaign creation screen"
+        )
+        static let chooseObjective = NSLocalizedString(
+            "blazeCampaignCreationForm.chooseObjective",
+            value: "Choose campaign objective",
+            comment: "Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified"
+        )
         static let budget = NSLocalizedString(
             "blazeCampaignCreationForm.budget",
             value: "Budget",
             comment: "Title of the Budget field on the Blaze campaign creation screen"
+        )
+        static let audience = NSLocalizedString(
+            "blazeCampaignCreationForm.audience",
+            value: "Audience",
+            comment: "Section title on the Blaze campaign creation screen"
         )
         static let language = NSLocalizedString(
             "blazeCampaignCreationForm.language",
@@ -405,21 +496,22 @@ private extension BlazeCampaignCreationForm {
             value: "Ad destination",
             comment: "Title of the Ad destination field on the Blaze campaign creation screen"
         )
+        static let adDestinationEmpty = NSLocalizedString(
+            "blazeCampaignCreationForm.adDestination.empty",
+            value: "Select destination URL",
+            comment: "Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen"
+        )
         static let confirmDetails = NSLocalizedString(
             "blazeCampaignCreationForm.confirmDetails",
             value: "Confirm Details",
             comment: "Button to confirm ad details on the Blaze campaign creation screen"
         )
+
         enum AISuggestionsErrorAlert {
             static let fetchingAISuggestions = NSLocalizedString(
                 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions",
                 value: "Failed to load suggestions for tagline and description",
                 comment: "Error message indicating that loading suggestions for tagline and description failed"
-            )
-            static let cancel = NSLocalizedString(
-                "blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel",
-                value: "Cancel",
-                comment: "Dismiss button on the error alert displayed on the Blaze campaign creation screen"
             )
             static let retry = NSLocalizedString(
                 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.retry",
@@ -427,16 +519,12 @@ private extension BlazeCampaignCreationForm {
                 comment: "Button on the error alert displayed on the Blaze campaign creation screen"
             )
         }
+
         enum NoImageErrorAlert {
             static let noImageFound = NSLocalizedString(
                 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound",
                 value: "Please add an image for the Blaze campaign",
                 comment: "Message asking to select an image for the Blaze campaign"
-            )
-            static let cancel = NSLocalizedString(
-                "blazeCampaignCreationForm.noImageErrorAlert.cancel",
-                value: "Cancel",
-                comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
             )
             static let addImage = NSLocalizedString(
                 "blazeCampaignCreationForm.noImageErrorAlert.addImage",
@@ -444,6 +532,38 @@ private extension BlazeCampaignCreationForm {
                 comment: "Button on the alert to add an image for the Blaze campaign"
             )
         }
+
+        enum NoDestinationURLAlert {
+            static let noURLFound = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound",
+                value: "Please select a destination URL for the Blaze campaign",
+                comment: "Message asking to select a destination URL for the Blaze campaign"
+            )
+            static let selectURL = NSLocalizedString(
+                "blazeCampaignCreationForm.noDestinationURLAlert.selectURL",
+                value: "Select URL",
+                comment: "Button on the alert to select a destination URL for the Blaze campaign"
+            )
+        }
+
+        enum MissingObjectiveAlert {
+            static let title = NSLocalizedString(
+                "blazeCampaignCreationForm.missingObjectiveAlert.title",
+                value: "Please select an objective for the Blaze campaign",
+                comment: ""
+            )
+            static let selectObjective = NSLocalizedString(
+                "blazeCampaignCreationForm.missingObjectiveAlert.selectObjective",
+                value: "Select objective",
+                comment: "Button on the alert to select an objective for the Blaze campaign"
+            )
+        }
+
+        static let cancel = NSLocalizedString(
+            "blazeCampaignCreationForm.cancel",
+            value: "Cancel",
+            comment: "Dismiss button on an error alert on the Blaze campaign creation form"
+        )
 
         static let help = NSLocalizedString(
             "blazeCampaignCreationForm.help",

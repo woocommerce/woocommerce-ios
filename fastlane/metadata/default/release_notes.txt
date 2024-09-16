@@ -1,1 +1,2 @@
-Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
+In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
+Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.

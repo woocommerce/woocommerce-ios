@@ -11,9 +11,9 @@ extension Networking.AIProduct {
     ///
     public static func fake() -> Networking.AIProduct {
         .init(
-            name: .fake(),
-            description: .fake(),
-            shortDescription: .fake(),
+            names: .fake(),
+            descriptions: .fake(),
+            shortDescriptions: .fake(),
             virtual: .fake(),
             shipping: .fake(),
             tags: .fake(),
@@ -203,7 +203,23 @@ extension Networking.BlazeCampaignListItem {
             spentBudget: .fake(),
             budgetMode: .fake(),
             budgetAmount: .fake(),
-            budgetCurrency: .fake()
+            budgetCurrency: .fake(),
+            isEvergreen: .fake(),
+            durationDays: .fake(),
+            startTime: .fake()
+        )
+    }
+}
+extension Networking.BlazeCampaignObjective {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignObjective {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            description: .fake(),
+            suitableForDescription: .fake(),
+            locale: .fake()
         )
     }
 }
@@ -216,7 +232,8 @@ extension Networking.BlazeForecastedImpressionsInput {
             endDate: .fake(),
             timeZone: .fake(),
             totalBudget: .fake(),
-            targeting: .fake()
+            targeting: .fake(),
+            isEvergreen: .fake()
         )
     }
 }
@@ -411,6 +428,7 @@ extension Networking.CreateBlazeCampaign {
             endDate: .fake(),
             timeZone: .fake(),
             budget: .fake(),
+            isEvergreen: .fake(),
             siteName: .fake(),
             textSnippet: .fake(),
             targetUrl: .fake(),
@@ -418,7 +436,8 @@ extension Networking.CreateBlazeCampaign {
             mainImage: .fake(),
             targeting: .fake(),
             targetUrn: .fake(),
-            type: .fake()
+            type: .fake(),
+            objective: .fake()
         )
     }
 }
@@ -571,6 +590,70 @@ extension Networking.GiftCardStatsTotals {
         )
     }
 }
+extension Networking.GoogleAdsCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaign {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            rawStatus: .fake(),
+            rawType: .fake(),
+            amount: .fake(),
+            country: .fake(),
+            targetedLocations: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStats {
+        .init(
+            siteID: .fake(),
+            totals: .fake(),
+            campaigns: .fake(),
+            nextPageToken: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsItem {
+        .init(
+            campaignID: .fake(),
+            campaignName: .fake(),
+            rawStatus: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsCampaignStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsCampaignStatsTotals {
+        .init(
+            sales: .fake(),
+            spend: .fake(),
+            clicks: .fake(),
+            impressions: .fake(),
+            conversions: .fake()
+        )
+    }
+}
+extension Networking.GoogleAdsConnection {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GoogleAdsConnection {
+        .init(
+            id: .fake(),
+            currency: .fake(),
+            symbol: .fake(),
+            rawStatus: .fake()
+        )
+    }
+}
 extension Networking.InboxAction {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -667,6 +750,17 @@ extension Networking.Media {
             alt: .fake(),
             height: .fake(),
             width: .fake()
+        )
+    }
+}
+extension Networking.MetaData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.MetaData {
+        .init(
+            metadataID: .fake(),
+            key: .fake(),
+            value: .fake()
         )
     }
 }
@@ -1171,12 +1265,14 @@ extension Networking.Product {
             bundleMinSize: .fake(),
             bundleMaxSize: .fake(),
             bundledItems: .fake(),
+            password: .fake(),
             compositeComponents: .fake(),
             subscription: .fake(),
             minAllowedQuantity: .fake(),
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
-            combineVariationQuantities: .fake()
+            combineVariationQuantities: .fake(),
+            customFields: .fake()
         )
     }
 }

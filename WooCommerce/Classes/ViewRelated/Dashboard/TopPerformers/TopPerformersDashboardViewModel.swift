@@ -2,9 +2,12 @@ import Combine
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// View model for `TopPerformersDashboardView`
 ///
+@MainActor
 final class TopPerformersDashboardViewModel: ObservableObject {
 
     // Set externally to trigger callback upon hiding the Top Performers card.
@@ -14,6 +17,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published var selectedItem: TopEarnerStatsItem?
     @Published private(set) var syncingError: Error?
+    @Published private(set) var analyticsEnabled = true
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -30,16 +34,31 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         Date()
     }
 
-    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
+    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading(cached: [])) { [weak self] topPerformersItem in
         guard let self else { return }
 
         trackInteraction()
+        if timeRange.isCustomTimeRange {
+            trackCustomRangeEvent(.DashboardCustomRange.interacted())
+        }
         selectedItem = topPerformersItem
     }
 
     private var topEarnerStats: TopEarnerStats? {
         resultsController?.fetchedObjects.first
     }
+
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .topPerformers, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
+    }
+
 
     private var waitingTracker: WaitingTimeTracker?
     private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
@@ -71,25 +90,47 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
+        guard timeRange != newTimeRange else { return }
         timeRange = newTimeRange
+
         saveLastTimeRange(timeRange)
         updateResultsController()
 
         Task { [weak self] in
-            await self?.reloadData()
+            await self?.reloadDataIfNeeded()
         }
     }
 
+    /// Reloads the card data if significantly time has passed.
+    /// Set `forceRefresh` to `true` to always sync data, useful for pull to refresh scenarios.
     @MainActor
-    func reloadData() async {
+    func reloadDataIfNeeded(forceRefresh: Bool = false) async {
+
+        // Preemptively show any cached content
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .topPerformers, at: timeRange.timestampRange) {
+            return updateUIInLoadedState()
+        }
+
         syncingData = true
         syncingError = nil
         updateUIInLoadingState()
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .topPerformers))
         do {
-            try await syncTopEarnersStats()
+
+            let useCase = TopPerformersCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
+            try await useCase.sync()
+
+            analyticsEnabled = true
             syncingDidFinishPublisher.send(nil)
         } catch {
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+            }
             syncingError = error
             syncingDidFinishPublisher.send(error)
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
@@ -107,6 +148,11 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func trackInteraction() {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
         usageTracksEventEmitter.interacted()
+    }
+
+    /// To be triggered from the UI for custom range related events
+    func trackCustomRangeEvent(_ event: WooAnalyticsEvent) {
+        analytics.track(event: event)
     }
 
     func onViewAppear() {
@@ -155,8 +201,11 @@ private extension TopPerformersDashboardViewModel {
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] error in
                 guard let self else { return }
-                if error == nil {
+                if let error {
+                    analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .topPerformers, error: error))
+                } else {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+                    analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .topPerformers))
                 }
                 waitingTracker?.end()
             }
@@ -176,6 +225,11 @@ private extension TopPerformersDashboardViewModel {
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
+
+        // Assume we don't have a timestamp for a new custom range since we don't support saving multiple custom ranges timestamps.
+        if timeRange.timestampRange == .custom {
+            DashboardTimestampStore.removeTimestamp(for: .topPerformers, at: .custom)
+        }
     }
 
     func updateResultsController() {
@@ -196,7 +250,8 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
-        periodViewModel.update(state: .loading)
+        let items = topEarnerStats?.items?.sorted(by: >) ?? []
+        periodViewModel.update(state: .loading(cached: items))
     }
 
     func updateUIInLoadedState() {
@@ -213,32 +268,12 @@ private extension TopPerformersDashboardViewModel {
         let granularity = timeRange.topEarnerStatsGranularity
         let formattedDateString: String = {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-            return StatsStoreV4.buildDateString(from: date, with: granularity)
+            return StatsStoreV4.buildDateString(from: date, timeRange: timeRange)
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
 
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }
-
-    @MainActor
-    func syncTopEarnersStats() async throws {
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                                 timeRange: timeRange,
-                                                                 timeZone: siteTimezone,
-                                                                 earliestDateToInclude: earliestDateToInclude,
-                                                                 latestDateToInclude: latestDateToInclude,
-                                                                 quantity: Constants.topEarnerStatsLimit,
-                                                                 forceRefresh: true,
-                                                                 saveInStorage: true,
-                                                                 onCompletion: { result in
-                let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                continuation.resume(with: voidResult)
-            }))
-        }
     }
 }
 
@@ -247,7 +282,6 @@ private extension TopPerformersDashboardViewModel {
 private extension TopPerformersDashboardViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
-        static let topEarnerStatsLimit: Int = 5
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

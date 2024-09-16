@@ -24,19 +24,22 @@ struct TopPerformersDashboardView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.syncingError != nil {
+            if !viewModel.analyticsEnabled {
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
+                    .padding(.horizontal, Layout.padding)
+            } else if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
                     Task {
-                        await viewModel.reloadData()
+                        await viewModel.reloadDataIfNeeded(forceRefresh: true)
                     }
                 })
                 .padding(.horizontal, Layout.padding)
             } else {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.header ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.header)
 
                 Divider()
 
@@ -45,10 +48,15 @@ struct TopPerformersDashboardView: View {
                 Divider()
                     .padding(.leading, Layout.padding)
 
+                timestampView
+                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                    .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.rows)
+
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
+                    .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
             }
 
         }
@@ -61,6 +69,7 @@ struct TopPerformersDashboardView: View {
                              endDate: viewModel.endDateForCustomRange,
                              customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                              datesSelected: { start, end in
+                viewModel.trackCustomRangeEvent(.DashboardCustomRange.customRangeConfirmed(isEditing: viewModel.timeRange.isCustomTimeRange))
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
         }
@@ -108,6 +117,7 @@ private extension TopPerformersDashboardView {
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
                         viewModel.trackInteraction()
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -128,6 +138,11 @@ private extension TopPerformersDashboardView {
 
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
+                    if viewModel.timeRange.isCustomTimeRange {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
+                    } else {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.addButtonTapped())
+                    }
                 } else {
                     viewModel.didSelectTimeRange(newTimeRange)
                 }
@@ -154,6 +169,12 @@ private extension TopPerformersDashboardView {
     var topPerformersList: some View {
         TopPerformersPeriodView(viewModel: viewModel.periodViewModel)
             .frame(maxWidth: .infinity)
+    }
+
+    var timestampView: some View {
+        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+            .footnoteStyle()
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
@@ -186,6 +207,15 @@ private extension TopPerformersDashboardView {
             "topPerformersDashboardView.custom",
             value: "Custom",
             comment: "Title of the custom time range on the Top Performers card on the Dashboard screen"
+        )
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the top performers card was last updated")
+            return String.localizedStringWithFormat(format, time)
+        }
+        static let unavailableAnalytics = NSLocalizedString(
+            "topPerformersDashboardView.unavailableAnalyticsView.title",
+            value: "Unable to display your store's top performers",
+            comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
         )
     }
 }

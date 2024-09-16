@@ -4,23 +4,6 @@ import Yosemite
 import Combine
 import WooFoundation
 
-/// Configuration of a bundled order item from the configuration UI. It contains necessary information to save the configuration remotely.
-struct BundledProductConfiguration: Equatable {
-    enum ProductOrVariation: Equatable {
-        case product(id: Int64)
-        case variation(productID: Int64, variationID: Int64, attributes: [ProductVariationAttribute])
-    }
-
-    let bundledItemID: Int64
-
-    let productOrVariation: ProductOrVariation
-
-    let quantity: Decimal
-
-    /// `nil` when it's not optional.
-    let isOptionalAndSelected: Bool?
-}
-
 /// View model for `ConfigurableBundleProductView`.
 final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     @Published private(set) var bundleItemViewModels: [ConfigurableBundleItemViewModel] = [] {

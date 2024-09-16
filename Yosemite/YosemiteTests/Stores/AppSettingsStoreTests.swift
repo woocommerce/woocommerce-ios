@@ -395,42 +395,6 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_loadPointOfSaleSwitchState_isEnabled_when_new_generalAppSettings_then_returns_false() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_loadPointOfSaleSwitchState_isEnabled_when_setPointOfSaleSwitchState_to_true_then_returns_true() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.setPointOfSaleSwitchState(isEnabled: true, onCompletion: { _ in })
-        subject?.onAction(updateAction)
-
-        // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
-                promise(result)
-            }
-            self.subject?.onAction(action)
-        }
-
-        // Then
-        let isEnabled = try result.get()
-        XCTAssertTrue(isEnabled)
-    }
-
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
         // Deletes any pre-existing app settings.
@@ -1168,58 +1132,6 @@ extension AppSettingsStoreTests {
         XCTAssertNil(actualValue)
     }
 
-    // MARK: Local Annoucement Dismissal
-
-    func test_setLocalAnnouncementDismissed_overwrites_stored_dismissal_value() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
-        let settings = createAppSettings(localAnnouncementDismissed: [.productDescriptionAI: false])
-        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let action = AppSettingsAction.setLocalAnnouncementDismissed(announcement: .productDescriptionAI) { _ in }
-        subject?.onAction(action)
-
-        // Then
-        let savedSettings: GeneralAppSettings = try XCTUnwrap(fileStorage?.data(for: expectedGeneralAppSettingsFileURL))
-
-        XCTAssertEqual(savedSettings.localAnnouncementDismissed[.productDescriptionAI], true)
-    }
-
-    func test_getLocalAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let isVisible = waitFor { promise in
-            self.subject?.onAction(AppSettingsAction.getLocalAnnouncementVisibility(announcement: .productDescriptionAI) { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertTrue(isVisible)
-    }
-
-    func test_getLocalAnnouncementVisibility_with_stored_dismissal_calls_completion_with_visibility_false() throws {
-        // Given
-        try fileStorage?.deleteFile(at: expectedGeneralStoreSettingsFileURL)
-
-        let settings = createAppSettings(localAnnouncementDismissed: [.productDescriptionAI: true])
-        try fileStorage?.write(settings, to: expectedGeneralAppSettingsFileURL)
-
-        // When
-        let isVisible = waitFor { promise in
-            self.subject?.onAction(AppSettingsAction.getLocalAnnouncementVisibility(announcement: .productDescriptionAI) { result in
-                promise(result)
-            })
-        }
-
-        // Then
-        XCTAssertFalse(isVisible)
-    }
-
     func test_setSelectedTaxRateID_works_correctly() throws {
         // Given
         let siteID: Int64 = 1234
@@ -1744,29 +1656,24 @@ private extension AppSettingsStoreTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
-            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false,
-            localAnnouncementDismissed: [:]
+            isEUShippingNoticeDismissed: false
         )
         return (settings, feedback)
     }
 
-    func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings] = [:],
-                           localAnnouncementDismissed: [LocalAnnouncement: Bool] = [:]) -> GeneralAppSettings {
+    func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings] = [:]) -> GeneralAppSettings {
         let settings = GeneralAppSettings(
             installationDate: Date(),
             feedbacks: [:],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
-            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],
-            isEUShippingNoticeDismissed: false,
-            localAnnouncementDismissed: localAnnouncementDismissed
+            isEUShippingNoticeDismissed: false
         )
         return settings
     }

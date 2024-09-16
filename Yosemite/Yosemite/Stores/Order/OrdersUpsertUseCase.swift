@@ -72,10 +72,6 @@ struct OrdersUpsertUseCase {
         let siteID = readOnlyOrder.siteID
         let orderID = readOnlyOrder.orderID
 
-        guard readOnlyOrder.items.count > 0 else {
-            return
-        }
-
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
             if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
@@ -310,10 +306,12 @@ struct OrdersUpsertUseCase {
     private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the `customFields` from the `readOnlyOrder`
         readOnlyOrder.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID, metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID,
+                                                                       orderID: storageOrder.orderID,
+                                                                       metadataID: readOnlyCustomField.metadataID) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
-                let newStorageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
                 newStorageMetaData.update(with: readOnlyCustomField)
                 storageOrder.addToCustomFields(newStorageMetaData)
             }

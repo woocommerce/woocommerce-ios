@@ -85,6 +85,7 @@ extension Storage.Product: ReadOnlyConvertible {
         bundleStockStatus = product.bundleStockStatus?.rawValue
         bundleMinSize = product.bundleMinSize as? NSDecimalNumber
         bundleMaxSize = product.bundleMaxSize as? NSDecimalNumber
+        password = product.password
         minAllowedQuantity = product.minAllowedQuantity
         maxAllowedQuantity = product.maxAllowedQuantity
         groupOfQuantity = product.groupOfQuantity
@@ -107,6 +108,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
         let bundledItemsArray: [StorageProductBundleItem] = bundledItems?.toArray() ?? []
         let compositeComponentsArray: [StorageProductCompositeComponent] = compositeComponents?.toArray() ?? []
+        let productCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
 
         var quantity: Decimal?
         if let stockQuantity = stockQuantity {
@@ -186,12 +188,14 @@ extension Storage.Product: ReadOnlyConvertible {
                        bundleMinSize: bundleMinSize?.decimalValue,
                        bundleMaxSize: bundleMaxSize?.decimalValue,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },
+                       password: password,
                        compositeComponents: compositeComponentsArray.map { $0.toReadOnly() },
                        subscription: subscription?.toReadOnly(),
                        minAllowedQuantity: minAllowedQuantity,
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
-                       combineVariationQuantities: combineVariationQuantities?.boolValue)
+                       combineVariationQuantities: combineVariationQuantities?.boolValue,
+                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
     }
 
     // MARK: - Private Helpers

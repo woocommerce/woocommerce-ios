@@ -101,11 +101,13 @@ private extension ProductFactory {
                 bundleMinSize: nil,
                 bundleMaxSize: nil,
                 bundledItems: [],
+                password: nil,
                 compositeComponents: [],
                 subscription: type == .subscription ? .empty : nil,
                 minAllowedQuantity: nil,
                 maxAllowedQuantity: nil,
                 groupOfQuantity: nil,
-                combineVariationQuantities: nil)
+                combineVariationQuantities: nil,
+                customFields: [])
     }
 }

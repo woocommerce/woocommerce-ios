@@ -8,7 +8,6 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
     private let viewModel: StoreOnboardingViewModel
     private let sourceNavigationController: UINavigationController
     private let site: Site
-    private let onUpgradePlan: (() -> Void)?
 
     private lazy var coordinator = StoreOnboardingCoordinator(navigationController: sourceNavigationController,
                                                               site: site,
@@ -18,19 +17,15 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
     }, reloadTasks: { [weak self] in
         self?.reloadTasks()
-    }, onUpgradePlan: { [weak self] in
-        self?.onUpgradePlan?()
     })
 
     init(viewModel: StoreOnboardingViewModel,
          navigationController: UINavigationController,
          site: Site,
-         onUpgradePlan: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.sourceNavigationController = navigationController
         self.site = site
-        self.onUpgradePlan = onUpgradePlan
         super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {

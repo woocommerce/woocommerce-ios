@@ -77,6 +77,7 @@ public enum WooConstants {
     /// App login deep link prefix
     ///
     static let appLoginURLPrefix = "woocommerce://app-login"
+    static let appMagicLoginURLPrefix = "woocommerce://magic-login"
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
 
@@ -338,6 +339,8 @@ extension WooConstants {
 
         case giftCardsExtension = "https://woocommerce.com/products/gift-cards/"
 
+        case googleAdsExtension = "https://woocommerce.com/products/google-listings-and-ads/"
+
         case wooPaymentsStartupGuide = "https://woocommerce.com/document/woopayments/startup-guide/"
 
         // swiftlint:disable:next line_length
@@ -360,6 +363,8 @@ extension WooConstants {
 #else
         case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-production"
 #endif
+
+        case ordersScreen = "https://woocommerce.com/mobile/orders"
 
         /// Returns the URL version of the receiver
         ///

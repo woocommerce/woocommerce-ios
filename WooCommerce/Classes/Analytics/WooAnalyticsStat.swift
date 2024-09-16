@@ -147,6 +147,7 @@ enum WooAnalyticsStat: String {
 
     // MARK: Dashboard View Events
     //
+    case dashboardLoaded = "dashboard_loaded"
     case dashboardSelected = "main_tab_dashboard_selected"
     case dashboardReselected = "main_tab_dashboard_reselected"
     case dashboardPulledToRefresh = "dashboard_pulled_to_refresh"
@@ -187,6 +188,9 @@ enum WooAnalyticsStat: String {
     case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
     case dynamicDashboardCardInteracted = "dynamic_dashboard_card_interacted"
     case dynamicDashboardAddNewSectionsTapped = "dynamic_dashboard_add_new_sections_tapped"
+    case dynamicDashboardCardDataLoadingStarted = "dynamic_dashboard_card_data_loading_started"
+    case dynamicDashboardCardDataLoadingCompleted = "dynamic_dashboard_card_data_loading_completed"
+    case dynamicDashboardCardDataLoadingFailed = "dynamic_dashboard_card_data_loading_failed"
 
     // MARK: Analytics Hub Events
     //
@@ -201,15 +205,12 @@ enum WooAnalyticsStat: String {
     case analyticsHubViewFullReportTapped = "analytics_hub_view_full_report_tapped"
     case analyticsHubSettingsOpened = "analytics_hub_settings_opened"
     case analyticsHubSettingsSaved = "analytics_hub_settings_saved"
+    case analyticsHubCardMetricSelected = "analytics_hub_card_metric_selected"
 
     // MARK: Blaze Events
     //
     case blazeEntryPointDisplayed = "blaze_entry_point_displayed"
     case blazeEntryPointTapped = "blaze_entry_point_tapped"
-    case blazeFlowStarted = "blaze_flow_started"
-    case blazeFlowCanceled = "blaze_flow_canceled"
-    case blazeFlowCompleted = "blaze_flow_completed"
-    case blazeFlowError = "blaze_flow_error"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeViewDismissed = "blaze_view_dismissed"
@@ -217,6 +218,7 @@ enum WooAnalyticsStat: String {
     case blazeIntroLearnMoreTapped = "blaze_intro_learn_more_tapped"
     case blazeCreationFormDisplayed = "blaze_creation_form_displayed"
     case blazeEditAdTapped = "blaze_creation_edit_ad_tapped"
+    case blazeCampaignObjectiveSaved = "blaze_campaign_objective_saved"
     case blazeCreationConfirmDetailsTapped = "blaze_creation_confirm_details_tapped"
     case blazeEditAdSaveTapped = "blaze_creation_edit_ad_save_tapped"
     case blazeEditAdAISuggestionTapped = "blaze_creation_edit_ad_ai_suggestion_tapped"
@@ -838,6 +840,10 @@ enum WooAnalyticsStat: String {
     // Edit Downloadable Products Events
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
     case productsDownloadableFile = "products_downloadable_file"
+    case productDownloadableOnDeviceMediaSelected = "product_downloadable_on_device_media_selected"
+    case productDownloadableDocumentSelected = "product_downloadable_document_selected"
+    case productDownloadableFileUploadingSuccess = "product_downloadable_file_uploading_success"
+    case productDownloadableFileUploadingFailed = "product_downloadable_file_uploading_failed"
 
     // Edit External/Affiliate Product Event
     //
@@ -951,6 +957,13 @@ enum WooAnalyticsStat: String {
     case productCreationAISurveyConfirmationViewDisplayed = "product_creation_ai_survey_confirmation_view_displayed"
     case productCreationAISurveyStartSurveyButtonTapped = "product_creation_ai_survey_start_survey_button_tapped"
     case productCreationAISurveySkipButtonTapped = "product_creation_ai_survey_skip_button_tapped"
+
+    // V2 events
+    case productCreationAIStartedPackagePhotoSelectionFlow = "product_creation_ai_started_package_photo_selection_flow"
+    case productCreationAITextDetected = "product_creation_ai_text_detected"
+    case productCreationAITextDetectionFailed = "product_creation_ai_text_detection_failed"
+    case productCreationAIGeneratedNameDescriptionOptions = "product_creation_ai_generated_name_description_options"
+    case productCreationAIUndoEditTapped = "product_creation_ai_undo_edit_tapped"
 
     // MARK: Remote Request Events
     //
@@ -1220,6 +1233,24 @@ enum WooAnalyticsStat: String {
     case watchOrdersListOpened = "watch_orders_list_opened"
     case watchPushNotificationTapped = "watch_push_notification_tapped"
     case watchOrderDetailOpened = "watch_order_detail_opened"
+
+    // MARK: Google ads campaign management
+    case googleAdsEntryPointDisplayed = "googleads_entry_point_displayed"
+    case googleAdsEntryPointTapped = "googleads_entry_point_tapped"
+    case googleAdsFlowStarted = "googleads_flow_started"
+    case googleAdsFlowCanceled = "googleads_flow_canceled"
+    case googleAdsFlowError = "googleads_flow_error"
+    case googleAdsCampaignCreationSuccess = "googleads_campaign_creation_success"
+
+    // MARK: Background Data Updates
+    case backgroundDataSynced = "background_data_synced"
+    case backgroundDataSyncError = "background_data_sync_error"
+    case pushNotificationOrderBackgroundSynced = "push_notification_order_background_synced"
+    case pushNotificationOrderBackgroundSyncError = "push_notification_order_background_sync_error"
+    case backgroundUpdatesDisabled = "background_updates_disabled"
+
+    // MARK: Point of Sale events
+    case pointOfSaleAddItemToCart = "pos_item_added_to_cart"
 }
 
 extension WooAnalyticsStat {

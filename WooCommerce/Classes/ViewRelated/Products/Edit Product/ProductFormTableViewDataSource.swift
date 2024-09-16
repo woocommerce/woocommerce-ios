@@ -365,6 +365,7 @@ private extension ProductFormTableViewDataSource {
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
         switch row {
         case .price(let viewModel, _),
+             .customFields(let viewModel),
              .inventory(let viewModel, _),
              .productType(let viewModel, _),
              .shipping(let viewModel, _),

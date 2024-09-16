@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `ReviewsDashboardCard`
 ///
+@MainActor
 final class ReviewsDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Reviews card
     var onDismiss: (() -> Void)?
@@ -109,13 +110,16 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .reviews))
         syncingData = true
         syncingError = nil
         do {
             try await synchronizeReviews(filter: currentFilter)
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .reviews))
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing reviews: \(error)")
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .reviews, error: error))
         }
         syncingData = false
     }
@@ -245,24 +249,18 @@ private extension ReviewsDashboardCardViewModel {
             updateProductsResultsController(for: productIDs)
 
             // Get product names and, optionally, read status from notifications.
-            await withTaskGroup(of: Void.self) { group in
+            try await withThrowingTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
-                    do {
-                        try await self?.retrieveProducts(for: productIDs)
-                    } catch {
-                        self?.syncingError = error
-                        DDLogError("⛔️ Dashboard (Reviews) — Error retrieving products: \(error)")
-                    }
+                    try await self?.retrieveProducts(for: productIDs)
                 }
                 if stores.isAuthenticatedWithoutWPCom == false {
                     group.addTask { [weak self] in
-                        do {
-                            try await self?.synchronizeNotifications()
-                        } catch {
-                            self?.syncingError = error
-                            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing notifications: \(error)")
-                        }
+                        try await self?.synchronizeNotifications()
                     }
+                }
+                // rethrow any failure.
+                for try await _ in group {
+                    // no-op if result doesn't throw any error
                 }
             }
         }

@@ -78,6 +78,7 @@ final class ProductStoreTests: XCTestCase {
                                              variation: true,
                                              options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
+        let mockCustomField = MetaData(metadataID: 1, key: "custom_key", value: "custom_value")
         let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                                   productID: sampleProductID,
                                                   downloads: sampleDownloads(),
@@ -91,13 +92,15 @@ final class ProductStoreTests: XCTestCase {
                                                   defaultAttributes: [mockDefaultAttribute],
                                                   addOns: sampleAddOns(),
                                                   bundledItems: [.fake()],
+                                                  password: "Caput Draconis",
                                                   compositeComponents: [.fake()],
-                                                  subscription: .fake())
+                                                  subscription: .fake(),
+                                                  customFields: [mockCustomField])
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0, password: "Caput Draconis")
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -125,6 +128,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
     }
 
     func test_addProduct_returns_error_upon_network_error() {
@@ -177,8 +181,10 @@ final class ProductStoreTests: XCTestCase {
                                                   defaultAttributes: [mockDefaultAttribute],
                                                   addOns: sampleAddOns(),
                                                   bundledItems: [.fake()],
+                                                  password: "Caput Draconis",
                                                   compositeComponents: [.fake()],
-                                                  subscription: .fake())
+                                                  subscription: .fake(),
+                                                  customFields: sampleCustomFields())
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -197,6 +203,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -223,6 +230,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
     }
 
     func test_deleteProduct_returns_error_upon_network_error() {
@@ -561,14 +569,19 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
-    func testRetrieveSingleProductReturnsExpectedFields() throws {
+    func test_retrieve_single_product_returns_expected_fields() throws {
         // Arrange
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass,
+                                          downloadable: true,
+                                          isSampleItem: true).copy(password: "Fortuna Major",
+                                                                   customFields: [MetaData(metadataID: 6000,
+                                                                                           key: "just_a_custom_field",
+                                                                                           value: "10")])
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
@@ -638,7 +651,12 @@ final class ProductStoreTests: XCTestCase {
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass,
+                                          downloadable: true,
+                                          isSampleItem: true).copy(password: "Fortuna Major",
+                                                                   customFields: [MetaData(metadataID: 6000,
+                                                                                           key: "just_a_custom_field",
+                                                                                           value: "10")])
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
@@ -793,7 +811,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` does not produce duplicate entries.
     ///
-    func testUpdateStoredProductEffectivelyUpdatesPreexistantProduct() {
+    func test_update_stored_product_effectively_updates_preexistant_product() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -807,6 +825,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(downloadable: true), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
@@ -835,6 +854,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 2)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCompositeComponent.self), 2)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductSubscription.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
     }
 
     /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
@@ -1277,7 +1297,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProduct` returns the expected `Product`.
     ///
-    func testUpdatingProductReturnsExpectedFields() {
+    func test_updating_product_returns_expected_fields() {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1303,6 +1323,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedDownloadable = false
         let expectedBundleStockStatus = ProductStockStatus.insufficientStock
         let expectedBundleStockQuantity: Int64 = 0
+        let expectedPassword: String = "Caput Draconis"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -1349,6 +1370,7 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.bundleStockQuantity, expectedBundleStockQuantity)
             XCTAssertNil(product.bundleMinSize)
             XCTAssertNil(product.bundleMaxSize)
+            XCTAssertEqual(product.password, expectedPassword)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -1865,25 +1887,6 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let hasPublishedProducts = try XCTUnwrap(result.get())
         XCTAssertFalse(hasPublishedProducts)
-    }
-
-    func test_create_template_product_invokes_correct_network_calls() {
-        // Given
-        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
-        network.simulateResponse(requestUrlSuffix: "products/3946", filename: "product")
-
-        // When
-        let result: Result<Networking.Product, Error> = waitFor { promise in
-            let action = ProductAction.createTemplateProduct(siteID: self.sampleSiteID, template: .physical) { result in
-                promise(result)
-            }
-            productStore.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertNotNil(try? result.get())
     }
 
     // MARK: - ProductAction.generateProductDescription
@@ -3115,6 +3118,7 @@ private extension ProductStoreTests {
                        bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [],
+                       password: nil,
                        compositeComponents: [],
                        subscription: nil,
                        minAllowedQuantity: nil,
@@ -3286,7 +3290,8 @@ private extension ProductStoreTests {
                        minAllowedQuantity: nil,
                        maxAllowedQuantity: nil,
                        groupOfQuantity: nil,
-                       combineVariationQuantities: nil)
+                       combineVariationQuantities: nil,
+                       customFields: sampleCustomFieldsMutated())
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -3504,6 +3509,26 @@ private extension ProductStoreTests {
                                                             Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
                                                            ])
         return [topping, soda, delivery]
+    }
+
+    func sampleCustomFields() -> [Networking.MetaData] {
+        let meta1 = MetaData.fake().copy(metadataID: 4060,
+                                         key: "my_custom_field",
+                                         value: "10")
+        let meta2 = MetaData.fake().copy(metadataID: 4061,
+                                         key: "privileges",
+                                         value: "xyz")
+        return [meta1, meta2]
+    }
+
+    func sampleCustomFieldsMutated() -> [Networking.MetaData] {
+        let meta1 = MetaData.fake().copy(metadataID: 4060,
+                                         key: "my_custom_field_mutated",
+                                         value: "2")
+        let meta2 = MetaData.fake().copy(metadataID: 4061,
+                                         key: "privileges_mutated",
+                                         value: "zyx")
+        return [meta1, meta2]
     }
 }
 

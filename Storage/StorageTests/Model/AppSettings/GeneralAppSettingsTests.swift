@@ -51,18 +51,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         XCTAssertEqual(newSettings.feedbacks[.general], newFeedback)
     }
 
-    func test_it_updates_localAnnouncementDismissed_when_replacing_an_announcement_as_dismissed() {
-        // Given
-        let settings = createGeneralAppSettings()
-        XCTAssertNil(settings.localAnnouncementDismissed[.productDescriptionAI])
-
-        // When
-        let newSettings = settings.updatingAsDismissed(localAnnouncement: .productDescriptionAI)
-
-        // Then
-        XCTAssertEqual(newSettings.localAnnouncementDismissed[.productDescriptionAI], true)
-    }
-
     func test_updating_properties_to_generalAppSettings_does_not_breaks_decoding() throws {
         // Given
         let installationDate = Date(timeIntervalSince1970: 1630314000) // Mon Aug 30 2021 09:00:00 UTC+0000
@@ -74,19 +62,16 @@ final class GeneralAppSettingsTests: XCTestCase {
             FeatureAnnouncementCampaign.linkedProductsPromo:
                 FeatureAnnouncementCampaignSettings(dismissedDate: Date(), remindAfter: nil)]
         let sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [1234, 123, 12, 1]
-        let localAnnouncementDismissed = [LocalAnnouncement.productDescriptionAI: true]
         let previousSettings = GeneralAppSettings(installationDate: installationDate,
                                                   feedbacks: feedbackSettings,
                                                   isViewAddOnsSwitchEnabled: true,
                                                   isInAppPurchasesSwitchEnabled: false,
-                                                  isPointOfSaleEnabled: false,
                                                   knownCardReaders: readers,
                                                   lastEligibilityErrorInfo: eligibilityInfo,
                                                   lastJetpackBenefitsBannerDismissedTime: jetpackBannerDismissedDate,
                                                   featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                                                   sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-                                                  isEUShippingNoticeDismissed: false,
-                                                  localAnnouncementDismissed: localAnnouncementDismissed)
+                                                  isEUShippingNoticeDismissed: false)
 
         let previousEncodedSettings = try JSONEncoder().encode(previousSettings)
         var previousSettingsJson = try JSONSerialization.jsonObject(with: previousEncodedSettings, options: .allowFragments) as? [String: Any]
@@ -105,7 +90,6 @@ final class GeneralAppSettingsTests: XCTestCase {
         assertEqual(newSettings.lastJetpackBenefitsBannerDismissedTime, jetpackBannerDismissedDate)
         assertEqual(newSettings.featureAnnouncementCampaignSettings, featureAnnouncementCampaignSettings)
         assertEqual(newSettings.sitesWithAtLeastOneIPPTransactionFinished, sitesWithAtLeastOneIPPTransactionFinished)
-        assertEqual(newSettings.localAnnouncementDismissed, localAnnouncementDismissed)
     }
 }
 
@@ -123,20 +107,17 @@ private extension GeneralAppSettingsTests {
                                   lastJetpackBenefitsBannerDismissedTime: Date? = nil,
                                   featureAnnouncementCampaignSettings: [Campaign: CampaignSettings] = [:],
                                   sitesWithAtLeastOneIPPTransactionFinished: Set<Int64> = [],
-                                  isEUShippingNoticeDismissed: Bool = false,
-                                  localAnnouncementDismissed: [LocalAnnouncement: Bool] = [:]
+                                  isEUShippingNoticeDismissed: Bool = false
     ) -> GeneralAppSettings {
         GeneralAppSettings(installationDate: installationDate,
                            feedbacks: feedbacks,
                            isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
                            isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
-                           isPointOfSaleEnabled: false,
                            knownCardReaders: knownCardReaders,
                            lastEligibilityErrorInfo: lastEligibilityErrorInfo,
                            lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
                            featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
                            sitesWithAtLeastOneIPPTransactionFinished: sitesWithAtLeastOneIPPTransactionFinished,
-                           isEUShippingNoticeDismissed: isEUShippingNoticeDismissed,
-                           localAnnouncementDismissed: localAnnouncementDismissed)
+                           isEUShippingNoticeDismissed: isEUShippingNoticeDismissed)
     }
 }

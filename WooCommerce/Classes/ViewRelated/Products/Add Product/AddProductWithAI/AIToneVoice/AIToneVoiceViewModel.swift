@@ -1,13 +1,6 @@
 import Foundation
 import protocol WooFoundation.Analytics
 
-public enum AIToneVoice: String, CaseIterable {
-    case casual = "Casual"
-    case formal = "Formal"
-    case flowery = "Flowery"
-    case convincing = "Convincing"
-}
-
 /// View model for `AIToneVoiceView`.
 ///
 final class AIToneVoiceViewModel: ObservableObject {

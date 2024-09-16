@@ -2860,6 +2860,236 @@ final class MigrationTests: XCTestCase {
         // Verify that the new attribute has been set correctly
         XCTAssertEqual(newSite.value(forKey: "visibility") as? Int64, -1)
     }
+
+    func test_migrating_from_112_to_113_adds_new_password_attributes_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 112")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 112)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["password"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 113")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductEntity = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        XCTAssertNil(migratedProductEntity.value(forKey: "password") as? String, "Confirm expected property exists and is nil by default.")
+
+        migratedProductEntity.setValue("test", forKey: "password")
+        try targetContext.save()
+
+        let password = try XCTUnwrap(migratedProductEntity.value(forKey: "password") as? String)
+        XCTAssertEqual(password, "test", "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_113_to_114_adds_new_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 113")
+        let sourceContext = sourceContainer.viewContext
+
+        let blazeCampaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["isEvergreen"],
+                     "Precondition. Property isEvergreen does not exist.")
+
+        XCTAssertNil(blazeCampaign.entity.attributesByName["durationDays"],
+                     "Precondition. Property durationDays does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 114")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCampaignEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool, false, "Confirm property isEvergreen exists and is false by default.")
+
+        XCTAssertEqual(migratedCampaignEntity.value(forKey: "durationDays") as? Int64, 0, "Confirm property durationDays exists and is 0 by default.")
+
+        migratedCampaignEntity.setValue(true, forKey: "isEvergreen")
+        migratedCampaignEntity.setValue(7, forKey: "durationDays")
+        try targetContext.save()
+
+        let isEvergreen = try XCTUnwrap(migratedCampaignEntity.value(forKey: "isEvergreen") as? Bool)
+        let durationDays = try XCTUnwrap(migratedCampaignEntity.value(forKey: "durationDays") as? Int64)
+        XCTAssertEqual(isEvergreen, true)
+        XCTAssertEqual(durationDays, 7)
+    }
+
+    func test_migrating_from_114_to_115_adds_BlazeCampaignObjective_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 114")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 114
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 115")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaignObjective", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 0)
+
+        // Insert a new BlazeCampaignObjective
+        let objective = insertBlazeCampaignObjective(to: targetContext)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaignObjective"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(objective.entity.attributesByName["id"])
+        XCTAssertNotNil(objective.entity.attributesByName["title"])
+        XCTAssertNotNil(objective.entity.attributesByName["generalDescription"])
+        XCTAssertNotNil(objective.entity.attributesByName["suitableForDescription"])
+    }
+
+    func test_migrating_from_114_to_115_renames_OrderMetaData_to_MetaData() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 114")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderMetaData = insertOrderMetaData(to: sourceContext)
+        order.setValue(NSSet(array: [orderMetaData]), forKey: "customFields")
+        try sourceContext.save()
+
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "OrderMetaData", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "MetaData", in: sourceContext))
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderMetaData"), 1)
+
+        let originalOrderMetaData = try XCTUnwrap(sourceContext.first(entityName: "OrderMetaData"))
+        let originalAttributes = originalOrderMetaData.entity.attributesByName.keys.reduce(into: [String: Any]()) { result, key in
+            result[key] = originalOrderMetaData.value(forKey: key)
+        }
+
+        // When
+
+        // Before migrating, confirm that doing lightweight migration is possible
+        // see: https://developer.apple.com/documentation/coredata/migrating_your_data_model_automatically#2903987
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 114")))
+        let destinationModel = try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 115")))
+        let inferredMappingModel = try NSMappingModel.inferredMappingModel(forSourceModel: sourceModel, destinationModel: destinationModel)
+        XCTAssertNotNil(inferredMappingModel, "Failed to infer mapping model. This may indicate that a heavyweight migration is required.")
+
+        // Start migration
+        let targetContainer = try migrate(sourceContainer, to: "Model 115")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        // Check that OrderMetaData entity no longer exists
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderMetaData", in: targetContext))
+
+        // Check that MetaData entity exists
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "MetaData", in: targetContext))
+
+        // Check that the data has been migrated
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 1)
+
+        // Check that the relationship with Order is correct and compare migrated data
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let migratedMetaData = try XCTUnwrap(migratedOrder.value(forKey: "customFields") as? NSSet)
+        XCTAssertEqual(migratedMetaData.count, 1)
+
+        let migratedMetaDataObject = try XCTUnwrap(migratedMetaData.anyObject() as? NSManagedObject)
+        XCTAssertTrue(migratedMetaDataObject.entity.name == "MetaData")
+
+        // Compare attribute values
+        for (attribute, originalValue) in originalAttributes {
+            let migratedValue = migratedMetaDataObject.value(forKey: attribute)
+            XCTAssertEqual(originalValue as? NSObject, migratedValue as? NSObject, "Attribute '\(attribute)' mismatch")
+        }
+
+        // Test adding new MetaData
+        let newMetaData = insertMetaData(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "customFields").add(newMetaData)
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 2)
+        XCTAssertEqual((migratedOrder.value(forKey: "customFields") as? NSSet)?.count, 2)
+    }
+
+    func test_migrating_from_115_to_116_adds_new_startTime_attribute_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 115")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "BlazeCampaignListItem"), 1)
+
+        // Confidence check: new startTime attribute is not present
+        XCTAssertNil(campaign.entity.attributesByName["startTime"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 116")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        XCTAssertNil(migratedEntity.value(forKey: "startTime") as? Date, "Confirm expected property exists and is nil by default.")
+
+        let startTimeDate = Date(timeIntervalSince1970: 1603250786)
+        migratedEntity.setValue(startTimeDate, forKey: "startTime")
+        try targetContext.save()
+
+        let startTime = try XCTUnwrap(migratedEntity.value(forKey: "startTime") as? Date)
+        XCTAssertEqual(startTime, startTimeDate, "Confirm expected property exists, and has expected date.")
+    }
+
+    func test_migrating_from_116_to_117_adds_customFields_property_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 116")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 116)
+        try sourceContext.save()
+
+        // `customFields` should not be present before migration
+        XCTAssertNil(product.entity.relationshipsByName["customFields"])
+
+        // Make sure product exist in model 115
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 117")
+        let targetContext = targetContainer.viewContext
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 0)
+
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        // `customFields` should be present in `migratedProduct`
+        XCTAssertNotNil(migratedProduct.entity.relationshipsByName["customFields"])
+
+        // Test adding custom fields to a migrated `Product`.
+        let customField = insertMetaData(to: targetContext)
+        migratedProduct.mutableSetValue(forKey: "customFields").add(customField)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence check
+        XCTAssertEqual(try targetContext.count(entityName: "MetaData"), 1)
+
+        // The relationship between Product and MetaData should be updated.
+        XCTAssertEqual(migratedProduct.value(forKey: "customFields") as? Set<NSManagedObject>, [customField])
+
+        // The MetaData.product inverse relationship should be updated.
+        XCTAssertEqual(customField.value(forKey: "product") as? NSManagedObject, migratedProduct)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3166,6 +3396,11 @@ private extension MigrationTests {
         // Required since model 33
         if modelVersion >= 33 {
             product.setValue(Date(), forKey: "Date")
+        }
+
+        // Field available from model 113
+        if modelVersion >= 113 {
+            product.setValue("test", forKey: "password")
         }
 
         return product
@@ -3680,5 +3915,25 @@ private extension MigrationTests {
             "title": "Flat rate"
         ])
         return method
+    }
+
+    @discardableResult
+    func insertBlazeCampaignObjective(to context: NSManagedObjectContext) -> NSManagedObject {
+        let method = context.insert(entityName: "BlazeCampaignObjective", properties: [
+            "id": "sales",
+            "title": "Sales",
+            "generalDescription": "Converts potential customers into buyers by encouraging purchase.",
+            "suitableForDescription": "E-commerce, retailers, subscription services."
+        ])
+        return method
+    }
+
+    @discardableResult
+    func insertMetaData(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "MetaData", properties: [
+            "metadataID": 18149,
+            "key": "New Metadata Key",
+            "value": "New Metadata Value"
+        ])
     }
 }

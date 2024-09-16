@@ -1,86 +1,93 @@
 import XCTest
 import WooFoundation
+@testable import Networking
 @testable import Yosemite
 
 final class POSProductProviderTests: XCTestCase {
-
-    private var storageManager: MockStorageManager!
     private var currencySettings: CurrencySettings!
     private var itemProvider: POSItemProvider!
+    private var network: MockNetwork!
     private let siteID: Int64 = 123
 
     override func setUp() {
         super.setUp()
-        storageManager = MockStorageManager()
+        network = MockNetwork()
         currencySettings = CurrencySettings()
+        itemProvider = POSProductProvider(siteID: siteID,
+                                          currencySettings: currencySettings,
+                                          network: network)
     }
 
     override func tearDown() {
-        storageManager = nil
         currencySettings = nil
         itemProvider = nil
         super.tearDown()
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_products() {
+    func test_POSItemProvider_when_fails_request_then_throws_error() async throws {
         // Given
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
+        let expectedError = POSProductProvider.POSProductProviderError.requestFailed
+        network.simulateError(requestUrlSuffix: "products", error: expectedError)
 
         // When
-        let items = itemProvider.providePointOfSaleItems()
-
-        // Then
-        XCTAssertTrue(items.isEmpty)
+        do {
+            _ = try await itemProvider.providePointOfSaleItems()
+            XCTFail("Expected an error, but got success.")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? POSProductProvider.POSProductProviderError, expectedError)
+        }
     }
 
-    func test_POSItemProvider_provides_no_items_when_store_has_no_eligible_products() {
-        // Given
-        let nonEligibleProduct = Product.fake().copy(siteID: siteID,
-                                                productID: 789,
-                                                name: "Choco",
-                                                productTypeKey: "not simple",
-                                                price: "2",
-                                                purchasable: true)
-
-        storageManager.insertSampleProduct(readOnlyProduct: nonEligibleProduct)
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
-
-        // When
-        let items = itemProvider.providePointOfSaleItems()
+    func test_POSItemProvider_provides_no_items_when_store_has_no_products() async throws {
+        // Given/When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        XCTAssertTrue(items.isEmpty)
+        XCTAssertTrue(expectedItems.isEmpty)
     }
 
-    func test_POSItemProvider_when_store_has_eligible_products_then_provides_correctly_formatted_product() {
+    func test_POSItemProvider_provides_items_when_store_has_eligible_products() async throws {
         // Given
-        let productPrice = "2"
-        let expectedFormattedPrice = "$2.00"
-        let eligibleProduct = Product.fake().copy(siteID: siteID,
-                                                productID: 789,
-                                                name: "Choco",
-                                                productTypeKey: "simple",
-                                                price: productPrice,
-                                                purchasable: true)
-
-        storageManager.insertSampleProduct(readOnlyProduct: eligibleProduct)
-        itemProvider = POSProductProvider(storageManager: storageManager,
-                                     siteID: siteID,
-                                     currencySettings: currencySettings)
+        let expectedProductName = "Dymo LabelWriter 4XL"
+        let expectedProductID: Int64 = 208
+        let expectedProductPrice = "216"
+        let expectedFormattedPrice = "$216.00"
+        let expectedNumberOfEligibleProducts = 6
 
         // When
-        let items = itemProvider.providePointOfSaleItems()
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
 
         // Then
-        guard let product = items.first else {
+        guard let product = expectedItems.first else {
             return XCTFail("No eligible products")
         }
-        XCTAssertEqual(product.name, "Choco")
-        XCTAssertEqual(product.productID, 789)
-        XCTAssertEqual(product.price, expectedFormattedPrice)
+        XCTAssertEqual(expectedItems.count, expectedNumberOfEligibleProducts)
+        XCTAssertEqual(product.name, expectedProductName)
+        XCTAssertEqual(product.productID, expectedProductID)
+        XCTAssertEqual(product.price, expectedProductPrice)
+        XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
+    }
+
+    func test_POSItemProvider_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
+        // Given
+        let expectedNumberOfItems = 2
+        let expectedItemNames = ["Dymo LabelWriter 4XL", "Private Hoodie"]
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-for-eligibility-criteria")
+        let expectedItems = try await itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertEqual(expectedItems.count, expectedNumberOfItems)
+
+        guard let firstEligibleItem = expectedItems.first,
+              let secondEligibleItem = expectedItems.last else {
+            return XCTFail("Expected \(expectedNumberOfItems) eligible items. Got \(expectedItems.count) instead.")
+        }
+        XCTAssertEqual(firstEligibleItem.name, expectedItemNames.first)
+        XCTAssertEqual(secondEligibleItem.name, expectedItemNames.last)
     }
 }

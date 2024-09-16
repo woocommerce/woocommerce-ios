@@ -18,28 +18,6 @@ struct Inbox: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
-            // When the app supports iOS 15+, we can remove this workaround by moving the `actionSheet` and `alert` calls to the `ToolbarItem`'s button.
-            Divider()
-                .hidden()
-                .actionSheet(isPresented: $showingActionSheet) {
-                    ActionSheet(
-                        title: Text(Localization.title),
-                        buttons: [
-                            .default(Text(Localization.dismissAllNotes), action: {
-                                showingDismissAlert = true
-                            }),
-                            .cancel()
-                        ]
-                    )
-                }
-                .alert(isPresented: $showingDismissAlert) {
-                    return Alert(title: Text(Localization.dismissAllNotesAlertTitle),
-                                 message: Text(Localization.dismissAllNotesAlertMessage),
-                                 primaryButton: .default(Text(Localization.dismissAllNotes), action: viewModel.dismissAllInboxNotes),
-                                 secondaryButton: .cancel())
-                }
-
             Group {
                 switch viewModel.syncState {
                 case .results:
@@ -83,16 +61,33 @@ struct Inbox: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showingActionSheet = true
-                    }, label: {
-                        Image(uiImage: .moreImage)
-                            .renderingMode(.template)
-                    })
-                        .renderedIf(viewModel.syncState == .results)
+                    if viewModel.syncState == .results {
+                        Button(action: {
+                            showingActionSheet = true
+                        }, label: {
+                            Image(uiImage: .moreImage)
+                                .renderingMode(.template)
+                        })
+                        .confirmationDialog(Localization.title, isPresented: $showingActionSheet) {
+                            Button(Localization.dismissAllNotes) {
+                                showingDismissAlert = true
+                            }
+                        }
+                    }
                 }
             }
-            .wooNavigationBarStyle()
+            .alert(Localization.dismissAllNotesAlertTitle, isPresented: $showingDismissAlert, actions: {
+                Button(Localization.dismissAllNotes) {
+                    showingDismissAlert = false
+                    viewModel.dismissAllInboxNotes()
+                }
+
+                Button(Localization.cancel) {
+                    showingDismissAlert = false
+                }
+            }, message: {
+                Text(Localization.dismissAllNotesAlertMessage)
+            })
         }
     }
 }
@@ -116,6 +111,11 @@ private extension Inbox {
                                                          comment: "Title of the alert for dismissing all the inbox notes.")
         static let dismissAllNotesAlertMessage = NSLocalizedString("Are you sure? Inbox messages will be dismissed forever.",
                                                            comment: "Message displayed in the alert for dismissing all the inbox notes.")
+        static let cancel = NSLocalizedString(
+            "inbox.alert.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the confirmation alert on the Inbox screen."
+        )
     }
 }
 

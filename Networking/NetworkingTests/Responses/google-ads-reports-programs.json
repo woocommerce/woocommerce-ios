@@ -1,0 +1,12 @@
+{
+    "data": {
+        "products": null,
+        "campaigns": null,
+        "intervals": null,
+        "totals": {
+            "sales": 0,
+            "spend": 0
+        },
+        "next_page": null
+    }
+}

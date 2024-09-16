@@ -4,7 +4,7 @@ import Codegen
 /// Represents a OrderFeeTaxStatus Entity.
 ///
 
-public enum OrderFeeTaxStatus: Codable, Hashable, GeneratedFakeable {
+public enum OrderFeeTaxStatus: Codable, Hashable, Sendable, GeneratedFakeable {
     case taxable
     case none
 }

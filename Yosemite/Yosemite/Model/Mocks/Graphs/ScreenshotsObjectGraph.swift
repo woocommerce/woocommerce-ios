@@ -230,7 +230,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     }
 
-    var thisMonthTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .month, items: [
+    var thisMonthTopProducts: TopEarnerStats = createStats(siteID: 1, timeRange: .thisMonth, granularity: .month, items: [
         createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
         createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
         createTopEarningItem(product: Products.coloradoShades, quantity: 5),

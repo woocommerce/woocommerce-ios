@@ -2,6 +2,28 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 117 (Release 20.3.0.0)
+- @pmusolino 2024-09-04
+    - Added `customFields` to-many relationship from `Product` to `MetaData`.
+    
+## Model 116 (Release 20.3.0.0)
+- @selanthiraiyan 2024-09-03
+    - Added `startTime` attribute to `BlazeCampaignListItem` entity.
+    
+## Model 115 (Release 20.2.0.0)
+- @itsmeichigo 2024-08-26
+    - Added `BlazeCampaignObjective` entity.
+- @hafizrahman 2024-08-26
+    - Rename `OrderMetaData` entity to `MetaData` while migrating existing data. The migration is done using automatic data migration (a.k.a lightweight migration) as outlined in https://developer.apple.com/documentation/coredata/migrating_your_data_model_automatically#2903979 . A visual guide for the steps taken is available on https://stackoverflow.com/a/68693108
+
+## Model 114 (Release 20.0.0.0)
+- @itsmeichigo 2024-08-13
+    - Added `isEvergreen` and `durationDays` attributes to `BlazeCampaignListItem` entity.
+
+## Model 113 (Release 19.7.0.0)
+- @pmusolino 2024-07-25
+    - Added `password` attribute to `Product` entity.
+
 ## Model 112 (Release 19.0.0.0)
 - @pmusolino 2024-05-31
     - Added `visibility` attribute to `Site` entity.
@@ -36,7 +58,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 105 (Release 16.8.0.0)
 - @rachelmcr 2023-12-19
     - Removed `price` attribute from `TopEarnerStatsItem` entity.
-- @hihuongdo 2023-12-26
+- @itsmeichigo 2023-12-26
     - Added new entities `BlazeTargetDevice`, `BlazeTargetLanguage`, `BlazeTargetTopic`.
 
 ## Model 104 (Release 16.5.0.0)
@@ -68,7 +90,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
     - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional`, `allowedVariations`, `overridesDefaultVariationAttributes`, `overridesVariations` attributes and `defaultVariationAttributes` relationship to `ProductBundleItem` entity.
 
 ## Model 98 (Release 15.4.0.0)
-- @hihuongdo 2023-09-15
+- @itsmeichigo 2023-09-15
     - Added `isSampleItem` attribute to `Product` entity.
 - @selanthiraiyan 2023-09-14
     - Added `isAIAssitantFeatureActive` attribute to `Site` entity.

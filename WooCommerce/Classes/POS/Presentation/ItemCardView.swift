@@ -3,61 +3,79 @@ import SwiftUI
 
 struct ItemCardView: View {
     private let item: POSItem
-    private let onItemCardTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    init(item: POSItem, onItemCardTapped: (() -> Void)? = nil) {
+    init(item: POSItem) {
         self.item = item
-        self.onItemCardTapped = onItemCardTapped
     }
 
     var body: some View {
-        HStack {
+        HStack(spacing: Constants.cardSpacing) {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: Constants.productImageWidth,
+                                      productImageSize: Constants.productCardSize * scale,
                                       scale: scale,
-                                      productImageCornerRadius: Constants.productImageCornerRadius,
-                                      foregroundColor: .clear)
+                                      foregroundColor: .clear,
+                                      cachesOriginalImage: true)
+                .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                       height: Constants.productCardSize * scale)
+                .clipped()
             } else {
-                // TODO:
-                // Handle what we'll show when there's lack of images:
                 Rectangle()
-                    .frame(width: Constants.productImageWidth * scale,
-                           height: Constants.productImageWidth * scale)
-                    .foregroundColor(.gray)
+                    .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
+                           height: Constants.productCardSize * scale)
+                    .foregroundColor(Color(.secondarySystemFill))
             }
-            VStack {
+
+            DynamicHStack(spacing: Constants.textSpacing) {
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
                 Text(item.name)
-                    .foregroundStyle(Color.primaryBackground)
-                Text(item.price)
-                    .foregroundStyle(Color.primaryBackground)
-                HStack(spacing: 8) {
-                    Spacer()
-                    Button(action: {
-                        onItemCardTapped?()
-                    }, label: { })
-                    .buttonStyle(POSPlusButtonStyle())
-                    .frame(width: 56, height: 56)
-                }
+                    .lineLimit(2)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemNameFont)
+                Spacer()
+                Text(item.formattedPrice)
+                    .foregroundStyle(Color.posPrimaryText)
+                    .font(Constants.itemPriceFont)
+                Spacer().renderedIf(dynamicTypeSize.isAccessibilitySize)
             }
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            Spacer()
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.tertiaryBackground)
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+        .background(Color.posSecondaryBackground)
+        .overlay {
+            RoundedRectangle(cornerRadius: Constants.productCardCornerRadius)
+                .stroke(Color.black, lineWidth: Constants.nilOutline)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: Constants.productCardCornerRadius))
+        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 2)
     }
 }
 
 private extension ItemCardView {
     enum Constants {
-        static let productImageWidth: CGFloat = 60
-        static let productImageCornerRadius: CGFloat = 0
+        static let productCardSize: CGFloat = 112
+        static let maximumProductCardSize: CGFloat = Constants.productCardSize * 2
+        static let productCardCornerRadius: CGFloat = 8
+        // The use of stroke means the shape is rendered as an outline (border) rather than a filled shape,
+        // since we still have to give it a value, we use 0 so it renders no border but it's shaped as one.
+        static let nilOutline: CGFloat = 0
+        static let cardSpacing: CGFloat = 0
+        static let textSpacing: CGFloat = 8
+        static let horizontalTextPadding: CGFloat = 32
+        static let verticalTextPadding: CGFloat = 8
+        static let itemNameFont: POSFontStyle = .posBodyEmphasized
+        static let itemPriceFont: POSFontStyle = .posBodyRegular
     }
 }
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem(),
-                 onItemCardTapped: { })
+    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem())
 }
 #endif

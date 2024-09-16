@@ -102,4 +102,28 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         XCTAssertEqual(actionViewModel.title, "Accept Apple Pay")
         XCTAssertEqual(actionViewModel.url?.absoluteString, "https://woocommerce.com")
     }
+
+    func test_showInboxCTA_property_is_correctly_enabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShowInboxCTAEnabled: true)
+        let note = InboxNote.fake()
+
+        // When
+        let viewModel = InboxNoteRowViewModel(note: note, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertTrue(viewModel.showInboxCTA)
+    }
+
+    func test_showInboxCTA_property_is_correctly_disabled() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShowInboxCTAEnabled: false)
+        let note = InboxNote.fake()
+
+        // When
+        let viewModel = InboxNoteRowViewModel(note: note, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertFalse(viewModel.showInboxCTA)
+    }
 }

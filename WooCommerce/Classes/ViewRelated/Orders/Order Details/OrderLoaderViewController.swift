@@ -3,7 +3,6 @@ import SwiftUI
 import UIKit
 import Yosemite
 
-
 // Loads and render an Order details asynchronously.
 // This is useful for showing the details of an order coming from a push notification or universal link.
 // On Success the OrderDetailsViewController will be rendered "in place".
@@ -42,6 +41,14 @@ class OrderLoaderViewController: UIViewController {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// ResultsController: Queries for the current order.
+    ///
+    private lazy var orderResultsController: ResultsController<StorageOrder> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld AND orderID == %lld", siteID, orderID)
+        return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// The current list of order statuses for the default site
@@ -87,6 +94,12 @@ private extension OrderLoaderViewController {
     /// Loads (and displays) the specified Order.
     ///
     func reloadOrder() {
+        // If we have an stored order there is no point on re-loading it now and delaying the user interface.
+        // In any the OrderDetailViewController will reload the order data.
+        if let storedOrder = orderResultsController.fetchedObjects.first {
+            return self.state = .success(order: storedOrder)
+        }
+
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let self = self else {
                 return
@@ -117,6 +130,7 @@ private extension OrderLoaderViewController {
         // Order status FRC
         do {
             try statusResultsController.performFetch()
+            try? orderResultsController.performFetch()
         } catch {
             DDLogError("⛔️ Unable to fetch Order Status for Site \(siteID) and Order \(orderID): \(error)")
         }
@@ -244,16 +258,20 @@ private extension OrderLoaderViewController {
     /// Marks a specific Notification as read.
     ///
     func markNotificationAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
+        guard note.read == false,
+              let orderID = note.meta.identifier(forKey: .order) else {
             return
         }
 
-        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
-            if let error = error {
+        Task {
+            let markReadResult = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: note.noteID, orderID: orderID)
+            switch markReadResult {
+            case .success:
+                return
+            case .failure(let error):
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

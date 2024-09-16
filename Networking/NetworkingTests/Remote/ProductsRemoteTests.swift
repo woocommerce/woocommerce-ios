@@ -111,6 +111,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
@@ -224,6 +225,7 @@ final class ProductsRemoteTests: XCTestCase {
                                       bundleStockStatus: nil,
                                       bundleStockQuantity: nil,
                                       bundledItems: [],
+                                      password: nil,
                                       compositeComponents: [],
                                       subscription: nil,
                                       minAllowedQuantity: nil,
@@ -296,7 +298,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
     ///
-    func testLoadAllProductsProperlyRelaysNetwokingErrors() {
+    func test_loadAllProducts_properly_relays_netwoking_errors() {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load all products returns error")
 
@@ -318,7 +320,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly parses the `product` sample response.
     ///
-    func testLoadSingleProductProperlyReturnsParsedProduct() throws {
+    func test_loadSingleProduct_properly_returns_parsed_product() throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load single product")
@@ -344,7 +346,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly parses the `product-external` sample response.
     ///
-    func testLoadSingleExternalProductProperlyReturnsParsedProduct() throws {
+    func test_loadSingleExternalProduct_properly_returns_parsed_product() throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-external")
@@ -370,7 +372,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadProduct properly relays any Networking Layer errors.
     ///
-    func testLoadSingleProductProperlyRelaysNetwokingErrors() throws {
+    func test_loadSingleProduct_properly_relays_netwoking_errors() throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Load single product returns error")
@@ -522,7 +524,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that updateProduct properly parses the `product-update` sample response.
     ///
-    func testUpdateProductProperlyReturnsParsedProduct() {
+    func test_updateProduct_properly_returns_parsed_product() {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
@@ -548,7 +550,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that updateProduct properly relays Networking Layer errors.
     ///
-    func testUpdateProductProperlyRelaysNetwokingErrors() {
+    func test_updateProduct_properly_relays_netwoking_errors() {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -684,23 +686,6 @@ final class ProductsRemoteTests: XCTestCase {
         let queryParameters = try XCTUnwrap(network.queryParameters)
         let emptyParam = "status="
         XCTAssertFalse(queryParameters.contains(emptyParam), "Unexpected empty query param: \(emptyParam)")
-    }
-
-    func test_create_template_product_returns_product_id() throws {
-        // Given
-        let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "onboarding/tasks/create_product_from_template", filename: "product-id-only")
-
-        // When
-        let result = waitFor { promise in
-            remote.createTemplateProduct(for: self.sampleSiteID, template: .physical) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let productID = try XCTUnwrap(result.get())
-        XCTAssertEqual(productID, 3946)
     }
 
     // MARK: - `loadNumberOfProducts`
@@ -861,6 +846,35 @@ final class ProductsRemoteTests: XCTestCase {
                                                       order: .descending)
         }, errorAssert: {
             // Then
+            $0 as? NetworkError == .notFound()
+        })
+    }
+
+    func test_loadAllSimpleProductsForPointOfSale_loads_simple_products() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedProductsFromResponse = 6
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all-type-simple")
+
+        let products = try await remote.loadAllSimpleProductsForPointOfSale(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(products.count, expectedProductsFromResponse)
+        for product in products {
+            XCTAssertEqual(try XCTUnwrap(product).productType, .simple)
+        }
+    }
+
+    func test_loadAllSimpleProductsForPointOfSale_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When/Then
+        await assertThrowsError({
+            let _ = try await remote.loadAllSimpleProductsForPointOfSale(for: sampleSiteID)
+        }, errorAssert: {
             $0 as? NetworkError == .notFound()
         })
     }

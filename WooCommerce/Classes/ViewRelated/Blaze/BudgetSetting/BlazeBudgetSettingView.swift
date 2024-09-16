@@ -5,10 +5,9 @@ struct BlazeBudgetSettingView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.sizeCategory) private var sizeCategory
+
     @State private var showingImpressionInfo = false
     @State private var showingDurationSetting = false
-    @State private var duration: Double = 0
-    @State private var startDate = Date()
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -33,29 +32,17 @@ struct BlazeBudgetSettingView: View {
             footerView
         }
         .sheet(isPresented: $showingImpressionInfo) {
-            if #available(iOS 16, *) {
-                impressionInfoView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
-            } else {
-                impressionInfoView
-            }
+            impressionInfoView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
         }
         .sheet(isPresented: $showingDurationSetting) {
-            if #available(iOS 16, *) {
-                durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
-            } else {
-                durationSettingView
-            }
-        }
-        .onAppear {
-            duration = viewModel.dayCount
-            startDate = viewModel.startDate
+            durationSettingView.presentationDetents(sizeCategory.isAccessibilityCategory ? [.medium, .large] : [.medium])
         }
     }
 }
 
 private extension BlazeBudgetSettingView {
     var mainContentView: some View {
-        ScrollableVStack(spacing: Layout.sectionSpacing) {
+        ScrollableVStack(padding: 0, spacing: Layout.sectionSpacing) {
             // Title and subtitle
             VStack(spacing: Layout.sectionContentSpacing) {
                 Text(Localization.title)
@@ -67,41 +54,60 @@ private extension BlazeBudgetSettingView {
                     .subheadlineStyle()
             }
 
-            // Total budget amount details
-            VStack {
-                Text(Localization.totalSpend)
+            // Daily budget amount details
+            VStack(spacing: Layout.dailyBudgetSectionSpacing) {
+                Text(Localization.dailySpend)
+                    .foregroundStyle(Color(.text))
                     .subheadlineStyle()
 
-                Text(viewModel.totalAmountText)
-                    .bold()
+                Text(String(format: "$%.0f", viewModel.dailyAmount))
+                    .fontWeight(.semibold)
                     .largeTitleStyle()
 
-                Text(viewModel.formattedTotalDuration)
-                    .foregroundColor(Color.secondary)
-                    .bold()
-                    .largeTitleStyle()
-            }
-
-            // Daily amount slider and estimated impression
-            VStack {
-                Text(viewModel.dailyAmountText)
-
+                // Daily amount slider
                 Slider(value: $viewModel.dailyAmount,
                        in: viewModel.dailyAmountSliderRange,
                        step: BlazeBudgetSettingViewModel.Constants.dailyAmountSliderStep)
+            }
 
-                AdaptiveStack {
-                    Text(Localization.estimatedImpressions)
-                    Image(systemName: "info.circle")
+            // Schedule
+            VStack(alignment: .leading) {
+                // Title
+                Text(Localization.schedule)
+                    .foregroundStyle(Color(.text))
+                    .subheadlineStyle()
+
+                // Formatted duration
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(viewModel.formattedDateRange)
+                    Spacer()
+                    Button(Localization.edit) {
+                        showingDurationSetting = true
+                    }
+                    .foregroundStyle(Color.accentColor)
                 }
-                .font(.subheadline)
-                .onTapGesture {
+                .tertiaryTitleStyle()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Estimated impressions
+            VStack(alignment: .leading) {
+                Button {
                     showingImpressionInfo = true
+                } label: {
+                    AdaptiveStack(horizontalAlignment: .leading) {
+                        Text(Localization.estimatedImpressions)
+                        Image(systemName: "info.circle")
+                    }
+                    .font(.subheadline)
                 }
+                .buttonStyle(.plain)
+                .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
                 .renderedIf(viewModel.forecastedImpressionState != .failure)
 
                 forecastedImpressionsView
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
@@ -112,8 +118,8 @@ private extension BlazeBudgetSettingView {
             ActivityIndicator(isAnimating: .constant(true), style: .medium)
         case .result(let formattedResult):
             Text(formattedResult)
-                .bold()
-                .font(.subheadline)
+                .fontWeight(.semibold)
+                .tertiaryTitleStyle()
         case .failure:
             Button {
                 Task {
@@ -128,29 +134,10 @@ private extension BlazeBudgetSettingView {
     }
 
     var footerView: some View {
-        VStack(alignment: .leading, spacing: Layout.sectionContentSpacing) {
+        VStack(alignment: .center, spacing: Layout.sectionContentSpacing) {
             Divider()
-
-            // Duration title
-            Text(Localization.duration)
-                .secondaryBodyStyle()
-                .padding(.horizontal, Layout.contentPadding)
-                .padding(.top, Layout.sectionContentSpacing)
-
-            // Formatted duration
-            HStack {
-                Text(viewModel.formattedDateRange)
-                    .bold()
-                    .bodyStyle()
-                Text("·")
-                Text(Localization.edit)
-                    .foregroundColor(.accentColor)
-                    .bodyStyle()
-            }
-            .padding(.horizontal, Layout.contentPadding)
-            .onTapGesture {
-                showingDurationSetting = true
-            }
+            // Total amount and duration
+            AttributedText(viewModel.formattedAmountAndDuration)
 
             // CTA to confirm all settings
             Button(Localization.update) {
@@ -159,7 +146,6 @@ private extension BlazeBudgetSettingView {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding([.horizontal, .bottom], Layout.contentPadding)
-            .padding(.top, Layout.sectionContentSpacing)
         }
         .background(Color(.systemBackground))
     }
@@ -184,67 +170,27 @@ private extension BlazeBudgetSettingView {
     }
 
     var durationSettingView: some View {
-        NavigationView {
-            ScrollView {
-                // Duration slider
-                VStack(spacing: Layout.sectionContentSpacing) {
-                    Text(viewModel.formatDayCount(duration))
-                        .fontWeight(.semibold)
-                        .bodyStyle()
-
-                    Slider(value: $duration,
-                           in: viewModel.dayCountSliderRange,
-                           step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
-                }
-                .padding(Layout.contentPadding)
-                .padding(.top, Layout.sectionSpacing)
-
-                // Start date picker
-                VStack {
-                    AdaptiveStack(horizontalAlignment: .leading) {
-                        Text(Localization.starts)
-                            .bodyStyle()
-
-                        Spacer()
-
-                        DatePicker(selection: $startDate, in: viewModel.minDayAllowedInPickerSelection..., displayedComponents: [.date]) {
-                            EmptyView()
-                        }
-                        .datePickerStyle(.compact)
-                    }
-                    .padding(Layout.contentPadding)
-
-                    Divider()
-                }
-
-                Spacer()
-
-                // CTA
-                Button(Localization.apply) {
-                    viewModel.didTapApplyDuration(dayCount: duration, since: startDate)
-                    showingDurationSetting = false
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentPadding)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(Localization.setDuration)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        showingDurationSetting = false
-                    }
-                }
-            }
-        }
+        BlazeScheduleSettingView(startDate: viewModel.startDate,
+                                 hasEndDate: viewModel.hasEndDate,
+                                 duration: viewModel.dayCount,
+                                 durationTextFormatter: { duration in
+            viewModel.formatDayCount(duration)
+        }, onCompletion: { startDate, hasEndDate, duration in
+            viewModel.hasEndDate = hasEndDate
+            viewModel.didTapApplyDuration(dayCount: duration, since: startDate)
+            showingDurationSetting = false
+        }, onDismiss: {
+            showingDurationSetting = false
+        })
     }
 }
 
 private extension BlazeBudgetSettingView {
     enum Layout {
+        static let dailyBudgetSectionSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
-        static let sectionContentSpacing: CGFloat = 8
-        static let sectionSpacing: CGFloat = 40
+        static let sectionContentSpacing: CGFloat = 16
+        static let sectionSpacing: CGFloat = 32
     }
 
     enum Localization {
@@ -259,24 +205,24 @@ private extension BlazeBudgetSettingView {
             comment: "Title of the Blaze budget setting screen"
         )
         static let subtitle = NSLocalizedString(
-            "blazeBudgetSettingView.subtitle",
-            value: "How much would you like to spend on your product promotion campaign?",
+            "blazeBudgetSettingView.description",
+            value: "How much would you like to spend on your campaign, and how long should it run for?",
             comment: "Subtitle of the Blaze budget setting screen"
         )
-        static let totalSpend = NSLocalizedString(
-            "blazeBudgetSettingView.totalSpend",
-            value: "Total spend",
-            comment: "Label for total spend on the Blaze budget setting screen"
+        static let dailySpend = NSLocalizedString(
+            "blazeBudgetSettingView.dailySpend",
+            value: "Daily spend",
+            comment: "Title label for the daily spend amount on the Blaze ads campaign budget settings screen."
         )
         static let estimatedImpressions = NSLocalizedString(
-            "blazeBudgetSettingView.estimatedImpressions",
-            value: "Estimated people reached per day",
+            "blazeBudgetSettingView.estimatedTotalImpressions",
+            value: "Estimated total impressions",
             comment: "Label for the estimated impressions on the Blaze budget setting screen"
         )
-        static let duration = NSLocalizedString(
-            "blazeBudgetSettingView.duration",
-            value: "Duration",
-            comment: "Label for the campaign duration on the Blaze budget setting screen"
+        static let schedule = NSLocalizedString(
+            "blazeBudgetSettingView.schedule",
+            value: "Schedule",
+            comment: "Label for the campaign schedule on the Blaze budget setting screen"
         )
         static let edit = NSLocalizedString(
             "blazeBudgetSettingView.edit",
@@ -306,25 +252,15 @@ private extension BlazeBudgetSettingView {
             value: "Done",
             comment: "Button to dismiss the Blaze impression info screen"
         )
-        static let setDuration = NSLocalizedString(
-            "blazeBudgetSettingView.setDuration",
-            value: "Set duration",
-            comment: "Title of the Blaze campaign duration setting screen"
-        )
-        static let starts = NSLocalizedString(
-            "blazeBudgetSettingView.starts",
-            value: "Starts",
-            comment: "Label of the start date picker on the Blaze campaign duration setting screen"
-        )
-        static let apply = NSLocalizedString(
-            "blazeBudgetSettingView.apply",
-            value: "Apply",
-            comment: "Button to apply the changes on the Blaze campaign duration setting screen"
-        )
         static let forecastingFailed = NSLocalizedString(
             "blazeBudgetSettingView.forecastingFailed",
             value: "Failed to estimate impressions. Retry?",
             comment: "Button to retry fetching estimated impressions on the Blaze campaign duration setting screen"
+        )
+        static let estimatedImpressionsAccessibilityHint = NSLocalizedString(
+            "blazeBudgetSettingView.estimatedImpressionsAccessibilityHint",
+            value: "Tap for more information about estimated impressions",
+            comment: "Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen"
         )
     }
 }
@@ -332,6 +268,10 @@ private extension BlazeBudgetSettingView {
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
         let tomorrow = Date.now + 60 * 60 * 24 // Current date + 1 day
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: tomorrow) { _, _, _ in })
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123,
+                                                                      dailyBudget: 5,
+                                                                      isEvergreen: true,
+                                                                      duration: 7,
+                                                                      startDate: tomorrow) { _, _, _, _ in })
     }
 }

@@ -21,8 +21,9 @@ protocol CardPresentPaymentFacade {
     /// - Output: publishes intermediate events on the `paymentEventPublisher` as required.
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult
 
-    /// Also cancels any in-progress connection attempt.
-    func disconnectReader()
+    /// Disconnects the currently connected card reader, if present.
+    /// Also cancels any in-progress payment, if possible.
+    func disconnectReader() async
 
     /// Collects a card present payment for an order.
     /// If the appropriate type of reader is not already connected, this should attempt a connection before the payment.

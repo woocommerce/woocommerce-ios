@@ -1,0 +1,2 @@
+En esta versión, hemos habilitado el escaneo de números de seguimiento de pedidos y mejorado la gestión de contraseñas de productos. También hemos añadido mejoras para el escáner de productos, los pagos en efectivo y los descuentos.
+La creación de campañas de Blaze Ads se ha actualizado con una mejor experiencia para la selección de imágenes y los ajustes del presupuesto.

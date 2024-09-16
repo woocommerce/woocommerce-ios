@@ -98,7 +98,7 @@ final class MainTabBarController: UITabBarController {
     private let productsNavigationController = WooTabNavigationController()
 
     private let reviewsNavigationController = WooTabNavigationController()
-    private let hubMenuNavigationController = WooTabNavigationController()
+    private let hubMenuContainerController = TabContainerController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
@@ -324,8 +324,19 @@ extension MainTabBarController {
 
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///
-    static func switchToHubMenuTab(completion: (() -> Void)? = nil) {
-        navigateTo(.hubMenu, completion: completion)
+    static func switchToHubMenuTab(completion: ((HubMenuViewController?) -> Void)? = nil) {
+        navigateTo(.hubMenu, completion: {
+            let hubMenuViewController: HubMenuViewController? = {
+                guard let hubMenuTabController = childViewController() as? TabContainerController,
+                      let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
+                      let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
+                    DDLogError("⛔️ Could not switch to the Hub Menu")
+                    return nil
+                }
+                return hubMenuViewController
+            }()
+            completion?(hubMenuViewController)
+        })
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -359,16 +370,27 @@ extension MainTabBarController {
     ///
     static func presentNotificationDetails(for noteID: Int64) {
         let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
-            guard let note = note else {
+            guard let note = note,
+                  let siteID = note.meta.identifier(forKey: .site) else {
                 return
             }
-            let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-
-            showStore(with: siteID, onCompletion: { _ in
+            showStore(with: Int64(siteID), onCompletion: { _ in
                 presentNotificationDetails(for: note)
             })
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Presents the details  of a push notification.
+    static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
+        guard let note = notification.note,
+              let siteID = note.meta.identifier(forKey: .site) else {
+            presentNotificationDetails(for: notification.noteID)
+            return
+        }
+        showStore(with: Int64(siteID), onCompletion: { _ in
+            presentNotificationDetails(for: note)
+        })
     }
 
     /// Presents the order details if the `note` is for an order push notification.
@@ -379,6 +401,8 @@ extension MainTabBarController {
             switchToOrdersTab {
                 ordersTabSplitViewWrapper()?.presentDetails(for: note)
             }
+        case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
+           navigateToBlazeCampaignDetails(using: note)
         default:
             break
         }
@@ -436,17 +460,33 @@ extension MainTabBarController {
         })
     }
 
-    static func presentOrderCreationFlow() {
-        switchToOrdersTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let ordersContainerController = tabBar?.ordersContainerController
+    static func navigateToBlazeCampaignDetails(using note: Note) {
+        guard note.kind.isBlaze else {
+            return
+        }
 
-            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
+        guard let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its site ID!")
+            return
+        }
+
+        guard let campaignID = note.meta.identifier(forKey: .campaignID) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its campaign ID!")
+            return
+        }
+
+        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+            // It failed to show the campaign's store.
+            guard storeIsShown else {
                 return
             }
 
-            ordersSplitViewWrapperController.presentOrderCreationFlow()
-        }
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                switchToHubMenuTab() { hubMenuViewController in
+                    hubMenuViewController?.showBlazeCampaign("\(campaignID)")
+                }
+            }
+        })
     }
 
     static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
@@ -475,33 +515,22 @@ extension MainTabBarController {
     }
 
     static func presentPayments() {
-        switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return
-            }
-
-            hubMenuViewController.showPaymentsMenu()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showPaymentsMenu()
         }
     }
 
     static func presentCoupons() {
-        switchToHubMenuTab() {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return
-            }
-
-            hubMenuViewController.showCoupons()
+        switchToHubMenuTab() { hubMenuViewController in
+            hubMenuViewController?.showCoupons()
         }
     }
 
     /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.
     ///
     static func navigateToPrivacySettings() {
-        switchToHubMenuTab {
-            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-                return DDLogError("⛔️ Could not switch to the Hub Menu")
-            }
-            hubMenuViewController.showPrivacySettings()
+        switchToHubMenuTab { hubMenuViewController in
+            hubMenuViewController?.showPrivacySettings()
         }
     }
 
@@ -517,8 +546,18 @@ extension MainTabBarController {
 //
 extension MainTabBarController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        navigateTo(.hubMenu) { [weak self] in
-            self?.hubMenuTabCoordinator?.navigate(to: destination)
+        switch destination {
+        case is HubMenuDestination,
+            is PaymentsMenuDestination:
+            navigateTo(.hubMenu) { [weak self] in
+                self?.hubMenuTabCoordinator?.navigate(to: destination)
+            }
+        case is OrdersDestination:
+            navigateTo(.orders) {
+                Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
+            }
+        default:
+            return
         }
     }
 }
@@ -549,7 +588,7 @@ private extension MainTabBarController {
             case .products:
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
             case .hubMenu:
-                return hubMenuNavigationController
+                return hubMenuContainerController
         }
     }
 
@@ -588,7 +627,6 @@ private extension MainTabBarController {
         if hubMenuTabCoordinator == nil {
             let hubTabCoordinator = createHubMenuTabCoordinator()
             self.hubMenuTabCoordinator = hubTabCoordinator
-            hubTabCoordinator.start()
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
@@ -607,7 +645,7 @@ private extension MainTabBarController {
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
-        HubMenuCoordinator(navigationController: hubMenuNavigationController,
+        HubMenuCoordinator(tabContainerController: hubMenuContainerController,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in
@@ -676,7 +714,7 @@ private extension MainTabBarController {
             switch error.error {
             case .failedSavingProductAfterImageUpload:
                 self.handleErrorSavingProductAfterImageUpload(error)
-            case .failedUploadingImage:
+            case .failedUploadingImage, .noActionHandlerFound, .noRemoteProductIDFound:
                 self.handleErrorUploadingImage(error)
             }
         }
@@ -768,6 +806,7 @@ private extension MainTabBarController {
         // to ensure that the first transition is finished. Without this delay
         // the second one might not happen.
         static let screenTransitionsDelay = 0.3
+        static let blazeScreenTransitionsDelay = 1.0
     }
 }
 

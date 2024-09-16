@@ -110,6 +110,22 @@ struct SupportForm: View {
                             )
                     }
 
+                    // Site Address Text Field
+                    VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
+                        Text(Localization.siteAddress)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+
+                        TextField("", text: $viewModel.siteAddress)
+                            .keyboardType(.URL)
+                            .bodyStyle()
+                            .padding(insets: Layout.subjectInsets)
+                            .background(Color(.listForeground(modal: false)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                    }
+
                     // Description Text Editor
                     VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                         Text(Localization.message)
@@ -190,6 +206,7 @@ private extension SupportForm {
                                                   " and we will be in touch soon."].joined(),
                                                   comment: "Message info on the support screen.")
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
+        static let siteAddress = NSLocalizedString("Site Address", comment: "Site Address title on the support form")
         static let message = NSLocalizedString("Message", comment: "Message on the support form")
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
 

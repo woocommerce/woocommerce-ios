@@ -63,6 +63,32 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// The opacity of the product row based on the selected state.
+    var rowOpacity: CGFloat {
+        switch selectedState {
+        case .unsupported: 0.7
+        case .notSelected, .selected, .partiallySelected: 1
+        }
+    }
+
+    /// Whether selection is enabled for the product row.
+    var selectionEnabled: Bool {
+        switch selectedState {
+        case .unsupported: false
+        case .notSelected, .selected, .partiallySelected: true
+        }
+    }
+
+    /// Toggled selected value for when the row is tapped.
+    /// If the row is currently selected, tapping it again should returns false for the toggled value and vice versa.
+    /// Unsupported state returns false by default.
+    var toggledSelectedValue: Bool {
+        switch selectedState {
+        case .selected, .unsupported: false
+        case .notSelected, .partiallySelected: true
+        }
+    }
+
     /// Determines if Subscription-type product details should be shown
     ///
     var shouldShowProductSubscriptionsDetails: Bool {
@@ -210,7 +236,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        if productSubscriptionDetails != nil {
+        if case .unsupported(let unsupportedReason) = selectedState {
+            unsupportedReason
+        } else if productSubscriptionDetails != nil {
             [stockOrAttributesLabel, skuLabel, variationsLabel]
                 .compactMap({ $0 })
                 .filter { $0.isNotEmpty }
@@ -225,6 +253,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
+        if case .unsupported(let reason) = selectedState {
+            return ""
+        }
+
         var labels = [productTypeLabel]
         // Only add the SKU label to the secondary product details when there are no
         // product subscription details
@@ -252,7 +284,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
+        if case .unsupported(let reason) = selectedState {
+            return [name, reason].joined(separator: ". ")
+        }
+        return [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
             .joined(separator: ". ")
     }
@@ -343,12 +378,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             price = product.price
         }
 
-        let productBundlesEnabled = featureFlagService.isFeatureFlagEnabled(.productBundles)
-
         // If product is a product bundle with insufficient bundle stock, use that as the product stock status.
         let stockStatusKey: String = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockStatus) {
-            case (true, .bundle, .insufficientStock):
+            switch (product.productType, product.bundleStockStatus) {
+            case (.bundle, .insufficientStock):
                 return ProductStockStatus.insufficientStock.rawValue
             default:
                 return product.stockStatusKey
@@ -357,8 +390,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         // If product is a product bundle with a bundle stock quantity, use that as the product stock quantity.
         let stockQuantity: Decimal? = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
-            case (true, .bundle, .some(let bundleStockQuantity)):
+            switch (product.productType, product.bundleStockQuantity) {
+            case (.bundle, .some(let bundleStockQuantity)):
                 return Decimal(bundleStockQuantity)
             default:
                 return product.stockQuantity
@@ -367,8 +400,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         // If product is a product bundle with a bundle stock quantity, override product `manageStock` setting.
         let manageStock: Bool = {
-            switch (productBundlesEnabled, product.productType, product.bundleStockQuantity) {
-            case (true, .bundle, .some):
+            switch (product.productType, product.bundleStockQuantity) {
+            case (.bundle, .some):
                 return true
             default:
                 return product.manageStock

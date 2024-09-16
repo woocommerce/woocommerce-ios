@@ -1,0 +1,2 @@
+In questa versione abbiamo abilitato la scansione dei codici di tracciamento e migliorato la gestione della password dei prodotti. Abbiamo inoltre aggiunto miglioramenti per la scansione dei prodotti, pagamenti in contanti e sconti.
+La creazione della campagna annunci Blaze è stata aggiornata e ora offre un'esperienza migliorata nella selezione di immagini e impostazioni del budget.

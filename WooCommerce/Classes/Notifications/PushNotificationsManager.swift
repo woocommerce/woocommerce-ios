@@ -11,6 +11,16 @@ import protocol WooFoundation.Analytics
 ///
 final class PushNotificationsManager: PushNotesManager {
 
+    private var inAppNotices: Bool = true
+
+    func disableInAppNotifications() {
+        inAppNotices = false
+    }
+
+    func enableInAppNotifications() {
+        inAppNotices = true
+    }
+
     /// PushNotifications Configuration
     ///
     let configuration: PushNotificationsConfiguration
@@ -249,7 +259,7 @@ extension PushNotificationsManager {
     @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
-        guard applicationState == .active, content.isRemoteNotification else {
+        guard applicationState == .active, content.isRemoteNotification, inAppNotices == true else {
             // Local notifications are currently not handled when the app is in the foreground.
             return UNNotificationPresentationOptions(rawValue: 0)
         }
@@ -305,7 +315,7 @@ extension PushNotificationsManager {
             backgroundNotificationsSubject.send(notification)
         }
 
-        return await synchronizeNotifications()
+        return await PushNotificationBackgroundSynchronizer(userInfo: userInfo, stores: configuration.storesManager).sync()
     }
 
     func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
@@ -495,7 +505,7 @@ private extension PushNotificationsManager {
     ///
     /// - Parameter notification: Push notification content from a remote notification.
     @MainActor
-    func handleInactiveRemoteNotification(notification: PushNotification) async {
+    func handleInactiveRemoteNotification(notification: WooCommerce.PushNotification) async {
         guard applicationState == .inactive else {
             return
         }
@@ -521,7 +531,7 @@ private extension PushNotificationsManager {
 private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
         if notification.kind != .comment {
-            configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+            configuration.application.presentNotificationDetails(notification: notification)
         }
     }
 }

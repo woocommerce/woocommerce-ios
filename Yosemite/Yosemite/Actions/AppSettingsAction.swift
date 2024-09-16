@@ -98,14 +98,6 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Sets the state for the Point Of Sale beta feature switch
-    ///
-    case setPointOfSaleSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
-
-    /// Loads the most recent state for the Point Of Sale beta feature switch
-    ///
-    case loadPointOfSaleSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
-
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -242,12 +234,6 @@ public enum AppSettingsAction: Action {
     /// Existing values are preserved, this will not overwrite previously stored dates.
     ///
     case storeInPersonPaymentsTransactionIfFirst(siteID: Int64, cardReaderType: CardReaderType)
-
-    // MARK: - Local Announcement Visibility
-
-    case getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> ())
-
-    case setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> Void)
 
     // MARK: - Tax Rates
 

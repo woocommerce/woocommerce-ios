@@ -4,6 +4,7 @@ import SwiftUI
 /// Though Simple Payments has been migrated to order creation, the summary view is still used in the Tap To Pay trial flow
 /// in the Menu tab > Payments > Tap to pay.
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 struct SimplePaymentsSummary: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
@@ -45,14 +46,11 @@ struct SimplePaymentsSummary: View {
             .ignoresSafeArea(edges: .horizontal)
 
             TakePaymentSection(viewModel: viewModel)
-
-            // Navigation To Payment Methods
-            LazyNavigationLink(destination: PaymentMethodsView(dismiss: dismiss,
-                                                               rootViewController: rootViewController,
-                                                               viewModel: viewModel.createMethodsViewModel()),
-                               isActive: $viewModel.navigateToPaymentMethods) {
-                EmptyView()
-            }
+        }
+        .navigationDestination(isPresented: $viewModel.navigateToPaymentMethods) {
+            PaymentMethodsView(dismiss: dismiss,
+                               rootViewController: rootViewController,
+                               viewModel: viewModel.createMethodsViewModel())
         }
         .background(Color(.listBackground).ignoresSafeArea())
         .navigationTitle(Localization.title)
@@ -77,6 +75,7 @@ struct SimplePaymentsSummary: View {
 
 /// Represents the Custom amount section
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private struct CustomAmountSection: View {
 
     /// ViewModel to drive the view content.
@@ -119,6 +118,7 @@ private struct CustomAmountSection: View {
 
 /// Represents the email section
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private struct EmailSection: View {
 
     /// ViewModel to drive the view content
@@ -148,6 +148,7 @@ private struct EmailSection: View {
 
 /// Represents the Payments Section
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private struct PaymentsSection: View {
 
     /// ViewModel to drive the view content.
@@ -199,6 +200,7 @@ private struct PaymentsSection: View {
 
 /// Represents the Order note section
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private struct NoteSection: View {
 
     /// ViewModel to drive the view content.
@@ -272,6 +274,7 @@ private struct NoteSection: View {
 
 /// Represents the bottom take payment button
 ///
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private struct TakePaymentSection: View {
 
     /// ViewModel to drive the view content.
@@ -296,6 +299,7 @@ private struct TakePaymentSection: View {
 }
 
 // MARK: Constants
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 private extension SimplePaymentsSummary {
     enum Layout {
         static let spacerHeight: CGFloat = 16.0
@@ -341,6 +345,7 @@ private extension SimplePaymentsSummary {
 }
 
 // MARK: Previews
+@available(*, deprecated, message: "Simple payments is removed, use Order Creation with custom amounts instead.")
 struct SimplePaymentsSummary_Preview: PreviewProvider {
     static var previews: some View {
         SimplePaymentsSummary(viewModel: createSampleViewModel())

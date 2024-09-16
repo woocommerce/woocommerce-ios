@@ -132,11 +132,6 @@ private extension BlazeCreateCampaignIntroView {
 
         var body: some View {
             VStack(alignment: .leading) {
-                Image(uiImage: .blaze)
-                    .resizable()
-                    .renderingMode(.template)
-                    .foregroundColor(Color(.accent))
-                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
 
                 Text(feature.title)
                     .fontWeight(.bold)
@@ -180,7 +175,7 @@ private extension BlazeCreateCampaignIntroView {
             )
             static let subtitle = NSLocalizedString(
                 "blazeCreateCampaignIntroView.quickStart.subtitle",
-                value: "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD.",
+                value: "Launch ads in minutes – no experience or big budget needed, starting at just $5 USD daily.",
                 comment: "Subtitle for the quick start big impact feature"
             )
         }

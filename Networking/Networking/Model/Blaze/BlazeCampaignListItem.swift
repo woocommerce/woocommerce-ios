@@ -51,6 +51,15 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
     /// Currency used in `budgetAmount`. Default to be USD.
     public let budgetCurrency: String
 
+    /// Whether the campaign is unlimited.
+    public let isEvergreen: Bool
+
+    /// Campaign duration in days
+    public let durationDays: Int64
+
+    /// Campaign start time as `Date`
+    public let startTime: Date?
+
     public init(siteID: Int64,
                 campaignID: String,
                 productID: Int64?,
@@ -65,7 +74,10 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
                 spentBudget: Double,
                 budgetMode: BlazeCampaignBudget.Mode,
                 budgetAmount: Double,
-                budgetCurrency: String) {
+                budgetCurrency: String,
+                isEvergreen: Bool,
+                durationDays: Int64,
+                startTime: Date?) {
         self.siteID = siteID
         self.campaignID = campaignID
         self.productID = productID
@@ -81,6 +93,9 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         self.budgetMode = budgetMode
         self.budgetAmount = budgetAmount
         self.budgetCurrency = budgetCurrency
+        self.isEvergreen = isEvergreen
+        self.durationDays = durationDays
+        self.startTime = startTime
     }
 
     public init(from decoder: Decoder) throws {
@@ -115,19 +130,31 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         budgetMode = budget?.mode ?? .total
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
+
+        isEvergreen = try container.decodeIfPresent(Bool.self, forKey: .isEvergreen) ?? false
+        durationDays = try container.decode(Int64.self, forKey: .durationDays)
+        startTime = try? {
+            guard let startTimeString = try container.decodeIfPresent(String.self, forKey: .startTime) else {
+                return nil
+            }
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
+            return dateFormatter.date(from: startTimeString)
+        }()
     }
 }
 
 // MARK: Public subtypes
 //
 public extension BlazeCampaignListItem {
-    enum Status: String {
+    enum Status: String, CaseIterable {
         case pending
         case scheduled
         case active
         case rejected
         case canceled
         case finished
+        case suspended
         case unknown
     }
 
@@ -153,6 +180,9 @@ private extension BlazeCampaignListItem {
         case impressions
         case clicks
         case budget
+        case isEvergreen
+        case durationDays
+        case startTime
     }
 
     /// Private subtype for parsing image details.

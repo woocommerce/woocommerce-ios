@@ -96,7 +96,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
     ///
-    private let didSelectSave: ((String?) -> Void)
+    private let didSelectSave: ((_ discount: Decimal?) -> Void)
 
     /// Helper to format price field input.
     ///
@@ -104,21 +104,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Stores the fixed amount entered by the merchant.
     ///
-    @Published var amount: String = "" {
-        didSet {
-            guard amount != oldValue else { return }
-            amount = priceFieldFormatter.formatAmount(amount)
-        }
-    }
+    @Published var amount: String = ""
 
     /// Stores the percentage entered by the merchant.
     ///
-    @Published var percentage: String = "" {
-        didSet {
-            guard percentage != oldValue else { return }
-            percentage = sanitizePercentageAmount(percentage)
-        }
-    }
+    @Published var percentage: String = ""
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
@@ -130,7 +120,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     private var finalAmountDecimal: Decimal {
         let inputString = feeOrDiscountType == .fixed ? amount : percentage
-        guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
+        guard let decimalInput = Decimal(string: inputString) else {
             return .zero
         }
 
@@ -151,10 +141,10 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
     func calculatePriceAfterDiscount(_ price: String) -> String {
-        guard let price = currencyFormatter.convertToDecimal(price),
-              let discount = currencyFormatter.convertToDecimal(finalAmountString ?? "") else {
+        guard let price = currencyFormatter.convertToDecimal(price) else {
             return ""
         }
+        let discount = NSDecimalNumber(decimal: finalAmountDecimal)
         let priceAfterDiscount = price.subtracting(discount)
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
@@ -229,12 +219,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
-         initialTotal: String,
+         initialTotal: Decimal,
          lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         didSelectSave: @escaping ((String?) -> Void)) {
+         didSelectSave: @escaping ((Decimal?) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.percentSymbol = NumberFormatter().percentSymbol
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
@@ -245,12 +235,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
         self.isExistingLine = isExistingLine
         self.baseAmountForPercentage = baseAmountForPercentage
-
-        if let initialAmount = currencyFormatter.convertToDecimal(initialTotal) {
-            self.initialAmount = initialAmount as Decimal
-        } else {
-            self.initialAmount = .zero
-        }
+        self.initialAmount = initialTotal
 
         if initialAmount != 0, let formattedInputAmount = currencyFormatter.formatAmount(initialAmount) {
             self.amount = priceFieldFormatter.formatAmount(formattedInputAmount)
@@ -270,45 +255,44 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     }
 
     func saveData() {
-        guard let finalAmountString = finalAmountString else {
-            return
-        }
-
         if let event = lineTypeViewModel.addValueEvent(with: feeOrDiscountType) {
             analytics.track(event: event)
         }
 
-        didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))
+        didSelectSave(finalAmountDecimal)
     }
 }
 
-private extension FeeOrDiscountLineDetailsViewModel {
-
+extension FeeOrDiscountLineDetailsViewModel {
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
-    func sanitizePercentageAmount(_ amount: String) -> String {
+    func updatePercentage(_ percentageInput: String) {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
-        let negativePrefix = amount.hasPrefix(minusSign) ? minusSign : ""
+        let negativePrefix = percentageInput.hasPrefix(minusSign) ? minusSign : ""
 
-        let sanitized = amount
+        let sanitized = percentageInput
             .filter { $0.isNumber || "\($0)" == deviceDecimalSeparator }
 
         // Trim to two decimals & remove any extra "."
         let components = sanitized.components(separatedBy: deviceDecimalSeparator)
         switch components.count {
         case 1 where sanitized.contains(deviceDecimalSeparator):
-            return negativePrefix + components[0] + deviceDecimalSeparator
+            self.percentage = negativePrefix + components[0] + deviceDecimalSeparator
         case 1:
-            return negativePrefix + components[0]
+            self.percentage = negativePrefix + components[0]
         case 2...Int.max:
             let number = components[0]
             let decimals = components[1]
             let trimmedDecimals = decimals.prefix(numberOfDecimals)
-            return negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
+            self.percentage = negativePrefix + number + deviceDecimalSeparator + trimmedDecimals
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+
+    func updateAmount(_ amountInput: String) {
+        self.amount = priceFieldFormatter.formatAmount(amountInput)
     }
 }

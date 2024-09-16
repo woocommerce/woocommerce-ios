@@ -28,17 +28,17 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
 
 public enum RemoteFeatureFlag: Decodable {
     case storeCreationCompleteNotification
-    case blaze
     case hardcodedPlanUpgradeDetailsMilestone1AreAccurate
+    case pointOfSale
 
     init?(rawValue: String) {
         switch rawValue {
         case "woo_notification_store_creation_ready":
             self = .storeCreationCompleteNotification
-        case "woo_blaze":
-            self = .blaze
         case "woo_hardcoded_plan_upgrade_details_milestone_1_are_accurate":
             self = .hardcodedPlanUpgradeDetailsMilestone1AreAccurate
+        case "woo_pos":
+            self = .pointOfSale
         default:
             return nil
         }

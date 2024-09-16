@@ -119,10 +119,6 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.stockQuantity
     }
 
-    var hasIntegerStockQuantity: Bool {
-        product.hasIntegerStockQuantity
-    }
-
     var backordersKey: String {
         product.backordersKey
     }
@@ -169,6 +165,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     var bundleStockQuantity: Int64? {
         product.bundleStockQuantity
+    }
+
+    var password: String? {
+        product.password
     }
 
     var compositeComponents: [ProductCompositeComponent] {

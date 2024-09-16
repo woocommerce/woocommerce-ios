@@ -238,4 +238,14 @@ extension MockStorageManager {
 
         return newInboxNote
     }
+
+    /// Inserts a new sample note into the specified context.
+    ///
+    @discardableResult
+    func insertSampleNote(readOnlyNote: Note) -> StorageNote {
+        let newNote = viewStorage.insertNewObject(ofType: StorageNote.self)
+        newNote.update(with: readOnlyNote)
+
+        return newNote
+    }
 }

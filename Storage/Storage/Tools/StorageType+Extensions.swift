@@ -112,13 +112,6 @@ public extension StorageType {
         return firstObject(ofType: OrderTaxLine.self, matching: predicate)
     }
 
-    /// Retrieves the Stored Order Metadata.
-    ///
-    func loadOrderMetaData(siteID: Int64, metadataID: Int64) -> OrderMetaData? {
-        let predicate = \OrderMetaData.order?.siteID == siteID && \OrderMetaData.metadataID == metadataID
-        return firstObject(ofType: OrderMetaData.self, matching: predicate)
-    }
-
     // MARK: - Stats
 
     /// Retrieves the Stored TopEarnerStats.
@@ -578,6 +571,20 @@ public extension StorageType {
         return allObjects(ofType: BlazeTargetTopic.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns all Blaze campaign objectives with the given locale.
+    ///
+    func loadAllBlazeCampaignObjectives(locale: String) -> [BlazeCampaignObjective] {
+        let predicate = \BlazeCampaignObjective.locale == locale
+        return allObjects(ofType: BlazeCampaignObjective.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns Blaze campaign objective with the given ID and locale.
+    ///
+    func retrieveBlazeCampaignObjective(id: String, locale: String) -> BlazeCampaignObjective? {
+        let predicate = \BlazeCampaignObjective.locale == locale && \BlazeCampaignObjective.id == id
+        return firstObject(ofType: BlazeCampaignObjective.self, matching: predicate)
+    }
+
     // MARK: - Coupons
 
     /// Returns a single Coupon given a `siteID` and `CouponID`
@@ -749,4 +756,21 @@ public extension StorageType {
         let predicate = \OrderAttributionInfo.order?.siteID == siteID && \OrderAttributionInfo.order?.orderID == orderID
         return firstObject(ofType: OrderAttributionInfo.self, matching: predicate)
     }
+
+    // MARK: - Meta Data
+
+    /// Retrieves the Stored Metadata for Order.
+    ///
+    func loadOrderMetaData(siteID: Int64, orderID: Int64, metadataID: Int64) -> MetaData? {
+        let predicate = \MetaData.order?.siteID == siteID && \MetaData.order?.orderID == orderID && \MetaData.metadataID == metadataID
+        return firstObject(ofType: MetaData.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Metadata for a Product.
+    ///
+    func loadProductMetaData(siteID: Int64, productID: Int64, metadataID: Int64) -> MetaData? {
+        let predicate = \MetaData.product?.siteID == siteID && \MetaData.product?.productID == productID && \MetaData.metadataID == metadataID
+        return firstObject(ofType: MetaData.self, matching: predicate)
+    }
+
 }

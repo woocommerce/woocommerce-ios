@@ -516,18 +516,19 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_createProductRowViewModel_creates_expected_row_for_product() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "10")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
-        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1)
+        let orderItem = OrderItem.fake().copy(name: product.name, productID: product.productID, quantity: 1, price: 8)
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
         let expectedProductRow = ProductRowViewModel(product: product)
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_creates_expected_row_for_product_variation() {
@@ -536,7 +537,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productVariation = ProductVariation.fake().copy(siteID: sampleSiteID,
                                                             productID: sampleProductID,
                                                             productVariationID: 33,
-                                                            sku: "product-variation")
+                                                            sku: "product-variation",
+                                                            price: "10")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariation, on: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -545,7 +547,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderItem = OrderItem.fake().copy(name: product.name,
                                               productID: product.productID,
                                               variationID: productVariation.productVariationID,
-                                              quantity: 2)
+                                              quantity: 2,
+                                              price: 8)
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
@@ -556,6 +559,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.productRow.name, expectedProductRow.name)
         XCTAssertEqual(productRow?.productRow.skuLabel, expectedProductRow.skuLabel)
         XCTAssertEqual(productRow?.productRow.stepperViewModel.quantity, expectedProductRow.quantity)
+        XCTAssertEqual(productRow?.productRow.price, orderItem.basePrice.stringValue)
     }
 
     func test_createProductRowViewModel_sets_expected_discount_for_discounted_order_item() {
@@ -853,7 +857,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Pre-check
@@ -913,7 +917,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
         productSelectorViewModel.completeMultipleSelection()
         let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.updateAmount("10")
         addCustomAmountViewModel.doneButtonPressed()
 
         // Then

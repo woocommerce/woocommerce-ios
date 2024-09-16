@@ -9,6 +9,9 @@ public struct MetaContainer {
     ///
     let payload: [String: AnyCodable]
 
+    public init(payload: [String: AnyCodable]) {
+        self.payload = payload
+    }
 
     /// Returns the Meta Link associated with the specified key (if any).
     ///
@@ -50,6 +53,7 @@ extension MetaContainer {
         case comment
         case home
         case order
+        case campaignID = "campaign_id"
         case post
         case reply  = "reply_comment"
         case site

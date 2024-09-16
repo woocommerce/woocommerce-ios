@@ -10,12 +10,13 @@ import struct Networking.BlazeAISuggestion
 final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322
-
+    private let sampleSiteAddress = "https://example.com"
     private let sampleProductID: Int64 = 433
 
     private var sampleProduct: Product {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
+                     permalink: "Sample product url",
                      statusKey: (ProductStatus.published.rawValue),
                      images: [.fake().copy(imageID: 1)])
     }
@@ -43,7 +44,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(url: sampleSiteAddress)))
         storageManager = MockStorageManager()
         imageLoader = MockProductUIImageLoader()
         analyticsProvider = MockAnalyticsProvider()
@@ -60,8 +61,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Initial values
-    @MainActor
-    func test_image_is_empty_initially() async throws {
+    func test_image_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -75,8 +75,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.image)
     }
 
-    @MainActor
-    func test_tagline_is_empty_initially() async throws {
+    func test_tagline_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -90,8 +89,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tagline, "")
     }
 
-    @MainActor
-    func test_description_is_empty_initially() async throws {
+    func test_description_is_empty_initially() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -103,6 +101,79 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.description, "")
+    }
+
+    func test_ad_destination_product_url_is_updated_correctly_if_empty() throws {
+        // Given
+        insertProduct(sampleProduct.copy(permalink: ""))
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
+    }
+
+    func test_hasEndDate_is_true_when_feature_flag_is_disabled() {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertTrue(viewModel.budgetSettingViewModel.hasEndDate)
+    }
+
+    func test_hasEndDate_is_false_when_feature_flag_is_enabled() {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertFalse(viewModel.budgetSettingViewModel.hasEndDate)
+    }
+
+    func test_campaignObjectiveText_is_updated_based_on_saved_objective() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let locale = Locale.current
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
+        let objective = BlazeCampaignObjective(id: "traffic", title: "Traffic", description: "", suitableForDescription: "", locale: locale.identifier)
+        insertCampaignObjective(objective)
+
+        // When
+        userDefaults[.blazeSelectedCampaignObjective] = ["\(sampleSiteID)": objective.id]
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           locale: locale,
+                                                           userDefaults: userDefaults,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertEqual(viewModel.campaignObjectiveText, objective.title)
+        XCTAssertEqual(viewModel.campaignObjectiveViewModel.selectedObjective?.id, objective.id)
     }
 
     // MARK: On load
@@ -316,6 +387,58 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.error, .failedToLoadAISuggestions)
     }
 
+    // MARK: `isUsingAISuggestions`
+    @MainActor
+    func test_isUsingAISuggestions_updates_correctly_after_fetching_AI_suggestions() async throws {
+        // Given
+        insertProduct(sampleProduct)
+
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // Then
+        XCTAssertFalse(viewModel.isUsingAISuggestions, "Initially, isUsingAISuggestions should be false.")
+
+        // When
+        await viewModel.loadAISuggestions()
+
+        // Then
+        XCTAssertTrue(viewModel.isUsingAISuggestions, "After setting AI suggestions, isUsingAISuggestions should be true.")
+    }
+
+    @MainActor
+    func test_isUsingAISuggestions_updates_correctly_after_editing_suggestions() async throws {
+        // Given
+        insertProduct(sampleProduct)
+
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        await viewModel.loadAISuggestions()
+
+        // Then
+        XCTAssertTrue(viewModel.isUsingAISuggestions, "After setting AI suggestions, isUsingAISuggestions should be true.")
+
+        // When
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.description = "Custom description"
+        editAdViewModel.didTapSave()
+
+        // Then
+        XCTAssertFalse(viewModel.isUsingAISuggestions, "After setting AI suggestions, isUsingAISuggestions should be true.")
+    }
+
     // MARK: `canConfirmDetails`
     @MainActor
     func test_ad_cannot_be_confirmed_if_tagline_is_empty() async throws {
@@ -365,6 +488,85 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.description.isEmpty)
         XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
+
+    // MARK: `didTapConfirmDetails`
+    @MainActor
+    func test_it_shows_error_if_confirmed_without_image() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        // No image set
+        mockDownloadImage(nil)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
+    }
+
+    func test_it_shows_error_if_confirm_without_objective_when_feature_flag_for_objective_is_on() async {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        XCTAssertNil(viewModel.campaignObjectiveViewModel.selectedObjective)
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.isShowingMissingObjectiveAlert)
+    }
+
+    func test_it_does_not_show_error_if_confirm_with_objective_when_feature_flag_for_objective_is_on() async {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: true)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        viewModel.campaignObjectiveViewModel.selectedObjective = .fake().copy(id: "sales")
+        viewModel.campaignObjectiveViewModel.confirmSelection()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        XCTAssertFalse(viewModel.isShowingMissingObjectiveAlert)
     }
 
     // MARK: Analytics
@@ -430,6 +632,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -437,6 +640,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -459,6 +663,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -466,6 +671,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -492,6 +698,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -499,6 +706,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                             analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -525,6 +733,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         insertProduct(sampleProduct)
         mockAISuggestionsSuccess(sampleAISuggestions)
         mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -532,6 +741,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
                                                            analytics: analytics,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
         // Sets non-nil product image
         await viewModel.downloadProductImage()
@@ -552,6 +762,100 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let isAISuggested = try XCTUnwrap(eventProperties["is_ai_suggested_ad_content"] as? Bool)
         XCTAssertFalse(isAISuggested)
     }
+
+    @MainActor
+    func test_event_is_tracked_upon_tapping_confirm_details_with_correct_campaign_type_when_no_end_date_is_specified() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set evergreen
+        viewModel.budgetSettingViewModel.hasEndDate = false
+        viewModel.budgetSettingViewModel.confirmSettings()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let campaignType = try XCTUnwrap(eventProperties["campaign_type"] as? String)
+        XCTAssertEqual(campaignType, "evergreen")
+    }
+
+    @MainActor
+    func test_event_is_tracked_upon_tapping_confirm_details_with_correct_campaign_type_when_end_date_is_specified() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+        let featureFlagService = MockFeatureFlagService(blazeCampaignObjective: false)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set non-evergreen
+        viewModel.budgetSettingViewModel.hasEndDate = true
+        viewModel.budgetSettingViewModel.confirmSettings()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let campaignType = try XCTUnwrap(eventProperties["campaign_type"] as? String)
+        XCTAssertEqual(campaignType, "start_end")
+    }
+
+    @MainActor
+    func test_tapping_confirm_details_tracks_selected_objective() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           analytics: analytics,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        // When
+        // set non-evergreen
+        viewModel.campaignObjectiveViewModel.selectedObjective = BlazeCampaignObjective.fake().copy(id: "sales")
+        viewModel.campaignObjectiveViewModel.confirmSelection()
+        viewModel.didTapConfirmDetails()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(of: "blaze_creation_confirm_details_tapped"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        let objective = try XCTUnwrap(eventProperties["objective"] as? String)
+        XCTAssertEqual(objective, "sales")
+    }
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {
@@ -566,6 +870,12 @@ private extension BlazeCampaignCreationFormViewModelTests {
             productImage.update(with: readOnlyImage)
             productImage.product = product
         }
+        storage.saveIfNeeded()
+    }
+
+    func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
+        let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
+        objective.update(with: readOnlyObjective)
         storage.saveIfNeeded()
     }
 }

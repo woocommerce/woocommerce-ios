@@ -150,10 +150,6 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.stockQuantity
     }
 
-    var hasIntegerStockQuantity: Bool {
-        productVariation.hasIntegerStockQuantity
-    }
-
     var backordersKey: String {
         productVariation.backordersKey
     }
@@ -203,6 +199,10 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var bundleStockQuantity: Int64? {
+        nil
+    }
+
+    var password: String? {
         nil
     }
 

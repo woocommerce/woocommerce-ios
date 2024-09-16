@@ -455,6 +455,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
+            case .customFields:
+                // TODO-13493: add tap handling.
+                return
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
@@ -809,41 +812,15 @@ private extension ProductFormViewController {
 
     }
 
-    /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
+    /// Updates table view model and datasource.
     ///
-    func reloadLinkedPromoCellAnimated() {
-        let indexPathBeforeReload = findLinkedPromoCellIndexPath()
+    func reloadLinkedPromoCell() {
         tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
-        let indexPathAfterReload = findLinkedPromoCellIndexPath()
 
-        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses) { [weak self] in
-            guard let self = self else { return }
-
-            switch (indexPathBeforeReload, indexPathAfterReload) {
-            case (let indexPathBeforeReload?, nil):
-                self.tableView.deleteRows(at: [indexPathBeforeReload], with: .left)
-            case (nil, let indexPathAfterReload?):
-                self.tableView.insertRows(at: [indexPathAfterReload], with: .automatic)
-            default:
-                self.tableView.reloadData()
-            }
-        }
-    }
-
-    func findLinkedPromoCellIndexPath() -> IndexPath? {
-        for (sectionIndex, section) in tableViewModel.sections.enumerated() {
-            if case .primaryFields(rows: let sectionRows) = section {
-                for (rowIndex, row) in sectionRows.enumerated() {
-                    if case .linkedProductsPromo = row {
-                        return IndexPath(row: rowIndex, section: sectionIndex)
-                    }
-                }
-            }
-        }
-        return nil
+        reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
 
     func onProductUpdated(product: ProductModel) {
@@ -922,7 +899,7 @@ private extension ProductFormViewController {
         }
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
             guard let self = self else { return }
-            self.reloadLinkedPromoCellAnimated()
+            self.reloadLinkedPromoCell()
         }
         tableViewDataSource.descriptionAIAction = { [weak self] in
             self?.showProductDescriptionAI()
@@ -1034,7 +1011,7 @@ private extension ProductFormViewController {
 
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
-                self?.reloadLinkedPromoCellAnimated()
+                self?.reloadLinkedPromoCell()
                 onCompletion(.success(()))
             }
         }
@@ -1185,8 +1162,15 @@ private extension ProductFormViewController {
             source: .productDetailPromoteButton,
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: {
-                // no-op
+            onCampaignCreated: { [weak self] in
+                /// Re-sync Blaze campaigns to update storage items.
+                ServiceLocator.stores.dispatch(BlazeAction.synchronizeCampaignsList(
+                    siteID: site.siteID,
+                    skip: 0,
+                    limit: PaginationTracker.Defaults.pageSize) { _ in
+                        self?.updateFormTableContent()
+                    }
+                )
             }
         )
         coordinator.start()
@@ -1333,7 +1317,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
-            presentationStyle.createExitForm(viewController: self, completion: onDiscard)
+            presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)
         }()
         let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {

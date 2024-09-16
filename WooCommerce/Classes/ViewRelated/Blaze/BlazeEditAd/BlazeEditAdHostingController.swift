@@ -35,7 +35,8 @@ private extension BlazeEditAdHostingController {
     func showImagePicker(source: MediaPickingSource) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
-                                                                  allowsMultipleImages: false,
+                                                                  imagesOnly: true,
+                                                                  allowsMultipleSelections: false,
                                                                   flow: .blazeEditAdForm,
                                                                   onCameraCaptureCompletion: { [weak self] asset, error in
                 guard let self else {
@@ -59,6 +60,14 @@ private extension BlazeEditAdHostingController {
                 }
                 Task { @MainActor in
                     let image = await self.onWPMediaPickerCompletion(mediaItems: mediaItems)
+                    continuation.resume(returning: image)
+                }
+            }, onProductImagePickerCompletion: { [weak self] productImage in
+                guard let self, let productImage else {
+                    return continuation.resume(returning: nil)
+                }
+                Task { @MainActor in
+                    let image = await self.onProductImageCompletion(productImage: productImage)
                     continuation.resume(returning: image)
                 }
             })
@@ -103,6 +112,19 @@ private extension BlazeEditAdHostingController {
         }
 
         return .init(image: image, source: .media(media: media))
+    }
+}
+
+// MARK: - Action handling for product image
+//
+private extension BlazeEditAdHostingController {
+    @MainActor
+    func onProductImageCompletion(productImage: ProductImage) async -> MediaPickerImage? {
+        guard let image = try? await productImageLoader.requestImage(productImage: productImage) else {
+            return nil
+        }
+
+        return .init(image: image, source: .productImage(image: productImage))
     }
 }
 

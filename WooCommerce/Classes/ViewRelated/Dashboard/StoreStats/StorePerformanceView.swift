@@ -7,7 +7,6 @@ import struct Yosemite.DashboardCard
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
-    @State private var showingSupportForm = false
 
     private var statsValueColor: Color {
         guard viewModel.hasRevenue else {
@@ -37,23 +36,28 @@ struct StorePerformanceView: View {
             if viewModel.loadingError != nil {
                 errorStateView
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.statsVersion == .v4 {
+            } else if viewModel.analyticsEnabled {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
 
                 statsView
                     .padding(.vertical, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
+
+                timestampView
+                    .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 chartView
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showRedactedState ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showRedactedState)
 
                 Divider()
                     .padding(.leading, Layout.padding)
@@ -63,7 +67,7 @@ struct StorePerformanceView: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
             } else {
-                contentUnavailableView
+                UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
             }
         }
@@ -76,11 +80,9 @@ struct StorePerformanceView: View {
                              endDate: viewModel.endDateForCustomRange,
                              customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                              datesSelected: { start, end in
+                viewModel.trackCustomRangeEvent(.DashboardCustomRange.customRangeConfirmed(isEditing: viewModel.timeRange.isCustomTimeRange))
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
-        }
-        .sheet(isPresented: $showingSupportForm) {
-            supportForm
         }
         .onAppear {
             viewModel.onViewAppear()
@@ -94,7 +96,7 @@ private extension StorePerformanceView {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
+                .renderedIf(!viewModel.analyticsEnabled || viewModel.loadingError != nil)
 
             Text(DashboardCard.CardType.performance.name)
                 .headlineStyle()
@@ -123,6 +125,7 @@ private extension StorePerformanceView {
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
                         viewModel.trackInteraction()
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -143,6 +146,11 @@ private extension StorePerformanceView {
 
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
+                    if viewModel.timeRange.isCustomTimeRange {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.editButtonTapped())
+                    } else {
+                        viewModel.trackCustomRangeEvent(.DashboardCustomRange.addButtonTapped())
+                    }
                 } else {
                     viewModel.didSelectTimeRange(newTimeRange)
                 }
@@ -195,6 +203,12 @@ private extension StorePerformanceView {
                     .renderedIf(!viewModel.hasRevenue)
             }
         }
+    }
+
+    var timestampView: some View {
+        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+            .footnoteStyle()
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func statsItemView(title: String, value: String, redactMode: RedactMode) -> some View {
@@ -278,44 +292,13 @@ private extension StorePerformanceView {
         .disabled(viewModel.syncingData)
     }
 
-    var contentUnavailableView: some View {
-        VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .noStoreImage)
-            Text(Localization.ContentUnavailable.title)
-                .headlineStyle()
-            Text(Localization.ContentUnavailable.details)
-                .bodyStyle()
-                .multilineTextAlignment(.center)
-            Button(Localization.ContentUnavailable.buttonTitle) {
-                showingSupportForm = true
-            }
-            .buttonStyle(SecondaryButtonStyle())
-        }
-        .frame(maxWidth: .infinity)
-    }
-
     var errorStateView: some View {
         DashboardCardErrorView(onRetry: {
             ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
             Task {
-                await viewModel.reloadData()
+                await viewModel.reloadDataIfNeeded(forceRefresh: true)
             }
         })
-    }
-
-    var supportForm: some View {
-        NavigationView {
-            SupportForm(isPresented: $showingSupportForm,
-                        viewModel: SupportFormViewModel())
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.ContentUnavailable.done) {
-                        showingSupportForm = false
-                    }
-                }
-            }
-        }
-        .navigationViewStyle(.stack)
     }
 }
 
@@ -382,29 +365,15 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-        enum ContentUnavailable {
-            static let title = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.title",
-                value: "We can’t display your store’s analytics",
-                comment: "Title when we can't show stats because user is on a deprecated WooCommerce Version"
-            )
-            static let details = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.details",
-                value: "Make sure you are running the latest version of WooCommerce on your site" +
-                " and enabling Analytics in WooCommerce Settings.",
-                comment: "Text that explains how to update WooCommerce to get the latest stats"
-            )
-            static let buttonTitle = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.buttonTitle",
-                value: "Still need help? Contact us",
-                comment: "Button title to contact support to get help with deprecated stats module"
-            )
-            static let done = NSLocalizedString(
-                "storePerformanceView.contentUnavailable.dismissSupport",
-                value: "Done",
-                comment: "Button to dismiss the support form from the Dashboard stats error screen."
-            )
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the performance card was last updated")
+            return String.localizedStringWithFormat(format, time)
         }
+        static let unavailableAnalytics = NSLocalizedString(
+            "storePerformanceView.unavailableAnalyticsView.title",
+            value: "Unable to display your store's performance",
+            comment: "Title when the Performance card is disabled because the analytics feature is unavailable"
+        )
     }
 }
 

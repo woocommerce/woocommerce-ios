@@ -1,12 +1,11 @@
-# Nodes with values to reuse in the pipeline.
-common_params:
-  # Common plugin settings to use with the `plugins` key.
-  - &common_plugins
-    - automattic/a8c-ci-toolkit#3.3.0
-  # Common environment values to use with the `env` key.
-  - &common_env
-    # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-    IMAGE_ID: xcode-15.4
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
 
 # This is the default pipeline – it will build and test the app
 steps:
@@ -14,100 +13,100 @@ steps:
   # Build the app
   #################
   - label: ":pipeline: Build"
-    key: "build"
-    command: ".buildkite/commands/build-for-testing.sh"
-    env: *common_env
-    plugins: *common_plugins
+    key: build
+    command: .buildkite/commands/build-for-testing.sh
+    plugins: [$CI_TOOLKIT]
     notify:
       - github_commit_status:
-          context: "Build"
+          context: Build
 
   #################
   # Create Prototype Build
   #################
-  - label: "🛠 Prototype Build"
-    command: ".buildkite/commands/prototype-build.sh"
-    env: *common_env
-    plugins: *common_plugins
+  - label: ":hammer_and_wrench: Prototype Build"
+    command: .buildkite/commands/prototype-build.sh
+    plugins: [$CI_TOOLKIT]
     if: build.pull_request.id != null
     notify:
       - github_commit_status:
-          context: "Prototype Build"
+          context: Prototype Build
 
   #################
   # Run Unit Tests
   #################
-  - label: "🔬 Unit Tests"
-    command: ".buildkite/commands/run-unit-tests.sh"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
+  - label: ":microscope: Unit Tests"
+    command: .buildkite/commands/run-unit-tests.sh
+    depends_on: build
+    plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "Unit Tests"
+          context: Unit Tests
 
   #################
   # Linters
   #################
   - group: Linters
     steps:
-      - label: "☢️ Danger - PR Check"
+      - label: ":radioactive_sign: Danger - PR Check"
         command: danger
         key: danger
-        if: "build.pull_request.id != null"
+        if: build.pull_request.id != null
         retry:
           manual:
             permit_on_passed: true
         agents:
-          queue: "linter"
+          queue: linter
+        notify:
+          - github_commit_status:
+              context: Danger - PR Check
 
       - label: ":swift: SwiftLint"
         command: swiftlint
         notify:
           - github_commit_status:
-              context: "SwiftLint"
+              context: SwiftLint
         agents:
-          queue: "linter"
+          queue: linter
 
-      - label: "🧹 Lint Translations"
-        command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
+      - label: 🧹 Lint Translations
+        command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
         plugins:
           - docker#v3.8.0:
-              image: "public.ecr.aws/automattic/glotpress-validator:1.0.0"
+              image: public.ecr.aws/automattic/glotpress-validator:1.0.0
         agents:
-          queue: "default"
+          queue: default
         notify:
           - github_commit_status:
-              context: "Lint Translations"
+              context: Lint Translations
 
       - label: ":sleuth_or_spy: Lint Localized Strings Format"
         command: .buildkite/commands/lint-localized-strings-format.sh
-        plugins: *common_plugins
-        env: *common_env
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Lint Localized Strings Format
 
   #################
   # UI Tests
   #################
-  - label: "🔬 UI Tests (iPhone)"
+  - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 15'
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
+    depends_on: build
+    plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "UI Tests (iPhone)"
+          context: UI Tests (iPhone)
 
-  - label: "🔬 UI Tests (iPad)"
+  - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
-    depends_on: "build"
-    env: *common_env
-    plugins: *common_plugins
+    depends_on: build
+    plugins: [$CI_TOOLKIT]
     artifact_paths:
-      - "fastlane/test_output/*"
+      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: "UI Tests (iPad)"
+          context: UI Tests (iPad)

@@ -41,6 +41,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForShippingLabelCreation: Bool = false
 
+    /// Whether the order is eligible for Woo Shipping flows.
+    ///
+    var isEligibleForWooShipping: Bool = false
+
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
@@ -251,7 +255,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     var shouldShowGiftCards: Bool {
-        appliedGiftCards.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlyGiftCards)
+        appliedGiftCards.isNotEmpty
     }
 
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

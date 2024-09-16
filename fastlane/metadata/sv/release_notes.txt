@@ -1,0 +1,2 @@
+I den här versionen har vi aktiverat skanning av spårningsnummer för beställningar och förbättrat produktlösenordshanteringen. Vi har också lagt till förbättringar för produktskannern, kontakta betalningar och rabatter.
+Skapandet av Blaze-annonskampanjer har uppdaterats med en bättre upplevelse för bildval och budgetinställningar.

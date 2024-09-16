@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// Different display modes of site visit stats
 ///
@@ -17,6 +18,7 @@ enum SiteVisitStatsMode {
 
 /// View model for `StorePerformanceView`.
 ///
+@MainActor
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var statsIntervalData: [StoreStatsChartData] = []
@@ -32,7 +34,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
-    @Published private(set) var statsVersion: StatsVersion = .v4
+    @Published private(set) var analyticsEnabled = true
 
     @Published private(set) var loadingError: Error?
 
@@ -56,7 +58,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
     private var waitingTracker: WaitingTimeTracker?
-    private let syncingDidFinishPublisher = PassthroughSubject<Void, Never>()
+    private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -69,6 +71,24 @@ final class StorePerformanceViewModel: ObservableObject {
             return false
         }
         return true
+    }
+
+    /// Determines if the redacted state should be shown.
+    /// `True`when fetching data for the first time, otherwise `false` as cached data should be presented.
+    ///
+    var showRedactedState: Bool {
+        return syncingData && periodViewModel?.noDataFound == true
+    }
+
+    /// Returns the last updated timestamp for the current time range.
+    ///
+    var lastUpdatedTimestamp: String {
+        guard let timestamp = DashboardTimestampStore.loadTimestamp(for: .performance, at: timeRange.timestampRange) else {
+            return ""
+        }
+
+        let formatter = timestamp.isSameDay(as: .now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: timestamp)
     }
 
     init(siteID: Int64,
@@ -98,11 +118,15 @@ final class StorePerformanceViewModel: ObservableObject {
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
+        guard timeRange != newTimeRange else { return }
+
         timeRange = newTimeRange
-        Task { [weak self] in
-            await self?.reloadData()
-        }
         saveLastTimeRange(timeRange)
+
+        Task { [weak self] in
+            await self?.reloadDataIfNeeded()
+        }
+
         shouldHighlightStats = false
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
     }
@@ -128,15 +152,30 @@ final class StorePerformanceViewModel: ObservableObject {
         }
     }
 
+    /// Reloads the card data if significantly time has passed.
+    /// Set `forceRefresh` to `true` to always sync data, useful for pull to refresh scenarios.
     @MainActor
-    func reloadData() async {
+    func reloadDataIfNeeded(forceRefresh: Bool = false) async {
+
+        // Preemptively show any cached content
+        periodViewModel?.loadCachedContent()
+
+        // Stop if data is relatively new
+        if !forceRefresh && DashboardTimestampStore.isTimestampFresh(for: .performance, at: timeRange.timestampRange) {
+            return
+        }
+
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .performance))
         do {
-            try await syncAllStats()
+            currentDate = .now // Legacy code from when code was outside of `PerformanceCardDataSyncUseCase`
+            let syncUseCase = PerformanceCardDataSyncUseCase(siteID: siteID, siteTimezone: siteTimezone, timeRange: timeRange, stores: stores)
+            try await syncUseCase.sync()
+
             trackDashboardStatsSyncComplete()
-            statsVersion = .v4
+            analyticsEnabled = true
             switch timeRange {
             case .custom:
                 updateSiteVisitStatModeForCustomRange()
@@ -147,15 +186,19 @@ final class StorePerformanceViewModel: ObservableObject {
             case .thisWeek, .thisMonth, .thisYear:
                 siteVisitStatMode = .default
             }
-        } catch DotcomError.noRestRoute {
-            statsVersion = .v3
+            syncingDidFinishPublisher.send(nil)
         } catch {
-            statsVersion = .v4
+            switch error {
+            case DotcomError.noRestRoute, NetworkError.notFound:
+                analyticsEnabled = false
+            default:
+                analyticsEnabled = true
+                handleSyncError(error: error)
+            }
             DDLogError("⛔️ Error loading store stats: \(error)")
-            handleSyncError(error: error)
+            syncingDidFinishPublisher.send(error)
         }
         syncingData = false
-        syncingDidFinishPublisher.send()
     }
 
     func hideStorePerformance() {
@@ -167,6 +210,11 @@ final class StorePerformanceViewModel: ObservableObject {
     func trackInteraction() {
         usageTracksEventEmitter.interacted()
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
+    }
+
+    /// To be triggered from the UI for custom range related events
+    func trackCustomRangeEvent(_ event: WooAnalyticsEvent) {
+        analytics.track(event: event)
     }
 
     func onViewAppear() {
@@ -235,10 +283,15 @@ private extension StorePerformanceViewModel {
     func observeSyncingCompletion() {
         syncingDidFinishPublisher
             .receive(on: DispatchQueue.global(qos: .background))
-            .sink { [weak self] in
+            .sink { [weak self] error in
                 guard let self else { return }
                 waitingTracker?.end()
                 analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
+                if let error {
+                    analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .performance, error: error))
+                } else {
+                    analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .performance))
+                }
             }
             .store(in: &subscriptions)
     }
@@ -338,6 +391,11 @@ private extension StorePerformanceViewModel {
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
+
+        // Assume we don't have a timestamp for a new custom range since we don't support saving multiple custom ranges timestamps.
+        if timeRange.timestampRange == .custom {
+            DashboardTimestampStore.removeTimestamp(for: .performance, at: .custom)
+        }
     }
 
     /// Initial redaction state logic for site visit stats.
@@ -386,94 +444,6 @@ private extension StorePerformanceViewModel {
 // MARK: - Syncing data
 //
 private extension StorePerformanceViewModel {
-    @MainActor
-    func syncAllStats() async throws {
-        currentDate = Date()
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask { [weak self] in
-                try await self?.syncStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            group.addTask { [weak self] in
-                try await self?.syncSiteVisitStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            group.addTask { [weak self] in
-                try await self?.syncSiteSummaryStats(latestDateToInclude: latestDateToInclude)
-            }
-
-            while !group.isEmpty {
-                // rethrow any failure.
-                try await group.next()
-            }
-        }
-    }
-
-    /// Syncs store stats for dashboard UI.
-    @MainActor
-    func syncStats(latestDateToInclude: Date) async throws {
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveStats(siteID: siteID,
-                                                        timeRange: timeRange,
-                                                        timeZone: siteTimezone,
-                                                        earliestDateToInclude: earliestDateToInclude,
-                                                        latestDateToInclude: latestDateToInclude,
-                                                        quantity: timeRange.maxNumberOfIntervals,
-                                                        forceRefresh: true,
-                                                        onCompletion: { result in
-                continuation.resume(with: result)
-            }))
-        }
-    }
-
-    /// Syncs visitor stats for dashboard UI.
-    @MainActor
-    func syncSiteVisitStats(latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
-            return
-        }
-
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                                 siteTimezone: siteTimezone,
-                                                                 timeRange: timeRange,
-                                                                 latestDateToInclude: latestDateToInclude,
-                                                                 onCompletion: { result in
-                if case let .failure(error) = result {
-                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                }
-                continuation.resume(with: result)
-            }))
-        }
-    }
-
-    /// Syncs summary stats for dashboard UI.
-    @MainActor
-    func syncSiteSummaryStats(latestDateToInclude: Date) async throws {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
-            return
-        }
-
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
-                                                                   siteTimezone: siteTimezone,
-                                                                   period: timeRange.summaryStatsGranularity,
-                                                                   quantity: 1,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   saveInStorage: true) { result in
-                   if case let .failure(error) = result {
-                       DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-                   }
-
-                   let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-                continuation.resume(with: voidResult)
-               })
-        }
-    }
-
     private func handleSyncError(error: Error) {
         switch error {
         case let siteStatsStoreError as SiteStatsStoreError:

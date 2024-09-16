@@ -43,12 +43,12 @@ final class HubMenuCoordinatorTests: XCTestCase {
     func test_when_receiving_a_non_review_notification_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
+        let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
 
         // When
         pushNotificationsManager.sendInactiveNotification(pushNotification)
@@ -57,16 +57,15 @@ final class HubMenuCoordinatorTests: XCTestCase {
         assertEmpty(storesManager.receivedActions)
 
         // Only the HubMenu is shown
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 
     func test_when_receiving_a_notification_while_in_foreground_then_it_will_not_do_anything() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
         // When
@@ -75,17 +74,17 @@ final class HubMenuCoordinatorTests: XCTestCase {
         // Then
         assertEmpty(storesManager.receivedActions)
 
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
         // Only the HubMenu is shown
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 
     func test_when_failing_to_retrieve_ProductReview_details_then_it_will_present_a_notice() throws {
         // Given
         let coordinator = makeHubMenuCoordinator()
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
 
-        coordinator.start()
         coordinator.activate(siteID: siteID)
 
         assertEmpty(noticePresenter.queuedNotices)
@@ -111,16 +110,17 @@ final class HubMenuCoordinatorTests: XCTestCase {
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
         XCTAssertEqual(notice.title, HubMenuCoordinator.Localization.failedToRetrieveReviewNotificationDetails)
 
+        let navigationController = try XCTUnwrap(coordinator.tabContainerController.wrappedController as? UINavigationController)
         // Only the HubMenu should still be visible
-        XCTAssertEqual(coordinator.navigationController.viewControllers.count, 1)
-        assertThat(coordinator.navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
+        XCTAssertEqual(navigationController.viewControllers.count, 1)
+        assertThat(navigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
     }
 }
 
 // MARK: - Utils
 private extension HubMenuCoordinatorTests {
     func makeHubMenuCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> HubMenuCoordinator {
-        HubMenuCoordinator(navigationController: UINavigationController(),
+        HubMenuCoordinator(tabContainerController: TabContainerController(),
                            pushNotificationsManager: pushNotificationsManager,
                            storesManager: storesManager,
                            noticePresenter: noticePresenter,

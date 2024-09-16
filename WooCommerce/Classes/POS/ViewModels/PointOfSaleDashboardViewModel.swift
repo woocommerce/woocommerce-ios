@@ -1,34 +1,18 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import Combine
+import enum Yosemite.OrderStatusEnum
+import struct Yosemite.POSCartItem
+import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    enum PaymentState {
-        case acceptingCard
-        case processingCard
-        case cardPaymentSuccessful
-    }
+    let cartViewModel: any CartViewModelProtocol
+    let totalsViewModel: any TotalsViewModelProtocol
+    let itemListViewModel: any ItemListViewModelProtocol
 
-    @Published private(set) var items: [POSItem]
-    @Published private(set) var itemsInCart: [CartItem] = [] {
-        didSet {
-            calculateAmounts()
-        }
-    }
-    @Published private(set) var formattedCartTotalPrice: String?
-    @Published private(set) var formattedOrderTotalPrice: String?
-    @Published private(set) var formattedOrderTotalTaxPrice: String?
-
-    @Published var showsCardReaderSheet: Bool = false
-    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: CardPresentPaymentAlertType?
-    @Published private(set) var cardPresentPaymentInlineMessage: CardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
-
-    @Published var showsCreatingOrderSheet: Bool = false
-
-    @Published var showsFilterSheet: Bool = false
+    private let connectivityObserver: ConnectivityObserver
 
     enum OrderStage {
         case building
@@ -37,151 +21,202 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    private let cardPresentPaymentService: CardPresentPaymentFacade
+    @Published private(set) var isAddMoreDisabled: Bool = false
+    @Published var isExitPOSDisabled: Bool = false
+    @Published var isReaderDisconnectionDisabled: Bool = false
+    /// This boolean is used to determine if the whole totals/payments view is occupying the full screen (cart is not showed)
+    @Published var isTotalsViewFullScreen: Bool = false
+    @Published var isInitialLoading: Bool = false
+    @Published var isError: Bool = false
+    @Published var isEmpty: Bool = false
+    @Published var showExitPOSModal: Bool = false
+    @Published var showSupport: Bool = false
+    @Published var showsConnectivityError: Bool = false
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(items: [POSItem],
-         cardPresentPaymentService: CardPresentPaymentFacade) {
-        self.items = items
-        self.cardPresentPaymentService = cardPresentPaymentService
+    init(cardPresentPaymentService: CardPresentPaymentFacade,
+         totalsViewModel: any TotalsViewModelProtocol,
+         cartViewModel: any CartViewModelProtocol,
+         itemListViewModel: any ItemListViewModelProtocol,
+         connectivityObserver: ConnectivityObserver) {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
-        observeCardPresentPaymentEvents()
-        observeItemsInCartForCartTotal()
+        self.itemListViewModel = itemListViewModel
+        self.totalsViewModel = totalsViewModel
+        self.cartViewModel = cartViewModel
+        self.connectivityObserver = connectivityObserver
+
+        observeOrderStage()
+        observeSelectedItemToAddToCart()
+        observeCartSubmission()
+        observeCartAddMoreAction()
+        observeCartItemsToCheckIfCartIsEmpty()
+        observePaymentStateForButtonDisabledProperties()
+        observeItemListState()
+        observeTotalsStartNewOrderAction()
+        observeConnectivity()
     }
 
-    var itemToScrollToWhenCartUpdated: CartItem? {
-        return itemsInCart.last
-    }
-
-    func addItemToCart(_ item: POSItem) {
-        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
-        itemsInCart.append(cartItem)
-    }
-
-    func removeItemFromCart(_ cartItem: CartItem) {
-        itemsInCart.removeAll(where: { $0.id == cartItem.id })
-        checkIfCartEmpty()
-    }
-
-    var itemsInCartLabel: String? {
-        switch itemsInCart.count {
-        case 0:
-            return nil
-        default:
-            return String.pluralize(itemsInCart.count,
-                                    singular: "%1$d item",
-                                    plural: "%1$d items")
-        }
-    }
-
-    private func checkIfCartEmpty() {
-        if itemsInCart.isEmpty {
-            orderStage = .building
-        }
-    }
-
-    func submitCart() {
-        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
-        orderStage = .finalizing
-    }
-
-    func addMoreToCart() {
+    private func startNewOrder() {
+        // clear cart
+        cartViewModel.removeAllItemsFromCart()
         orderStage = .building
     }
 
-    func showFilters() {
-        showsFilterSheet = true
-    }
-
-    private func calculateAmounts() {
-        // TODO: this is just a starting point for this logic, to have something calculated on the fly
-        if let formattedCartTotalPrice = formattedCartTotalPrice,
-           let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
-            let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
-            let totalAmount = subtotalAmount + taxAmount
-            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
-            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
-        }
-    }
-
-    var checkoutButtonDisabled: Bool {
-        return itemsInCart.isEmpty
-    }
-
-    func cardPaymentTapped() {
-        Task { @MainActor in
-            showsCreatingOrderSheet = true
-            let order = try await createTestOrder()
-            showsCreatingOrderSheet = false
-            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
-
-            // TODO: Here we should present something to show the payment was successful or not,
-            // and then clear the screen ready for the next transaction.
-        }
+    private func cartSubmitted(cartItems: [CartItem]) {
+        totalsViewModel.checkOutTapped(with: cartItems, allItems: itemListViewModel.items)
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeItemsInCartForCartTotal() {
-        $itemsInCart
-            .map { [weak self] in
-                guard let self else { return "-" }
-                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
-                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
-                    let quantity = cartItem.quantity
-                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-                    return partialResult + total
-                }
-                return currencyFormatter.formatAmount(totalValue)
+    func observeSelectedItemToAddToCart() {
+        itemListViewModel.selectedItemPublisher
+            .sink { [weak self] selectedItem in
+                self?.cartViewModel.addItemToCart(selectedItem)
             }
-            .assign(to: &$formattedCartTotalPrice)
+            .store(in: &cancellables)
     }
 
-    func observeCardPresentPaymentEvents() {
-        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
-        cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showAlert(alertDetails) = event else {
-                    return nil
+    func observeCartSubmission() {
+        cartViewModel.cartSubmissionPublisher
+            .sink { [weak self] cartItems in
+                guard let self else { return }
+                self.orderStage = .finalizing
+                self.cartSubmitted(cartItems: cartItems)
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeCartAddMoreAction() {
+        cartViewModel.addMoreToCartActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.orderStage = .building
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeCartItemsToCheckIfCartIsEmpty() {
+        cartViewModel.itemsInCartPublisher
+            .filter { $0.isEmpty }
+            .sink { [weak self] _ in
+                self?.orderStage = .building
+            }
+            .store(in: &cancellables)
+    }
+
+    func observePaymentStateForButtonDisabledProperties() {
+        Publishers.CombineLatest(totalsViewModel.paymentStatePublisher, totalsViewModel.orderStatePublisher)
+            .map { paymentState, orderState in
+                switch paymentState {
+                case .processingPayment,
+                        .paymentError,
+                        .cardPaymentSuccessful,
+                        .validatingOrder,
+                        .preparingReader:
+                    return true
+                case .idle, .validatingOrderError, .acceptingCard:
+                    return orderState.isSyncing
                 }
-                return alertDetails
             }
-            .assign(to: &$cardPresentPaymentAlertViewModel)
-        cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showPaymentMessage(messageType) = event else {
-                    return nil
+            .assign(to: &$isAddMoreDisabled)
+
+        totalsViewModel.paymentStatePublisher
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment:
+                    return true
+                case .idle,
+                        .acceptingCard,
+                        .validatingOrder,
+                        .validatingOrderError,
+                        .preparingReader,
+                        .paymentError,
+                        .cardPaymentSuccessful:
+                    return false
                 }
-                return messageType
             }
-            .assign(to: &$cardPresentPaymentInlineMessage)
-        cardPresentPaymentService.paymentEventPublisher.map { event in
-            switch event {
-            case .idle, .showPaymentMessage:
-                return false
-            case .showAlert,
-                    .showReaderList,
-                    .showOnboarding:
-                return true
+            .assign(to: &$isExitPOSDisabled)
+
+        let afterCardTapPaymentStates = totalsViewModel.paymentStatePublisher
+            .map { paymentState in
+                switch paymentState {
+                case .processingPayment,
+                        .paymentError,
+                        .cardPaymentSuccessful:
+                    return true
+                case .idle,
+                        .validatingOrder,
+                        .validatingOrderError,
+                        .preparingReader,
+                        .acceptingCard:
+                    return false
+                }
             }
-        }.assign(to: &$showsCardReaderSheet)
+            .share()
+
+        afterCardTapPaymentStates
+            .assign(to: &$isTotalsViewFullScreen)
+
+        afterCardTapPaymentStates
+            .assign(to: &$isReaderDisconnectionDisabled)
+
+    }
+
+    private func observeOrderStage() {
+        $orderStage
+            .removeDuplicates()
+            .sink { [weak self] stage in
+            guard let self else { return }
+            cartViewModel.canDeleteItemsFromCart = stage == .building
+
+            switch stage {
+            case .building:
+                totalsViewModel.stopShowingTotalsView()
+            case .finalizing:
+                totalsViewModel.startShowingTotalsView()
+            }
+        }
+        .store(in: &cancellables)
+    }
+
+    func observeItemListState() {
+        Publishers.CombineLatest(itemListViewModel.statePublisher, itemListViewModel.itemsPublisher)
+            .sink { [weak self] state, items in
+                guard let self = self else { return }
+
+                self.isInitialLoading = (state == .loading && items.isEmpty)
+
+                switch state {
+                case .error:
+                    self.isError = true
+                case .empty:
+                    self.isEmpty = true
+                default:
+                    self.isError = false
+                    self.isEmpty = false
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeTotalsStartNewOrderAction() {
+        totalsViewModel.startNewOrderActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.startNewOrder()
+            }
+            .store(in: &cancellables)
     }
 }
 
-import enum Yosemite.OrderAction
-import struct Yosemite.Order
 private extension PointOfSaleDashboardViewModel {
-    @MainActor
-       func createTestOrder() async throws -> Order {
-           return try await withCheckedThrowingContinuation { continuation in
-               let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-                                                                  status: .pending,
-                                                                  amount: "15.00",
-                                                                  taxable: false) { result in
-                   continuation.resume(with: result)
-               }
-               ServiceLocator.stores.dispatch(action)
-           }
-       }
+    func observeConnectivity() {
+        connectivityObserver.statusPublisher
+            .removeDuplicates()
+            .map { connectivityStatus in
+                return connectivityStatus == .notReachable
+            }
+            .assign(to: &$showsConnectivityError)
+    }
 }

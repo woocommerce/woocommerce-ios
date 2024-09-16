@@ -69,6 +69,7 @@ struct InboxNoteRow: View {
                                     .font(Font(contentFont))
                             }
                         }
+                        .renderedIf(viewModel.showInboxCTA)
 
                         Text(Localization.surveyCompleted)
                             .secondaryBodyStyle()
@@ -104,33 +105,28 @@ struct InboxNoteRow: View {
         }
     }
 
-    @ViewBuilder
-    private func webView(url: URL) -> some View {
-        let isWPComStore = ServiceLocator.stores.sessionManager.defaultSite?.isWordPressComStore ?? false
-
-        if isWPComStore {
-        NavigationView {
-            AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
-                                 url: url,
-                                 urlToTriggerExit: nil) { _ in
-
+    func webView(url: URL) -> some View {
+        NavigationStack {
+            Group {
+                if viewModel.shouldAuthenticateAdminPage {
+                    AuthenticatedWebView(isPresented: .constant(tappedAction != nil),
+                                         url: url)
+                } else {
+                    WebView(isPresented: .constant(tappedAction != nil),
+                            url: url)
+                }
             }
-             .navigationTitle(Localization.inboxWebViewTitle)
-             .navigationBarTitleDisplayMode(.inline)
-             .toolbar {
-                 ToolbarItem(placement: .confirmationAction) {
-                     Button(action: {
-                         tappedAction = nil
-                     }, label: {
-                         Text(Localization.doneButtonWebview)
-                     })
-                 }
-             }
-        }
-        .wooNavigationBarStyle()
-        }
-        else {
-            SafariSheetView(url: url)
+            .navigationTitle(Localization.inboxWebViewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        tappedAction = nil
+                    }, label: {
+                        Text(Localization.doneButtonWebview)
+                    })
+                }
+            }
         }
     }
 }

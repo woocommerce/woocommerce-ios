@@ -58,6 +58,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     }
 
     let totalAmount: String
+    let totalAmountWithCurrency: String
 
     @Published private(set) var isFetchingPaymentInfo = false
     @Published private(set) var cardIcon: UIImage?
@@ -83,7 +84,19 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.completionHandler = onCompletion
-        self.totalAmount = String(format: "$%.0f", campaignInfo.budget.amount)
+
+        let dayCountInWeek = BlazeBudgetSettingViewModel.Constants.dayCountInWeek
+        let amount = campaignInfo.isEvergreen ? (campaignInfo.budget.amount * Double(dayCountInWeek)) : campaignInfo.budget.amount
+        let formattedAmount = String(format: "$%.0f", amount)
+
+        self.totalAmount = campaignInfo.isEvergreen ? String(format: Localization.totalWeeklyAmount, formattedAmount) : formattedAmount
+        self.totalAmountWithCurrency = {
+            if campaignInfo.isEvergreen {
+                String(format: Localization.totalWeeklyAmountWithCurrency, formattedAmount, campaignInfo.budget.currency)
+            } else {
+                String(format: Localization.totalAmountWithCurrency, formattedAmount, campaignInfo.budget.currency)
+            }
+        }()
     }
 
     @MainActor
@@ -130,10 +143,10 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                     throw BlazeCampaignCreationError.failedToCreateCampaign
                 }
             }
-            analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
+            analytics.track(event: .Blaze.Payment.campaignCreationSuccess(isEvergreen: campaignInfo.isEvergreen))
             completionHandler()
         } catch {
-            analytics.track(event: .Blaze.Payment.campaignCreationFailed())
+            analytics.track(event: .Blaze.Payment.campaignCreationFailed(error: error))
             campaignCreationError = error as? BlazeCampaignCreationError ?? .failedToCreateCampaign
         }
         isCreatingCampaign = false
@@ -229,6 +242,30 @@ private extension BlazeConfirmPaymentViewModel {
         cardIcon = cardType.icon
         cardTypeName = paymentMethod.info.type
         cardName = paymentMethod.name
+    }
+}
+
+private extension BlazeConfirmPaymentViewModel {
+    enum Localization {
+        static let totalWeeklyAmount = NSLocalizedString(
+            "blazeConfirmPaymentViewModel.totalWeeklyAmount",
+            value: "%1$@ weekly",
+            comment: "Total weekly amount of a Blaze campaign without an end date. " +
+            "Reads as: $11 weekly"
+        )
+        static let totalWeeklyAmountWithCurrency = NSLocalizedString(
+            "blazeConfirmPaymentViewModel.totalWeeklyAmountWithCurrency",
+            value: "%1$@ %2$@ weekly",
+            comment: "Total weekly amount of a Blaze campaign without an end date. " +
+            "Placeholders are formatted amount and currency. " +
+            "Reads as: $11 USD weekly"
+        )
+        static let totalAmountWithCurrency = NSLocalizedString(
+            "blazeConfirmPaymentViewModel.totalAmountWithCurrency",
+            value: "%1$@ %2$@",
+            comment: "Total amount of a Blaze campaign. Placeholders are formatted amount and currency. " +
+            "Reads as: $11 USD"
+        )
     }
 }
 

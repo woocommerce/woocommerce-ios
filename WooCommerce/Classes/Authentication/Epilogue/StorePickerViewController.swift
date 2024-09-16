@@ -38,10 +38,6 @@ enum StorePickerConfiguration: Equatable {
     ///
     case login
 
-    /// Setup the store picker for store creation initiated from the logged out state
-    ///
-    case storeCreationFromLogin(source: LoggedOutStoreCreationCoordinator.Source)
-
     /// Setup the store picker for use in the store switching flow
     ///
     case switchingStores
@@ -161,8 +157,6 @@ final class StorePickerViewController: UIViewController {
         self?.restartAuthentication()
     }
 
-    private var storeCreationCoordinator: StoreCreationCoordinator?
-
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -252,7 +246,7 @@ private extension StorePickerViewController {
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         let showsActionButton: Bool = {
             switch configuration {
-            case .login, .standard, .storeCreationFromLogin:
+            case .login, .standard:
                 return true
             case .switchingStores, .listStores:
                 return false
@@ -361,6 +355,7 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
+        ServiceLocator.authenticationManager.initialize()
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }

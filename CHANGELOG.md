@@ -1,6 +1,52 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.4
+In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
+
+## 20.3
+In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
+Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+
+## 20.2
+In this version, Blaze ads get evergreen campaign support. We've fixed some bugs in product editing, especially around prices, and now support negative-priced products!
+
+We've fixed a problem using the menu with VoiceOver and assistive technology, and some bugs which caused titles to disappear, and buttons to become unresponsive.
+
+## 20.1
+In this update we've improved the order creation flows, fixed several bugs in the edit order flows, and fixed a problem when starting a Tap to Pay on iPhone payment.
+We've also made it easier to understand the budgets for your Blaze ad campaigns, and added support for Blaze ad creation in locales which don't use Western Arabic numerals.
+
+## 20.0
+Enhance your WooCommerce management with our latest update! Creating Blaze ads is now smoother with media selection streamlined for current products. Plus, we've ironed out kinks everywhere from creating orders to contacting support, ensuring a more reliable experience. Enjoy a more cohesive app environment with various fixes and improvements.
+
+## 19.9
+Experience smoother operations in the WooCommerce app! For iPad users, we've squashed a bug to ensure seamless payment collection, plus we've eliminated crashes linked to the order list on iPadOS 16 & 16.1. Stores with the Blaze plugin can also manage and create campaigns right from the app. Upgrade for an improved, stable user experience!
+
+## 19.8
+Experience seamless updates with our latest release! Now enjoy background updates for your order list and dashboard analytics cards. We've enhanced the dynamic dashboard to display unavailable analytics views when not logged into WPCom. Plus, we've fixed large text support in the Barcode Scanner for better accessibility. Update now for a smoother experience!
+
+## 19.7
+Exciting updates in our WooCommerce mobile app! Manage Google Ads campaigns with plugin version 2.7.7 or later. Enjoy consistent order status across various lists. Easily create paid campaigns with our new call to action in Google Campaign analytics. Plus, we've improved Blaze and Product Creation AI features for a smoother experience. Update now!
+
+## 19.6
+Discover our latest update! We’ve introduced product creation with AI and enhanced order creation with better tax-inclusive pricing displays. Plus, our Google Campaigns analytics card now lets you choose any available campaign metric for detailed insights. Enjoy a smoother, smarter WooCommerce experience!
+
+## 19.5
+Update your WooCommerce app now for an improved cash payment experience! We’ve fixed the issue where orders paid in cash weren’t showing the payment method and title. Now, when collecting cash payments, the app sets these details correctly, just like on the web, ensuring clarity in your order details and receipts.
+
+## 19.4
+Discover the latest updates to our app! The Analytics Hub now includes analytics for Google Ads campaigns, provided the Google Listings & Ads extension is active and connected. We've also enabled Inbox Notes in both the Dynamic Dashboard and the Hub Menu, offering users a centralized, non-intrusive method for receiving important updates, feature announcements, and pertinent information. Update now to enjoy these new features and enhance your experience! 
+
+## 19.3
+Discover the latest updates to WooCommerce mobile app! We’ve enhanced Blaze Campaigns with date range checks to prevent validation errors, improved UX for a more intuitive interface, and fixed multiple issues with card reader connections. Plus, we’ve refined error handling during payment collection for a smoother experience. Update now for a better WooCommerce experience!
+
+## 19.2
+Enhance your WooCommerce experience with our latest update! Now you can pick videos from your local library for downloadable files and view private tags on the product list tab. We've fixed the customer list loading issue in order creation and improved dashboard stability. Plus, bookable products are now disabled in order forms. Enjoy smoother payments with added log insights. Update today!
+
+## 19.1
+Discover the latest updates to our WooCommerce app! We've added a "Private" filter option for enhanced product searches on iOS and revamped the product creation sheet for better organization. The privacy settings screen now has its navigation bar restored. The Customers section now displays phone numbers and addresses, with options to copy or contact directly. Plus, you can create new orders for registered customers with ease!
+
 ## 19.0
 Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
 

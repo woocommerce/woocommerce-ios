@@ -61,9 +61,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v19.0-whats-new"
+msgctxt "v20.4-whats-new"
 msgid ""
-"Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!\n"
+"In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.\n"
+"\n"
+"\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

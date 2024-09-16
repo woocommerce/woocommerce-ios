@@ -224,7 +224,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "")
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -244,7 +244,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -278,10 +278,10 @@ final class OrderListViewModelTests: XCTestCase {
         // Given
         let expectedError = MockError()
         let viewModel = OrderListViewModel(siteID: siteID, filters: nil)
-        viewModel.activate()
 
         // When
         viewModel.dataLoadingError = expectedError
+        viewModel.activate()
 
         // Then
         waitUntil {
@@ -480,7 +480,7 @@ private extension OrderListViewModelTests {
                      status: OrderStatusEnum,
                      dateCreated: Date = Date(),
                      datePaid: Date? = nil,
-                     customFields: [Yosemite.OrderMetaData] = [],
+                     customFields: [Yosemite.MetaData] = [],
                      paymentMethodID: String? = nil) -> Yosemite.Order {
         let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
                                                       orderID: orderID,
@@ -493,25 +493,12 @@ private extension OrderListViewModelTests {
         storageOrder.update(with: readonlyOrder)
 
         for field in customFields {
-            let storageMetaData = storage.insertNewObject(ofType: Storage.OrderMetaData.self)
+            let storageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
             storageMetaData.update(with: field)
             storageOrder.addToCustomFields(storageMetaData)
         }
 
         return readonlyOrder
-    }
-
-    func insertCODPaymentGateway() {
-        //let codGateway = PaymentGateway.fake().copy(siteID: siteID, gatewayID: "cod", enabled: true)
-        let codGateway = PaymentGateway(siteID: siteID,
-                                        gatewayID: "cod",
-                                        title: "Pay in Person",
-                                        description: "Pay by cash or card when you pick up in store",
-                                        enabled: true,
-                                        features: [],
-                                        instructions: nil)
-        let storageGateway = storage.insertNewObject(ofType: StoragePaymentGateway.self)
-        storageGateway.update(with: codGateway)
     }
 
     final class MockError: Error { }

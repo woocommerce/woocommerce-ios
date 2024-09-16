@@ -9,8 +9,8 @@ import protocol Yosemite.StoresManager
 
 /// Coordinator for the HubMenu tab.
 ///
-final class HubMenuCoordinator: Coordinator {
-    let navigationController: UINavigationController
+final class HubMenuCoordinator {
+    let tabContainerController: TabContainerController
     var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
@@ -24,7 +24,7 @@ final class HubMenuCoordinator: Coordinator {
 
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    init(navigationController: UINavigationController,
+    init(tabContainerController: TabContainerController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -38,14 +38,14 @@ final class HubMenuCoordinator: Coordinator {
         self.switchStoreUseCase = switchStoreUseCase
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
-        self.navigationController = navigationController
+        self.tabContainerController = tabContainerController
     }
 
-    convenience init(navigationController: UINavigationController,
+    convenience init(tabContainerController: TabContainerController,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
                      willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(navigationController: navigationController,
+        self.init(tabContainerController: tabContainerController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
@@ -56,17 +56,14 @@ final class HubMenuCoordinator: Coordinator {
         notificationsSubscription?.cancel()
     }
 
-    func start() {
-        // No-op: please call `activate(siteID:)` instead when the menu tab is configured.
-    }
-
-    /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
+    /// Used to reload the Hub menu screen when selected site changes
+    ///
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
-                                                  navigationController: navigationController,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController = hubMenuController {
-            navigationController.viewControllers = [hubMenuController]
+            let navigationController = UINavigationController(rootViewController: hubMenuController)
+            tabContainerController.wrappedController = navigationController
         }
 
         if notificationsSubscription == nil {
@@ -78,7 +75,7 @@ final class HubMenuCoordinator: Coordinator {
         }
     }
 
-    private func handleNotification(_ notification: PushNotification) {
+    private func handleNotification(_ notification: WooCommerce.PushNotification) {
         guard notification.kind == .comment else {
             return
         }

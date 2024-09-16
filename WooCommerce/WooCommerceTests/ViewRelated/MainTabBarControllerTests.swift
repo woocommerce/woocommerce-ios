@@ -38,7 +38,7 @@ final class MainTabBarControllerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_tab_view_controllers_are_not_empty_after_updating_default_site() {
+    func test_tab_view_controllers_are_not_empty_after_updating_default_site() throws {
 
         // Arrange
         // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
@@ -64,11 +64,13 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_returns_expected_values() {
+    func test_tab_view_controllers_returns_expected_values() throws {
         // Arrange
         let featureFlagService = MockFeatureFlagService()
 
@@ -93,7 +95,9 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products),
                    isAnInstanceOf: ProductsViewController.self)
-        assertThat(tabBarController.tabRootViewController(tab: .hubMenu),
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
@@ -206,12 +210,12 @@ final class MainTabBarControllerTests: XCTestCase {
             }
         }
 
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabContainerController(tab: .hubMenu) as? UINavigationController)
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
 
         // Action
         // Send push notification in inactive state
-        let pushNotification = PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "")
+        let pushNotification = WooCommerce.PushNotification(noteID: 1_234, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
         pushNotificationsManager.sendInactiveNotification(pushNotification)
 
         // Simulate that the network call returns a parcel

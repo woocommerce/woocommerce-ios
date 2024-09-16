@@ -9,6 +9,9 @@ struct HubMenu: View {
     /// Set from the hosting controller to handle switching store.
     var switchStoreHandler: () -> Void = {}
 
+    /// Set from the hosting controller to open Google Ads campaigns.
+    var googleAdsCampaignHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
@@ -22,17 +25,8 @@ struct HubMenu: View {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             menuList
-                .navigationDestination(for: String.self) { id in
-                    detailView(menuID: id)
-                }
                 .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
                     detailView(destination: destination)
-                }
-                .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
-                    reviewDetailView
-                }
-                .navigationDestination(isPresented: $viewModel.showingCoupons) {
-                    couponListView
                 }
                 .onAppear {
                     viewModel.setupMenuElements()
@@ -47,13 +41,18 @@ struct HubMenu: View {
             Constants.trackingOptionKey: menu.trackingOption
         ])
 
-        if menu.id == HubMenuViewModel.Settings.id {
+        switch menu.id {
+        case HubMenuViewModel.GoogleAds.id:
+            googleAdsCampaignHandler()
+        case HubMenuViewModel.Settings.id:
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
+        case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        default:
+            break
         }
 
-        viewModel.selectedMenuID = menu.id
+        viewModel.navigateToDestination(menu.navigationDestination)
     }
 }
 
@@ -122,96 +121,94 @@ private extension HubMenu {
             .foregroundColor(Color(menu.iconColor))
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
-        .overlay {
-            NavigationLink(value: menu.id) {
-                EmptyView()
-            }
-            .opacity(0)
-        }
-    }
-
-    @ViewBuilder
-    func detailView(menuID: String) -> some View {
-        Group {
-            switch menuID {
-            case HubMenuViewModel.Settings.id:
-                SettingsView()
-                    .navigationTitle(HubMenuViewModel.Localization.settings)
-            case HubMenuViewModel.Payments.id:
-                paymentsView
-            case HubMenuViewModel.Blaze.id:
-                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
-            case HubMenuViewModel.WoocommerceAdmin.id:
-                webView(url: viewModel.woocommerceAdminURL,
-                        title: HubMenuViewModel.Localization.woocommerceAdmin,
-                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
-            case HubMenuViewModel.ViewStore.id:
-                webView(url: viewModel.storeURL,
-                        title: HubMenuViewModel.Localization.viewStore,
-                        shouldAuthenticate: false)
-            case HubMenuViewModel.Inbox.id:
-                Inbox(viewModel: .init(siteID: viewModel.siteID))
-            case HubMenuViewModel.Reviews.id:
-                ReviewsView(siteID: viewModel.siteID)
-            case HubMenuViewModel.Coupons.id:
-                couponListView
-            case HubMenuViewModel.InAppPurchases.id:
-                InAppPurchasesDebugView()
-            case HubMenuViewModel.Subscriptions.id:
-                SubscriptionsView(viewModel: .init())
-            case HubMenuViewModel.Customers.id:
-                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
-            case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                if let cardPresentPaymentService = viewModel.cardPresentPaymentService {
-                    PointOfSaleEntryPointView(
-                        itemProvider: viewModel.posItemProvider,
-                        hideAppTabBar: { isHidden in
-                            AppDelegate.shared.setShouldHideTabBar(isHidden)
-                        },
-                        cardPresentPaymentService: cardPresentPaymentService)
-                } else {
-                    // TODO: When we have a singleton for the card payment service, this should not be required.
-                    Text("Error creating card payment service")
-                }
-            default:
-                fatalError("🚨 Unsupported menu item")
-            }
-        }
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
     func detailView(destination: HubMenuNavigationDestination) -> some View {
         Group {
             switch destination {
-                case .payments:
-                    paymentsView
+            case .settings:
+                ViewControllerContainer(SettingsViewController())
+                    .navigationTitle(HubMenuViewModel.Localization.settings)
+            case .payments:
+                paymentsView
+            case .blaze:
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
+            case .wooCommerceAdmin:
+                webView(url: viewModel.woocommerceAdminURL,
+                        title: HubMenuViewModel.Localization.woocommerceAdmin,
+                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
+            case .viewStore:
+                webView(url: viewModel.storeURL,
+                        title: HubMenuViewModel.Localization.viewStore,
+                        shouldAuthenticate: false)
+            case .inbox:
+                Inbox(viewModel: viewModel.inboxViewModel)
+            case .reviews:
+                ReviewsView(siteID: viewModel.siteID)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationTitle(Localization.reviews)
+            case .coupons:
+                couponListView
+            case .inAppPurchase:
+                InAppPurchasesDebugView()
+            case .subscriptions:
+                SubscriptionsView(viewModel: .init())
+            case .customers:
+                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+            case .pointOfSales:
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
+                   let orderService = POSOrderService(siteID: viewModel.siteID,
+                                                      credentials: viewModel.credentials) {
+                    PointOfSaleEntryPointView(
+                        itemProvider: viewModel.posItemProvider,
+                        onPointOfSaleModeActiveStateChange: { isEnabled in
+                            viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
+                        },
+                        cardPresentPaymentService: cardPresentPaymentService,
+                        orderService: orderService,
+                        currencyFormatter: .init(currencySettings: ServiceLocator.currencySettings),
+                        analytics: ServiceLocator.analytics)
+                } else {
+                    // TODO: When we have a singleton for the card payment service, this should not be required.
+                    Text("Error creating card payment service")
+                }
+            case .reviewDetails(let parcel):
+                reviewDetailView(parcel: parcel)
+            case .blazeCampaignDetails(let campaignID):
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
-    func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
+    func webView(url: URL,
+                 title: String,
+                 shouldAuthenticate: Bool,
+                 urlToTriggerExit: String? = nil,
+                 redirectHandler: ((URL) -> Void)? = nil) -> some View {
         Group {
             if shouldAuthenticate {
                 AuthenticatedWebView(isPresented: .constant(true),
-                                     url: url)
+                                     url: url,
+                                     urlToTriggerExit: urlToTriggerExit,
+                                     redirectHandler: redirectHandler)
             } else {
                 WebView(isPresented: .constant(true),
-                        url: url)
+                        url: url,
+                        urlToTriggerExit: urlToTriggerExit,
+                        redirectHandler: redirectHandler)
             }
         }
         .navigationTitle(title)
     }
 
     @ViewBuilder
-    var reviewDetailView: some View {
-        if let parcel = viewModel.productReviewFromNoteParcel {
-            ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationTitle(Localization.productReview)
-        }
+    func reviewDetailView(parcel: ProductReviewFromNoteParcel) -> some View {
+        ViewControllerContainer(ReviewDetailsViewController(productReview: parcel.review, product: parcel.product, notification: parcel.note))
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.productReview)
     }
 
     var paymentsView: some View {
@@ -222,6 +219,7 @@ private extension HubMenu {
     var couponListView: some View {
         EnhancedCouponListView(siteID: viewModel.siteID)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Localization.coupons)
     }
 
     /// Reusable List row for the hub menu
@@ -252,7 +250,7 @@ private extension HubMenu {
                 case .leading:
                     return .chevronImage
                 case .enteringMode:
-                    return .playSquareImage
+                    return .switchingModeImage
                         .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }
@@ -287,6 +285,7 @@ private extension HubMenu {
         var chevronAccessibilityID: String?
 
         @Environment(\.sizeCategory) private var sizeCategory
+        @ScaledMetric private var scale: CGFloat = 1.0
 
         var body: some View {
             HStack(spacing: HubMenu.Constants.padding) {
@@ -353,7 +352,8 @@ private extension HubMenu {
                 // Tap Indicator
                 Image(uiImage: chevron.asset)
                     .resizable()
-                    .frame(width: HubMenu.Constants.chevronSize, height: HubMenu.Constants.chevronSize)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: HubMenu.Constants.chevronSize * scale, height: HubMenu.Constants.chevronSize * scale)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
@@ -392,6 +392,16 @@ private extension HubMenu {
             "hubMenu.productReview",
             value: "Product Review",
             comment: "Title of the view containing a single Product Review"
+        )
+        static let reviews = NSLocalizedString(
+            "hubMenu.reviewsList",
+            value: "Reviews",
+            comment: "Title of the view containing Reviews list"
+        )
+        static let coupons = NSLocalizedString(
+            "hubMenu.couponsList",
+            value: "Coupons",
+            comment: "Title of the view containing Coupons list"
         )
     }
 }

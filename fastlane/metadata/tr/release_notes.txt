@@ -1,1 +1,2 @@
-En son sürümümüz Mağazam ekranınızı zenginleştirir. Artık en son siparişleriniz, düşük stoklu ürünleriniz, etkin kuponlarınız, müşteri incelemeleri ve daha fazlası hakkında ayrıntılar verilir. Bu eklemelerle mağazanızın performansını daha derinlemesine inceleyin!
+Bu sürümde sipariş takip numaralarını taramayı etkinleştirdik ve ürün şifresi yönetimini iyileştirdik. Ürün tarayıcısı, nakit ödemeler ve indirimler için de geliştirmeler yaptık.
+Blaze reklamları kampanyası oluşturma; görsel seçme ve bütçe ayarları için daha iyi bir deneyimle güncellendi.

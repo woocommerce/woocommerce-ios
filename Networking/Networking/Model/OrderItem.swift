@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order's Item Entity.
 ///
-public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let itemID: Int64
     public let name: String
 
@@ -113,7 +113,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
-        // Use failsafe decoding to discard any attributes with non-string values (currently not supported).
+        // Use failsafe lossy decoding to silently discard any attributes with non-string values.
+        // Non-string values are not supported; instead of silently decoding them as empty strings (causing confusion in the UI) we now discard them.
         let allAttributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
         attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 

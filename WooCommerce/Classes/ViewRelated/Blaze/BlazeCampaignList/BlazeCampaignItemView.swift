@@ -9,17 +9,16 @@ struct BlazeCampaignItemView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let campaign: BlazeCampaignListItem
-    private let showBudget: Bool
 
-    init(campaign: BlazeCampaignListItem,
-         showBudget: Bool = true) {
+    init(campaign: BlazeCampaignListItem) {
         self.campaign = campaign
-        self.showBudget = showBudget
     }
 
     var body: some View {
-        VStack(spacing: Layout.contentSpacing) {
-            AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.contentSpacing) {
+        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .center,
+                              spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -41,10 +40,10 @@ struct BlazeCampaignItemView: View {
                                               backgroundColor: campaign.status.backgroundColor)
                     )
                     Text(campaign.name)
-                        .font(.headline)
+                        .font(.subheadline)
                         .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .fixedSize(horizontal: false, vertical: false)
 
                 Spacer()
 
@@ -55,48 +54,39 @@ struct BlazeCampaignItemView: View {
             }
 
             // campaign stats
-            AdaptiveStack {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .firstTextBaseline,
+                              spacing: Layout.contentSpacing) {
+
                 Spacer()
-                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
+                    .frame(width: Layout.imageSize * scale)
 
-                // campaign total impressions
+                // campaign total impressions -> clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.impressions)
+                    Text(Localization.clickthroughs)
                         .subheadlineStyle()
-                    Text("\(campaign.impressions)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
-                }
-                .fixedSize()
-                .frame(maxWidth: .infinity, alignment: .leading)
 
-                // campaign total clicks
-                VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.clicks)
-                        .subheadlineStyle()
-                    Text("\(campaign.clicks)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.init(UIColor.text))
+                    (Text("\(campaign.humanReadableImpressions) ").font(.title2).fontWeight(.semibold) +
+                     Text(Image(systemName: "arrow.forward")) +
+                     Text(" \(campaign.humanReadableClicks)").font(.title2).fontWeight(.semibold))
+                        .foregroundStyle(Color(.text))
                 }
-                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text(Localization.budget)
+                    Text(campaign.budgetTitle)
                         .subheadlineStyle()
-                    Text(String(format: "%.0f", campaign.totalBudget))
+                        .lineLimit(1)
+                    Text(campaign.budgetToDisplay)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
-                .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .renderedIf(showBudget)
 
                 Spacer()
+
             }
         }
         .fixedSize(horizontal: false, vertical: true)
@@ -130,9 +120,11 @@ private extension BlazeCampaignItemView {
     }
 
     enum Localization {
-        static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
-        static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
-        static let budget = NSLocalizedString("Budget", comment: "Title label for the total budget of a Blaze campaign")
+        static let clickthroughs = NSLocalizedString(
+            "blazeCampaignItemView.clickthroughs",
+            value: "Click-throughs",
+            comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
+        )
     }
 }
 
@@ -142,16 +134,19 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        productID: 33,
                                                        name: "Fluffy bunny pouch",
                                                        textSnippet: "Buy now!",
-                                                       uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
+                                                       uiStatus: BlazeCampaignListItem.Status.suspended.rawValue,
                                                        imageURL: nil,
                                                        targetUrl: nil,
-                                                       impressions: 112,
-                                                       clicks: 22,
+                                                       impressions: 11200000,
+                                                       clicks: 2200,
                                                        totalBudget: 35,
                                                        spentBudget: 4,
                                                        budgetMode: .total,
                                                        budgetAmount: 0,
-                                                       budgetCurrency: "USD")
+                                                       budgetCurrency: "USD",
+                                                       isEvergreen: false,
+                                                       durationDays: 5,
+                                                       startTime: Date())
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
     }

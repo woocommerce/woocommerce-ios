@@ -2585,24 +2585,11 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
-            case templateEligible = "template_eligible"
             case horizontalSizeClass = "horizontal_size_class"
         }
 
-        enum CreationType: String {
-            case manual
-            case template
-        }
-
-        /// Trackas when the merchants selects a product creation type.
-        ///
-        static func productCreationTypeSelected(type: CreationType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .addProductCreationTypeSelected, properties: [Keys.type.rawValue: type.rawValue])
-        }
-
-        static func productListAddProductButtonTapped(templateEligible: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.templateEligible.rawValue: templateEligible,
-                                                                                   Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
+        static func productListAddProductButtonTapped(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
         }
     }
 }
@@ -2665,6 +2652,8 @@ extension WooAnalyticsEvent {
             case compare
             case enabledCards = "enabled_cards"
             case disabledCards = "disabled_cards"
+            case card
+            case selectedMetric = "selected_metric"
         }
 
         /// Tracks when the "See more" button is tapped in My Store, to open the Analytics Hub.
@@ -2741,6 +2730,15 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .analyticsHubSettingsSaved, properties: [
                 Keys.enabledCards.rawValue: cards.filter { $0.enabled }.map { $0.type.rawValue }.joined(separator: ","),
                 Keys.disabledCards.rawValue: cards.filter { !$0.enabled }.map { $0.type.rawValue }.joined(separator: ",")
+            ])
+        }
+
+        /// Tracks when a new metric is selected on a card in the Analytics Hub.
+        ///
+        static func selectedMetric(_ selectedMetric: String, for cardType: AnalyticsCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .analyticsHubCardMetricSelected, properties: [
+                Keys.card.rawValue: cardType.rawValue,
+                Keys.selectedMetric.rawValue: selectedMetric
             ])
         }
     }

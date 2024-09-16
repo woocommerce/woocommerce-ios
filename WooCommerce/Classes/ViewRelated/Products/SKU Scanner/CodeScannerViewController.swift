@@ -27,6 +27,7 @@ final class CodeScannerViewController: UIViewController {
     @IBOutlet private weak var instructionLabel: PaddedLabel!
     @IBOutlet private weak var bottomDimmingView: UIView!
     @IBOutlet private weak var cancelButton: UIButton!
+    @IBOutlet private weak var swapCameraButton: UIButton!
 
     // > Delegate any interaction with the AVCaptureSession—including its inputs and outputs—to a
     // > dedicated serial dispatch queue, so that the interaction doesn’t block the main queue.
@@ -62,6 +63,7 @@ final class CodeScannerViewController: UIViewController {
         configureBarcodeDetection()
 
         configureCancelButton()
+        configureSwapCameraButton()
 
         startLiveVideo()
     }
@@ -70,6 +72,12 @@ final class CodeScannerViewController: UIViewController {
         cancelButton.setTitle(Localization.cancel, for: .normal)
         cancelButton.tintColor = UIColor.white
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+    }
+
+    private func configureSwapCameraButton() {
+        swapCameraButton.isHidden = captureDevice(with: .front) == nil || captureDevice(with: .back) == nil
+        swapCameraButton.tintColor = UIColor.white
+        swapCameraButton.addTarget(self, action: #selector(swapCamera), for: .touchUpInside)
     }
 
     @objc func cancelButtonTapped() {
@@ -272,6 +280,7 @@ private extension CodeScannerViewController {
         instructionLabel.textColor = .white
         instructionLabel.textInsets = Constants.instructionTextInsets
         instructionLabel.text = instructionText
+        instructionLabel.numberOfLines = 0
     }
 }
 
@@ -334,5 +343,58 @@ private extension CodeScannerViewController {
 
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the screen")
+    }
+}
+
+private extension CodeScannerViewController {
+    @objc func swapCamera() {
+        // Get current input
+        guard let input = session.inputs[0] as? AVCaptureDeviceInput else { return }
+
+        // Begin new session configuration and defer commit
+        session.beginConfiguration()
+        defer { session.commitConfiguration() }
+
+        // Create new capture device
+        var newDevice: AVCaptureDevice?
+        if input.device.position == .back {
+            newDevice = captureDevice(with: .front)
+        } else {
+            newDevice = captureDevice(with: .back)
+        }
+
+        // Create new capture input
+        var deviceInput: AVCaptureDeviceInput!
+        do {
+            deviceInput = try AVCaptureDeviceInput(device: newDevice!)
+        } catch let error {
+            print(error.localizedDescription)
+            return
+        }
+
+        // Swap capture device inputs
+        session.removeInput(input)
+        session.addInput(deviceInput)
+    }
+
+    /// Create new capture device with requested position
+    func captureDevice(with position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+        let devices = AVCaptureDevice.DiscoverySession(deviceTypes:
+                                                        [
+                                                            .builtInWideAngleCamera,
+                                                            .builtInMicrophone,
+                                                            .builtInDualCamera,
+                                                            .builtInTelephotoCamera
+                                                        ],
+                                                       mediaType: AVMediaType.video,
+                                                       position: .unspecified).devices
+
+        for device in devices {
+            if device.position == position {
+                return device
+            }
+        }
+
+        return nil
     }
 }

@@ -1,10 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
 steps:
-  - label: "Finalize Hotfix Release"
-    plugins:
-      - automattic/a8c-ci-toolkit#3.0.1
-    env:
-      # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-      IMAGE_ID: xcode-15.4
+  - label: Finalize Hotfix Release
+    plugins: [$CI_TOOLKIT]
     command: |
       .buildkite/commands/configure-environment.sh
 
@@ -16,3 +21,7 @@ steps:
 
       echo '--- :fire: Finalize Hotfix Release'
       bundle exec fastlane finalize_hotfix_release skip_confirm:true
+    retry:
+      manual:
+        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        allowed: false

@@ -6,6 +6,7 @@ import Experiments
 import protocol WooFoundation.Analytics
 
 /// View model for `StoreOnboardingView`.
+@MainActor
 class StoreOnboardingViewModel: ObservableObject {
     /// UI state of the store onboarding tasks.
     enum State {
@@ -106,15 +107,31 @@ class StoreOnboardingViewModel: ObservableObject {
             return
         }
 
-        await update(state: .loading)
-        if let tasks = try? await loadTasks(),
-           tasks.isNotEmpty {
-            await checkIfAllTasksAreCompleted(tasks)
-            await update(state: .loaded(rows: tasks))
+        analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
+        update(state: .loading)
+
+        let tasks: [StoreOnboardingTaskViewModel]
+        var syncingError: Error?
+        do {
+            tasks = try await loadTasks()
+        } catch {
+            tasks = []
+            syncingError = error
+        }
+
+        if tasks.isNotEmpty {
+            checkIfAllTasksAreCompleted(tasks)
+            update(state: .loaded(rows: tasks))
         } else if taskViewModels.isNotEmpty {
-            await update(state: .loaded(rows: taskViewModels))
+            update(state: .loaded(rows: taskViewModels))
         } else {
-            await update(state: .failed)
+            update(state: .failed)
+        }
+
+        if let syncingError {
+            analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .onboarding, error: syncingError))
+        } else {
+            analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .onboarding))
         }
     }
 
@@ -139,7 +156,6 @@ private extension StoreOnboardingViewModel {
             .map { .init(task: $0, badgeText: nil) }
     }
 
-    @MainActor
     func update(state: State) {
         switch state {
         case .loading:
@@ -161,7 +177,6 @@ private extension StoreOnboardingViewModel {
         onStateChange?()
     }
 
-    @MainActor
     func checkIfAllTasksAreCompleted(_ tasksFromServer: [StoreOnboardingTaskViewModel]) {
         guard tasksFromServer.isNotEmpty else {
             return

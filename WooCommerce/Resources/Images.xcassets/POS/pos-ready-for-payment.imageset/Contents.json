@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pos_ready_for_payment.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -65,7 +65,7 @@ public final class MetaDataStore: Store {
 // MARK: - Upsert MetaData for Orders and Products
 //
 private extension MetaDataStore {
-    /// Updates order metadata in the local database.
+    /// Updates order metadata both remotely and in the local database..
     /// - Parameters:
     ///   - siteID: Site id of the order.
     ///   - orderID: ID of the order.

@@ -76,12 +76,12 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
         if resetAmountWithNewValue,
             let newInput = newAmount.last {
-            amount = priceFieldFormatter.formatAmount(String(newInput))
+            amount = priceFieldFormatter.formatUserInput(String(newInput))
             resetAmountWithNewValue = false
             return
         }
 
-        amount = priceFieldFormatter.formatAmount(newAmount)
+        amount = priceFieldFormatter.formatUserInput(newAmount)
     }
 }
 

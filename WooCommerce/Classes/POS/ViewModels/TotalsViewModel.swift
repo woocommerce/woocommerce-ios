@@ -20,7 +20,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
-    @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
@@ -95,7 +94,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
-    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
     var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
@@ -294,6 +292,7 @@ private extension TotalsViewModel {
 
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }
@@ -305,27 +304,13 @@ private extension TotalsViewModel {
                 return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
                 self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
-        cardPresentPaymentService.paymentEventPublisher.map { [weak self] event in
-            guard let self else { return false }
-            switch event {
-            case .idle:
-                return false
-            case .show(let eventDetails):
-                switch presentationStyle(for: eventDetails) {
-                case .alert:
-                    return true
-                case .message, .none:
-                    return false
-                }
-            case .showOnboarding:
-                return true
-            }
-        }.assign(to: &$showsCardReaderSheet)
+
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { [weak self] paymentEvent in
                 guard let self else { return .none }

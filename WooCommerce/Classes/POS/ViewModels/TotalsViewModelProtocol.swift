@@ -4,7 +4,6 @@ import protocol Yosemite.POSItem
 
 protocol TotalsViewModelProtocol {
     var paymentState: TotalsViewModel.PaymentState { get }
-    var showsCardReaderSheet: Bool { get set }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get }
     var cardPresentPaymentEvent: CardPresentPaymentEvent { get }
     var connectionStatus: CardReaderConnectionStatus { get }
@@ -14,7 +13,6 @@ protocol TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
-    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { get }
     var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { get }
     var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { get }
     var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { get }

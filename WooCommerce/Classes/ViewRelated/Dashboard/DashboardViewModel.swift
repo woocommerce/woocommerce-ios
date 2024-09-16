@@ -147,6 +147,7 @@ final class DashboardViewModel: ObservableObject {
                                                                                                                storageManager: storageManager,
                                                                                                                userDefaults: userDefaults,
                                                                                                                blazeEligibilityChecker: blazeEligibilityChecker)
+        self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -179,7 +180,7 @@ final class DashboardViewModel: ObservableObject {
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
 
-        await blazeLocalNotificationScheduler.scheduleNotifications()
+        await blazeLocalNotificationScheduler.scheduleNoCampaignReminder()
     }
 
     func handleCustomizationDismissal() {

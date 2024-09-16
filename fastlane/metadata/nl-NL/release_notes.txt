@@ -1,4 +1,2 @@
-In deze versie krijgen Blaze-advertenties ondersteuning voor evergreen-campagnes. We hebben een aantal bugs opgelost bij productbewerking, vooral wat betreft prijzen, en ondersteunen nu producten met een negatieve prijs!
-
-We hebben een probleem opgelost bij het gebruiken van het menu met VoiceOver en hulptechnologie, en een aantal bugs waardoor titels verdwenen en knoppen niet reageerden.
-
+In deze versie hebben wij het scannen van volgnummers voor bestellingen ingeschakeld en het beheer van productwachtwoorden verbeterd. We hebben ook verbeteringen toegevoegd voor de productscanner, contante betalingen en kortingen.
+Het aanmaken van Blaze-advertentiecampagnes is geüpdatet, voor een betere ervaring met het kiezen van afbeeldingen en budgetinstellingen.

@@ -102,7 +102,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         }
 
         let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder,
-                                             userInfo: [:])
+                                             userInfo: [Constants.siteIDKey: siteID])
         await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
         DDLogDebug("Blaze: Schedule abandoned campaign creation local notification for date \(notificationTime).")
         await scheduler.schedule(notification: notification,
@@ -186,7 +186,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
-                                                 userInfo: [:])
+                                                 userInfo: [Constants.siteIDKey: siteID])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             DDLogDebug("Blaze: Schedule no campaign local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
@@ -199,6 +199,8 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
+        static let siteIDKey = "site_id"
+
         enum NoCampaignReminder {
             static let daysDurationForNotification = 30
         }

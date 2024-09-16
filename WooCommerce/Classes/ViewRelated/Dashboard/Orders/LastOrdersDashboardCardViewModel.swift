@@ -230,7 +230,7 @@ private extension LastOrdersDashboardCardViewModel {
         let remoteStatuses = statusResultsController.fetchedObjects
             .map { OrderStatusEnum(rawValue: $0.slug) }
             .map { OrderStatusRow($0) }
-        allStatuses = [.any] + remoteStatuses
+        allStatuses = [.any] + remoteStatuses + [.trash]
     }
 
     @MainActor

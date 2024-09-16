@@ -447,6 +447,29 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
             self.defaults[.blazeNoCampaignReminderOpened] == true
         }
     }
+
+    func test_it_triggers_store_switching_when_handling_user_response_to_local_notifcations() throws {
+        // Given
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         userDefaults: defaults,
+                                                         pushNotesManager: pushNotesManager,
+                                                         blazeEligibilityChecker: blazeEligibilityChecker,
+                                                         switchStoreUseCase: switchStoreUseCase)
+        sut.observeNotificationUserResponse()
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: "",
+                                                              requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
+                                                              notificationUserInfo: [:]))
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        XCTAssert(switchStoreUseCase.destinationStoreIDs == [siteID])
+    }
 }
 
 private extension BlazeLocalNotificationSchedulerTests {

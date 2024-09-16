@@ -20,7 +20,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
-    private var switchStoreUseCase: SwitchStoreUseCaseProtocol?
+    private var switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -38,7 +38,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -46,6 +47,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
     }
 
     /// Observes user responses to local notification and updates user defaults
@@ -130,7 +132,6 @@ private extension DefaultBlazeLocalNotificationScheduler {
         }
 
         /// Switching store is needed for Blaze eligibility check.
-        let switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self, await isEligibleForBlaze() else {
@@ -139,7 +140,6 @@ private extension DefaultBlazeLocalNotificationScheduler {
                 MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
             }
         }
-        self.switchStoreUseCase = switchStoreUseCase
     }
 
     func isEligibleForBlaze() async -> Bool {

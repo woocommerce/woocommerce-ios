@@ -15,18 +15,13 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBackendReceiptsEnabled: Bool
     private let sideBySideViewForOrderForm: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
-<<<<<<< HEAD
-    private let isDisplayPointOfSaleToggleEnabled: Bool
-    private let isDynamicDashboardM2Enabled: Bool
-    private let favoriteProducts: Bool
-=======
     private let isPointOfSaleEnabled: Bool
     private let isProductCreationAIv2M1Enabled: Bool
     private let googleAdsCampaignCreationOnWebView: Bool
     private let blazeEvergreenCampaigns: Bool
     private let blazeCampaignObjective: Bool
     private let revampedShippingLabelCreation: Bool
->>>>>>> trunk
+    private let favoriteProducts: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -41,18 +36,13 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
-<<<<<<< HEAD
-         isDisplayPointOfSaleToggleEnabled: Bool = false,
-         isDynamicDashboardM2Enabled: Bool = false,
-         favoriteProducts: Bool = false) {
-=======
          isPointOfSaleEnabled: Bool = false,
          isProductCreationAIv2M1Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
-         revampedShippingLabelCreation: Bool = false) {
->>>>>>> trunk
+         revampedShippingLabelCreation: Bool = false,
+         favoriteProducts: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -66,18 +56,13 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
-<<<<<<< HEAD
-        self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
-        self.isDynamicDashboardM2Enabled = isDynamicDashboardM2Enabled
-        self.favoriteProducts = favoriteProducts
-=======
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
->>>>>>> trunk
+        self.favoriteProducts = favoriteProducts
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -108,14 +93,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:
             return isSubscriptionsInOrderCreationCustomersEnabled
-<<<<<<< HEAD
-        case .displayPointOfSaleToggle:
-            return isDisplayPointOfSaleToggleEnabled
-        case .dynamicDashboardM2:
-            return isDynamicDashboardM2Enabled
-        case .favoriteProducts:
-            return favoriteProducts
-=======
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .productCreationAIv2M1:
@@ -128,7 +105,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
->>>>>>> trunk
+        case .favoriteProducts:
+            return favoriteProducts
         default:
             return false
         }

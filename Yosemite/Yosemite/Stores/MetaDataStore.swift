@@ -136,7 +136,7 @@ private extension MetaDataStore {
         storageOrder.addToCustomFields(newStorageMetaData)
     }
 
-    /// Updates product metadata in the local database.
+    /// Updates product metadata both remotely and in the local database.
     /// - Parameters:
     ///   - siteID: Site id of the product.
     ///   - productID: ID of the product.

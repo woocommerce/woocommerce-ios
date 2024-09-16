@@ -60,6 +60,7 @@ struct PointOfSaleDashboardView: View {
         .navigationBarBackButtonHidden(true)
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
         .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)

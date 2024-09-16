@@ -15,11 +15,7 @@ class PriceFieldFormatter {
     /// Current amount converted to Decimal.
     ///
     var amountDecimal: Decimal? {
-        guard let amountDecimal = currencyFormatter.convertToDecimal(amount) else {
-            return nil
-        }
-
-        return amountDecimal as Decimal
+        return decimalFormatter.number(from: amount)?.decimalValue
     }
 
     /// Duplicates input var for internal reference
@@ -58,6 +54,17 @@ class PriceFieldFormatter {
 
     private let minusSign: String = NumberFormatter().minusSign
 
+    /// Price Field number formatter with store decimal separator without thousands separator
+    ///
+    private lazy var decimalFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.decimalSeparator = storeCurrencySettings.decimalSeparator
+        formatter.maximumFractionDigits = storeCurrencySettings.fractionDigits
+        formatter.usesGroupingSeparator = false
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     init(locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          allowNegativeNumber: Bool = false) {
@@ -67,7 +74,6 @@ class PriceFieldFormatter {
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.allowNegativeNumber = allowNegativeNumber
     }
-
 
     /// Formats user input by removing non-numeric symbols, thousands separator, and using store's currency settings.
     ///
@@ -89,12 +95,7 @@ class PriceFieldFormatter {
     /// Formats user input without thousands separator using store's currency settings
     ///
     func formatAmount(_ decimal: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.decimalSeparator = storeCurrencySettings.decimalSeparator
-        formatter.maximumFractionDigits = storeCurrencySettings.fractionDigits
-        formatter.usesGroupingSeparator = false
-        formatter.numberStyle = .decimal
-        amount = formatSanitizedAmount(formatter.string(from: decimal as NSNumber) ?? decimal.formatted())
+        amount = formatSanitizedAmount(decimalFormatter.string(from: decimal as NSNumber) ?? decimal.formatted())
         amountWithSymbol = setCurrencySymbol(to: amount)
         return amount
     }

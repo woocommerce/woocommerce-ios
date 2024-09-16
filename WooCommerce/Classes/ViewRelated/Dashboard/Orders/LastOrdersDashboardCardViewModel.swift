@@ -17,6 +17,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         case cancelled
         case refunded
         case failed
+        case trash
         case custom(String)
 
         init(_ status: OrderStatusEnum?) {
@@ -42,6 +43,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                 self = .completed
             case .refunded:
                 self = .refunded
+            case .trash:
+                self = .trash
             case .custom(let value):
                 self = .custom(value)
             }
@@ -67,6 +70,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                 return .completed
             case .refunded:
                 return .refunded
+            case .trash:
+                return .trash
             case .custom(let value):
                 return .custom(value)
             }

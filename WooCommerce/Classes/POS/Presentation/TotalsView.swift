@@ -204,11 +204,12 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.newOrderButtonPadding)
-        .foregroundColor(Color.posPrimaryText)
+        .foregroundColor(.posPrimaryTextInverted)
         .overlay(
             RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
                 .stroke(Color.posPrimaryText, lineWidth: Constants.defaultBorderLineWidth)
         )
+        .background(Color.posOverlayFillInverted)
     }
 
     @ViewBuilder

@@ -10,9 +10,11 @@ struct MetaDataMapper: Mapper {
         let decoder = JSONDecoder()
         if hasDataEnvelope(in: response) {
             let envelope = try decoder.decode(DataEnvelope.self, from: response)
+            // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
             return envelope.data.metadata.filter { !$0.key.hasPrefix("_") }
         } else {
             let envelope = try decoder.decode(MetaDataEnvelope.self, from: response)
+            // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
             return envelope.metadata.filter { !$0.key.hasPrefix("_") }
         }
     }

@@ -405,6 +405,27 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.blazeNoCampaignReminderOpened])
     }
 
+    /// Verifies that `blazeAbandonedCampaignCreationReminderOpened` is set to `nil` upon reset
+    ///
+    func test_blazeAbandonedCampaignCreationReminderOpened_is_set_to_nil_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.blazeAbandonedCampaignCreationReminderOpened] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults.blazeAbandonedCampaignCreationReminderOpened()))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[UserDefaults.Key.blazeAbandonedCampaignCreationReminderOpened])
+    }
+
     /// Verifies that `blazeSelectedCampaignObjective` is set to `nil` upon reset
     ///
     func test_blazeSelectedCampaignObjective_is_set_to_nil_upon_reset() throws {

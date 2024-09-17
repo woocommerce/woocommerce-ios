@@ -1,4 +1,2 @@
-In questa versione, gli annunci Blaze ricevono il supporto delle campagne evergreen. Abbiamo corretto alcuni bug che interessavano la modifica del prodotto, soprattutto riguardanti i prezzi, e ora sono supportati i prodotti con prezzi negativi.
-
-Abbiamo risolto un problema nell'utilizzo del menu con VoiceOver e con la tecnologia assistiva, oltre ad alcuni bug che facevano sparire i titoli e impedivano ai pulsanti di rispondere.
-
+In questa versione abbiamo abilitato la scansione dei codici di tracciamento e migliorato la gestione della password dei prodotti. Abbiamo inoltre aggiunto miglioramenti per la scansione dei prodotti, pagamenti in contanti e sconti.
+La creazione della campagna annunci Blaze è stata aggiornata e ora offre un'esperienza migliorata nella selezione di immagini e impostazioni del budget.

@@ -3,7 +3,10 @@ import protocol Storage.StorageManagerType
 import Combine
 
 protocol BlazeLocalNotificationScheduler {
-    func scheduleNotifications() async
+    func observeNotificationUserResponse()
+    func scheduleNoCampaignReminder() async
+    func scheduleAbandonedCreationReminder() async
+    func cancelAbandonedCreationReminder() async
 }
 
 /// Handles the scheduling of Blaze local notifications.
@@ -17,6 +20,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private var switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -34,7 +38,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -42,11 +47,35 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
     }
 
-    /// Starts observing campaigns from storage and schedules local notification
+    /// Observes user responses to local notification and updates user defaults
     ///
-    func scheduleNotifications() async {
+    func observeNotificationUserResponse() {
+        pushNotesManager.localNotificationUserResponses
+            .sink { [weak self] response in
+                guard let self else {
+                    return
+                }
+
+                switch response.notification.request.identifier {
+                case LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder.identifier:
+                    userDefaults.setBlazeAbandonedCampaignCreationReminderOpened(true)
+                case LocalNotification.Scenario.blazeNoCampaignReminder.identifier:
+                    userDefaults.setBlazeNoCampaignReminderOpened(true)
+                default:
+                    break
+                }
+
+                navigateToCampaignCreation(from: response)
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// Starts observing campaigns from storage and schedules no campaign local notification
+    ///
+    func scheduleNoCampaignReminder() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
@@ -54,21 +83,65 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         }
 
         observeStorageAndScheduleNotifications()
+    }
 
-        pushNotesManager.localNotificationUserResponses
-            .sink { [weak self] response in
-                guard let self,
-                      response.notification.request.identifier == LocalNotification.Scenario.blazeNoCampaignReminder.identifier else {
-                    return
-                }
+    /// Schedules abandoned Blaze campaign creation local notification if applicable
+    ///
+    @MainActor
+    func scheduleAbandonedCreationReminder() async {
+        guard await isEligibleForBlaze() else {
+            DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule abandoned campaign creation local notification.")
+            await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
+            return
+        }
 
-                userDefaults.setBlazeNoCampaignReminderOpened(true)
-            }
-            .store(in: &subscriptions)
+        guard !userDefaults.blazeAbandonedCampaignCreationReminderOpened() else {
+            DDLogDebug("Blaze: User interacted with a previously scheduled abandoned campaign creation local notification. Don't schedule again.")
+            return
+        }
+
+        guard let notificationTime = Calendar.current.date(byAdding: .hour,
+                                                           value: Constants.AbandonedCampaignCreationReminder.hoursDurationForNotification,
+                                                           to: Date.now) else {
+            return DDLogDebug("Blaze: Failed calculating notification time for abandoned campaign creation local notification.")
+        }
+
+        let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder,
+                                             userInfo: [Constants.siteIDKey: siteID])
+        await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
+        DDLogDebug("Blaze: Schedule abandoned campaign creation local notification for date \(notificationTime).")
+        await scheduler.schedule(notification: notification,
+                                 trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
+                                                                        repeats: false),
+                                 remoteFeatureFlag: nil)
+    }
+
+    /// Cancels abandoned Blaze campaign creation local notification
+    ///
+    @MainActor
+    func cancelAbandonedCreationReminder() async {
+        await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
     }
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
+    func navigateToCampaignCreation(from response: UNNotificationResponse) {
+        guard let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
+            DDLogDebug("Blaze: no site ID found in location notification user info to navigate to campaign creation")
+            return
+        }
+
+        /// Switching store is needed for Blaze eligibility check.
+        switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, await isEligibleForBlaze() else {
+                    return
+                }
+                MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
+            }
+        }
+    }
+
     func isEligibleForBlaze() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
@@ -79,21 +152,21 @@ private extension DefaultBlazeLocalNotificationScheduler {
     /// Performs initial fetch from storage and updates results.
     func observeStorageAndScheduleNotifications() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
 
         do {
             try blazeCampaignResultsController.performFetch()
-            scheduleLocalNotificationIfNeeded()
+            scheduleNoCampaignReminderIfNeeded()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
-    func scheduleLocalNotificationIfNeeded() {
+    func scheduleNoCampaignReminderIfNeeded() {
         guard !userDefaults.blazeNoCampaignReminderOpened() else {
             DDLogDebug("Blaze: User interacted with a previously scheduled no campaign local notification. Don't schedule again.")
             return
@@ -104,7 +177,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
             Task { @MainActor in
                 await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             }
-            return DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a local notification.")
+            return DDLogDebug("Blaze: An active evergreen campaign is present. No need to schedule a no campaign local notification.")
         }
 
         let latestEndTime = campaigns
@@ -123,19 +196,21 @@ private extension DefaultBlazeLocalNotificationScheduler {
             return DDLogDebug("Blaze: Failed calculating latest campaign end time.")
         }
 
-        guard let notificationTime = Calendar.current.date(byAdding: .day, value: Constants.daysDurationNoCampaignReminderNotification, to: latestEndTime) else {
-            return DDLogDebug("Blaze: Failed calculating notification time from latest campaign end time.")
+        guard let notificationTime = Calendar.current.date(byAdding: .day,
+                                                           value: Constants.NoCampaignReminder.daysDurationForNotification,
+                                                           to: latestEndTime) else {
+            return DDLogDebug("Blaze: Failed calculating no campaign notification time from latest campaign end time.")
         }
 
         guard notificationTime > Date.now else {
-            return DDLogDebug("Blaze: Calculated notification time already passed.")
+            return DDLogDebug("Blaze: Calculated no campaign notification time already passed.")
         }
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
-                                                 userInfo: [:])
+                                                 userInfo: [Constants.siteIDKey: siteID])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
-            DDLogDebug("Blaze: Schedule local notification for date \(notificationTime).")
+            DDLogDebug("Blaze: Schedule no campaign local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
                                      trigger: UNCalendarNotificationTrigger(dateMatching: notificationTime.dateAndTimeComponents(),
                                                                             repeats: false),
@@ -146,7 +221,15 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
-        static let daysDurationNoCampaignReminderNotification = 30
+        static let siteIDKey = "site_id"
+
+        enum NoCampaignReminder {
+            static let daysDurationForNotification = 30
+        }
+
+        enum AbandonedCampaignCreationReminder {
+            static let hoursDurationForNotification = 24
+        }
     }
 }
 
@@ -166,5 +249,20 @@ extension UserDefaults {
     ///
     func setBlazeNoCampaignReminderOpened(_ shown: Bool) {
         self[.blazeNoCampaignReminderOpened] = shown
+    }
+
+    /// Returns Blaze abandoned campaign creation Notification opened bool value
+    ///
+    func blazeAbandonedCampaignCreationReminderOpened() -> Bool {
+        guard let value = self[.blazeAbandonedCampaignCreationReminderOpened] as? Bool else {
+            return false
+        }
+        return value
+    }
+
+    /// Stores the Blaze abandoned campaign creation Notification opened bool value
+    ///
+    func setBlazeAbandonedCampaignCreationReminderOpened(_ shown: Bool) {
+        self[.blazeAbandonedCampaignCreationReminderOpened] = shown
     }
 }

@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
           "branch": null,
-          "revision": "14b10de6d21b0d2e9ee41fc63b1cffc840d73003",
-          "version": "1.1.3"
+          "revision": "31045d654bcc1f2b56c85dd658f160fad5b50a29",
+          "version": "1.1.4"
         }
       },
       {
@@ -123,8 +123,8 @@
         "repositoryURL": "https://github.com/nalexn/ViewInspector",
         "state": {
           "branch": null,
-          "revision": "7b1732802ffe30e6a67754bda6c7819e5cb0eb70",
-          "version": "0.9.11"
+          "revision": "23d6fabc6e8f0115c94ad3af5935300c70e0b7fa",
+          "version": null
         }
       },
       {

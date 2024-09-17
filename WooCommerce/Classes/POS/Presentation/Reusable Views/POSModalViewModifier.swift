@@ -16,6 +16,11 @@ struct POSRootModalViewModifier: ViewModifier {
             if modalManager.isPresented {
                 Color.posOverlayFill
                     .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        if modalManager.allowsInteractiveDismissal {
+                            modalManager.dismiss()
+                        }
+                    }
                     // Don't scale/fade in the backdrop
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
@@ -59,17 +64,23 @@ extension View {
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Binding var item: Item?
+    let onDismiss: (() -> Void)?
     let modalContent: (Item) -> ModalContent
 
     func body(content: Content) -> some View {
         content
             .onChange(of: item) { newItem in
                 if let newItem = newItem {
-                    modalManager.present {
+                    modalManager.present(onDismiss: {
+                        // Internal dismissal, i.e. from tapping the background
+                        onDismiss?()
+                        item = nil
+                    }) {
                         modalContent(newItem)
                             .animation(.default, value: item)
                     }
                 } else {
+                    // External dismissal
                     modalManager.dismiss()
                 }
             }
@@ -79,14 +90,22 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Binding var isPresented: Bool
+    let onDismiss: (() -> Void)?
     let modalContent: () -> ModalContent
 
     func body(content: Content) -> some View {
         content
             .onChange(of: isPresented) { newValue in
                 if newValue {
-                    modalManager.present { modalContent() }
+                    modalManager.present(onDismiss: {
+                        // Internal dismissal, i.e. from tapping the background
+                        onDismiss?()
+                        isPresented = false
+                    }) {
+                        modalContent()
+                    }
                 } else {
+                    // External dismissal
                     modalManager.dismiss()
                 }
             }
@@ -107,9 +126,11 @@ extension View {
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
     /// - Returns: a modified view which can show the modal content specifed, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
+                                      onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifierForBool(isPresented: isPresented,
+                                        onDismiss: onDismiss,
                                         modalContent: content))
     }
 
@@ -126,9 +147,34 @@ extension View {
     /// - Returns: a modified view which can show the modal content specifed, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> ModalContent) -> some View {
         self.modifier(
             POSModalViewModifier(item: item,
+                                 onDismiss: onDismiss,
                                  modalContent: content))
+    }
+}
+
+struct POSInteractiveDismissModifier: ViewModifier {
+    @EnvironmentObject var modalManager: POSModalManager
+
+    let disabled: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: disabled) { newValue in
+                modalManager.setInteractiveDismissal(!newValue)
+            }
+            .onAppear {
+                modalManager.setInteractiveDismissal(!disabled)
+            }
+    }
+}
+
+extension View {
+    /// Prevents a POS Modal from being dismissed by tapping on the background.
+    func posInteractiveDismissDisabled(_ disabled: Bool = true) -> some View {
+        self.modifier(POSInteractiveDismissModifier(disabled: disabled))
     }
 }

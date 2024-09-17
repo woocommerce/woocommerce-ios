@@ -508,7 +508,8 @@ private extension OrderDetailsViewController {
             return
         }
 
-        let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController()
+        let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order)
+        let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
         shippingLabelCreationVC.modalPresentationStyle = .overFullScreen
         navigationController?.present(shippingLabelCreationVC, animated: true)
     }

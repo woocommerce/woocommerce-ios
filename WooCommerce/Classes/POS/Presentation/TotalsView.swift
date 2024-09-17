@@ -205,11 +205,8 @@ private extension TotalsView {
         })
         .padding(Constants.newOrderButtonPadding)
         .foregroundColor(.posPrimaryTextInverted)
-        .overlay(
-            RoundedRectangle(cornerRadius: Constants.defaultBorderLineCornerRadius)
-                .stroke(Color.posPrimaryText, lineWidth: Constants.defaultBorderLineWidth)
-        )
         .background(Color.posOverlayFillInverted)
+        .cornerRadius(Constants.newOrderButtonCornerRadius)
     }
 
     @ViewBuilder
@@ -306,8 +303,7 @@ private extension TotalsView {
 private extension TotalsView {
     enum Constants {
         static let pricesIdealWidth: CGFloat = 382
-        static let defaultBorderLineWidth: CGFloat = 1
-        static let defaultBorderLineCornerRadius: CGFloat = 8
+        static let newOrderButtonCornerRadius: CGFloat = 8
 
         static let verticalSpacing: CGFloat = 56
 

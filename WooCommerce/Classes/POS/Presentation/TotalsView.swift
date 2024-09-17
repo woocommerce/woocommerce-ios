@@ -204,8 +204,8 @@ private extension TotalsView {
             .frame(minWidth: UIScreen.main.bounds.width / 2)
         })
         .padding(Constants.newOrderButtonPadding)
-        .foregroundColor(.posPrimaryTextInverted)
-        .background(Color.posOverlayFillInverted)
+        .foregroundColor(Constants.posPrimaryTextInverted)
+        .background(Constants.posOverlayFillInverted)
         .cornerRadius(Constants.newOrderButtonCornerRadius)
     }
 
@@ -335,6 +335,24 @@ private extension TotalsView {
         static let matchedGeometryTotalId: String = "pos_totals_view_total_matched_geometry_id"
 
         static let totalsFieldsHideAnimationDelay: CGFloat = 0.3
+
+        static var posOverlayFillInverted: Color {
+            Color(
+                UIColor(
+                    light: .black,
+                    dark: .white
+                )
+            )
+        }
+
+        static var posPrimaryTextInverted: Color {
+            Color(
+                UIColor(
+                    light: UIColor(.white),
+                    dark: UIColor(.black)
+                )
+            )
+        }
     }
 
     enum Localization {

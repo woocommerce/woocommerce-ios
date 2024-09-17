@@ -5,6 +5,7 @@
 -----
 - [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
 - [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
+- [*] Some error views were misaligned on iPad when the store was not a WordPress site or didn't have Jetpack installed. Now, everything is perfectly centered.
 - [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
 
 

@@ -158,14 +158,12 @@ private extension GoogleAdsDashboardCard {
     func statsView(with stats: GoogleAdsCampaignStatsTotals) -> some View {
         // campaign stats
         AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Layout.padding) {
-            VStack {
-                // Logo image
-                Image(uiImage: .googleLogo)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
-                Spacer()
-            }
+            // Logo image
+            Image(uiImage: .googleLogo)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
+
             VStack(alignment: .leading, spacing: Layout.padding) {
                 HStack {
                     // Title
@@ -191,7 +189,6 @@ private extension GoogleAdsDashboardCard {
                             .fontWeight(.semibold)
                             .foregroundColor(.init(UIColor.text))
                     }
-                    .fixedSize()
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     // campaign total clicks
@@ -203,7 +200,6 @@ private extension GoogleAdsDashboardCard {
                             .fontWeight(.semibold)
                             .foregroundColor(.init(UIColor.text))
                     }
-                    .fixedSize()
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

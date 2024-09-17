@@ -157,7 +157,7 @@ private extension GoogleAdsDashboardCard {
 
     func statsView(with stats: GoogleAdsCampaignStatsTotals) -> some View {
         // campaign stats
-        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.padding) {
+        AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Layout.padding) {
             VStack {
                 // Logo image
                 Image(uiImage: .googleLogo)

@@ -1,8 +1,9 @@
 #!/bin/bash -eu
 
-# Note: BUILDKITE_RELEASE_VERSION is passed as an environment variable to Buildkite.
-# It must use the `BUILDKITE_` prefix to then be forwarded to the MacOS VM due to how `hostmgr` works.
-# This is considered legacy and we should eventually remove all custom BUILDKITE_ variables.
+# Note: `BUILDKITE_RELEASE_VERSION` is the legacy environment variable passed to Buildkite by ReleaseV2.
+# It used the `BUILDKITE_` prefix so it was not filtered out when passed to the MacOS VMs, due to how `hostmgr` works.
+# This is considered legacy: we should eventually remove all use of custom `BUILDKITE_` variables, and instead
+# resolve the value of those sooner (i.e. in the YML pipeline) then pass it as parameter to the `.sh` calls instead.
 
 # Use the provided argument if there's one, otherwise fall back to the legacy BUILDKITE_RELEASE_VERSION
 RELEASE_VERSION=${1:-$BUILDKITE_RELEASE_VERSION}

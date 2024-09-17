@@ -52,7 +52,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var showOnDashboardFirstColumn: [DashboardCard] = []
     @Published private(set) var showOnDashboardSecondColumn: [DashboardCard] = []
 
-    @Published private(set) var isInAppFeedbackCardVisible = false
+    @Published private var isInAppFeedbackCardVisible = false
 
     private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
 
@@ -60,7 +60,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders = false
+    @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
 
@@ -375,9 +375,9 @@ private extension DashboardViewModel {
 
                     // Append feedback card after the first card
                     let feedbackCard = DashboardCard.inAppFeedBackCard
-                    if allCards.isEmpty {
+                    if allCards.isEmpty, showFeedbackCard {
                         allCards.append(feedbackCard)
-                    } else {
+                    } else if showFeedbackCard {
                         allCards.insert(feedbackCard, at: 1)
                     }
 

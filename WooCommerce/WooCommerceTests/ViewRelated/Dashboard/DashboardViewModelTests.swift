@@ -262,7 +262,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"))
     }
 
-    // MARK: Dashboard cards
+    // MARK: Customize dashboard cards
     @MainActor
     func test_dashboard_cards_are_saved_to_app_settings() throws {
         // Given
@@ -306,44 +306,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties?["sorted_cards"], "performance,blaze")
     }
 
-    // MARK: hasOrders state
-    @MainActor
-    func test_hasOrders_is_true_when_site_has_orders() {
-        // Given
-        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
-        insertSampleOrder(readOnlyOrder: insertOrder)
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
-
-        // Then
-        XCTAssertTrue(viewModel.hasOrders)
-    }
-
-    @MainActor
-    func test_hasOrders_is_false_when_site_has_no_orders() async {
-        // Given
-        mockReloadingData(storeHasOrders: false)
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.hasOrders)
-    }
-
-    @MainActor
-    func test_hasOrders_is_true_when_remote_request_returns_true() async {
-        // Given
-        mockReloadingData(storeHasOrders: true)
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertTrue(viewModel.hasOrders)
-    }
-
     // MARK: Dashboard cards
 
     @MainActor
@@ -376,6 +338,11 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         assertEqual(expectedCards, viewModel.dashboardCards)
+
+        assertEqual([.onboarding, .shareStore],
+                    viewModel.showOnDashboardCards.map(\.type))
+        assertEqual([.onboarding], viewModel.showOnDashboardFirstColumn.map(\.type))
+        assertEqual([.shareStore], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     @MainActor
@@ -407,6 +374,11 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         assertEqual(expectedCards, viewModel.dashboardCards)
+
+        assertEqual([.onboarding, .shareStore],
+                    viewModel.showOnDashboardCards.map(\.type))
+        assertEqual([.onboarding], viewModel.showOnDashboardFirstColumn.map(\.type))
+        assertEqual([.shareStore], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     @MainActor
@@ -433,6 +405,13 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedPerformanceCard))
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
+
+        assertEqual([.onboarding, .performance, .topPerformers, .newCardsNotice],
+                    viewModel.showOnDashboardCards.map(\.type))
+        assertEqual([.onboarding, .performance],
+                    viewModel.showOnDashboardFirstColumn.map(\.type))
+        assertEqual([.topPerformers, .newCardsNotice],
+                    viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     @MainActor
@@ -507,6 +486,12 @@ final class DashboardViewModelTests: XCTestCase {
 
         let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
         XCTAssertFalse(topPerformersCard.enabled)
+
+        assertEqual([.onboarding, .performance, .newCardsNotice],
+                    viewModel.showOnDashboardCards.map(\.type))
+        assertEqual([.onboarding],
+                    viewModel.showOnDashboardFirstColumn.map(\.type))
+        assertEqual([.performance, .newCardsNotice], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     @MainActor
@@ -530,6 +515,12 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedGoogleCard))
+
+        assertEqual([.onboarding, .performance, .topPerformers, .googleAds, .newCardsNotice],
+                    viewModel.showOnDashboardCards.map(\.type))
+        assertEqual([.onboarding, .performance],
+                    viewModel.showOnDashboardFirstColumn.map(\.type))
+        assertEqual([.topPerformers, .googleAds, .newCardsNotice], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     // MARK: Show New Cards Notice
@@ -556,6 +547,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.showNewCardsNotice)
+        XCTAssert(!viewModel.showOnDashboardCards.contains(where: { $0.type == .newCardsNotice }))
     }
 
     @MainActor
@@ -574,6 +566,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.showNewCardsNotice)
+        XCTAssert(viewModel.showOnDashboardCards.contains(where: { $0.type == .newCardsNotice }))
     }
 
     @MainActor
@@ -594,12 +587,64 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         XCTAssertTrue(viewModel.showNewCardsNotice)
+        XCTAssert(viewModel.showOnDashboardCards.contains(where: { $0.type == .newCardsNotice }))
         viewModel.showCustomizationScreen() // Simulate showing Customize screen
         viewModel.handleCustomizationDismissal() // Simulate dismissing Customize screen
 
         // Then
         XCTAssertFalse(viewModel.showNewCardsNotice) // Check it's false after dismissing Customize screen
+        XCTAssert(!viewModel.showOnDashboardCards.contains(where: { $0.type == .newCardsNotice }))
     }
+
+    // MARK: In app feedback card
+
+    @MainActor
+    func test_inAppFeedbackCard_is_not_available_when_feedback_is_not_needed() async {
+        // Given
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        mockReloadingData(shouldShowInAppFeedback: false)
+
+        // When
+        await viewModel.reloadAllData()
+        await viewModel.onViewAppear()
+
+        // Then
+        let index = viewModel.showOnDashboardCards.firstIndex(where: { $0.type == .inAppFeedback })
+        XCTAssert(index == nil)
+    }
+
+    @MainActor
+    func test_inAppFeedbackCard_is_available_when_feedback_is_needed() async {
+        // Given
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        mockReloadingData(shouldShowInAppFeedback: true)
+
+        // When
+        await viewModel.reloadAllData()
+        await viewModel.onViewAppear()
+
+        // Then
+        let index = viewModel.showOnDashboardCards.firstIndex(where: { $0.type == .inAppFeedback })
+        XCTAssert(index == 1)
+    }
+
+    // MARK: Local notifications
 
     @MainActor
     func test_local_notification_scheduler_starts_observing_user_responses_upon_init() async throws {
@@ -644,7 +689,8 @@ private extension DashboardViewModelTests {
                            storeHasOrders: Bool = true,
                            existingProducts: [Product] = [],
                            existingBlazeCampaigns: [BlazeCampaignListItem] = [],
-                           storedDashboardCards: [DashboardCard] = []) {
+                           storedDashboardCards: [DashboardCard] = [],
+                           shouldShowInAppFeedback: Bool = false) {
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {
             case let .loadMessage(_, _, _, completion):
@@ -660,6 +706,8 @@ private extension DashboardViewModelTests {
                 completion(false)
             case let .loadDashboardCards(_, onCompletion):
                 onCompletion(storedDashboardCards)
+            case let .loadFeedbackVisibility(_, onCompletion):
+                onCompletion(.success(shouldShowInAppFeedback))
             default:
                 break
             }

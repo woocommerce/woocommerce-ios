@@ -4,11 +4,13 @@ import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 import struct Yosemite.Coupon
 import struct Yosemite.Order
+import struct Yosemite.DashboardCard
 
 /// View for the dashboard screen
 ///
 struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
@@ -92,8 +94,17 @@ struct DashboardView: View {
             featureAnnouncementCard
 
             // Card views
-            dashboardCards
-                .padding(.bottom, Layout.padding)
+            Group {
+                if horizontalSizeClass == .regular {
+                    HStack(alignment: .top, spacing: 0) {
+                        dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                        dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                    }
+                } else {
+                    dashboardCardList(with: viewModel.showOnDashboardCards)
+                }
+            }
+            .padding(.bottom, Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -181,9 +192,9 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     @ViewBuilder
-    var dashboardCards: some View {
+    func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(viewModel.showOnDashboardCards.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(items.enumerated()), id: \.element.hashValue) { index, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:

@@ -7,7 +7,7 @@ import protocol WooFoundation.Analytics
 ///
 @MainActor
 final class LastOrdersDashboardCardViewModel: ObservableObject {
-    enum OrderStatusRow: Identifiable {
+    enum OrderStatusRow: Identifiable, Equatable {
         case any
         case autoDraft
         case pending
@@ -230,7 +230,12 @@ private extension LastOrdersDashboardCardViewModel {
         let remoteStatuses = statusResultsController.fetchedObjects
             .map { OrderStatusEnum(rawValue: $0.slug) }
             .map { OrderStatusRow($0) }
-        allStatuses = [.any] + remoteStatuses + [.trash]
+        allStatuses = [.any] + remoteStatuses
+
+        /// manually add trash option if not present
+        if !allStatuses.contains(where: { $0 == .trash }) {
+            allStatuses.append(.trash)
+        }
     }
 
     @MainActor

@@ -34,7 +34,7 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="400-04-ig6">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="400-04-ig6">
                     <rect key="frame" x="0.0" y="48" width="414" height="639"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
@@ -160,6 +160,7 @@
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="16" id="JMi-tB-A1k"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="width" secondItem="400-04-ig6" secondAttribute="width" constant="-32" id="JXw-Lb-9aQ"/>
                         <constraint firstItem="zV2-0c-gPq" firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="8" id="Xa5-Tq-WWH"/>
+                        <constraint firstItem="jIt-xb-rrN" firstAttribute="bottom" secondItem="ZYw-uz-r4k" secondAttribute="bottom" id="new-bottom-constraint"/>
                     </constraints>
                     <viewLayoutGuide key="contentLayoutGuide" id="ZYw-uz-r4k"/>
                     <viewLayoutGuide key="frameLayoutGuide" id="zV2-0c-gPq"/>

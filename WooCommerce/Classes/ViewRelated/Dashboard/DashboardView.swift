@@ -95,12 +95,15 @@ struct DashboardView: View {
 
             // Card views
             Group {
-                if horizontalSizeClass == .regular {
+                if horizontalSizeClass == .regular,
+                   viewModel.showOnDashboardSecondColumn.isNotEmpty {
+                    // display cards in 2 columns for large screen sizes if there are more than 1 cards.
                     HStack(alignment: .top, spacing: 0) {
                         dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
                         dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
                     }
                 } else {
+                    // display all cards in a single column
                     dashboardCardList(with: viewModel.showOnDashboardCards)
                 }
             }

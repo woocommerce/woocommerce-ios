@@ -139,6 +139,23 @@ final class PriceFieldFormatterTests: XCTestCase {
         XCTAssertEqual(priceFieldFormatter.formattedAmount, "$11.30")
     }
 
+    func test_formatUserInput_when_decimals_more_than_expected_then_returns_the_max_numberOfDecimals_allowed() {
+        // Given
+        let customSettings = CurrencySettings(currencyCode: .EUR,
+                                              currencyPosition: .left,
+                                              thousandSeparator: ".",
+                                              decimalSeparator: ",",
+                                              numberOfDecimals: 2)
+
+        let priceFieldFormatter = PriceFieldFormatter(locale: Locale(identifier: "lt-LT"), storeCurrencySettings: customSettings)
+
+        // When
+        _ = priceFieldFormatter.formatUserInput("1000,5123")
+
+        // Then
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "€1000,51")
+    }
+
     func test_formatUserInput_supports_numbers_with_decimal_and_thousands_separator() {
         // Given
         let priceFieldFormatter = PriceFieldFormatter(locale: usLocale, storeCurrencySettings: usStoreSettings)
@@ -150,7 +167,7 @@ final class PriceFieldFormatterTests: XCTestCase {
         XCTAssertEqual(priceFieldFormatter.formattedAmount, "$1000.40")
     }
 
-    func test_formatUserInput_upports_numbers_with_decimal_and_thousands_separator_uses_custom_separators() {
+    func test_formatUserInput_supports_numbers_with_decimal_and_thousands_separator_uses_custom_separators() {
         // Given
         let customSettings = CurrencySettings(currencyCode: .EUR, currencyPosition: .left, thousandSeparator: ".", decimalSeparator: ",", numberOfDecimals: 2)
         let priceFieldFormatter = PriceFieldFormatter(locale: Locale(identifier: "lt-LT"), storeCurrencySettings: customSettings)

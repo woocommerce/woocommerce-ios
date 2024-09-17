@@ -48,9 +48,9 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards.filter { $0.availability != .hide }
     }
 
-    var showOnDashboardCards: [DashboardCard] {
-        dashboardCards.filter { $0.availability == .show && $0.enabled }
-    }
+    @Published private(set) var showOnDashboardCards: [DashboardCard] = []
+    @Published private(set) var showOnDashboardFirstColumn: [DashboardCard] = []
+    @Published private(set) var showOnDashboardSecondColumn: [DashboardCard] = []
 
     @Published private(set) var isInAppFeedbackCardVisible = false
 
@@ -363,6 +363,17 @@ private extension DashboardViewModel {
                     }
                 }
             })
+            .store(in: &subscriptions)
+
+        $dashboardCards
+            .sink { [weak self] cards in
+                guard let self else { return }
+                let filteredCards = cards.filter { $0.availability == .show && $0.enabled }
+                showOnDashboardCards = filteredCards
+                let middleIndex = filteredCards.count / 2
+                showOnDashboardFirstColumn = Array(filteredCards.prefix(middleIndex))
+                showOnDashboardSecondColumn = Array(filteredCards.suffix(from: middleIndex))
+            }
             .store(in: &subscriptions)
     }
 

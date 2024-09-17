@@ -464,7 +464,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         // When
         let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: "",
                                                               requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
-                                                              notificationUserInfo: [:]))
+                                                              notificationUserInfo: ["site_id": siteID]))
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then

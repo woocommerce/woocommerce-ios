@@ -120,10 +120,9 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
-        guard let decimalInput = feeOrDiscountType == .fixed ?
-                priceFieldFormatter.amountDecimal : percentageFieldFormatter.amountDecimal else {
-            return .zero
-        }
+        let decimalInput = feeOrDiscountType == .fixed
+            ? priceFieldFormatter.amountDecimal
+            : percentageFieldFormatter.amountDecimal
 
         switch feeOrDiscountType {
         case .fixed:

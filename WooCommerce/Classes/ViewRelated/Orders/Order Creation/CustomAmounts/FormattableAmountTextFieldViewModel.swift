@@ -22,14 +22,6 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     private var resetAmountWithNewValue = false
 
-    var amountIsValid: Bool {
-        guard let amountDecimal = priceFieldFormatter.amountDecimal else {
-            return false
-        }
-
-        return allowNegativeNumber ? true : amountDecimal > .zero
-    }
-
     /// Formatted amount to display. When empty displays a placeholder value.
     ///
     var formattedAmount: String {

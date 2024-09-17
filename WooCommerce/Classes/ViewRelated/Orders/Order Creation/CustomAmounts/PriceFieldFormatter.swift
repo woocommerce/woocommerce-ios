@@ -14,8 +14,15 @@ class PriceFieldFormatter {
 
     /// Current amount converted to Decimal.
     ///
-    var amountDecimal: Decimal? {
-        return decimalFormatter.number(from: amount)?.decimalValue
+    var amountDecimal: Decimal {
+        guard let decimal = decimalFormatter.number(from: amount)?.decimalValue else {
+            if amount.isNotEmpty {
+                DDLogError("Failed to convert amount to Decimal: \(amount)")
+            }
+            return .zero
+        }
+
+        return decimal
     }
 
     /// Duplicates input var for internal reference

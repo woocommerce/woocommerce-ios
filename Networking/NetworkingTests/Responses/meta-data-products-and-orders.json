@@ -1,0 +1,29 @@
+{
+    "meta_data": [
+        {
+            "id": 1,
+            "key": "lorem_key_1",
+            "value": "Lorem ipsum"
+        },
+        {
+            "id": 2,
+            "key": "ipsum_key_2",
+            "value": "dolor sit amet"
+        },
+        {
+            "id": 3,
+            "key": "dolor_key_3",
+            "value": "consectetur adipiscing elit"
+        },
+        {
+            "id": 4,
+            "key": "sit_key_4",
+            "value": "Nisi ut aliquip"
+        },
+        {
+            "id": 5,
+            "key": "_internal_key",
+            "value": "In voluptate velit"
+        }
+    ]
+}

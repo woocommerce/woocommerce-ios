@@ -1,4 +1,2 @@
-Bei dieser Version ist Blaze-Werbung mit Evergreen-Kampagnen möglich. Wir haben Fehler bei der Produktbearbeitung behoben, insbesondere bei Preisen. Jetzt werden auch Produkte mit negativen Preisen unterstützt.
-
-Wir haben ein Menü-Problem behoben, das bei der Verwendung von VoiceOver und assistiver Technologie auftrat, sowie einige Fehler, die dazu führten, dass Titel verschwanden und Buttons nicht reagierten.
-
+Bei dieser Version haben wir das Scannen von Sendungsverfolgungsnummern für Bestellungen aktiviert und das Passwortmanagement für Produkte verbessert. Außerdem haben wir Verbesserungen vorgenommen, die Produktscanner, Barzahlungen und Rabatte betreffen.
+Beim Erstellen von Blaze-Werbekampagnen haben wir die Bildauswahl und die Budgeteinstellungen aktualisiert und optimiert.

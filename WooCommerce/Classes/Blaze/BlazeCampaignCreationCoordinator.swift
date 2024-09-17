@@ -171,6 +171,7 @@ private extension BlazeCampaignCreationCoordinator {
                                                            onCompletion: { [weak self] in
             Task { @MainActor [weak self] in
                 await self?.restoreBlazeOnDashboardIfNeeded()
+                self?.cancelAbandonedCampaignCreationNotification()
                 self?.onCampaignCreated()
                 self?.dismissCampaignCreation()
             }
@@ -202,7 +203,7 @@ private extension BlazeCampaignCreationCoordinator {
                 },
                 onCloseButtonTapped: { [weak self] in
                     guard let self else { return }
-
+                    scheduleAbandonedCampaignCreationNotification()
                     navigationController.dismiss(animated: true, completion: nil)
                 }
             )
@@ -303,6 +304,24 @@ private extension BlazeCampaignCreationCoordinator {
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
                 continuation.resume(returning: cards)
             }))
+        }
+    }
+}
+
+// MARK: - Abandoned campaign creation
+//
+private extension BlazeCampaignCreationCoordinator {
+    func scheduleAbandonedCampaignCreationNotification() {
+        Task { @MainActor in
+            let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
+            await scheduler.scheduleAbandonedCreationReminder()
+        }
+    }
+
+    func cancelAbandonedCampaignCreationNotification() {
+        Task { @MainActor in
+            let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
+            await scheduler.cancelAbandonedCreationReminder()
         }
     }
 }

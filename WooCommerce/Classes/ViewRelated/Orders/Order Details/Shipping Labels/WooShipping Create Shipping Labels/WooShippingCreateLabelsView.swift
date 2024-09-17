@@ -3,8 +3,11 @@ import SwiftUI
 /// Hosting controller for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewHostingController: UIHostingController<WooShippingCreateLabelsView> {
-    init() {
-        super.init(rootView: WooShippingCreateLabelsView())
+    let viewModel: WooShippingCreateLabelsViewModel
+
+    init(viewModel: WooShippingCreateLabelsViewModel) {
+        self.viewModel = viewModel
+        super.init(rootView: WooShippingCreateLabelsView(viewModel: viewModel))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -15,12 +18,14 @@ final class WooShippingCreateLabelsViewHostingController: UIHostingController<Wo
 /// View to create shipping labels with the Woo Shipping extension.
 ///
 struct WooShippingCreateLabelsView: View {
+    @ObservedObject var viewModel: WooShippingCreateLabelsViewModel
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                WooShippingItems(itemsCountLabel: "6 items", itemsDetailLabel: "825g  ·  $135.00")
+                WooShippingItems(viewModel: viewModel.items)
                     .padding()
             }
             .navigationTitle(Localization.title)
@@ -45,8 +50,4 @@ private extension WooShippingCreateLabelsView {
                                               value: "Cancel",
                                               comment: "Title of the button to dismiss the shipping label creation screen")
     }
-}
-
-#Preview {
-    WooShippingCreateLabelsView()
 }

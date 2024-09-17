@@ -1,10 +1,10 @@
 #!/bin/bash -eu
 
-# Note: BUILDKITE_RELEASE_VERSION is passed as an environment variable from fastlane to Buildkite
-# It must use the `BUILDKITE_` prefix to be passed to the agent due to how `hostmgr` works.
+# Note: BUILDKITE_RELEASE_VERSION is passed as an environment variable to Buildkite.
+# It must use the `BUILDKITE_` prefix to then be forwarded to the MacOS VM due to how `hostmgr` works.
 # This is considered legacy and we should eventually remove all custom BUILDKITE_ variables.
 
-# Use the provided RELEASE_VERSION if set, otherwise fall back to the legacy BUILDKITE_RELEASE_VERSION
+# Use the provided argument if there's one, otherwise fall back to the legacy BUILDKITE_RELEASE_VERSION
 RELEASE_VERSION=${1:-$BUILDKITE_RELEASE_VERSION}
 
 if [[ -z "${RELEASE_VERSION}" ]]; then

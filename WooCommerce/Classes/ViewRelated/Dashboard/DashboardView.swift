@@ -256,21 +256,14 @@ private extension DashboardView {
                         }, onShowAllCampaigns: {
                             onShowAllGoogleAdsCampaigns?()
                         })
-                    }
-
-                    // Append feedback card after the first card
-                    if index == 0 && viewModel.isInAppFeedbackCardVisible {
+                    case .inAppFeedback:
                         feedbackCard
+                    case .newCardsNotice:
+                        newCardsNoticeCard
+                    case .shareStore:
+                        shareStoreCard
                     }
                 }
-            }
-
-            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
-                newCardsNoticeCard
-            }
-
-            if !viewModel.hasOrders && !viewModel.isReloadingAllData {
-                shareStoreCard
             }
         }
     }

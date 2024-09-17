@@ -33,9 +33,11 @@ struct DashboardSyncBackgroundTask {
                     group.addTask { try await performanceTask() }
                 case .topPerformers:
                     group.addTask { try await topPerformersTask() }
-
                 case .blaze, .coupons, .googleAds, .inbox, .lastOrders, .onboarding, .reviews, .stock:
                     DDLogInfo("⚠️ Synchronizing \(card.type.name) card in the background is not yet supported...")
+                    return
+                case .inAppFeedback, .shareStore, .newCardsNotice:
+                    // no syncing needed
                     return
                 }
             }

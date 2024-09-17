@@ -365,14 +365,35 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards
-            .sink { [weak self] cards in
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible)
+            .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
+            .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let filteredCards = cards.filter { $0.availability == .show && $0.enabled }
-                showOnDashboardCards = filteredCards
-                let middleIndex = filteredCards.count / 2
-                showOnDashboardFirstColumn = Array(filteredCards.prefix(middleIndex))
-                showOnDashboardSecondColumn = Array(filteredCards.suffix(from: middleIndex))
+                let ((cards, showFeedbackCard), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let cardsToShow: [DashboardCard] = {
+                    var allCards = cards.filter { $0.availability == .show && $0.enabled }
+
+                    // Append feedback card after the first card
+                    let feedbackCard = DashboardCard.inAppFeedBackCard
+                    if allCards.isEmpty {
+                        allCards.append(feedbackCard)
+                    } else {
+                        allCards.insert(feedbackCard, at: 1)
+                    }
+
+                    if showNewCardsNotice && !isReloading {
+                        allCards.append(DashboardCard.newCardsNoticeCard)
+                    }
+
+                    if !hasOrders && !isReloading {
+                        allCards.append(DashboardCard.shareStoreCard)
+                    }
+                    return allCards
+                }()
+                showOnDashboardCards = cardsToShow
+                let middleIndex = cardsToShow.count / 2
+                showOnDashboardFirstColumn = Array(cardsToShow.prefix(middleIndex))
+                showOnDashboardSecondColumn = Array(cardsToShow.suffix(from: middleIndex))
             }
             .store(in: &subscriptions)
     }
@@ -422,6 +443,8 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
+                case .inAppFeedback, .newCardsNotice, .shareStore:
+                    break // do nothing
                 }
             }
         }

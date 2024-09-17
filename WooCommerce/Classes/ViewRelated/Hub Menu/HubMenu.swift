@@ -177,6 +177,8 @@ private extension HubMenu {
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
+            case .blazeCampaignCreation:
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
             }
         }
         .navigationBarTitleDisplayMode(.inline)

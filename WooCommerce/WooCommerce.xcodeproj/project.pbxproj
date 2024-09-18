@@ -2279,8 +2279,8 @@
 		CEC3CC6F2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */; };
 		CEC3CC742C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC732C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift */; };
 		CEC3CC762C934F5500B93FBE /* WooShippingItemsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC752C934F5500B93FBE /* WooShippingItemsDataSource.swift */; };
-		CEC3CC7C2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */; };
 		CEC3CC7A2C93537B00B93FBE /* MockShippingSettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC792C93537B00B93FBE /* MockShippingSettingsService.swift */; };
+		CEC3CC7C2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */; };
 		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
 		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
 		CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758523D21AC200486676 /* AggregateOrderItem.swift */; };
@@ -5333,8 +5333,8 @@
 		CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreateLabelsViewModel.swift; sourceTree = "<group>"; };
 		CEC3CC732C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemsViewModelTests.swift; sourceTree = "<group>"; };
 		CEC3CC752C934F5500B93FBE /* WooShippingItemsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemsDataSource.swift; sourceTree = "<group>"; };
-		CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemsDataSourceTests.swift; sourceTree = "<group>"; };
 		CEC3CC792C93537B00B93FBE /* MockShippingSettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingSettingsService.swift; sourceTree = "<group>"; };
+		CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemsDataSourceTests.swift; sourceTree = "<group>"; };
 		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
 		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -18389,8 +18389,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nalexn/ViewInspector";
 			requirement = {
-				kind = revision;
-				revision = 23d6fabc6e8f0115c94ad3af5935300c70e0b7fa;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
 			};
 		};
 		2621D1F52C810DB800654C4C /* XCRemoteSwiftPackageReference "ViewControllerPresentationSpy" */ = {

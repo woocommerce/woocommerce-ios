@@ -11,6 +11,24 @@ protocol FavoriteProductsUseCase {
     func favoriteProductIDs() async -> [Int64]
 }
 
+/// Used to filter favorite products
+///
+struct FavoriteProductsFilter: Equatable, FilterType {
+    let description = Localization.favoriteProducts
+
+    let isActive = true
+}
+
+private extension FavoriteProductsFilter {
+    enum Localization {
+        static let favoriteProducts = NSLocalizedString(
+            "favoriteProductsFilter.favoriteProducts",
+            value: "Favorite Products",
+            comment: "Description of the filter used to show only favorite products."
+        )
+    }
+}
+
 /// Used for marking/removing products as favorite
 ///
 struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {

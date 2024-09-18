@@ -65,6 +65,7 @@ public enum AppSettingsAction: Action {
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
                                 productCategoryFilter: ProductCategory? = nil,
+                                favoriteProduct: Bool = false,
                                 onCompletion: (Error?) -> Void)
 
     /// Clears all the products settings

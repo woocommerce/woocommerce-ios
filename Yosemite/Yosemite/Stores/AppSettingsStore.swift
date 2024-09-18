@@ -126,6 +126,7 @@ public class AppSettingsStore: Store {
                                      let productStatusFilter,
                                      let productTypeFilter,
                                      let productCategoryFilter,
+                                     let favoriteProduct,
                                      let onCompletion):
             upsertProductsSettings(siteID: siteID,
                                    sort: sort,
@@ -133,6 +134,7 @@ public class AppSettingsStore: Store {
                                    productStatusFilter: productStatusFilter,
                                    productTypeFilter: productTypeFilter,
                                    productCategoryFilter: productCategoryFilter,
+                                   favoriteProduct: favoriteProduct,
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
@@ -727,6 +729,7 @@ private extension AppSettingsStore {
                                 productStatusFilter: ProductStatus? = nil,
                                 productTypeFilter: ProductType? = nil,
                                 productCategoryFilter: ProductCategory? = nil,
+                                favoriteProduct: Bool = false,
                                 onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredProductSettings.Setting] = [:]
         if let storedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) {
@@ -738,7 +741,8 @@ private extension AppSettingsStore {
                                                        stockStatusFilter: stockStatusFilter,
                                                        productStatusFilter: productStatusFilter,
                                                        productTypeFilter: productTypeFilter,
-                                                       productCategoryFilter: productCategoryFilter)
+                                                       productCategoryFilter: productCategoryFilter,
+                                                       favoriteProduct: favoriteProduct)
         existingSettings[siteID] = newSetting
 
         let newStoredProductSettings = StoredProductSettings(settings: existingSettings)

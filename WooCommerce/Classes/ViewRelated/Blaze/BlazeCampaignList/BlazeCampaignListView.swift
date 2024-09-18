@@ -105,7 +105,6 @@ struct BlazeCampaignListView: View {
 
     var onCreateCampaign: (Int64?) -> Void = { _ in }
 
-
     init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
     }
@@ -151,7 +150,9 @@ struct BlazeCampaignListView: View {
             viewModel.loadCampaigns()
             viewModel.onViewAppear()
         }
-        .sheet(item: $viewModel.selectedCampaignURL) { url in
+        .sheet(item: $viewModel.selectedCampaignURL, onDismiss: {
+            viewModel.refreshSelectedCampaign()
+        }) { url in
             detailView(url: url)
         }
         .onChange(of: viewModel.shouldShowIntroView) { shouldShow in

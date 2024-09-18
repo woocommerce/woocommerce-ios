@@ -13,19 +13,22 @@ public struct StoredProductSettings: Codable, Equatable, GeneratedFakeable {
         public let productStatusFilter: ProductStatus?
         public let productTypeFilter: ProductType?
         public let productCategoryFilter: ProductCategory?
+        public let favoriteProduct: Bool
 
         public init(siteID: Int64,
                     sort: String?,
                     stockStatusFilter: ProductStockStatus?,
                     productStatusFilter: ProductStatus?,
                     productTypeFilter: ProductType?,
-                    productCategoryFilter: ProductCategory?) {
+                    productCategoryFilter: ProductCategory?,
+                    favoriteProduct: Bool) {
             self.siteID = siteID
             self.sort = sort
             self.stockStatusFilter = stockStatusFilter
             self.productStatusFilter = productStatusFilter
             self.productTypeFilter = productTypeFilter
             self.productCategoryFilter = productCategoryFilter
+            self.favoriteProduct = favoriteProduct
         }
 
         public func numberOfActiveFilters() -> Int {
@@ -41,6 +44,10 @@ public struct StoredProductSettings: Codable, Equatable, GeneratedFakeable {
             }
 
             if productCategoryFilter != nil {
+                total += 1
+            }
+
+            if favoriteProduct {
                 total += 1
             }
 

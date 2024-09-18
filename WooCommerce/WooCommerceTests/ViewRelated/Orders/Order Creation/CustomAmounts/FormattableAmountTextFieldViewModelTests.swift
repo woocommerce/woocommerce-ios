@@ -122,7 +122,7 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         let newInput = "1"
 
         // When
-        viewModel.presetAmount("12.23")
+        viewModel.presetAmount(12.23)
         // Simulates the input on the text field that appends the new input to the old
         viewModel.updateAmount(oldAmount + newInput)
 

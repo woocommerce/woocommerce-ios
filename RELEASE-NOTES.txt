@@ -6,6 +6,7 @@
 - [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
 - [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
 - [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
+- [Payments] Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
 
 
 20.4

@@ -274,7 +274,7 @@ final class BlazeRemoteTests: XCTestCase {
     func test_retrieveCampaignDetail_returns_parsed_campaign() async throws {
         // Given
         let remote = BlazeRemote(network: network)
-        let campaignID: Int64 = 123
+        let campaignID = "123"
 
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/\(campaignID)"
         network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-retrieval-success")
@@ -301,7 +301,7 @@ final class BlazeRemoteTests: XCTestCase {
     func test_retrieveCampaignDetail_properly_relays_networking_errors() async {
         // Given
         let remote = BlazeRemote(network: network)
-        let campaignID: Int64 = 123
+        let campaignID = "123"
 
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
         let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/\(campaignID)"

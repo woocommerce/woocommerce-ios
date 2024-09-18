@@ -90,7 +90,7 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         }
     }
 
-    func retrieveCampaignDetails(campaignID: Int64, from siteID: Int64) async throws -> BlazeCampaignListItem {
+    func retrieveCampaignDetails(campaignID: String, from siteID: Int64) async throws -> BlazeCampaignListItem {
         guard let result = retrieveCampaignResult else {
             XCTFail("Could not find result for retrieve Blaze campaign details.")
             throw NetworkError.notFound()

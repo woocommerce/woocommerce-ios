@@ -86,7 +86,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
                 onCompletion(.success(true))
             default:
@@ -109,7 +109,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .loading)
                 onCompletion(.success(true))
             default:
@@ -139,7 +139,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 if let syncStatus = viewModel.syncStatus {
                     syncStatusSpy.append(syncStatus)
                 }
@@ -178,7 +178,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .results)
                 onCompletion(.success(true))
             default:
@@ -446,7 +446,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
                 onCompletion(.success(false))
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(true))
                 expectation.fulfill()
             default:
@@ -485,7 +485,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -1173,7 +1173,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, _, _, _, onCompletion):
                 filteredStockStatus = stockStatus
                 filteredProductType = productType
                 filteredProductStatus = productStatus
@@ -1306,7 +1306,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.changeSelectionStateForProduct(with: products[0].productID, selected: true)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 viewModel.changeSelectionStateForProduct(with: products[1].productID, selected: true)
                 onCompletion(.success(true))
             default:
@@ -1546,7 +1546,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                     self.insert(product, withSearchTerm: "shirt")
                     // No next page from the search.
                     onCompletion(.success(false))
-                case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, onCompletion):
+                case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, _, onCompletion):
                     synchronizeProductsPages.append(pageNumber)
                     let hasNextPage = pageNumber < 2
                     onCompletion(.success(hasNextPage))

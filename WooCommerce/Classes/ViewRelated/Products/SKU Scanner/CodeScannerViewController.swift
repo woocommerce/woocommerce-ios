@@ -349,7 +349,7 @@ private extension CodeScannerViewController {
 private extension CodeScannerViewController {
     @objc func swapCamera() {
         // Get current input
-        guard let input = session.inputs[0] as? AVCaptureDeviceInput else { return }
+        guard let input = session.inputs.first as? AVCaptureDeviceInput else { return }
 
         // Begin new session configuration and defer commit
         session.beginConfiguration()

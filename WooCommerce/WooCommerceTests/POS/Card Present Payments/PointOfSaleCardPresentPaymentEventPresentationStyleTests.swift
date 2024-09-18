@@ -131,13 +131,15 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         nonRetryableErrorExitAction: @escaping () -> Void = {},
         formattedOrderTotalPrice: String? = nil,
         paymentCaptureErrorTryAgainAction: @escaping () -> Void = {},
-        paymentCaptureErrorNewOrderAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        paymentCaptureErrorNewOrderAction: @escaping () -> Void = {},
+        paymentIntentCreationErrorEditOrderAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
             PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
                 tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
                 nonRetryableErrorExitAction: nonRetryableErrorExitAction,
                 formattedOrderTotalPrice: formattedOrderTotalPrice,
                 paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction,
-                paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction
+                paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction,
+                paymentIntentCreationErrorEditOrderAction: paymentIntentCreationErrorEditOrderAction
             )
         }
 

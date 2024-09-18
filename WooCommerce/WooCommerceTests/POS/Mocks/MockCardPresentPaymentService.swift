@@ -9,6 +9,8 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectedReader: CardPresentPaymentCardReader?
 
+    var cancelPaymentCalled = false
+
     // MARK: - CardPresentPaymentFacade
 
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
@@ -35,6 +37,6 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     func cancelPayment() {
-        // no-op
+        cancelPaymentCalled = true
     }
 }

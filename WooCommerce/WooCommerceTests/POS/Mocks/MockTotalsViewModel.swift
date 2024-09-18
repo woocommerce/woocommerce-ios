@@ -17,6 +17,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     @Published var formattedOrderTotalPrice: String?
     @Published var formattedOrderTotalTaxPrice: String?
     @Published var startNewOrderAction: Void = ()
+    @Published var editOrderAction: Void = ()
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
@@ -27,6 +28,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { $startNewOrderAction.eraseToAnyPublisher() }
+    var editOrderActionPublisher: AnyPublisher<Void, Never> { $editOrderAction.eraseToAnyPublisher() }
 
     var isShimmering: Bool {
         orderState.isSyncing

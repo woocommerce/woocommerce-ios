@@ -53,13 +53,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCartItemsToCheckIfCartIsEmpty()
         observePaymentStateForButtonDisabledProperties()
         observeItemListState()
-        observeTotalsStartNewOrderAction()
+        observeTotalsOrderActions()
         observeConnectivity()
     }
 
     private func startNewOrder() {
         // clear cart
         cartViewModel.removeAllItemsFromCart()
+        orderStage = .building
+    }
+
+    private func editOrder() {
         orderStage = .building
     }
 
@@ -200,11 +204,18 @@ private extension PointOfSaleDashboardViewModel {
             .store(in: &cancellables)
     }
 
-    func observeTotalsStartNewOrderAction() {
+    func observeTotalsOrderActions() {
         totalsViewModel.startNewOrderActionPublisher
             .sink { [weak self] in
                 guard let self else { return }
                 self.startNewOrder()
+            }
+            .store(in: &cancellables)
+
+        totalsViewModel.editOrderActionPublisher
+            .sink { [weak self] in
+                guard let self else { return }
+                self.editOrder()
             }
             .store(in: &cancellables)
     }

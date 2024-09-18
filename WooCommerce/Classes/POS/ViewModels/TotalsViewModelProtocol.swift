@@ -20,6 +20,7 @@ protocol TotalsViewModelProtocol {
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { get }
     var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { get }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
+    var editOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var isShimmering: Bool { get }
     var isTotalPriceFieldRedacted: Bool { get }

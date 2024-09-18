@@ -153,7 +153,6 @@ private extension CartView {
     enum Constants {
         static let primaryFont: POSFontStyle = .posTitleEmphasized
         static let secondaryFont: POSFontStyle = .posBodyRegular
-        static let cartEmptyViewTextLineHeight: CGFloat = 12
         static let itemsFont: POSFontStyle = .posDetailRegular
         static let clearButtonFont: POSFontStyle = .posDetailEmphasized
         static let clearButtonCornerRadius: CGFloat = 4
@@ -227,7 +226,6 @@ private extension CartView {
             // avoids issues when the text size is changed through dynamic type.
             Text(Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
-                .lineSpacing(Constants.cartEmptyViewTextLineHeight)
                 .foregroundColor(Color.posTertiaryText)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {

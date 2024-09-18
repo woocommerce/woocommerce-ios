@@ -29,6 +29,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
+    private var selectedCampaignID: String?
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -173,6 +175,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
+        selectedCampaignID = campaign.campaignID
+
         let path = String(format: Constants.campaignDetailsURLFormat,
                           campaign.campaignID,
                           siteURL.trimHTTPScheme(),
@@ -194,6 +198,17 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         Task {
             await reload()
         }
+    }
+
+    func refreshSelectedCampaign() {
+        guard let selectedCampaignID else {
+            return
+        }
+        stores.dispatch(BlazeAction.synchronizeCampaign(campaignID: selectedCampaignID, siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error syncing details for Blaze campaign: \(error)")
+            }
+        })
     }
 }
 

@@ -1409,7 +1409,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
-                                                              productCategoryFilter: filters.productCategory) { (error) in
+                                                              productCategoryFilter: filters.productCategory,
+                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -1431,6 +1432,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                                  productStatus: settings.productStatusFilter,
                                                                  promotableProductType: promotableProductType,
                                                                  productCategory: settings.productCategoryFilter,
+                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
                     onCompletion(result)
                 }
@@ -1476,7 +1478,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                                 stockStatusFilter: settings.stockStatusFilter,
                                                                 productStatusFilter: settings.productStatusFilter,
                                                                 productTypeFilter: settings.productTypeFilter,
-                                                                productCategoryFilter: updatingProductCategory)
+                                                                productCategoryFilter: updatingProductCategory,
+                                                                favoriteProduct: settings.favoriteProduct)
             }
 
             onCompletion(completionSettings)

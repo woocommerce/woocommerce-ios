@@ -28,7 +28,7 @@ public protocol BlazeRemoteProtocol {
     ///    - campaignID: ID of the campaign to retrieve info from.
     ///    - siteID: WPCom ID for the site to load ads campaigns.
     ///
-    func retrieveCampaignDetail(campaignID: Int64, from siteID: Int64) async throws -> BlazeCampaignListItem
+    func retrieveCampaignDetails(campaignID: Int64, from siteID: Int64) async throws -> BlazeCampaignListItem
 
     /// Fetches target languages for campaign creation.
     /// - Parameters:
@@ -130,10 +130,11 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 
     /// Retrieves details for a campaign.
     ///
-    public func retrieveCampaignDetail(campaignID: Int64, from siteID: Int64) async throws -> BlazeCampaignListItem {
+    public func retrieveCampaignDetails(campaignID: Int64, from siteID: Int64) async throws -> BlazeCampaignListItem {
         let path = Paths.campaign(campaignID: campaignID, siteID: siteID)
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: [:])
-        return try await enqueue(request)
+        let mapper = BlazeCampaignListItemMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Fetches target languages for campaign creation.

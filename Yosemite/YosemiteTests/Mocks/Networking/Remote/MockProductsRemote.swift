@@ -13,6 +13,16 @@ final class MockProductsRemote {
     private(set) var searchProductWithProductType: ProductType?
     private(set) var searchProductWithProductCategory: ProductCategory?
 
+    private(set) var synchronizeProductsTriggered: Bool = false
+    private(set) var synchronizeProductsWithStockStatus: ProductStockStatus?
+    private(set) var synchronizeProductsWithProductStatus: ProductStatus?
+    private(set) var synchronizeProductsWithProductType: ProductType?
+    private(set) var synchronizeProductsWithProductCategory: ProductCategory?
+    private(set) var synchronizeProductsSortOrderBy: ProductsRemote.OrderKey?
+    private(set) var synchronizeProductsOrder: ProductsRemote.Order?
+    private(set) var synchronizeProductsProductIDs: [Int64]?
+    private(set) var synchronizeProductsExcludedProductIDs: [Int64]?
+
     private struct ResultKey: Hashable {
         let siteID: Int64
         let productIDs: [Int64]
@@ -195,8 +205,18 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
+                         productIDs: [Int64],
                          excludedProductIDs: [Int64],
                          completion: @escaping (Result<[Product], Error>) -> Void) {
+        synchronizeProductsTriggered = true
+        synchronizeProductsWithStockStatus = stockStatus
+        synchronizeProductsWithProductStatus = productStatus
+        synchronizeProductsWithProductType = productType
+        synchronizeProductsWithProductCategory = productCategory
+        synchronizeProductsSortOrderBy = orderBy
+        synchronizeProductsOrder = order
+        synchronizeProductsProductIDs = productIDs
+        synchronizeProductsExcludedProductIDs = excludedProductIDs
         if let result = loadAllProductsResultsBySiteID[siteID] {
             completion(result)
         } else {

@@ -36,14 +36,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
         orderState = .syncing
     }
 
-    func connectReaderTapped() {
-        // Provide a mock implementation if needed
-    }
-
-    func onTotalsViewDisappearance() {
-        // Provide a mock implementation if needed
-    }
-
     var spyStopShowingTotalsViewCalled = false
     func stopShowingTotalsView() {
         spyStopShowingTotalsViewCalled = true

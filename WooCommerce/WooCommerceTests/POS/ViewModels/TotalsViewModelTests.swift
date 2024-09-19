@@ -25,20 +25,15 @@ final class TotalsViewModelTests: XCTestCase {
                               paymentState: .acceptingCard)
         cancellables = Set()
     }
-    func test_on_checkOutTapped_startSyncOrder() {}
-    func test_stopSyncOrder() {}
-    func test_order() {}
-    func test_formattedPrice() {}
-    func test_formattedOrderTotalPrice() {}
-    func test_formattedOrderTotalTaxPrice() {}
-    func test_clearOrder() {
+
+    func test_order_when_clearOrder_invoked_then_order_is_set_to_nil() {
         // When
         sut.clearOrder()
 
         // Then
         XCTAssertNil(sut.order)
     }
-    func test_setOrder() {}
+
     func test_startNewOrder_after_collecting_payment() async throws {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard

@@ -1030,6 +1030,23 @@ private extension ProductsViewController {
         }
         return indexPathsForVisibleRows.contains(indexPath)
     }
+
+    func updatePredicate(filters: FilterProductListViewModel.Filters) async {
+        let productIDs: [Int64]? = await {
+            guard filters.favoriteProduct != nil else {
+                return nil
+            }
+
+            await viewModel.loadFavoriteProductIDs()
+            return viewModel.favoriteProductIDs
+        }()
+
+        resultsController.updatePredicate(siteID: siteID,
+                                          stockStatus: filters.stockStatus,
+                                          productStatus: filters.productStatus,
+                                          productType: filters.promotableProductType?.productType,
+                                          productIDs: productIDs)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance

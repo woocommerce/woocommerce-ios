@@ -34,9 +34,9 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
-    @Published var formattedCartTotalPrice: String?
-    @Published var formattedOrderTotalPrice: String?
-    @Published var formattedOrderTotalTaxPrice: String?
+    @Published private(set) var formattedCartTotalPrice: String?
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     private let startNewOrderActionSubject = PassthroughSubject<Void, Never>()
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> {

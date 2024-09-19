@@ -25,26 +25,6 @@ final class TotalsViewModelTests: XCTestCase {
                               paymentState: .acceptingCard)
         cancellables = Set()
     }
-/*
- Since we're not exposing the publisher outside of the class, and it's public just for testing purposes
- (which we do not have tests for), we don't need these tests, simplifying the interface:
- */
-//    func test_order_cardPresentPaymentEvent_when_initial_state_then_state_is_idle() {
-//        // Given
-//        let expectation = XCTestExpectation(description: "Initial state")
-//
-//        // When
-//        sut.cardPresentPaymentEventPublisher
-//            .sink { event in
-//                if case .idle = event {
-//                    // Then
-//                    expectation.fulfill()
-//                } else {
-//                    XCTFail("Expected .idle event state, got \(event)")
-//                }
-//            }
-//            .store(in: &cancellables)
-//    }
 
     func test_order_when_clearOrder_invoked_then_order_is_set_to_nil() {
         // When

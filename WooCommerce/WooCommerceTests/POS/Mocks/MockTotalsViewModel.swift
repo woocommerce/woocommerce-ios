@@ -13,9 +13,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
-    @Published var formattedCartTotalPrice: String?
-    @Published var formattedOrderTotalPrice: String?
-    @Published var formattedOrderTotalTaxPrice: String?
     @Published var startNewOrderAction: Void = ()
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
@@ -28,18 +25,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     var isSyncingOrder: Bool {
         return orderState.isSyncing
-    }
-
-    var isSubtotalFieldRedacted: Bool {
-        formattedCartTotalPrice == nil || isSyncingOrder
-    }
-
-    var isTaxFieldRedacted: Bool {
-        formattedOrderTotalTaxPrice == nil || isSyncingOrder
-    }
-
-    var isTotalPriceFieldRedacted: Bool {
-        formattedOrderTotalPrice == nil || isSyncingOrder
     }
 
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? {

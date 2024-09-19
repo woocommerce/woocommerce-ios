@@ -7,18 +7,12 @@ protocol TotalsViewModelProtocol {
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get }
     var cardPresentPaymentEvent: CardPresentPaymentEvent { get }
     var connectionStatus: CardReaderConnectionStatus { get }
-    var formattedCartTotalPrice: String? { get }
-    var formattedOrderTotalPrice: String? { get }
-    var formattedOrderTotalTaxPrice: String? { get }
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var isShimmering: Bool { get }
-    var isTotalPriceFieldRedacted: Bool { get }
-    var isSubtotalFieldRedacted: Bool { get }
-    var isTaxFieldRedacted: Bool { get }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
     var order: Order? { get }
 

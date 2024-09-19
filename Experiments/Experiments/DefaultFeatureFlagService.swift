@@ -89,7 +89,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .blazeCampaignObjective:
             return true
         case .favoriteProducts:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

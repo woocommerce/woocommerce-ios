@@ -47,7 +47,7 @@ final class MetaDataStoreTests: XCTestCase {
         let result = waitFor { promise in
             store.onAction(MetaDataAction.updateOrderMetaData(siteID: self.sampleSiteID,
                                                               orderID: self.sampleOrderID,
-                                                              metadata: newMetadataArray,
+                                                              metadata: self.newMetadataArray,
                                                               onCompletion: { result in
                 promise(result)
             }))
@@ -95,7 +95,7 @@ final class MetaDataStoreTests: XCTestCase {
         let result = waitFor { promise in
             store.onAction(MetaDataAction.updateProductMetaData(siteID: self.sampleSiteID,
                                                                 productID: self.sampleProductID,
-                                                                metadata: newMetadataArray,
+                                                                metadata: self.newMetadataArray,
                                                                 onCompletion: { result in
                 promise(result)
             }))

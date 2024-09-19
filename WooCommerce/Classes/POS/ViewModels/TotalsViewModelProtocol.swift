@@ -12,7 +12,6 @@ protocol TotalsViewModelProtocol {
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
-    var isShimmering: Bool { get }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
     var order: Order? { get }
 

@@ -19,10 +19,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { $startNewOrderAction.eraseToAnyPublisher() }
 
-    var isShimmering: Bool {
-        orderState.isSyncing
-    }
-
     var isSyncingOrder: Bool {
         return orderState.isSyncing
     }

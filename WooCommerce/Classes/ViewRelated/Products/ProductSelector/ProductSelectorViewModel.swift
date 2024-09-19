@@ -527,6 +527,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                        productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
+                                                       productIDs: (filtersSubject.value.favoriteProduct != nil) ? favoriteProductIDs : [],
                                                        shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage) { [weak self] result in
             guard let self = self else { return }
 

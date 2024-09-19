@@ -370,16 +370,27 @@ extension MainTabBarController {
     ///
     static func presentNotificationDetails(for noteID: Int64) {
         let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
-            guard let note = note else {
+            guard let note = note,
+                  let siteID = note.meta.identifier(forKey: .site) else {
                 return
             }
-            let siteID = Int64(note.meta.identifier(forKey: .site) ?? Int.min)
-
-            showStore(with: siteID, onCompletion: { _ in
+            showStore(with: Int64(siteID), onCompletion: { _ in
                 presentNotificationDetails(for: note)
             })
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Presents the details  of a push notification.
+    static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
+        guard let note = notification.note,
+              let siteID = note.meta.identifier(forKey: .site) else {
+            presentNotificationDetails(for: notification.noteID)
+            return
+        }
+        showStore(with: Int64(siteID), onCompletion: { _ in
+            presentNotificationDetails(for: note)
+        })
     }
 
     /// Presents the order details if the `note` is for an order push notification.
@@ -390,6 +401,8 @@ extension MainTabBarController {
             switchToOrdersTab {
                 ordersTabSplitViewWrapper()?.presentDetails(for: note)
             }
+        case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
+           navigateToBlazeCampaignDetails(using: note)
         default:
             break
         }
@@ -442,6 +455,50 @@ extension MainTabBarController {
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
                     presentDetails(for: orderID, siteID: siteID)
+                }
+            }
+        })
+    }
+
+    static func navigateToBlazeCampaignDetails(using note: Note) {
+        guard note.kind.isBlaze else {
+            return
+        }
+
+        guard let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its site ID!")
+            return
+        }
+
+        guard let campaignID = note.meta.identifier(forKey: .campaignID) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its campaign ID!")
+            return
+        }
+
+        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+            // It failed to show the campaign's store.
+            guard storeIsShown else {
+                return
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                switchToHubMenuTab() { hubMenuViewController in
+                    hubMenuViewController?.showBlazeCampaign("\(campaignID)")
+                }
+            }
+        })
+    }
+
+    static func navigateToBlazeCampaignCreation(for siteID: Int64) {
+        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+            // It failed to show the campaign's store.
+            guard storeIsShown else {
+                return
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
+                switchToHubMenuTab() { hubMenuViewController in
+                    hubMenuViewController?.showBlazeCampaignCreation()
                 }
             }
         })
@@ -764,6 +821,7 @@ private extension MainTabBarController {
         // to ensure that the first transition is finished. Without this delay
         // the second one might not happen.
         static let screenTransitionsDelay = 0.3
+        static let blazeScreenTransitionsDelay = 1.0
     }
 }
 

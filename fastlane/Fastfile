@@ -387,42 +387,38 @@ platform :ios do
   # bundle exec fastlane new_hotfix_release skip_confirm:true version:10.6.1
   #####################################################################################
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
-  lane :new_hotfix_release do |options|
+  lane :new_hotfix_release do |version:, skip_confirm: false|
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    new_version = options[:version] || UI.input('Version number for the new hotfix?')
-
     # Parse the provided version into an AppVersion object
-    parsed_version = VERSION_FORMATTER.parse(new_version)
+    parsed_version = VERSION_FORMATTER.parse(version)
     build_code_hotfix = BUILD_CODE_FORMATTER.build_code(version: parsed_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
 
     # Check versions
     UI.important <<-MESSAGE
 
-      New hotfix version: #{new_version}
+      New hotfix version: #{version}
       New build code: #{build_code_hotfix}
       Branching from tag: #{previous_version}
 
     MESSAGE
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
+    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     # Check tags
-    UI.user_error!("Version #{new_version} already exists! Abort!") if git_tag_exists(tag: new_version)
+    UI.user_error!("Version #{version} already exists! Abort!") if git_tag_exists(tag: version)
     UI.user_error!("Version #{previous_version} is not tagged! A hotfix branch cannot be created.") unless git_tag_exists(tag: previous_version)
 
     # Create the hotfix branch
     UI.message('Creating hotfix branch...')
-    Fastlane::Helper::GitHelper.create_branch("release/#{new_version}", from: previous_version)
+    Fastlane::Helper::GitHelper.create_branch("release/#{version}", from: previous_version)
     UI.success("Done! New hotfix branch is: #{git_branch}")
 
     # Bump the hotfix version and build code and write it to the `xcconfig` file
     UI.message('Bumping hotfix version and build code...')
     VERSION_FILE.write(
-      version_short: new_version,
+      version_short: version,
       version_long: build_code_hotfix
     )
     commit_version_bump
@@ -531,7 +527,7 @@ platform :ios do
     end
   end
 
-  # This lane publishes a release on GitHub, tagging it on git, and backmerges the current release branch into the next release/ branch
+  # This lane publishes a release on GitHub and creates a PR to backmerge the current release branch into the next release/ branch
   #
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
   #
@@ -540,7 +536,7 @@ platform :ios do
   #
   lane :publish_release do |skip_confirm: false|
     ensure_git_status_clean
-    ensure_git_branch_is_release_branch
+    ensure_git_branch_is_release_branch!
 
     version_number = release_version_current
 
@@ -665,7 +661,7 @@ platform :ios do
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
     version = options[:beta_release] ? build_code_current : release_version_current
-    create_release(
+    create_github_release(
       repository: GITHUB_REPO,
       version: version,
       release_notes_file_path: RELEASE_NOTES_PATH,
@@ -782,16 +778,8 @@ platform :ios do
     )
   end
 
-  #####################################################################################
-  # build_for_testing
-  # -----------------------------------------------------------------------------------
-  # This lane builds the app for testing
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane build_for_testing
-  #####################################################################################
   desc 'Build for Testing'
-  lane :build_for_testing do |options|
+  lane :build_for_testing do |device: nil, ios_version: nil| # with nil, Fastlane will find the first best compatible match
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     run_tests(
@@ -799,8 +787,8 @@ platform :ios do
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
       build_for_testing: true,
-      device: options[:device],
-      deployment_target_version: options[:ios_version]
+      device: device,
+      deployment_target_version: ios_version
     )
   end
 
@@ -1492,9 +1480,7 @@ rescue StandardError => e
   error_message = <<-MESSAGE
     Error creating backmerge pull request:
 
-    ```
     #{e.message}
-    ```
 
     If this is not the first time you are running the release task, the backmerge PR for the version `#{version}` might have already been previously created.
     Please close any previous backmerge PR for `#{version}`, delete the previous merge branch, then run the release task again.

@@ -436,7 +436,8 @@ extension Networking.CreateBlazeCampaign {
             mainImage: .fake(),
             targeting: .fake(),
             targetUrn: .fake(),
-            type: .fake()
+            type: .fake(),
+            objective: .fake()
         )
     }
 }
@@ -749,6 +750,17 @@ extension Networking.Media {
             alt: .fake(),
             height: .fake(),
             width: .fake()
+        )
+    }
+}
+extension Networking.MetaData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.MetaData {
+        .init(
+            metadataID: .fake(),
+            key: .fake(),
+            value: .fake()
         )
     }
 }

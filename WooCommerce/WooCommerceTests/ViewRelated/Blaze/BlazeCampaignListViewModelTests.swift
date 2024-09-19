@@ -352,7 +352,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedCampaignURL)
 
         // When
-        viewModel.didSelectCampaignDetails(campaign)
+        viewModel.didSelectCampaignDetails(campaign.campaignID)
 
         // Then
         XCTAssertEqual(viewModel.selectedCampaignURL?.absoluteString, "https://wordpress.com/advertising/campaigns/123/example.com?source=campaign_list")
@@ -382,7 +382,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
 
         // When
-        viewModel.didSelectCampaignDetails(.fake())
+        viewModel.didSelectCampaignDetails("123")
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))
@@ -403,6 +403,24 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(properties["source"] as? String, "intro_view")
+    }
+
+    // MARK: - Blaze Push notification badge
+
+    func test_it_resets_blaze_push_notifications_badge_count_on_appear() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID,
+                                                   pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazePerformedNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeCancelledNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeRejectedNote))
+        XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeApprovedNote))
     }
 }
 

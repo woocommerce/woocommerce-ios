@@ -1,10 +1,35 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.5
+-----
+- [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
+- [**] Fixed formatting issues for discount and cash payment input values when the device and store currency settings are different. [https://github.com/woocommerce/woocommerce-ios/pull/13979]
+- [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
+- [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
+
+
+20.4
+-----
+- [Internal] Mark order notification read if needed on watch app and notification extension https://github.com/woocommerce/woocommerce-ios/pull/13896
+- [*] Blaze: Enhanced the layout of the campaign list item. [https://github.com/woocommerce/woocommerce-ios/pull/13934]
+- [*] Fixed the incorrect navigation title of the product selector in the Blaze campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13903]
+- [*] Payments: Fixed an issue to ensure the payment onboarding state is reset after logout and login. [https://github.com/woocommerce/woocommerce-ios/pull/13897]
+- [*] Blaze: Handle links on the campaign detail web view natively. [https://github.com/woocommerce/woocommerce-ios/pull/13922]
+- [*] Blaze: Open blaze campaign detail page upon tapping push notification. [https://github.com/woocommerce/woocommerce-ios/pull/13843]
+- [internal] Updated dependencies for Xcode 16 Support [https://github.com/woocommerce/woocommerce-ios/pull/13911]
+
+
 20.3
 -----
+- [**] Users who log in using wp-admin credentials (application password) can now set up a password on Products, provided WooCommerce version is 8.1 or higher.
+- [Internal] New order notification: Added parsing of "note_full_data" parameter so we can properly open specific order https://github.com/woocommerce/woocommerce-ios/pull/13734
 - [*] Hub Menu: Fix incorrect title for Coupons list screen. [https://github.com/woocommerce/woocommerce-ios/pull/13836]
 - [Internal] Blaze: Parse and store `startTime` from campaign list response. [https://github.com/woocommerce/woocommerce-ios/pull/13807]
+- [*] Product scanner: Added swap camera button to code scanner https://github.com/woocommerce/woocommerce-ios/pull/13830
+- [*] Blaze: Changes on the schedule setting screen should only be applied after tapping the Apply button. [https://github.com/woocommerce/woocommerce-ios/pull/13846]
+- [*] Blaze: Schedule a reminder local notification asking to promote products. [https://github.com/woocommerce/woocommerce-ios/pull/13816]
+- [*] Cash payments and discounts: Improve handling of numbers with grouping separators, e.g. $1,000.00 [https://github.com/woocommerce/woocommerce-ios/pull/13854]
 - [*] Blaze: Updated the image picker from existing product images. [https://github.com/woocommerce/woocommerce-ios/pull/13796]
 - [*] Order Tracking in HACK Week: Allow users to scan their order tracking number [https://github.com/woocommerce/woocommerce-ios/pull/13850]
 

@@ -45,6 +45,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
+    private var campaignObjective: BlazeCampaignObjective?
+
     // Target options
     private(set) var locations: Set<BlazeTargetLocation>?
     private(set) var languages: Set<BlazeTargetLanguage>?
@@ -93,6 +95,13 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             self.description = adData.description
         })
     }
+
+    lazy private(set) var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
+        BlazeCampaignObjectivePickerViewModel(siteID: siteID, selectedObjective: campaignObjective) { [weak self] selectedObjective in
+            self?.campaignObjective = selectedObjective
+            self?.campaignObjectiveText = selectedObjective?.title
+        }
+    }()
 
     lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
@@ -161,6 +170,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
     private var siteURL: String? { stores.sessionManager.defaultSite?.url }
 
+    @Published private(set) var campaignObjectiveText: String?
     @Published private(set) var budgetDetailText: String = ""
     @Published private(set) var targetLanguageText: String = ""
     @Published private(set) var targetDeviceText: String = ""
@@ -206,6 +216,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         tagline.isNotEmpty && description.isNotEmpty
     }
 
+    @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
     @Published var isShowingPaymentInfo = false
@@ -248,10 +259,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
-                            type: Constants.campaignType)
+                            type: Constants.campaignType,
+                            objective: campaignObjective?.id)
     }
 
+    private let locale: Locale
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -260,6 +275,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
+         locale: Locale = .current,
+         userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
@@ -268,13 +285,17 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.stores = stores
         self.storage = storage
         self.productImageLoader = productImageLoader
+        self.locale = locale
+        self.userDefaults = userDefaults
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
+        initializeCampaignObjective()
         updateBudgetDetails()
         updateTargetLanguagesText()
         updateTargetDevicesText()
@@ -341,12 +362,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingDestinationURLAlert = true
         }
 
+        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
+           campaignObjective == nil {
+            return isShowingMissingObjectiveAlert = true
+        }
+
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }
         let descriptionMatching = suggestions.map { $0.textSnippet }.contains { $0 == description }
         let isAISuggestedAdContent = taglineMatching || descriptionMatching
         analytics.track(event: .Blaze.CreationForm.confirmDetailsTapped(
             isAISuggestedAdContent: isAISuggestedAdContent,
-            isEvergreen: isEvergreen
+            isEvergreen: isEvergreen,
+            objective: campaignObjective?.id
         ))
         isShowingPaymentInfo = true
     }
@@ -416,6 +443,21 @@ private extension BlazeCampaignCreationFormViewModel {
 // MARK: - Private helpers
 
 private extension BlazeCampaignCreationFormViewModel {
+    func initializeCampaignObjective() {
+        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
+            return
+        }
+        guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
+            return
+        }
+        let objective = storage.viewStorage.retrieveBlazeCampaignObjective(id: savedID, locale: locale.identifier)
+        guard let readOnlyObjective = objective?.toReadOnly() else {
+            return
+        }
+        campaignObjective = readOnlyObjective
+        campaignObjectiveText = readOnlyObjective.title
+    }
+
     func updateBudgetDetails() {
         let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
         if isEvergreen {

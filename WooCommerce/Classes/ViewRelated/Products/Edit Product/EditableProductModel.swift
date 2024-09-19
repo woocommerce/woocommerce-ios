@@ -167,6 +167,10 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.bundleStockQuantity
     }
 
+    var password: String? {
+        product.password
+    }
+
     var compositeComponents: [ProductCompositeComponent] {
         product.compositeComponents
     }

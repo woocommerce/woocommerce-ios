@@ -4,6 +4,7 @@ import protocol Yosemite.POSItem
 struct ItemListView: View {
     @ObservedObject var viewModel: ItemListViewModel
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(viewModel: ItemListViewModel) {
         self.viewModel = viewModel
@@ -49,15 +50,15 @@ private extension ItemListView {
                     .padding(.trailing, Constants.infoIconPadding)
                 }
             }
-            if viewModel.shouldShowHeaderBanner {
+            if !dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                 bannerCardView
-                    .padding(.bottom, Constants.bannerCardPadding)
+                    .padding(.horizontal, Constants.bannerCardPadding)
             }
         }
     }
 
     var bannerCardView: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 0) {
             VStack {
                 Spacer()
                 Image(systemName: "info.circle")
@@ -75,15 +76,14 @@ private extension ItemListView {
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
                     Text(Localization.headerBannerSubtitle)
-                    Text(Localization.headerBannerHint)
-                    Text(Localization.headerBannerLearnMoreHint)
-                        .linkStyle()
+                    bannerHintAndLearnMoreText
                 }
                 .font(Constants.bannerSubtitleFont)
+                .lineSpacing(Constants.bannerTextSpacing)
                 .accessibilityElement(children: .combine)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, Constants.bannerVerticalPadding)
-            Spacer()
             VStack {
                 Button(action: {
                     viewModel.dismissBanner()
@@ -106,13 +106,23 @@ private extension ItemListView {
         .onTapGesture {
             viewModel.simpleProductsInfoButtonTapped()
         }
-        .padding(.horizontal, Constants.bannerCardPadding)
+        .padding(.bottom, Constants.bannerCardPadding)
+    }
+
+    private var bannerHintAndLearnMoreText: Text {
+        Text(Localization.headerBannerHint + " ") +
+        Text(Localization.headerBannerLearnMoreHint)
+            .font(POSFontStyle.posDetailEmphasized.font())
+            .foregroundColor(Color(.accent))
     }
 
     @ViewBuilder
     func listView(_ items: [POSItem]) -> some View {
         ScrollView {
             VStack {
+                if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
+                    bannerCardView
+                }
                 ForEach(items, id: \.productID) { item in
                     Button(action: {
                         viewModel.select(item)
@@ -135,7 +145,7 @@ private extension ItemListView {
         static let bannerSubtitleFont: POSFontStyle = .posDetailRegular
         static let bannerCornerRadius: CGFloat = 8
         static let bannerVerticalPadding: CGFloat = 26
-        static let bannerTextSpacing: CGFloat = 2
+        static let bannerTextSpacing: CGFloat = 4
         static let bannerTitleSpacing: CGFloat = 8
         static let infoIconPadding: CGFloat = 16
         static let bannerInfoIconSize: CGFloat = 44

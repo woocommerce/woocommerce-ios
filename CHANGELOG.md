@@ -1,6 +1,13 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.4
+In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
+
+## 20.3
+In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
+Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+
 ## 20.2
 In this version, Blaze ads get evergreen campaign support. We've fixed some bugs in product editing, especially around prices, and now support negative-priced products!
 

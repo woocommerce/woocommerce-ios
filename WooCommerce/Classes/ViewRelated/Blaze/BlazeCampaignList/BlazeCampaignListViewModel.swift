@@ -32,6 +32,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let pushNotesManager: PushNotesManager
 
     /// Keeps track of the current state of the syncing
     @Published private(set) var syncState: SyncState = .empty
@@ -56,24 +57,33 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         selectedCampaignID: String? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.pushNotesManager = pushNotesManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
         configurePaginationTracker()
+
+        if let selectedCampaignID {
+            didSelectCampaignDetails(selectedCampaignID)
+        }
     }
 
     /// Called when view first appears.
     func onViewAppear() {
         analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
+
+        resetNotificationBadgeCount()
     }
 
     /// Called when loading the first page of campaigns.
@@ -94,11 +104,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
         }
     }
 
-    func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+    func didSelectCampaignDetails(_ campaignID: String) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
-                          campaign.campaignID,
+                          campaignID,
                           siteURL.trimHTTPScheme(),
                           BlazeCampaignDetailSource.campaignList.rawValue)
         selectedCampaignURL = URL(string: path)
@@ -147,6 +157,15 @@ private extension BlazeCampaignListViewModel {
         if !didShowIntroView {
             shouldShowIntroView = syncState == .empty
             didShowIntroView = true
+        }
+    }
+
+    /// Clears application icon badge
+    ///
+    func resetNotificationBadgeCount() {
+        let kind: [Note.Kind] = [.blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote]
+        kind.forEach { kind in
+            pushNotesManager.resetBadgeCount(type: kind)
         }
     }
 }

@@ -3,7 +3,6 @@ import SwiftUI
 import UIKit
 import Yosemite
 
-
 // Loads and render an Order details asynchronously.
 // This is useful for showing the details of an order coming from a push notification or universal link.
 // On Success the OrderDetailsViewController will be rendered "in place".
@@ -259,16 +258,20 @@ private extension OrderLoaderViewController {
     /// Marks a specific Notification as read.
     ///
     func markNotificationAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
+        guard note.read == false,
+              let orderID = note.meta.identifier(forKey: .order) else {
             return
         }
 
-        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
-            if let error = error {
+        Task {
+            let markReadResult = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: ServiceLocator.stores, noteID: note.noteID, orderID: orderID)
+            switch markReadResult {
+            case .success:
+                return
+            case .failure(let error):
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

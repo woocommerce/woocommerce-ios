@@ -1,15 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+
 steps:
-  - label: "Complete Code Freeze"
-    plugins:
-      - automattic/a8c-ci-toolkit#3.0.1
-    env:
-      # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-      IMAGE_ID: xcode-15.4
+  - label: Complete Code Freeze
+    plugins: [$CI_TOOLKIT]
     command: |
       .buildkite/commands/configure-environment.sh
 
       echo '--- :git: Checkout Release Branch'
-      .buildkite/commands/checkout-release-branch.sh
+      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
 
       echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply

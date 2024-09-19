@@ -61,11 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v20.2-whats-new"
+msgctxt "v20.4-whats-new"
 msgid ""
-"In this version, Blaze ads get evergreen campaign support. We've fixed some bugs in product editing, especially around prices, and now support negative-priced products!\n"
+"In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.\n"
 "\n"
-"We've fixed a problem using the menu with VoiceOver and assistive technology, and some bugs which caused titles to disappear, and buttons to become unresponsive.\n"
 "\n"
 msgstr ""
 

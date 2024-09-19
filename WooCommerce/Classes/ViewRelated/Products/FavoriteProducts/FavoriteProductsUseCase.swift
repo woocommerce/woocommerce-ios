@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Experiments
 
 protocol FavoriteProductsUseCase {
     func markAsFavorite(productID: Int64)
@@ -34,11 +35,14 @@ private extension FavoriteProductsFilter {
 struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {
     private let siteID: Int64
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
+        self.featureFlagService = featureFlagService
     }
 
     @MainActor
@@ -64,6 +68,9 @@ struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {
 
     @MainActor
     func favoriteProductIDs() async -> [Int64] {
+        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
+            return []
+        }
         return await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadFavoriteProductIDs(siteID: siteID, onCompletion: { savedFavProductIDs in
                 continuation.resume(returning: savedFavProductIDs)

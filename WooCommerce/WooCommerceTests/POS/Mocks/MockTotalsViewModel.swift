@@ -20,8 +20,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
-    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
-    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
     var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
     var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
     var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }

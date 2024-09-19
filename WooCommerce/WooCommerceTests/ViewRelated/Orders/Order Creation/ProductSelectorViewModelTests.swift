@@ -1151,33 +1151,38 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Given
         let mockStorageManager = MockStorageManager()
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [23, 89, 432]
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
             source: .orderForm(flow: .creation),
             storageManager: mockStorageManager,
-            stores: mockStores
+            stores: mockStores,
+            favoriteProductsUseCase: favoriteProductsUseCase
         )
 
         var filteredStockStatus: ProductStockStatus?
         var filteredProductStatus: ProductStatus?
         var filteredProductType: ProductType?
         var filteredProductCategory: Yosemite.ProductCategory?
+        var filteredproductIDs: [Int64]?
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
-            favoriteProduct: nil,
+            favoriteProduct: FavoriteProductsFilter(),
             numberOfActiveFilters: 1
         )
 
         mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, _, _, _, onCompletion):
+            case let .synchronizeProducts(_, _, _, stockStatus, productStatus, productType, category, _, productIDs, _, _, onCompletion):
                 filteredStockStatus = stockStatus
                 filteredProductType = productType
                 filteredProductStatus = productStatus
                 filteredProductCategory = category
+                filteredproductIDs = productIDs
                 onCompletion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -1194,6 +1199,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         assertEqual(filteredProductType, filters.promotableProductType?.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
+        assertEqual(filteredproductIDs, favoriteProductsUseCase.favoriteProductIDsValue)
     }
 
     func test_searchProducts_are_triggered_with_correct_filters() async throws {
@@ -1273,9 +1279,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.updateFilters(filters)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 0) // no product matches the filter and search term
-        // When
+        waitUntil {
+            viewModel.productRows.count == 0 // no product matches the filter and search term
+        }
 
+        // When
         viewModel.searchTerm = ""
         waitUntil {
             viewModel.productRows.isNotEmpty
@@ -1591,6 +1599,40 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(synchronizeProductsPages, [1, 1, 2])
         XCTAssertEqual(searchProductsPages, [1])
+    }
+
+    // MARK: - Favorite products
+    func test_it_loads_favorite_products_on_init() {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        // Then
+        waitUntil {
+            favoriteProductsUseCase.favoriteProductIDsCalled == true
+        }
+    }
+
+    func test_it_loads_and_sets_favorite_product_IDs_correctly() async {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        XCTAssertTrue(viewModel.favoriteProductIDs.isEmpty)
+
+        // When
+        let sampleProductIDs: [Int64] = [1, 2, 3]
+        favoriteProductsUseCase.favoriteProductIDsValue = sampleProductIDs
+        await viewModel.loadFavoriteProductIDs()
+
+        // Then
+        XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
     }
 }
 

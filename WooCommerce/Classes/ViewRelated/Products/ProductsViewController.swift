@@ -162,21 +162,20 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-            if filters != oldValue ||
-                categoryHasChangedRemotely {
-                updateLocalProductSettings(sort: sortOrder,
-                                           filters: filters)
-                updateFilterButtonTitle(filters: filters)
+            Task { @MainActor in
+                if filters != oldValue ||
+                    categoryHasChangedRemotely {
+                    updateLocalProductSettings(sort: sortOrder,
+                                               filters: filters)
+                    updateFilterButtonTitle(filters: filters)
 
-                resultsController.updatePredicate(siteID: siteID,
-                                                  stockStatus: filters.stockStatus,
-                                                  productStatus: filters.productStatus,
-                                                  productType: filters.promotableProductType?.productType)
+                    await updatePredicate(filters: filters)
 
-                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                tableView.reloadData()
+                    /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                    tableView.reloadData()
 
-                paginationTracker.resync()
+                    paginationTracker.resync()
+                }
             }
         }
     }

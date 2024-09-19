@@ -372,7 +372,11 @@ private extension TotalsViewModel {
             paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
             paymentCaptureErrorNewOrderAction: { [weak self] in
                 self?.startNewOrder()
-            })
+            },
+            dismissReaderConnectionModal: { [weak self] in
+                self?.cardPresentPaymentAlertViewModel = nil
+            }
+        )
     }
 
     func cancelThenCollectPayment() {

@@ -16,6 +16,8 @@ final class MetaDataStoreTests: XCTestCase {
     private let sampleSiteID: Int64 = 1234
     private let sampleOrderID: Int64 = 1
     private let sampleProductID: Int64 = 2
+    private let newMetadataArray = [["id": 1234, "key": "newValue"]]
+    private let returnMetaDataArray = [MetaData.fake().copy(metadataID: 1234, key: "key", value: "newValue")]
 
     override func setUp() {
         super.setUp()
@@ -35,9 +37,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateOrderMetaData_is_successful_when_updating_successfully() throws {
         // Given
-        let newMetadataArray = [["id": 1234, "key": "newValue"]]
-        let returnMetaData = MetaData.fake().copy(metadataID: 1234, key: "key", value: "newValue")
-        remote.whenUpdatingMetaData(thenReturn: .success([returnMetaData]))
+        remote.whenUpdatingMetaData(thenReturn: .success(returnMetaDataArray))
         let store = MetaDataStore(dispatcher: Dispatcher(),
                                   storageManager: storageManager,
                                   network: network,
@@ -85,9 +85,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateProductMetaData_is_successful_when_updating_successfully() throws {
         // Given
-        let newMetadataArray = [["id": 1234, "key": "newValue"]]
-        let returnMetaData = MetaData.fake().copy(metadataID: 1234, key: "key", value: "newValue")
-        remote.whenUpdatingMetaData(thenReturn: .success([returnMetaData]))
+        remote.whenUpdatingMetaData(thenReturn: .success(returnMetaDataArray))
         let store = MetaDataStore(dispatcher: Dispatcher(),
                                   storageManager: storageManager,
                                   network: network,

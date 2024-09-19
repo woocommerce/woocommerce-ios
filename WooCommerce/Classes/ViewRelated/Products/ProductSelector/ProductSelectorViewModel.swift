@@ -736,11 +736,22 @@ private extension ProductSelectorViewModel {
         sections.append(ProductSelectorSection(type: type, products: products))
     }
 
-    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) {
+    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) async {
+        let productIDs: [Int64]? = await {
+            guard filters.favoriteProduct != nil else {
+                return nil
+            }
+
+            await loadFavoriteProductIDs()
+            return favoriteProductIDs
+        }()
+
         productsResultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.promotableProductType?.productType)
+                                                  productType: filters.promotableProductType?.productType,
+                                                  productIDs: productIDs)
+
         if searchTerm.isNotEmpty {
             // When the search query changes, also includes the original results predicate in addition to the search keyword and filter key.
             let searchResultsPredicate = NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
@@ -786,10 +797,12 @@ private extension ProductSelectorViewModel {
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self = self else { return }
-                self.updateFilterButtonTitle(with: filtersSubject)
-                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
-                self.reloadData()
-                self.paginationTracker.resync()
+                Task { @MainActor in
+                    self.updateFilterButtonTitle(with: filtersSubject)
+                    await self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
+                    self.reloadData()
+                    self.paginationTracker.resync()
+                }
             }.store(in: &subscriptions)
     }
 

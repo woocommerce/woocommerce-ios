@@ -43,18 +43,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         startNewOrderActionSubject.eraseToAnyPublisher()
     }
 
-    var computedFormattedCartTotalPrice: String? {
-        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalPrice: String? {
-        formattedPrice(order?.total, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalTaxPrice: String? {
-        formattedPrice(order?.totalTax, currency: order?.currency)
-    }
-
     var isShimmering: Bool {
         orderState.isSyncing
     }
@@ -189,16 +177,20 @@ extension TotalsViewModel {
         }
     }
 
-    private func updateFormattedPrices() {
-        formattedCartTotalPrice = computedFormattedCartTotalPrice
-        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
-        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
-    }
-
     private func updateOrder(_ updatedOrder: Order) {
         self.order = updatedOrder
         totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
         updateFormattedPrices()
+    }
+}
+
+// MARK: - Price formatters
+
+private extension TotalsViewModel {
+    func updateFormattedPrices() {
+        formattedCartTotalPrice = computedFormattedCartTotalPrice
+        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
+        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -206,6 +198,18 @@ extension TotalsViewModel {
             return nil
         }
         return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    var computedFormattedCartTotalPrice: String? {
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalPrice: String? {
+        formattedPrice(order?.total, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalTaxPrice: String? {
+        formattedPrice(order?.totalTax, currency: order?.currency)
     }
 }
 

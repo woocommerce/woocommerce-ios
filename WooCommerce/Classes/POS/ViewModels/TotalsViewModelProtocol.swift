@@ -13,10 +13,6 @@ protocol TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { get }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { get }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { get }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { get }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var isShimmering: Bool { get }

@@ -20,10 +20,6 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { $paymentState }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { $startNewOrderAction.eraseToAnyPublisher() }
 
     var isShimmering: Bool {

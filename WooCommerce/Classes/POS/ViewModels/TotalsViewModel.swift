@@ -96,10 +96,10 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
     private var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
     private var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
+    private var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    private var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
+    private var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
+    private var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var startPaymentOnReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?

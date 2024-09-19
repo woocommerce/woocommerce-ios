@@ -1191,10 +1191,15 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.productListPulledToRefresh)
+        Task { @MainActor in
 
-        paginationTracker.resync {
-            sender.endRefreshing()
+            ServiceLocator.analytics.track(.productListPulledToRefresh)
+
+            await updatePredicate(filters: filters)
+
+            paginationTracker.resync {
+                sender.endRefreshing()
+            }
         }
     }
 

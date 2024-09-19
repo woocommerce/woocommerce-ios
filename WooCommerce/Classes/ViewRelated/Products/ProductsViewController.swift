@@ -1395,7 +1395,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                  productStatus: filters.productStatus,
                                  productType: filters.promotableProductType?.productType,
                                  productCategory: filters.productCategory,
-                                 sortOrder: sortOrder) { [weak self] result in
+                                 sortOrder: sortOrder,
+                                 productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
                                     guard let self = self else {
                                         return
                                     }

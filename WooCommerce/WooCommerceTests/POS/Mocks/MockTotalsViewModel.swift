@@ -10,7 +10,7 @@ final class MockTotalsViewModel: TotalsViewModelProtocol {
 
     @Published var orderState: TotalsViewModel.OrderState = .loaded
     @Published var paymentState: TotalsViewModel.PaymentState = .idle
-    @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+
     @Published var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectionStatus: CardReaderConnectionStatus = .disconnected
     @Published var startNewOrderAction: Void = ()

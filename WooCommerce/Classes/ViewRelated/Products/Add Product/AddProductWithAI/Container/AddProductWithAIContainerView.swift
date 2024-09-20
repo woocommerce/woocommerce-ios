@@ -103,49 +103,20 @@ struct AddProductWithAIContainerView: View {
 
             switch viewModel.currentStep {
             case .productName:
-                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
-                    ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
-                                                      onContinueWithFeatures: { features in
-                        withAnimation {
-                            viewModel.onProductFeaturesAdded(features: features)
-                        }
-                    })
-                } else {
-                    AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
-                                             onUsePackagePhoto: onUsePackagePhoto,
-                                             onContinueWithProductName: { name in
-                        withAnimation {
-                            viewModel.onContinueWithProductName(name: name)
-                        }
-                    })
-                }
-            case .aboutProduct:
-                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
-                                                        productName: viewModel.productName,
-                                                        productFeatures: viewModel.productFeatures) { features in
+                ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
+                                                  onContinueWithFeatures: { features in
                     withAnimation {
                         viewModel.onProductFeaturesAdded(features: features)
                     }
                 })
             case .preview:
-                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
-                    ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
-                                                                                      productFeatures: viewModel.productFeatures,
-                                                                                      imageState: viewModel.startingInfoViewModel.imageState) { product in
-                        viewModel.didCreateProduct(product)
-                    }, onDismiss: {
-                        viewModel.backtrackOrDismiss()
-                    })
-                } else {
-                    LegacyProductDetailPreviewView(viewModel: LegacyProductDetailPreviewViewModel(siteID: viewModel.siteID,
-                                                                                                  productName: viewModel.productName,
-                                                                                                  productDescription: viewModel.productDescription,
-                                                                                                  productFeatures: viewModel.productFeatures) { product in
-                        viewModel.didCreateProduct(product)
-                    }, onDismiss: {
-                        viewModel.backtrackOrDismiss()
-                    })
-                }
+                ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                  productFeatures: viewModel.productFeatures,
+                                                                                  imageState: viewModel.startingInfoViewModel.imageState) { product in
+                    viewModel.didCreateProduct(product)
+                }, onDismiss: {
+                    viewModel.backtrackOrDismiss()
+                })
             }
         }
         .onAppear() {

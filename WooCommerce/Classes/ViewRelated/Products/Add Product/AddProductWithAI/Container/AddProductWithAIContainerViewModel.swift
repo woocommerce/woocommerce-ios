@@ -27,11 +27,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let featureFlagService: FeatureFlagService
 
     var canBeDismissed: Bool {
-        if featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
-            currentStep == .productName && startingInfoViewModel.productFeatures == nil
-        } else {
-            currentStep == .productName && addProductNameViewModel.productName == nil
-        }
+        currentStep == .productName && startingInfoViewModel.productFeatures == nil
     }
 
     private let analytics: Analytics
@@ -101,11 +97,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func backtrackOrDismiss() {
-        if featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1),
-           currentStep == .preview {
-            return currentStep = .productName
-        }
-
         if let previousStep = currentStep.previousStep {
             currentStep = previousStep
         } else {

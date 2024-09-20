@@ -34,25 +34,13 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
 
-    @Published var formattedCartTotalPrice: String?
-    @Published var formattedOrderTotalPrice: String?
-    @Published var formattedOrderTotalTaxPrice: String?
+    @Published private(set) var formattedCartTotalPrice: String?
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     private let startNewOrderActionSubject = PassthroughSubject<Void, Never>()
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> {
         startNewOrderActionSubject.eraseToAnyPublisher()
-    }
-
-    var computedFormattedCartTotalPrice: String? {
-        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalPrice: String? {
-        formattedPrice(order?.total, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalTaxPrice: String? {
-        formattedPrice(order?.totalTax, currency: order?.currency)
     }
 
     var isShimmering: Bool {
@@ -94,12 +82,12 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
-    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
-    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
+    private var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
+    private var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
+    private var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
+    private var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
+    private var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
+    private var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var startPaymentOnReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -189,16 +177,20 @@ extension TotalsViewModel {
         }
     }
 
-    private func updateFormattedPrices() {
-        formattedCartTotalPrice = computedFormattedCartTotalPrice
-        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
-        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
-    }
-
     private func updateOrder(_ updatedOrder: Order) {
         self.order = updatedOrder
         totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
         updateFormattedPrices()
+    }
+}
+
+// MARK: - Price formatters
+
+private extension TotalsViewModel {
+    func updateFormattedPrices() {
+        formattedCartTotalPrice = computedFormattedCartTotalPrice
+        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
+        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -206,6 +198,18 @@ extension TotalsViewModel {
             return nil
         }
         return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    var computedFormattedCartTotalPrice: String? {
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalPrice: String? {
+        formattedPrice(order?.total, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalTaxPrice: String? {
+        formattedPrice(order?.totalTax, currency: order?.currency)
     }
 }
 

@@ -44,6 +44,14 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 self?.readerConnectionStatusSubject.send(.cancellingConnection)
                 endSearch()
             })))
+        case .foundReader(let name, let connect, let continueSearch, let endSearch):
+            paymentEventSubject.send(.show(eventDetails: .foundReader(name: name,
+                                                                      connect: connect,
+                                                                      continueSearch: continueSearch,
+                                                                      endSearch: { [weak self] in
+                self?.readerConnectionStatusSubject.send(.cancellingConnection)
+                endSearch()
+            })))
         default:
             paymentEventSubject.send(.show(eventDetails: eventDetails))
         }

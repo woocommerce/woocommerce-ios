@@ -391,9 +391,17 @@ private extension DashboardViewModel {
                     return allCards
                 }()
                 showOnDashboardCards = cardsToShow
-                let middleIndex = cardsToShow.count / 2
-                showOnDashboardFirstColumn = Array(cardsToShow.prefix(middleIndex))
-                showOnDashboardSecondColumn = Array(cardsToShow.suffix(from: middleIndex))
+                var firstColumn = [DashboardCard]()
+                var secondColumn = [DashboardCard]()
+                for (index, value) in cardsToShow.enumerated() {
+                    if index % 2 == 0 {
+                        firstColumn.append(value)
+                    } else {
+                        secondColumn.append(value)
+                    }
+                }
+                showOnDashboardFirstColumn = firstColumn
+                showOnDashboardSecondColumn = secondColumn
             }
             .store(in: &subscriptions)
     }

@@ -234,7 +234,7 @@ public final class CoreDataManager: StorageManagerType {
             return partialResult + size
         }
 
-        return directorySizes.merging(["Total": totalSize]) { first, second in
+        return directorySizes.merging(["Total": totalSize]) { first, _ in
             first
         }
     }

@@ -1,9 +1,6 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
-## 20.5
-In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
-
 ## 20.4
 In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
 

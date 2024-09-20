@@ -5,7 +5,6 @@ import Experiments
 
 enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1
-    case aboutProduct
     case preview
 
     var previousStep: AddProductWithAIStep? {
@@ -53,11 +52,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     func onAppear() {
         //
-    }
-
-    func onContinueWithProductName(name: String) {
-        productName = name
-        currentStep = .aboutProduct
     }
 
     func onProductFeaturesAdded(features: String) {

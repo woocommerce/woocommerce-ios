@@ -97,10 +97,6 @@ struct AddProductWithAIContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) == false {
-                progressView
-            }
-
             switch viewModel.currentStep {
             case .productName:
                 ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
@@ -141,26 +137,9 @@ struct AddProductWithAIContainerView: View {
     }
 }
 
-
-private extension AddProductWithAIContainerView {
-    var progressView: some View {
-        ProgressView(value: viewModel.currentStep.progress)
-            .frame(height: Layout.ProgressView.height)
-            .tint(.init(uiColor: .accent))
-            .progressViewStyle(.linear)
-    }
-}
-
 private extension AddProductWithAIContainerView {
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the AI product creation flow.")
-    }
-
-
-    enum Layout {
-        enum ProgressView {
-            static let height: CGFloat = 2
-        }
     }
 }
 

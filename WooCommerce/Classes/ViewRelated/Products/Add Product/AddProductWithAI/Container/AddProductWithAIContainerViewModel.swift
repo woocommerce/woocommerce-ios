@@ -8,12 +8,6 @@ enum AddProductWithAIStep: Int, CaseIterable {
     case aboutProduct
     case preview
 
-    /// Progress to display
-    var progress: Double {
-        let incrementBy = 1.0 / Double(Self.allCases.count)
-        return Double(self.rawValue) * incrementBy
-    }
-
     var previousStep: AddProductWithAIStep? {
         .init(rawValue: self.rawValue - 1)
     }

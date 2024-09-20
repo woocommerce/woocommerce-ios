@@ -3,15 +3,11 @@ import SwiftUI
 /// Hosting controller for `AddProductWithAIContainerView`
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
-    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
     private var selectPackageImageCoordinator: SelectPackageImageCoordinator?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
-        rootView.onUsePackagePhoto = { [weak self] productName in
-            self?.presentPackageFlow(productName: productName)
-        }
         viewModel.startingInfoViewModel.onPickPackagePhoto = { [weak self] source in
             await self?.presentImageSelectionFlow(source: source)
         }
@@ -45,23 +41,6 @@ extension AddProductWithAIContainerHostingController: UIAdaptivePresentationCont
 }
 
 private extension AddProductWithAIContainerHostingController {
-    /// Presents the image to product flow to detect product details from image using AI
-    ///
-    func presentPackageFlow(productName: String?) {
-        guard let navigationController else {
-            return
-        }
-        let coordinator = AddProductFromImageCoordinator(siteID: viewModel.siteID,
-                                                         source: viewModel.source,
-                                                         productName: productName,
-                                                         sourceNavigationController: navigationController,
-                                                         onAIGenerationCompleted: { [weak self] data in
-            self?.viewModel.didGenerateDataFromPackage(data)
-        })
-        self.addProductFromImageCoordinator = coordinator
-        coordinator.start()
-    }
-
     /// Presents the image selection flow to select package photo
     ///
     @MainActor
@@ -85,10 +64,6 @@ private extension AddProductWithAIContainerHostingController {
 
 /// Container view for the product creation with AI flow.
 struct AddProductWithAIContainerView: View {
-    /// Closure invoked when the close button is pressed
-    ///
-    var onUsePackagePhoto: (String?) -> Void = { _ in }
-
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
     init(viewModel: AddProductWithAIContainerViewModel) {

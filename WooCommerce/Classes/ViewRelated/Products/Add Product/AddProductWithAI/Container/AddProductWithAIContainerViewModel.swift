@@ -36,10 +36,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         ProductCreationAIStartingInfoViewModel(siteID: siteID)
     }()
 
-    private(set) lazy var addProductNameViewModel: AddProductNameWithAIViewModel = {
-        AddProductNameWithAIViewModel(siteID: siteID)
-    }()
-
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
     init(siteID: Int64,
@@ -52,7 +48,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
-        self.featureFlagService = featureFlagService
         isFirstAttemptGeneratingDetails = true
     }
 
@@ -75,17 +70,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     func didCreateProduct(_ product: Product) {
         completionHandler(product)
-    }
-
-    func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {
-        guard let data else {
-            return
-        }
-        addProductNameViewModel.productNameContent = data.name
-        productName = data.name
-        productDescription = data.description
-        productFeatures = data.description
-        currentStep = .preview
     }
 
     func backtrackOrDismiss() {

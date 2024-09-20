@@ -24,7 +24,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
     let siteID: Int64
     let source: AddProductCoordinator.Source
-    let featureFlagService: FeatureFlagService
 
     var canBeDismissed: Bool {
         currentStep == .productName && startingInfoViewModel.productFeatures == nil
@@ -53,8 +52,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
          source: AddProductCoordinator.Source,
          analytics: Analytics = ServiceLocator.analytics,
          onCancel: @escaping () -> Void,
-         onCompletion: @escaping (Product) -> Void,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         onCompletion: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.source = source
         self.analytics = analytics

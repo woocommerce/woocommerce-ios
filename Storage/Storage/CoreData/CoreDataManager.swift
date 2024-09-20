@@ -250,8 +250,9 @@ public final class CoreDataManager: StorageManagerType {
 
         var totalSize: Int64 = 0
 
+        let fileSizeKeysSet = Set(fileSizeKeys)
         for case let fileUrl as URL in enumerator {
-            if let fileSizeResource = try? fileUrl.resourceValues(forKeys: Set(fileSizeKeys)),
+            if let fileSizeResource = try? fileUrl.resourceValues(forKeys: fileSizeKeysSet),
                let fileSize = fileSizeResource.totalFileAllocatedSize ?? fileSizeResource.fileAllocatedSize {
                 totalSize += Int64(fileSize)
             }

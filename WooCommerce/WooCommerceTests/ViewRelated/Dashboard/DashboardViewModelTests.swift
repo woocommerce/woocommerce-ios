@@ -309,14 +309,17 @@ final class DashboardViewModelTests: XCTestCase {
     // MARK: Dashboard cards
 
     @MainActor
-    func test_generated_default_cards_are_as_expected_when_site_is_eligible_for_inbox() async {
+    func test_generated_default_cards_are_as_expected_when_site_is_eligible_for_inbox() async throws {
         // Given
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
         inboxEligibilityChecker.isEligible = true
 
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
@@ -346,13 +349,16 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_generated_default_cards_are_as_expected_when_site_is_not_eligible_for_inbox() async {
+    func test_generated_default_cards_are_as_expected_when_site_is_not_eligible_for_inbox() async throws {
         // Given
         inboxEligibilityChecker.isEligible = false
+
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
@@ -382,14 +388,17 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() async {
+    func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() async throws {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID)
         insertSampleOrder(readOnlyOrder: order)
 
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -408,9 +417,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         assertEqual([.onboarding, .performance, .topPerformers, .newCardsNotice],
                     viewModel.showOnDashboardCards.map(\.type))
-        assertEqual([.onboarding, .performance],
+        assertEqual([.onboarding, .topPerformers],
                     viewModel.showOnDashboardFirstColumn.map(\.type))
-        assertEqual([.topPerformers, .newCardsNotice],
+        assertEqual([.performance, .newCardsNotice],
                     viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
@@ -465,9 +474,12 @@ final class DashboardViewModelTests: XCTestCase {
         let order = Order.fake().copy(siteID: sampleSiteID)
         insertSampleOrder(readOnlyOrder: order)
 
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -489,19 +501,22 @@ final class DashboardViewModelTests: XCTestCase {
 
         assertEqual([.onboarding, .performance, .newCardsNotice],
                     viewModel.showOnDashboardCards.map(\.type))
-        assertEqual([.onboarding],
+        assertEqual([.onboarding, .newCardsNotice],
                     viewModel.showOnDashboardFirstColumn.map(\.type))
-        assertEqual([.performance, .newCardsNotice], viewModel.showOnDashboardSecondColumn.map(\.type))
+        assertEqual([.performance], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     @MainActor
-    func test_dashboard_cards_contain_google_ads_card_when_store_is_eligible() async {
+    func test_dashboard_cards_contain_google_ads_card_when_store_is_eligible() async throws {
         // Given
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
+
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -518,9 +533,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         assertEqual([.onboarding, .performance, .topPerformers, .googleAds, .newCardsNotice],
                     viewModel.showOnDashboardCards.map(\.type))
-        assertEqual([.onboarding, .performance],
+        assertEqual([.onboarding, .topPerformers, .newCardsNotice],
                     viewModel.showOnDashboardFirstColumn.map(\.type))
-        assertEqual([.topPerformers, .googleAds, .newCardsNotice], viewModel.showOnDashboardSecondColumn.map(\.type))
+        assertEqual([.performance, .googleAds], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
     // MARK: Show New Cards Notice

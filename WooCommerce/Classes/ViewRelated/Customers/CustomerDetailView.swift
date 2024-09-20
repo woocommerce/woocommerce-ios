@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomerDetailView: View {
-    @StateObject private var viewModel: CustomerDetailViewModel
+    @ObservedObject private var viewModel: CustomerDetailViewModel
 
     @State private var isPresentingEmailDialog: Bool = false
     @State private var isShowingEmailView: Bool = false
@@ -9,7 +9,7 @@ struct CustomerDetailView: View {
     @State private var isShowingMessageView: Bool = false
 
     init(viewModel: CustomerDetailViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     var body: some View {

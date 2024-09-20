@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeable {
+public struct WCAnalyticsCustomer: Decodable, Hashable, GeneratedCopiable, GeneratedFakeable {
     /// The siteID for the WCAnalyticsCustomer
     public let siteID: Int64
 
@@ -120,6 +120,26 @@ public struct WCAnalyticsCustomer: Decodable, GeneratedCopiable, GeneratedFakeab
                   region: region,
                   city: city,
                   postcode: postcode)
+    }
+}
+
+extension WCAnalyticsCustomer: Equatable {
+    public static func == (lhs: WCAnalyticsCustomer, rhs: WCAnalyticsCustomer) -> Bool {
+        lhs.siteID == rhs.siteID &&
+        lhs.customerID == rhs.customerID &&
+        lhs.userID == rhs.userID &&
+        lhs.name == rhs.name &&
+        lhs.email == rhs.email &&
+        lhs.username == rhs.username &&
+        lhs.dateRegistered == rhs.dateRegistered &&
+        lhs.dateLastActive == rhs.dateLastActive &&
+        lhs.ordersCount == rhs.ordersCount &&
+        lhs.totalSpend == rhs.totalSpend &&
+        lhs.averageOrderValue == rhs.averageOrderValue &&
+        lhs.country == rhs.country &&
+        lhs.region == rhs.region &&
+        lhs.city == rhs.city &&
+        lhs.postcode == rhs.postcode
     }
 }
 

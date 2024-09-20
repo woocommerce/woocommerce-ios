@@ -1,7 +1,40 @@
 import SwiftUI
+import Yosemite
+
+struct CustomersContainerView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @StateObject private var viewModel: CustomersListViewModel
+    @State private var selectedCustomer: WCAnalyticsCustomer?
+    @State private var columnVisibility = NavigationSplitViewVisibility.all
+
+    init(siteID: Int64) {
+        _viewModel = StateObject(wrappedValue: CustomersListViewModel(siteID: siteID))
+    }
+
+    var body: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            CustomersListView(viewModel: viewModel, selectedCustomer: $selectedCustomer)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Back", action: { presentationMode.wrappedValue.dismiss() })
+                    }
+                }
+                .toolbar(.hidden, for: .navigationBar)
+
+        } detail: {
+            if let customer = selectedCustomer {
+                CustomerDetailView(viewModel: .init(customer: customer))
+            } else {
+                Text("Select a customer")
+            }
+        }
+        .navigationSplitViewStyle(.balanced)
+    }
+}
 
 struct CustomersListView: View {
-    @StateObject var viewModel: CustomersListViewModel
+    @ObservedObject var viewModel: CustomersListViewModel
+    @Binding var selectedCustomer: WCAnalyticsCustomer?
 
     @State private var isEditingSearchTerm: Bool = false
 
@@ -23,32 +56,16 @@ struct CustomersListView: View {
 
             switch viewModel.syncState {
             case .results:
-                RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                              loadAction: viewModel.onLoadNextPageAction,
-                                              refreshAction: { completion in
-                    viewModel.onRefreshAction(completion: completion)
-                }) {
+                List(selection: $selectedCustomer) {
                     ForEach(viewModel.customers, id: \.customerID) { customer in
-                        VStack(spacing: 0) {
-                            LazyNavigationLink(destination: CustomerDetailView(viewModel: .init(customer: customer)), label: {
-                                HStack {
-                                    TitleAndSubtitleAndDetailRow(title: viewModel.displayName(for: customer),
-                                                                 detail: viewModel.displayUsername(for: customer),
-                                                                 subtitle: viewModel.displayEmail(for: customer),
-                                                                 subtitlePlaceholder: Localization.emailPlaceholder)
-                                    DisclosureIndicator()
-                                }
-                                .padding()
-                                .background(Color(.listForeground(modal: false)))
-                            })
-
-                            Divider().padding(.leading)
-                        }
-                        .simultaneousGesture(TapGesture().onEnded { _ in
-                            viewModel.trackCustomerSelected(customer)
-                        })
+                        CustomerRow(customer: customer,
+                                    viewModel: viewModel,
+                                    emailPlaceholder: Localization.emailPlaceholder,
+                                    isSelected: selectedCustomer == customer)
+                        .tag(customer)
                     }
                 }
+                .listStyle(.plain)
             case .syncingFirstPage:
                 List {
                     ForEach(CustomersListViewModel.placeholderRows, id: \.customerID) { customer in
@@ -73,13 +90,32 @@ struct CustomersListView: View {
                 }
             }
         }
-        .listStyle(.plain)
         .background(Color(uiColor: .listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
-        .wooNavigationBarStyle()
         .onAppear {
             viewModel.loadCustomers()
+        }
+    }
+}
+
+struct CustomerRow: View {
+    let customer: WCAnalyticsCustomer
+    let viewModel: CustomersListViewModel
+    let emailPlaceholder: String
+    let isSelected: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                TitleAndSubtitleAndDetailRow(title: viewModel.displayName(for: customer),
+                                             detail: viewModel.displayUsername(for: customer),
+                                             subtitle: viewModel.displayEmail(for: customer),
+                                             subtitlePlaceholder: emailPlaceholder)
+                DisclosureIndicator()
+            }
+            .padding()
+            .background(isSelected ? Color.yellow : Color(.listForeground(modal: false)))
         }
     }
 }
@@ -108,5 +144,5 @@ private extension CustomersListView {
 }
 
 #Preview {
-    CustomersListView(viewModel: .init(siteID: 0))
+    CustomersListView(viewModel: .init(siteID: 0), selectedCustomer: .constant(nil))
 }

@@ -155,7 +155,9 @@ private extension HubMenu {
             case .subscriptions:
                 SubscriptionsView(viewModel: .init())
             case .customers:
-                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+                CustomersContainerView(siteID: viewModel.siteID)
+
+                //CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case .pointOfSales:
                 if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
                    let orderService = POSOrderService(siteID: viewModel.siteID,

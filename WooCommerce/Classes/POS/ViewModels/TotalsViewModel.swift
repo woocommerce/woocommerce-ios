@@ -272,7 +272,10 @@ private extension TotalsViewModel {
                 }
             }
     }
-
+    
+    /// Starts a payment immediately if a reader is connected.
+    /// Otherwise, schedules a payment to start the next time a reader connects.
+    /// Note that any schedlued payments are cancelled by `cancelReaderPreparation` when the TotalsView goes offscreen.
     func startPaymentWhenReaderConnected() async {
         guard case .connected = connectionStatus else {
             return startPaymentOnReaderConnection = $connectionStatus

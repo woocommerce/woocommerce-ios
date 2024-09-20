@@ -16,7 +16,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let sideBySideViewForOrderForm: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
     private let isPointOfSaleEnabled: Bool
-    private let isProductCreationAIv2M1Enabled: Bool
     private let googleAdsCampaignCreationOnWebView: Bool
     private let blazeEvergreenCampaigns: Bool
     private let blazeCampaignObjective: Bool
@@ -36,7 +35,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         isProductCreationAIv2M1Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
@@ -55,7 +53,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.isProductCreationAIv2M1Enabled = isProductCreationAIv2M1Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
@@ -92,8 +89,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSubscriptionsInOrderCreationCustomersEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .productCreationAIv2M1:
-            return isProductCreationAIv2M1Enabled
         case .googleAdsCampaignCreationOnWebView:
             return googleAdsCampaignCreationOnWebView
         case .blazeEvergreenCampaigns:

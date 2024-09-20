@@ -1,6 +1,3 @@
-- [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
-- [**] Fixed formatting issues for discount and cash payment input values when the device and store currency settings are different. [https://github.com/woocommerce/woocommerce-ios/pull/13979]
-- [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
-- [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
+In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
 
 

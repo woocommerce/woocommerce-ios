@@ -219,12 +219,12 @@ public final class CoreDataManager: StorageManagerType {
     /// Note that we have to enumerate all the files in our sandbox to get these properties, so this takes some time.
     /// It is intended _only_ for use when logging a crash, or other high-value log which won't get in the user's way.
     private static func storageSizeLogProperties() -> [String: Int64]? {
-        let directoryUrls = [
+        let directoryUrls: [String: URL] = [
             "Bundle": Bundle.main.bundleURL,
-            "Documents": FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!,
-            "Library": FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!,
+            "Documents": FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+            "Library": FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first,
             "Temp": FileManager.default.temporaryDirectory,
-        ]
+        ].compactMapValues { $0 }
 
         let directorySizes = directoryUrls.mapValues { url in
             getAllocatedStorageSize(for: url)

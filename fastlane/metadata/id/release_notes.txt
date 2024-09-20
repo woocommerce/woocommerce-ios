@@ -1,2 +1,3 @@
-Dalam versi ini, kami telah mengaktifkan pemindaian nomor pelacakan pesanan dan memperbaiki manajemen kata sandi produk. Selain itu, kami telah meningkatkan fitur pemindai produk, pembayaran tunai, dan diskon.
-Pembuatan kampanye iklan Blaze telah diperbarui dengan fitur pemilihan gambar dan pengaturan anggaran yang lebih baik.
+Di versi ini, kami membereskan masalah terkait penyiapan awal pembayaran. Pengelolaan iklan Blaze juga disempurnakan agar lebih nyaman digunakan.
+
+

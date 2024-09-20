@@ -1,2 +1,3 @@
-In deze versie hebben wij het scannen van volgnummers voor bestellingen ingeschakeld en het beheer van productwachtwoorden verbeterd. We hebben ook verbeteringen toegevoegd voor de productscanner, contante betalingen en kortingen.
-Het aanmaken van Blaze-advertentiecampagnes is geüpdatet, voor een betere ervaring met het kiezen van afbeeldingen en budgetinstellingen.
+In deze versie hebben we een probleem opgelost met de onboarding van betalingen. Het beheer van Blaze-advertenties is ook verbeterd voor een betere ervaring.
+
+

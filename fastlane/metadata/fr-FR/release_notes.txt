@@ -1,2 +1,3 @@
-Dans cette version, il est à présent possible de scanner les numéros de suivi des commandes. Nous avons aussi amélioré la gestion des mots de passe de produits. Nous avons également ajouté des améliorations pour le scanner de produits, les paiements en espèces et les remises.
-La création de campagnes publicitaires Blaze a été optimisée en ce qui concerne la sélection d’images et les réglages de budget.
+Dans cette version, nous avons corrigé un problème lié à l’intégration des paiements. La gestion des publicités Blaze a également été améliorée pour une meilleure expérience.
+
+

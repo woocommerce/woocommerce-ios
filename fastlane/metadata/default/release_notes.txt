@@ -1,2 +1,3 @@
-In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
-Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
+
+

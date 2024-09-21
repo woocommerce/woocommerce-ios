@@ -3,7 +3,7 @@
 
 20.6
 -----
-
+- [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
 
 20.5
 -----

@@ -153,7 +153,7 @@ private extension CardReaderConnectionStatusView {
             "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title",
             value: "Please wait",
             comment: "The title of the floating button to indicate that the reader is not ready for another " +
-            "connection, usually because a connection has just been cancelled" 
+            "connection, usually because a connection has just been cancelled"
         )
     }
 }

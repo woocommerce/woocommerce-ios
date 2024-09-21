@@ -231,7 +231,7 @@ private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
-        case .connected, .disconnecting:
+        case .connected, .disconnecting, .cancellingConnection:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()

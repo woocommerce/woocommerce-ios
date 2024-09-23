@@ -19,6 +19,8 @@ final class BlazeCampaignListViewModel: ObservableObject {
     @Published var shouldShowIntroView = false
     @Published var selectedCampaignURL: URL?
 
+    private var selectedCampaignID: String?
+
     /// Tracks whether the intro view has been presented.
     private var didShowIntroView = false
 
@@ -106,6 +108,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
     func didSelectCampaignDetails(_ campaignID: String) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
+        selectedCampaignID = campaignID
 
         let path = String(format: Constants.campaignDetailsURLFormat,
                           campaignID,
@@ -121,6 +124,12 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func didCreateCampaign() {
         // TODO: make Blaze card appear on the dashboard again
         loadCampaigns()
+    }
+
+    func didDismissSelectedCampaign() {
+        /// re-sync the updated details about the selected campaign from remote
+        /// in case the campaign has been canceled on the web page.
+        refreshSelectedCampaign()
     }
 }
 
@@ -167,6 +176,17 @@ private extension BlazeCampaignListViewModel {
         kind.forEach { kind in
             pushNotesManager.resetBadgeCount(type: kind)
         }
+    }
+
+    func refreshSelectedCampaign() {
+        guard let selectedCampaignID else {
+            return
+        }
+        stores.dispatch(BlazeAction.synchronizeCampaign(campaignID: selectedCampaignID, siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error syncing details for Blaze campaign: \(error)")
+            }
+        })
     }
 }
 

@@ -3,8 +3,8 @@ import SwiftUI
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
+    @State private var editorType = 0 // 0 = text, 1 = html
     @State private var hasUnsavedChanges: Bool = false
-    @State private var showRichTextEditor: Bool = false
     @State private var showingActionSheet: Bool = false
 
     private let initialKey: String
@@ -48,36 +48,46 @@ struct CustomFieldEditorView: View {
 
                 // Value Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                    HStack {
-                        Text("Value") // todo-13493: set String to be translatable
-                            .foregroundColor(Color(.text))
-                            .subheadlineStyle()
+                    Text("Value") // todo-13493: set String to be translatable
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
 
-                        Spacer()
+                    if !isReadOnlyValue {
 
-                        if !isReadOnlyValue {
-                            Button(action: {
-                                showRichTextEditor = true
-                            }) {
-                                Text("Edit in Rich Text Editor") // todo-13493: set String to be translatable
-                                    .font(.footnote)
+                        Picker("Choose editing mode:", selection: $editorType) {
+                            Text("Text").tag(0)
+                            Text("HTML").tag(1)
+                        }
+                        .pickerStyle(.segmented)
+                    }
+
+                    if editorType == 0 {
+                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
+                            .bodyStyle()
+                            .frame(minHeight: Layout.minimumEditorSize)
+                            .padding(insets: Layout.inputInsets)
+                            .background(Color(.listForeground(modal: false)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                            .onChange(of: value) { _ in
+                                checkForModifications()
                             }
-                            .buttonStyle(.plain)
-                            .foregroundColor(Color(uiColor: .accent))
+                    } else {
+                        ScrollView {
+                            AztecEditorViewTwo(initialValue: value)
+                                .frame(minHeight: Layout.minimumEditorSize)
+                                .padding(insets: Layout.inputInsets)
+                                .background(Color(.listForeground(modal: false)))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                                )
+                                .onChange(of: value) { _ in
+                                    checkForModifications()
+                                }
                         }
                     }
 
-                    TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
-                        .bodyStyle()
-                        .frame(minHeight: Layout.minimumEditorSize)
-                        .padding(insets: Layout.inputInsets)
-                        .background(Color(.listForeground(modal: false)))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
-                        )
-                        .onChange(of: value) { _ in
-                            checkForModifications()
-                        }
                 }
             }
             .padding()
@@ -104,12 +114,6 @@ struct CustomFieldEditorView: View {
                     }
                 }
             }
-        }
-        .sheet(isPresented: $showRichTextEditor) {
-            RichTextEditor(html: $value)
-                .onDisappear {
-                    checkForModifications()
-                }
         }
     }
 
@@ -139,21 +143,23 @@ struct CustomFieldEditorView: View {
     }
 }
 
-private struct RichTextEditor: View {
-    @Binding var html: String
-    @Environment(\.presentationMode) var presentationMode
+struct AztecEditorViewTwo: UIViewControllerRepresentable {
+    let initialValue: String
 
-    var body: some View {
-        AztecEditorView(
-            initialValue: html,
-            onDone: { content, _ in
-                html = content
-                presentationMode.wrappedValue.dismiss()
-            },
-            onCancel: {
-                presentationMode.wrappedValue.dismiss()
-            }
-        )
+    func makeUIViewController(context: Context) -> AztecEditorViewController {
+        let controller = EditorFactory().customFieldRichTextEditor(initialValue: initialValue)
+
+        guard let aztecController = controller as? AztecEditorViewController else {
+            fatalError("EditorFactory must return an AztecEditorViewController, but returned \(type(of: controller))")
+        }
+
+        aztecController.editorView.clipsToBounds = true
+
+        return aztecController
+    }
+
+    func updateUIViewController(_ uiViewController: AztecEditorViewController, context: Context) {
+        // Update the controller if needed
     }
 }
 

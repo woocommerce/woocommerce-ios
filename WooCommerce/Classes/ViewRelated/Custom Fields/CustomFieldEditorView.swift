@@ -3,7 +3,6 @@ import SwiftUI
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
-    @State private var hasUnsavedChanges: Bool = false
     @State private var showRichTextEditor: Bool = false
     @State private var showingActionSheet: Bool = false
 
@@ -11,6 +10,9 @@ struct CustomFieldEditorView: View {
     private let initialValue: String
     private let isReadOnlyValue: Bool
 
+    private var hasUnsavedChanges: Bool {
+        key != initialKey || value != initialValue
+    }
 
     /// Initializer for custom field editor
     /// - Parameters:
@@ -41,9 +43,6 @@ struct CustomFieldEditorView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
-                        .onChange(of: key) { _ in
-                            checkForModifications()
-                        }
                 }
 
                 // Value Input
@@ -63,8 +62,9 @@ struct CustomFieldEditorView: View {
                     if showRichTextEditor {
                         AztecEditorView(value: $value,
                                         onContentChanged: { content in
-                            value = content
-                            checkForModifications()
+                            DispatchQueue.main.async {
+                                value = content
+                            }
                         })
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
@@ -82,9 +82,6 @@ struct CustomFieldEditorView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
-                            .onChange(of: value) { _ in
-                                checkForModifications()
-                            }
                     }
                 }
             }
@@ -130,13 +127,6 @@ struct CustomFieldEditorView: View {
         Button("Delete Custom Field", role: .destructive) { // todo-13493: set String to be translatable
             // todo-13493: Implement delete action
         }
-    }
-
-    private func checkForModifications() {
-        DispatchQueue.main.async {
-            hasUnsavedChanges = key != initialKey || value != initialValue
-        }
-
     }
 
     private func saveChanges() {

@@ -10,7 +10,7 @@ struct MostActiveCouponRow: View {
             tapHandler()
         } label: {
             VStack {
-                HStack {
+                HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(viewModel.code)
                             .bodyStyle()
@@ -20,11 +20,8 @@ struct MostActiveCouponRow: View {
 
                     Spacer()
 
-                    VStack(alignment: .trailing) {
-                        Text(viewModel.uses)
-                            .bodyStyle()
-                        Spacer()
-                    }
+                    Text(viewModel.uses)
+                        .bodyStyle()
                 }
                 .padding(.horizontal, Layout.padding)
 

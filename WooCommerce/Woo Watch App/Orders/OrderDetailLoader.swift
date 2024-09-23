@@ -6,9 +6,11 @@ import NetworkingWatchOS
 struct OrderDetailLoader: View {
 
     @StateObject var viewModel: OrderDetailLoaderViewModel
+    private let pushNotification: PushNotification
 
     init(dependencies: WatchDependencies, pushNotification: PushNotification) {
         _viewModel = StateObject(wrappedValue: OrderDetailLoaderViewModel(dependencies: dependencies, pushNotification: pushNotification))
+        self.pushNotification = pushNotification
     }
 
     var body: some View {
@@ -21,6 +23,9 @@ struct OrderDetailLoader: View {
                     .redacted(reason: .placeholder)
             case .loaded(let order):
                 OrderDetailView(order: order)
+                    .task {
+                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: pushNotification.noteID, orderID: Int(order.orderID))
+                    }
             case .error:
                 Text(AppLocalizedString(
                     "watch.notification.order.error",
@@ -52,21 +57,28 @@ final class OrderDetailLoaderViewModel: ObservableObject {
     private let dependencies: WatchDependencies
 
     private let pushNotification: PushNotification
+    private let dataService: OrderNotificationDataService
 
     @Published var viewState: State = .idle
 
     init(dependencies: WatchDependencies, pushNotification: PushNotification) {
         self.dependencies = dependencies
         self.pushNotification = pushNotification
+        self.dataService = OrderNotificationDataService(credentials: dependencies.credentials)
+    }
+
+    ///  Marks a notification as read when the given `orderID` matches `orderID` of the provided notification.
+    ///
+    func markOrderNoteAsReadIfNeeded(noteID: Int64, orderID: Int) async {
+        _ = await dataService.markOrderNoteAsReadIfNeeded(noteID: noteID, orderID: orderID)
     }
 
     /// Fetch order based on the provided push notification. Updates the view state as needed.
     ///
     func fetchOrder() async {
         self.viewState = .loading
-        let dataService = OrderNotificationDataService(credentials: dependencies.credentials)
         do {
-            let (_, remoteOrder) = try await dataService.loadOrderFrom(noteID: pushNotification.noteID)
+            let (_, remoteOrder) = try await dataService.loadOrderFrom(notification: pushNotification)
             let viewOrders = OrdersListViewModel.viewOrders(from: [remoteOrder], currencySettings: dependencies.currencySettings)
 
             // Should always succeed.

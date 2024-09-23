@@ -102,10 +102,12 @@ enum ProductSettingsRows {
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
+            /// Check if the store is eligible for password editing or is authenticated with WPCom.
+            /// If neither condition is met, the cell will not be selectable.
             let passwordProtectedAvailable = ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
-            /// If the password was not fetched for user authenticated with WPCom,
-            /// the cell is not selectable
-            if settings.password == nil && passwordProtectedAvailable {
+                        || ProductPasswordEligibilityUseCase().isEligibleForWooProductPasswordEndpoint()
+
+            guard passwordProtectedAvailable else {
                 return
             }
 

@@ -1,4 +1,3 @@
-I den här versionen har Blaze-annonser fått stöd för evergreen-kampanjer. Vi har åtgärdat ett antal i produktredigeringen, särskilt kring priser, och det finns nu stöd för produkter med negativa priser.
+I den här versionen har vi åtgärdat ett problem som rörde onboarding av betalningar. Dessutom har Blaze-annonshanteringen förbättrats för en bättre upplevelse.
 
-Vi har åtgärdat ett problem som uppstod vid användning av menyn med VoiceOver och hjälpmedelsteknik, samt ett antal buggar som gjorde att rubriker försvann och knappar slutade svara.
 

@@ -37,7 +37,7 @@ struct CustomFieldViewModel: Identifiable {
         self.init(
             id: metadata.metadataID,
             title: metadata.key,
-            content: metadata.value,
+            content: metadata.value.removedHTMLTags,
             contentURL: contentURL
         )
     }

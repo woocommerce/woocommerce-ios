@@ -176,6 +176,29 @@ final class UniversalLinkRouterTests: XCTestCase {
         XCTAssert(routes.contains { $0 is PaymentsRoute })
         XCTAssert(routes.contains { $0 is OrdersRoute })
     }
+
+    func test_canHandle_returns_false_for_magic_link_url() throws {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+        let sut = UniversalLinkRouter(routes: routes)
+        let url = try XCTUnwrap(URL(string: "woocommerce://magic-login?token=23easdcasd&flow=login&source=default"))
+
+        // Then
+        XCTAssertFalse(sut.canHandle(url: url))
+    }
+
+
+    func test_canHandle_returns_false_for_login_link_url() throws {
+        // Given
+        let mockNavigator = MockDeepLinkNavigator()
+        let routes = UniversalLinkRouter.defaultRoutes(navigator: mockNavigator)
+        let sut = UniversalLinkRouter(routes: routes)
+        let url = try XCTUnwrap(URL(string: "woocommerce://app-login?token=cawe212m&flow=login&source=default"))
+
+        // Then
+        XCTAssertFalse(sut.canHandle(url: url))
+    }
 }
 
 private extension UniversalLinkRouterTests {

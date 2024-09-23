@@ -218,6 +218,14 @@
                     "id": 4049,
                     "key": "_last_editor_used_jetpack",
                     "value": "classic-editor"
+                }, {
+                    "id": 4060,
+                    "key": "my_custom_field",
+                    "value": "10"
+                }, {
+                    "id": 4061,
+                    "key": "privileges",
+                    "value": "xyz"
                 }],
                 "stock_status": "instock",
                 "jetpack_publicize_connections": [],

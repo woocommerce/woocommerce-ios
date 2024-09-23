@@ -1,4 +1,3 @@
-En esta versión, los anuncios de Blaze reciben apoyo de la campaña Evergreen. Hemos corregido algunos errores presentes en la edición de productos, especialmente en lo que respecta a los precios.
+En esta versión hemos solucionado un problema relacionado con la incorporación de pagos. También se ha mejorado la gestión de los anuncios de Blaze para mejorar la experiencia.
 
-Hemos corregido un problema que aparecía al utilizar el menú con VoiceOver y tecnología asistencial, así como algunos errores que hacían que los títulos desaparecieran y que los botones dejaran de responder.
 

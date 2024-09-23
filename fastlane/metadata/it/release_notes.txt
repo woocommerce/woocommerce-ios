@@ -1,4 +1,3 @@
-In questa versione, gli annunci Blaze ricevono il supporto delle campagne evergreen. Abbiamo corretto alcuni bug che interessavano la modifica del prodotto, soprattutto riguardanti i prezzi, e ora sono supportati i prodotti con prezzi negativi.
+In questa versione, abbiamo risolto un problema relativo all'onboarding dei pagamenti. La gestione degli annunci Blaze è stata inoltre migliorata per fornire un'esperienza migliore.
 
-Abbiamo risolto un problema nell'utilizzo del menu con VoiceOver e con la tecnologia assistiva, oltre ad alcuni bug che facevano sparire i titoli e impedivano ai pulsanti di rispondere.
 

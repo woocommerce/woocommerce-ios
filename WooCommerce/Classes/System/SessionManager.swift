@@ -211,6 +211,9 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.themesPendingInstall] = nil
         defaults[.siteIDPendingStoreSwitch] = nil
         defaults[.expectedStoreNamePendingStoreSwitch] = nil
+        defaults[.blazeNoCampaignReminderOpened] = nil
+        defaults[.blazeAbandonedCampaignCreationReminderOpened] = nil
+        defaults[.blazeSelectedCampaignObjective] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

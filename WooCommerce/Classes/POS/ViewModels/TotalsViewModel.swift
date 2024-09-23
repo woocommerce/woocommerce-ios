@@ -20,7 +20,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
-    @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
@@ -33,27 +32,15 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     @Published private(set) var paymentState: PaymentState
 
-    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
 
-    @Published var formattedCartTotalPrice: String?
-    @Published var formattedOrderTotalPrice: String?
-    @Published var formattedOrderTotalTaxPrice: String?
+    @Published private(set) var formattedCartTotalPrice: String?
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     private let startNewOrderActionSubject = PassthroughSubject<Void, Never>()
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> {
         startNewOrderActionSubject.eraseToAnyPublisher()
-    }
-
-    var computedFormattedCartTotalPrice: String? {
-        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalPrice: String? {
-        formattedPrice(order?.total, currency: order?.currency)
-    }
-
-    var computedFormattedOrderTotalTaxPrice: String? {
-        formattedPrice(order?.totalTax, currency: order?.currency)
     }
 
     var isShimmering: Bool {
@@ -95,13 +82,12 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
 
     var orderStatePublisher: Published<OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
-    var showsCardReaderSheetPublisher: Published<Bool>.Publisher { $showsCardReaderSheet }
-    var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
-    var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
-    var connectionStatusPublisher: Published<CardReaderConnectionStatus>.Publisher { $connectionStatus }
-    var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
-    var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
-    var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
+    private var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
+    private var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
+    private var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { $connectionStatus }
+    private var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
+    private var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
+    private var formattedOrderTotalTaxPricePublisher: Published<String?>.Publisher { $formattedOrderTotalTaxPrice }
 
     private var startPaymentOnReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -191,16 +177,20 @@ extension TotalsViewModel {
         }
     }
 
-    private func updateFormattedPrices() {
-        formattedCartTotalPrice = computedFormattedCartTotalPrice
-        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
-        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
-    }
-
     private func updateOrder(_ updatedOrder: Order) {
         self.order = updatedOrder
         totalsCalculator = OrderTotalsCalculator(for: updatedOrder, using: currencyFormatter)
         updateFormattedPrices()
+    }
+}
+
+// MARK: - Price formatters
+
+private extension TotalsViewModel {
+    func updateFormattedPrices() {
+        formattedCartTotalPrice = computedFormattedCartTotalPrice
+        formattedOrderTotalPrice = computedFormattedOrderTotalPrice
+        formattedOrderTotalTaxPrice = computedFormattedOrderTotalTaxPrice
     }
 
     func formattedPrice(_ price: String?, currency: String?) -> String? {
@@ -208,6 +198,18 @@ extension TotalsViewModel {
             return nil
         }
         return currencyFormatter.formatAmount(price, with: currency)
+    }
+
+    var computedFormattedCartTotalPrice: String? {
+        formattedPrice(totalsCalculator?.itemsTotal.stringValue, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalPrice: String? {
+        formattedPrice(order?.total, currency: order?.currency)
+    }
+
+    var computedFormattedOrderTotalTaxPrice: String? {
+        formattedPrice(order?.totalTax, currency: order?.currency)
     }
 }
 
@@ -240,11 +242,7 @@ private extension TotalsViewModel {
 
 private extension TotalsViewModel {
     func observeConnectedReaderForStatus() {
-        cardPresentPaymentService.connectedReaderPublisher
-            .map { connectedReader in
-                // Note that this does not cover when a reader is disconnecting
-                connectedReader == nil ? .disconnected: .connected
-            }
+        cardPresentPaymentService.readerConnectionStatusPublisher
             .assign(to: &$connectionStatus)
 
         Publishers.CombineLatest4($connectionStatus, $orderState, $cardPresentPaymentInlineMessage, $order)
@@ -259,7 +257,7 @@ private extension TotalsViewModel {
                 }
 
                 switch connectionStatus {
-                case .connected, .disconnecting:
+                case .connected, .disconnecting, .cancellingConnection:
                     return message != nil
                 case .disconnected:
                     // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -279,9 +277,20 @@ private extension TotalsViewModel {
             }
     }
 
+    /// Starts a payment immediately if a reader is connected.
+    /// Otherwise, schedules a payment to start the next time a reader connects.
+    /// Note that any schedlued payments are cancelled by `cancelReaderPreparation` when the TotalsView goes offscreen.
     func startPaymentWhenReaderConnected() async {
-        guard connectionStatus == .connected else {
-            return startPaymentOnReaderConnection = $connectionStatus.filter { $0 == .connected }
+        guard case .connected = connectionStatus else {
+            return startPaymentOnReaderConnection = $connectionStatus
+                .filter { status in
+                    switch status {
+                    case .connected:
+                        return true
+                    case .disconnected, .disconnecting, .cancellingConnection:
+                        return false
+                    }
+                }
                 .removeDuplicates()
                 .sink { _ in
                     Task { @MainActor [weak self] in
@@ -294,6 +303,7 @@ private extension TotalsViewModel {
 
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }
@@ -305,27 +315,13 @@ private extension TotalsViewModel {
                 return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
                 self?.mapCardPresentPaymentEventToMessageType(event)
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
-        cardPresentPaymentService.paymentEventPublisher.map { [weak self] event in
-            guard let self else { return false }
-            switch event {
-            case .idle:
-                return false
-            case .show(let eventDetails):
-                switch presentationStyle(for: eventDetails) {
-                case .alert:
-                    return true
-                case .message, .none:
-                    return false
-                }
-            case .showOnboarding:
-                return true
-            }
-        }.assign(to: &$showsCardReaderSheet)
+
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { [weak self] paymentEvent in
                 guard let self else { return .none }
@@ -383,7 +379,11 @@ private extension TotalsViewModel {
             paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
             paymentCaptureErrorNewOrderAction: { [weak self] in
                 self?.startNewOrder()
-            })
+            },
+            dismissReaderConnectionModal: { [weak self] in
+                self?.cardPresentPaymentAlertViewModel = nil
+            }
+        )
     }
 
     func cancelThenCollectPayment() {

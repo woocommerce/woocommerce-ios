@@ -600,6 +600,42 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.showNewCardsNotice) // Check it's false after dismissing Customize screen
     }
+
+    @MainActor
+    func test_local_notification_scheduler_starts_observing_user_responses_upon_init() async throws {
+        // Given
+        let scheduler = MockBlazeLocalNotificationScheduler()
+        _ = DashboardViewModel(siteID: sampleSiteID,
+                               stores: stores,
+                               storageManager: storageManager,
+                               blazeEligibilityChecker: blazeEligibilityChecker,
+                               inboxEligibilityChecker: inboxEligibilityChecker,
+                               localNotificationScheduler: scheduler)
+
+        // Then
+        XCTAssertTrue(scheduler.observeNotificationUserResponseCalled)
+    }
+
+    @MainActor
+    func test_no_campaign_reminder_local_notification_scheduler_starts_once_view_appears() async throws {
+        // Given
+        let scheduler = MockBlazeLocalNotificationScheduler()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           localNotificationScheduler: scheduler)
+        mockReloadingData()
+
+        // When
+        await viewModel.onViewAppear()
+
+        // Then
+        waitUntil {
+            scheduler.scheduleNoCampaignReminderCalled == true
+        }
+    }
 }
 
 private extension DashboardViewModelTests {

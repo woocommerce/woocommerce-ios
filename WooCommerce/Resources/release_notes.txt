@@ -1,4 +1,3 @@
-In this version, Blaze ads get evergreen campaign support. We've fixed some bugs in product editing, especially around prices, and now support negative-priced products!
+In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
 
-We've fixed a problem using the menu with VoiceOver and assistive technology, and some bugs which caused titles to disappear, and buttons to become unresponsive.
 

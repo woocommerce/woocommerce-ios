@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-03 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-17 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -4268,6 +4268,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Pengembalian Dana Manual";
+
+/* The instruction text below the scan area in the barcode scanner for order tracking number. */
+"ManualTrackingViewController.scanView.instructionText" = "Pindai Barcode atau Kode QR Pelacakan";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
+"ManualTrackingViewController.scanView.titleView" = "Pindai barcode atau Kode QR dengan nomor pelacakan";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domain Dipetakan";
@@ -9305,12 +9311,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "Membuat toko baru?";
 
-/* Cell description on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.description" = "Coba Titik Penjualan sebelum kami meluncurkannya";
-
-/* Cell title on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.title" = "Titik Penjualan";
-
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Kirim pesan Telegram";
 
@@ -9398,9 +9398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that will be displayed after adding a new Blaze payment method */
 "blazeAddPaymentWebView.paymentMethodAddedNotice" = "Metode pembayaran ditambahkan";
 
-/* Button to apply the changes on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.apply" = "Terapkan";
-
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "Batal";
 
@@ -9413,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Selesai";
 
-/* Title label of the Blaze campaign duration field */
-"blazeBudgetSettingView.duration" = "Durasi";
-
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Edit";
 
@@ -9424,9 +9418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedTotalImpressions" = "Perkiraan total impresi";
-
-/* Label to explain when no end date is specified for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenDescription" = "Kampanye akan terus berjalan sampai Anda nonaktifkan.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "Gagal mengestimasi tayangan. Coba lagi?";
@@ -9439,12 +9430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "Jadwal";
-
-/* Switch to enable an end date for a Blaze campaign. */
-"blazeBudgetSettingView.specifyDuration" = "Tentukan durasi";
-
-/* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.startDate" = "Tanggal mulai";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Tentukan anggaran";
@@ -9540,9 +9525,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination.empty" = "Pilih URL tujuan";
 
-/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Batal";
-
 /* Error message indicating that loading suggestions for tagline and description failed */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "Gagal memuat saran slogan dan deskripsi";
 
@@ -9554,6 +9536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Anggaran";
+
+/* Dismiss button on an error alert on the Blaze campaign creation form */
+"blazeCampaignCreationForm.cancel" = "Batal";
+
+/* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
+"blazeCampaignCreationForm.chooseObjective" = "Pilih tujuan kampanye";
 
 /* Button to confirm ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.confirmDetails" = "Konfirmasi Detail";
@@ -9582,8 +9570,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Lokasi";
 
-/* Dismiss button on the alert asking to select a destination URL for the Blaze campaign */
-"blazeCampaignCreationForm.noDestinationURLAlert.cancel" = "Batal";
+/* Button on the alert to select an objective for the Blaze campaign */
+"blazeCampaignCreationForm.missingObjectiveAlert.selectObjective" = "Pilih tujuan";
+
+/* No comment provided by engineer. */
+"blazeCampaignCreationForm.missingObjectiveAlert.title" = "Pilih tujuan kampanye Blaze";
 
 /* Message asking to select a destination URL for the Blaze campaign */
 "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound" = "Pilih URL tujuan untuk kampanye Blaze";
@@ -9594,11 +9585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the alert to add an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Tambahkan Gambar";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Batal";
-
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Tambahkan gambar untuk kampanye Blaze";
+
+/* Title of the Campaign objective field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.objective" = "Tujuan kampanye";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Beli Sekarang";
@@ -9683,6 +9674,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Mingguan";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Dipilih";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintUnselected" = "Tidak dipilih";
+
+/* Button to dismiss the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.cancel" = "Batal";
+
+/* Error message when data syncing fails on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.errorMessage" = "Error saat menyinkronkan tujuan kampanye. Coba lagi.";
+
+/* Title for the explanation of a Blaze campaign objective. */
+"blazeCampaignObjectivePickerView.goodFor" = "Cocok untuk:";
+
+/* Message on the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.message" = "Pilih tujuan kampanye";
+
+/* Button to save the selection on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.save" = "Simpan";
+
+/* Toggle to save the selection of a Blaze campaign objective for future campaigns. */
+"blazeCampaignObjectivePickerView.saveSelection" = "Simpan pilihan saya untuk kampanye mendatang";
+
+/* Title of the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.title" = "Tujuan kampanye";
+
+/* Button to retry syncing data on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.tryAgain" = "Coba Lagi";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Kebijakan Iklan";
@@ -9887,6 +9908,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "Semua transaksi aman dan terenkripsi";
+
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.apply" = "Terapkan";
+
+/* Button to dismiss the Blaze schedule setting screen */
+"blazeScheduleSettingView.cancel" = "Batal";
+
+/* Title label of the Blaze campaign duration field */
+"blazeScheduleSettingView.duration" = "Durasi";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeScheduleSettingView.evergreenDescription" = "Kampanye akan terus berjalan sampai Anda menghentikannya.";
+
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeScheduleSettingView.schedule" = "Jadwal";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeScheduleSettingView.specifyDuration" = "Tentukan durasi";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDate" = "Tanggal mulai";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "Semua perangkat";
@@ -10608,9 +10650,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Lihat semua kampanye";
 
-/* Title of the view containing Coupons list
-   Title of the view containing Reviews list */
-"hubMenu.coupons" = "Ulasan";
+/* Title of the view containing Coupons list */
+"hubMenu.couponsList" = "Kupon";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Pelanggan";
@@ -10620,6 +10661,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Ulasan Produk";
+
+/* Title of the view containing Reviews list */
+"hubMenu.reviewsList" = "Ulasan";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google untuk WooCommerce";
@@ -10719,6 +10763,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paket Jalur Darat Kuantitas Terbatas - Aerosol, disinfektan semprot, cat semprot, hair spray, propana, butana, produk-produk kebersihan, dll. - Parfum, cat kuku, pembersih cat kuku, pelarut, penyanitasi tangan, alkohol medis, produk-produk berbahan dasar etanol, dll. - Bahan-bahan jalur darat kuantitas terbatas lainnya (kosmetik, produk-produk kebersihan, cat, dll.)";
+
+/* Message on the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.body" = "Promosikan produk Anda dengan Iklan Blaze dan dongkrak penjualan sekarang.";
+
+/* Title of the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.title" = "Tingkatkan penjualan Anda";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "Woo siap mendukung Anda melalui seluruh proses bisnis Anda. Inilah alasan kami dipercaya para penjual untuk mendukung 3,9 juta toko online mereka.";
@@ -11515,12 +11565,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Menunjukkan produk sederhana saja";
 
-/* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "Mari layani pelanggan";
-
-/* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "Memulai ";
-
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Untuk menambahkan produk, keluar dari POS dan buka Produk.";
 
@@ -11547,9 +11591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Mengapa produk saya tidak muncul?";
-
-/* Button title for calculate amounts button */
-"pos.totalsView.calculateAmounts" = "Hitung jumlah";
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "Pesanan baru";
@@ -11766,6 +11807,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Gambar tidak tersedia karena situs Anda ditandai Privat. Anda dapat mengubahnya dengan beralih ke mode Segera Hadir.";
+
+/* Button to dismiss the product image picker screen */
+"productImagePickerView.cancel" = "Batal";
+
+/* Title for the empty state of the product image picker screen */
+"productImagePickerView.emptyStateTitle" = "Foto tidak ditemukan";
+
+/* Title of the product image picker screen */
+"productImagePickerView.title" = "Foto";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Tunggu hingga semua selesai diunggah sebelum menyusun ulang gambar.";
@@ -12377,6 +12427,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Minggu";
+
+/* Title of the button to dismiss the shipping label creation screen */
+"wooShipping.createLabel.cancelButton" = "Batal";
+
+/* Title for the screen to create a shipping label */
+"wooShipping.createLabels.title" = "Buat Label Pengiriman";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, toko saya, hari ini, minggu ini, bulan ini, tahun ini, pesanan, pengunjung, konversi, konversi teratas, item terjual";

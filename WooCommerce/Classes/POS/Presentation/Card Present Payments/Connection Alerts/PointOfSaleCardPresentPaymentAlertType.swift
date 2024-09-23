@@ -25,4 +25,50 @@ enum PointOfSaleCardPresentPaymentAlertType: Hashable, Identifiable {
     case connectingFailedUpdateAddress(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
     case connectingFailedUpdatePostalCode(viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
     case connectionSuccess(viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel)
+
+    var onDismiss: (() -> Void)? {
+        switch self {
+        case .scanningForReaders(let viewModel):
+            return viewModel.buttonViewModel.actionHandler
+        case .scanningFailed(let viewModel):
+            return viewModel.buttonViewModel.actionHandler
+        case .bluetoothRequired(let viewModel):
+            return viewModel.dismissButtonViewModel.actionHandler
+        case .foundReader(let viewModel):
+            return viewModel.cancelSearchButton.actionHandler
+        case .foundMultipleReaders(let viewModel):
+            return viewModel.cancelSearch
+        case .requiredReaderUpdateInProgress(let viewModel):
+            return viewModel.cancelReaderUpdate
+        case .optionalReaderUpdateInProgress(let viewModel):
+            return viewModel.cancelReaderUpdate
+        case .readerUpdateCompletion:
+            // We only support in-line updates at the moment, and they automatically move on to connecting the reader.
+            return nil
+        case .updateFailed(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .updateFailedNonRetryable(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .updateFailedLowBattery(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingToReader:
+            return nil
+        case .connectingFailed(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedNonRetryable(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedChargeReader(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedUpdateAddress(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectingFailedUpdatePostalCode(let viewModel):
+            return viewModel.cancelButtonViewModel.actionHandler
+        case .connectionSuccess(let viewModel):
+            return viewModel.buttonViewModel.actionHandler
+        }
+    }
+
+    var isDismissDisabled: Bool {
+        onDismiss == nil
+    }
 }

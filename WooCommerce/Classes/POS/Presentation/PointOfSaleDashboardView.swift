@@ -23,6 +23,7 @@ struct PointOfSaleDashboardView: View {
             if viewModel.isInitialLoading {
                 PointOfSaleLoadingView()
                     .transition(.opacity)
+                    .ignoresSafeArea()
             } else if viewModel.isError {
                 let errorContents = viewModel.itemListViewModel.state.hasError
                 PointOfSaleItemListErrorView(error: errorContents, onRetry: {
@@ -35,10 +36,9 @@ struct PointOfSaleDashboardView: View {
             } else {
                 contentView
                     .accessibilitySortPriority(2)
-                    .transition(.push(from: .top))
             }
             POSFloatingControlView(viewModel: viewModel)
-                .shadow(color: Color.black.opacity(0.08), radius: 4)
+                .shadow(color: Color.black.opacity(0.12), radius: 4, y: 2)
                 .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
                 .trackSize(size: $floatingSize)
                 .accessibilitySortPriority(1)
@@ -58,8 +58,12 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
+        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
+                  onDismiss: {
+            totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
         .posModal(isPresented: $itemListViewModel.showSimpleProductsModal) {
             SimpleProductsOnlyInformation(isPresented: $itemListViewModel.showSimpleProductsModal)
@@ -90,6 +94,7 @@ struct PointOfSaleDashboardView: View {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
+                        .ignoresSafeArea(edges: .bottom)
                 }
 
                 if viewModel.orderStage == .finalizing {

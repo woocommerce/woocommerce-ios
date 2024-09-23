@@ -58,6 +58,13 @@ extension UserDefaults {
 
         // Background Task Refresh
         case latestBackgroundOrderSyncDate
+
+        // Blaze Local notification
+        case blazeNoCampaignReminderOpened
+        case blazeAbandonedCampaignCreationReminderOpened
+
+        // Selected campaign objective saved for future campaigns
+        case blazeSelectedCampaignObjective
     }
 }
 

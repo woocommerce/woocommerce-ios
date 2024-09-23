@@ -216,6 +216,8 @@
 		453305F7245AE68C00264E50 /* SitePostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F6245AE68C00264E50 /* SitePostStore.swift */; };
 		453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305F8245AE6B200264E50 /* SitePostAction.swift */; };
 		453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */; };
+		453954D82C9197BE00A3E64A /* MetaDataAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954D72C9197BE00A3E64A /* MetaDataAction.swift */; };
+		453954DA2C9197C900A3E64A /* MetaDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954D92C9197C900A3E64A /* MetaDataStore.swift */; };
 		4552073D25811B4E001CF873 /* ProductAttributeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */; };
 		455A931D2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */; };
 		45739F372437680F00480C95 /* ProductSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45739F362437680F00480C95 /* ProductSettings.swift */; };
@@ -717,6 +719,8 @@
 		453305F6245AE68C00264E50 /* SitePostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStore.swift; sourceTree = "<group>"; };
 		453305F8245AE6B200264E50 /* SitePostAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostAction.swift; sourceTree = "<group>"; };
 		453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStoreTests.swift; sourceTree = "<group>"; };
+		453954D72C9197BE00A3E64A /* MetaDataAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataAction.swift; sourceTree = "<group>"; };
+		453954D92C9197C900A3E64A /* MetaDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataStore.swift; sourceTree = "<group>"; };
 		4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeStoreTests.swift; sourceTree = "<group>"; };
 		455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+OrdersSettings.swift"; sourceTree = "<group>"; };
 		45739F362437680F00480C95 /* ProductSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSettings.swift; sourceTree = "<group>"; };
@@ -1667,6 +1671,7 @@
 				EEB4E2C829B0489800371C3C /* StoreOnboardingTasksStore.swift */,
 				0286A1B72A0CBDC40099EF94 /* FeatureFlagStore.swift */,
 				DEDA8DAE2B1847C80076BF0F /* WordPressThemeStore.swift */,
+				453954D92C9197C900A3E64A /* MetaDataStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1939,6 +1944,7 @@
 				EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */,
 				0286A1B92A0CBE1B0099EF94 /* FeatureFlagAction.swift */,
 				DEDA8DAC2B1846FF0076BF0F /* WordPressThemeAction.swift */,
+				453954D72C9197BE00A3E64A /* MetaDataAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -2313,6 +2319,7 @@
 				DEA493922B3BD49700EED015 /* BlazeTargetDevice+ReadOnlyConvertible.swift in Sources */,
 				45E462122684C7A400011BF2 /* DataAction.swift in Sources */,
 				247CE83C2582F36800F9D9D1 /* MockOrderActionHandler.swift in Sources */,
+				453954DA2C9197C900A3E64A /* MetaDataStore.swift in Sources */,
 				45E462142684C92D00011BF2 /* DataStore.swift in Sources */,
 				02FF055423D983F30058E6E7 /* MediaExport.swift in Sources */,
 				74643EE1221F567E00EDC51A /* ShipmentAction.swift in Sources */,
@@ -2442,6 +2449,7 @@
 				0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */,
 				DA3F0E152C218AC200B8C2F8 /* BundledProductConfiguration.swift in Sources */,
 				077F39DE26A5A1CB00ABEADC /* SystemStatusAction.swift in Sources */,
+				453954D82C9197BE00A3E64A /* MetaDataAction.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,
 				24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */,

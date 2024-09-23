@@ -15,8 +15,14 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
         $paymentEvent.eraseToAnyPublisher()
     }
 
-    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> {
-        $connectedReader.eraseToAnyPublisher()
+    var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
+        $connectedReader.map { reader -> CardPresentPaymentReaderConnectionStatus in
+            guard let reader else {
+                return .disconnected
+            }
+            return .connected(reader)
+        }
+        .eraseToAnyPublisher()
     }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {

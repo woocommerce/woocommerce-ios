@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-03 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-19 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -4268,6 +4268,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "手动退款";
+
+/* The instruction text below the scan area in the barcode scanner for order tracking number. */
+"ManualTrackingViewController.scanView.instructionText" = "扫描跟踪条形码或二维码";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
+"ManualTrackingViewController.scanView.titleView" = "扫描带有跟踪编号的条形码或二维码";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
@@ -9305,12 +9311,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "开设新商店？";
 
-/* Cell description on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.description" = "试用我们即将发布的销售点";
-
-/* Cell title on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.title" = "销售点";
-
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "发送 Telegram 消息";
 
@@ -9398,9 +9398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that will be displayed after adding a new Blaze payment method */
 "blazeAddPaymentWebView.paymentMethodAddedNotice" = "已添加付款方式";
 
-/* Button to apply the changes on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.apply" = "应用";
-
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "取消";
 
@@ -9413,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "完成";
 
-/* Title label of the Blaze campaign duration field */
-"blazeBudgetSettingView.duration" = "时长";
-
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "编辑";
 
@@ -9424,9 +9418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedTotalImpressions" = "预计总展示次数";
-
-/* Label to explain when no end date is specified for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenDescription" = "活动将持续进行，直到您手动将其停止。";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "预估展示次数失败。 重试？";
@@ -9439,12 +9430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "安排";
-
-/* Switch to enable an end date for a Blaze campaign. */
-"blazeBudgetSettingView.specifyDuration" = "指定时长";
-
-/* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.startDate" = "开始日期";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "设置您的预算";
@@ -9540,9 +9525,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination.empty" = "选择目标 URL";
 
-/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "取消";
-
 /* Error message indicating that loading suggestions for tagline and description failed */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "加载有关标语和描述的建议失败";
 
@@ -9554,6 +9536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "预算";
+
+/* Dismiss button on an error alert on the Blaze campaign creation form */
+"blazeCampaignCreationForm.cancel" = "取消";
+
+/* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
+"blazeCampaignCreationForm.chooseObjective" = "选择广告活动目标";
 
 /* Button to confirm ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.confirmDetails" = "确认详情";
@@ -9582,8 +9570,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "位置";
 
-/* Dismiss button on the alert asking to select a destination URL for the Blaze campaign */
-"blazeCampaignCreationForm.noDestinationURLAlert.cancel" = "取消";
+/* Button on the alert to select an objective for the Blaze campaign */
+"blazeCampaignCreationForm.missingObjectiveAlert.selectObjective" = "选择目标";
+
+/* No comment provided by engineer. */
+"blazeCampaignCreationForm.missingObjectiveAlert.title" = "请为 Blaze 广告活动选择一个目标";
 
 /* Message asking to select a destination URL for the Blaze campaign */
 "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound" = "请为 Blaze 广告活动选择目标 URL";
@@ -9594,11 +9585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the alert to add an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.addImage" = "添加图片";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "取消";
-
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "请为 Blaze 营销活动添加图片";
+
+/* Title of the Campaign objective field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.objective" = "广告活动目标";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "立即购买";
@@ -9683,6 +9674,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "每周";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintSelected" = "已选择";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintUnselected" = "已取消选择";
+
+/* Button to dismiss the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.cancel" = "取消";
+
+/* Error message when data syncing fails on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.errorMessage" = "同步广告活动目标时出错。 请重试。";
+
+/* Title for the explanation of a Blaze campaign objective. */
+"blazeCampaignObjectivePickerView.goodFor" = "适合：";
+
+/* Message on the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.message" = "选择广告活动目标";
+
+/* Button to save the selection on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.save" = "保存";
+
+/* Toggle to save the selection of a Blaze campaign objective for future campaigns. */
+"blazeCampaignObjectivePickerView.saveSelection" = "保存我的选择，以备将来活动使用";
+
+/* Title of the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.title" = "广告活动目标";
+
+/* Button to retry syncing data on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.tryAgain" = "重试";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "广告政策";
@@ -9887,6 +9908,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "所有交易均经过安全加密";
+
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.apply" = "应用";
+
+/* Button to dismiss the Blaze schedule setting screen */
+"blazeScheduleSettingView.cancel" = "取消";
+
+/* Title label of the Blaze campaign duration field */
+"blazeScheduleSettingView.duration" = "时长";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeScheduleSettingView.evergreenDescription" = "活动将持续进行，直到您手动将其停止。";
+
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeScheduleSettingView.schedule" = "安排";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeScheduleSettingView.specifyDuration" = "指定时长";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDate" = "开始日期";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "所有设备";
@@ -10608,9 +10650,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "查看所有广告活动";
 
-/* Title of the view containing Coupons list
-   Title of the view containing Reviews list */
-"hubMenu.coupons" = "评论";
+/* Title of the view containing Coupons list */
+"hubMenu.couponsList" = "优惠券";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "客户";
@@ -10620,6 +10661,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "产品评论";
+
+/* Title of the view containing Reviews list */
+"hubMenu.reviewsList" = "评论";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -10719,6 +10763,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "有限数量基础包装 — 气雾剂、喷雾消毒剂、喷漆、定型喷雾、丙烷、丁烷、清洁产品等 - 芳香剂、指甲油、洗甲水、溶剂、洗手液、擦洗酒精、乙醇基产品等 - 其他有限数量表面物质（化妆品、清洁产品、油漆等）";
+
+/* Message on the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.body" = "立即使用 Blaze Ads 推广您的产品并提高销售额。";
+
+/* Title of the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.title" = "提高您的销售额";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "从您的第一笔交易到赚得数百万收入，Woo 都与您同在。 了解商家为什么信任我们，让我们为 390 万家在线商店提供技术支持。";
@@ -11515,12 +11565,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "仅显示简单产品";
 
-/* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "让我们为客户服务";
-
-/* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "开始";
-
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "如需添加产品，请退出 POS，然后转到“产品”";
 
@@ -11547,9 +11591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "为何看不到我的产品？";
-
-/* Button title for calculate amounts button */
-"pos.totalsView.calculateAmounts" = "计算金额";
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "新订单";
@@ -11766,6 +11807,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "图片不可用，因为您的站点已标记为“私人”。 您可以切换至“即将推出”模式来更改此设置。";
+
+/* Button to dismiss the product image picker screen */
+"productImagePickerView.cancel" = "取消";
+
+/* Title for the empty state of the product image picker screen */
+"productImagePickerView.emptyStateTitle" = "未找到照片";
+
+/* Title of the product image picker screen */
+"productImagePickerView.title" = "照片";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "请等待所有图片上传完成后，再对其进行重新排序。";
@@ -12377,6 +12427,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "周";
+
+/* Title of the button to dismiss the shipping label creation screen */
+"wooShipping.createLabel.cancelButton" = "取消";
+
+/* Title for the screen to create a shipping label */
+"wooShipping.createLabels.title" = "创建配送标签";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 我的商店, 今天, 本周, 本月, 本年, 订单, 访问者, 转化率, 最高转化率, 已销售项目";

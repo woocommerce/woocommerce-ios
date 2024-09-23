@@ -16,9 +16,9 @@ struct BlazeCampaignItemView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            AdaptiveStack(horizontalAlignment: .leading,
-                          verticalAlignment: .center,
-                          spacing: Layout.contentSpacing) {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .center,
+                              spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -54,21 +54,21 @@ struct BlazeCampaignItemView: View {
             }
 
             // campaign stats
-            AdaptiveStack(horizontalAlignment: .leading,
-                          verticalAlignment: .firstTextBaseline) {
+            CollapsibleHStack(horizontalAlignment: .leading,
+                              verticalAlignment: .firstTextBaseline,
+                              spacing: Layout.contentSpacing) {
 
                 Spacer()
-                    .frame(width: Layout.imageSize * scale + Layout.contentSpacing)
+                    .frame(width: Layout.imageSize * scale)
 
                 // campaign total impressions -> clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
                     Text(Localization.clickthroughs)
                         .subheadlineStyle()
-                        .lineLimit(1)
 
-                    (Text("\(campaign.impressions) ").font(.title2).fontWeight(.semibold) +
+                    (Text("\(campaign.humanReadableImpressions) ").font(.title2).fontWeight(.semibold) +
                      Text(Image(systemName: "arrow.forward")) +
-                     Text(" \(campaign.clicks)").font(.title2).fontWeight(.semibold))
+                     Text(" \(campaign.humanReadableClicks)").font(.title2).fontWeight(.semibold))
                         .foregroundStyle(Color(.text))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,8 +137,8 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                        uiStatus: BlazeCampaignListItem.Status.suspended.rawValue,
                                                        imageURL: nil,
                                                        targetUrl: nil,
-                                                       impressions: 112,
-                                                       clicks: 22,
+                                                       impressions: 11200000,
+                                                       clicks: 2200,
                                                        totalBudget: 35,
                                                        spentBudget: 4,
                                                        budgetMode: .total,

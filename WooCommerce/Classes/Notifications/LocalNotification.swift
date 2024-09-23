@@ -19,10 +19,16 @@ struct LocalNotification {
     /// The scenario for the local notification.
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
     enum Scenario {
+        case blazeNoCampaignReminder
+        case blazeAbandonedCampaignCreationReminder
         case unknown(siteID: Int64)
 
         var identifier: String {
             switch self {
+            case .blazeNoCampaignReminder:
+                return "blaze_no_campaign_reminder"
+            case .blazeAbandonedCampaignCreationReminder:
+                return "blaze_abandoned_campaign_reminder"
             case let .unknown(siteID):
                 return "unknown_" + "\(siteID)"
             }
@@ -77,6 +83,12 @@ extension LocalNotification {
         let actions: CategoryActions? = nil
 
         switch scenario {
+        case .blazeNoCampaignReminder:
+            title = Localization.BlazeNoCampaignReminder.title
+            body = String.localizedStringWithFormat(Localization.BlazeNoCampaignReminder.body, name)
+        case .blazeAbandonedCampaignCreationReminder:
+            title = Localization.AbandonedCampaignCreation.title
+            body = String.localizedStringWithFormat(Localization.AbandonedCampaignCreation.body, name)
         case .unknown:
             title = ""
             body = ""
@@ -87,5 +99,34 @@ extension LocalNotification {
                   scenario: scenario,
                   actions: actions,
                   userInfo: userInfo)
+    }
+}
+
+extension LocalNotification {
+    enum Localization {
+        enum BlazeNoCampaignReminder {
+            static let title = NSLocalizedString(
+                "localNotification.BlazeNoCampaignReminder.title",
+                value: "Boost your sales",
+                comment: "Title of the local notification to remind scheduling a Blaze campaign."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.BlazeNoCampaignReminder.body",
+                value: "Promote your products with Blaze Ads and increase your sales now.",
+                comment: "Message on the local notification to remind scheduling a Blaze campaign."
+            )
+        }
+        enum AbandonedCampaignCreation {
+            static let title = NSLocalizedString(
+                "localNotification.AbandonedCampaignCreation.title",
+                value: "Thinking about boosting your sales?",
+                comment: "Title of the local notification to remind to continue the Blaze campaign creation."
+            )
+            static let body = NSLocalizedString(
+                "localNotification.AbandonedCampaignCreation.body",
+                value: "Get your products seen by millions with Blaze and boost your sales",
+                comment: "Message on the local notification to remind to continue the Blaze campaign creation."
+            )
+        }
     }
 }

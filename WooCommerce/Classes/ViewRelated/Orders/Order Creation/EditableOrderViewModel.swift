@@ -936,6 +936,7 @@ final class EditableOrderViewModel: ObservableObject {
             siteID: siteID,
             orderID: order.orderID,
             paymentLink: order.paymentURL,
+            total: order.total,
             formattedTotal: formattedTotal,
             flow: .orderCreation)
 
@@ -2162,17 +2163,18 @@ private extension EditableOrderViewModel {
             return nil
         }
 
-        return .init(addedDiscount: currentDiscount(on: orderItem),
-                     baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
-                     onSaveFormattedDiscount: { [weak self] formattedDiscount in
-                        guard let formattedDiscount = formattedDiscount,
-                              let discount = self?.currencyFormatter.convertToDecimal(formattedDiscount) else {
-                            self?.addDiscountToOrderItem(item: orderItem, discount: 0)
-                            return
-                        }
+        return .init(
+            addedDiscount: currentDiscount(on: orderItem),
+            baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
+            onSave: { [weak self] discount in
+                guard let discount = discount else {
+                    self?.addDiscountToOrderItem(item: orderItem, discount: 0)
+                    return
+                }
 
-                            self?.addDiscountToOrderItem(item: orderItem, discount: discount as Decimal)
-                    })
+                self?.addDiscountToOrderItem(item: orderItem, discount: discount)
+            }
+        )
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total

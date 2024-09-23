@@ -1,0 +1,3 @@
+Dans cette version, nous avons corrigé un problème lié à l’intégration des paiements. La gestion des publicités Blaze a également été améliorée pour une meilleure expérience.
+
+

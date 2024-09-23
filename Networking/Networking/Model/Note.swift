@@ -142,7 +142,6 @@ extension Note {
     }
 }
 
-
 // MARK: - Decodable Conformance
 //
 extension Note: Decodable {
@@ -153,7 +152,7 @@ extension Note: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let noteID = try container.decode(Int64.self, forKey: .noteID)
-        let hash = try container.decode(Int64.self, forKey: .hash)
+        let hash = container.failsafeDecodeIfPresent(Int64.self, forKey: .hash) ?? Int64.min
 
         let read = container.failsafeDecodeIfPresent(booleanForKey: .read) ?? false
         let icon = container.failsafeDecodeIfPresent(String.self, forKey: .icon)
@@ -229,7 +228,18 @@ extension Note {
         case post
         case storeOrder = "store_order"
         case user
+
+        /// Blaze
+        case blazePerformedNote = "blaze_performed_note"
+        case blazeCancelledNote = "blaze_cancelled_note"
+        case blazeRejectedNote = "blaze_rejected_note"
+        case blazeApprovedNote = "blaze_approved_note"
+
         case unknown
+
+        public var isBlaze: Bool {
+            self == .blazePerformedNote || self == .blazeCancelledNote || self == .blazeRejectedNote || self == .blazeApprovedNote
+        }
     }
 
     /// Known Notification Subkind(s)

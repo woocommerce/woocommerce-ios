@@ -1072,7 +1072,8 @@ extension UIImage {
     /// Switching mode image
     ///
     static var switchingModeImage: UIImage {
-        UIImage(systemName: "arrow.left.arrow.right")!
+        let configuration = UIImage.SymbolConfiguration(weight: .light)
+        return UIImage(systemName: "arrow.left.arrow.right", withConfiguration: configuration)!
     }
 
     /// Plus Icon

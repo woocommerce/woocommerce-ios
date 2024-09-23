@@ -1,4 +1,3 @@
-Nesta versão, os anúncios do Blaze passam a ser compatíveis com campanhas contínuas. Corrigimos alguns bugs na edição de produtos, principalmente quanto aos preços, e agora preços negativos são aceitos!
+Nesta versão, corrigimos um problema relacionado à integração de pagamentos. Para uma experiência melhor, o gerenciamento de anúncios do Blaze também foi melhorado.
 
-Corrigimos um problema no uso do menu com VoiceOver e tecnologia assistiva, além de alguns bugs que faziam os títulos desaparecerem e os botões pararem de funcionar.
 

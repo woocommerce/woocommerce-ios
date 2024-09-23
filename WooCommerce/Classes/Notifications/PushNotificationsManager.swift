@@ -505,7 +505,7 @@ private extension PushNotificationsManager {
     ///
     /// - Parameter notification: Push notification content from a remote notification.
     @MainActor
-    func handleInactiveRemoteNotification(notification: PushNotification) async {
+    func handleInactiveRemoteNotification(notification: WooCommerce.PushNotification) async {
         guard applicationState == .inactive else {
             return
         }
@@ -531,7 +531,7 @@ private extension PushNotificationsManager {
 private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
         if notification.kind != .comment {
-            configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+            configuration.application.presentNotificationDetails(notification: notification)
         }
     }
 }

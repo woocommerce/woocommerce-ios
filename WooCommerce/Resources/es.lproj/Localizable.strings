@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-03 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-19 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -4268,6 +4268,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. */
 "Manual Refund" = "Reembolso manual";
+
+/* The instruction text below the scan area in the barcode scanner for order tracking number. */
+"ManualTrackingViewController.scanView.instructionText" = "Escanear código de barras o código QR de seguimiento";
+
+/* Navigation bar title for scanning a barcode or QR Code to use as an order tracking number. */
+"ManualTrackingViewController.scanView.titleView" = "Escanear código de barras o código QR con número de seguimiento";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Dominio mapeado";
@@ -9305,12 +9311,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "¿Deseas crear una nueva tienda?";
 
-/* Cell description on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.description" = "Prueba la función de punto de venta mientras preparamos todo para lanzarla";
-
-/* Cell title on beta features screen to enable the Point Of Sale feature */
-"betaFeature.pointOfSale.title" = "Punto de venta";
-
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Enviar mensaje de Telegram";
 
@@ -9398,9 +9398,6 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that will be displayed after adding a new Blaze payment method */
 "blazeAddPaymentWebView.paymentMethodAddedNotice" = "Método de pago añadido";
 
-/* Button to apply the changes on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.apply" = "Aplicar";
-
 /* Button to dismiss the Blaze budget setting screen */
 "blazeBudgetSettingView.cancel" = "Cancelar";
 
@@ -9413,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze impression info screen */
 "blazeBudgetSettingView.done" = "Hecho";
 
-/* Title label of the Blaze campaign duration field */
-"blazeBudgetSettingView.duration" = "Duración";
-
 /* Button to edit the campaign duration on the Blaze budget setting screen */
 "blazeBudgetSettingView.edit" = "Editar";
 
@@ -9424,9 +9418,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the estimated impressions on the Blaze budget setting screen */
 "blazeBudgetSettingView.estimatedTotalImpressions" = "Total de impresiones estimadas";
-
-/* Label to explain when no end date is specified for a Blaze campaign. */
-"blazeBudgetSettingView.evergreenDescription" = "La campaña continuará hasta que la detengas.";
 
 /* Button to retry fetching estimated impressions on the Blaze campaign duration setting screen */
 "blazeBudgetSettingView.forecastingFailed" = "No se han podido estimar las impresiones. ¿Reintentar?";
@@ -9439,12 +9430,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "Programar";
-
-/* Switch to enable an end date for a Blaze campaign. */
-"blazeBudgetSettingView.specifyDuration" = "Especificar la duración";
-
-/* Label of the start date picker on the Blaze campaign duration setting screen */
-"blazeBudgetSettingView.startDate" = "Fecha de inicio";
 
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Fija tu presupuesto";
@@ -9540,9 +9525,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination.empty" = "Elegir URL de destino";
 
-/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Cancelar";
-
 /* Error message indicating that loading suggestions for tagline and description failed */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "No se han podido cargar las sugerencias para la descripción corta y la descripción.";
 
@@ -9554,6 +9536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Presupuesto";
+
+/* Dismiss button on an error alert on the Blaze campaign creation form */
+"blazeCampaignCreationForm.cancel" = "Cancelar";
+
+/* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
+"blazeCampaignCreationForm.chooseObjective" = "Elegir objetivo de la campaña";
 
 /* Button to confirm ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.confirmDetails" = "Confirmar detalles";
@@ -9582,8 +9570,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Ubicación";
 
-/* Dismiss button on the alert asking to select a destination URL for the Blaze campaign */
-"blazeCampaignCreationForm.noDestinationURLAlert.cancel" = "Cancelar";
+/* Button on the alert to select an objective for the Blaze campaign */
+"blazeCampaignCreationForm.missingObjectiveAlert.selectObjective" = "Elegir objetivo";
+
+/* No comment provided by engineer. */
+"blazeCampaignCreationForm.missingObjectiveAlert.title" = "Elige un objetivo para la campaña de Blaze";
 
 /* Message asking to select a destination URL for the Blaze campaign */
 "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound" = "Elige una URL de destino para la campaña de Blaze";
@@ -9594,11 +9585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button on the alert to add an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Añadir imagen";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Cancelar";
-
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Añade una imagen para la campaña Blaze";
+
+/* Title of the Campaign objective field on the Blaze campaign creation screen */
+"blazeCampaignCreationForm.objective" = "Objetivo de la campaña";
 
 /* Button to shop on the Blaze ad preview */
 "blazeCampaignCreationForm.shopNow" = "Comprar ahora";
@@ -9683,6 +9674,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Semanal";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Seleccionado";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintUnselected" = "Sin seleccionar";
+
+/* Button to dismiss the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.cancel" = "Cancelar";
+
+/* Error message when data syncing fails on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.errorMessage" = "Error al sincronizar los objetivos de la campaña. Inténtalo de nuevo.";
+
+/* Title for the explanation of a Blaze campaign objective. */
+"blazeCampaignObjectivePickerView.goodFor" = "Ideal para:";
+
+/* Message on the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.message" = "Elegir objetivo de la campaña";
+
+/* Button to save the selection on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.save" = "Guardar";
+
+/* Toggle to save the selection of a Blaze campaign objective for future campaigns. */
+"blazeCampaignObjectivePickerView.saveSelection" = "Guardar mi selección para futuras campañas";
+
+/* Title of the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.title" = "Objetivo de la campaña";
+
+/* Button to retry syncing data on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.tryAgain" = "Intentar de nuevo";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Política de publicidad";
@@ -9887,6 +9908,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text to explain that transactions will be secure in Payment Method screen */
 "blazePaymentMethodsView.transactionsSecure" = "Todas las transacciones son seguras y están cifradas";
+
+/* Button to apply the changes on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.apply" = "Aplicar";
+
+/* Button to dismiss the Blaze schedule setting screen */
+"blazeScheduleSettingView.cancel" = "Cancelar";
+
+/* Title label of the Blaze campaign duration field */
+"blazeScheduleSettingView.duration" = "Duración";
+
+/* Label to explain when no end date is specified for a Blaze campaign. */
+"blazeScheduleSettingView.evergreenDescription" = "La campaña continuará hasta que la detengas.";
+
+/* Label for the campaign schedule on the Blaze budget setting screen */
+"blazeScheduleSettingView.schedule" = "Programar";
+
+/* Switch to enable an end date for a Blaze campaign. */
+"blazeScheduleSettingView.specifyDuration" = "Especificar la duración";
+
+/* Label of the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDate" = "Fecha de inicio";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "Todos los dispositivos";
@@ -10608,9 +10650,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Ver todas las campañas";
 
-/* Title of the view containing Coupons list
-   Title of the view containing Reviews list */
-"hubMenu.coupons" = "Reseñas";
+/* Title of the view containing Coupons list */
+"hubMenu.couponsList" = "Cupones";
 
 /* Title of one of the hub menu options */
 "hubMenu.customers" = "Clientes";
@@ -10620,6 +10661,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Reseña de producto";
+
+/* Title of the view containing Reviews list */
+"hubMenu.reviewsList" = "Reseñas";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google para WooCommerce";
@@ -10719,6 +10763,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paquete de transporte terrestre con cantidad limitada: aerosoles, desinfectantes en pulverizador, pintura en pulverizador, productos capilares en pulverizador, propano, butano, productos de limpieza, etc. - Fragancias, esmalte de uñas, quitaesmalte, disolventes, desinfectante de manos, alcohol isopropílico, productos con base de etanol, etc. - Otros materiales de transporte terrestre con cantidad limitada (cosméticos, productos de limpieza, pinturas, etc.).";
+
+/* Message on the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.body" = "Promociona tus productos con Blaze Ads y aumenta tus ventas ahora.";
+
+/* Title of the local notification to remind scheduling a Blaze campaign. */
+"localNotification.BlazeNoCampaignReminder.title" = "Aumenta tus ventas";
 
 /* Subtitle displayed in the simplified prologue screen */
 "loginProloguePageType.getStartedText" = "WooCommerce te acompaña desde tu primera venta hasta que alcances ingresos millonarios. Descubre por qué los vendedores de 3,9 millones de tiendas online confían en nosotros.";
@@ -11515,12 +11565,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Mostrar solo productos sencillos";
 
-/* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "Atendamos a algunos clientes";
-
-/* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "Puesta en marcha";
-
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Para añadir uno, sal del punto de venta y ve a Productos";
 
@@ -11547,9 +11591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "¿Por qué no puedo ver mis productos?";
-
-/* Button title for calculate amounts button */
-"pos.totalsView.calculateAmounts" = "Calcular importes";
 
 /* Button title for new order button */
 "pos.totalsView.newOrder" = "Nuevo pedido";
@@ -11766,6 +11807,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Las imágenes no están disponibles porque tu sitio está marcado como privado. Puedes modificar este ajuste cambiando al modo Próximamente.";
+
+/* Button to dismiss the product image picker screen */
+"productImagePickerView.cancel" = "Cancelar";
+
+/* Title for the empty state of the product image picker screen */
+"productImagePickerView.emptyStateTitle" = "No se han encontrado fotos";
+
+/* Title of the product image picker screen */
+"productImagePickerView.title" = "Fotos";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Espera hasta que se terminen todas las actualizaciones para reordenar imágenes.";
@@ -12377,6 +12427,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Semanas";
+
+/* Title of the button to dismiss the shipping label creation screen */
+"wooShipping.createLabel.cancelButton" = "Cancelar";
+
+/* Title for the screen to create a shipping label */
+"wooShipping.createLabels.title" = "Crear etiquetas de envío";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mi tienda, hoy, esta semana, este mes, este año, pedidos, visitantes, conversión, conversión principal, artículos vendidos";

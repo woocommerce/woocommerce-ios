@@ -177,6 +177,7 @@ final class OrderDetailsViewModel {
         return PaymentMethodsViewModel(siteID: order.siteID,
                                        orderID: order.orderID,
                                        paymentLink: order.paymentURL,
+                                       total: order.total,
                                        formattedTotal: formattedTotal,
                                        flow: .orderPayment)
     }

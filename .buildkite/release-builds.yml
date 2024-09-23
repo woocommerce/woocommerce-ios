@@ -1,24 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
 # This pipeline is meant to be run via the Buildkite API, and is only used for release builds
 
-# Nodes with values to reuse in the pipeline.
-common_params:
-  # Common plugin settings to use with the `plugins` key.
-  - &common_plugins
-    - automattic/a8c-ci-toolkit#3.0.1
-  # Common environment values to use with the `env` key.
-  - &common_env
-    # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
-    IMAGE_ID: xcode-15.4
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
 
 steps:
-
-  - label: "🛠 Release Build (App Store Connect)"
-    command: ".buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}"
+  - label: ":hammer_and_wrench: Release Build (App Store Connect)"
+    command: .buildkite/commands/release-build.sh ${BUILDKITE_BETA_RELEASE}
     priority: 1
-    env: *common_env
-    plugins: *common_plugins
+    plugins: [$CI_TOOLKIT]
     notify:
-    - slack: "#build-and-ship"
+      - slack: "#build-and-ship"
     retry:
       manual:
         # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite

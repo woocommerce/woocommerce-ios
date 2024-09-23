@@ -133,7 +133,10 @@ struct CustomFieldEditorView: View {
     }
 
     private func checkForModifications() {
-        hasUnsavedChanges = key != initialKey || value != initialValue
+        DispatchQueue.main.async {
+            hasUnsavedChanges = key != initialKey || value != initialValue
+        }
+
     }
 
     private func saveChanges() {

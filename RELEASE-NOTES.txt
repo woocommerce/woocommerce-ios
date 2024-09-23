@@ -6,6 +6,7 @@
 - [*] Jetpack setup: fixed issue checking site info after activating Jetpack for sites with Jetpack connection package. [https://github.com/woocommerce/woocommerce-ios/pull/13993]
 - [*] Blaze: Campaign status is now updated immediately after being canceled. [https://github.com/woocommerce/woocommerce-ios/pull/13992]
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
+- [*] Payments: Fixed a bug preventing payments onboarding from being automatically hidden when complete [https://github.com/woocommerce/woocommerce-ios/pull/14017]
 
 20.5
 -----

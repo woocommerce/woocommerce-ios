@@ -61,7 +61,11 @@ struct CustomFieldEditorView: View {
                         .pickerStyle(.segmented)
                     }
                     if showRichTextEditor {
-                        AztecEditorView(value: $value)
+                        AztecEditorView(value: $value,
+                                        onContentChanged: { content in
+                            value = content
+                            checkForModifications()
+                        })
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
                         .padding(insets: Layout.inputInsets)

@@ -200,6 +200,15 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    func didDismissSelectedCampaign() {
+        /// re-sync the updated details about the selected campaign from remote
+        /// in case the campaign has been canceled on the web page.
+        refreshSelectedCampaign()
+    }
+}
+
+// MARK: - Blaze campaigns
+private extension BlazeCampaignDashboardViewModel {
     func refreshSelectedCampaign() {
         guard let selectedCampaignID else {
             return
@@ -210,10 +219,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
             }
         })
     }
-}
 
-// MARK: - Blaze campaigns
-private extension BlazeCampaignDashboardViewModel {
     func checkSiteEligibility() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false

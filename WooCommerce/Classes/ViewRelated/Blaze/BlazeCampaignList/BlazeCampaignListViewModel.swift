@@ -126,15 +126,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
         loadCampaigns()
     }
 
-    func refreshSelectedCampaign() {
-        guard let selectedCampaignID else {
-            return
-        }
-        stores.dispatch(BlazeAction.synchronizeCampaign(campaignID: selectedCampaignID, siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Error syncing details for Blaze campaign: \(error)")
-            }
-        })
+    func didDismissSelectedCampaign() {
+        /// re-sync the updated details about the selected campaign from remote
+        /// in case the campaign has been canceled on the web page.
+        refreshSelectedCampaign()
     }
 }
 
@@ -181,6 +176,17 @@ private extension BlazeCampaignListViewModel {
         kind.forEach { kind in
             pushNotesManager.resetBadgeCount(type: kind)
         }
+    }
+
+    func refreshSelectedCampaign() {
+        guard let selectedCampaignID else {
+            return
+        }
+        stores.dispatch(BlazeAction.synchronizeCampaign(campaignID: selectedCampaignID, siteID: siteID) { result in
+            if case let .failure(error) = result {
+                DDLogError("⛔️ Error syncing details for Blaze campaign: \(error)")
+            }
+        })
     }
 }
 

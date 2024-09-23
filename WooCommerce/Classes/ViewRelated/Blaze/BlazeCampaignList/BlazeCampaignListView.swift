@@ -151,7 +151,7 @@ struct BlazeCampaignListView: View {
             viewModel.onViewAppear()
         }
         .sheet(item: $viewModel.selectedCampaignURL, onDismiss: {
-            viewModel.refreshSelectedCampaign()
+            viewModel.didDismissSelectedCampaign()
         }) { url in
             detailView(url: url)
         }

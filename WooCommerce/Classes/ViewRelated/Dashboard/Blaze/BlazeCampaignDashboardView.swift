@@ -137,7 +137,9 @@ struct BlazeCampaignDashboardView: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
-        .sheet(item: $viewModel.selectedCampaignURL) { url in
+        .sheet(item: $viewModel.selectedCampaignURL, onDismiss: {
+            viewModel.didDismissSelectedCampaign()
+        }) { url in
             campaignDetailView(url: url)
         }
     }

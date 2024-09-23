@@ -13,18 +13,7 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
     }
 
-    func test_it_inits_with_expected_order_items() {
-        // Given
-        let order = Order.fake().copy(items: [OrderItem.fake(), OrderItem.fake()])
-
-        // When
-        let dataSource = DefaultWooShippingItemsDataSource(order: order)
-
-        // Then
-        assertEqual(2, dataSource.orderItems.count)
-    }
-
-    func test_it_inits_with_expected_stored_products_and_variations() {
+    func test_it_inits_with_expected_items_from_storage() {
         // Given
         let product = Product.fake().copy(productID: 11)
         let variation = ProductVariation.fake().copy(productVariationID: 12)
@@ -37,11 +26,10 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
         let dataSource = DefaultWooShippingItemsDataSource(order: order, storageManager: storageManager)
 
         // Then
-        assertEqual(1, dataSource.products.count)
-        assertEqual(1, dataSource.productVariations.count)
+        assertEqual(2, dataSource.items.count)
     }
 
-    func test_it_inits_with_expected_products_and_variations_from_remote() {
+    func test_it_inits_with_expected_items_from_remote() {
         // Given
         let product = Product.fake().copy(productID: 13)
         let variation = ProductVariation.fake().copy(productVariationID: 14)
@@ -69,8 +57,7 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
         let dataSource = DefaultWooShippingItemsDataSource(order: order, storageManager: storageManager, stores: stores)
 
         // Then
-        assertEqual(1, dataSource.products.count)
-        assertEqual(1, dataSource.productVariations.count)
+        assertEqual(2, dataSource.items.count)
     }
 
 }

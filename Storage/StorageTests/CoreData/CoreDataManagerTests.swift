@@ -65,7 +65,7 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertNotNil(viewContext)
         XCTAssertNotNil(derivedContext)
         XCTAssertNotEqual(derivedContext, viewContext)
-        XCTAssertEqual(derivedContext?.parent, viewContext)
+        XCTAssertNil(derivedContext?.parent)
     }
 
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
@@ -84,7 +84,7 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
     }
 
-    func test_saving_derived_storage_while_resetting_CoreData_still_saves_data() throws {
+    func test_saving_derived_storage_while_resetting_CoreData_does_not_save_data() throws {
         // Arrange
         let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         manager.reset()
@@ -97,6 +97,7 @@ final class CoreDataManagerTests: XCTestCase {
                 _ = derivedContext.insertNewObject(ofType: ShippingLine.self)
             }
             manager.saveDerivedType(derivedStorage: derivedContext, {
+                XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
                 expectation.fulfill()
             })
             manager.reset()
@@ -104,7 +105,7 @@ final class CoreDataManagerTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
     }
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {

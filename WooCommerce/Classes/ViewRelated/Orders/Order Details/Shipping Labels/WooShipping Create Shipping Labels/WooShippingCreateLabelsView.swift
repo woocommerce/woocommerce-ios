@@ -26,8 +26,10 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 WooShippingItems(viewModel: viewModel.items)
-                    .padding()
+
+                WooShippingHazmat()
             }
+            .padding()
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

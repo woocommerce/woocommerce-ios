@@ -88,7 +88,9 @@ struct MarkOrderAsReadUseCase {
 
         switch loadedNotes {
         case .success(let notes):
-            guard let note = notes.first else {
+            guard let note = notes.first(where: { goalNote in
+                return goalNote.noteID == noteID
+            }) else {
                 return .failure(MarkOrderAsReadUseCase.Error.unavailableNote)
             }
             guard let syncronizedNoteOrderID = note.meta.identifier(forKey: .order),

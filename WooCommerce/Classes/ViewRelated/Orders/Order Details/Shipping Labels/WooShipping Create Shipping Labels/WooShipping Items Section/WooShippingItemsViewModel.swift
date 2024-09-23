@@ -62,10 +62,7 @@ private extension WooShippingItemsViewModel {
     ///
     func generateItemsDetailLabel() -> String {
         let formattedWeight = formatWeight(for: dataSource.items)
-
-        let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
-        let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
-
+        let formattedPrice = formatPrice(for: dataSource.items)
         return "\(formattedWeight) • \(formattedPrice)"
     }
 
@@ -143,6 +140,14 @@ private extension WooShippingItemsViewModel {
         }()
         let quantity = Double(truncating: item.quantity as NSDecimalNumber)
         return itemWeight * quantity
+    }
+
+    /// Calculates and formats the price of the given item based on the item quantity and unit price.
+    ///
+    func formatPrice(for items: [ShippingLabelPackageItem]) -> String {
+        let totalPrice = items.map { Decimal($0.value) * $0.quantity }.reduce(0, +)
+        let formattedPrice = currencyFormatter.formatAmount(totalPrice)
+        return formattedPrice ?? totalPrice.description
     }
 
     /// Calculates and formats the price of the given item based on the item quantity and unit price.

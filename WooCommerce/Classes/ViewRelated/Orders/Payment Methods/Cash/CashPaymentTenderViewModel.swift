@@ -44,7 +44,7 @@ final class CashPaymentTenderViewModel: ObservableObject {
         self.onOrderPaid = onOrderPaid
         self.analytics = analytics
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        formattableAmountViewModel.presetAmount(formattedTotal)
+        formattableAmountViewModel.presetAmount(currencyFormatter.convertToDecimal(total)?.decimalValue ?? 0)
         observeFormattableAmountForUIStates()
     }
 

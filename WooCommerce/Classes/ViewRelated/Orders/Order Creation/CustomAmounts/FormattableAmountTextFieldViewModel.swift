@@ -22,14 +22,6 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     private var resetAmountWithNewValue = false
 
-    var amountIsValid: Bool {
-        guard let amountDecimal = priceFieldFormatter.amountDecimal else {
-            return false
-        }
-
-        return allowNegativeNumber ? true : amountDecimal > .zero
-    }
-
     /// Formatted amount to display. When empty displays a placeholder value.
     ///
     var formattedAmount: String {
@@ -65,9 +57,9 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         amount = ""
     }
 
-    func presetAmount(_ newAmount: String) {
+    func presetAmount(_ newAmount: Decimal) {
         resetAmountWithNewValue = false
-        updateAmount(newAmount)
+        amount = priceFieldFormatter.formatAmount(newAmount)
         resetAmountWithNewValue = true
     }
 
@@ -76,12 +68,12 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
         if resetAmountWithNewValue,
             let newInput = newAmount.last {
-            amount = priceFieldFormatter.formatAmount(String(newInput))
+            amount = priceFieldFormatter.formatUserInput(String(newInput))
             resetAmountWithNewValue = false
             return
         }
 
-        amount = priceFieldFormatter.formatAmount(newAmount)
+        amount = priceFieldFormatter.formatUserInput(newAmount)
     }
 }
 

@@ -46,7 +46,7 @@ private extension WooShippingItemsViewModel {
     ///
     func configureItemRows() {
         itemRows = dataSource.items.map { item in
-            WooShippingItemRowViewModel(item: item, shippingSettingsService: shippingSettingsService, currencySettings: currencySettings)
+            WooShippingItemRowViewModel(item: item)
         }
     }
 

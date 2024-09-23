@@ -6,9 +6,6 @@ import protocol Storage.StorageManagerType
 ///
 protocol WooShippingItemsDataSource {
     var items: [ShippingLabelPackageItem] { get }
-    var orderItems: [OrderItem] { get }
-    var products: [Product] { get }
-    var productVariations: [ProductVariation] { get }
 }
 
 final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
@@ -24,20 +21,20 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
 
     /// Items in the order.
     ///
-    var orderItems: [OrderItem] {
+    private var orderItems: [OrderItem] {
         order.items
     }
 
     /// Stored products that match the items in the order.
     ///
-    var products: [Product] {
+    private var products: [Product] {
         try? productResultsController.performFetch()
         return productResultsController.fetchedObjects
     }
 
     /// Stored product variations that match the items in the order.
     ///
-    var productVariations: [ProductVariation] {
+    private var productVariations: [ProductVariation] {
         try? productVariationResultsController.performFetch()
         return productVariationResultsController.fetchedObjects
     }

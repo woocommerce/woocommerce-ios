@@ -15,11 +15,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_inits_with_expected_values() throws {
         // Given
-        let product = Product.fake().copy(productID: 1, weight: "4")
-        let productVariation = ProductVariation.fake().copy(productVariationID: 2, weight: "3")
-        let orderItems = [OrderItem.fake().copy(productID: product.productID, quantity: 1, price: 10),
-                          OrderItem.fake().copy(variationID: productVariation.productVariationID, quantity: 1, price: 2.5)]
-        let dataSource = MockDataSource(orderItems: orderItems, products: [product], productVariations: [productVariation])
+        let items = [sampleItem(id: 1, weight: 4, value: 10, quantity: 1),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let dataSource = MockDataSource(items: items)
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
@@ -34,9 +32,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_total_items_count_handles_items_with_quantity_greater_than_one() {
         // Given
-        let products = [Product.fake().copy(productID: 1), Product.fake().copy(productID: 2)]
-        let orderItems = [OrderItem.fake().copy(productID: 1, quantity: 2), OrderItem.fake().copy(productID: 2, quantity: 1)]
-        let dataSource = MockDataSource(orderItems: orderItems, products: products)
+        let items = [sampleItem(id: 1, weight: 1, value: 1, quantity: 1),
+                     sampleItem(id: 2, weight: 1, value: 1, quantity: 2)]
+        let dataSource = MockDataSource(items: items)
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)
@@ -47,12 +45,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_total_items_details_handles_items_with_quantity_greater_than_one() {
         // Given
-        let dimensions = ProductDimensions(length: "20", width: "35", height: "5")
-        let product = Product.fake().copy(productID: 1, weight: "5", dimensions: dimensions)
-        let variation = ProductVariation.fake().copy(productID: 2, productVariationID: 12, weight: "3", dimensions: dimensions)
-        let orderItems = [OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 10),
-                          OrderItem.fake().copy(productID: variation.productID, variationID: variation.productVariationID, quantity: 1, price: 2.5)]
-        let dataSource = MockDataSource(orderItems: orderItems, products: [product], productVariations: [variation])
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+        let dataSource = MockDataSource(items: items)
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
@@ -65,21 +60,23 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
 }
 
+private extension WooShippingItemsViewModelTests {
+    func sampleItem(id: Int64, weight: Double, value: Double, quantity: Decimal) -> ShippingLabelPackageItem {
+        ShippingLabelPackageItem(productOrVariationID: id,
+                                 name: "Item",
+                                 weight: weight,
+                                 quantity: quantity,
+                                 value: value,
+                                 dimensions: ProductDimensions(length: "20", width: "35", height: "5"),
+                                 attributes: [],
+                                 imageURL: nil)
+    }
+}
+
 private final class MockDataSource: WooShippingItemsDataSource {
     var items: [ShippingLabelPackageItem]
 
-    var orderItems: [OrderItem]
-
-    var products: [Product]
-
-    var productVariations: [ProductVariation]
-
-    init(orderItems: [OrderItem] = [],
-         products: [Product] = [],
-         productVariations: [ProductVariation] = []) {
-        self.orderItems = orderItems
-        self.products = products
-        self.productVariations = productVariations
-        self.items = orderItems.compactMap { ShippingLabelPackageItem(orderItem: $0, products: products, productVariations: productVariations)}
+    init(items: [ShippingLabelPackageItem]) {
+        self.items = items
     }
 }

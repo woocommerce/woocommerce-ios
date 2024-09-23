@@ -60,6 +60,8 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public var viewStorage: StorageType {
         let context = persistentContainer.viewContext
+        /// This simplifies the process of merging updates from persistent container to view context.
+        /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
         context.automaticallyMergesChangesFromParent = true
         return context
     }

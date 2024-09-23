@@ -1,17 +1,17 @@
 import SwiftUI
 
 /// `UIViewControllerRepresentable` to use an Aztec Editor in SwiftUI.
-/// This view needs to be wrapped inside a parent View that manages its states and toolbar as needed.
+/// It can be used as-is, or be wrapped inside a parent View that manages its states and toolbar as needed.
 /// Params:
-/// - value: Binding to the content of the editor.
-/// - viewController: To get the content of the editor, the parent View can pass this and then call `getLatestContent()`
+/// - initialValue: Initial value in the editor
+/// - onContentChanged: callback to to be called when the content is changed.
 ///
 struct AztecEditorView: UIViewControllerRepresentable {
-    @Binding var value: String
+    let initialValue: String
     let onContentChanged: (String) -> Void
 
     func makeUIViewController(context: Context) -> AztecEditorViewController {
-        let controller = EditorFactory().customFieldRichTextEditor(initialValue: value)
+        let controller = EditorFactory().customFieldRichTextEditor(initialValue: initialValue)
 
         guard let aztecController = controller as? AztecEditorViewController else {
             fatalError("EditorFactory must return an AztecEditorViewController, but returned \(type(of: controller))")

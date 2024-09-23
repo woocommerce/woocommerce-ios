@@ -66,7 +66,7 @@ struct CustomFieldEditorView: View {
                     }
 
                     if showRichTextEditor {
-                        AztecEditorView(value: $value,
+                        AztecEditorView(initialValue: value,
                                         onContentChanged: { content in
                             DispatchQueue.main.async {
                                 value = content

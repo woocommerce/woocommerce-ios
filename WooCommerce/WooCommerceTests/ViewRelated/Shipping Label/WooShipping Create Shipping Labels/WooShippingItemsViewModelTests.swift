@@ -15,12 +15,16 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_inits_with_expected_values_from_order_items() throws {
         // Given
+        let dimensions = ProductDimensions(length: "20", width: "35", height: "5")
+        let products = [Product.fake().copy(productID: 1)]
+        let productVariations = [ProductVariation.fake().copy(productVariationID: 2, dimensions: dimensions)]
         let orderItems = [OrderItem.fake().copy(name: "Shirt",
+                                                variationID: 2,
                                                 quantity: 1,
                                                 price: 10,
                                                 attributes: [OrderItemAttribute.fake().copy(value: "Red")]),
-                          OrderItem.fake().copy(quantity: 1, price: 2.5)]
-        let dataSource = MockDataSource(orderItems: orderItems)
+                          OrderItem.fake().copy(productID: 1, quantity: 1, price: 2.5)]
+        let dataSource = MockDataSource(orderItems: orderItems, products: products, productVariations: productVariations)
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource,
@@ -38,7 +42,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         assertEqual("Shirt", firstItem.name)
         assertEqual("1", firstItem.quantityLabel)
         assertEqual("$10.00", firstItem.priceLabel)
-        assertEqual("Red", firstItem.detailsLabel)
+        assertEqual("20 x 35 x 5 in • Red", firstItem.detailsLabel)
     }
 
     func test_populates_item_data_from_products_and_variations() {
@@ -75,8 +79,9 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_total_items_count_handles_items_with_quantity_greater_than_one() {
         // Given
-        let orderItems = [OrderItem.fake().copy(quantity: 2), OrderItem.fake().copy(quantity: 1)]
-        let dataSource = MockDataSource(orderItems: orderItems)
+        let products = [Product.fake().copy(productID: 1), Product.fake().copy(productID: 2)]
+        let orderItems = [OrderItem.fake().copy(productID: 1, quantity: 2), OrderItem.fake().copy(productID: 2, quantity: 1)]
+        let dataSource = MockDataSource(orderItems: orderItems, products: products)
 
         // When
         let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)

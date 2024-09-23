@@ -53,7 +53,7 @@ private extension WooShippingItemsViewModel {
     /// Generates a label with the total number of items to ship.
     ///
     func generateItemsCountLabel() -> String {
-        let itemsCount = dataSource.orderItems.map(\.quantity).reduce(0, +)
+        let itemsCount = dataSource.items.map(\.quantity).reduce(0, +)
         return Localization.itemsCount(itemsCount)
     }
 

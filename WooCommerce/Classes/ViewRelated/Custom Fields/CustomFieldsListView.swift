@@ -43,7 +43,7 @@ struct CustomFieldsListView: View {
                         Button(action: {
                             presentationMode.wrappedValue.dismiss()
                         }, label: {
-                            Text(Localization.cancel)
+                            Image(uiImage: .closeButton)
                         })
                     }
                 }
@@ -127,11 +127,6 @@ private struct CustomFieldRow: View {
 extension CustomFieldsListView {
     enum Localization {
         static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
-        static let cancel = NSLocalizedString(
-            "customFieldsListView.cancel",
-            value: "Cancel",
-            comment: "Button to dismiss the Custom List View"
-        )
     }
 }
 

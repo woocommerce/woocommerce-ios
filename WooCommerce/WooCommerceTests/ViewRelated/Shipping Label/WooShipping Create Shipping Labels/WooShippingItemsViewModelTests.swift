@@ -110,16 +110,19 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
     func test_item_row_details_label_handles_items_with_multiple_attributes() throws {
         // Given
-        let orderItems = [OrderItem.fake().copy(attributes: [OrderItemAttribute.fake().copy(value: "Red"),
+        let dimensions = ProductDimensions(length: "20", width: "35", height: "5")
+        let productVariation = ProductVariation.fake().copy(productVariationID: 1, dimensions: dimensions)
+        let orderItems = [OrderItem.fake().copy(variationID: productVariation.productVariationID,
+                                                attributes: [OrderItemAttribute.fake().copy(value: "Red"),
                                                              OrderItemAttribute.fake().copy(value: "Small")])]
-        let dataSource = MockDataSource(orderItems: orderItems)
+        let dataSource = MockDataSource(orderItems: orderItems, productVariations: [productVariation])
 
         // When
-        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings, shippingSettingsService: shippingSettingsService)
 
         // Then
         let firstItem = try XCTUnwrap(viewModel.itemRows.first)
-        assertEqual("Red, Small", firstItem.detailsLabel)
+        assertEqual("20 x 35 x 5 in • Red, Small", firstItem.detailsLabel)
     }
 
     func test_item_rows_handle_items_with_quantity_greater_than_one() throws {

@@ -75,6 +75,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
     /// Starts observing campaigns from storage and schedules no campaign local notification
     ///
+    @MainActor
     func scheduleNoCampaignReminder() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")

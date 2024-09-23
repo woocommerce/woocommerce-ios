@@ -4,8 +4,14 @@ import Combine
 
 protocol BlazeLocalNotificationScheduler {
     func observeNotificationUserResponse()
+
+    @MainActor
     func scheduleNoCampaignReminder() async
+
+    @MainActor
     func scheduleAbandonedCreationReminder() async
+
+    @MainActor
     func cancelAbandonedCreationReminder() async
 }
 
@@ -75,7 +81,6 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
     /// Starts observing campaigns from storage and schedules no campaign local notification
     ///
-    @MainActor
     func scheduleNoCampaignReminder() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule local notification.")
@@ -88,7 +93,6 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
     /// Schedules abandoned Blaze campaign creation local notification if applicable
     ///
-    @MainActor
     func scheduleAbandonedCreationReminder() async {
         guard await isEligibleForBlaze() else {
             DDLogDebug("Blaze: Store not eligible for Blaze. Don't schedule abandoned campaign creation local notification.")
@@ -119,7 +123,6 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 
     /// Cancels abandoned Blaze campaign creation local notification
     ///
-    @MainActor
     func cancelAbandonedCreationReminder() async {
         await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
     }

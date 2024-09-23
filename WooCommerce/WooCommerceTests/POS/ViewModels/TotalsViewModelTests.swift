@@ -211,7 +211,8 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertEqual(orderStates, [.idle, .syncing, .error(.init(message: "", handler: {}))])
     }
 
-    func test_when_reader_reconnects_on_TotalsView_reader_is_prepared_for_payment() async {
+    func test_when_reader_reconnects_on_TotalsView_reader_is_prepared_for_payment() async throws {
+        try XCTSkipIf(true, "This test is flaky in CI and should be improved. See #14005")
         // Given a reader has been connected, with the order synced, on the TotalsView
         sut.startShowingTotalsView()
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)

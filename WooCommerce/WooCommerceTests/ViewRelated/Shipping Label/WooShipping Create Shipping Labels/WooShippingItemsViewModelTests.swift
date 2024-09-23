@@ -135,6 +135,8 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 }
 
 private final class MockDataSource: WooShippingItemsDataSource {
+    var items: [ShippingLabelPackageItem]
+
     var orderItems: [OrderItem]
 
     var products: [Product]
@@ -147,5 +149,6 @@ private final class MockDataSource: WooShippingItemsDataSource {
         self.orderItems = orderItems
         self.products = products
         self.productVariations = productVariations
+        self.items = orderItems.compactMap { ShippingLabelPackageItem(orderItem: $0, products: products, productVariations: productVariations)}
     }
 }

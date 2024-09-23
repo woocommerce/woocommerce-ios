@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 /// Provides data about items to ship for an order with the Woo Shipping extension.
 ///
 protocol WooShippingItemsDataSource {
+    var items: [ShippingLabelPackageItem] { get }
     var orderItems: [OrderItem] { get }
     var products: [Product] { get }
     var productVariations: [ProductVariation] { get }
@@ -14,6 +15,12 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     private let order: Order
     private let storageManager: StorageManagerType
     private let stores: StoresManager
+
+    /// Items to ship from an order.
+    ///
+    var items: [ShippingLabelPackageItem] {
+        order.items.compactMap { ShippingLabelPackageItem(orderItem: $0, products: products, productVariations: productVariations) }
+    }
 
     /// Items in the order.
     ///

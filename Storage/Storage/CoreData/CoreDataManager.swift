@@ -59,16 +59,17 @@ public final class CoreDataManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        return persistentContainer.viewContext
+        let context = persistentContainer.viewContext
+        context.automaticallyMergesChangesFromParent = true
+        return context
     }
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
     public lazy var writerDerivedStorage: StorageType = {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
-        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return childManagedObjectContext
+        let backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return backgroundContext
     }()
 
     /// Persistent Container: Holds the full CoreData Stack

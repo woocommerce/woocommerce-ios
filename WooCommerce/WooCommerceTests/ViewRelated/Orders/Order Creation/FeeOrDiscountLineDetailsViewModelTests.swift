@@ -148,7 +148,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
         XCTAssertEqual(viewModel.amount, "10.00")
-        XCTAssertEqual(viewModel.percentage, "5")
+        XCTAssertEqual(viewModel.percentage, "5.00")
     }
 
     func test_view_model_prefills_negative_input_data_correctly() {
@@ -166,7 +166,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isExistingLine)
         XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
         XCTAssertEqual(viewModel.amount, "-10.00")
-        XCTAssertEqual(viewModel.percentage, "-5")
+        XCTAssertEqual(viewModel.percentage, "-5.00")
     }
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
@@ -328,7 +328,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                           didSelectSave: { _ in })
 
         // Then
-        XCTAssertEqual(viewModel.amountPlaceholder, "0")
+        XCTAssertEqual(viewModel.amountPlaceholder, "0.00")
     }
 
     func test_view_model_initializes_correctly_with_no_existing_fee_line() {

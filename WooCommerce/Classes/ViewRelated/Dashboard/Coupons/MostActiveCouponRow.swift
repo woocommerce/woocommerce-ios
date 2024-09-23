@@ -16,6 +16,7 @@ struct MostActiveCouponRow: View {
                             .bodyStyle()
                         Text(viewModel.summary)
                             .subheadlineStyle()
+                            .multilineTextAlignment(.leading)
                     }
 
                     Spacer()

@@ -17,6 +17,7 @@ final class WooShippingItemsViewModel: ObservableObject {
     @Published var itemsCountLabel: String = ""
 
     /// Label with the details of the items to ship.
+    /// Include total weight and total price for all items in the shipment.
     @Published var itemsDetailLabel: String = ""
 
     /// View models for rows of items to ship.

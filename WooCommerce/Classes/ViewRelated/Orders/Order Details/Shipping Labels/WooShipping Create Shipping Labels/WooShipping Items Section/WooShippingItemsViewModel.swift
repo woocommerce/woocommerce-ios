@@ -86,6 +86,7 @@ private extension WooShippingItemsViewModel {
     }
 
     /// Generates a details label for an item row.
+    /// Includes item dimensions (height, weight, length) and variation attributes, if available.
     ///
     func generateItemRowDetailsLabel(for item: OrderItem) -> String {
         let dimensions: ProductDimensions? = {

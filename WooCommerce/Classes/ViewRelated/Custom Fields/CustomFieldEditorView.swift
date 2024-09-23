@@ -37,7 +37,8 @@ struct CustomFieldEditorView: View {
                         .subheadlineStyle()
 
                     TextField("Enter key", text: $key) // todo-13493: set String to be translatable
-                        .bodyStyle()
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
@@ -55,7 +56,7 @@ struct CustomFieldEditorView: View {
                         Spacer()
 
                         if !isReadOnlyValue {
-                            Picker("Choose editing mode:", selection: $showRichTextEditor) {
+                            Picker("Choose text editing mode", selection: $showRichTextEditor) {
                                 Text("Text").tag(false)
                                 Text("HTML").tag(true)
                             }
@@ -80,7 +81,8 @@ struct CustomFieldEditorView: View {
                         )
                     } else {
                         TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
-                            .bodyStyle()
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
                             .frame(minHeight: Layout.minimumEditorSize)
                             .padding(insets: Layout.inputInsets)
                             .background(Color(.listForeground(modal: false)))

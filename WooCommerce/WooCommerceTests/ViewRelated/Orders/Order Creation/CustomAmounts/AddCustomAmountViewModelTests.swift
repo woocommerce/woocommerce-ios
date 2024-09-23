@@ -86,7 +86,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
     func test_doneButtonPressed_when_a_fee_is_preset_then_passes_its_data() {
         // Given
-        let amount = "23"
+        let amount = "23.00"
         let name = "Custom amount name"
         let feeID: Int64 = 12345
 

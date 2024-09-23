@@ -5719,6 +5719,12 @@ which should be translated separately and considered part of this sentence. */
 /* Loading. Verb */
 "Loading..." = "Loading...";
 
+/* Message on the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.body" = "Get your products seen by millions with Blaze and boost your sales";
+
+/* Title of the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.title" = "Thinking about boosting your sales?";
+
 /* Message on the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.body" = "Promote your products with Blaze Ads and increase your sales now.";
 
@@ -12142,6 +12148,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "Cancel";
+
+/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.items.count" = "%1$@ items";
+
+/* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
+"wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "Create Shipping Labels";

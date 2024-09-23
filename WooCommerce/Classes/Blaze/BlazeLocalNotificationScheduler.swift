@@ -20,6 +20,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
     private let pushNotesManager: PushNotesManager
     private var subscriptions: Set<AnyCancellable> = []
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private var switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
@@ -37,7 +38,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -45,6 +47,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         self.scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager)
         self.userDefaults = userDefaults
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
     }
 
     /// Observes user responses to local notification and updates user defaults
@@ -64,6 +67,8 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
                 default:
                     break
                 }
+
+                navigateToCampaignCreation(from: response)
             }
             .store(in: &subscriptions)
     }
@@ -102,7 +107,7 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
         }
 
         let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder,
-                                             userInfo: [:])
+                                             userInfo: [Constants.siteIDKey: siteID])
         await scheduler.cancel(scenario: .blazeAbandonedCampaignCreationReminder)
         DDLogDebug("Blaze: Schedule abandoned campaign creation local notification for date \(notificationTime).")
         await scheduler.schedule(notification: notification,
@@ -120,6 +125,23 @@ final class DefaultBlazeLocalNotificationScheduler: BlazeLocalNotificationSchedu
 }
 
 private extension DefaultBlazeLocalNotificationScheduler {
+    func navigateToCampaignCreation(from response: UNNotificationResponse) {
+        guard let siteID = response.notification.request.content.userInfo[Constants.siteIDKey] as? Int64 else {
+            DDLogDebug("Blaze: no site ID found in location notification user info to navigate to campaign creation")
+            return
+        }
+
+        /// Switching store is needed for Blaze eligibility check.
+        switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, await isEligibleForBlaze() else {
+                    return
+                }
+                MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
+            }
+        }
+    }
+
     func isEligibleForBlaze() async -> Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
@@ -130,21 +152,21 @@ private extension DefaultBlazeLocalNotificationScheduler {
     /// Performs initial fetch from storage and updates results.
     func observeStorageAndScheduleNotifications() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.scheduleLocalNotificationIfNeeded()
+            self?.scheduleNoCampaignReminderIfNeeded()
         }
 
         do {
             try blazeCampaignResultsController.performFetch()
-            scheduleLocalNotificationIfNeeded()
+            scheduleNoCampaignReminderIfNeeded()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
-    func scheduleLocalNotificationIfNeeded() {
+    func scheduleNoCampaignReminderIfNeeded() {
         guard !userDefaults.blazeNoCampaignReminderOpened() else {
             DDLogDebug("Blaze: User interacted with a previously scheduled no campaign local notification. Don't schedule again.")
             return
@@ -186,7 +208,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
         Task { @MainActor in
             let notification = LocalNotification(scenario: LocalNotification.Scenario.blazeNoCampaignReminder,
-                                                 userInfo: [:])
+                                                 userInfo: [Constants.siteIDKey: siteID])
             await scheduler.cancel(scenario: .blazeNoCampaignReminder)
             DDLogDebug("Blaze: Schedule no campaign local notification for date \(notificationTime).")
             await scheduler.schedule(notification: notification,
@@ -199,6 +221,8 @@ private extension DefaultBlazeLocalNotificationScheduler {
 
 private extension DefaultBlazeLocalNotificationScheduler {
     enum Constants {
+        static let siteIDKey = "site_id"
+
         enum NoCampaignReminder {
             static let daysDurationForNotification = 30
         }

@@ -1,2 +1,3 @@
-Bu sürümde sipariş takip numaralarını taramayı etkinleştirdik ve ürün şifresi yönetimini iyileştirdik. Ürün tarayıcısı, nakit ödemeler ve indirimler için de geliştirmeler yaptık.
-Blaze reklamları kampanyası oluşturma; görsel seçme ve bütçe ayarları için daha iyi bir deneyimle güncellendi.
+Bu sürümde ödemelerinin kabulüyle ilgili bir sorunu düzelttik. Blaze reklamları yönetimi de daha iyi deneyimler için geliştirildi.
+
+

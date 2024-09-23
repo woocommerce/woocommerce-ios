@@ -7,10 +7,17 @@ import SwiftUI
 /// - viewController: To get the content of the editor, the parent View can pass this and then call `getLatestContent()`
 ///
 struct AztecEditorView: UIViewControllerRepresentable {
-    let initialValue: String
+    @Binding var value: String
+    let onContentChanged: (String) -> Void
 
     func makeUIViewController(context: Context) -> AztecEditorViewController {
-        let controller = EditorFactory().customFieldRichTextEditor(initialValue: initialValue)
+        let controller = EditorFactory().customFieldRichTextEditor(initialValue: value)
+
+        guard let aztecController = controller as? AztecEditorViewController else {
+            fatalError("EditorFactory must return an AztecEditorViewController, but returned \(type(of: controller))")
+        }
+
+        aztecController.onContentChanged = onContentChanged
         return controller as! AztecEditorViewController
     }
 

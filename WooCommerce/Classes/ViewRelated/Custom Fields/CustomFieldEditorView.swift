@@ -47,18 +47,23 @@ struct CustomFieldEditorView: View {
 
                 // Value Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                    Text("Value") // todo-13493: set String to be translatable
-                        .foregroundColor(Color(.text))
-                        .subheadlineStyle()
+                    HStack {
+                        Text("Value") // todo-13493: set String to be translatable
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
 
-                    if !isReadOnlyValue {
+                        Spacer()
 
-                        Picker("Choose editing mode:", selection: $showRichTextEditor) {
-                            Text("Text").tag(false)
-                            Text("HTML").tag(true)
+                        if !isReadOnlyValue {
+                            Picker("Choose editing mode:", selection: $showRichTextEditor) {
+                                Text("Text").tag(false)
+                                Text("HTML").tag(true)
+                            }
+                            .pickerStyle(.segmented)
+                            .fixedSize()
                         }
-                        .pickerStyle(.segmented)
                     }
+
                     if showRichTextEditor {
                         AztecEditorView(value: $value,
                                         onContentChanged: { content in

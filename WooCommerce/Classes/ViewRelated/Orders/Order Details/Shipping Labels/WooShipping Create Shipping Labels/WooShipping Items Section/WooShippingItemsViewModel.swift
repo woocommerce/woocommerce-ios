@@ -61,8 +61,7 @@ private extension WooShippingItemsViewModel {
     /// This includes the total weight and total price of all items.
     ///
     func generateItemsDetailLabel() -> String {
-        let totalWeight = dataSource.orderItems.map { calculateWeight(for: $0) }.reduce(0, +)
-        let formattedWeight = weightFormatter.formatWeight(weight: totalWeight)
+        let formattedWeight = formatWeight(for: dataSource.orderItems)
 
         let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
@@ -75,12 +74,11 @@ private extension WooShippingItemsViewModel {
     func generateItemRows() -> [WooShippingItemRowViewModel] {
         dataSource.orderItems.map { item in
             let (product, variation) = getProductAndVariation(for: item)
-            let itemWeight = calculateWeight(for: item)
             return WooShippingItemRowViewModel(imageUrl: variation?.imageURL ?? product?.imageURL,
                                                quantityLabel: item.quantity.description,
                                                name: item.name,
                                                detailsLabel: generateItemRowDetailsLabel(for: item),
-                                               weightLabel: weightFormatter.formatWeight(weight: itemWeight),
+                                               weightLabel: formatWeight(for: [item]),
                                                priceLabel: formatPrice(for: item))
         }
     }
@@ -112,6 +110,13 @@ private extension WooShippingItemsViewModel {
         }()
 
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
+    }
+
+    /// Calculates and formats the total weight of the given items.
+    ///
+    func formatWeight(for items: [OrderItem]) -> String {
+        let totalWeight = items.map { calculateWeight(for: $0) }.reduce(0, +)
+        return weightFormatter.formatWeight(weight: totalWeight)
     }
 
     /// Calculates the weight of the given item based on the item quantity and the product or variation weight.

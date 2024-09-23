@@ -117,6 +117,21 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         assertEqual("Red, Small", firstItem.detailsLabel)
     }
 
+    func test_item_rows_handle_items_with_quantity_greater_than_one() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, weight: "3")
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 10)
+        let dataSource = MockDataSource(orderItems: [orderItem], products: [product])
+
+        // When
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings, shippingSettingsService: shippingSettingsService)
+
+        // Then
+        let firstItem = try XCTUnwrap(viewModel.itemRows.first)
+        assertEqual("6 oz", firstItem.weightLabel)
+        assertEqual("$20.00", firstItem.priceLabel)
+    }
+
 }
 
 private final class MockDataSource: WooShippingItemsDataSource {

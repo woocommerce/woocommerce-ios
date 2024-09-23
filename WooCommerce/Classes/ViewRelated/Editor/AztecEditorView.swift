@@ -57,7 +57,7 @@ struct AztecEditorView: UIViewControllerRepresentable {
 private extension AztecEditorView {
     enum Localization {
         static let cancel = NSLocalizedString(
-            "aztecEditorView.cancel",
+            "aztedEditorView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the Aztec Editor View"
         )

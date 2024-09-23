@@ -146,11 +146,7 @@ public final class CoreDataManager: StorageManagerType {
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()
-
-            self.viewStorage.perform {
-                self.viewStorage.saveIfNeeded()
-                closure()
-            }
+            closure()
         }
     }
 

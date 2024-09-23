@@ -59,6 +59,8 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
                 self?.hideOnboarding(onboardingViewController)
 
                 completion()
+
+                self?.readinessSubscription = nil
             })
     }
 

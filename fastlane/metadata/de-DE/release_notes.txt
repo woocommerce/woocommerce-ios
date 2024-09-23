@@ -1,2 +1,3 @@
-Bei dieser Version haben wir das Scannen von Sendungsverfolgungsnummern für Bestellungen aktiviert und das Passwortmanagement für Produkte verbessert. Außerdem haben wir Verbesserungen vorgenommen, die Produktscanner, Barzahlungen und Rabatte betreffen.
-Beim Erstellen von Blaze-Werbekampagnen haben wir die Bildauswahl und die Budgeteinstellungen aktualisiert und optimiert.
+In dieser Version haben wir ein Problem im Zusammenhang mit dem Onboarding von Bezahlungen behoben. Das Blaze-Werbungsmanagement wurde ebenfalls verbessert, um dir ein angenehmeres Erlebnis bieten zu können.
+
+

@@ -8,9 +8,9 @@ protocol CardPresentPaymentFacade {
     /// This is a long lasting stream, and will not finish during the life of the façade, instead it will publish events for each payment attempt.
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> { get }
 
-    /// `connectedReaderPublisher` provides the latest CardReader that was connected.
+    /// `readerConnectionStatusPublisher` provides the latest connection status for the card reader.
     /// This is a long lasting stream, and will not finish during the life of the façade.
-    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> { get }
+    var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> { get }
 
     /// Attempts to a card reader of the specified type.
     /// If another type of reader is already connected, this will be disconnected automatically.

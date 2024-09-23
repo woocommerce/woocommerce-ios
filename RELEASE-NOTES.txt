@@ -1,9 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.6
+-----
+- [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
+
 20.5
 -----
 - [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
+- [**] Fixed formatting issues for discount and cash payment input values when the device and store currency settings are different. [https://github.com/woocommerce/woocommerce-ios/pull/13979]
 - [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
 - [*] Dashboard: Cards are now displayed in 2 columns on large screen sizes. [https://github.com/woocommerce/woocommerce-ios/pull/13983]
 - [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]

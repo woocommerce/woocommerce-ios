@@ -12,6 +12,8 @@ struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
@@ -96,6 +98,7 @@ struct DashboardView: View {
             // Card views
             Group {
                 if horizontalSizeClass == .regular,
+                   !dynamicTypeSize.isAccessibilitySize,
                    viewModel.showOnDashboardSecondColumn.isNotEmpty {
                     // display cards in 2 columns for large screen sizes if there are more than 1 cards.
                     HStack(alignment: .top, spacing: 0) {

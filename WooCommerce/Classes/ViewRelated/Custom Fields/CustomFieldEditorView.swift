@@ -141,11 +141,30 @@ struct CustomFieldEditorView: View {
 
 private struct RichTextEditor: View {
     @Binding var html: String
+    @State private var isModified: Bool = false
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        AztecEditorView(initialValue: html) {
-            presentationMode.wrappedValue.dismiss()
+        NavigationView {
+            AztecEditorView(initialValue: html)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Text("Cancel") // todo-13493: set String to be translatable
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            // todo-13493: implement save action
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Text("Done") // todo-13493: set String to be translatable
+                        }
+                        .disabled(!isModified)
+                    }
+                }
         }
     }
 }

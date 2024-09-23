@@ -17,6 +17,7 @@ final class WooShippingItemsViewModel: ObservableObject {
     @Published var itemsCountLabel: String = ""
 
     /// Label with the details of the items to ship.
+    /// Include total weight and total price for all items in the shipment.
     @Published var itemsDetailLabel: String = ""
 
     /// View models for rows of items to ship.
@@ -60,8 +61,7 @@ private extension WooShippingItemsViewModel {
     /// This includes the total weight and total price of all items.
     ///
     func generateItemsDetailLabel() -> String {
-        let totalWeight = dataSource.orderItems.map { calculateWeight(for: $0) }.reduce(0, +)
-        let formattedWeight = weightFormatter.formatWeight(weight: totalWeight)
+        let formattedWeight = formatWeight(for: dataSource.orderItems)
 
         let itemsTotal = dataSource.orderItems.map { $0.price.decimalValue * $0.quantity }.reduce(0, +)
         let formattedPrice = currencyFormatter.formatAmount(itemsTotal) ?? itemsTotal.description
@@ -74,17 +74,17 @@ private extension WooShippingItemsViewModel {
     func generateItemRows() -> [WooShippingItemRowViewModel] {
         dataSource.orderItems.map { item in
             let (product, variation) = getProductAndVariation(for: item)
-            let itemWeight = calculateWeight(for: item)
             return WooShippingItemRowViewModel(imageUrl: variation?.imageURL ?? product?.imageURL,
                                                quantityLabel: item.quantity.description,
                                                name: item.name,
                                                detailsLabel: generateItemRowDetailsLabel(for: item),
-                                               weightLabel: weightFormatter.formatWeight(weight: itemWeight),
-                                               priceLabel: currencyFormatter.formatAmount(item.price.decimalValue) ?? item.price.description)
+                                               weightLabel: formatWeight(for: [item]),
+                                               priceLabel: formatPrice(for: item))
         }
     }
 
     /// Generates a details label for an item row.
+    /// Includes item dimensions (height, weight, length) and variation attributes, if available.
     ///
     func generateItemRowDetailsLabel(for item: OrderItem) -> String {
         let dimensions: ProductDimensions? = {
@@ -112,6 +112,13 @@ private extension WooShippingItemsViewModel {
         return [formattedDimensions, attributes].compacted().joined(separator: " • ")
     }
 
+    /// Calculates and formats the total weight of the given items.
+    ///
+    func formatWeight(for items: [OrderItem]) -> String {
+        let totalWeight = items.map { calculateWeight(for: $0) }.reduce(0, +)
+        return weightFormatter.formatWeight(weight: totalWeight)
+    }
+
     /// Calculates the weight of the given item based on the item quantity and the product or variation weight.
     ///
     func calculateWeight(for item: OrderItem) -> Double {
@@ -125,6 +132,14 @@ private extension WooShippingItemsViewModel {
         }()
         let quantity = Double(truncating: item.quantity as NSDecimalNumber)
         return itemWeight * quantity
+    }
+
+    /// Calculates and formats the price of the given item based on the item quantity and unit price.
+    ///
+    func formatPrice(for item: OrderItem) -> String {
+        let totalPrice = item.price.decimalValue * item.quantity
+        let formattedPrice = currencyFormatter.formatAmount(totalPrice)
+        return formattedPrice ?? item.price.description
     }
 
     /// Finds the corresponding product and variation for the given item.

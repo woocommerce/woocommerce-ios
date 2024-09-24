@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct CustomFieldsDetailsView: View {
+struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
 
     let isEditable: Bool
-    let customFields: [CustomFieldsViewModel]
+    let customFields: [CustomFieldViewModel]
 
     var body: some View {
         NavigationView {
@@ -12,10 +12,22 @@ struct CustomFieldsDetailsView: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         ForEach(customFields) { customField in
-                            CustomFieldRow(isEditable: isEditable,
-                                           title: customField.title,
-                                           content: customField.content,
-                                           contentURL: customField.contentURL)
+                            if isEditable {
+                                NavigationLink(destination: CustomFieldEditorView(key: customField.title,
+                                                                                  value: customField.content)
+                                ) {
+                                    CustomFieldRow(isEditable: true,
+                                                   title: customField.title,
+                                                   content: customField.content,
+                                                   contentURL: customField.contentURL)
+                                }
+                            }
+                            else {
+                                CustomFieldRow(isEditable: false,
+                                               title: customField.title,
+                                               content: customField.content,
+                                               contentURL: customField.contentURL)
+                            }
 
                             Divider()
                                 .padding(.leading)
@@ -87,11 +99,11 @@ private struct CustomFieldRow: View {
                                 openURL(url) // Open in associated app for URL scheme
                             }
                         }
-                        .lineLimit(isEditable ? 3 : nil)
+                        .lineLimit(isEditable ? 2 : nil)
                 } else { // Display content as plain text
                     Text(content)
                         .footnoteStyle()
-                        .lineLimit(isEditable ? 3 : nil)
+                        .lineLimit(isEditable ? 2 : nil)
                 }
             }.padding([.leading, .trailing], Constants.vStackPadding)
 
@@ -106,18 +118,13 @@ private struct CustomFieldRow: View {
         }
         .padding(Constants.hStackPadding)
         .frame(minHeight: Constants.height)
-        .onTapGesture {
-            if isEditable {
-                // todo-13493 add tap handling
-            }
-        }
     }
 }
 
 
 // MARK: - Constants
 //
-extension CustomFieldsDetailsView {
+extension CustomFieldsListView {
     enum Localization {
         static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
     }
@@ -136,12 +143,12 @@ private extension CustomFieldRow {
 
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CustomFieldsDetailsView(
+        CustomFieldsListView(
             isEditable: false,
             customFields: [
-            CustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
-            CustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-        ])
+                CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
+                CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+            ])
     }
 }
 

@@ -11,6 +11,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
         let paymentCaptureErrorTryAgainAction: () -> Void
         let paymentCaptureErrorNewOrderAction: () -> Void
         let paymentIntentCreationErrorEditOrderAction: () -> Void
+        let dismissReaderConnectionModal: () -> Void
     }
 
     /// Determines the appropriate payment alert/message type and creates its view model.
@@ -29,19 +30,28 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             /// Connection alerts
         case .scanningForReaders(let endSearch):
             self = .alert(.scanningForReaders(
-                viewModel: PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel(endSearchAction: endSearch)))
+                viewModel: PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel(endSearchAction: {
+                    endSearch()
+                    dependencies.dismissReaderConnectionModal()
+                })))
 
         case .scanningFailed(let error, let endSearch):
             self = .alert(.scanningFailed(
                 viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel(
                     error: error,
-                    endSearchAction: endSearch)))
+                    endSearchAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .bluetoothRequired(let error, let endSearch):
             self = .alert(.bluetoothRequired(
                 viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel(
                     error: error,
-                    endSearch: endSearch)))
+                    endSearch: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectingToReader:
             self = .alert(.connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel()))
@@ -51,25 +61,37 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel(
                     error: error,
                     retryButtonAction: retrySearch,
-                    cancelButtonAction: endSearch)))
+                    cancelButtonAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectingFailedNonRetryable(let error, let endSearch):
             self = .alert(.connectingFailedNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
                     error: error,
-                    cancelAction: endSearch)))
+                    cancelAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
             self = .alert(.connectingFailedUpdatePostalCode(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel(
                     retryButtonAction: retrySearch,
-                    cancelButtonAction: endSearch)))
+                    cancelButtonAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectingFailedChargeReader(let retrySearch, let endSearch):
             self = .alert(.connectingFailedChargeReader(
                 viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
                     retryButtonAction: retrySearch,
-                    cancelButtonAction: endSearch)))
+                    cancelButtonAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let showsInAuthenticatedWebView, let retrySearch, let endSearch):
             self = .alert(.connectingFailedUpdateAddress(
@@ -77,7 +99,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                     settingsAdminUrl: wcSettingsAdminURL,
                     showsInAuthenticatedWebView: showsInAuthenticatedWebView,
                     retrySearchAction: retrySearch,
-                    cancelSearchAction: endSearch)))
+                    cancelSearchAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .foundReader(let name, let connect, let continueSearch, let endSearch):
             self = .alert(.foundReader(
@@ -85,7 +110,10 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                     readerName: name,
                     connectAction: connect,
                     continueSearchAction: continueSearch,
-                    endSearchAction: endSearch)))
+                    endSearchAction: {
+                        endSearch()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .foundMultipleReaders(let readerIDs, let selectionHandler):
             self = .alert(.foundMultipleReaders(
@@ -101,11 +129,17 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                     .alert(.requiredReaderUpdateInProgress(
                         viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel(
                             progress: progress,
-                            cancel: cancelUpdate))) :
+                            cancel: {
+                                cancelUpdate?()
+                                dependencies.dismissReaderConnectionModal()
+                            }))) :
                     .alert(.optionalReaderUpdateInProgress(
                         viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
                             progress: progress,
-                            cancel: cancelUpdate)))
+                            cancel: {
+                                cancelUpdate?()
+                                dependencies.dismissReaderConnectionModal()
+                            })))
 
             }
 
@@ -113,18 +147,27 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             self = .alert(.updateFailed(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel(
                     retryAction: tryAgain,
-                    cancelUpdateAction: cancelUpdate)))
+                    cancelUpdateAction: {
+                        cancelUpdate()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .updateFailedNonRetryable(let cancelUpdate):
             self = .alert(.updateFailedNonRetryable(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel(
-                    cancelUpdateAction: cancelUpdate)))
+                    cancelUpdateAction: {
+                        cancelUpdate()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
             self = .alert(.updateFailedLowBattery(
                 viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
                     batteryLevel: batteryLevel,
-                    cancelUpdateAction: cancelUpdate)))
+                    cancelUpdateAction: {
+                        cancelUpdate()
+                        dependencies.dismissReaderConnectionModal()
+                    })))
 
         case .connectionSuccess(let done):
             self = .alert(.connectionSuccess(

@@ -9,11 +9,13 @@ import protocol Yosemite.StoresManager
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
-    let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
+    let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
+
+    private let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 
-    private let connectedReaderSubject = PassthroughSubject<CardPresentPaymentCardReader?, Never>()
+    private let readerConnectionStatusSubject = PassthroughSubject<CardPresentPaymentReaderConnectionStatus, Never>()
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
@@ -57,8 +59,20 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()
 
-        connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
-            .merge(with: connectedReaderSubject)
+        let connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
+        self.connectedReaderPublisher = connectedReaderPublisher
+
+        readerConnectionStatusPublisher = connectedReaderPublisher
+            .map({ reader -> CardPresentPaymentReaderConnectionStatus? in
+                if let reader {
+                    return .connected(reader)
+                } else {
+                    return nil
+                }
+            })
+            .compactMap { $0 }
+            .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
+            .merge(with: readerConnectionStatusSubject)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
@@ -79,6 +93,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             })))
             return .connected(connectedReader)
         case .canceled:
+            readerConnectionStatusSubject.send(.disconnected)
             paymentEventSubject.send(.idle)
             return .canceled
         }
@@ -86,6 +101,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func disconnectReader() async {
+        readerConnectionStatusSubject.send(.disconnecting)
+
         cancelPayment()
 
         connectionControllerManager.knownReaderProvider.forgetCardReader()
@@ -93,13 +110,12 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         return await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
 
-            let action = CardPresentPaymentAction.disconnect { [weak self] result in
-                if case .failure = result {
-                    // Disconnections typically fail because the reader is not connected in the first place.
-                    // Assuming we're disconnected allows further connection attempts, which can resolve the situation.
-                    // Connection attempts with a reader already connected succeed immediately.
-                    self?.connectedReaderSubject.send(nil)
-                }
+            let action = CardPresentPaymentAction.disconnect { [weak self] _ in
+                // Disconnections typically fail because the reader is not connected in the first place.
+                // Assuming we're disconnected allows further connection attempts, which can resolve the situation.
+                // Connection attempts with a reader already connected succeed immediately.
+                // Therefore, send disconnected for both success and failure results.
+                self?.readerConnectionStatusSubject.send(.disconnected)
                 nillableContinuation?.resume()
                 nillableContinuation = nil
             }

@@ -6,6 +6,7 @@ import Networking
 final class MockBlazeRemote {
     private var creatingCampaignResult: Result<Void, Error>?
     private var loadingCampaignListResult: Result<[BlazeCampaignListItem], Error>?
+    private var retrieveCampaignResult: Result<BlazeCampaignListItem, Error>?
     private var fetchingTargetLanguagesResult: Result<[BlazeTargetLanguage], Error>?
     private var fetchingTargetDevicesResult: Result<[BlazeTargetDevice], Error>?
     private var fetchingTargetTopicsResult: Result<[BlazeTargetTopic], Error>?
@@ -21,6 +22,10 @@ final class MockBlazeRemote {
 
     func whenLoadingCampaignList(thenReturn result: Result<[BlazeCampaignListItem], Error>) {
         loadingCampaignListResult = result
+    }
+
+    func whenRetrieveCampaignDetail(thenReturn result: Result<BlazeCampaignListItem, Error>) {
+        retrieveCampaignResult = result
     }
 
     func whenFetchingTargetLanguages(thenReturn result: Result<[BlazeTargetLanguage], Error>?) {
@@ -80,6 +85,19 @@ extension MockBlazeRemote: BlazeRemoteProtocol {
         switch result {
         case .success(let campaigns):
             return campaigns
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func retrieveCampaignDetails(campaignID: String, from siteID: Int64) async throws -> BlazeCampaignListItem {
+        guard let result = retrieveCampaignResult else {
+            XCTFail("Could not find result for retrieve Blaze campaign details.")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case .success(let campaign):
+            return campaign
         case .failure(let error):
             throw error
         }

@@ -65,7 +65,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         let dependencies = createPresentationStyleDependencies(nonRetryableErrorExitAction: { spyTryAnotherPaymentMethod = true })
 
         // When
-        let presentationStyle =  PointOfSaleCardPresentPaymentEventPresentationStyle(
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
             for: eventDetails,
             dependencies: dependencies)
 
@@ -126,20 +126,46 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
     }
 
+    func test_presentationStyle_for_scanningForReader_is_alert_scanningForReader_with_correctActions() {
+        // Given
+        let eventDetails = CardPresentPaymentEventDetails.scanningForReaders(endSearch: {})
+        var spyDismissReaderConnectionModalActionCalled = false
+        let dependencies = createPresentationStyleDependencies(
+            dismissReaderConnectionModalAction: {
+                spyDismissReaderConnectionModalActionCalled = true
+            }
+        )
+
+        // When
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: dependencies)
+
+        // Then
+        guard case .alert(.scanningForReaders(let viewModel)) = presentationStyle else {
+            return XCTFail("Expected scanning for readers alert not found")
+        }
+
+        viewModel.buttonViewModel.actionHandler()
+        XCTAssertTrue(spyDismissReaderConnectionModalActionCalled)
+    }
+
     func createPresentationStyleDependencies(
         tryPaymentAgainBackToCheckoutAction: @escaping () -> Void = {},
         nonRetryableErrorExitAction: @escaping () -> Void = {},
         formattedOrderTotalPrice: String? = nil,
         paymentCaptureErrorTryAgainAction: @escaping () -> Void = {},
         paymentCaptureErrorNewOrderAction: @escaping () -> Void = {},
-        paymentIntentCreationErrorEditOrderAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
+        paymentIntentCreationErrorEditOrderAction: @escaping () -> Void = {},
+        dismissReaderConnectionModalAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
             PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
                 tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
                 nonRetryableErrorExitAction: nonRetryableErrorExitAction,
                 formattedOrderTotalPrice: formattedOrderTotalPrice,
                 paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction,
                 paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction,
-                paymentIntentCreationErrorEditOrderAction: paymentIntentCreationErrorEditOrderAction
+                paymentIntentCreationErrorEditOrderAction: paymentIntentCreationErrorEditOrderAction,
+                dismissReaderConnectionModal: dismissReaderConnectionModalAction
             )
         }
 

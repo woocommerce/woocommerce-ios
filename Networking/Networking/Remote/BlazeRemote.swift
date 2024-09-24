@@ -20,8 +20,15 @@ public protocol BlazeRemoteProtocol {
     ///    - limit: Pagination limit
     ///
     func loadCampaignsList(for siteID: Int64,
-                            skip: Int,
-                            limit: Int) async throws -> [BlazeCampaignListItem]
+                           skip: Int,
+                           limit: Int) async throws -> [BlazeCampaignListItem]
+
+    /// Retrieve a Blaze campaign detail given the campaign ID and site ID.
+    /// - Parameters:
+    ///    - campaignID: ID of the campaign to retrieve info from.
+    ///    - siteID: WPCom ID for the site to load ads campaigns.
+    ///
+    func retrieveCampaignDetails(campaignID: String, from siteID: Int64) async throws -> BlazeCampaignListItem
 
     /// Fetches target languages for campaign creation.
     /// - Parameters:
@@ -118,6 +125,15 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = BlazeCampaignListItemsMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Retrieves details for a campaign.
+    ///
+    public func retrieveCampaignDetails(campaignID: String, from siteID: Int64) async throws -> BlazeCampaignListItem {
+        let path = Paths.campaign(campaignID: campaignID, siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: [:])
+        let mapper = BlazeCampaignListItemMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -253,6 +269,10 @@ private extension BlazeRemote {
     enum Paths {
         static func campaigns(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/campaigns"
+        }
+
+        static func campaign(campaignID: String, siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1.1/campaigns/\(campaignID)"
         }
 
         static func campaignSearch(siteID: Int64) -> String {

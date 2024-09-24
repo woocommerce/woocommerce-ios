@@ -188,9 +188,7 @@ extension NSManagedObjectContext: StorageType {
             assert(Thread.isMainThread == false,
                    "Write operations for \(entityName) should only be done on a background context")
         } else {
-            DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️ \n" +
-                      "Stack trace: \n" +
-                      Thread.callStackSymbols.joined(separator: "\n"))
+            DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️")
         }
     }
 }

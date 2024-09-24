@@ -5,7 +5,7 @@
 -----
 - [*] Jetpack setup: fixed issue checking site info after activating Jetpack for sites with Jetpack connection package. [https://github.com/woocommerce/woocommerce-ios/pull/13993]
 - [*] Blaze: Campaign status is now updated immediately after being canceled. [https://github.com/woocommerce/woocommerce-ios/pull/13992]
-- [*] Now the keyboard will be open automatically when creating a new Product Category.
+- [*] Now the keyboard will be open automatically when creating a new Product Category. [https://github.com/woocommerce/woocommerce-ios/pull/14031]
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
 
 20.5

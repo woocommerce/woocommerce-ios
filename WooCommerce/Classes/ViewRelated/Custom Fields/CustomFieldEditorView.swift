@@ -3,8 +3,8 @@ import SwiftUI
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
-    @State private var showRichTextEditor: Bool = false
-    @State private var showingActionSheet: Bool = false
+    @State private var showRichTextEditor = false
+    @State private var showingActionSheet = false
 
     private let initialKey: String
     private let initialValue: String

@@ -32,11 +32,11 @@ struct CustomFieldEditorView: View {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 // Key Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                    Text("Key") // todo-13493: set String to be translatable
+                    Text(Localization.keyLabel)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField("Enter key", text: $key) // todo-13493: set String to be translatable
+                    TextField(Localization.keyPlaceholder, text: $key)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
@@ -49,16 +49,16 @@ struct CustomFieldEditorView: View {
                 // Value Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                     HStack {
-                        Text("Value") // todo-13493: set String to be translatable
+                        Text(Localization.valueLabel)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
 
                         Spacer()
 
                         if !isReadOnlyValue {
-                            Picker("Choose text editing mode", selection: $showRichTextEditor) {
-                                Text("Text").tag(false)
-                                Text("HTML").tag(true)
+                            Picker(Localization.editorPickerLabel, selection: $showRichTextEditor) {
+                                Text(Localization.editorPickerText).tag(false)
+                                Text(Localization.editorPickerHTML).tag(true)
                             }
                             .pickerStyle(.segmented)
                             .fixedSize()
@@ -149,6 +149,44 @@ private extension CustomFieldEditorView {
         static let cornerRadius: CGFloat = 8
         static let inputInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
         static let minimumEditorSize: CGFloat = 400
+    }
+
+    enum Localization {
+        static let keyLabel = NSLocalizedString(
+            "customFieldEditorView.keyLabel",
+            value: "Key",
+            comment: "Label for the Key field"
+        )
+
+        static let keyPlaceholder = NSLocalizedString(
+            "customFieldEditorView.keyPlaceholder",
+            value: "Enter key",
+            comment: "Placeholder for the Key field"
+        )
+
+        static let valueLabel = NSLocalizedString(
+            "customFieldEditorView.valueLabel",
+            value: "Value",
+            comment: "Label for the Value field"
+        )
+
+        static let editorPickerLabel = NSLocalizedString(
+            "customFieldEditorView.editorPickerLabel",
+            value: "Choose text editing mode",
+            comment: "Label for the Editor type picker"
+        )
+
+        static let editorPickerText = NSLocalizedString(
+            "customFieldEditorView.editorPickerText",
+            value: "Text",
+            comment: "Picker option for using Text Editor"
+        )
+
+        static let editorPickerHTML = NSLocalizedString(
+            "customFieldEditorView.editorPickerHTML",
+            value: "HTML",
+            comment: "Picker option for using Text Editor"
+        )
     }
 }
 

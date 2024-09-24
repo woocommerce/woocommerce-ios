@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 import enum Yosemite.ServerSidePaymentCaptureError
-import enum Hardware.CardReaderServiceError
+import enum Yosemite.CardReaderServiceError
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
     typealias AlertDetails = CardPresentPaymentEventDetails

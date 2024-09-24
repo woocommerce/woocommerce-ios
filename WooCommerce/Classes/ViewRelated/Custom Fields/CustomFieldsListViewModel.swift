@@ -25,6 +25,11 @@ final class CustomFieldsListViewModel: ObservableObject {
 // MARK: - Items actions
 extension CustomFieldsListViewModel {
     func editField(at index: Int, newField: CustomFieldUI) {
+        guard index >= 0 && index < combinedList.count else {
+            DDLogError("⛔️ Error: Invalid index for editing a custom field")
+            return
+        }
+
         let oldField = combinedList[index]
 
         if newField.id == nil {

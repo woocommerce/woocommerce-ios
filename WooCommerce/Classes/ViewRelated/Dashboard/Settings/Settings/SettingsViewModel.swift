@@ -298,9 +298,9 @@ private extension SettingsViewModel {
         let otherSection: Section = {
             let rows: [Row]
             #if DEBUG
-            rows = [.deviceSettings, .wormholy]
+            rows = [.deviceSettings, .wormholy, .webhooks]
             #else
-            rows = [.deviceSettings]
+            rows = [.deviceSettings, .webhooks]
             #endif
             return Section(title: Localization.otherTitle,
                            rows: rows,

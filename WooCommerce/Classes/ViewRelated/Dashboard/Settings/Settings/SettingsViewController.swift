@@ -164,6 +164,8 @@ private extension SettingsViewController {
             configureWhatsNew(cell: cell)
         case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
+        case let cell as BasicTableViewCell where row == .webhooks:
+            configureWebhooks(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .accountSettings:
@@ -258,6 +260,13 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.openDeviceSettings
+    }
+
+    func configureWebhooks(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = "Webhooks"
+        cell.accessibilityIdentifier = "settings-webhooks-button"
     }
 
     func configureWormholy(cell: BasicTableViewCell) {
@@ -488,6 +497,12 @@ private extension SettingsViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
+    func webhooksWasPressed() {
+        // TODO-gm: track event featureWebhooksShown
+        let viewController = UIHostingController(rootView: WebhooksView())
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = viewModel.announcement else { return }
@@ -643,6 +658,8 @@ extension SettingsViewController: UITableViewDelegate {
             aboutWasPressed()
         case .deviceSettings:
             deviceSettingsWasPressed()
+        case .webhooks:
+            webhooksWasPressed()
         case .wormholy:
             wormholyWasPressed()
         case .whatsNew:
@@ -727,6 +744,7 @@ extension SettingsViewController {
 
         // Other
         case deviceSettings
+        case webhooks
         case wormholy
 
         // Account settings
@@ -771,6 +789,8 @@ extension SettingsViewController {
             case .about:
                 return BasicTableViewCell.self
             case .deviceSettings:
+                return BasicTableViewCell.self
+            case .webhooks:
                 return BasicTableViewCell.self
             case .wormholy:
                 return BasicTableViewCell.self

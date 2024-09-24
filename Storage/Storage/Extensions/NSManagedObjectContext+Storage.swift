@@ -182,9 +182,8 @@ extension NSManagedObjectContext: StorageType {
     /// Helper to trigger failure in debug mode or print warning when write operations are called from the view context (main thread).
     ///
     private static func ensureCorrectContextUsage(for entityName: String) {
-        let isUITesting = CommandLine.arguments.contains("-ui_testing")
         let enforceWriteInBackground = ProcessInfo.processInfo.arguments.contains("-enforce-core-data-write-in-background")
-        if !isUITesting, enforceWriteInBackground {
+        if enforceWriteInBackground {
             assert(Thread.isMainThread == false,
                    "Write operations for \(entityName) should only be done on a background context")
         } else {

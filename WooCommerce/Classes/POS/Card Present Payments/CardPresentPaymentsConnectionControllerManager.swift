@@ -4,7 +4,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 final class CardPresentPaymentsConnectionControllerManager {
     let externalReaderConnectionController: CardReaderConnectionController<CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                                                                             CardPresentPaymentsAlertPresenterAdaptor>
-    let tapToPayConnectionController: BuiltInCardReaderConnectionController<CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+    let tapToPayConnectionController: RemoteBuiltInCardReaderConnectionController<CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
                                                                             CardPresentPaymentsAlertPresenterAdaptor>
     let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
@@ -27,11 +27,11 @@ final class CardPresentPaymentsConnectionControllerManager {
             alertsProvider: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
-        self.tapToPayConnectionController = BuiltInCardReaderConnectionController(
-            forSiteID: siteID,
-            alertsPresenter: alertsPresenter,
-            alertsProvider: CardPresentPaymentBuiltInReaderConnectionAlertsProvider(),
-            configuration: configuration,
-            analyticsTracker: analyticsTracker)
+        self.tapToPayConnectionController = RemoteBuiltInCardReaderConnectionController()
+//            forSiteID: siteID,
+//            alertsPresenter: alertsPresenter,
+//            alertsProvider: CardPresentPaymentBuiltInReaderConnectionAlertsProvider(),
+//            configuration: configuration,
+//            analyticsTracker: analyticsTracker)
     }
 }

@@ -22,6 +22,19 @@ final class CardReaderConnectionViewModel: ObservableObject {
         }
     }
 
+    func connectRemoteReader() {
+        guard connectionStatus == .disconnected else {
+            return
+        }
+        Task { @MainActor in
+            do {
+                let _ = try await cardPresentPayment.connectReader(using: .tapToPay)
+            } catch {
+                DDLogError("🔴 POS tap to pay connection error: \(error)")
+            }
+        }
+    }
+
     func disconnectReader() {
         guard case .connected = connectionStatus else {
             return

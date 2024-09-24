@@ -33,6 +33,7 @@ final class LoginPrologueViewController: UIViewController {
         return .portrait
     }
 
+    private var multipeer: CardReaderMultipeerSession?
 
     // MARK: - Overridden Methods
 
@@ -55,6 +56,14 @@ final class LoginPrologueViewController: UIViewController {
         setupContainerView()
         setupCurvedRectangle()
         setupCarousel()
+    }
+
+    @IBAction func bluetoothTapped(_ sender: Any) {
+        guard multipeer == nil else {
+            return
+        }
+        multipeer = CardReaderMultipeerSession()
+        multipeer?.startAdvertising()
     }
 
     override func viewWillAppear(_ animated: Bool) {

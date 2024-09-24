@@ -65,7 +65,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
+    private var builtInConnectionController: BuiltInCardReaderConnectionControlling
 
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
@@ -88,7 +88,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          tapToPayAlertProvider: TapToPayAlertProvider,
          externalReaderConnectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
+         tapToPayConnectionController: BuiltInCardReaderConnectionControlling,
          tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
@@ -180,7 +180,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         guard !tapToPayReconnectionController.isReconnecting else {
             return adoptReconnection(using: paymentGatewayAccount)
         }
-        let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
+        let localMobileReaderSupported = true// await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
 
         switch (discoveryMethod, localMobileReaderSupported) {
         case (.none, true):

@@ -33,9 +33,9 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         return try! mapNotes(from: "notifications-load-all")
     }()
 
-    private var sampleNoteWithOrderID: Yosemite.Note? {
+    private func sampleNote(read: Bool) -> Yosemite.Note? {
         for note in sampleNotes {
-            if note.read == false, note.meta.identifier(forKey: .order) != nil {
+            if note.read == read, note.meta.identifier(forKey: .order) != nil {
                 return note
             }
         }
@@ -53,26 +53,30 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         NotificationStore.resetSharedDerivedStorage()
     }
 
+    private func setupStoreManagerReceivingNotificationActions(for note: Yosemite.Note, noteStore: NotificationStore) {
+        self.storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .synchronizeNotifications(onCompletion):
+                onCompletion(nil)
+            case let .synchronizeNotification(_, onCompletion):
+                onCompletion(note, nil)
+            case let .updateReadStatus(noteID, read, onCompletion):
+                noteStore.updateLocalNoteReadStatus(for: [noteID], read: read) {
+                    onCompletion(nil)
+                }
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+    }
+
     @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_stores() {
+    func test_markOrderNoteAsReadIfNeeded_with_stores_unreadNote() {
         let expectation = self.expectation(description: "Mark order as read with stores")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        if let note = sampleNoteWithOrderID, let orderID = note.meta.identifier(forKey: .order) {
-            self.storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-                switch action {
-                case let .synchronizeNotifications(onCompletion):
-                    onCompletion(nil)
-                case let .synchronizeNotification(_, onCompletion):
-                    onCompletion(note, nil)
-                case let .updateReadStatus(noteID, read, onCompletion):
-                    noteStore.updateLocalNoteReadStatus(for: [noteID], read: read) {
-                        onCompletion(nil)
-                    }
-                default:
-                    XCTFail("Unexpected action: \(action)")
-                }
-            }
+        if let note = sampleNote(read: false), let orderID = note.meta.identifier(forKey: .order) {
+            setupStoreManagerReceivingNotificationActions(for: note, noteStore: noteStore)
             noteStore.updateLocalNotes(with: [note]) {
                 XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
                 Task {
@@ -95,10 +99,39 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
     }
 
     @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_network() async {
+    func test_markOrderNoteAsReadIfNeeded_with_stores_alreadyReadNote() {
+        let expectation = self.expectation(description: "Mark order as read with stores")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        if let note = sampleNote(read: true), let orderID = note.meta.identifier(forKey: .order) {
+            setupStoreManagerReceivingNotificationActions(for: note, noteStore: noteStore)
+            noteStore.updateLocalNotes(with: [note]) {
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
+                Task {
+                    let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: self.storesManager, noteID: note.noteID, orderID: orderID)
+                    switch result {
+                    case .success:
+                        XCTFail("Note was already read, it should not be marked as read again.")
+                    case .failure(let error):
+                        if case MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead = error {
+                            expectation.fulfill()
+                        } else {
+                            XCTFail("Got wrong error \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+        } else {
+            XCTFail()
+        }
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    @MainActor
+    func test_markOrderNoteAsReadIfNeeded_with_network_unreadNote() async {
         let expectation = self.expectation(description: "Mark order as read with network")
 
-        if let note = sampleNoteWithOrderID, let orderID = note.meta.identifier(forKey: .order) {
+        if let note = sampleNote(read: false), let orderID = note.meta.identifier(forKey: .order) {
             Task {
                 self.network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
                 self.network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
@@ -109,6 +142,31 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
                     expectation.fulfill()
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
+                }
+            }
+        } else {
+            XCTFail()
+        }
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    @MainActor
+    func test_markOrderNoteAsReadIfNeeded_with_network_alreadyReadNote() async {
+        let expectation = self.expectation(description: "Mark order as read with network")
+
+        if let note = sampleNote(read: true), let orderID = note.meta.identifier(forKey: .order) {
+            Task {
+                self.network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+                let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: note.noteID, orderID: orderID)
+                switch result {
+                case .success:
+                    XCTFail("Note was already read, it should not be marked as read again.")
+                case .failure(let error):
+                    if case MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead = error {
+                        expectation.fulfill()
+                    } else {
+                        XCTFail("Got wrong error \(error.localizedDescription)")
+                    }
                 }
             }
         } else {

@@ -40,7 +40,8 @@ struct MarkOrderAsReadUseCase {
         switch syncronizedNoteResult {
         case .success(let syncronizedNote):
             guard let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
-                  syncronizedNoteOrderID == orderID else {
+                  syncronizedNoteOrderID == orderID,
+                  syncronizedNote.read == false else {
                 return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
             }
 
@@ -93,8 +94,9 @@ struct MarkOrderAsReadUseCase {
             }) else {
                 return .failure(MarkOrderAsReadUseCase.Error.unavailableNote)
             }
-            guard let syncronizedNoteOrderID = note.meta.identifier(forKey: .order),
-               syncronizedNoteOrderID == orderID else {
+            guard let loadedNoteOrderID = note.meta.identifier(forKey: .order),
+                  loadedNoteOrderID == orderID,
+                  note.read == false else {
                 return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
             }
 

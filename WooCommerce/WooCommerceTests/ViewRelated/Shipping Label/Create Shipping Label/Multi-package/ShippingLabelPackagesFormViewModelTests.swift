@@ -183,13 +183,15 @@ extension ShippingLabelPackageItem {
                      quantity: Decimal = 1,
                      value: Double = 10,
                      dimensions: Yosemite.ProductDimensions = .fake(),
-                     attributes: [VariationAttributeViewModel] = []) -> ShippingLabelPackageItem {
+                     attributes: [VariationAttributeViewModel] = [],
+                     imageURL: URL? = nil) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
                                  name: name,
                                  weight: weight,
                                  quantity: quantity,
                                  value: value,
                                  dimensions: dimensions,
-                                 attributes: attributes)
+                                 attributes: attributes,
+                                 imageURL: imageURL)
     }
 }

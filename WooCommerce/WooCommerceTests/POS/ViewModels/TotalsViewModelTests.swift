@@ -233,6 +233,51 @@ final class TotalsViewModelTests: XCTestCase {
 
         XCTAssertTrue(collectPaymentCalled)
     }
+
+    func test_paymentIntentCreationErrorMessage_when_paymentIntentCreationError() async {
+        // Given
+        struct TestError: Error {}
+        let item = Self.makeItem()
+        orderService.orderToReturn = Order.fake()
+        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
+
+        var editOrderCalled = false
+        sut.editOrderActionPublisher.sink { _ in
+            editOrderCalled = true
+        }
+        .store(in: &cancellables)
+
+        // When paymentIntentCreationError event is received
+        cardPresentPaymentService.paymentEvent = .show(
+            eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+        )
+
+        // Then
+        // paymentIntentCreationError message is set
+        var editOrderAction: (() -> Void)? = nil
+        var tryAgainAction: (() -> Void)? = nil
+        if case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage {
+            editOrderAction = viewModel.editOrderButtonViewModel?.actionHandler
+            tryAgainAction = viewModel.tryAgainButtonViewModel.actionHandler
+        } else {
+            XCTFail("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+        }
+
+        // Try again action emits payment cancelation and collection
+        XCTAssertFalse(cardPresentPaymentService.cancelPaymentCalled)
+        tryAgainAction?()
+        XCTAssertTrue(cardPresentPaymentService.cancelPaymentCalled)
+        let expectation = XCTestExpectation(description: "Collect payment should be called after retrying payment")
+        cardPresentPaymentService.onCollectPaymentCalled = {
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: 1)
+
+        // Edit order action emits edit order event
+        XCTAssertFalse(editOrderCalled)
+        editOrderAction?()
+        XCTAssertTrue(editOrderCalled)
+    }
 }
 
 private extension TotalsViewModelTests {

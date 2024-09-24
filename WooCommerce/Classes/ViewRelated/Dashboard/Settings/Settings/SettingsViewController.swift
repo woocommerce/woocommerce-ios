@@ -499,7 +499,8 @@ private extension SettingsViewController {
 
     func webhooksWasPressed() {
         // TODO-gm: track event featureWebhooksShown
-        let viewController = UIHostingController(rootView: WebhooksView())
+        let viewModel = WebhooksViewModel()
+        let viewController = UIHostingController(rootView: WebhooksView(viewModel: viewModel))
         navigationController?.pushViewController(viewController, animated: true)
     }
 

@@ -512,6 +512,9 @@
 		57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E8FED2246616AC0057CD68 /* Result+Extensions.swift */; };
 		621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
+		680910712CA279340057B02A /* Webhook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910702CA279340057B02A /* Webhook.swift */; };
+		680910732CA27B900057B02A /* WebhookMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910722CA27B900057B02A /* WebhookMapper.swift */; };
+		680910752CA27DC50057B02A /* WebhooksRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910742CA27DC50057B02A /* WebhooksRemote.swift */; };
 		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
 		68255E442C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json in Resources */ = {isa = PBXBuildFile; fileRef = 68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
@@ -1661,6 +1664,9 @@
 		6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
+		680910702CA279340057B02A /* Webhook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webhook.swift; sourceTree = "<group>"; };
+		680910722CA27B900057B02A /* WebhookMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookMapper.swift; sourceTree = "<group>"; };
+		680910742CA27DC50057B02A /* WebhooksRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksRemote.swift; sourceTree = "<group>"; };
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-for-eligibility-criteria.json"; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
@@ -2857,6 +2863,7 @@
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
 				311D412F2783C0E200052F64 /* StripeRemote.swift */,
 				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
+				680910742CA27DC50057B02A /* WebhooksRemote.swift */,
 				FE28F6E5268429B6004465C7 /* UserRemote.swift */,
 				077F39D526A58E4500ABEADC /* SystemStatusRemote.swift */,
 				AEF94584272974F2001DCCFB /* TelemetryRemote.swift */,
@@ -2999,6 +3006,7 @@
 				0359EA0C27AAC5F80048DE2D /* WCPayChargeStatus.swift */,
 				3105470B262E27F000C5C02B /* WCPayPaymentIntentStatusEnum.swift */,
 				0359EA0E27AAC6410048DE2D /* WCPayPaymentMethodDetails.swift */,
+				680910702CA279340057B02A /* Webhook.swift */,
 				209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */,
 				E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */,
 				DE2E8E9C29530EEF002E4B14 /* WordPressSite.swift */,
@@ -3572,6 +3580,7 @@
 				FE28F6E326842848004465C7 /* UserMapper.swift */,
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
 				DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */,
+				680910722CA27B900057B02A /* WebhookMapper.swift */,
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
 				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
 				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
@@ -4886,6 +4895,7 @@
 				DEFBA74E29485A7600C35BA9 /* RESTRequest.swift in Sources */,
 				456930A9264EB576009ED69D /* ShippingLabelCarriersAndRates.swift in Sources */,
 				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
+				680910732CA27B900057B02A /* WebhookMapper.swift in Sources */,
 				020D07BA23D8542000FD9580 /* UploadableMedia.swift in Sources */,
 				DEC2961C26BBE764005A056B /* ShippingLabelCustomsForm.swift in Sources */,
 				31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */,
@@ -5097,6 +5107,7 @@
 				4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */,
 				02C11276274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift in Sources */,
 				DEB387762C2A9A140025256E /* GoogleAdsConnectionMapper.swift in Sources */,
+				680910752CA27DC50057B02A /* WebhooksRemote.swift in Sources */,
 				CC0786C5267BAF0F00BA9AC1 /* ShippingLabelStatusMapper.swift in Sources */,
 				4515280D257A7EEC0076B03C /* ProductAttributeListMapper.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
@@ -5242,6 +5253,7 @@
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				DE34051928BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
+				680910712CA279340057B02A /* Webhook.swift in Sources */,
 				077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */,
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				DEB387732C2A8F9A0025256E /* GoogleAdsConnection.swift in Sources */,

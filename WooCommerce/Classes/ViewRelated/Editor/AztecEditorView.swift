@@ -18,7 +18,7 @@ struct AztecEditorView: UIViewControllerRepresentable {
         }
 
         aztecController.onContentChanged = onContentChanged
-        return controller as! AztecEditorViewController
+        return aztecController
     }
 
     func updateUIViewController(_ uiViewController: AztecEditorViewController, context: Context) {

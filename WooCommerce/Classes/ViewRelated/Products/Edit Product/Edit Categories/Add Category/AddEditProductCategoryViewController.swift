@@ -38,6 +38,11 @@ final class AddEditProductCategoryViewController: UIViewController {
         configureTableView()
         startListeningToNotifications()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        focusTitleTextField()
+    }
 }
 
 // MARK: - View Configuration
@@ -174,6 +179,15 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
         if let indexPath = sections.indexPathForRow(.title) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
             cell?.resignFirstResponder()
+        }
+    }
+
+    /// Focus on Title Category Text Field
+    ///
+    private func focusTitleTextField() {
+        if let indexPath = sections.indexPathForRow(.title) {
+            let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
+            cell?.becomeFirstResponder()
         }
     }
 }

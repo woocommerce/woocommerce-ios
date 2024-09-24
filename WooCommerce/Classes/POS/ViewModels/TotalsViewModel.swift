@@ -43,6 +43,11 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         startNewOrderActionSubject.eraseToAnyPublisher()
     }
 
+    private let editOrderActionSubject = PassthroughSubject<Void, Never>()
+    var editOrderActionPublisher: AnyPublisher<Void, Never> {
+        editOrderActionSubject.eraseToAnyPublisher()
+    }
+
     var isShimmering: Bool {
         orderState.isSyncing
     }
@@ -122,6 +127,12 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         clearOrder()
         cardPresentPaymentInlineMessage = nil
         startNewOrderActionSubject.send(())
+    }
+
+    private func editOrder() {
+        paymentState = .idle
+        cardPresentPaymentInlineMessage = nil
+        editOrderActionSubject.send(())
     }
 
     func onTotalsViewDisappearance() {
@@ -379,6 +390,9 @@ private extension TotalsViewModel {
             paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
             paymentCaptureErrorNewOrderAction: { [weak self] in
                 self?.startNewOrder()
+            },
+            paymentIntentCreationErrorEditOrderAction: { [weak self] in
+                self?.editOrder()
             },
             dismissReaderConnectionModal: { [weak self] in
                 self?.cardPresentPaymentAlertViewModel = nil

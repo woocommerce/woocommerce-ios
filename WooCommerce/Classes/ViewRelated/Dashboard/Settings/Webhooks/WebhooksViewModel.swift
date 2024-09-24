@@ -7,7 +7,7 @@ final class WebhooksViewModel: ObservableObject {
     var credentials: Credentials = ServiceLocator.stores.sessionManager.defaultCredentials ?? .init(authToken: "")
     var service: WebhooksService
 
-    var webhooks: [Webhook] = []
+    @Published var webhooks: [Webhook] = []
 
     init() {
         service = WebhooksService(siteID: siteID, credentials: credentials)

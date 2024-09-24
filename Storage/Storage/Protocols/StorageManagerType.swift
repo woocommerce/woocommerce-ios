@@ -18,6 +18,7 @@ public protocol StorageManagerType {
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
+    @available(*, deprecated, message: "Use `performAndSave` to handle write operations instead.")
     var writerDerivedStorage: StorageType { get }
 
     /// Performs a task in Background: a special `Storage` instance will be provided (which is expected to be used within the closure!).
@@ -30,7 +31,15 @@ public protocol StorageManagerType {
     ///   - derivedStorageType: a derived StorageType constructed with `newDerivedStorage`
     ///   - closure: Callback to be executed on completion
     ///
+    @available(*, deprecated, message: "Use `performAndSave` to handle write operations instead.")
     func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void)
+
+    /// Helper method to perform a write operation and save the changes in a background context.
+    /// - Parameters:
+    ///   - block: the write operation to be handled, given the derived StorageType.
+    ///   - completion: Callback to be executed on completion
+    ///
+    func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

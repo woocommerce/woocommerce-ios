@@ -150,6 +150,17 @@ public final class CoreDataManager: StorageManagerType {
         }
     }
 
+    /// Handles a write operation using the background context and saves changes when done.
+    ///
+    public func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
+        let derivedStorage = writerDerivedStorage
+        derivedStorage.perform {
+            block(derivedStorage)
+            derivedStorage.saveIfNeeded()
+            completion?()
+        }
+    }
+
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {

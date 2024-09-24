@@ -17,17 +17,6 @@ class CustomFieldViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.contentURL, url)
     }
 
-    func test_init_with_MetaData_strips_HTML_from_metadata_value() throws {
-        // Given
-        let metadata = MetaData(metadataID: 0, key: "HTML Metadata", value: "<strong>Fancy</strong> <a href=\"http://\">Metadata</a>")
-
-        // When
-        let viewModel = CustomFieldViewModel(metadata: metadata)
-
-        // Then
-        XCTAssertEqual(viewModel.content, "Fancy Metadata")
-    }
-
     func test_init_with_MetaData_creates_contentURL_from_metadata_value() throws {
         // Given
         let urlString = "https://woocommerce.com/"

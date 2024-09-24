@@ -484,7 +484,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // When
-        MainTabBarController.navigateToOrderDetails(with: 155, siteID: siteID)
+        tabBarController.navigateToOrderDetails(with: 155, siteID: siteID)
         waitUntil {
             tabBarController.selectedViewController is TabContainerController
         }
@@ -527,7 +527,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // When
-        MainTabBarController.presentNotificationDetails(for: 1)
+        tabBarController.presentNotificationDetails(for: 1)
         waitUntil {
             tabBarController.selectedViewController is TabContainerController
         }

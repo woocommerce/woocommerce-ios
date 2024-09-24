@@ -9,7 +9,7 @@ struct MyStoreRoute: Route {
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        MainTabBarController.switchToMyStoreTab()
+        AppDelegate.shared.tabBarController?.switchToMyStoreTab(animated: false)
 
         return true
     }

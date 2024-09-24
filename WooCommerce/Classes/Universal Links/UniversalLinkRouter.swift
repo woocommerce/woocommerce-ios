@@ -46,7 +46,7 @@ struct UniversalLinkRouter {
         return false
     }
 
-    static func defaultUniversalLinkRouter(tabBarController: MainTabBarController) -> UniversalLinkRouter {
+    static func defaultUniversalLinkRouter(tabBarController: MainTabBarControllerProtocol) -> UniversalLinkRouter {
         UniversalLinkRouter(routes: UniversalLinkRouter.defaultRoutes(navigator: tabBarController))
     }
 

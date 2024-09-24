@@ -6,16 +6,16 @@ struct SpotlightManager {
         var type: WooActivityType?
         switch userActivity.activityType {
         case WooActivityType.dashboard.rawValue:
-            MainTabBarController.switchToMyStoreTab()
+            AppDelegate.shared.tabBarController?.switchToMyStoreTab(animated: false)
             type = WooActivityType.dashboard
         case WooActivityType.orders.rawValue:
-            MainTabBarController.switchToOrdersTab()
+            AppDelegate.shared.tabBarController?.switchToOrdersTab(completion: nil)
             type = WooActivityType.orders
         case WooActivityType.products.rawValue:
-            MainTabBarController.switchToProductsTab()
+            AppDelegate.shared.tabBarController?.switchToProductsTab(completion: nil)
             type = WooActivityType.products
         case WooActivityType.payments.rawValue:
-            MainTabBarController.presentPayments()
+            AppDelegate.shared.tabBarController?.presentPayments()
             type = WooActivityType.payments
         default:
             break

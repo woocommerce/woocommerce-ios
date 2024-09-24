@@ -60,7 +60,7 @@ extension WooTab {
 ///
 /// TODO Migrate the `viewControllers` management from `Main.storyboard` to here (as code).
 ///
-final class MainTabBarController: UITabBarController {
+final class MainTabBarController: UITabBarController, MainTabBarControllerProtocol {
 
     /// For picking up the child view controller's status bar styling
     /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
@@ -306,28 +306,28 @@ extension MainTabBarController {
 
     /// Switches to the My Store tab and pops to the root view controller
     ///
-    static func switchToMyStoreTab(animated: Bool = false) {
+    func switchToMyStoreTab(animated: Bool = false) {
         navigateTo(.myStore, animated: animated)
     }
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
-    static func switchToOrdersTab(completion: (() -> Void)? = nil) {
+    func switchToOrdersTab(completion: (() -> Void)? = nil) {
         navigateTo(.orders, completion: completion)
     }
 
     /// Switches to the Products tab and pops to the root view controller
     ///
-    static func switchToProductsTab(completion: (() -> Void)? = nil) {
+    func switchToProductsTab(completion: (() -> Void)? = nil) {
         navigateTo(.products, completion: completion)
     }
 
     /// Switches to the Hub Menu tab and pops to the root view controller
     ///
-    static func switchToHubMenuTab(completion: ((HubMenuViewController?) -> Void)? = nil) {
+    func switchToHubMenuTab(completion: ((HubMenuViewController?) -> Void)? = nil) {
         navigateTo(.hubMenu, completion: {
-            let hubMenuViewController: HubMenuViewController? = {
-                guard let hubMenuTabController = childViewController() as? TabContainerController,
+            let hubMenuViewController: HubMenuViewController? = { [weak self] in
+                guard let hubMenuTabController = self?.childViewController() as? TabContainerController,
                       let navigationController = hubMenuTabController.wrappedController as? UINavigationController,
                       let hubMenuViewController = navigationController.topViewController as? HubMenuViewController else {
                     DDLogError("⛔️ Could not switch to the Hub Menu")
@@ -339,20 +339,9 @@ extension MainTabBarController {
         })
     }
 
-    /// Switches the TabBarController to the specified Tab
-    ///
-    private static func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
-        guard let tabBar = AppDelegate.shared.tabBarController else {
-            return
-        }
-
-        tabBar.navigateTo(tab, animated: animated, completion: completion)
-    }
-
     /// Returns the "Top Visible Child" of the specified type
     ///
-    private static func childViewController<T: UIViewController>() -> T? {
-        let selectedViewController = AppDelegate.shared.tabBarController?.selectedViewController
+    private func childViewController<T: UIViewController>() -> T? {
         guard let navController = selectedViewController as? UINavigationController else {
             return selectedViewController as? T
         }
@@ -368,38 +357,39 @@ extension MainTabBarController {
 
     /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
-    static func presentNotificationDetails(for noteID: Int64) {
-        let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
-            guard let note = note,
+    func presentNotificationDetails(for noteID: Int64) {
+        let action = NotificationAction.synchronizeNotification(noteID: noteID) { [weak self] note, error in
+            guard let self,
+                  let note = note,
                   let siteID = note.meta.identifier(forKey: .site) else {
                 return
             }
             showStore(with: Int64(siteID), onCompletion: { _ in
-                presentNotificationDetails(for: note)
+                self.presentNotificationDetails(for: note)
             })
         }
         ServiceLocator.stores.dispatch(action)
     }
 
     /// Presents the details  of a push notification.
-    static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
+    func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
         guard let note = notification.note,
               let siteID = note.meta.identifier(forKey: .site) else {
             presentNotificationDetails(for: notification.noteID)
             return
         }
-        showStore(with: Int64(siteID), onCompletion: { _ in
-            presentNotificationDetails(for: note)
+        showStore(with: Int64(siteID), onCompletion: { [weak self] _ in
+            self?.presentNotificationDetails(for: note)
         })
     }
 
     /// Presents the order details if the `note` is for an order push notification.
     ///
-    private static func presentNotificationDetails(for note: Note) {
+    private func presentNotificationDetails(for note: Note) {
         switch note.kind {
         case .storeOrder:
-            switchToOrdersTab {
-                ordersTabSplitViewWrapper()?.presentDetails(for: note)
+            switchToOrdersTab { [weak self] in
+                self?.ordersTabSplitViewWrapper()?.presentDetails(for: note)
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: note)
@@ -411,7 +401,7 @@ extension MainTabBarController {
                                                                               "already_read": note.read ])
     }
 
-    private static func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+    private func showStore(with siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
         let stores = ServiceLocator.stores
 
         // Already showing that store, do nothing
@@ -432,12 +422,13 @@ extension MainTabBarController {
         }
     }
 
-    static func presentAddProductFlow() {
-        switchToProductsTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let productsContainerController = tabBar?.productsContainerController
+    func presentAddProductFlow() {
+        switchToProductsTab { [weak self] in
+            guard let self else { return }
 
-            guard let productsSplitViewWrapperController = productsContainerController?.wrappedController as? ProductsSplitViewWrapperController else {
+            let productsContainerController = productsContainerController
+
+            guard let productsSplitViewWrapperController = productsContainerController.wrappedController as? ProductsSplitViewWrapperController else {
                 return
             }
 
@@ -445,8 +436,9 @@ extension MainTabBarController {
         }
     }
 
-    static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
-        showStore(with: siteID, onCompletion: { storeIsShown in
+    func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
+        showStore(with: siteID, onCompletion: { [weak self] storeIsShown in
+            guard let self else { return }
             switchToOrdersTab {
                 // It failed to show the order's store. We navigate to the orders tab and stop, as we cannot show the order details screen
                 guard storeIsShown else {
@@ -454,13 +446,13 @@ extension MainTabBarController {
                 }
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                    presentDetails(for: orderID, siteID: siteID)
+                    self.presentDetails(for: orderID, siteID: siteID)
                 }
             }
         })
     }
 
-    static func navigateToBlazeCampaignDetails(using note: Note) {
+    func navigateToBlazeCampaignDetails(using note: Note) {
         guard note.kind.isBlaze else {
             return
         }
@@ -475,41 +467,43 @@ extension MainTabBarController {
             return
         }
 
-        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+        showStore(with: Int64(siteID), onCompletion: { [weak self] storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
+            guard let self,
+                  storeIsShown else {
                 return
             }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
-                switchToHubMenuTab() { hubMenuViewController in
+                self.switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaign("\(campaignID)")
                 }
             }
         })
     }
 
-    static func navigateToBlazeCampaignCreation(for siteID: Int64) {
-        showStore(with: Int64(siteID), onCompletion: { storeIsShown in
+    func navigateToBlazeCampaignCreation(for siteID: Int64) {
+        showStore(with: Int64(siteID), onCompletion: { [weak self] storeIsShown in
             // It failed to show the campaign's store.
-            guard storeIsShown else {
+            guard let self, storeIsShown else {
                 return
             }
 
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.blazeScreenTransitionsDelay) {
-                switchToHubMenuTab() { hubMenuViewController in
+                self.switchToHubMenuTab() { hubMenuViewController in
                     hubMenuViewController?.showBlazeCampaignCreation()
                 }
             }
         })
     }
 
-    static func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
-        switchToOrdersTab {
-            let tabBar = AppDelegate.shared.tabBarController
-            let ordersContainerController = tabBar?.ordersContainerController
+    func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
+        switchToOrdersTab { [weak self] in
+            guard let self else { return }
 
-            guard let ordersSplitViewWrapperController = ordersContainerController?.wrappedController as? OrdersSplitViewWrapperController else {
+            let ordersContainerController = ordersContainerController
+
+            guard let ordersSplitViewWrapperController = ordersContainerController.wrappedController as? OrdersSplitViewWrapperController else {
                 return
             }
 
@@ -517,11 +511,11 @@ extension MainTabBarController {
         }
     }
 
-    private static func presentDetails(for orderID: Int64, siteID: Int64) {
+    private func presentDetails(for orderID: Int64, siteID: Int64) {
         ordersTabSplitViewWrapper()?.presentDetails(for: orderID, siteID: siteID)
     }
 
-    private static func ordersTabSplitViewWrapper() -> OrdersSplitViewWrapperController? {
+    private func ordersTabSplitViewWrapper() -> OrdersSplitViewWrapperController? {
         guard let ordersTabController = childViewController() as? TabContainerController,
               let ordersSplitViewWrapperController = ordersTabController.wrappedController as? OrdersSplitViewWrapperController else {
             return nil
@@ -529,13 +523,13 @@ extension MainTabBarController {
         return ordersSplitViewWrapperController
     }
 
-    static func presentPayments() {
+    func presentPayments() {
         switchToHubMenuTab() { hubMenuViewController in
             hubMenuViewController?.showPaymentsMenu()
         }
     }
 
-    static func presentCoupons() {
+    func presentCoupons() {
         switchToHubMenuTab() { hubMenuViewController in
             hubMenuViewController?.showCoupons()
         }
@@ -543,17 +537,10 @@ extension MainTabBarController {
 
     /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.
     ///
-    static func navigateToPrivacySettings() {
+    func navigateToPrivacySettings() {
         switchToHubMenuTab { hubMenuViewController in
             hubMenuViewController?.showPrivacySettings()
         }
-    }
-
-    static func presentCollectPayment() {
-        guard let tabBar = AppDelegate.shared.tabBarController else {
-            return
-        }
-        tabBar.presentCollectPayment()
     }
 }
 
@@ -568,8 +555,8 @@ extension MainTabBarController: DeepLinkNavigator {
                 self?.hubMenuTabCoordinator?.navigate(to: destination)
             }
         case is OrdersDestination:
-            navigateTo(.orders) {
-                Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
+            navigateTo(.orders) { [weak self] in
+                self?.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
         default:
             return

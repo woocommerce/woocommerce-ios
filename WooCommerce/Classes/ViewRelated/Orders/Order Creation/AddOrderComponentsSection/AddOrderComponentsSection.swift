@@ -106,7 +106,7 @@ private extension AddOrderComponentsSection {
                           message: Text(Localization.goToCouponsAlertMessage),
                           primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
                         viewModel.onGoToCouponsClosure()
-                        MainTabBarController.presentCoupons()
+                        AppDelegate.shared.tabBarController?.presentCoupons()
                     }),
                           secondaryButton: .cancel())
                 })

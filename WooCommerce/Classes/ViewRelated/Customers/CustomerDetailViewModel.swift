@@ -167,7 +167,7 @@ final class CustomerDetailViewModel: ObservableObject {
         guard canCreateNewOrder else {
             return
         }
-        MainTabBarController.presentOrderCreationFlow(for: customerID, billing: billing, shipping: shipping)
+        AppDelegate.shared.tabBarController?.presentOrderCreationFlow(for: customerID, billing: billing, shipping: shipping)
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailNewOrder())
     }
 }

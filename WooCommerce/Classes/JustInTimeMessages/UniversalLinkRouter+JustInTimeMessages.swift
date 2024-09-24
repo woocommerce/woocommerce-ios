@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 extension UniversalLinkRouter {
-    static func justInTimeMessagesUniversalLinkRouter(tabBarController: MainTabBarController?,
+    static func justInTimeMessagesUniversalLinkRouter(tabBarController: MainTabBarControllerProtocol?,
                                                       urlOpener: URLOpener) -> UniversalLinkRouter {
         UniversalLinkRouter(routes: Self.defaultRoutes(navigator: tabBarController),
                             bouncingURLOpener: urlOpener,

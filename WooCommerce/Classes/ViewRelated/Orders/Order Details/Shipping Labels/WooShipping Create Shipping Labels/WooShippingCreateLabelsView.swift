@@ -26,8 +26,13 @@ struct WooShippingCreateLabelsView: View {
         NavigationStack {
             ScrollView {
                 WooShippingItems(viewModel: viewModel.items)
-                    .padding()
+
+                WooShippingHazmat()
+
+                WooShippingPackageSelection()
+                    .padding(.vertical, Layout.buttonPadding)
             }
+            .padding()
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -42,6 +47,10 @@ struct WooShippingCreateLabelsView: View {
 }
 
 private extension WooShippingCreateLabelsView {
+    enum Layout {
+        static let buttonPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let title = NSLocalizedString("wooShipping.createLabels.title",
                                              value: "Create Shipping Labels",

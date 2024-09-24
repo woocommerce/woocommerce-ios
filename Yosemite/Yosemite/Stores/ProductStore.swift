@@ -9,10 +9,6 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
@@ -265,9 +261,9 @@ private extension ProductStore {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
@@ -859,15 +855,14 @@ extension ProductStore {
                                           siteID: Int64,
                                           shouldDeleteExistingProducts: Bool = false,
                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
+        storageManager.performAndSave { derivedStorage in
+            derivedStorage.perform {
+                if shouldDeleteExistingProducts {
+                    derivedStorage.deleteProducts(siteID: siteID)
+                }
+                self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
             }
-            self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+        } completion: {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
@@ -1248,13 +1243,12 @@ private extension ProductStore {
                                                  filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
                                                  onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+        storageManager.performAndSave { derivedStorage in
+            derivedStorage.perform { [weak self] in
+                self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
+                self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            }
+        } completion: {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

@@ -14,14 +14,15 @@ public class MockStorageManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        return persistentContainer.viewContext
+        let viewContext = persistentContainer.viewContext
+        viewContext.automaticallyMergesChangesFromParent = true
+        return viewContext
     }
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
     public lazy var writerDerivedStorage: StorageType = {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
+        let childManagedObjectContext = persistentContainer.newBackgroundContext()
         childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return childManagedObjectContext
     }()
@@ -46,11 +47,7 @@ public class MockStorageManager: StorageManagerType {
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()
-
-            self.viewStorage.perform {
-                self.viewStorage.saveIfNeeded()
-                closure()
-            }
+            closure()
         }
     }
 
@@ -59,6 +56,17 @@ public class MockStorageManager: StorageManagerType {
     public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
         persistentContainer.performBackgroundTask { context in
             closure(context as StorageType)
+        }
+    }
+
+    /// Handles a write operation using the background context and saves changes when done.
+    ///
+    public func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
+        let derivedStorage = writerDerivedStorage
+        derivedStorage.perform {
+            block(derivedStorage)
+            derivedStorage.saveIfNeeded()
+            completion?()
         }
     }
 

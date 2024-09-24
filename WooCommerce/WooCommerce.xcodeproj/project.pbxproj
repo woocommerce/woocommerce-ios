@@ -2257,6 +2257,7 @@
 		CE6E110D2C91E5FF00563DD4 /* WooShippingItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6E110C2C91E5FF00563DD4 /* WooShippingItems.swift */; };
 		CE6E110F2C91EF6800563DD4 /* View+RoundedBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */; };
 		CE7B4A582CA191FB00F764EB /* WooShippingItemRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */; };
+		CE7B4A5B2CA1BF9900F764EB /* WooShippingHazmat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */; };
 		CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */; };
 		CE7F778B2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */; };
 		CE7F778D2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */; };
@@ -5314,6 +5315,7 @@
 		CE6E110C2C91E5FF00563DD4 /* WooShippingItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItems.swift; sourceTree = "<group>"; };
 		CE6E110E2C91EF6800563DD4 /* View+RoundedBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+RoundedBorder.swift"; sourceTree = "<group>"; };
 		CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingItemRowViewModelTests.swift; sourceTree = "<group>"; };
+		CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingHazmat.swift; sourceTree = "<group>"; };
 		CE7CEC2C2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CE7F778A2C074D2500C89F4E /* EditableOrderShippingLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModel.swift; sourceTree = "<group>"; };
 		CE7F778C2C0770FF00C89F4E /* EditableOrderShippingLineViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderShippingLineViewModelTests.swift; sourceTree = "<group>"; };
@@ -11776,6 +11778,14 @@
 			path = "WooShipping Items Section";
 			sourceTree = "<group>";
 		};
+		CE7B4A592CA1BF7800F764EB /* WooShipping Hazmat Section */ = {
+			isa = PBXGroup;
+			children = (
+				CE7B4A5A2CA1BF9900F764EB /* WooShippingHazmat.swift */,
+			);
+			path = "WooShipping Hazmat Section";
+			sourceTree = "<group>";
+		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -11872,6 +11882,7 @@
 			isa = PBXGroup;
 			children = (
 				CE6E11092C91DA3D00563DD4 /* WooShipping Items Section */,
+				CE7B4A592CA1BF7800F764EB /* WooShipping Hazmat Section */,
 				CEAB739B2C81E3F600A7EB39 /* WooShippingCreateLabelsView.swift */,
 				CEC3CC6E2C93146700B93FBE /* WooShippingCreateLabelsViewModel.swift */,
 			);
@@ -15155,6 +15166,7 @@
 				0212276324498CDC0042161F /* ProductFormBottomSheetAction.swift in Sources */,
 				03B9E5272A14EA89005C77F5 /* CardReaderSupportDeterminer.swift in Sources */,
 				DEF8CF1629A8C2EB00800A60 /* AdminRoleRequiredView.swift in Sources */,
+				CE7B4A5B2CA1BF9900F764EB /* WooShippingHazmat.swift in Sources */,
 				0258B4D82B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift in Sources */,
 				DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */,
 				DE69C54D27BB719A000BB888 /* CouponRestrictions.swift in Sources */,

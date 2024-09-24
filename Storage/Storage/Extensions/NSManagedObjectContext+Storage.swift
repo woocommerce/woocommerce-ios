@@ -60,7 +60,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes the specified Object Instance
     ///
     public func deleteObject<T: Object>(_ object: T) {
-        assert(Thread.isMainThread == false, "Deleting objects should only be done on a background context")
+        Self.ensureCorrectContextUsage(for: T.entityName)
         guard let object = object as? NSManagedObject else {
             logErrorAndExit("Invalid Object Kind")
         }
@@ -71,7 +71,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes all of the NSMO instances associated to the specified kind
     ///
     public func deleteAllObjects<T: Object>(ofType type: T.Type) {
-        assert(Thread.isMainThread == false, "Deleting objects should only be done on a background context")
+        Self.ensureCorrectContextUsage(for: T.entityName)
         let request = fetchRequest(forType: type)
         request.includesPropertyValues = false
         request.includesSubentities = false
@@ -106,7 +106,7 @@ extension NSManagedObjectContext: StorageType {
     /// Inserts a new Entity. For performance reasons, this helper *DOES NOT* persists the context.
     ///
     public func insertNewObject<T: Object>(ofType type: T.Type) -> T {
-        assert(Thread.isMainThread == false, "Inserting new objects should only be done on a background context")
+        Self.ensureCorrectContextUsage(for: T.entityName)
         return NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as! T
     }
 
@@ -177,5 +177,20 @@ extension NSManagedObjectContext: StorageType {
     ///
     private func fetchRequest<T: Object>(forType type: T.Type) -> NSFetchRequest<NSFetchRequestResult> {
         return NSFetchRequest<NSFetchRequestResult>(entityName: type.entityName)
+    }
+
+    /// Helper to trigger failure in debug mode or print warning when write operations are called from the view context (main thread).
+    ///
+    private static func ensureCorrectContextUsage(for entityName: String) {
+        let isUITesting = CommandLine.arguments.contains("-ui_testing")
+        let enforceWriteInBackground = ProcessInfo.processInfo.arguments.contains("-enforce-core-data-write-in-background")
+        if !isUITesting, enforceWriteInBackground {
+            assert(Thread.isMainThread == false,
+                   "Write operations for \(entityName) should only be done on a background context")
+        } else {
+            DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️ \n" +
+                      "Stack trace: \n" +
+                      Thread.callStackSymbols.joined(separator: "\n"))
+        }
     }
 }

@@ -124,6 +124,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-enforce-core-data-write-in-background"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-stripe-verbose-logging"
             isEnabled = "NO">
          </CommandLineArgument>

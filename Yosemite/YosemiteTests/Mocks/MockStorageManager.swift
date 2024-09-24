@@ -14,15 +14,14 @@ public class MockStorageManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        let viewContext = persistentContainer.viewContext
-        viewContext.automaticallyMergesChangesFromParent = true
-        return viewContext
+        return persistentContainer.viewContext
     }
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
     public lazy var writerDerivedStorage: StorageType = {
-        let childManagedObjectContext = persistentContainer.newBackgroundContext()
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = persistentContainer.viewContext
         childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return childManagedObjectContext
     }()
@@ -47,7 +46,11 @@ public class MockStorageManager: StorageManagerType {
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
             derivedStorage.saveIfNeeded()
-            closure()
+
+            self.viewStorage.perform {
+                self.viewStorage.saveIfNeeded()
+                closure()
+            }
         }
     }
 
@@ -56,17 +59,6 @@ public class MockStorageManager: StorageManagerType {
     public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
         persistentContainer.performBackgroundTask { context in
             closure(context as StorageType)
-        }
-    }
-
-    /// Handles a write operation using the background context and saves changes when done.
-    ///
-    public func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
-        let derivedStorage = writerDerivedStorage
-        derivedStorage.perform {
-            block(derivedStorage)
-            derivedStorage.saveIfNeeded()
-            completion?()
         }
     }
 
@@ -98,6 +90,17 @@ public class MockStorageManager: StorageManagerType {
 
             NSLog("💣 [CoreDataManager] Stack Destroyed!")
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+    }
+
+    /// Handles a write operation using the background context and saves changes when done.
+    ///
+    public func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
+        let derivedStorage = writerDerivedStorage
+        derivedStorage.perform {
+            block(derivedStorage)
+            derivedStorage.saveIfNeeded()
+            completion?()
         }
     }
 }

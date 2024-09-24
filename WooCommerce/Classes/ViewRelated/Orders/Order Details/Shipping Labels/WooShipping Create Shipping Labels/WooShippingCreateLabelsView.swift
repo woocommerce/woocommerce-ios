@@ -31,6 +31,8 @@ struct WooShippingCreateLabelsView: View {
 
                 WooShippingPackageSelection()
                     .padding(.vertical, Layout.buttonPadding)
+
+                WooShippingRateSelection()
             }
             .padding()
             .navigationTitle(Localization.title)

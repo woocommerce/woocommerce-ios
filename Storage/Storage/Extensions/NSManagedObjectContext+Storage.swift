@@ -60,6 +60,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes the specified Object Instance
     ///
     public func deleteObject<T: Object>(_ object: T) {
+        assert(Thread.isMainThread == false, "Deleting objects should only be done on a background context")
         guard let object = object as? NSManagedObject else {
             logErrorAndExit("Invalid Object Kind")
         }
@@ -70,6 +71,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes all of the NSMO instances associated to the specified kind
     ///
     public func deleteAllObjects<T: Object>(ofType type: T.Type) {
+        assert(Thread.isMainThread == false, "Deleting objects should only be done on a background context")
         let request = fetchRequest(forType: type)
         request.includesPropertyValues = false
         request.includesSubentities = false
@@ -104,6 +106,7 @@ extension NSManagedObjectContext: StorageType {
     /// Inserts a new Entity. For performance reasons, this helper *DOES NOT* persists the context.
     ///
     public func insertNewObject<T: Object>(ofType type: T.Type) -> T {
+        assert(Thread.isMainThread == false, "Inserting new objects should only be done on a background context")
         return NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as! T
     }
 

@@ -59,7 +59,7 @@ struct WebhooksView: View {
                             Spacer()
                             Image(.magnifyingGlassNotFound)
                                 .padding(.bottom)
-                            Text("No webhooks have been configured yet on your site.")
+                            Text(Localization.noWebhooksFoundMessage)
                                 .subheadlineStyle()
                             Spacer()
                         }
@@ -76,18 +76,18 @@ struct WebhooksView: View {
             case .createNew:
                 VStack {
                     Group {
-                        Text("Webhooks are event notifications sent to URLs of your choice.")
-                        Text("They can be used to integrate with third-party services which support them.")
+                        Text(Localization.addNewWebhookHint1)
+                        Text(Localization.addNewWebhookHint2)
                     }
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom)
 
                     HStack() {
-                        Text("Select a topic:")
+                        Text(Localization.topicSelectionHint)
                             .subheadlineStyle()
                         Spacer()
-                        Picker("option", selection: $selectedOption) {
+                        Picker("", selection: $selectedOption) {
                             ForEach(AvailableWebhook.allCases, id: \.self) { option in
                                 Text(option.rawValue)
                                     .tag(option)
@@ -96,7 +96,7 @@ struct WebhooksView: View {
                         .pickerStyle(.menu)
                     }
 
-                    TextField("Delivery URL", text: $deliveryURLString)
+                    TextField(Localization.deliveryURLPlaceholder, text: $deliveryURLString)
                         .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
 
                     Spacer()
@@ -112,7 +112,7 @@ struct WebhooksView: View {
                             }
                         }
                     }, label: {
-                        Text("Create")
+                        Text(Localization.createWebhookButtonTitle)
                     })
                     .buttonStyle(PrimaryButtonStyle())
                 }
@@ -140,15 +140,80 @@ struct WebhooksView: View {
             }
         }
         .alert(isPresented: $showErrorModal) {
-            Alert(title: Text("Error"),
-                  message: Text("Error message"),
-                  dismissButton: .default(Text("Dismiss")))
+            Alert(title: Text(Localization.createWebhookErrorTitle),
+                  message: Text(Localization.createWebhookErrorMessage),
+                  dismissButton: .default(Text(Localization.createWebhookErrorDismiss)))
         }
         .alert(isPresented: $showSuccessModal) {
-            Alert(title: Text("Success!"),
-                  message: Text("A new webhook has been created in your site."),
-                  dismissButton: .default(Text("Ok")))
+            Alert(title: Text(Localization.createWebhookSuccessTitle),
+                  message: Text(Localization.createWebhookSuccessMessage),
+                  dismissButton: .default(Text(Localization.createWebhookSuccessOkButton)))
         }
+    }
+}
+
+private extension WebhooksView {
+    enum Localization {
+        static let noWebhooksFoundMessage = NSLocalizedString(
+            "settings.webhooksview.noWebhooksFoundMessage",
+            value: "No webhooks have been configured yet on your site.",
+            comment: "Message shown to the merchant when no webhooks are found on their site."
+        )
+        static let addNewWebhookHint1 = NSLocalizedString(
+            "settings.webhooksview.addNewWebhookHint1",
+            value: "Webhooks are event notifications sent to URLs of your choice.",
+            comment: "Message shown to the merchant in order to setup their webhooks"
+        )
+        static let addNewWebhookHint2 = NSLocalizedString(
+            "settings.webhooksview.addNewWebhookHint2",
+            value: "They can be used to integrate with third-party services which support them.",
+            comment: "Message shown to the merchant in order to setup their webhooks"
+        )
+        static let deliveryURLPlaceholder = NSLocalizedString(
+            "settings.webhooksview.deliveryURLPlaceholder",
+            value: "Delivery URL:",
+            comment: "Texfield's placeholder message indicating an URL must be typed"
+        )
+        static let createWebhookButtonTitle = NSLocalizedString(
+            "settings.webhooksview.createWebhookButtonTitle",
+            value: "Create",
+            comment: "Title for the button to create a webhook"
+        )
+        static let createWebhookErrorTitle = NSLocalizedString(
+            "settings.webhooksview.createWebhookErrorTitle",
+            value: "Error",
+            comment: "Error title when webhook creation fails"
+        )
+        static let createWebhookErrorMessage = NSLocalizedString(
+            "settings.webhooksview.createWebhookErrorMessage",
+            value: "There was an error creating the webhook. Please try again.",
+            comment: "Error message when webhook creation fails"
+        )
+        static let createWebhookErrorDismiss = NSLocalizedString(
+            "settings.webhooksview.createWebhookErrorDismiss",
+            value: "Dismiss",
+            comment: "Title for the dismiss button when a webhook creation fails"
+        )
+        static let createWebhookSuccessTitle = NSLocalizedString(
+            "settings.webhooksview.createWebhookSuccessTitle",
+            value: "Success!",
+            comment: "Title shown in an alert when a webhook creation succeeds"
+        )
+        static let createWebhookSuccessMessage = NSLocalizedString(
+            "settings.webhooksview.createWebhookSuccessMessage",
+            value: "A new webhook has been created in your site.",
+            comment: "Message shown in an alert when a webhook creation succeeds"
+        )
+        static let createWebhookSuccessOkButton = NSLocalizedString(
+            "settings.webhooksview.createWebhookSuccessOkButton",
+            value: "Ok",
+            comment: "Title for the button that dismisses the alert when a webhook creation succeeds"
+        )
+        static let topicSelectionHint = NSLocalizedString(
+            "settings.webhooksview.topicSelectionHint",
+            value: "Select a topic:",
+            comment: "Message shown to the merchant so they can select between different available webhook options"
+        )
     }
 }
 

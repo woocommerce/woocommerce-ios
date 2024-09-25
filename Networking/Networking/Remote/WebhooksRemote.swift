@@ -12,15 +12,15 @@ public class WebhooksRemote: Remote {
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func createWebhook(for siteID: Int64) async throws -> Webhook {
+    public func createWebhook(for siteID: Int64, topic: String, url: URL) async throws -> Webhook {
         let parameters = [
-            "topic": "",
-            "delivery_url": ""
+            "topic": "\(topic)",
+            "delivery_url": "\(url.absoluteString)"
         ]
 
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .post,
-                                     siteID: siteID, 
+                                     siteID: siteID,
                                      path: "webhooks",
                                      parameters: parameters,
                                      availableAsRESTRequest: true)

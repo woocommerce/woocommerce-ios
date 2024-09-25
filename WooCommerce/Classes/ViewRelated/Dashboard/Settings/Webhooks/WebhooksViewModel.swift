@@ -22,8 +22,13 @@ final class WebhooksViewModel: ObservableObject {
         }
     }
 
-    func createWebhook() async throws {
-        let webhook = try await service.createWebhook()
-        debugPrint("🍍 \(webhook)")
+    func createWebhook(_ deliveryURLString: String) async throws {
+        // At the moment we only allow for the order.updated webhook, so it's hardcoded
+        // On further iterations we can pass different selectable topics or custom actions down to the service.
+        let topic = "order.updated"
+        guard let url = URL(string: deliveryURLString) else {
+            throw NSError(domain: "Invalid URL", code: 0)
+        }
+        let webhook = try await service.createWebhook(topic: topic, url: url)
     }
 }

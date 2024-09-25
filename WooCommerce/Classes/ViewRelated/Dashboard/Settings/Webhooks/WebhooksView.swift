@@ -91,7 +91,7 @@ struct WebhooksView: View {
                     Button(action: {
                         Task {
                             do {
-                                try await viewModel.createWebhook()
+                                try await viewModel.createWebhook( $deliveryURLString.wrappedValue)
                             } catch {
                                 showErrorModal = true
                             }
@@ -99,6 +99,7 @@ struct WebhooksView: View {
                     }, label: {
                         Text("Create")
                     })
+                    .disabled(orderCreatedToggle ? false : true)
                     .buttonStyle(PrimaryButtonStyle())
                     Spacer()
                 }

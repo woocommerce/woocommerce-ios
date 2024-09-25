@@ -26,8 +26,10 @@ public final class WebhooksService: ObservableObject {
     }
 
     @MainActor
-    public func createWebhook() async throws -> Webhook {
-        let response = try await remote.createWebhook(for: siteID)
+    public func createWebhook(topic: String, url: URL) async throws -> Webhook {
+        let response = try await remote.createWebhook(for: siteID,
+                                                      topic: topic,
+                                                      url: url)
         return Webhook(name: response.name,
                        topic: response.topic,
                        deliveryURL: response.deliveryURL)

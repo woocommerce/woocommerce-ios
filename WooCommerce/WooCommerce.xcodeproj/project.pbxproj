@@ -1499,6 +1499,8 @@
 		680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680BA5992A4C377900F5559D /* UpgradeViewState.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
+		681842D62CA4006700246C90 /* WebhookRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681842D52CA4006700246C90 /* WebhookRowView.swift */; };
+		681842D82CA400AD00246C90 /* WebhookRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
@@ -4521,6 +4523,8 @@
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		681842D52CA4006700246C90 /* WebhookRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRowView.swift; sourceTree = "<group>"; };
+		681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRowViewModel.swift; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
@@ -9339,7 +9343,9 @@
 			isa = PBXGroup;
 			children = (
 				6809106E2CA25FAE0057B02A /* WebhooksView.swift */,
+				681842D52CA4006700246C90 /* WebhookRowView.swift */,
 				680910792CA2B37F0057B02A /* WebhooksViewModel.swift */,
+				681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */,
 			);
 			path = Webhooks;
 			sourceTree = "<group>";
@@ -14826,6 +14832,7 @@
 				027EB56E29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift in Sources */,
 				26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
+				681842D82CA400AD00246C90 /* WebhookRowViewModel.swift in Sources */,
 				684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */,
 				CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */,
 				0230B4D62C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift in Sources */,
@@ -16201,6 +16208,7 @@
 				EE1905842B579B6700617C53 /* BlazeCampaignCreationLoadingView.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
 				EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */,
+				681842D62CA4006700246C90 /* WebhookRowView.swift in Sources */,
 				0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */,
 				26C98F9829C1247000F96503 /* WPComSitePlan+FreeTrial.swift in Sources */,
 				3120491726DD807900A4EC4F /* LabelAndButtonTableViewCell.swift in Sources */,

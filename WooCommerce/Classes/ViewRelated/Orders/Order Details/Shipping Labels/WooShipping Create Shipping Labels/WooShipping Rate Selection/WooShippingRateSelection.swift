@@ -3,8 +3,6 @@ import SwiftUI
 struct WooShippingRateSelection: View {
     var body: some View {
         VStack(spacing: Layout.verticalSpacing) {
-            Image(.shippingLabelRatesPlaceholder)
-                .padding(.bottom, Layout.imagePadding)
             Text(Localization.placeholderTitle)
                 .font(.subheadline)
                 .bold()

@@ -1144,12 +1144,6 @@ extension UIImage {
         return UIImage.gridicon(.shipping, size: CGSize(width: 80, height: 80))
     }
 
-    /// Shipping label rates placeholder image (Woo Shipping)
-    ///
-    static var shippingLabelRatesPlaceholder: UIImage {
-        UIImage(named: "shipping-label-rates-placeholder")!
-    }
-
     /// Spam Icon
     ///
     static var spamImage: UIImage {

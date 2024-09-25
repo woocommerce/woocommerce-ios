@@ -273,8 +273,9 @@ private extension BlazeCampaignCreationCoordinator {
                 /// Only ask for feedback if there are at least 2 campaigns created for the site.
                 return nil
             }
-            return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { vote in
-                /// TODO: add tracks & show survey
+            return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { [weak self] vote in
+                guard let self else { return }
+                analytics.track(event: .Blaze.campaignCreationFeedbackReceived(positive: vote == .up))
             })
         }()
         let controller = CelebrationHostingController(

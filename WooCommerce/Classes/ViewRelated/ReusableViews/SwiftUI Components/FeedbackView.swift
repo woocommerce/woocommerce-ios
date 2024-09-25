@@ -25,6 +25,9 @@ struct FeedbackView: View {
             Spacer()
             HStack(spacing: Layout.buttonSpacing) {
                 Button {
+                    guard vote == nil else {
+                        return
+                    }
                     vote = .up
                 } label: {
                     Image(systemName: vote == .up ? "hand.thumbsup.fill" : "hand.thumbsup")
@@ -36,6 +39,9 @@ struct FeedbackView: View {
                 .buttonStyle(.plain)
 
                 Button {
+                    guard vote == nil else {
+                        return
+                    }
                     vote = .down
                 } label: {
                     Image(systemName: vote == .down ?  "hand.thumbsdown.fill" : "hand.thumbsdown")

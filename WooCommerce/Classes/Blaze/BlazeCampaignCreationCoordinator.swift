@@ -267,11 +267,22 @@ private extension BlazeCampaignCreationCoordinator {
 
     func showSuccessView() {
         bottomSheetPresenter = buildBottomSheetPresenter()
+        let feedbackConfiguration: FeedbackView.Configuration? = {
+            let allCampaigns = storageManager.viewStorage.loadAllBlazeCampaignListItems(siteID: siteID)
+            guard allCampaigns.count >= 2 else {
+                /// Only ask for feedback if there are at least 2 campaigns created for the site.
+                return nil
+            }
+            return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { vote in
+                /// TODO: add tracks & show survey
+            })
+        }()
         let controller = CelebrationHostingController(
             title: Localization.successTitle,
             subtitle: Localization.successSubtitle,
             closeButtonTitle: Localization.successCTA,
             image: .blazeSuccessImage,
+            feedbackConfiguration: feedbackConfiguration,
             onTappingDone: { [weak self] in
             self?.bottomSheetPresenter?.dismiss()
             self?.bottomSheetPresenter = nil
@@ -365,5 +376,10 @@ private extension BlazeCampaignCreationCoordinator {
                 comment: "Button to create a product when attempting to start Blaze campaign creation flow without any product in the store"
             )
         }
+        static let feedbackQuestion = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.feedbackQuestion",
+            value: "How was the experience with Blaze?",
+            comment: "Question in the feedback banner after a Blaze campaign is successfully created"
+        )
     }
 }

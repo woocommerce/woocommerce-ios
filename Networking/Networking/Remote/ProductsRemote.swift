@@ -190,7 +190,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.page: POSConstants.page,
             ParameterKey.perPage: POSConstants.productsPerPage,
             ParameterKey.productType: POSConstants.productType,
-            ParameterKey.orderBy: OrderKey.name.value,
+            ParameterKey.orderBy: OrderKey.menuOrder.value,
             ParameterKey.order: Order.ascending.value,
             ParameterKey.productStatus: POSConstants.productStatus,
         ]
@@ -541,6 +541,7 @@ public extension ProductsRemote {
         case name
         // available for use in `GET wc-analytics/reports/products/stats` only.
         case itemsSold
+        case menuOrder
     }
 
     enum Order {
@@ -625,6 +626,8 @@ private extension ProductsRemote.OrderKey {
             return "title"
         case .itemsSold:
             return "items_sold"
+        case .menuOrder:
+            return "menu_order"
         }
     }
 }

@@ -16,7 +16,7 @@ struct WebhookRowView: View {
     init(viewModel: WebhookRowViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var statusLabelColor: Color {
         switch viewModel.webhook.status {
         case "active":
@@ -47,7 +47,6 @@ struct WebhookRowView: View {
         }
         .padding(.vertical, 2)
         .padding(.horizontal)
-        Divider()
     }
 }
 
@@ -62,10 +61,12 @@ enum WebhooksViewState: String, CaseIterable, Identifiable {
 struct WebhooksView: View {
     @ObservedObject private var viewModel: WebhooksViewModel
     @State private var viewState: WebhooksViewState = .listAll
+    @State private var isLoading: Bool = false
 
     @State private var orderCreatedToggle: Bool = false
     @State private var deliveryURLString: String = ""
     @State private var showErrorModal: Bool = false
+    @State private var showSuccessModal: Bool = false
 
     init(viewModel: WebhooksViewModel) {
         self.viewModel = viewModel
@@ -88,12 +89,18 @@ struct WebhooksView: View {
             .pickerStyle(SegmentedPickerStyle())
             switch viewState {
             case .listAll:
-                List {
-                    ForEach(rowViewModels) { viewModel in
-                        WebhookRowView(viewModel: viewModel)
+                if isLoading {
+                    ProgressView()
+                        .padding()
+                    Spacer()
+                } else {
+                    List {
+                        ForEach(rowViewModels) { viewModel in
+                            WebhookRowView(viewModel: viewModel)
+                        }
                     }
+                    .listStyle(.plain)
                 }
-                .listStyle(.plain)
             case .createNew:
                 VStack {
                     Toggle(isOn: $orderCreatedToggle, label: { Text("Order created")} )
@@ -103,7 +110,8 @@ struct WebhooksView: View {
                     Button(action: {
                         Task {
                             do {
-                                try await viewModel.createWebhook( $deliveryURLString.wrappedValue)
+                                try await viewModel.createWebhook($deliveryURLString.wrappedValue)
+                                showSuccessModal = true
                             } catch {
                                 showErrorModal = true
                             }
@@ -121,16 +129,23 @@ struct WebhooksView: View {
         .task {
             if viewState == .listAll {
                 do {
+                    isLoading = true
                     try await viewModel.listAllWebhooks()
                 } catch {
                     showErrorModal = true
                 }
+                isLoading = false
             }
         }
         .alert(isPresented: $showErrorModal) {
             Alert(title: Text("Error"),
                   message: Text("Error message"),
                   dismissButton: .default(Text("Dismiss")))
+        }
+        .alert(isPresented: $showSuccessModal) {
+            Alert(title: Text("Success!"),
+                  message: Text("A new webhook has been created in your site."),
+                  dismissButton: .default(Text("Ok")))
         }
     }
 }

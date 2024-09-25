@@ -102,12 +102,25 @@ struct WebhooksView: View {
                         .padding()
                     Spacer()
                 } else {
-                    List {
-                        ForEach(rowViewModels) { viewModel in
-                            WebhookRowView(viewModel: viewModel)
+                    if rowViewModels.isEmpty {
+                        VStack(alignment: .center) {
+                            Spacer()
+                            Image(.emptyBox)
+                            Text("Webhooks are event notifications sent to URLs of your choice.")
+                                .subheadlineStyle()
+                            Text("They can be used to integrate with third-party services which support them.")
+                                .subheadlineStyle()
+                            Spacer()
                         }
+                        .padding()
+                    } else {
+                        List {
+                            ForEach(rowViewModels) { viewModel in
+                                WebhookRowView(viewModel: viewModel)
+                            }
+                        }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
                 }
             case .createNew:
                 VStack {

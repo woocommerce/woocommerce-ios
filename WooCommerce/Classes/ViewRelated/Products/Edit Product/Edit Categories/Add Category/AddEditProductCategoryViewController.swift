@@ -173,7 +173,7 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
         }
     }
 
-    /// Update Title Category Text Field
+    /// Update Title Category Text Field focus
     ///
     private func updateTitleTextField(shouldFocus: Bool) {
         if let indexPath = sections.indexPathForRow(.title) {

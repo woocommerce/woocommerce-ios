@@ -29,10 +29,7 @@ struct WooShippingCreateLabelsView: View {
 
                 WooShippingHazmat()
 
-                WooShippingPackageSelection()
-                    .padding(.vertical, Layout.buttonPadding)
-
-                WooShippingRateSelection()
+                WooShippingPackageAndRatePlaceholder()
             }
             .padding()
             .navigationTitle(Localization.title)

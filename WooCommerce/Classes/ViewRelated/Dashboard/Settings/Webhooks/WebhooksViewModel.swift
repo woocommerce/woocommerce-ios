@@ -23,9 +23,9 @@ final class WebhooksViewModel: ObservableObject {
     }
 
     func createWebhook(_ deliveryURLString: String) async throws {
-        // At the moment we only allow for the order.updated webhook, so it's hardcoded
+        // At the moment we only allow for the order.created webhook, so it's hardcoded
         // On further iterations we can pass different selectable topics or custom actions down to the service.
-        let topic = "order.updated"
+        let topic = "order.created"
         guard let url = URL(string: deliveryURLString) else {
             throw NSError(domain: "Invalid URL", code: 0)
         }

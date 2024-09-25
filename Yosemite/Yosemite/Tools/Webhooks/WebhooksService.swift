@@ -18,6 +18,7 @@ public final class WebhooksService: ObservableObject {
 
         let webhooks = webhooksFromRemote.map {
             Webhook(name: $0.name,
+                    status: $0.status,
                     topic: $0.topic,
                     deliveryURL: $0.deliveryURL)
         }
@@ -31,6 +32,7 @@ public final class WebhooksService: ObservableObject {
                                                       topic: topic,
                                                       url: url)
         return Webhook(name: response.name,
+                       status: response.status,
                        topic: response.topic,
                        deliveryURL: response.deliveryURL)
     }

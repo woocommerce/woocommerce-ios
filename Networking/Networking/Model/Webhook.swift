@@ -9,6 +9,7 @@ public struct Webhook: Codable {
     public let siteID: Int64
 
     public let name: String?
+    public let status: String
     public let topic: String
     public let deliveryURL: URL
 
@@ -16,10 +17,12 @@ public struct Webhook: Codable {
     ///
     public init(siteID: Int64,
                 name: String?,
+                status: String,
                 topic: String,
                 deliveryURL: URL) {
         self.siteID = siteID
         self.name = name
+        self.status = status
         self.topic = topic
         self.deliveryURL = deliveryURL
     }
@@ -33,11 +36,13 @@ public struct Webhook: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let name = try container.decodeIfPresent(String.self, forKey: .name)
+        let status = try container.decode(String.self, forKey: .status)
         let topic = try container.decode(String.self, forKey: .topic)
         let deliveryURL = try container.decode(URL.self, forKey: .deliveryURL)
 
         self.init(siteID: siteID,
                   name: name,
+                  status: status,
                   topic: topic,
                   deliveryURL: deliveryURL)
     }
@@ -46,6 +51,7 @@ public struct Webhook: Codable {
 extension Webhook {
     enum CodingKeys: String, CodingKey {
         case name
+        case status
         case topic
         case deliveryURL = "delivery_url"
     }

@@ -16,6 +16,19 @@ struct WebhookRowView: View {
     init(viewModel: WebhookRowViewModel) {
         self.viewModel = viewModel
     }
+    
+    var statusLabelColor: Color {
+        switch viewModel.webhook.status {
+        case "active":
+            Color.green
+        case "paused":
+            Color.yellow
+        case "disabled":
+            Color.gray
+        default:
+            Color.white
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -24,9 +37,8 @@ struct WebhookRowView: View {
                     Text(name)
                 }
                 Spacer()
-                // TODO-gm: Forgot to model wh status!
-                Text("Active")
-                    .background(Color.green)
+                Text(viewModel.webhook.status)
+                    .background(statusLabelColor)
             }
             Text("Topic: \(viewModel.webhook.topic)")
                 .font(.caption)

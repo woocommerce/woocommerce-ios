@@ -14,13 +14,16 @@ final class WebhooksViewModel: ObservableObject {
     }
 
     @MainActor
-    func listAllWebhooks() async {
+    func listAllWebhooks() async throws {
         do {
             webhooks = try await service.listAllWebhooks()
-            debugPrint("🍍 Webhooks: \(webhooks)")
         } catch {
-            // TODO-gm: Modal with error
-            debugPrint(error)
+            throw NSError(domain: error.localizedDescription, code: 0)
         }
+    }
+
+    func createWebhook() async throws {
+        let webhook = try await service.createWebhook()
+        debugPrint("🍍 \(webhook)")
     }
 }

@@ -51,6 +51,10 @@ struct WebhooksView: View {
     @ObservedObject private var viewModel: WebhooksViewModel
     @State private var viewState: WebhooksViewState = .listAll
 
+    @State private var orderCreatedToggle: Bool = false
+    @State private var deliveryURLString: String = ""
+    @State private var showErrorModal: Bool = false
+
     init(viewModel: WebhooksViewModel) {
         self.viewModel = viewModel
     }
@@ -77,15 +81,43 @@ struct WebhooksView: View {
                         WebhookRowView(viewModel: viewModel)
                     }
                 }
+                .listStyle(.plain)
             case .createNew:
-                Text("Create new")
+                VStack {
+                    Toggle(isOn: $orderCreatedToggle, label: { Text("Order created")} )
+                    Spacer()
+                    TextField("Delivery URL", text: $deliveryURLString)
+                        .border(.black, width: 1.0)
+                    Button(action: {
+                        Task {
+                            do {
+                                try await viewModel.createWebhook()
+                            } catch {
+                                showErrorModal = true
+                            }
+                        }
+                    }, label: {
+                        Text("Create")
+                    })
+                    .buttonStyle(PrimaryButtonStyle())
+                    Spacer()
+                }
+                .padding()
             }
         }
         .task {
-            // TODO-gm:
-            // Loading screen
-            // load only when in the correct viewState
-            await viewModel.listAllWebhooks()
+            if viewState == .listAll {
+                do {
+                    try await viewModel.listAllWebhooks()
+                } catch {
+                    showErrorModal = true
+                }
+            }
+        }
+        .alert(isPresented: $showErrorModal) {
+            Alert(title: Text("Error"),
+                  message: Text("Error message"),
+                  dismissButton: .default(Text("Dismiss")))
         }
     }
 }

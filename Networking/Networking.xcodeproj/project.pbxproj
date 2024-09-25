@@ -512,6 +512,7 @@
 		57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E8FED2246616AC0057CD68 /* Result+Extensions.swift */; };
 		621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
+		6800B44C2CA3BDE900A64B4F /* WebhookListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6800B44B2CA3BDE900A64B4F /* WebhookListMapper.swift */; };
 		680910712CA279340057B02A /* Webhook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910702CA279340057B02A /* Webhook.swift */; };
 		680910732CA27B900057B02A /* WebhookMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910722CA27B900057B02A /* WebhookMapper.swift */; };
 		680910752CA27DC50057B02A /* WebhooksRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910742CA27DC50057B02A /* WebhooksRemote.swift */; };
@@ -1664,6 +1665,7 @@
 		6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
+		6800B44B2CA3BDE900A64B4F /* WebhookListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookListMapper.swift; sourceTree = "<group>"; };
 		680910702CA279340057B02A /* Webhook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webhook.swift; sourceTree = "<group>"; };
 		680910722CA27B900057B02A /* WebhookMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookMapper.swift; sourceTree = "<group>"; };
 		680910742CA27DC50057B02A /* WebhooksRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksRemote.swift; sourceTree = "<group>"; };
@@ -3581,6 +3583,7 @@
 				077F39D326A58DE700ABEADC /* SystemStatusMapper.swift */,
 				DEC51AE827687AAF009F3DF4 /* SystemPluginMapper.swift */,
 				680910722CA27B900057B02A /* WebhookMapper.swift */,
+				6800B44B2CA3BDE900A64B4F /* WebhookListMapper.swift */,
 				02C11275274285FF00F4F0B4 /* WooCommerceAvailabilityMapper.swift */,
 				02BE0A7A274B695F001176D2 /* WordPressMediaMapper.swift */,
 				02C112772742862600F4F0B4 /* WordPressSiteSettingsMapper.swift */,
@@ -4881,6 +4884,7 @@
 				09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */,
 				CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */,
 				451A97E9260B657D0059D135 /* ShippingLabelPredefinedOption.swift in Sources */,
+				6800B44C2CA3BDE900A64B4F /* WebhookListMapper.swift in Sources */,
 				263659DC2A264A3E00607A0D /* IPLocationRemote.swift in Sources */,
 				CEB9BF432BB199600007978A /* ProductBundleStatsMapper.swift in Sources */,
 				02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */,

@@ -52,6 +52,7 @@ struct CustomFieldEditorView: View {
                         Text(Localization.valueLabel)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                         Spacer()
 
@@ -61,7 +62,6 @@ struct CustomFieldEditorView: View {
                                 Text(Localization.editorPickerHTML).tag(true)
                             }
                             .pickerStyle(.segmented)
-                            .fixedSize()
                         }
                     }
 

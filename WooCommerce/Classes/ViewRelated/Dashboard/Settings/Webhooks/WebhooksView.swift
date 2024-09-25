@@ -87,7 +87,7 @@ struct WebhooksView: View {
                     Toggle(isOn: $orderCreatedToggle, label: { Text("Order created")} )
                     Spacer()
                     TextField("Delivery URL", text: $deliveryURLString)
-                        .border(.black, width: 1.0)
+                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
                     Button(action: {
                         Task {
                             do {

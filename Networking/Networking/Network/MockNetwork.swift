@@ -27,6 +27,10 @@ class MockNetwork: Network {
     ///
     var requestsForResponseData = [URLRequestConvertible]()
 
+    /// Number of notification objects in notifications-load-all.json file.
+    ///
+    static let notificationLoadAllJSONCount = 46
+
     /// Note: If the useResponseQueue param is `true`, any responses added via `simulateResponse` will stored in a FIFO queue
     /// and used once for a matching request (then removed from the queue). Subsequent requests will use the next response in the queue, and so on.
     ///

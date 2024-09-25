@@ -58,15 +58,23 @@ enum WebhooksViewState: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
+enum AvailableWebhook: String, CaseIterable {
+    case orderCreated = "Order created"
+    case couponCreated = "Coupon created"
+    case customerCreated = "Customer created"
+    case productCreated = "Product created"
+}
+
 struct WebhooksView: View {
     @ObservedObject private var viewModel: WebhooksViewModel
     @State private var viewState: WebhooksViewState = .listAll
     @State private var isLoading: Bool = false
 
-    @State private var orderCreatedToggle: Bool = false
     @State private var deliveryURLString: String = ""
     @State private var showErrorModal: Bool = false
     @State private var showSuccessModal: Bool = false
+
+    @State private var selectedOption: AvailableWebhook = .orderCreated
 
     init(viewModel: WebhooksViewModel) {
         self.viewModel = viewModel
@@ -103,14 +111,21 @@ struct WebhooksView: View {
                 }
             case .createNew:
                 VStack {
-                    Toggle(isOn: $orderCreatedToggle, label: { Text("Order created")} )
+                    Picker("option", selection: $selectedOption) {
+                        ForEach(AvailableWebhook.allCases, id: \.self) { option in
+                            Text(option.rawValue)
+                                .tag(option)
+                        }
+                    }
+                    .pickerStyle(.menu)
                     Spacer()
                     TextField("Delivery URL", text: $deliveryURLString)
                         .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
                     Button(action: {
                         Task {
                             do {
-                                try await viewModel.createWebhook($deliveryURLString.wrappedValue)
+                                try await viewModel.createWebhook($selectedOption.wrappedValue,
+                                                                  $deliveryURLString.wrappedValue)
                                 showSuccessModal = true
                             } catch {
                                 showErrorModal = true
@@ -119,7 +134,6 @@ struct WebhooksView: View {
                     }, label: {
                         Text("Create")
                     })
-                    .disabled(orderCreatedToggle ? false : true)
                     .buttonStyle(PrimaryButtonStyle())
                     Spacer()
                 }
@@ -135,6 +149,15 @@ struct WebhooksView: View {
                     showErrorModal = true
                 }
                 isLoading = false
+            }
+        }
+        .refreshable {
+            do {
+                isLoading = true
+                try await viewModel.listAllWebhooks()
+                isLoading = false
+            } catch {
+                showErrorModal = true
             }
         }
         .alert(isPresented: $showErrorModal) {

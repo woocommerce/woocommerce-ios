@@ -6316,6 +6316,7 @@
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
 				265BCA032430E5EA004E53EE /* Edit Categories */,
+				EE289AE12C988FF0004AB1A6 /* FavoriteProducts */,
 				4592A54824BF58A200BC3DE0 /* Edit Tags */,
 				45E9A6E124DAE18E00A600E8 /* Reviews */,
 				CC01CE5B29B2342E004FF537 /* Bundled Products */,
@@ -8880,7 +8881,6 @@
 		4592A54824BF58A200BC3DE0 /* Edit Tags */ = {
 			isa = PBXGroup;
 			children = (
-				EE289AE12C988FF0004AB1A6 /* FavoriteProducts */,
 				4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */,
 				4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */,
 				450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */,
@@ -13146,7 +13146,7 @@
 				EE289AE02C988FF0004AB1A6 /* FavoriteProductsUseCase.swift */,
 			);
 			name = FavoriteProducts;
-			path = Classes/ViewRelated/Products/FavoriteProducts;
+			path = "Classes/ViewRelated/Products/Edit Product/FavoriteProducts";
 			sourceTree = SOURCE_ROOT;
 		};
 		EE3272A229A88F670015F8D0 /* Onboarding */ = {

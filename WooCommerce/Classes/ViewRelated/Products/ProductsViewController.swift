@@ -274,6 +274,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         }
 
         navigationController?.navigationBar.removeShadow()
+
+        reloadFavoriteProductsIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -1028,6 +1030,32 @@ private extension ProductsViewController {
             return false
         }
         return indexPathsForVisibleRows.contains(indexPath)
+    }
+
+    func reloadFavoriteProductsIfNeeded() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            // Reload only if favorite products filter is turned on
+            guard filters.favoriteProduct != nil else {
+                return
+            }
+
+            let previousFavoriteProductIDs = viewModel.favoriteProductIDs
+            await viewModel.loadFavoriteProductIDs()
+
+            // Reload only if favorite product IDs changed
+            guard viewModel.favoriteProductIDs != previousFavoriteProductIDs else {
+                return
+            }
+
+            await updatePredicate(filters: filters)
+
+            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+            tableView.reloadData()
+
+            paginationTracker.resync()
+        }
     }
 
     func updatePredicate(filters: FilterProductListViewModel.Filters) async {

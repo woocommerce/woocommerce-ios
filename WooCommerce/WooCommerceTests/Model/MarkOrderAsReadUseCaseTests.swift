@@ -5,41 +5,21 @@ import WooFoundation
 @testable import Storage
 
 final class MarkOrderAsReadUseCaseTests: XCTestCase {
-    /// Mock Dispatcher!
-    ///
     private var dispatcher: Dispatcher!
-
-    /// Mock Network: Allows us to inject predefined responses!
-    ///
     private var network: MockNetwork!
-
-    /// Mock Storage: InMemory
-    ///
     private var storageManager: MockStorageManager!
-
-    /// Mock stores manager
-    ///
     private var storesManager: MockStoresManager!
-
-    /// Convenience Property: Returns the StorageType associated with the main thread.
-    ///
     private var viewStorage: StorageType {
         return storageManager.viewStorage
     }
-
-    /// Sample Notes
-    ///
     private lazy var sampleNotes: [Yosemite.Note] = {
         return try! mapNotes(from: "notifications-load-all")
     }()
 
     private func sampleNote(read: Bool) -> Yosemite.Note? {
-        for note in sampleNotes {
-            if note.read == read, note.meta.identifier(forKey: .order) != nil {
-                return note
-            }
+        return sampleNotes.first { note in
+            return note.read == read && note.meta.identifier(forKey: .order) != nil
         }
-        return nil
     }
 
     override func setUp() {
@@ -49,12 +29,16 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         storesManager = MockStoresManager(sessionManager: .makeForTesting())
         network = MockNetwork()
 
-        // Need to nuke this in-between tests otherwise some will randomly fail
         NotificationStore.resetSharedDerivedStorage()
     }
 
+    override func tearDown() {
+        NotificationStore.resetSharedDerivedStorage()
+        super.tearDown()
+    }
+
     private func setupStoreManagerReceivingNotificationActions(for note: Yosemite.Note, noteStore: NotificationStore) {
-        self.storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
             case let .synchronizeNotifications(onCompletion):
                 onCompletion(nil)
@@ -71,93 +55,48 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
     }
 
     @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_stores_unreadNote() {
-        let expectation = self.expectation(description: "Mark order as read with stores")
+    func test_markOrderNoteAsReadIfNeeded_with_stores_unreadNote() throws {
+        let unreadNote = try XCTUnwrap(sampleNote(read: false))
+        let orderID = try XCTUnwrap(unreadNote.meta.identifier(forKey: .order))
+
+        let expectation = expectation(description: "Mark order as read with stores")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        if let note = sampleNote(read: false), let orderID = note.meta.identifier(forKey: .order) {
-            setupStoreManagerReceivingNotificationActions(for: note, noteStore: noteStore)
-            noteStore.updateLocalNotes(with: [note]) {
-                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
-                Task {
-                    let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: self.storesManager, noteID: note.noteID, orderID: orderID)
-                    switch result {
-                    case .success(let markedNote):
-                        XCTAssertEqual(note.noteID, markedNote.noteID)
-                        let storageNote = self.viewStorage.loadNotification(noteID: markedNote.noteID)
-                        XCTAssertEqual(storageNote?.read, true)
-                        expectation.fulfill()
-                    case .failure(let error):
-                        XCTFail(error.localizedDescription)
-                    }
-                }
-            }
-        } else {
-            XCTFail()
-        }
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
+        setupStoreManagerReceivingNotificationActions(for: unreadNote, noteStore: noteStore)
 
-    @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_stores_alreadyReadNote() {
-        let expectation = self.expectation(description: "Mark order as read with stores")
-        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        if let note = sampleNote(read: true), let orderID = note.meta.identifier(forKey: .order) {
-            setupStoreManagerReceivingNotificationActions(for: note, noteStore: noteStore)
-            noteStore.updateLocalNotes(with: [note]) {
-                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
-                Task {
-                    let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: self.storesManager, noteID: note.noteID, orderID: orderID)
-                    switch result {
-                    case .success:
-                        XCTFail("Note was already read, it should not be marked as read again.")
-                    case .failure(let error):
-                        if case MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead = error {
-                            expectation.fulfill()
-                        } else {
-                            XCTFail("Got wrong error \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
-        } else {
-            XCTFail()
-        }
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_network_unreadNote() async {
-        let expectation = self.expectation(description: "Mark order as read with network")
-
-        if let note = sampleNote(read: false), let orderID = note.meta.identifier(forKey: .order) {
+        noteStore.updateLocalNotes(with: [unreadNote]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
             Task {
-                self.network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
-                self.network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
-                let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: note.noteID, orderID: orderID)
+                let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: self.storesManager, noteID: unreadNote.noteID, orderID: orderID)
                 switch result {
-                case .success(let markedNoteID):
-                    XCTAssertEqual(note.noteID, markedNoteID)
+                case .success(let markedNote):
+                    XCTAssertEqual(unreadNote.noteID, markedNote.noteID)
+                    let storageNote = self.viewStorage.loadNotification(noteID: markedNote.noteID)
+                    XCTAssertEqual(storageNote?.read, true)
                     expectation.fulfill()
                 case .failure(let error):
                     XCTFail(error.localizedDescription)
                 }
             }
-        } else {
-            XCTFail()
         }
-        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     @MainActor
-    func test_markOrderNoteAsReadIfNeeded_with_network_alreadyReadNote() async {
-        let expectation = self.expectation(description: "Mark order as read with network")
+    func test_markOrderNoteAsReadIfNeeded_with_stores_alreadyReadNote() throws {
+        let readNote = try XCTUnwrap(sampleNote(read: true))
+        let orderID = try XCTUnwrap(readNote.meta.identifier(forKey: .order))
 
-        if let note = sampleNote(read: true), let orderID = note.meta.identifier(forKey: .order) {
+        let expectation = expectation(description: "Mark order as read with stores")
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        setupStoreManagerReceivingNotificationActions(for: readNote, noteStore: noteStore)
+
+        noteStore.updateLocalNotes(with: [readNote]) {
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 1)
             Task {
-                self.network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
-                let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: self.network, noteID: note.noteID, orderID: orderID)
+                let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(stores: self.storesManager, noteID: readNote.noteID, orderID: orderID)
                 switch result {
                 case .success:
                     XCTFail("Note was already read, it should not be marked as read again.")
@@ -169,10 +108,50 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
                     }
                 }
             }
-        } else {
-            XCTFail()
         }
-        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    @MainActor
+    func test_markOrderNoteAsReadIfNeeded_with_network_unreadNote() async throws {
+        let unreadNote = try XCTUnwrap(sampleNote(read: false))
+        let orderID = try XCTUnwrap(unreadNote.meta.identifier(forKey: .order))
+
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+        network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
+
+        let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: network,
+                                                                              noteID: unreadNote.noteID,
+                                                                              orderID: orderID)
+
+        switch result {
+        case .success(let markedNoteID):
+            XCTAssertEqual(unreadNote.noteID, markedNoteID)
+        case .failure(let error):
+            XCTFail(error.localizedDescription)
+        }
+    }
+
+    @MainActor
+    func test_markOrderNoteAsReadIfNeeded_with_network_alreadyReadNote() async throws {
+        let readNote = try XCTUnwrap(sampleNote(read: true))
+        let orderID = try XCTUnwrap(readNote.meta.identifier(forKey: .order))
+
+        network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
+
+        let result = await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: network,
+                                                                              noteID: readNote.noteID,
+                                                                              orderID: orderID)
+
+        switch result {
+        case .success:
+            XCTFail("Note was already read, it should not be marked as read again.")
+        case .failure(let error):
+            if case MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead = error {} else {
+                XCTFail("Got wrong error \(error.localizedDescription)")
+            }
+        }
     }
 }
 

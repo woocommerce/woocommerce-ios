@@ -10,6 +10,7 @@ protocol TotalsViewModelProtocol {
     var orderStatePublisher: Published<TotalsViewModel.OrderState>.Publisher { get }
     var paymentStatePublisher: Published<TotalsViewModel.PaymentState>.Publisher { get }
     var startNewOrderActionPublisher: AnyPublisher<Void, Never> { get }
+    var editOrderActionPublisher: AnyPublisher<Void, Never> { get }
 
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
     var order: Order? { get }

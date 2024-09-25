@@ -7,6 +7,7 @@
 - [*] Blaze: Campaign status is now updated immediately after being canceled. [https://github.com/woocommerce/woocommerce-ios/pull/13992]
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
 - [*] Payments: Prevent phone from sleeping during card reader updates [https://github.com/woocommerce/woocommerce-ios/pull/14021]
+- [internal] Fixed concurrency issue with Blaze local notification scheduler. [https://github.com/woocommerce/woocommerce-ios/pull/14012]
 
 20.5
 -----

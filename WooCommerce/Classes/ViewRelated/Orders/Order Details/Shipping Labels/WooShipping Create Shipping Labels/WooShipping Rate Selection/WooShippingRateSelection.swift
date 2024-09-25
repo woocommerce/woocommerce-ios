@@ -29,7 +29,7 @@ private extension WooShippingRateSelection {
     enum Localization {
         static let placeholderTitle = NSLocalizedString(
             "wooShipping.createLabel.shippingRate.placeholderTitle",
-            value: "Add a package to get shipping rates",
+            value: "Select a package to get shipping rates",
             comment: "Call to action in the shipping rate section during shipping label creation, when there is no selected package."
         )
         static let placeholderMessage = NSLocalizedString(

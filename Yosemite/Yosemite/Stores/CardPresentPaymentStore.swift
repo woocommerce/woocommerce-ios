@@ -137,7 +137,17 @@ public final class CardPresentPaymentStore: Store {
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
+        case .captureOrderPaymentOnSite(let siteID, let orderID, let paymentIntentID):
+            let paymentIntent = PaymentIntent(id: paymentIntentID, status: .requiresCapture, created: .now, amount: 100, currency: "usd", metadata: nil, charges: [])
+            captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: paymentIntent)
+                .print("Capture payment: ")
+                .sink { result in
+                    print(result)
+                }
+                .store(in: &cancellables)
         }
+
+        var cancellables = Set<AnyCancellable>()
     }
 }
 

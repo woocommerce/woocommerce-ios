@@ -98,4 +98,8 @@ public enum CardPresentPaymentAction: Action {
     /// Fetches Charge details by charge ID
     ///
     case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
+
+    case captureOrderPaymentOnSite(siteID: Int64,
+                                   orderID: Int64,
+                                   paymentIntentID: String)
 }

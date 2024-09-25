@@ -33,7 +33,7 @@ final class LoginPrologueViewController: UIViewController {
         return .portrait
     }
 
-    private var multipeer: CardReaderMultipeerSession?
+    private var tapToPayServer: RemoteTapToPayReaderServer?
 
     // MARK: - Overridden Methods
 
@@ -59,11 +59,11 @@ final class LoginPrologueViewController: UIViewController {
     }
 
     @IBAction func bluetoothTapped(_ sender: Any) {
-        guard multipeer == nil else {
+        guard tapToPayServer == nil else {
             return
         }
-        multipeer = CardReaderMultipeerSession()
-        multipeer?.startAdvertising()
+        tapToPayServer = RemoteTapToPayReaderServer()
+        tapToPayServer?.start()
     }
 
     override func viewWillAppear(_ animated: Bool) {

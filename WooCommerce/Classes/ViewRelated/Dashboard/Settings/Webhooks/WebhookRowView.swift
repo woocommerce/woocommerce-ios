@@ -28,8 +28,11 @@ struct WebhookRowView: View {
                     Text(name)
                 }
                 Spacer()
-                Text(viewModel.webhook.status)
-                    .background(statusLabelColor)
+                Text(viewModel.webhook.status.capitalized)
+                    .font(.caption)
+                    .padding(2)
+                    .background(RoundedRectangle(cornerRadius: CGFloat(8)).fill(statusLabelColor))
+                    .foregroundColor(.primary)
             }
             Text("Topic: \(viewModel.webhook.topic)")
                 .font(.caption)

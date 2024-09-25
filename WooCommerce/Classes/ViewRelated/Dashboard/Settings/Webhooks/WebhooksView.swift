@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 enum WebhooksViewState: String, CaseIterable, Identifiable {
-    case listAll = "List all Webhooks"
+    case listAll = "All Webhooks"
     case createNew = "Create new Webhook"
 
     // Identifiable conformance
@@ -46,6 +46,7 @@ struct WebhooksView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
+            .padding()
             switch viewState {
             case .listAll:
                 if isLoading {
@@ -56,10 +57,9 @@ struct WebhooksView: View {
                     if rowViewModels.isEmpty {
                         VStack(alignment: .center) {
                             Spacer()
-                            Image(.emptyBox)
-                            Text("Webhooks are event notifications sent to URLs of your choice.")
-                                .subheadlineStyle()
-                            Text("They can be used to integrate with third-party services which support them.")
+                            Image(.magnifyingGlassNotFound)
+                                .padding(.bottom)
+                            Text("No webhooks have been configured yet on your site.")
                                 .subheadlineStyle()
                             Spacer()
                         }
@@ -75,16 +75,32 @@ struct WebhooksView: View {
                 }
             case .createNew:
                 VStack {
-                    Picker("option", selection: $selectedOption) {
-                        ForEach(AvailableWebhook.allCases, id: \.self) { option in
-                            Text(option.rawValue)
-                                .tag(option)
-                        }
+                    Group {
+                        Text("Webhooks are event notifications sent to URLs of your choice.")
+                        Text("They can be used to integrate with third-party services which support them.")
                     }
-                    .pickerStyle(.menu)
-                    Spacer()
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom)
+
+                    HStack() {
+                        Text("Select a topic:")
+                            .subheadlineStyle()
+                        Spacer()
+                        Picker("option", selection: $selectedOption) {
+                            ForEach(AvailableWebhook.allCases, id: \.self) { option in
+                                Text(option.rawValue)
+                                    .tag(option)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+
                     TextField("Delivery URL", text: $deliveryURLString)
                         .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+
+                    Spacer()
+
                     Button(action: {
                         Task {
                             do {
@@ -99,7 +115,6 @@ struct WebhooksView: View {
                         Text("Create")
                     })
                     .buttonStyle(PrimaryButtonStyle())
-                    Spacer()
                 }
                 .padding()
             }

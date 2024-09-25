@@ -3,7 +3,7 @@
 
 20.6
 -----
-- [internal] Ability to mark and filter favorite products. [https://github.com/woocommerce/woocommerce-ios/pull/14001]
+- [internal] We added ability to mark and filter favorite products. This feature isn't released yet. But please smoke test product filtering work as expected. [https://github.com/woocommerce/woocommerce-ios/pull/14001]
 
 20.5
 -----

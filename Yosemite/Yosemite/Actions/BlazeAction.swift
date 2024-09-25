@@ -31,6 +31,16 @@ public enum BlazeAction: Action {
                                    limit: Int,
                                    onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Retrieves and stores a Blaze Campaign item with the give ID for a site.
+    ///
+    /// - `campaignID`: ID of the campaign to retrieve
+    /// - `siteID`: the site the campaign belongs to.
+    /// - `onCompletion`: invoked when the sync operation finishes.
+    ///
+    case synchronizeCampaign(campaignID: String,
+                             siteID: Int64,
+                             onCompletion: (Result<Void, Error>) -> Void)
+
     /// Retrieves and stores target devices for creating Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.

@@ -218,6 +218,8 @@
 		453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */; };
 		453954D82C9197BE00A3E64A /* MetaDataAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954D72C9197BE00A3E64A /* MetaDataAction.swift */; };
 		453954DA2C9197C900A3E64A /* MetaDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954D92C9197C900A3E64A /* MetaDataStore.swift */; };
+		453954DC2C91F79B00A3E64A /* MetaDataStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453954DB2C91F79B00A3E64A /* MetaDataStoreTests.swift */; };
+		454D606F2C9C5DF1004709AB /* MockMetaDataRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454D606E2C9C5DF1004709AB /* MockMetaDataRemote.swift */; };
 		4552073D25811B4E001CF873 /* ProductAttributeStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */; };
 		455A931D2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */; };
 		45739F372437680F00480C95 /* ProductSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45739F362437680F00480C95 /* ProductSettings.swift */; };
@@ -721,6 +723,8 @@
 		453305FA245AEDCB00264E50 /* SitePostStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePostStoreTests.swift; sourceTree = "<group>"; };
 		453954D72C9197BE00A3E64A /* MetaDataAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataAction.swift; sourceTree = "<group>"; };
 		453954D92C9197C900A3E64A /* MetaDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataStore.swift; sourceTree = "<group>"; };
+		453954DB2C91F79B00A3E64A /* MetaDataStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetaDataStoreTests.swift; sourceTree = "<group>"; };
+		454D606E2C9C5DF1004709AB /* MockMetaDataRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMetaDataRemote.swift; sourceTree = "<group>"; };
 		4552073C25811B4E001CF873 /* ProductAttributeStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeStoreTests.swift; sourceTree = "<group>"; };
 		455A931C2747C19300259C7F /* AppSettingsStoreTests+OrdersSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+OrdersSettings.swift"; sourceTree = "<group>"; };
 		45739F362437680F00480C95 /* ProductSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSettings.swift; sourceTree = "<group>"; };
@@ -1407,6 +1411,7 @@
 				02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */,
 				EE4D51B72ACD3C9800783D77 /* MockProductCategoriesRemote.swift */,
 				DEB387872C2C09FC0025256E /* MockGoogleListingsAndAdsRemote.swift */,
+				454D606E2C9C5DF1004709AB /* MockMetaDataRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1744,6 +1749,7 @@
 				0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */,
 				DEDA8DB22B184B950076BF0F /* WordPressThemeStoreTests.swift */,
 				DEB387852C2C09A70025256E /* GoogleAdsStoreTests.swift */,
+				453954DB2C91F79B00A3E64A /* MetaDataStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -2586,6 +2592,7 @@
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockAcountStore.swift in Sources */,
 				312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */,
+				453954DC2C91F79B00A3E64A /* MetaDataStoreTests.swift in Sources */,
 				EEB4E2CF29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift in Sources */,
 				687F83722C0EBF8900460AB3 /* POSProductProviderTests.swift in Sources */,
 				03EB99922907EBB300F06A39 /* JustInTimeMessageStoreTests.swift in Sources */,
@@ -2685,6 +2692,7 @@
 				020C907D24C729D6001E2BEB /* MockProductVariation.swift in Sources */,
 				7499936820EFC0ED00CF01CD /* OrderNoteStoreTests.swift in Sources */,
 				578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */,
+				454D606F2C9C5DF1004709AB /* MockMetaDataRemote.swift in Sources */,
 				E18FDB0128F98376008519BA /* AppAccountTokenTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

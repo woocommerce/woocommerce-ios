@@ -267,7 +267,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                         quantity: 1,
                                                         value: 10.0,
                                                         dimensions: expectedDimensions,
-                                                        attributes: [])
+                                                        attributes: [],
+                                                        imageURL: nil)
 
         let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
                                                                     totalWeight: expectedPackageWeight,
@@ -308,7 +309,8 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                         quantity: 1,
                                                         value: 10.0,
                                                         dimensions: expectedDimensions,
-                                                        attributes: [])
+                                                        attributes: [],
+                                                        imageURL: nil)
 
         let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
                                                                     totalWeight: expectedPackageWeight,

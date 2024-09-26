@@ -419,7 +419,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: .draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
-            numberOfActiveFilters: 3)
+            favoriteProduct: FavoriteProductsFilter(),
+            numberOfActiveFilters: 4)
 
         viewModel.searchTerm = "shirt"
         viewModel.updateFilters(filters)
@@ -866,6 +867,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: ProductStatus.draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
+            favoriteProduct: nil,
             numberOfActiveFilters: 3
         )
         viewModel.searchTerm = ""
@@ -1033,14 +1035,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: ProductStatus.draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
-            numberOfActiveFilters: 3
+            favoriteProduct: FavoriteProductsFilter(),
+            numberOfActiveFilters: 4
         )
         viewModel.searchTerm = ""
         viewModel.updateFilters(filters)
         try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
-        XCTAssertEqual(viewModel.filterButtonTitle, String.localizedStringWithFormat(NSLocalizedString("Filter (%ld)", comment: ""), 3))
+        XCTAssertEqual(viewModel.filterButtonTitle, String.localizedStringWithFormat(NSLocalizedString("Filter (%ld)", comment: ""), 4))
     }
 
     func test_productRows_are_updated_correctly_when_filters_are_applied() async throws {
@@ -1059,6 +1062,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: nil,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
+            favoriteProduct: nil,
             numberOfActiveFilters: 1
         )
         viewModel.updateFilters(filters)
@@ -1163,6 +1167,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: .draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
+            favoriteProduct: nil,
             numberOfActiveFilters: 1
         )
 
@@ -1205,6 +1210,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: .draft,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
+            favoriteProduct: nil,
             numberOfActiveFilters: 1
         )
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -1261,6 +1267,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: nil,
             promotableProductType: PromotableProductType(productType: .variable, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
+            favoriteProduct: nil,
             numberOfActiveFilters: 1
         )
         viewModel.updateFilters(filters)
@@ -1466,6 +1473,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             productStatus: nil,
             promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
+            favoriteProduct: nil,
             numberOfActiveFilters: 1
         )
         viewModel.updateFilters(filters)

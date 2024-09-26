@@ -46,7 +46,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                                                          stockStatusFilter: nil,
                                                          productStatusFilter: nil,
                                                          productTypeFilter: nil,
-                                                         productCategoryFilter: nil)
+                                                         productCategoryFilter: nil,
+                                                         favoriteProduct: false)
         onCompletion(.success(emptySetting))
     }
 }

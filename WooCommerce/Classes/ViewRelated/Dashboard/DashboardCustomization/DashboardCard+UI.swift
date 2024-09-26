@@ -24,6 +24,8 @@ extension DashboardCard.CardType {
             Localization.coupons
         case .googleAds:
             Localization.googleAds
+        case .shareStore, .newCardsNotice, .inAppFeedback:
+            "" // these cards don't have title
         }
     }
 }

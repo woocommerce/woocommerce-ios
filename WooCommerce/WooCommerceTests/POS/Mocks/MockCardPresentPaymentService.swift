@@ -9,14 +9,22 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     @Published var paymentEvent: CardPresentPaymentEvent = .idle
     @Published var connectedReader: CardPresentPaymentCardReader?
 
+    var cancelPaymentCalled = false
+
     // MARK: - CardPresentPaymentFacade
 
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
         $paymentEvent.eraseToAnyPublisher()
     }
 
-    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> {
-        $connectedReader.eraseToAnyPublisher()
+    var readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
+        $connectedReader.map { reader -> CardPresentPaymentReaderConnectionStatus in
+            guard let reader else {
+                return .disconnected
+            }
+            return .connected(reader)
+        }
+        .eraseToAnyPublisher()
     }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
@@ -35,6 +43,6 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     func cancelPayment() {
-        // no-op
+        cancelPaymentCalled = true
     }
 }

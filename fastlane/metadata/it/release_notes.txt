@@ -1,2 +1,3 @@
-In questa versione abbiamo abilitato la scansione dei codici di tracciamento e migliorato la gestione della password dei prodotti. Abbiamo inoltre aggiunto miglioramenti per la scansione dei prodotti, pagamenti in contanti e sconti.
-La creazione della campagna annunci Blaze è stata aggiornata e ora offre un'esperienza migliorata nella selezione di immagini e impostazioni del budget.
+In questo aggiornamento, abbiamo aggiunto una comoda funzionalità promemoria che ti consente di riprendere la creazione di campagne abbandonate e abbiamo ottimizzato la modalità di apertura delle notifiche direttamente durante la creazione di una campagna in Blaze. Inoltre, abbiamo risolto degli errori di formattazione relativi agli sconti e ai pagamenti in contanti nel caso in cui le impostazioni della valuta del dispositivo sono diverse da quelle del negozio. Preparati a un'esperienza più fluida con la gestione del tuo negozio ovunque tu sia!
+
+

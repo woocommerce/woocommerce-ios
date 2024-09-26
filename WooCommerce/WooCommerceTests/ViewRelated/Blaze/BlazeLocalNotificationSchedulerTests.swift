@@ -184,8 +184,10 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
-        let scenario = pushNotesManager.requestedLocalNotifications.first?.scenario
-        XCTAssertEqual(scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
+        let notification = try XCTUnwrap(pushNotesManager.requestedLocalNotifications.first)
+        XCTAssertEqual(notification.scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
+        let siteIDFromNotification = try XCTUnwrap(notification.userInfo["site_id"] as? Int64)
+        XCTAssertEqual(siteID, siteIDFromNotification)
     }
 
     func test_no_campaign_notification_is_not_scheduled_when_only_evergreen_campaign_exists_in_storage() async throws {
@@ -323,8 +325,10 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
             self.pushNotesManager.requestedLocalNotifications.isNotEmpty
         }
 
-        let scenario = try XCTUnwrap(pushNotesManager.requestedLocalNotifications.first?.scenario)
-        XCTAssertEqual(scenario, LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder)
+        let notification = try XCTUnwrap(pushNotesManager.requestedLocalNotifications.first)
+        XCTAssertEqual(notification.scenario, LocalNotification.Scenario.blazeAbandonedCampaignCreationReminder)
+        let siteIDFromNotification = try XCTUnwrap(notification.userInfo["site_id"] as? Int64)
+        XCTAssertEqual(siteID, siteIDFromNotification)
     }
 
     func test_abandoned_creation_notification_is_not_scheduled_when_store_is_not_eligible_for_blaze() async throws {
@@ -442,6 +446,29 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         waitUntil {
             self.defaults[.blazeNoCampaignReminderOpened] == true
         }
+    }
+
+    func test_it_triggers_store_switching_when_handling_user_response_to_local_notifcations() throws {
+        // Given
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let switchStoreUseCase = MockSwitchStoreUseCase()
+        let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager,
+                                                         userDefaults: defaults,
+                                                         pushNotesManager: pushNotesManager,
+                                                         blazeEligibilityChecker: blazeEligibilityChecker,
+                                                         switchStoreUseCase: switchStoreUseCase)
+        sut.observeNotificationUserResponse()
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(actionIdentifier: "",
+                                                              requestIdentifier: LocalNotification.Scenario.blazeNoCampaignReminder.identifier,
+                                                              notificationUserInfo: ["site_id": siteID]))
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        XCTAssert(switchStoreUseCase.destinationStoreIDs == [siteID])
     }
 }
 

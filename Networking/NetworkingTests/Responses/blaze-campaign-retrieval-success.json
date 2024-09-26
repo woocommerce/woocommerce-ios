@@ -1,0 +1,26 @@
+{
+  "id": "34518",
+  "status": "rejected",
+  "start_time": "2024-09-02T04:58:03.000Z",
+  "total_budget": 35,
+  "spent_budget": 5,
+  "impressions": 34,
+  "is_evergreen": true,
+  "duration_days": 364,
+  "clicks": 12,
+  "site_name": "Fried-egg Bacon Bagel",
+  "text_snippet": "Get the best discounts now! Click here",
+  "target_url": "https://example.com/product/fried-egg-bacon-bagel/",
+  "target_urn": "urn:wpcom:post:1:134",
+  "main_image": {
+    "url": "https://example.com/image?w=600&zoom=2",
+    "mime_type": "image/jpeg",
+    "width": 500,
+    "height": 500
+  },
+  "budget": {
+      "mode": "total",
+      "amount": 230.00,
+      "currency": "USD"
+  }
+}

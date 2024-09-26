@@ -97,7 +97,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         // Syncs the dependencies to the paired counterpart when the session becomes available.
         Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
             .sink { [watchSession] dependencies, isSessionActive, forceSync in
-                guard isSessionActive else { return }
+
+                // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
+                guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else { return }
+
                 do {
 
                     // If dependencies is nil, send an empty dictionary. This is most likely a logged out state

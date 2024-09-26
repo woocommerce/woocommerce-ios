@@ -277,9 +277,7 @@ private extension BlazeCampaignCreationCoordinator {
             return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { [weak self] vote in
                 guard let self else { return }
                 analytics.track(event: .Blaze.campaignCreationFeedbackReceived(positive: vote == .up))
-                if vote == .down {
-                    showSurveyPage()
-                }
+                showSurveyPage()
             })
         }()
         let controller = CelebrationHostingController(

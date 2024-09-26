@@ -25,12 +25,13 @@ struct WooShippingCreateLabelsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                WooShippingItems(viewModel: viewModel.items)
+                VStack(spacing: Layout.verticalSpacing) {
+                    WooShippingItems(viewModel: viewModel.items)
 
-                WooShippingHazmat()
+                    WooShippingHazmat()
 
-                WooShippingPackageSelection()
-                    .padding(.vertical, Layout.buttonPadding)
+                    WooShippingPackageAndRatePlaceholder()
+                }
             }
             .padding()
             .navigationTitle(Localization.title)
@@ -48,7 +49,7 @@ struct WooShippingCreateLabelsView: View {
 
 private extension WooShippingCreateLabelsView {
     enum Layout {
-        static let buttonPadding: CGFloat = 16
+        static let verticalSpacing: CGFloat = 8
     }
 
     enum Localization {

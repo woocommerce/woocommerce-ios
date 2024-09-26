@@ -40,7 +40,7 @@ final class NotificationsRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
 
         let notes = try result.get()
-        XCTAssertEqual(notes.count, 44)
+        XCTAssertEqual(notes.count, MockNetwork.notificationLoadAllJSONCount)
     }
 
     /// Verifies that `loadHashes` properly returns all of the retrieved hashes.

@@ -90,6 +90,7 @@ public class ProductStore: Store {
                                   let productType,
                                   let productCategory,
                                   let sortOrder,
+                                  let productIDs,
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
@@ -101,6 +102,7 @@ public class ProductStore: Store {
                                 productType: productType,
                                 productCategory: productCategory,
                                 sortOrder: sortOrder,
+                                productIDs: productIDs,
                                 excludedProductIDs: excludedProductIDs,
                                 shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
                                 onCompletion: onCompletion)
@@ -287,6 +289,7 @@ private extension ProductStore {
                              productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
+                             productIDs: [Int64],
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -300,6 +303,7 @@ private extension ProductStore {
                                productCategory: productCategory,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder,
+                               productIDs: productIDs,
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):

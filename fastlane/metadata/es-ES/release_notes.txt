@@ -1,3 +1,3 @@
-En esta versión hemos solucionado un problema relacionado con la incorporación de pagos. También se ha mejorado la gestión de los anuncios de Blaze para mejorar la experiencia.
+En esta actualización, hemos añadido una práctica función de recordatorio para ayudarte a continuar con la creación de campañas abandonadas y hemos mejorado la forma en que las notificaciones se abren directamente a la creación de campañas en Blaze. También hemos solucionado problemas de formato en los pagos con descuento y en efectivo cuando los ajustes de moneda del dispositivo y de la tienda difieren. Disfruta de una experiencia más fluida al gestionar tu tienda sobre la marcha.
 
 

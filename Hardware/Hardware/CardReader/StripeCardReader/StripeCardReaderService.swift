@@ -2,6 +2,7 @@
 import Combine
 import StripeTerminal
 import CoreBluetooth
+import class UIKit.UIApplication
 
 /// The adapter wrapping the Stripe Terminal SDK
 public final class StripeCardReaderService: NSObject {
@@ -866,6 +867,7 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didStartInstallingUpdate update: ReaderSoftwareUpdate, cancelable: StripeTerminal.Cancelable?) {
+        UIApplication.shared.isIdleTimerDisabled = true
         softwareUpdateSubject.send(.started(cancelable: cancelable.map(StripeCancelable.init(cancelable:))))
     }
 
@@ -874,6 +876,8 @@ extension StripeCardReaderService: BluetoothReaderDelegate {
     }
 
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+        // Note that this function is called with an error when updates are cancelled, so this is enough to ensure we re-enable sleep.
+        UIApplication.shared.isIdleTimerDisabled = false
         if let error = error {
             let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(

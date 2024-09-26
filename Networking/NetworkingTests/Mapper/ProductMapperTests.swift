@@ -515,7 +515,7 @@ final class ProductMapperTests: XCTestCase {
 
         // Given
         let product = try XCTUnwrap(mapLoadSubscriptionProductResponse())
-        let subscriptionSettings = try XCTUnwrap(product.subscription)
+        _ = try XCTUnwrap(product.subscription)
 
         // When
         let encoder = JSONEncoder()
@@ -548,6 +548,51 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(Int64(encodedMetadata?[9]["id"] as? String ?? ""), customFields[1].metadataID)
         XCTAssertEqual(encodedMetadata?[9]["key"] as? String, customFields[1].key)
         XCTAssertEqual(encodedMetadata?[9]["value"] as? String, customFields[1].value)
+    }
+
+    /// Test that attributes are properly encoded.
+    ///
+    func test_attributes_are_properly_encoded() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductResponse().first)
+
+
+        // When
+        let encoder = JSONEncoder()
+        let encodedData = try encoder.encode(product)
+        let encodedJSON = try JSONSerialization.jsonObject(with: encodedData, options: []) as? [String: Any]
+
+        // Then
+
+        let attribute1 = ProductAttribute(siteID: dummySiteID,
+                                          attributeID: 0,
+                                          name: "Color",
+                                          position: 1,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
+
+        let attribute2 = ProductAttribute(siteID: dummySiteID,
+                                          attributeID: 0,
+                                          name: "Size",
+                                          position: 0,
+                                          visible: true,
+                                          variation: true,
+                                          options: ["Small", "Medium", "Large"])
+        let attributes = [attribute1, attribute2]
+
+        XCTAssertNotNil(encodedJSON)
+        let encodedAttributes = encodedJSON?["attributes"] as? [[String: Any]]
+        XCTAssertEqual(encodedAttributes?.count, attributes.count)
+
+        // Verify all attributes are properly encoded
+        for (index, attribute) in attributes.enumerated() {
+            XCTAssertEqual(encodedAttributes?[index]["name"] as? String, attribute.name)
+            XCTAssertEqual(encodedAttributes?[index]["position"] as? Int, attribute.position)
+            XCTAssertEqual(encodedAttributes?[index]["visible"] as? Bool, attribute.visible)
+            XCTAssertEqual(encodedAttributes?[index]["variation"] as? Bool, attribute.variation)
+            XCTAssertEqual(encodedAttributes?[index]["options"] as? [String], attribute.options)
+        }
     }
 }
 

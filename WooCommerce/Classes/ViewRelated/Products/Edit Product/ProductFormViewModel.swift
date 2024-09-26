@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Experiments
 
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -217,6 +218,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -225,6 +228,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
+    private let featureFlagService: FeatureFlagService
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -232,7 +237,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -243,6 +250,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -302,6 +311,13 @@ extension ProductFormViewModel {
         let isSitePublic = stores.sessionManager.defaultSite?.visibility == .publicSite
         let productHasLinkToShare = URL(string: product.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
+    }
+
+    func canFavoriteProduct() -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
+            return false
+        }
+        return formType != .add
     }
 
     /// Merchants can promote a product with Blaze if product and site are eligible, and there's no existing Blaze campaign for the product.
@@ -839,5 +855,24 @@ private extension ProductFormViewModel {
         return campaigns.contains(where: {
             $0.productID == product.productID && $0.isActive
         })
+    }
+}
+
+// MARK: Favorite
+//
+extension ProductFormViewModel {
+    @MainActor
+    func isFavorite() async -> Bool {
+        await favoriteProductsUseCase.isFavorite(productID: product.productID)
+    }
+
+    @MainActor
+    func markAsFavorite() {
+        favoriteProductsUseCase.markAsFavorite(productID: product.productID)
+    }
+
+    @MainActor
+    func removeFromFavorite() {
+        favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }
 }

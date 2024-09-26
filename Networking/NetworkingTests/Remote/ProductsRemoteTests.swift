@@ -296,6 +296,47 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    /// Verifies that loadAllProducts with `productIDs` makes a network request with the `include` parameter.
+    ///
+    func test_loadAllProducts_with_productIDs_adds_a_include_param_in_network_request() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        let productIDs: [Int64] = [13, 61]
+
+        // When
+        waitForExpectation { expectation in
+            remote.loadAllProducts(for: sampleSiteID, productIDs: productIDs) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let expectedParam = "include=13,61"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
+    /// Verifies that loadAllProducts with empty `productIDs` makes a network request without the `include` parameter.
+    ///
+    func test_loadAllProducts_with_empty_productIDs_does_not_add_include_param_in_network_request() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        waitForExpectation { expectation in
+            remote.loadAllProducts(for: sampleSiteID, productIDs: []) { result in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let includeParam = "include"
+        XCTAssertFalse(queryParameters.contains(includeParam), "`include` param should not be present")
+    }
+
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
     ///
     func test_loadAllProducts_properly_relays_netwoking_errors() {

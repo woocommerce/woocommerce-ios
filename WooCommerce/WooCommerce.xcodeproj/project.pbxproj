@@ -2457,6 +2457,7 @@
 		DA81B4332C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
 		DA81B4342C8EE5D6000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
 		DA81B4362C8F2BB8000F3466 /* MarkOrderAsReadUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */; };
+		DAB4099D2CA59B26008EE1F2 /* WooShippingAddPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAB4099C2CA59B23008EE1F2 /* WooShippingAddPackageView.swift */; };
 		DABF35272C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */; };
 		DAD988C62C4A9CF9009DE9E3 /* CartItem+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */; };
 		DAD988C92C4A9D6C009DE9E3 /* CartItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */; };
@@ -5520,6 +5521,7 @@
 		DA25ADDC2C86145E00AE81FE /* MarkOrderAsReadUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsReadUseCase.swift; sourceTree = "<group>"; };
 		DA25ADDE2C87403900AE81FE /* PushNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationTests.swift; sourceTree = "<group>"; };
 		DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderPreviewService.swift; sourceTree = "<group>"; };
+		DAB4099C2CA59B23008EE1F2 /* WooShippingAddPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageView.swift; sourceTree = "<group>"; };
 		DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModelTests.swift; sourceTree = "<group>"; };
 		DAD988C52C4A9CF9009DE9E3 /* CartItem+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartItem+Order.swift"; sourceTree = "<group>"; };
 		DAD988C82C4A9D6C009DE9E3 /* CartItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartItemTests.swift; sourceTree = "<group>"; };
@@ -11798,6 +11800,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7B4A5F2CA1D05D00F764EB /* WooShippingPackageSelection.swift */,
+				DAB4099C2CA59B23008EE1F2 /* WooShippingAddPackageView.swift */,
 			);
 			path = "WooShipping Package Selection";
 			sourceTree = "<group>";
@@ -14978,6 +14981,7 @@
 				451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,
 				26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */,
+				DAB4099D2CA59B26008EE1F2 /* WooShippingAddPackageView.swift in Sources */,
 				025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */,
 				CC4A4ED82655478D00B75DCD /* ShippingLabelPaymentMethodsViewModel.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,

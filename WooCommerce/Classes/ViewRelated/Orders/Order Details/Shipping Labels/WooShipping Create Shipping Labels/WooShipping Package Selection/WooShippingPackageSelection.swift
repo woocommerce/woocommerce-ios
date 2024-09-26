@@ -1,13 +1,18 @@
 import SwiftUI
 
 struct WooShippingPackageSelection: View {
+    @State var showAddPackage: Bool = false
+
     var body: some View {
         Button {
-            // TODO-13551: Open package selection UI
+            showAddPackage.toggle()
         } label: {
             Text(Localization.addPackage)
         }
         .buttonStyle(PrimaryButtonStyle())
+        .sheet(isPresented: $showAddPackage) {
+            WooShippingAddPackageView()
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 import SwiftUI
 
 final class CardReaderConnectionViewModel: ObservableObject {
-    @Published private(set) var connectionStatus: CardReaderConnectionStatus = .disconnected
+    @Published private(set) var connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private let cardPresentPayment: CardPresentPaymentFacade
 
     init(cardPresentPayment: CardPresentPaymentFacade) {
@@ -23,10 +23,9 @@ final class CardReaderConnectionViewModel: ObservableObject {
     }
 
     func disconnectReader() {
-        guard connectionStatus == .connected else {
+        guard case .connected = connectionStatus else {
             return
         }
-        connectionStatus = .disconnecting
         Task { @MainActor in
             await cardPresentPayment.disconnectReader()
         }
@@ -35,10 +34,7 @@ final class CardReaderConnectionViewModel: ObservableObject {
 
 private extension CardReaderConnectionViewModel {
     func observeConnectedReaderForStatus() {
-        cardPresentPayment.connectedReaderPublisher
-            .map { connectedReader in
-                connectedReader == nil ? .disconnected: .connected
-            }
+        cardPresentPayment.readerConnectionStatusPublisher
             .assign(to: &$connectionStatus)
     }
 }

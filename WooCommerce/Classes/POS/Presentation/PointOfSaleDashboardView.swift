@@ -58,7 +58,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel) { alertType in
+        .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
+                  onDismiss: {
+            totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
             PointOfSaleCardPresentPaymentAlert(alertType: alertType)
                 .posInteractiveDismissDisabled(alertType.isDismissDisabled)
         }
@@ -91,6 +94,7 @@ struct PointOfSaleDashboardView: View {
                     cartView
                         .accessibilitySortPriority(1)
                         .frame(width: geometry.size.width * Constants.cartWidth)
+                        .ignoresSafeArea(edges: .bottom)
                 }
 
                 if viewModel.orderStage == .finalizing {

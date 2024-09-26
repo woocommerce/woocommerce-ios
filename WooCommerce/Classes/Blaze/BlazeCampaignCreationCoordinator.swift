@@ -173,8 +173,8 @@ private extension BlazeCampaignCreationCoordinator {
             Task { @MainActor [weak self] in
                 await self?.restoreBlazeOnDashboardIfNeeded()
                 self?.cancelAbandonedCampaignCreationNotification()
-                self?.onCampaignCreated()
                 self?.dismissCampaignCreation()
+                self?.onCampaignCreated()
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
@@ -270,8 +270,8 @@ private extension BlazeCampaignCreationCoordinator {
         bottomSheetPresenter = buildBottomSheetPresenter()
         let feedbackConfiguration: FeedbackView.Configuration? = {
             let allCampaigns = storageManager.viewStorage.loadAllBlazeCampaignListItems(siteID: siteID)
-            guard allCampaigns.count >= 2 else {
-                /// Only ask for feedback if there are at least 2 campaigns created for the site.
+            guard allCampaigns.isNotEmpty else {
+                /// Only ask for feedback if there is at least 1 campaign created in the past.
                 return nil
             }
             return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { [weak self] vote in

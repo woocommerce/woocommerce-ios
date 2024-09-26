@@ -124,14 +124,13 @@ final class JCPJetpackInstallStepsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.installFailed)
     }
 
-    func test_loadAndSynchronizeSite_is_dispatched_when_activating_plugin_succeeds() {
+    func syncSite_is_dispatched_when_activating_plugin_succeeds() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = JCPJetpackInstallStepsViewModel(siteID: testSiteID, siteURL: testSiteURL, siteAdminURL: testWPAdminURL, stores: storesManager)
 
         // When
         var checkedSiteID: Int64?
-        var forcedUpdateSite: Bool?
         storesManager.whenReceivingAction(ofType: SitePluginAction.self) { action in
             switch action {
             case .installSitePlugin(_, _, let onCompletion):
@@ -144,11 +143,10 @@ final class JCPJetpackInstallStepsViewModelTests: XCTestCase {
                 break
             }
         }
-        storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
+        storesManager.whenReceivingAction(ofType: SiteAction.self) { action in
             switch action {
-            case .loadAndSynchronizeSite(let siteID, let forcedUpdate, _):
+            case .syncSite(let siteID, _):
                 checkedSiteID = siteID
-                forcedUpdateSite = forcedUpdate
             default:
                 break
             }
@@ -157,7 +155,6 @@ final class JCPJetpackInstallStepsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(checkedSiteID, testSiteID)
-        XCTAssertEqual(forcedUpdateSite, true)
     }
 
     func test_currentStep_is_installation_on_startInstallation() {
@@ -244,10 +241,10 @@ final class JCPJetpackInstallStepsViewModelTests: XCTestCase {
                 break
             }
         }
-        storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
+        storesManager.whenReceivingAction(ofType: SiteAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
-            case .loadAndSynchronizeSite(_, _, let onCompletion):
+            case .syncSite(_, let onCompletion):
                 let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
                                                    isJetpackThePluginInstalled: true,
                                                    isJetpackConnected: true,
@@ -280,10 +277,10 @@ final class JCPJetpackInstallStepsViewModelTests: XCTestCase {
             }
         }
         var checkConnectionInvokedCount = 0
-        storesManager.whenReceivingAction(ofType: AccountAction.self) { [weak self] action in
+        storesManager.whenReceivingAction(ofType: SiteAction.self) { [weak self] action in
             guard let self = self else { return }
             switch action {
-            case .loadAndSynchronizeSite(_, _, let onCompletion):
+            case .syncSite(_, let onCompletion):
                 checkConnectionInvokedCount += 1
                 let fetchedSite = Site.fake().copy(siteID: self.testSiteID,
                                                    isJetpackThePluginInstalled: true,

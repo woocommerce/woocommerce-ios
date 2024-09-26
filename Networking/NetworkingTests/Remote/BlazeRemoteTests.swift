@@ -267,6 +267,58 @@ final class BlazeRemoteTests: XCTestCase {
         }
     }
 
+    // MARK: - Retrieve campaign details tests
+
+    /// Verifies that retrieveCampaignDetail properly parses the response.
+    ///
+    func test_retrieveCampaignDetail_returns_parsed_campaign() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let campaignID = "123"
+
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/\(campaignID)"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaign-retrieval-success")
+
+        // When
+        let item = try await remote.retrieveCampaignDetails(campaignID: campaignID, from: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(item.siteID, sampleSiteID)
+        XCTAssertEqual(item.campaignID, "34518")
+        XCTAssertEqual(item.productID, 134)
+        XCTAssertEqual(item.name, "Fried-egg Bacon Bagel")
+        XCTAssertEqual(item.uiStatus, "rejected")
+        XCTAssertEqual(item.targetUrl, "https://example.com/product/fried-egg-bacon-bagel/")
+        XCTAssertEqual(item.imageURL, "https://example.com/image?w=600&zoom=2")
+        XCTAssertEqual(item.totalBudget, 35)
+        XCTAssertEqual(item.spentBudget, 5)
+        XCTAssertEqual(item.clicks, 12)
+        XCTAssertEqual(item.impressions, 34)
+    }
+
+    /// Verifies that retrieveCampaignDetail properly relays Networking Layer errors.
+    ///
+    func test_retrieveCampaignDetail_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let campaignID = "123"
+
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1.1/campaigns/\(campaignID)"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.retrieveCampaignDetails(campaignID: campaignID, from: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
     // MARK: - Fetch target languages
 
     func test_fetchTargetLanguages_returns_parsed_campaigns() async throws {

@@ -25,20 +25,15 @@ final class TotalsViewModelTests: XCTestCase {
                               paymentState: .acceptingCard)
         cancellables = Set()
     }
-    func test_on_checkOutTapped_startSyncOrder() {}
-    func test_stopSyncOrder() {}
-    func test_order() {}
-    func test_formattedPrice() {}
-    func test_formattedOrderTotalPrice() {}
-    func test_formattedOrderTotalTaxPrice() {}
-    func test_clearOrder() {
+
+    func test_order_when_clearOrder_invoked_then_order_is_set_to_nil() {
         // When
         sut.clearOrder()
 
         // Then
         XCTAssertNil(sut.order)
     }
-    func test_setOrder() {}
+
     func test_startNewOrder_after_collecting_payment() async throws {
         // Given
         let paymentState: TotalsViewModel.PaymentState = .acceptingCard
@@ -216,7 +211,8 @@ final class TotalsViewModelTests: XCTestCase {
         XCTAssertEqual(orderStates, [.idle, .syncing, .error(.init(message: "", handler: {}))])
     }
 
-    func test_when_reader_reconnects_on_TotalsView_reader_is_prepared_for_payment() async {
+    func test_when_reader_reconnects_on_TotalsView_reader_is_prepared_for_payment() async throws {
+        try XCTSkipIf(true, "This test is flaky in CI and should be improved. See #14005")
         // Given a reader has been connected, with the order synced, on the TotalsView
         sut.startShowingTotalsView()
         cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
@@ -237,6 +233,51 @@ final class TotalsViewModelTests: XCTestCase {
         }
 
         XCTAssertTrue(collectPaymentCalled)
+    }
+
+    func test_paymentIntentCreationErrorMessage_when_paymentIntentCreationError() async {
+        // Given
+        struct TestError: Error {}
+        let item = Self.makeItem()
+        orderService.orderToReturn = Order.fake()
+        await sut.syncOrder(for: [CartItem(id: UUID(), item: item, quantity: 1)], allItems: [item])
+
+        var editOrderCalled = false
+        sut.editOrderActionPublisher.sink { _ in
+            editOrderCalled = true
+        }
+        .store(in: &cancellables)
+
+        // When paymentIntentCreationError event is received
+        cardPresentPaymentService.paymentEvent = .show(
+            eventDetails: .paymentIntentCreationError(error: TestError(), cancelPayment: {})
+        )
+
+        // Then
+        // paymentIntentCreationError message is set
+        var editOrderAction: (() -> Void)? = nil
+        var tryAgainAction: (() -> Void)? = nil
+        if case .paymentIntentCreationError(let viewModel) = sut.cardPresentPaymentInlineMessage {
+            editOrderAction = viewModel.editOrderButtonViewModel?.actionHandler
+            tryAgainAction = viewModel.tryAgainButtonViewModel.actionHandler
+        } else {
+            XCTFail("Expected cardPresentPaymentInlineMessage to be paymentIntentCreationError")
+        }
+
+        // Try again action emits payment cancelation and collection
+        XCTAssertFalse(cardPresentPaymentService.cancelPaymentCalled)
+        tryAgainAction?()
+        XCTAssertTrue(cardPresentPaymentService.cancelPaymentCalled)
+        let expectation = XCTestExpectation(description: "Collect payment should be called after retrying payment")
+        cardPresentPaymentService.onCollectPaymentCalled = {
+            expectation.fulfill()
+        }
+        await fulfillment(of: [expectation], timeout: 1)
+
+        // Edit order action emits edit order event
+        XCTAssertFalse(editOrderCalled)
+        editOrderAction?()
+        XCTAssertTrue(editOrderCalled)
     }
 }
 

@@ -236,6 +236,12 @@ public class AppSettingsStore: Store {
             setLastSelectedOrderStatus(siteID: siteID, status: status)
         case let .loadLastSelectedOrderStatus(siteID, onCompletion):
             loadLastSelectedOrderStatus(siteID: siteID, onCompletion: onCompletion)
+        case .setProductIDAsFavorite(let productID, let siteID):
+            setProductIDAsFavorite(productID: productID, siteID: siteID)
+        case .removeProductIDAsFavorite(let productID, let siteID):
+            removeProductIDAsFavorite(productID: productID, siteID: siteID)
+        case .loadFavoriteProductIDs(let siteID, let onCompletion):
+            loadFavoriteProductIDs(for: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1020,6 +1026,37 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let orderStatus = storeSettings.lastSelectedOrderStatus
         onCompletion(orderStatus)
+    }
+}
+
+// MARK: - Favorites Products
+//
+private extension AppSettingsStore {
+    func setProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+
+        let updatedSettings: GeneralStoreSettings
+        updatedSettings = storeSettings.copy(favoriteProductIDs: Array(Set(storeSettings.favoriteProductIDs + [productID])))
+
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func removeProductIDAsFavorite(productID: Int64, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        var savedFavProductIDs = storeSettings.favoriteProductIDs
+
+        guard let indexOfFavProductToBeRemoved = savedFavProductIDs.firstIndex(of: productID) else {
+            return
+        }
+        savedFavProductIDs.remove(at: indexOfFavProductToBeRemoved)
+
+        let updatedSettings: GeneralStoreSettings
+        updatedSettings = storeSettings.copy(favoriteProductIDs: savedFavProductIDs)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadFavoriteProductIDs(for siteID: Int64, onCompletion: ([Int64]) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).favoriteProductIDs)
     }
 }
 

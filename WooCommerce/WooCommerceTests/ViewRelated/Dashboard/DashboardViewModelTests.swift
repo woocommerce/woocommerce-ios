@@ -739,7 +739,7 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):
                 for product in existingProducts {
                     self?.insertProduct(product)
                 }

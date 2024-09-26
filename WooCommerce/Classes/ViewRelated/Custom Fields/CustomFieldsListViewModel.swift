@@ -34,11 +34,11 @@ extension CustomFieldsListViewModel {
         }
 
         let oldField = combinedList[index]
-        if newField.id == nil {
+        if newField.fieldId == nil {
             // When editing a field that has no id yet, it means the field has only been added locally.
             editLocallyAddedField(oldField: oldField, newField: newField)
         } else {
-            if let existingId = oldField.id {
+            if let existingId = oldField.fieldId {
                 editExistingField(idToEdit: existingId, newField: newField)
             } else {
                 DDLogError("⛔️ Error: Trying to edit an existing field but it has no id. It might be the wrong field to edit.")
@@ -66,12 +66,12 @@ private extension CustomFieldsListViewModel {
 
     /// Checking by id when editing an existing field since existing fields will always have them.
     func editExistingField(idToEdit: Int64, newField: CustomFieldUI) {
-        guard idToEdit == newField.id else {
+        guard idToEdit == newField.fieldId else {
             DDLogError("⛔️ Error: Trying to edit existing field but supplied new id is different.")
             return
         }
 
-        if let index = editedFields.firstIndex(where: { $0.id == idToEdit }) {
+        if let index = editedFields.firstIndex(where: { $0.fieldId == idToEdit }) {
             // Existing field has been locally edited, let's update it again
             editedFields[index] = newField
         } else {
@@ -82,7 +82,7 @@ private extension CustomFieldsListViewModel {
 
     func updateCombinedList() {
         let editedList = originalCustomFields.map { field in
-            editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
+            editedFields.first { $0.fieldId == field.id } ?? CustomFieldUI(customField: field)
         }
         combinedList = editedList + addedFields
     }
@@ -90,20 +90,21 @@ private extension CustomFieldsListViewModel {
 
 extension CustomFieldsListViewModel {
     struct CustomFieldUI: Identifiable {
+        let id = UUID()
         let key: String
         let value: String
-        let id: Int64?
+        let fieldId: Int64?
 
-        init(key: String, value: String, id: Int64? = nil) {
+        init(key: String, value: String, fieldId: Int64? = nil) {
             self.key = key
             self.value = value
-            self.id = id
+            self.fieldId = fieldId
         }
 
         init(customField: CustomFieldViewModel) {
             self.key = customField.title
             self.value = customField.content
-            self.id = customField.id
+            self.fieldId = customField.id
         }
     }
 }

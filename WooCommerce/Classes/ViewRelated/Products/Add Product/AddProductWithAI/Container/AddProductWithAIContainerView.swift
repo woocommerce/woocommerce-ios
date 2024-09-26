@@ -73,7 +73,7 @@ struct AddProductWithAIContainerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             switch viewModel.currentStep {
-            case .productName:
+            case .productFeatures:
                 ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
                                                   onContinueWithFeatures: { features in
                     withAnimation {

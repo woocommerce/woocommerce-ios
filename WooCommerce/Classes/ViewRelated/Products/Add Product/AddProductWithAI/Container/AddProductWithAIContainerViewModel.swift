@@ -4,7 +4,7 @@ import protocol WooFoundation.Analytics
 import Experiments
 
 enum AddProductWithAIStep: Int, CaseIterable {
-    case productName = 1
+    case productFeatures = 1
     case preview
 
     var previousStep: AddProductWithAIStep? {
@@ -19,7 +19,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let source: AddProductCoordinator.Source
 
     var canBeDismissed: Bool {
-        currentStep == .productName && startingInfoViewModel.productFeatures == nil
+        currentStep == .productFeatures && startingInfoViewModel.productFeatures == nil
     }
 
     private let analytics: Analytics
@@ -35,7 +35,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         ProductCreationAIStartingInfoViewModel(siteID: siteID)
     }()
 
-    @Published private(set) var currentStep: AddProductWithAIStep = .productName
+    @Published private(set) var currentStep: AddProductWithAIStep = .productFeatures
 
     init(siteID: Int64,
          source: AddProductCoordinator.Source,

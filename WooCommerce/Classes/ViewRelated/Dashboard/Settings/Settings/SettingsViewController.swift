@@ -499,7 +499,14 @@ private extension SettingsViewController {
 
     func webhooksWasPressed() {
         ServiceLocator.analytics.track(.settingsWebhooksTapped)
-        let viewModel = WebhooksViewModel()
+
+        guard let siteID = stores.sessionManager.defaultSite?.siteID,
+              let credentials = stores.sessionManager.defaultCredentials else {
+            DDLogError("⛔️ Cannot find siteID or credentials needed for webhooks!")
+            return
+        }
+        let webhookService = WebhooksService(siteID: siteID, credentials: credentials)
+        let viewModel = WebhooksViewModel(service: webhookService)
         let viewController = UIHostingController(rootView: WebhooksView(viewModel: viewModel))
         navigationController?.pushViewController(viewController, animated: true)
     }

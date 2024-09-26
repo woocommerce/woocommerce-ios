@@ -1,7 +1,12 @@
 import Foundation
 import Networking
 
-public final class WebhooksService: ObservableObject {
+public protocol WebhooksServiceProtocol {
+    func listAllWebhooks() async throws -> [Webhook]
+    func createWebhook(topic: String, url: URL) async throws -> Webhook
+}
+
+public final class WebhooksService: WebhooksServiceProtocol, ObservableObject {
     private let siteID: Int64
     public var remote: WebhooksRemote
 

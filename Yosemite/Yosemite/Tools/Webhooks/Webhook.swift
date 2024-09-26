@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Webhook {
+public struct Webhook: Equatable {
     public let name: String?
     public let status: String
     public let topic: String

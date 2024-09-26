@@ -3,14 +3,12 @@ import Yosemite
 import SwiftUI
 
 final class WebhooksViewModel: ObservableObject {
-    var siteID: Int64 = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-    var credentials: Credentials = ServiceLocator.stores.sessionManager.defaultCredentials ?? .init(authToken: "")
-    var service: WebhooksService
+    private let service: WebhooksServiceProtocol
 
     @Published var webhooks: [Webhook] = []
 
-    init() {
-        service = WebhooksService(siteID: siteID, credentials: credentials)
+    init(service: WebhooksServiceProtocol) {
+        self.service = service
     }
 
     @MainActor

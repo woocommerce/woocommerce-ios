@@ -218,5 +218,5 @@ private extension WebhooksView {
 }
 
 #Preview {
-    WebhooksView(viewModel: WebhooksViewModel())
+    WebhooksView(viewModel: WebhooksViewModel(service: WebhooksService(siteID: 1234, credentials: .init(authToken: ""))))
 }

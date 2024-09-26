@@ -77,11 +77,11 @@ private extension CustomFieldsListViewModel {
     }
 
     func updateCombinedList() {
-            let editedList = originalCustomFields.map { field in
-                editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
-            }
-            combinedList = editedList + addedFields
+        let editedList = originalCustomFields.map { field in
+            editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)
         }
+        combinedList = editedList + addedFields
+    }
 }
 
 extension CustomFieldsListViewModel {

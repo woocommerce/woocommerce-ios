@@ -192,6 +192,10 @@ extension ProductVariationFormViewModel {
     func canDuplicateProduct() -> Bool {
         false
     }
+
+    func canFavoriteProduct() -> Bool {
+        false
+    }
 }
 
 // MARK: Action handling
@@ -486,6 +490,22 @@ extension ProductVariationFormViewModel {
 //
 extension ProductVariationFormViewModel {
     func trackProductFormLoaded() {
+        // no-op
+    }
+}
+
+// MARK: Favorite
+//
+extension ProductVariationFormViewModel {
+    func isFavorite() -> Bool {
+        false
+    }
+
+    func markAsFavorite() {
+        // no-op
+    }
+
+    func removeFromFavorite() {
         // no-op
     }
 }

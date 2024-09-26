@@ -14,6 +14,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let productStatus: ProductStatus?
         let promotableProductType: PromotableProductType?
         let productCategory: ProductCategory?
+        let favoriteProduct: FavoriteProductsFilter?
 
         let numberOfActiveFilters: Int
 
@@ -22,6 +23,7 @@ final class FilterProductListViewModel: FilterListViewModel {
             productStatus = nil
             promotableProductType = nil
             productCategory = nil
+            favoriteProduct = nil
             numberOfActiveFilters = 0
         }
 
@@ -29,11 +31,13 @@ final class FilterProductListViewModel: FilterListViewModel {
              productStatus: ProductStatus?,
              promotableProductType: PromotableProductType?,
              productCategory: ProductCategory?,
+             favoriteProduct: FavoriteProductsFilter?,
              numberOfActiveFilters: Int) {
             self.stockStatus = stockStatus
             self.productStatus = productStatus
             self.promotableProductType = promotableProductType
             self.productCategory = productCategory
+            self.favoriteProduct = favoriteProduct
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -52,21 +56,40 @@ final class FilterProductListViewModel: FilterListViewModel {
     private let productStatusFilterViewModel: FilterTypeViewModel
     private let productTypeFilterViewModel: FilterTypeViewModel
     private let productCategoryFilterViewModel: FilterTypeViewModel
+    private let productFavoriteFilterViewModel: FilterTypeViewModel
+
+    private let featureFlagService: FeatureFlagService
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
-    init(filters: Filters, siteID: Int64) {
+    ///   - siteID: Current selected store's ID
+    ///   - featureFlagService: Feature flag service
+    init(filters: Filters,
+         siteID: Int64,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
+        self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
 
-        self.filterTypeViewModels = [
-            stockStatusFilterViewModel,
-            productStatusFilterViewModel,
-            productTypeFilterViewModel,
-            productCategoryFilterViewModel
-        ]
+        if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
+            self.filterTypeViewModels = [
+                stockStatusFilterViewModel,
+                productStatusFilterViewModel,
+                productTypeFilterViewModel,
+                productCategoryFilterViewModel,
+                productFavoriteFilterViewModel
+            ]
+        } else {
+            self.filterTypeViewModels = [
+                stockStatusFilterViewModel,
+                productStatusFilterViewModel,
+                productTypeFilterViewModel,
+                productCategoryFilterViewModel,
+            ]
+        }
     }
 
     var criteria: Filters {
@@ -74,6 +97,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
         let promotableProductType = productTypeFilterViewModel.selectedValue as? PromotableProductType ?? nil
         let productCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory ?? nil
+        let favoriteProduct = productFavoriteFilterViewModel.selectedValue as? FavoriteProductsFilter ?? nil
 
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
@@ -81,6 +105,7 @@ final class FilterProductListViewModel: FilterListViewModel {
                        productStatus: productStatus,
                        promotableProductType: promotableProductType,
                        productCategory: productCategory,
+                       favoriteProduct: favoriteProduct,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -96,6 +121,9 @@ final class FilterProductListViewModel: FilterListViewModel {
 
         let clearedProductCategory: ProductCategory? = nil
         productCategoryFilterViewModel.selectedValue = clearedProductCategory
+
+        let clearedFavoriteProduct: ProductCategory? = nil
+        productFavoriteFilterViewModel.selectedValue = clearedFavoriteProduct
     }
 }
 
@@ -107,6 +135,7 @@ extension FilterProductListViewModel {
         case productStatus
         case productType(siteID: Int64)
         case productCategory(siteID: Int64)
+        case favoriteProducts
     }
 }
 
@@ -121,7 +150,19 @@ private extension FilterProductListViewModel.ProductListFilter {
             return NSLocalizedString("Product Type", comment: "Row title for filtering products by product type.")
         case .productCategory:
             return NSLocalizedString("Product Category", comment: "Row title for filtering products by product category.")
+        case .favoriteProducts:
+            return Localization.favoriteProduct
         }
+    }
+}
+
+extension FilterProductListViewModel.ProductListFilter {
+    enum Localization {
+        static let favoriteProduct = NSLocalizedString(
+            "filterProductListViewModel.favoriteProduct",
+            value: "Favorite Products",
+            comment: "Row title for filtering products by favorite products."
+        )
     }
 }
 
@@ -148,6 +189,10 @@ extension FilterProductListViewModel.ProductListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .productCategories(siteID: siteID),
                                        selectedValue: filters.productCategory)
+        case .favoriteProducts:
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .staticOptions(options: [nil, FavoriteProductsFilter()]),
+                                       selectedValue: filters.favoriteProduct)
         }
     }
 

@@ -861,6 +861,8 @@ enum WooAnalyticsStat: String {
     //
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
+    case productDetailMarkAsFavoriteButtonTapped = "product_detail_mark_as_favorite_tapped"
+    case productDetailRemoveFromFavoriteButtonTapped = "product_detail_remove_from_favorite_tapped"
 
     // MARK: Product Settings
     //

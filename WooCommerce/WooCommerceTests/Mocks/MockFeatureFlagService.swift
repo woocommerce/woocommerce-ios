@@ -20,6 +20,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let blazeEvergreenCampaigns: Bool
     private let blazeCampaignObjective: Bool
     private let revampedShippingLabelCreation: Bool
+    private let favoriteProducts: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -38,7 +39,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
-         revampedShippingLabelCreation: Bool = false) {
+         revampedShippingLabelCreation: Bool = false,
+         favoriteProducts: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -57,6 +59,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
+        self.favoriteProducts = favoriteProducts
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -97,6 +100,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
+        case .favoriteProducts:
+            return favoriteProducts
         default:
             return false
         }

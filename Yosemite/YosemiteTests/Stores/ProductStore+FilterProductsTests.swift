@@ -268,6 +268,47 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                                            message: "Invalid parameter(s): type"))
         }
     }
+
+    func test_synchronizeProducts_triggers_remote_request_with_filters() {
+        // Given
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote,
+                                        generativeContentRemote: MockGenerativeContentRemote())
+        let filteredStockStatus: ProductStockStatus = .outOfStock
+        let filteredProductStatus: ProductStatus = .draft
+        let filteredProductType: ProductType = .simple
+        let filteredProductCategory: Networking.ProductCategory = .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test")
+        let filteredProductSortOrder = ProductsSortOrder.dateAscending
+        remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .success([Product.fake()]))
+
+        // When
+        let synchronizeAction = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                             pageNumber: defaultPageNumber,
+                                                             pageSize: defaultPageSize,
+                                                             stockStatus: filteredStockStatus,
+                                                             productStatus: filteredProductStatus,
+                                                             productType: filteredProductType,
+                                                             productCategory: filteredProductCategory,
+                                                             sortOrder: filteredProductSortOrder,
+                                                             productIDs: [1, 2],
+                                                             excludedProductIDs: [30, 45],
+                                                             onCompletion: { _ in })
+        productStore.onAction(synchronizeAction)
+
+        // Then
+        XCTAssertTrue(remote.synchronizeProductsTriggered)
+        assertEqual(filteredStockStatus, remote.synchronizeProductsWithStockStatus)
+        assertEqual(filteredProductStatus, remote.synchronizeProductsWithProductStatus)
+        assertEqual(filteredProductType, remote.synchronizeProductsWithProductType)
+        assertEqual(filteredProductCategory, remote.synchronizeProductsWithProductCategory)
+        assertEqual(filteredProductSortOrder.remoteOrderKey, remote.synchronizeProductsSortOrderBy)
+        assertEqual(filteredProductSortOrder.remoteOrder, remote.synchronizeProductsOrder)
+        assertEqual([1, 2], remote.synchronizeProductsProductIDs)
+        assertEqual([30, 45], remote.synchronizeProductsExcludedProductIDs)
+    }
 }
 
 private extension ProductStore_FilterProductsTests {

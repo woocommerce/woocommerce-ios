@@ -184,4 +184,8 @@ public enum FeatureFlag: Int {
     /// Enables selecting objectives during Blaze campaign creation.
     ///
     case blazeCampaignObjective
+
+    /// Allows marking product as favorite
+    ///
+    case favoriteProducts
 }

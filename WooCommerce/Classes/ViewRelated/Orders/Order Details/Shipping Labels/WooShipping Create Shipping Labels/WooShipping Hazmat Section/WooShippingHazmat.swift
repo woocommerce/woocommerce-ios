@@ -11,14 +11,14 @@ struct WooShippingHazmat: View {
             Image(uiImage: .chevronImage) // TODO: Replace with actual navigation to hazmat declaration screen
                 .secondaryBodyStyle()
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: Layout.backgroundRadius).fill(Color(.quaternarySystemFill)))
+        .padding(.vertical, Layout.verticalPadding)
     }
 }
 
 private extension WooShippingHazmat {
     enum Layout {
         static let backgroundRadius: CGFloat = 8
+        static let verticalPadding: CGFloat = 24
     }
 
     enum Localization {
@@ -30,4 +30,5 @@ private extension WooShippingHazmat {
 
 #Preview {
     WooShippingHazmat()
+        .padding()
 }

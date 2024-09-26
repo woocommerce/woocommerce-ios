@@ -968,4 +968,8 @@ final class IconsTests: XCTestCase {
     func test_shippingIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.shippingIcon)
     }
+
+    func test_productIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.productIcon)
+    }
 }

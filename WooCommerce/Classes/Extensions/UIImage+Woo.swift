@@ -1549,6 +1549,10 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "premium-themes-icon")
     }
 
+    static var productIcon: UIImage {
+        UIImage(imageLiteralResourceName: "icon-product")
+    }
+
     static var siteSecurityIcon: UIImage {
         UIImage(imageLiteralResourceName: "site-security-icon")
     }

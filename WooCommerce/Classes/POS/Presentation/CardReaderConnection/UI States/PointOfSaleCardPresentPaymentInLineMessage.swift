@@ -29,6 +29,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentCaptureError(let viewModel):
             PointOfSaleCardPresentPaymentCaptureErrorMessageView(viewModel: viewModel, animation: animation)
+        case .paymentIntentCreationError(let viewModel):
+            PointOfSaleCardPresentPaymentIntentCreationErrorMessageView(viewModel: viewModel, animation: animation)
         case .cancelledOnReader(let viewModel):
             PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel, animation: animation)
         }

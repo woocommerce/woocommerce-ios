@@ -102,6 +102,7 @@ struct BlazeCampaignItemView: View {
                 .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
         }
         .padding(Layout.strokeWidth)
+        .contentShape(Rectangle())
     }
 }
 

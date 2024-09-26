@@ -1,17 +1,22 @@
 import Foundation
 import Combine
 import enum Yosemite.ServerSidePaymentCaptureError
+import enum Yosemite.CardReaderServiceError
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
     typealias AlertDetails = CardPresentPaymentEventDetails
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
+    let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
 
     private let paymentEventSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
+
+    private let readerConnectionStatusSubject: PassthroughSubject<CardPresentPaymentReaderConnectionStatus, Never> = PassthroughSubject()
 
     private var latestReaderConnectionHandler: ((String?) -> Void)?
 
     init() {
         paymentEventPublisher = paymentEventSubject.eraseToAnyPublisher()
+        readerConnectionStatusPublisher = readerConnectionStatusSubject.eraseToAnyPublisher()
     }
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
@@ -21,6 +26,13 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in
+                    cancelPayment()
+                    self?.paymentEventSubject.send(.idle)
+                })
+            ))
+        case .paymentError(error: CardReaderServiceError.intentCreation(let underlyingError), _, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentIntentCreationError(error: underlyingError, cancelPayment: { [weak self] in
                     cancelPayment()
                     self?.paymentEventSubject.send(.idle)
                 })
@@ -35,6 +47,19 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                         cancelPayment()
                         self?.paymentEventSubject.send(.idle)
                     })))
+        case .scanningForReaders(let endSearch):
+            paymentEventSubject.send(.show(eventDetails: .scanningForReaders(endSearch: { [weak self] in
+                self?.readerConnectionStatusSubject.send(.cancellingConnection)
+                endSearch()
+            })))
+        case .foundReader(let name, let connect, let continueSearch, let endSearch):
+            paymentEventSubject.send(.show(eventDetails: .foundReader(name: name,
+                                                                      connect: connect,
+                                                                      continueSearch: continueSearch,
+                                                                      endSearch: { [weak self] in
+                self?.readerConnectionStatusSubject.send(.cancellingConnection)
+                endSearch()
+            })))
         default:
             paymentEventSubject.send(.show(eventDetails: eventDetails))
         }

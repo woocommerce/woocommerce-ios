@@ -1,2 +1,3 @@
-Dans cette version, il est à présent possible de scanner les numéros de suivi des commandes. Nous avons aussi amélioré la gestion des mots de passe de produits. Nous avons également ajouté des améliorations pour le scanner de produits, les paiements en espèces et les remises.
-La création de campagnes publicitaires Blaze a été optimisée en ce qui concerne la sélection d’images et les réglages de budget.
+Dans cette mise à jour, nous avons ajouté une fonctionnalité de rappel pratique pour vous aider à poursuivre la création de campagnes abandonnées, mais aussi amélioré la façon dont les notifications s’ouvrent directement dès la création de campagnes dans Blaze. Nous avons également corrigé des problèmes de formatage des remises et des paiements en espèces lorsque l’appareil et la boutique n’utilisent pas les mêmes réglages pour les devises. Profitez d’une expérience plus fluide pour gérer votre boutique où que vous soyez !
+
+

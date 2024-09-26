@@ -7,7 +7,8 @@ import struct Yosemite.Order
 struct CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> = Just(.idle).eraseToAnyPublisher()
 
-    let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> = Just(nil).eraseToAnyPublisher()
+    let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> = Just(.disconnected)
+        .eraseToAnyPublisher()
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))

@@ -1110,6 +1110,7 @@ private extension ProductFormViewController {
             switch result {
             case .success:
                 ServiceLocator.analytics.track(.productDetailProductDeleted)
+                self.viewModel.removeFromFavorite()
                 // Dismisses the in-progress UI.
                 self.navigationController?.dismiss(animated: true, completion: nil)
                 // Dismiss or Pop the Product Form

@@ -340,4 +340,37 @@ final class ProductListViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(result)
     }
+
+    // MARK: Favorite products
+    //
+    func test_it_loads_favorite_products_on_init() {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: storesManager,
+                                             favoriteProductsUseCase: favoriteProductsUseCase)
+
+        // Then
+        waitUntil {
+            favoriteProductsUseCase.favoriteProductIDsCalled == true
+        }
+    }
+
+    func test_it_loads_and_sets_favorite_product_IDs_correctly() async {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: storesManager,
+                                             favoriteProductsUseCase: favoriteProductsUseCase)
+
+        XCTAssertTrue(viewModel.favoriteProductIDs.isEmpty)
+
+        // When
+        let sampleProductIDs: [Int64] = [1, 2, 3]
+        favoriteProductsUseCase.favoriteProductIDsValue = sampleProductIDs
+        await viewModel.loadFavoriteProductIDs()
+
+        // Then
+        XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
+    }
 }

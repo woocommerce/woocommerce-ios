@@ -10,6 +10,7 @@
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
 - [*] Payments: Prevent phone from sleeping during card reader updates [https://github.com/woocommerce/woocommerce-ios/pull/14021]
 - [internal] Fixed concurrency issue with Blaze local notification scheduler. [https://github.com/woocommerce/woocommerce-ios/pull/14012]
+- [internal] We added ability to mark and filter favorite products. This feature isn't released yet. But please smoke test product filtering work as expected. [https://github.com/woocommerce/woocommerce-ios/pull/14001]
 
 20.5
 -----

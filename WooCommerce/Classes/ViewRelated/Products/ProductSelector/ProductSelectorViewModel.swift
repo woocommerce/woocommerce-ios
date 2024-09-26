@@ -232,6 +232,9 @@ final class ProductSelectorViewModel: ObservableObject {
 
     @Published var productVariationListViewModel: ProductVariationSelectorViewModel? = nil
 
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
+    private(set) var favoriteProductIDs: [Int64] = []
+
     init(siteID: Int64,
          source: ProductSelectorSource,
          selectedItemIDs: [Int64] = [],
@@ -241,6 +244,7 @@ final class ProductSelectorViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex,
@@ -278,6 +282,11 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onCloseButtonTapped = onCloseButtonTapped
         self.onConfigureProductRow = onConfigureProductRow
         tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
+
+        self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
+        Task { @MainActor [weak self] in
+            await self?.loadFavoriteProductIDs()
+        }
 
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
         tracker.viewModel = self
@@ -480,6 +489,13 @@ final class ProductSelectorViewModel: ObservableObject {
         onAllSelectionsCleared?()
     }
 
+    /// Loads favorite product IDs
+    ///
+    @MainActor
+    func loadFavoriteProductIDs() async {
+        favoriteProductIDs = await favoriteProductsUseCase.favoriteProductIDs()
+    }
+
     enum SyncApproach {
         case external
         case onButtonTap
@@ -511,6 +527,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                        productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
+                                                       productIDs: (filtersSubject.value.favoriteProduct != nil) ? favoriteProductIDs : [],
                                                        shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage) { [weak self] result in
             guard let self = self else { return }
 
@@ -720,11 +737,22 @@ private extension ProductSelectorViewModel {
         sections.append(ProductSelectorSection(type: type, products: products))
     }
 
-    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) {
+    func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) async {
+        let productIDs: [Int64]? = await {
+            guard filters.favoriteProduct != nil else {
+                return nil
+            }
+
+            await loadFavoriteProductIDs()
+            return favoriteProductIDs
+        }()
+
         productsResultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.promotableProductType?.productType)
+                                                  productType: filters.promotableProductType?.productType,
+                                                  productIDs: productIDs)
+
         if searchTerm.isNotEmpty {
             // When the search query changes, also includes the original results predicate in addition to the search keyword and filter key.
             let searchResultsPredicate = NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",
@@ -770,10 +798,12 @@ private extension ProductSelectorViewModel {
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self = self else { return }
-                self.updateFilterButtonTitle(with: filtersSubject)
-                self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
-                self.reloadData()
-                self.paginationTracker.resync()
+                Task { @MainActor in
+                    self.updateFilterButtonTitle(with: filtersSubject)
+                    await self.updatePredicate(searchTerm: searchTerm, filters: filtersSubject, productSearchFilter: productSearchFilter)
+                    self.reloadData()
+                    self.paginationTracker.resync()
+                }
             }.store(in: &subscriptions)
     }
 

@@ -31,30 +31,13 @@ extension CustomFieldsListViewModel {
         }
 
         let oldField = combinedList[index]
-
         if newField.id == nil {
-            // If there's no id, it means we're now editing a newly added field.
-            if let addedIndex = addedFields.firstIndex(where: { $0.key == oldField.key }) {
-                if newField.key == oldField.key {
-                    // If the key hasn't changed, update the existing added field
-                    addedFields[addedIndex] = newField
-                } else {
-                    // If the key has changed, remove the old field and add the new one
-                    addedFields.remove(at: addedIndex)
-                    addedFields.append(newField)
-                }
-            } else {
-                // This case should not happen in normal flow
-                DDLogError("⛔️ Error: Editing a newly updated field that doesn't exist in combinedList")
-
-            }
+            editLocallyAddedField(oldField: oldField, newField: newField)
         } else {
-            // For when editing an already edited field
-            if let editedIndex = editedFields.firstIndex(where: { $0.id == oldField.id }) {
-                editedFields[editedIndex] = newField
+            if let existingId = oldField.id {
+                editExistingField(idToEdit: existingId, newField: newField)
             } else {
-                // For the first time a field is edited
-                editedFields.append(newField)
+                DDLogError("⛔️ Error: Trying to edit existing field that has no id.")
             }
         }
 
@@ -68,6 +51,31 @@ extension CustomFieldsListViewModel {
 }
 
 private extension CustomFieldsListViewModel {
+    func editLocallyAddedField(oldField: CustomFieldUI, newField: CustomFieldUI) {
+        if let index = addedFields.firstIndex(where: { $0.key == oldField.key }) {
+            // Found the matching field, update it
+            addedFields[index] = newField
+        } else {
+            // This shouldn't happen in normal flow, but log an error just in case
+            DDLogError("⛔️ Error: Trying to edit a locally added field that doesn't exist in addedFields")
+        }
+    }
+
+    func editExistingField(idToEdit: Int64, newField: CustomFieldUI) {
+        guard idToEdit == newField.id else {
+            DDLogError("⛔️ Error: Trying to edit existing field but supplied new id is different.")
+            return
+        }
+
+        if let index = editedFields.firstIndex(where: { $0.id == idToEdit }) {
+            // This field has been locally edited, let's update it again
+            editedFields[index] = newField
+        } else {
+            // First time the field is locally edited
+            editedFields.append(newField)
+        }
+    }
+
     func updateCombinedList() {
             let editedList = originalCustomFields.map { field in
                 editedFields.first { $0.id == field.id } ?? CustomFieldUI(customField: field)

@@ -1525,6 +1525,10 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "email-outline-icon")
     }
 
+    static var shippingIcon: UIImage {
+        UIImage(imageLiteralResourceName: "icon-shipping")
+    }
+
     static var shippingOutlineIcon: UIImage {
         UIImage(imageLiteralResourceName: "shipping-outline-icon")
     }

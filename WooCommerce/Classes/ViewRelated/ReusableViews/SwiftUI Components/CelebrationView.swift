@@ -67,14 +67,14 @@ struct CelebrationView: View {
 
             Spacer()
 
-            if let feedbackConfiguration {
-                FeedbackView(configuration: feedbackConfiguration)
-            }
-
             Button(closeButtonTitle) {
                 onTappingDone()
             }
             .buttonStyle(PrimaryButtonStyle())
+
+            if let feedbackConfiguration {
+                FeedbackView(configuration: feedbackConfiguration)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }

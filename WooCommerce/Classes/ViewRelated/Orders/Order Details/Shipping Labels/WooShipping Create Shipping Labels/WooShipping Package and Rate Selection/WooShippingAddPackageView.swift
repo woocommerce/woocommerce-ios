@@ -31,6 +31,13 @@ struct WooShippingAddPackageView: View {
                 .padding()
                 Spacer()
                 selectedPackageTypeView
+                Spacer()
+                Button {
+                    // add package
+                } label: {
+                    Text(Localization.addPackage)
+                }
+
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -41,7 +48,7 @@ struct WooShippingAddPackageView: View {
                     })
                 }
             }
-            .navigationTitle(Localization.title)
+            .navigationTitle(Localization.addPackage)
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(.stack)
@@ -152,7 +159,7 @@ struct WooShippingAddPackageDimensionView: View {
 
 extension WooShippingAddPackageView {
     enum Localization {
-        static let title = NSLocalizedString("Add Package", comment: "Description")
+        static let addPackage = NSLocalizedString("Add Package", comment: "Description")
         static let cancel = NSLocalizedString("Cancel", comment: "Description")
         static let custom = NSLocalizedString("Custom", comment: "Description")
         static let carrier = NSLocalizedString("Carrier", comment: "Description")

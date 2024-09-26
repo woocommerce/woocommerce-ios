@@ -4,7 +4,7 @@ import Codegen
 /// Represents a Webhook entity:
 /// https://woocommerce.github.io/woocommerce-rest-api-docs/#webhooks
 ///
-public struct Webhook: Codable {
+public struct Webhook: Codable, Equatable {
     /// The siteID for the webhook
     public let siteID: Int64
 

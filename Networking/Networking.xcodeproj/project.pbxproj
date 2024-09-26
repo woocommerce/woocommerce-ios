@@ -518,6 +518,9 @@
 		680910752CA27DC50057B02A /* WebhooksRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910742CA27DC50057B02A /* WebhooksRemote.swift */; };
 		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
 		68255E442C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json in Resources */ = {isa = PBXBuildFile; fileRef = 68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */; };
+		682820512CA4F5C600295107 /* WebhooksRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682820502CA4F5C600295107 /* WebhooksRemoteTests.swift */; };
+		682820532CA4F98F00295107 /* webhooks-single.json in Resources */ = {isa = PBXBuildFile; fileRef = 682820522CA4F98F00295107 /* webhooks-single.json */; };
+		682820552CA4FEB400295107 /* webhooks-multiple.json in Resources */ = {isa = PBXBuildFile; fileRef = 682820542CA4FEB400295107 /* webhooks-multiple.json */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
 		6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6846B01A2A61B590008EB143 /* iap-transaction-handled.json */; };
 		684AB6D82AC2E93100106D7C /* order-with-special-character-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */; };
@@ -1671,6 +1674,9 @@
 		680910742CA27DC50057B02A /* WebhooksRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksRemote.swift; sourceTree = "<group>"; };
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		68255E432C60C6AA00090EBD /* products-load-all-for-eligibility-criteria.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "products-load-all-for-eligibility-criteria.json"; sourceTree = "<group>"; };
+		682820502CA4F5C600295107 /* WebhooksRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksRemoteTests.swift; sourceTree = "<group>"; };
+		682820522CA4F98F00295107 /* webhooks-single.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "webhooks-single.json"; sourceTree = "<group>"; };
+		682820542CA4FEB400295107 /* webhooks-multiple.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "webhooks-multiple.json"; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
 		6846B01A2A61B590008EB143 /* iap-transaction-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-handled.json"; sourceTree = "<group>"; };
 		684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-special-character-currency.json"; sourceTree = "<group>"; };
@@ -2706,6 +2712,7 @@
 				DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */,
 				68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */,
 				68F48B0E28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift */,
+				682820502CA4F5C600295107 /* WebhooksRemoteTests.swift */,
 				0239306A291A96F800B2632F /* DomainRemoteTests.swift */,
 				02616F8B292132800095BC00 /* SiteRemoteTests.swift */,
 				02EF166D292F0C5800D90AD6 /* PaymentRemoteTests.swift */,
@@ -3432,6 +3439,8 @@
 				31B8D6B526583970008E3DB2 /* wcpay-account-implicitly-not-eligible.json */,
 				31799AFB2705189200D78179 /* wcpay-location.json */,
 				31799AFD270518AD00D78179 /* wcpay-location-error.json */,
+				682820522CA4F98F00295107 /* webhooks-single.json */,
+				682820542CA4FEB400295107 /* webhooks-multiple.json */,
 				02A26F1A2744F5FC008E4EDB /* wp-site-settings.json */,
 				DEC51AEC2768A0AD009F3DF4 /* systemStatusWithPluginsOnly.json */,
 				077F39D726A58EB600ABEADC /* systemStatus.json */,
@@ -4347,6 +4356,7 @@
 				45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */,
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
 				DE66C559297799D000DAA978 /* add-on-groups-without-data.json in Resources */,
+				682820552CA4FEB400295107 /* webhooks-multiple.json in Resources */,
 				265BCA02243056E3004E53EE /* categories-all.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
 				EEE846A22A54745F005239B6 /* identify-language-success.json in Resources */,
@@ -4532,6 +4542,7 @@
 				DE2004702BFB535500660A72 /* product-report.json in Resources */,
 				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,
 				CE21FB242C2C16DA00303832 /* google-ads-reports-programs.json in Resources */,
+				682820532CA4F98F00295107 /* webhooks-single.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
 				DE2004762C001F7500660A72 /* variation-report.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,
@@ -5466,6 +5477,7 @@
 				74002D6C2118B88200A63C19 /* SiteStatsRemoteTests.swift in Sources */,
 				0212683524C046CB00F8A892 /* MockNetwork+Path.swift in Sources */,
 				EE1217DC2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift in Sources */,
+				682820512CA4F5C600295107 /* WebhooksRemoteTests.swift in Sources */,
 				68BD37B328D9B8BD00C2A517 /* CustomerRemoteTests.swift in Sources */,
 				B554FA932180C17200C54DFF /* NoteHashListMapperTests.swift in Sources */,
 				EEC312C52AFE01BC004369F7 /* ProductEncoderTests.swift in Sources */,

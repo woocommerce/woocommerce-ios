@@ -392,7 +392,8 @@ private extension View {
     func roundedRectBorderStyle(strokeColor: Color = ProductDetailPreviewView.Constants.separatorColor) -> some View {
         modifier(RoundedBorder(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius,
                                lineColor: strokeColor,
-                               lineWidth: ProductDetailPreviewView.Layout.borderWidth))
+                               lineWidth: ProductDetailPreviewView.Layout.borderWidth,
+                               dashed: false))
     }
 }
 

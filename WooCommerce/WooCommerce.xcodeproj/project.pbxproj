@@ -2179,6 +2179,7 @@
 		CE21B3E020FFC59700A259D5 /* ProductDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */; };
 		CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */; };
 		CE21FB262C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */; };
+		CE2207042CA5C55800E16D9B /* WooShippingCreateLabelsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */; };
 		CE22571B20E16FBC0037F478 /* LeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */; };
 		CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227096228F152400C0626C /* WooBasicTableViewCell.swift */; };
 		CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */; };
@@ -5225,6 +5226,7 @@
 		CE21B3DE20FFC59700A259D5 /* ProductDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		CE21B3DF20FFC59700A259D5 /* ProductDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		CE21FB252C2DB3A900303832 /* GoogleAdsCampaignReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAdsCampaignReportCardViewModel.swift; sourceTree = "<group>"; };
+		CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCreateLabelsViewModelTests.swift; sourceTree = "<group>"; };
 		CE227096228F152400C0626C /* WooBasicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooBasicTableViewCell.swift; sourceTree = "<group>"; };
 		CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WooBasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE22709E2293052700C0626C /* WebviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebviewHelper.swift; path = Classes/Tools/WebviewHelper.swift; sourceTree = SOURCE_ROOT; };
@@ -11849,6 +11851,7 @@
 		CEC3CC722C9343BC00B93FBE /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */,
 				CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */,
 				CEC3CC732C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift */,
 				CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */,
@@ -16825,6 +16828,7 @@
 				AEB6903729770B1D00872FE0 /* ProductListViewModelTests.swift in Sources */,
 				03B9E52B2A1505A7005C77F5 /* TapToPayReconnectionControllerTests.swift in Sources */,
 				314DC4C1268D28B100444C9E /* CardReaderSettingsKnownReadersStorageTests.swift in Sources */,
+				CE2207042CA5C55800E16D9B /* WooShippingCreateLabelsViewModelTests.swift in Sources */,
 				02D635792B58071C00B1CBF6 /* MockNote.swift in Sources */,
 				93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */,
 				45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */,

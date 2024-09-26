@@ -52,11 +52,11 @@ struct WooShippingCreateLabelsView: View {
                 }) {
                     if isShipmentDetailsExpanded {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
-                            Toggle(Localization.BottomSheet.markComplete, isOn: .constant(false)) // TODO: 14044 - Handle this toggle setting
+                            Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
 
                             Button {
-                                // TODO: 13556 - Trigger purchase action
+                                viewModel.purchaseLabel()
                             } label: {
                                 Text(Localization.BottomSheet.purchase)
                             }

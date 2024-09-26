@@ -1,31 +1,29 @@
-[
-    {
-        "id": 1,
-        "name": "Webhook created on Sep 26, 2024 @ 02:16 AM",
-        "status": "active",
-        "topic": "order.updated",
-        "resource": "order",
-        "event": "updated",
-        "hooks": [
-            "woocommerce_update_order",
-            "woocommerce_order_refunded"
+{
+    "id": 1,
+    "name": "Webhook created on Sep 26, 2024 @ 02:16 AM",
+    "status": "active",
+    "topic": "order.updated",
+    "resource": "order",
+    "event": "updated",
+    "hooks": [
+        "woocommerce_update_order",
+        "woocommerce_order_refunded"
+    ],
+    "delivery_url": "https://server.site/1234",
+    "date_created": "2024-09-26T09:16:56",
+    "date_created_gmt": "2024-09-26T02:16:56",
+    "date_modified": "2024-09-26T09:16:57",
+    "date_modified_gmt": "2024-09-26T02:16:57",
+    "_links": {
+        "self": [
+            {
+                "href": "https://example.exampletestsite.com/wp-json/wc/v3/webhooks/15"
+            }
         ],
-        "delivery_url": "https://server.site/1234",
-        "date_created": "2024-09-26T09:16:56",
-        "date_created_gmt": "2024-09-26T02:16:56",
-        "date_modified": "2024-09-26T09:16:57",
-        "date_modified_gmt": "2024-09-26T02:16:57",
-        "_links": {
-            "self": [
-                {
-                    "href": "https://example.exampletestsite.com/wp-json/wc/v3/webhooks/15"
-                }
-            ],
-            "collection": [
-                {
-                    "href": "https://example.exampletestsite.com/wp-json/wc/v3/webhooks"
-                }
-            ]
-        }
+        "collection": [
+            {
+                "href": "https://example.exampletestsite.com/wp-json/wc/v3/webhooks"
+            }
+        ]
     }
-]
+}

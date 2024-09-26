@@ -4,6 +4,7 @@ import XCTest
 final class WebhooksRemoteTests: XCTestCase {
     private var network: MockNetwork!
     private var sut: WebhooksRemote!
+    private let sampleSiteID: Int64 = 1
     
     override func setUp() {
         super.setUp()
@@ -17,14 +18,14 @@ final class WebhooksRemoteTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_listAllWebhooks_when_no_webhooks_then_returns_empty_response() async {
+    func test_listAllWebhooks_when_site_has_no_webhooks_then_returns_empty_response() async {
         // Given
         var webhooks: [Webhook] = []
         network.simulateResponse(requestUrlSuffix: "webhooks", filename: "empty-data-array")
         
         do {
             // When
-            webhooks = try await sut.listAllWebhooks(for: 1)
+            webhooks = try await sut.listAllWebhooks(for: sampleSiteID)
             // Then
             XCTAssertEqual(webhooks, [])
         } catch {
@@ -32,23 +33,23 @@ final class WebhooksRemoteTests: XCTestCase {
         }
     }
     
-    func test_listAllWebhooks_when_single_webhook_then_parses_and_returns_single_webhook_successfully() async {
+    func test_listAllWebhooks_when_site_has_single_webhook_then_parses_and_returns_single_webhook_successfully() async {
         // Given
-        var webhooks: [Webhook] = []
-        let expectedWebhooks = [Self.makeWebhookForTesting()]
-        network.simulateResponse(requestUrlSuffix: "webhooks", filename: "webhooks-single")
+        var webhook: Webhook?
+        let expectedWebhook = Self.makeWebhookForTesting()
+        network.simulateResponse(requestUrlSuffix: "webhooks", filename: "webhooks-multiple")
         
         do {
             // When
-            webhooks = try await sut.listAllWebhooks(for: 1)
+            webhook = try await sut.listAllWebhooks(for: sampleSiteID).first
             // Then
-            XCTAssertEqual(webhooks, expectedWebhooks)
+            XCTAssertEqual(webhook, expectedWebhook)
         } catch {
-            XCTFail("Expected \(expectedWebhooks). Got \(webhooks)")
+            XCTFail("Expected \(expectedWebhook). Got \(String(describing: webhook))")
         }
     }
     
-    func test_listAllWebhooks_when_multiple_webhooks_then_parses_and_returns_multiple_webhooks_successfully() async {
+    func test_listAllWebhooks_when_site_has_multiple_webhooks_then_parses_and_returns_multiple_webhooks_successfully() async {
         // Given
         var webhooks: [Webhook] = []
         let expectedWebhooks = Self.makeMultipleWebhooksForTesting()
@@ -56,7 +57,7 @@ final class WebhooksRemoteTests: XCTestCase {
         
         do {
             // When
-            webhooks = try await sut.listAllWebhooks(for: 1)
+            webhooks = try await sut.listAllWebhooks(for: sampleSiteID)
             // Then
             XCTAssertEqual(webhooks, expectedWebhooks)
         } catch {
@@ -71,7 +72,42 @@ final class WebhooksRemoteTests: XCTestCase {
         
         do {
             // When
-            _ = try await sut.listAllWebhooks(for: 1)
+            _ = try await sut.listAllWebhooks(for: sampleSiteID)
+            XCTFail("Expected an error, but got success.")
+        } catch {
+            // Then
+            XCTAssertEqual(error as NSError, expectedError)
+        }
+    }
+    
+    func test_createWebhook_then_creates_and_returns_single_webhook_successfully() async {
+        // Given
+        let topic = "order.created"
+        let url = URL(string: "https://server.site/1234")!
+        var webhook: Webhook?
+        let expectedWebhook = Self.makeWebhookForTesting()
+        network.simulateResponse(requestUrlSuffix: "webhooks", filename: "webhooks-single")
+        
+        do {
+            // When
+            webhook = try await sut.createWebhook(for: sampleSiteID, topic: topic, url: url)
+            // Then
+            XCTAssertEqual(webhook, expectedWebhook)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+    
+    func test_createWebhook_when_fails_then_throws_error() async {
+        // Given
+        let topic = "order.created"
+        let url = URL(string: "https://server.site/1234")!
+        let expectedError = NSError(domain: "Some error", code: 0)
+        network.simulateError(requestUrlSuffix: "webhooks", error: expectedError)
+        
+        do {
+            // When
+            _ = try await sut.createWebhook(for: sampleSiteID, topic: topic, url: url)
             XCTFail("Expected an error, but got success.")
         } catch {
             // Then
@@ -96,6 +132,6 @@ private extension WebhooksRemoteTests {
                 status: "active",
                 topic: "order.created",
                 deliveryURL: URL(string: "https://server.site/1234")!)
-        return [secondWebhook, firstWebhook]
+        return [firstWebhook, secondWebhook]
     }
 }

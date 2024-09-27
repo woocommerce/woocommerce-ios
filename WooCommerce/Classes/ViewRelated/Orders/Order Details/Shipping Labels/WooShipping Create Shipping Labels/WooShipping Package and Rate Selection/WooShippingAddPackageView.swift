@@ -91,13 +91,26 @@ struct WooShippingAddPackageView: View {
                 Spacer()
             }
             // type selection
-            Picker(selection: $packageType) {
-                ForEach(PackageType.allCases, id: \.self) {
-                    Text($0.name)
+            Menu {
+                // show selection
+                ForEach(PackageType.allCases, id: \.self) { option in
+                    Button {
+                        packageType = option
+                    } label: {
+                        Text(option.name)
+                    }
                 }
             } label: {
-                EmptyView()
+                HStack {
+                    // text
+                    Text(packageType.name)
+                    // arrows
+                    Spacer()
+                    Image(systemName: "chevron.up.chevron.down")
+                }
+                .padding()
             }
+            .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
             HStack {
                 ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) {
                     WooShippingAddPackageDimensionView(dimensionType: $0)
@@ -112,7 +125,6 @@ struct WooShippingAddPackageView: View {
                 } label: {
                     Text("Save package template")
                 }
-
             }
         }
         .padding()
@@ -147,9 +159,18 @@ struct WooShippingAddPackageDimensionView: View {
 
     var body: some View {
         VStack {
-            Text(dimensionType.name)
-            TextField(dimensionType.name, text: $fieldValue)
+            HStack {
+                Text(dimensionType.name)
+                Spacer()
+            }
+            HStack {
+                TextField("", text: $fieldValue)
+                Text("cm")
+            }
+            .padding()
+            .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
         }
+        .frame(minHeight: 48)
     }
 }
 

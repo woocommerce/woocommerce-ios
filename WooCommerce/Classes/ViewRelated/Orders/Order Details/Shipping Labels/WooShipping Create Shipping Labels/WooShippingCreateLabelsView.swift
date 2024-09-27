@@ -25,16 +25,6 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the shipment details bottom sheet is expanded.
     @State private var isShipmentDetailsExpanded = false
 
-    // TODO: 14044 - Track the paper size selection in the view model
-    // TODO: 13558 - Set the default selection from the account settings
-    @State private var selectedPaperSize: String = "Label (4\"x6\")"
-
-    // TODO: 14044 - Replace this static list with real data from the store
-    private let paperSizes: [String] = [
-        "Letter (8.5\"x11\")",
-        "Label (4\"x6\")"
-    ]
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -55,32 +45,6 @@ struct WooShippingCreateLabelsView: View {
                         VStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: .constant(false)) // TODO: 14044 - Handle this toggle setting
                                 .font(.subheadline)
-
-                            Menu {
-                                ForEach(paperSizes, id: \.self) { paperSize in
-                                    Button {
-                                        selectedPaperSize = paperSize
-                                    } label: {
-                                        HStack {
-                                            Text(paperSize)
-                                            if selectedPaperSize == paperSize {
-                                                Image(uiImage: .checkmarkStyledImage)
-                                            }
-                                        }
-                                    }
-                                }
-                            } label: {
-                                HStack {
-                                    Text(selectedPaperSize)
-                                        .bodyStyle()
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Image(systemName: "chevron.up.chevron.down")
-                                        .bold()
-                                }
-                                .padding(insets: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-                            }
-                            .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 1)
-                            .accessibilityLabel(Localization.BottomSheet.paperSize)
 
                             Button {
                                 // TODO: 13556 - Trigger purchase action

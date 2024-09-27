@@ -108,28 +108,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             }
-            remoteCardPaymentClient.onProcessingCompletion = { intentID in
-                let intent = PaymentIntent(id: intentID,
-                                           status: .requiresCapture,
-                                           created: .now,
-                                           amount: orderTotal.uintValue*100,
-                                           currency: "usd",
-                                           metadata: nil,
-                                           charges: [])
+            remoteCardPaymentClient.onProcessingCompletion = { intent in
                 onProcessingCompletion(intent)
             }
             remoteCardPaymentClient.onPaymentCompletion = { [weak self] result in
                 DDLogInfo("[Client] Payment capture orchestrator onPaymentCompletion called")
-                let intentResult = result.map { intentID in
-                    PaymentIntent(id: intentID,
-                                  status: .requiresCapture,
-                                  created: .now,
-                                  amount: orderTotal.uintValue*100,
-                                  currency: "usd",
-                                  metadata: parameters.metadata,
-                                  charges: [])
-                }
-                switch intentResult {
+                switch result {
                 case .success(let intent):
                     let action = CardPresentPaymentAction.captureOrderPaymentOnSite(
                         siteID: order.siteID,

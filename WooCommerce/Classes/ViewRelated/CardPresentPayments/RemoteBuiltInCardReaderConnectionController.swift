@@ -148,10 +148,8 @@ class RemoteTapToPayReaderServer {
                         self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentFailed(error: error.localizedDescription))
                     }
                 } receiveValue: { [weak self] paymentIntent in
-                    DDLogInfo("[Server] Payment intent collected: \(paymentIntent)")
-                    DDLogInfo("[Server] Charges: \(paymentIntent.charges)")
-                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentIntentConfirmed(id: paymentIntent.id, orderID: orderID))
-                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentMethodCollectionSuccessful(intentID: paymentIntent.id, orderID: orderID))
+                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentIntentConfirmed(intent: paymentIntent, orderID: orderID))
+                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentMethodCollectionSuccessful(intent: paymentIntent, orderID: orderID))
                 }
         }
 
@@ -205,8 +203,8 @@ class RemoteTapToPayReaderClient {
 
     var onConnection: ((CardReader) -> Void)?
     var onCardReaderMessage: ((CardReaderEvent) -> Void)?
-    var onProcessingCompletion: ((String) -> Void)?
-    var onPaymentCompletion: ((Result<String, Error>) -> Void)?
+    var onProcessingCompletion: ((PaymentIntent) -> Void)?
+    var onPaymentCompletion: ((Result<PaymentIntent, Error>) -> Void)?
 
     func start() {
         networkingStack.startBrowsing()
@@ -255,12 +253,12 @@ class RemoteTapToPayReaderClient {
         case .cardReaderMessage(let event):
             DDLogInfo("Card reader message: \(event)")
             onCardReaderMessage?(event)
-        case .paymentIntentConfirmed(let id, let orderID):
-            DDLogInfo("[Client] Remote card reader payment intent confirmed. Intent ID: \(id), order ID: \(orderID)")
-            onProcessingCompletion?(id)
-        case .paymentMethodCollectionSuccessful(let intentID, let orderID):
-            DDLogInfo("[Client] Remote card reader payment success. Intent ID: \(intentID), order ID: \(orderID)")
-            onPaymentCompletion?(.success(intentID))
+        case .paymentIntentConfirmed(let intent, let orderID):
+            DDLogInfo("[Client] Remote card reader payment intent confirmed. Intent: \(intent), order ID: \(orderID)")
+            onProcessingCompletion?(intent)
+        case .paymentMethodCollectionSuccessful(let intent, let orderID):
+            DDLogInfo("[Client] Remote card reader payment success. Intent ID: \(intent.id), order ID: \(orderID)")
+            onPaymentCompletion?(.success(intent))
         case .paymentFailed(let error):
             DDLogInfo("[Client] Remote payment failed: \(error)")
             onPaymentCompletion?(.failure(RemoteTapToPayServiceError.paymentFailed(details: error)))
@@ -288,8 +286,8 @@ enum RemoteCardReaderServerMessage: Codable {
     case cardReaderConnected
     case cardReaderConnectionFailed(error: String)
     case paymentFailed(error: String)
-    case paymentIntentConfirmed(id: String, orderID: Int64)
-    case paymentMethodCollectionSuccessful(intentID: String, orderID: Int64)
+    case paymentIntentConfirmed(intent: PaymentIntent, orderID: Int64)
+    case paymentMethodCollectionSuccessful(intent: PaymentIntent, orderID: Int64)
     case cardReaderMessage(event: CardReaderEvent)
 }
 

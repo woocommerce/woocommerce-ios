@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import WordPressAuthenticator
 import Experiments
@@ -58,12 +59,15 @@ final class LoginPrologueViewController: UIViewController {
         setupCarousel()
     }
 
-    @IBAction func bluetoothTapped(_ sender: Any) {
+    @IBAction func remoteTapToPayTapped(_ sender: Any) {
         guard tapToPayServer == nil else {
             return
         }
-        tapToPayServer = RemoteTapToPayReaderServer()
-        tapToPayServer?.start()
+        let tapToPayServer = RemoteTapToPayReaderServer()
+        tapToPayServer.start()
+        self.tapToPayServer = tapToPayServer
+        let hostingController = UIHostingController<RemoteTapToPayServerView>(rootView: RemoteTapToPayServerView(server: tapToPayServer))
+        present(hostingController, animated: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {

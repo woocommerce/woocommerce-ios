@@ -68,7 +68,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 }
 
 // Usage example for iPhone (server)
-class RemoteTapToPayReaderServer {
+class RemoteTapToPayReaderServer: ObservableObject {
     let networkingStack = NetworkingStack()
 
     private var cancellables = Set<AnyCancellable>()
@@ -77,10 +77,26 @@ class RemoteTapToPayReaderServer {
     var locationToken: String?
     var connectionToken: String?
 
+    @Published var serverMessages: [String] = []
+
     func start() {
+        serverMessages.append("Initialising Tap to Pay Server")
+
+        networkingStack.onListenerStateUpdate = { [weak self] state in
+            switch state {
+            case .ready:
+                self?.serverMessages.append("Server ready")
+            case .failed(let error):
+                self?.serverMessages.append("Server failed: \(error)")
+            default:
+                break
+            }
+        }
+
         networkingStack.setupServer()
         networkingStack.onMessageReceived = { [weak self] data in
             if let message = try? JSONDecoder().decode(RemoteCardReaderClientMessage.self, from: data) {
+                self?.serverMessages.append("Remote reader message received: \(message)")
                 self?.handleClientMessage(message)
             }
         }
@@ -94,7 +110,7 @@ class RemoteTapToPayReaderServer {
     var paymentCancellable: AnyCancellable?
 
     func handleClientMessage(_ message: RemoteCardReaderClientMessage) {
-        DDLogInfo("Received remote reader message: \(message)")
+        serverMessages.append("Received remote reader message: \(message)")
         switch message {
         case .connectReader(let locationToken, let connectionToken):
             self.locationToken = locationToken
@@ -102,10 +118,11 @@ class RemoteTapToPayReaderServer {
             do {
                 try cardReaderService.start(self, discoveryMethod: .localMobile)
                 startListeningForTapToPay { [weak self] error in
-                    DDLogError("Remote reader discovery error: \(error)")
                     if case CardReaderServiceError.discovery(UnderlyingError.alreadyConnectedToReader) = error {
+                        self?.serverMessages.append("Remote reader already connected")
                         self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnected)
                     } else {
+                        self?.serverMessages.append("Remote reader discovery error: \(error)")
                         self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnectionFailed(error: error.localizedDescription))
                     }
                 } onFoundTapToPayReader: { [weak self] reader in
@@ -115,16 +132,16 @@ class RemoteTapToPayReaderServer {
                         options: CardReaderConnectionOptions(
                             builtInOptions: .init(termsOfServiceAcceptancePermitted: true)))
 
-                    connectionPublisher.sink(receiveCompletion: { result in
-                        DDLogInfo("Remote reader connection result: \(result)")
+                    connectionPublisher.sink(receiveCompletion: { [weak self] result in
+                        self?.serverMessages.append("Remote reader connection result: \(result)")
                     }, receiveValue: { [weak self] reader in
-                        DDLogInfo("Remote reader connected: \(reader)")
+                        self?.serverMessages.append("Remote reader connected: \(reader)")
                         self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnected)
                     }).store(in: &cancellables)
                 }
 
             } catch {
-                DDLogError("Remote reader error: \(error)")
+                serverMessages.append("Remote reader error: \(error)")
                 networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnectionFailed(error: error.localizedDescription))
             }
 
@@ -138,6 +155,7 @@ class RemoteTapToPayReaderServer {
                                                metadata: metadata)
 
             let readerEventsSubscription = cardReaderService.readerEvents.sink { [weak self] event in
+                self?.serverMessages.append("Remote reader event: \(event)")
                 self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderMessage(event: event))
             }
 
@@ -145,9 +163,11 @@ class RemoteTapToPayReaderServer {
                 .sink { [weak self] completion in
                     readerEventsSubscription.cancel()
                     if case .failure(let error) = completion {
+                        self?.serverMessages.append("Remote reader payment error: \(error)")
                         self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentFailed(error: error.localizedDescription))
                     }
                 } receiveValue: { [weak self] paymentIntent in
+                    self?.serverMessages.append("Remote reader payment intent collected: \(paymentIntent.id)")
                     self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentIntentConfirmed(intent: paymentIntent, orderID: orderID))
                     self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentMethodCollectionSuccessful(intent: paymentIntent, orderID: orderID))
                 }
@@ -300,21 +320,16 @@ class NetworkingStack {
     var onConnectionStateChanged: ((Bool) -> Void)?
     var onEndpointsChanged: (([NWEndpoint]) -> Void)?
 
-    func setupServer() {
-        let parameters = NWParameters.init(passcode: "1234")
+    var onListenerStateUpdate: ((NWListener.State) -> Void)?
+
+    func setupServer(passcode: String = "1234") {
+        let parameters = NWParameters.init(passcode: passcode)
 
         let listener = try! NWListener(using: parameters)
         listener.service = NWListener.Service(name: "CardReader", type: "_card-reader._tcp")
 
-        listener.stateUpdateHandler = { state in
-            switch state {
-            case .ready:
-                print("Server ready")
-            case .failed(let error):
-                print("Server failed: \(error)")
-            default:
-                break
-            }
+        listener.stateUpdateHandler = { [weak self] state in
+            self?.onListenerStateUpdate?(state)
         }
 
         listener.newConnectionHandler = { [weak self] connection in

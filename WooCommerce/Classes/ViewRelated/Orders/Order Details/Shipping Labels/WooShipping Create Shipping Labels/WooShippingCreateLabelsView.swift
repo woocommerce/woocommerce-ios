@@ -79,7 +79,7 @@ struct WooShippingCreateLabelsView: View {
                             HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
                                 Text(Localization.BottomSheet.shipFrom)
                                     .trackSize(size: $shipmentDetailsShipFromSize)
-                                Text("417 MONTGOMERY ST, SAN FRANCISCO") // TODO: 14044 - Show real "ship from" address (store address)
+                                Text(viewModel.originAddress)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -90,10 +90,12 @@ struct WooShippingCreateLabelsView: View {
                                 Text(Localization.BottomSheet.shipTo)
                                     .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
                                 VStack(alignment: .leading) {
-                                    Text("1 Infinite Loop") // TODO: 14044 - Show real "ship to" address (customer address)
-                                        .bold()
-                                    Text("Cupertino, CA 95014")
-                                    Text("USA")
+                                    ForEach(viewModel.destinationAddressLines, id: \.self) { addressLine in
+                                        Text(addressLine)
+                                            .if(addressLine == viewModel.destinationAddressLines.first) { line in
+                                                line.bold()
+                                            }
+                                    }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }

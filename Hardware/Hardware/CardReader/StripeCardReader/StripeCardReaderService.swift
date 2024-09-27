@@ -134,7 +134,7 @@ extension StripeCardReaderService: CardReaderService {
                 DDLogError("\(error)")
                 throw error
             }
-        case .localMobile:
+        case .localMobile, .remoteMobile:
             let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
             do {
                 config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()

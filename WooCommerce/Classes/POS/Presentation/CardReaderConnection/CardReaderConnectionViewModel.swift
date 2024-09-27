@@ -28,7 +28,7 @@ final class CardReaderConnectionViewModel: ObservableObject {
         }
         Task { @MainActor in
             do {
-                let _ = try await cardPresentPayment.connectReader(using: .tapToPay)
+                let _ = try await cardPresentPayment.connectReader(using: .remoteTapToPay)
             } catch {
                 DDLogError("🔴 POS tap to pay connection error: \(error)")
             }

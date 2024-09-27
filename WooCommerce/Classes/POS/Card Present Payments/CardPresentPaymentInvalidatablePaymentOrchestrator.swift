@@ -10,6 +10,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
     }
 
     func collectPayment(for order: Order,
+                        using cardReader: CardReader,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
@@ -24,6 +25,7 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
             return onCompletion(.failure(CardPresentPaymentInvalidatablePaymentOrchestratorError.paymentInvalidated))
         }
         paymentOrchestrator.collectPayment(for: order,
+                                           using: cardReader,
                                            orderTotal: orderTotal,
                                            paymentGatewayAccount: paymentGatewayAccount,
                                            paymentMethodTypes: paymentMethodTypes,

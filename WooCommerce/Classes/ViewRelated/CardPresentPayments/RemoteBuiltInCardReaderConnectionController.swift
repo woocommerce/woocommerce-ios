@@ -5,13 +5,34 @@ final class RemoteBuiltInCardReaderConnectionController<AlertProvider: CardReade
                                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
                                                     BuiltInCardReaderConnectionControlling
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
-    private var readerClient = RemoteTapToPayReaderClient()
+    private var readerClient = ServiceLocator.remoteCardReaderClient
     private var cancellables = Set<AnyCancellable>()
     private let configProvider = ServiceLocator.cardReaderConfigProvider
+    private let alertProvider: AlertProvider
+    private let alertPresenter: AlertPresenter
+    private let configuration: CardPresentPaymentsConfiguration
+    private let stores: StoresManager
+    private let siteID: Int64
+    var connectedReaders = CurrentValueSubject<CardReader?, Never>(nil)
+
+    init(forSiteID siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         alertsPresenter: AlertPresenter,
+         alertsProvider: AlertProvider,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
+        self.siteID = siteID
+        self.stores = stores
+        self.alertProvider = alertsProvider
+        self.alertPresenter = alertsPresenter
+        self.configuration = configuration
+    }
 
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, any Error>) -> Void) {
-        readerClient = RemoteTapToPayReaderClient()
         readerClient.start()
+        readerClient.onConnection = { [weak self] reader in
+            onCompletion(.success(.connected(reader)))
+            self?.connectedReaders.send(reader)
+        }
         Task { [weak self] in
             await self?.connect(onCompletion: onCompletion)
         }
@@ -70,6 +91,8 @@ class RemoteTapToPayReaderServer {
         }
     }
 
+    var paymentCancellable: AnyCancellable?
+
     func handleClientMessage(_ message: RemoteCardReaderClientMessage) {
         DDLogInfo("Received remote reader message: \(message)")
         switch message {
@@ -80,7 +103,11 @@ class RemoteTapToPayReaderServer {
                 try cardReaderService.start(self, discoveryMethod: .localMobile)
                 startListeningForTapToPay { [weak self] error in
                     DDLogError("Remote reader discovery error: \(error)")
-                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnectionFailed(error: error.localizedDescription))
+                    if case CardReaderServiceError.discovery(UnderlyingError.alreadyConnectedToReader) = error {
+                        self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnected)
+                    } else {
+                        self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderConnectionFailed(error: error.localizedDescription))
+                    }
                 } onFoundTapToPayReader: { [weak self] reader in
                     guard let self else { return }
                     let connectionPublisher = cardReaderService.connect(
@@ -102,25 +129,30 @@ class RemoteTapToPayReaderServer {
             }
 
         case .collectPayment(let amount, let currency, let orderID):
-            let paymentPublisher = cardReaderService.capturePayment(
-                PaymentIntentParameters(amount: amount,
-                                        currency: currency,
-                                        stripeSmallestCurrencyUnitMultiplier: Decimal(string: "100")!,
-                                        paymentMethodTypes: ["card_present"]))
-            paymentPublisher.sink { [weak self] result in
-                switch result {
-                case .failure(let error):
-                    DDLogError("Remote reader collection error: \(error)")
-                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentFailed(error: error.localizedDescription))
-                case .finished:
-                    break
-                }
-            } receiveValue: { [weak self] paymentIntent in
-                self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentIntentConfirmed(id: paymentIntent.id, orderID: orderID))
-            }
-            .store(in: &cancellables)
+            let metadata = PaymentIntent.initMetadata(orderID: orderID, paymentType: PaymentIntent.PaymentTypes.single)
 
-            break
+            let parameters = PaymentParameters(amount: amount,
+                                               currency: currency,
+                                               stripeSmallestCurrencyUnitMultiplier: Decimal(100),
+                                               paymentMethodTypes: ["card_present"],
+                                               metadata: metadata)
+
+            let readerEventsSubscription = cardReaderService.readerEvents.sink { [weak self] event in
+                self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.cardReaderMessage(event: event))
+            }
+
+            paymentCancellable = cardReaderService.capturePayment(parameters)
+                .sink { [weak self] completion in
+                    readerEventsSubscription.cancel()
+                    if case .failure(let error) = completion {
+                        self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentFailed(error: error.localizedDescription))
+                    }
+                } receiveValue: { [weak self] paymentIntent in
+                    DDLogInfo("[Server] Payment intent collected: \(paymentIntent)")
+                    DDLogInfo("[Server] Charges: \(paymentIntent.charges)")
+                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentIntentConfirmed(id: paymentIntent.id, orderID: orderID))
+                    self?.networkingStack.sendMessage(RemoteCardReaderServerMessage.paymentMethodCollectionSuccessful(intentID: paymentIntent.id, orderID: orderID))
+                }
         }
 
         func startListeningForTapToPay(onError: @escaping (Error) -> Void, onFoundTapToPayReader: @escaping (CardReader) -> Void) {
@@ -171,6 +203,11 @@ class RemoteTapToPayReaderClient {
     let networkingStack = NetworkingStack()
     private let cardReaderService = ServiceLocator.cardReaderService
 
+    var onConnection: ((CardReader) -> Void)?
+    var onCardReaderMessage: ((CardReaderEvent) -> Void)?
+    var onProcessingCompletion: ((String) -> Void)?
+    var onPaymentCompletion: ((Result<String, Error>) -> Void)?
+
     func start() {
         networkingStack.startBrowsing()
         networkingStack.onEndpointsChanged = { [weak self] endpoints in
@@ -195,7 +232,7 @@ class RemoteTapToPayReaderClient {
                                                                                 connectionToken: connectionToken))
     }
 
-    func collectPayment(amount: Decimal, orderID: String) {
+    func collectPayment(amount: Decimal, orderID: Int64) {
         networkingStack.sendMessage(RemoteCardReaderClientMessage.collectPayment(amount: amount, currency: "usd", orderID: orderID))
     }
 
@@ -203,23 +240,30 @@ class RemoteTapToPayReaderClient {
         switch message {
         case .cardReaderConnected:
             DDLogInfo("[Client] Remote card reader connected")
-            collectPayment(amount: Decimal(100), orderID: "123")
+            onConnection?(
+                CardReader(
+                    serial: "RemoteReaderSerial",
+                    vendorIdentifier: "WooRemote",
+                    name: "Remote Tap to Pay",
+                    status: .init(connected: true, remembered: false),
+                    softwareVersion: nil,
+                    batteryLevel: nil,
+                    readerType: .remoteTapToPay,
+                    locationId: ""))
         case .cardReaderConnectionFailed(let error):
             DDLogInfo("[Client] Remote card reader connection failed: \(error)")
-            collectPayment(amount: Decimal(100), orderID: "123")
-        case .paymentProgress(let percent):
-            DDLogInfo("Payment progress: \(percent * 100)%")
+        case .cardReaderMessage(let event):
+            DDLogInfo("Card reader message: \(event)")
+            onCardReaderMessage?(event)
         case .paymentIntentConfirmed(let id, let orderID):
-            DDLogInfo("[Client] Remote card reader payment complete. Intent ID: \(id), order ID: \(orderID)")
-            let paymentIntentParameters = PaymentIntentParameters(amount: Decimal(100), currency: "usd", stripeSmallestCurrencyUnitMultiplier: CardPresentConfigurationLoader().configuration.stripeSmallestCurrencyUnitMultiplier, paymentMethodTypes: ["card_present"])
-            let stores = ServiceLocator.stores
-            let siteID = stores.sessionManager.defaultSite?.siteID
-            let action = CardPresentPaymentAction.captureOrderPaymentOnSite(siteID: siteID!, orderID: 123, paymentIntentID: id)
-            DispatchQueue.main.async {
-                stores.dispatch(action)
-            }
+            DDLogInfo("[Client] Remote card reader payment intent confirmed. Intent ID: \(id), order ID: \(orderID)")
+            onProcessingCompletion?(id)
+        case .paymentMethodCollectionSuccessful(let intentID, let orderID):
+            DDLogInfo("[Client] Remote card reader payment success. Intent ID: \(intentID), order ID: \(orderID)")
+            onPaymentCompletion?(.success(intentID))
         case .paymentFailed(let error):
             DDLogInfo("[Client] Remote payment failed: \(error)")
+            onPaymentCompletion?(.failure(RemoteTapToPayServiceError.paymentFailed(details: error)))
         }
     }
 }
@@ -229,6 +273,7 @@ import Yosemite
 enum RemoteTapToPayServiceError: Error {
     case connectingReaderWithoutToken
     case connectingReaderWithoutLocation
+    case paymentFailed(details: String)
 }
 
 import Network
@@ -236,15 +281,16 @@ import Network
 // Shared message types
 enum RemoteCardReaderClientMessage: Codable {
     case connectReader(locationToken: String, connectionToken: String)
-    case collectPayment(amount: Decimal, currency: String, orderID: String)
+    case collectPayment(amount: Decimal, currency: String, orderID: Int64)
 }
 
 enum RemoteCardReaderServerMessage: Codable {
     case cardReaderConnected
     case cardReaderConnectionFailed(error: String)
-    case paymentProgress(percent: Double)
     case paymentFailed(error: String)
-    case paymentIntentConfirmed(id: String, orderID: String)
+    case paymentIntentConfirmed(id: String, orderID: Int64)
+    case paymentMethodCollectionSuccessful(intentID: String, orderID: Int64)
+    case cardReaderMessage(event: CardReaderEvent)
 }
 
 class NetworkingStack {

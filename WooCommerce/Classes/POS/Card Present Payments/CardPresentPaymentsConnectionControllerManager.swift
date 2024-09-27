@@ -27,11 +27,10 @@ final class CardPresentPaymentsConnectionControllerManager {
             alertsProvider: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
-        self.tapToPayConnectionController = RemoteBuiltInCardReaderConnectionController()
-//            forSiteID: siteID,
-//            alertsPresenter: alertsPresenter,
-//            alertsProvider: CardPresentPaymentBuiltInReaderConnectionAlertsProvider(),
-//            configuration: configuration,
-//            analyticsTracker: analyticsTracker)
+        self.tapToPayConnectionController = RemoteBuiltInCardReaderConnectionController(
+            forSiteID: siteID,
+            alertsPresenter: alertsPresenter,
+            alertsProvider: CardPresentPaymentBuiltInReaderConnectionAlertsProvider(),
+            configuration: configuration)
     }
 }

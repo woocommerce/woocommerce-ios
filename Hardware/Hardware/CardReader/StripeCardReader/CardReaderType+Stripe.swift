@@ -30,7 +30,8 @@ extension CardReaderType {
             return .wisePad3
         case .appleBuiltIn:
             return .appleBuiltIn
-        case .other:
+        case .remoteTapToPay,
+                .other:
             return nil
         }
     }

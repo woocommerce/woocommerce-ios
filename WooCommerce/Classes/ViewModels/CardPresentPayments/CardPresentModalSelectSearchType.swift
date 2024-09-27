@@ -81,7 +81,7 @@ private extension CardReaderDiscoveryMethod {
             return NSLocalizedString(
                 "Bluetooth Reader",
                 comment: "The button title on the reader type alert, for the user to choose a bluetooth reader.")
-        case .localMobile:
+        case .localMobile, .remoteMobile:
             return NSLocalizedString(
                 "Tap to Pay on iPhone",
                 comment: "The button title on the reader type alert, for the user to choose Tap to Pay on iPhone.")

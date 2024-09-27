@@ -14,6 +14,8 @@ extension CardReaderConnectionMethod {
             return .bluetoothScan
         case .tapToPay:
             return .localMobile
+        case .remoteTapToPay:
+            return .remoteMobile
         }
     }
 }

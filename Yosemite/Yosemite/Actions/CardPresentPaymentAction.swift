@@ -63,6 +63,11 @@ public enum CardPresentPaymentAction: Action {
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
+    case collectPaymentMethod(parameters: PaymentParameters,
+                              onCardReaderMessage: (CardReaderEvent) -> Void,
+                              onProcessingCompletion: (String) -> Void,
+                              onCompletion: (Result<String, Error>) -> Void)
+
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
@@ -101,5 +106,6 @@ public enum CardPresentPaymentAction: Action {
 
     case captureOrderPaymentOnSite(siteID: Int64,
                                    orderID: Int64,
-                                   paymentIntentID: String)
+                                   paymentIntent: PaymentIntent,
+                                   onCompletion: (Result<Void, Error>) -> Void)
 }

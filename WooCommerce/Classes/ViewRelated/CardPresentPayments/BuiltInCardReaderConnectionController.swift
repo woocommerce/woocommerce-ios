@@ -9,6 +9,7 @@ import Yosemite
 ///
 
 protocol BuiltInCardReaderConnectionControlling {
+    var connectedReaders: CurrentValueSubject<CardReader?, Never> { get }
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
 }
 
@@ -16,6 +17,8 @@ final class BuiltInCardReaderConnectionController<AlertProvider: CardReaderConne
                                                   AlertPresenter: CardPresentPaymentAlertsPresenting>:
                                                     BuiltInCardReaderConnectionControlling
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
+    var connectedReaders = CurrentValueSubject<Yosemite.CardReader?, Never>(nil)
+
     private enum ControllerState {
         /// Initial state of the controller
         ///

@@ -25,7 +25,7 @@ extension CardReaderType {
                 name: "Wisepad 3",
                 urlString: "https://woocommerce.com/wp-content/uploads/2022/12/wp3_product_sheet.pdf"
             )
-        case .other, .appleBuiltIn:
+        case .other, .appleBuiltIn, .remoteTapToPay:
             return nil
         }
     }

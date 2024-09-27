@@ -110,7 +110,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     func connectReaderTapped() {
         Task { @MainActor in
             do {
-                let _ = try await cardPresentPaymentService.connectReader(using: .bluetooth)
+                let _ = try await cardPresentPaymentService.connectReader(using: .remoteTapToPay)
             } catch {
                 DDLogError("🔴 POS reader connection error: \(error)")
             }
@@ -236,7 +236,7 @@ private extension TotalsViewModel {
 
     @MainActor
     func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .remoteTapToPay)
     }
 }
 

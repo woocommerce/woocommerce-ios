@@ -115,6 +115,11 @@ public final class CardPresentPaymentStore: Store {
                            onCardReaderMessage: event,
                            onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
+        case .collectPaymentMethod(let parameters, let event, let processPaymentCompletion, let completion):
+            collectPaymentMethod(parameters: parameters,
+                                 onCardReaderMessage: event,
+                                 onProcessingCompletion: processPaymentCompletion,
+                                 onCompletion: completion)
         case .retryPayment(let siteID, let orderID, let event, let processPaymentCompletion, let completion):
             retryActivePayment(siteID: siteID,
                                orderID: orderID,
@@ -137,17 +142,14 @@ public final class CardPresentPaymentStore: Store {
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
-        case .captureOrderPaymentOnSite(let siteID, let orderID, let paymentIntentID):
-            let paymentIntent = PaymentIntent(id: paymentIntentID, status: .requiresCapture, created: .now, amount: 100, currency: "usd", metadata: nil, charges: [])
+        case .captureOrderPaymentOnSite(let siteID, let orderID, let paymentIntent, let completion):
             captureOrderPaymentOnSite(siteID: siteID, orderID: orderID, paymentIntent: paymentIntent)
-                .print("Capture payment: ")
+                .print("Capture payment: \(paymentIntent)")
                 .sink { result in
-                    print(result)
+                    completion(result)
                 }
                 .store(in: &cancellables)
         }
-
-        var cancellables = Set<AnyCancellable>()
     }
 }
 
@@ -327,6 +329,26 @@ private extension CardPresentPaymentStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    func collectPaymentMethod(parameters: PaymentParameters,
+                              onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                              onProcessingCompletion: @escaping (String) -> Void,
+                              onCompletion: @escaping (Result<String, Error>) -> Void) {
+        // Observe status events fired by the card reader
+        let readerEventsSubscription = cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
+        }
+
+        paymentCancellable = cardReaderService.capturePayment(parameters)
+            .sink { completion in
+                readerEventsSubscription.cancel()
+                if case .failure(let error) = completion {
+                    onCompletion(.failure(error))
+                }
+            } receiveValue: { paymentIntent in
+                onProcessingCompletion(paymentIntent.id)
+            }
     }
 
     func retryActivePayment(siteID: Int64,

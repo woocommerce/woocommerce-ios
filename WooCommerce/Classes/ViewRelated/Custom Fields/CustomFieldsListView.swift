@@ -32,6 +32,7 @@ struct CustomFieldsListView: View {
                                    contentURL: nil)
                 }
             }
+            .listStyle(.plain)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -137,7 +138,6 @@ extension CustomFieldsListView {
 private extension CustomFieldRow {
     enum Constants {
         static let spacing: CGFloat = 8
-        static let vStackPadding: CGFloat = 16
         static let hStackPadding: CGFloat = 10
         static let height: CGFloat = 64
     }

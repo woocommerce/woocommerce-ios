@@ -11,7 +11,7 @@ struct RoundedBorder: ViewModifier {
         content
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(style: StrokeStyle(lineWidth: lineWidth, dash: [dashed ? Layout.dashLength : 1]))
+                    .stroke(style: StrokeStyle(lineWidth: lineWidth, dash: dashed ? [Layout.dashLength] : []))
                     .foregroundStyle(lineColor)
             }
     }

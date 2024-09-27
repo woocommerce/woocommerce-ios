@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.7
+-----
+
+
 20.6
 -----
 - [*] Dashboard: Cards are now displayed in 2 columns on large screen sizes. [https://github.com/woocommerce/woocommerce-ios/pull/13983]

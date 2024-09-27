@@ -36,7 +36,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_existingField_when_editFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
         // Given: A custom field UI to edit an existing field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", id: 1)
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
 
         // When: Editing the field
         viewModel.editField(at: 0, newField: editedField)
@@ -62,7 +62,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     func test_given_editedAndNewFields_when_updatingDisplayedItems_then_changesAreReflected() {
         // Given: An edited field and a new field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", id: 1)
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
         let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
 
         // When: Editing and adding fields
@@ -82,7 +82,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
 
         // When: Editing a field
-        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", id: 1)
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
         viewModel.editField(at: 0, newField: editedField)
 
         // Then: hasChanges should be true
@@ -97,7 +97,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
         func test_given_invalidIndex_when_editFieldCalled_then_noChangesAreMade() {
             // Given: An invalid index and a custom field UI
-            let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", id: 1)
+            let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
 
             // When: Trying to edit a field at an invalid index
             viewModel.editField(at: -1, newField: editedField)

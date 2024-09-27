@@ -109,9 +109,9 @@ struct LegacyProductDetailPreviewView: View {
 
                 // Feedback banner
                 FeedbackView(configuration: .init(title: Localization.feedbackQuestion,
-                             backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
-                                                                   dark: .tertiarySystemBackground)),
-                             onVote: { vote in
+                                                  backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
+                                                                                        dark: .tertiarySystemBackground)),
+                                                  onVote: { vote in
                     withAnimation {
                         viewModel.handleFeedback(vote)
                     }

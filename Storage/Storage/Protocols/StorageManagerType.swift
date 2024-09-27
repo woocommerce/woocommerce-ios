@@ -36,10 +36,10 @@ public protocol StorageManagerType {
 
     /// Helper method to perform a write operation and save the changes in a background context.
     /// - Parameters:
-    ///   - block: the write operation to be handled, given the derived StorageType.
+    ///   - closure: the write operation to be handled, given the derived StorageType.
     ///   - completion: Callback to be executed on completion
     ///
-    func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?)
+    func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

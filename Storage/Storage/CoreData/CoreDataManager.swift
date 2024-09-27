@@ -144,10 +144,10 @@ public final class CoreDataManager: StorageManagerType {
 
     /// Handles a write operation using the background context and saves changes when done.
     ///
-    public func performAndSave(_ block: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
+    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
         let derivedStorage = writerDerivedStorage
         derivedStorage.perform {
-            block(derivedStorage)
+            closure(derivedStorage)
             derivedStorage.saveIfNeeded()
             completion?()
         }

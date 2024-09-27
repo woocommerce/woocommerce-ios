@@ -5,15 +5,18 @@ struct CustomFieldsListView: View {
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
+    let onBackButtonTapped: () -> Void
 
     init(isEditable: Bool,
-         viewModel: CustomFieldsListViewModel) {
+         viewModel: CustomFieldsListViewModel,
+         onBackButtonTapped: @escaping () -> Void) {
         self.isEditable = isEditable
         self.viewModel = viewModel
+        self.onBackButtonTapped = onBackButtonTapped
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(viewModel.combinedList) { customField in
                 if isEditable {
                     NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value)) {
@@ -34,9 +37,10 @@ struct CustomFieldsListView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
+                        onBackButtonTapped()
                         presentationMode.wrappedValue.dismiss()
                     }, label: {
-                        Image(uiImage: .closeButton)
+                        Image(systemName: "chevron.backward")
                     })
                 }
 
@@ -149,7 +153,8 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                 customFields: [
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-                ])
+                ]),
+            onBackButtonTapped: { }
             )
     }
 }

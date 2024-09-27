@@ -234,6 +234,7 @@ enum WooAnalyticsStat: String {
     case blazeAddPaymentMethodSuccess = "blaze_creation_add_payment_method_success"
     case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
     case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
+    case blazeCampaignCreationFeedback = "blaze_campaign_creation_feedback"
 
     // MARK: Store Onboarding Events
     //

@@ -1,3 +1,4 @@
+import SafariServices
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -172,8 +173,8 @@ private extension BlazeCampaignCreationCoordinator {
             Task { @MainActor [weak self] in
                 await self?.restoreBlazeOnDashboardIfNeeded()
                 self?.cancelAbandonedCampaignCreationNotification()
-                self?.onCampaignCreated()
                 self?.dismissCampaignCreation()
+                self?.onCampaignCreated()
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
@@ -267,16 +268,43 @@ private extension BlazeCampaignCreationCoordinator {
 
     func showSuccessView() {
         bottomSheetPresenter = buildBottomSheetPresenter()
+        let feedbackConfiguration: FeedbackView.Configuration? = {
+            let allCampaigns = storageManager.viewStorage.loadAllBlazeCampaignListItems(siteID: siteID)
+            guard allCampaigns.isNotEmpty else {
+                /// Only ask for feedback if there is at least 1 campaign created in the past.
+                return nil
+            }
+            return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { [weak self] vote in
+                guard let self else { return }
+                analytics.track(event: .Blaze.campaignCreationFeedbackReceived(positive: vote == .up))
+                /// Add 0.3s delay to let the vote be displayed on the UI before showing survey page.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.showSurveyPage()
+                }
+            })
+        }()
         let controller = CelebrationHostingController(
             title: Localization.successTitle,
             subtitle: Localization.successSubtitle,
             closeButtonTitle: Localization.successCTA,
             image: .blazeSuccessImage,
+            feedbackConfiguration: feedbackConfiguration,
             onTappingDone: { [weak self] in
             self?.bottomSheetPresenter?.dismiss()
             self?.bottomSheetPresenter = nil
         })
         bottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    func showSurveyPage() {
+        guard let url = URL(string: Constants.surveyURL) else {
+            DDLogError("⛔️ Could not construct URL for Blaze campaign creation survey.")
+            return
+        }
+        bottomSheetPresenter?.dismiss()
+        bottomSheetPresenter = nil
+        let controller = SFSafariViewController(url: url)
+        navigationController.present(controller, animated: true)
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
@@ -327,6 +355,9 @@ private extension BlazeCampaignCreationCoordinator {
 }
 
 private extension BlazeCampaignCreationCoordinator {
+    enum Constants {
+        static let surveyURL = "https://wordpressdotcom.survey.fm/blaze-on-woo-mobile-survey-sept-2024-i1"
+    }
     enum Localization {
         static let successTitle = NSLocalizedString(
             "blazeCampaignCreationCoordinator.successTitle",
@@ -365,5 +396,10 @@ private extension BlazeCampaignCreationCoordinator {
                 comment: "Button to create a product when attempting to start Blaze campaign creation flow without any product in the store"
             )
         }
+        static let feedbackQuestion = NSLocalizedString(
+            "blazeCampaignCreationCoordinator.feedbackQuestion",
+            value: "How was the experience with Blaze?",
+            comment: "Question in the feedback banner after a Blaze campaign is successfully created"
+        )
     }
 }

@@ -224,8 +224,8 @@ private extension ProductDetailPreviewView {
 
     var feedbackBanner: some View {
         FeedbackView(configuration: .init(title: Localization.feedbackQuestion,
-                     backgroundColor: Constants.feedbackViewColor,
-                     onVote: { vote in
+                                          backgroundColor: Constants.feedbackViewColor,
+                                          onVote: { vote in
             withAnimation {
                 viewModel.handleFeedback(vote)
             }

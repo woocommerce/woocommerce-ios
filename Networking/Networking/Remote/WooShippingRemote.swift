@@ -23,7 +23,7 @@ public final class WooShippingRemote: Remote {
                 let packageIDs = predefinedOption.predefinedPackages.map({ $0.id })
                 predefinedOptionDictionary = [predefinedOption.providerID: packageIDs]
             } else {
-                throw ShippingLabelError.missingPackage
+                throw ShippingError.missingPackage
             }
 
             let parameters: [String: Any] = [
@@ -37,8 +37,17 @@ public final class WooShippingRemote: Remote {
                                          path: path,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            let mapper = SuccessDataResultMapper()
-            enqueue(request, mapper: mapper, completion: completion)
+
+            // Temporary mapper while we decide what data type to use here.
+            let mapper = IgnoringResponseMapper()
+
+            enqueue(request, mapper: mapper) { _, error in
+                if let error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(true))
+                }
+            }
         } catch {
             completion(.failure(error))
         }
@@ -59,7 +68,7 @@ private extension WooShippingRemote {
 
 // MARK: Errors {
 extension WooShippingRemote {
-    enum ShippingLabelError: Error {
+    enum ShippingError: Error {
         case missingPackage
     }
 }

@@ -1,0 +1,40 @@
+{
+    "data": {
+        "predefined": [],
+        "custom": [
+            {
+                "name": "Custom Package 2",
+                "length": 10,
+                "width": 5,
+                "height": 5,
+                "weight": 2,
+                "id": "59096883f6dba8b25257246069e9ba9a"
+            },
+            {
+                "name": "Custom Package 1",
+                "length": 0,
+                "width": 0,
+                "height": 5,
+                "weight": 0,
+                "id": "5b19fc63d3dc43ad25cfcb771130a0cb"
+            },
+            {
+                "name": "custom",
+                "is_letter": false,
+                "inner_dimensions": "25.0 x 25.0 x 25.0",
+                "box_weight": 0.2,
+                "is_user_defined": true,
+                "max_weight": 0,
+                "id": "8b9035807842a4e4dbe009f3f1478127"
+            },
+            {
+                "name": "Test Package E",
+                "length": 10,
+                "width": 5,
+                "height": 5,
+                "weight": 2,
+                "id": "dd018572c0a4e0b128c8f429911b12d0"
+            }
+        ]
+    }
+}

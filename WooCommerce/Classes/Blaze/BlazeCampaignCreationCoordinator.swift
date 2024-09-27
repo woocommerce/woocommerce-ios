@@ -277,7 +277,7 @@ private extension BlazeCampaignCreationCoordinator {
             return FeedbackView.Configuration(title: Localization.feedbackQuestion, onVote: { [weak self] vote in
                 guard let self else { return }
                 analytics.track(event: .Blaze.campaignCreationFeedbackReceived(positive: vote == .up))
-                /// Add 0.3s delay before showing survey page
+                /// Add 0.3s delay to let the vote be displayed on the UI before showing survey page.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     self.showSurveyPage()
                 }

@@ -133,14 +133,6 @@ public final class CoreDataManager: StorageManagerType {
         return container
     }()
 
-    /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
-    ///
-    public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
-        persistentContainer.performBackgroundTask { context in
-            closure(context as StorageType)
-        }
-    }
-
     /// Saves the derived storage. Note: the closure may be called on a different thread
     ///
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {

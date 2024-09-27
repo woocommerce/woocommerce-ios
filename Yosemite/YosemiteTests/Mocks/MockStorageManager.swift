@@ -54,15 +54,6 @@ public class MockStorageManager: StorageManagerType {
         }
     }
 
-    /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
-    ///
-    public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
-        persistentContainer.performBackgroundTask { context in
-            closure(context as StorageType)
-        }
-    }
-
-
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {

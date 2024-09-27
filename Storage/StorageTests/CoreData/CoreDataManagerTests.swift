@@ -41,20 +41,6 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
-    /// Verifies that performBackgroundTask effectively runs received closure in BG.
-    ///
-    func test_performBackgroundTask_effectively_runs_received_closure_in_background_thread() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        let expectation = self.expectation(description: "Background")
-
-        manager.performBackgroundTask { (_) in
-            XCTAssertFalse(Thread.isMainThread)
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     /// Verifies that derived context is instantiated correctly.
     ///
     func test_derived_storage_is_instantiated_correctly() {

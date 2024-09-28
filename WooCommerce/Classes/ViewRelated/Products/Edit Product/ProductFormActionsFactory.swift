@@ -398,8 +398,7 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .customFields:
-            // The custom fields action is always visible in the settings section.
-            return true
+            return product.product.customFields.isNotEmpty
         case .subscriptionFreeTrial:
             // The Free trial row is always visible in the settings section for a subscription product.
             return true

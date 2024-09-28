@@ -935,6 +935,8 @@ private extension ProductFormViewController {
                                                                         case .editDownloadableFiles:
                                                                             ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                                                                             self?.showDownloadableFiles()
+                                                                        case .editCustomFields:
+                                                                            self?.showCustomFields()
                                                                         }
                                                                     }
         }

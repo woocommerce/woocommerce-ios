@@ -179,7 +179,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
         // Assert
         XCTAssertTrue(factory.settingsSectionActions().contains(.customFields),
@@ -197,7 +198,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
@@ -212,7 +214,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let factory = ProductFormActionsFactory(product: model, formType: .add)
+        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),

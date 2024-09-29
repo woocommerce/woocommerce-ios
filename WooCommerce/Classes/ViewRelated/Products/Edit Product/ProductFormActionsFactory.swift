@@ -206,7 +206,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -227,7 +228,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -257,7 +259,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -279,7 +282,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -301,7 +305,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -327,7 +332,8 @@ private extension ProductFormActionsFactory {
             .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -359,7 +365,8 @@ private extension ProductFormActionsFactory {
                 .tags(editable: editable),
                 .shortDescription(editable: editable),
                 .linkedProducts(editable: editable),
-                .productType(editable: canEditProductType)
+                .productType(editable: canEditProductType),
+                isCustomFieldsEnabled ? .customFields: nil
             ]
         }()
 
@@ -381,7 +388,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }

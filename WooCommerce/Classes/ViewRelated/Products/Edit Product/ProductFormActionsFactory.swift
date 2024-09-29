@@ -64,6 +64,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let variationsPrice: VariationsPrice
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private let isLinkedProductsPromoEnabled: Bool
     private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
@@ -75,7 +76,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private var isCustomFieldsEnabled: Bool {
         /// There's a technical API limitation where product ID is required to save custom fields,
         /// thus it needs to be disabled during new product creation (checked as productID == 0).
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
+        featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
         && product.productID != 0
     }
 
@@ -86,7 +87,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          variationsPrice: VariationsPrice = .unknown,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -95,6 +97,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.stores = stores
+        self.featureFlagService = featureFlagService
     }
 
     /// Returns an array of actions that are visible in the product form primary section.

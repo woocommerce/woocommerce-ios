@@ -984,7 +984,7 @@ extension UIImage {
     /// Custom Fields Icon
     ///
     static var customFieldsImage: UIImage {
-        return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24))
+        return UIImage.gridicon(.grid, size: CGSize(width: 24, height: 24))
     }
 
     /// Print Icon

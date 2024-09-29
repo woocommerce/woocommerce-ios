@@ -55,6 +55,19 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
             XCTAssertTrue(actions.contains(.productType(editable: false)))
         }
     }
+
+    func test_givenNewProductCreation_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+        let actions = Fixtures.actionsFactory(product: model, formType: .add, featureFlagService: featureFlagService).settingsSectionActions()
+
+        // Then
+        XCTAssertFalse(actions.contains(.customFields))
+    }
 }
 
 private extension ProductFormActionsFactory_ProductCreationTests {
@@ -64,12 +77,14 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
+                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown,
+                                   featureFlagService: MockFeatureFlagService = MockFeatureFlagService()) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      variationsPrice: variationsPrice)
+                                      variationsPrice: variationsPrice,
+                                      featureFlagService: featureFlagService)
         }
     }
 }

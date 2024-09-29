@@ -195,19 +195,6 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
                        "Custom fields row should be invisible when product has an ID but empty custom fields")
     }
-
-    func test_givenNewProductCreation_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
-        // Arrange
-        let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
-
-        // Act
-        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-        let factory = ProductFormActionsFactory(product: model, formType: .add, featureFlagService: featureFlagService)
-
-        // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
-                       "Custom fields row should be invisible when creating a new product (no ID)")
-    }
 }
 
 private extension ProductFormActionsFactory_VisibilityTests {

@@ -166,6 +166,58 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
+
+    // MARK: - Custom fields
+
+    func test_givenExistingProductAndCustomFields_whenCreatingActions_thenCustomFieldsRowIsVisible() {
+        // Arrange
+        let product = Product.fake().copy(
+            productID: 123,
+            productTypeKey: ProductType.simple.rawValue,
+            customFields: [MetaData(metadataID: 1, key: "test", value: "value")]
+        )
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // Assert
+        XCTAssertTrue(factory.settingsSectionActions().contains(.customFields),
+                      "Custom fields row should be visible when product has an ID and existing custom fields")
+    }
+
+
+    func test_givenExistingProductAndEmptyCustomFields_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
+        // Arrange
+        let product = Product.fake().copy(
+            productID: 123,
+            productTypeKey: ProductType.simple.rawValue,
+            customFields: []
+        )
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let factory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
+                       "Custom fields row should be invisible when product has an ID but empty custom fields")
+    }
+
+    func test_givenNewProductCreation_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
+        // Arrange
+        let product = Product.fake().copy(
+            productID: 0, // equals to new product
+            productTypeKey: ProductType.simple.rawValue)
+        let model = EditableProductModel(product: product)
+
+        // Act
+        let factory = ProductFormActionsFactory(product: model, formType: .add)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
+                       "Custom fields row should be invisible when creating a new product (no ID)")
+    }
 }
 
 private extension ProductFormActionsFactory_VisibilityTests {

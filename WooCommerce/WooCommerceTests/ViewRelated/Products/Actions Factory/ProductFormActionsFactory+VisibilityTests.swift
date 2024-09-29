@@ -171,12 +171,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     func test_givenExistingProductAndCustomFields_whenCreatingActions_thenCustomFieldsRowIsVisible() {
         // Arrange
-        let product = Product.fake().copy(
-            productID: 123,
-            productTypeKey: ProductType.simple.rawValue,
-            customFields: [MetaData(metadataID: 1, key: "test", value: "value")]
-        )
-        let model = EditableProductModel(product: product)
+        let model = EditableProductModel(product: Fixtures.productWithCustomFields)
 
         // Act
         let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
@@ -190,12 +185,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     func test_givenExistingProductAndEmptyCustomFields_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
         // Arrange
-        let product = Product.fake().copy(
-            productID: 123,
-            productTypeKey: ProductType.simple.rawValue,
-            customFields: []
-        )
-        let model = EditableProductModel(product: product)
+        let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
 
         // Act
         let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
@@ -208,14 +198,11 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     func test_givenNewProductCreation_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
         // Arrange
-        let product = Product.fake().copy(
-            productID: 0, // equals to new product
-            productTypeKey: ProductType.simple.rawValue)
-        let model = EditableProductModel(product: product)
+        let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
 
         // Act
         let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+        let factory = ProductFormActionsFactory(product: model, formType: .add, featureFlagService: featureFlagService)
 
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
@@ -249,5 +236,8 @@ private extension ProductFormActionsFactory_VisibilityTests {
         static let downloadableProduct = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, downloadable: true)
         static let nonDownloadableProduct = downloadableProduct.copy(downloadable: false)
 
+        // Custom fields
+        static let productWithCustomFields = Product.fake().copy(customFields: [MetaData(metadataID: 1, key: "test", value: "value")])
+        static let productWithNoCustomFields = Product.fake().copy(customFields: [])
     }
 }

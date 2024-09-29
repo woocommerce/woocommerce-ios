@@ -71,7 +71,13 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
-    private let isCustomFieldsEnabled: Bool
+
+    private var isCustomFieldsEnabled: Bool {
+        /// There's a technical API limitation where product ID is required to save custom fields,
+        /// thus it needs to be disabled during new product creation (checked as productID == 0).
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
+        && product.productID != 0
+    }
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -79,8 +85,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
-         isCustomFieldsEnabled: Bool =
-         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
          variationsPrice: VariationsPrice = .unknown,
          stores: StoresManager = ServiceLocator.stores) {
         self.product = product
@@ -90,7 +94,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
-        self.isCustomFieldsEnabled = isCustomFieldsEnabled
         self.stores = stores
     }
 

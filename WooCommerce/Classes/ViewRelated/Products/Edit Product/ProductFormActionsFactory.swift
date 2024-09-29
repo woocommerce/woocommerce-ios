@@ -172,7 +172,6 @@ private extension ProductFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
-            isCustomFieldsEnabled ? .customFields: nil,
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -183,7 +182,8 @@ private extension ProductFormActionsFactory {
             .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil,
         ]
         return actions.compactMap { $0 }
     }

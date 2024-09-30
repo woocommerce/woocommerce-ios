@@ -173,7 +173,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 if case .loading = sut.state {
                     // Loading state as expected
@@ -318,7 +318,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 XCTAssertTrue(sut.shouldRedactView)
                 onCompletion(.success(true))
@@ -421,7 +421,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
                 onCompletion(.success(true))
@@ -913,7 +913,7 @@ private extension BlazeCampaignDashboardViewModelTests {
     func mockSynchronizeProducts(insertProductToStorage product: Product? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):
                 if let product {
                     self?.insertProduct(product)
                 }

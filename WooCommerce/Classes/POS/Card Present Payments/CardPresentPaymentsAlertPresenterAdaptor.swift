@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import enum Yosemite.ServerSidePaymentCaptureError
+import enum Yosemite.CardReaderServiceError
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
     typealias AlertDetails = CardPresentPaymentEventDetails
@@ -25,6 +26,13 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         case .paymentError(error: ServerSidePaymentCaptureError.paymentGateway(.otherError), _, let cancelPayment):
             paymentEventSubject.send(.show(
                 eventDetails: .paymentCaptureError(cancelPayment: { [weak self] in
+                    cancelPayment()
+                    self?.paymentEventSubject.send(.idle)
+                })
+            ))
+        case .paymentError(error: CardReaderServiceError.intentCreation(let underlyingError), _, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentIntentCreationError(error: underlyingError, cancelPayment: { [weak self] in
                     cancelPayment()
                     self?.paymentEventSubject.send(.idle)
                 })

@@ -310,11 +310,27 @@ final class OrderDetailsDataSource: NSObject {
             return nil
         }
         let shippingLabelIndex = indexPath.section - firstShippingLabelSectionIndex
+        guard shippingLabelIndex >= 0 && shippingLabelIndex < shippingLabels.count else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid shippingLabelIndex in OrderDetailsDataSource",
+                properties: ["shippingLabelIndex": shippingLabelIndex],
+                level: .warning
+            )
+            return nil
+        }
         return shippingLabels[shippingLabelIndex]
     }
 
     func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return nil
+        }
+        guard indexPath.row >= 0 && indexPath.row < shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid row index for shippingLabel in OrderDetailsDataSource",
+                properties: ["rowIndex": indexPath.row, "shippingLabel": shippingLabel],
+                level: .warning
+            )
             return nil
         }
         return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
@@ -336,11 +352,36 @@ extension OrderDetailsDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard section >= 0 && section < sections.count else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid number of rows in section - OrderDetailsDataSource",
+                properties: ["section": section],
+                level: .error
+            )
+            return 0
+        }
         return sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        guard indexPath.section >= 0 && indexPath.section < sections.count else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid section in cellForRowAtIndexPath in OrderDetailsDataSource",
+                properties: ["section": indexPath.section],
+                level: .error
+            )
+            return UITableViewCell()
+        }
+        let section = sections[indexPath.section]
+        guard indexPath.row >= 0 && indexPath.row < section.rows.count else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid row in cellForRowAtIndexPath in OrderDetailsDataSource",
+                properties: ["row": indexPath.section, "section": indexPath.section],
+                level: .error
+            )
+            return UITableViewCell()
+        }
+        let row = section.rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
         return cell
@@ -351,9 +392,15 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 // MARK: - Support for UITableViewDelegate
 extension OrderDetailsDataSource {
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
-        guard let section = sections[safe: section] else {
+        guard section >= 0 && section < sections.count else {
+            ServiceLocator.crashLogging.logMessage(
+                            "Invalid section in viewForHeaderInSection in OrderDetailsDataSource",
+                            properties: ["section": section],
+                            level: .error
+                        )
             return nil
         }
+        let section = sections[section]
 
         let reuseIdentifier = section.headerStyle.viewType.reuseIdentifier
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {

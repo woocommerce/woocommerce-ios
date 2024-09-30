@@ -38,6 +38,11 @@ final class AddEditProductCategoryViewController: UIViewController {
         configureTableView()
         startListeningToNotifications()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateTitleTextField(shouldFocus: true)
+    }
 }
 
 // MARK: - View Configuration
@@ -110,7 +115,7 @@ extension AddEditProductCategoryViewController {
     @objc private func saveCategory() {
         ServiceLocator.analytics.track(.productCategorySettingsSaveNewCategoryTapped)
 
-        titleCategoryTextFieldResignFirstResponder()
+        updateTitleTextField(shouldFocus: false)
         configureRightButtonItemAsSpinner()
 
         Task { @MainActor in
@@ -168,12 +173,16 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
         }
     }
 
-    /// Dismiss keyboard on Title Category Text Field
+    /// Update Title Category Text Field focus
     ///
-    private func titleCategoryTextFieldResignFirstResponder() {
+    private func updateTitleTextField(shouldFocus: Bool) {
         if let indexPath = sections.indexPathForRow(.title) {
             let cell = tableView.cellForRow(at: indexPath) as? TextFieldTableViewCell
-            cell?.resignFirstResponder()
+            if shouldFocus {
+                cell?.becomeFirstResponder()
+            } else {
+                cell?.resignFirstResponder()
+            }
         }
     }
 }

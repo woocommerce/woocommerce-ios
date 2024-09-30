@@ -42,7 +42,7 @@ struct WooShippingCreateLabelsView: View {
                     isShipmentDetailsExpanded = isExpanded
                 }) {
                     if isShipmentDetailsExpanded {
-                        VStack(spacing: Layout.bottomSheetSpacing) {
+                        CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
                             Toggle(Localization.BottomSheet.markComplete, isOn: .constant(false)) // TODO: 14044 - Handle this toggle setting
                                 .font(.subheadline)
 

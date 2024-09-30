@@ -1,6 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.7
+-----
+- [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
+- [internal] Enhanced error logging in the `OrderDetailsDataSource` class to improve crash diagnostics. [https://github.com/woocommerce/woocommerce-ios/pull/14018]
+
 20.6
 -----
 - [*] Dashboard: Cards are now displayed in 2 columns on large screen sizes. [https://github.com/woocommerce/woocommerce-ios/pull/13983]
@@ -10,7 +15,6 @@
 - [*] Now the keyboard will be open automatically when creating a new Product Category. [https://github.com/woocommerce/woocommerce-ios/pull/14031]
 - [*] Payments: Prevent phone from sleeping during card reader updates [https://github.com/woocommerce/woocommerce-ios/pull/14021]
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
-- [internal] Enhanced error logging in the `OrderDetailsDataSource` class to improve crash diagnostics. [https://github.com/woocommerce/woocommerce-ios/pull/14018]
 - [internal] Fixed concurrency issue with Blaze local notification scheduler.
 - [internal] Fixed concurrency issue with Blaze local notification scheduler. [https://github.com/woocommerce/woocommerce-ios/pull/14012]
 - [internal] We added ability to mark and filter favorite products. This feature isn't released yet. But please smoke test product filtering work as expected. [https://github.com/woocommerce/woocommerce-ios/pull/14001]

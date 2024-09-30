@@ -48,11 +48,11 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards.filter { $0.availability != .hide }
     }
 
-    var showOnDashboardCards: [DashboardCard] {
-        dashboardCards.filter { $0.availability == .show && $0.enabled }
-    }
+    @Published private(set) var showOnDashboardCards: [DashboardCard] = []
+    @Published private(set) var showOnDashboardFirstColumn: [DashboardCard] = []
+    @Published private(set) var showOnDashboardSecondColumn: [DashboardCard] = []
 
-    @Published private(set) var isInAppFeedbackCardVisible = false
+    @Published private var isInAppFeedbackCardVisible = false
 
     private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
 
@@ -60,7 +60,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders = false
+    @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
 
@@ -364,6 +364,46 @@ private extension DashboardViewModel {
                 }
             })
             .store(in: &subscriptions)
+
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible)
+            .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
+            .sink { [weak self] combinedResult in
+                guard let self else { return }
+                let ((cards, showFeedbackCard), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let cardsToShow: [DashboardCard] = {
+                    var allCards = cards.filter { $0.availability == .show && $0.enabled }
+
+                    // Append feedback card after the first card
+                    let feedbackCard = DashboardCard.inAppFeedBackCard
+                    if allCards.isEmpty, showFeedbackCard {
+                        allCards.append(feedbackCard)
+                    } else if showFeedbackCard {
+                        allCards.insert(feedbackCard, at: 1)
+                    }
+
+                    if showNewCardsNotice && !isReloading {
+                        allCards.append(DashboardCard.newCardsNoticeCard)
+                    }
+
+                    if !hasOrders && !isReloading {
+                        allCards.append(DashboardCard.shareStoreCard)
+                    }
+                    return allCards
+                }()
+                showOnDashboardCards = cardsToShow
+                var firstColumn = [DashboardCard]()
+                var secondColumn = [DashboardCard]()
+                for (index, value) in cardsToShow.enumerated() {
+                    if index % 2 == 0 {
+                        firstColumn.append(value)
+                    } else {
+                        secondColumn.append(value)
+                    }
+                }
+                showOnDashboardFirstColumn = firstColumn
+                showOnDashboardSecondColumn = secondColumn
+            }
+            .store(in: &subscriptions)
     }
 
     @MainActor
@@ -411,6 +451,8 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
+                case .inAppFeedback, .newCardsNotice, .shareStore:
+                    break // do nothing
                 }
             }
         }

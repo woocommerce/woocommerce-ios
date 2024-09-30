@@ -7672,6 +7672,102 @@
             ]
         },
         {
+            "id": 100041,
+            "note_hash": 987654,
+            "type": "store_order",
+            "read": false,
+            "noticon": "\uf447",
+            "timestamp": "2018-10-22T15:29:36+00:00",
+            "icon": "https:\/\/s.wp.com\/wp-content\/mu-plugins\/notes\/images\/update-payment-2x.png",
+            "url": "https:\/\/aaaaaaaaa.mystagingwebsite.com\/wp-admin\/post.php?post=1476&action=edit",
+            "subject": [{
+                "text": "\ud83c\udf89 You have a new order!"
+            }, {
+                "text": "Someone placed a $20.00 order from Bananza World",
+                "ranges": [{
+                    "type": "site",
+                    "indices": [35, 48],
+                    "url": "https:\/\/somewhere.tld",
+                    "id": 123456
+                }]
+            }],
+            "body": [{
+                "text": "",
+                "media": [{
+                    "type": "image",
+                    "indices": [0, 0],
+                    "height": "48",
+                    "width": "48",
+                    "url": "https:\/\/s.wp.com\/wp-content\/mu-plugins\/notes\/images\/store-cart-icon.png"
+                }]
+            }, {
+                "text": "Order Number: 1476\nDate: October 22, 2018\nTotal: $20.00\nPayment Method: Credit Card (Stripe)\nShipping Method: Free shipping"
+            }, {
+                "text": "Products:\n\nAlmonds \u00d7 1\n"
+            }, {
+                "text": "\u2139\ufe0f View Order",
+                "ranges": [{
+                    "url": "https:\/\/somewhere.tld\/wp-admin\/post.php?post=1476&action=edit",
+                    "indices": [0, 13],
+                    "type": "link"
+                }]
+            }],
+            "meta": {
+                "ids": {
+                    "order": 123456
+                }
+            },
+            "title": "New Order"
+        },
+        {
+            "id": 100042,
+            "note_hash": 987654,
+            "type": "store_order",
+            "read": true,
+            "noticon": "\uf447",
+            "timestamp": "2018-10-22T15:29:36+00:00",
+            "icon": "https:\/\/s.wp.com\/wp-content\/mu-plugins\/notes\/images\/update-payment-2x.png",
+            "url": "https:\/\/aaaaaaaaa.mystagingwebsite.com\/wp-admin\/post.php?post=1476&action=edit",
+            "subject": [{
+                "text": "\ud83c\udf89 You have a new order!"
+            }, {
+                "text": "Someone placed a $20.00 order from Bananza World",
+                "ranges": [{
+                    "type": "site",
+                    "indices": [35, 48],
+                    "url": "https:\/\/somewhere.tld",
+                    "id": 123456
+                }]
+            }],
+            "body": [{
+                "text": "",
+                "media": [{
+                    "type": "image",
+                    "indices": [0, 0],
+                    "height": "48",
+                    "width": "48",
+                    "url": "https:\/\/s.wp.com\/wp-content\/mu-plugins\/notes\/images\/store-cart-icon.png"
+                }]
+            }, {
+                "text": "Order Number: 1476\nDate: October 22, 2018\nTotal: $20.00\nPayment Method: Credit Card (Stripe)\nShipping Method: Free shipping"
+            }, {
+                "text": "Products:\n\nAlmonds \u00d7 1\n"
+            }, {
+                "text": "\u2139\ufe0f View Order",
+                "ranges": [{
+                    "url": "https:\/\/somewhere.tld\/wp-admin\/post.php?post=1476&action=edit",
+                    "indices": [0, 13],
+                    "type": "link"
+                }]
+            }],
+            "meta": {
+                "ids": {
+                    "order": 123456
+                }
+            },
+            "title": "New Order"
+        },
+        {
             "id": 8401476681,
             "type": "blaze_approved_note",
             "subtype": "product",

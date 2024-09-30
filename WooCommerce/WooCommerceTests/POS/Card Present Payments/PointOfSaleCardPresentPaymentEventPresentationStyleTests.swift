@@ -156,6 +156,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         formattedOrderTotalPrice: String? = nil,
         paymentCaptureErrorTryAgainAction: @escaping () -> Void = {},
         paymentCaptureErrorNewOrderAction: @escaping () -> Void = {},
+        paymentIntentCreationErrorEditOrderAction: @escaping () -> Void = {},
         dismissReaderConnectionModalAction: @escaping () -> Void = {}) -> PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
             PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
                 tryPaymentAgainBackToCheckoutAction: tryPaymentAgainBackToCheckoutAction,
@@ -163,6 +164,7 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
                 formattedOrderTotalPrice: formattedOrderTotalPrice,
                 paymentCaptureErrorTryAgainAction: paymentCaptureErrorTryAgainAction,
                 paymentCaptureErrorNewOrderAction: paymentCaptureErrorNewOrderAction,
+                paymentIntentCreationErrorEditOrderAction: paymentIntentCreationErrorEditOrderAction,
                 dismissReaderConnectionModal: dismissReaderConnectionModalAction
             )
         }

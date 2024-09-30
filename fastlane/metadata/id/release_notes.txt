@@ -1,3 +1,3 @@
-Di versi ini, kami membereskan masalah terkait penyiapan awal pembayaran. Pengelolaan iklan Blaze juga disempurnakan agar lebih nyaman digunakan.
+Pada pembaruan ini, kami telah menambahkan fitur pengingat praktis untuk membantu Anda melanjutkan pembuatan kampanye yang terbengkalai sekaligus menyempurnakan agar pemberitahuan langsung mengarahkan Anda ke fitur pembuatan kampanye di Blaze. Kami juga telah memperbaiki isu pemformatan untuk diskon dan pembayaran tunai apabila pengaturan mata uang antara perangkat dan toko tidak sama. Nikmati pengalaman yang lebih baik dalam mengelola toko di mana saja!
 
 

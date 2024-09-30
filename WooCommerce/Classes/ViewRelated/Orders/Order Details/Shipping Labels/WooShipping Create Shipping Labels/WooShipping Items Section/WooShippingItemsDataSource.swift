@@ -5,9 +5,7 @@ import protocol Storage.StorageManagerType
 /// Provides data about items to ship for an order with the Woo Shipping extension.
 ///
 protocol WooShippingItemsDataSource {
-    var orderItems: [OrderItem] { get }
-    var products: [Product] { get }
-    var productVariations: [ProductVariation] { get }
+    var items: [ShippingLabelPackageItem] { get }
 }
 
 final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
@@ -15,22 +13,28 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
+    /// Items to ship from an order.
+    ///
+    var items: [ShippingLabelPackageItem] {
+        order.items.compactMap { ShippingLabelPackageItem(orderItem: $0, products: products, productVariations: productVariations) }
+    }
+
     /// Items in the order.
     ///
-    var orderItems: [OrderItem] {
+    private var orderItems: [OrderItem] {
         order.items
     }
 
     /// Stored products that match the items in the order.
     ///
-    var products: [Product] {
+    private var products: [Product] {
         try? productResultsController.performFetch()
         return productResultsController.fetchedObjects
     }
 
     /// Stored product variations that match the items in the order.
     ///
-    var productVariations: [ProductVariation] {
+    private var productVariations: [ProductVariation] {
         try? productVariationResultsController.performFetch()
         return productVariationResultsController.fetchedObjects
     }

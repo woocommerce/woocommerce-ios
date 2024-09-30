@@ -22,6 +22,9 @@ struct WooShippingCreateLabelsView: View {
 
     @Environment(\.dismiss) private var dismiss
 
+    /// Tracks the size of the "Ship from" label in the Shipment Details address section.
+    @State private var shipmentDetailsShipFromSize: CGSize = .zero
+
     /// Whether the shipment details bottom sheet is expanded.
     @State private var isShipmentDetailsExpanded = false
 
@@ -65,25 +68,29 @@ struct WooShippingCreateLabelsView: View {
                         Text(Localization.BottomSheet.orderDetails)
                             .footnoteStyle()
 
-                        Grid(alignment: .leading, verticalSpacing: .zero) {
-                            GridRow(alignment: .top) {
+                        CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
+                            HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
                                 Text(Localization.BottomSheet.shipFrom)
+                                    .trackSize(size: $shipmentDetailsShipFromSize)
                                 Text("417 MONTGOMERY ST, SAN FRANCISCO") // TODO: 14044 - Show real "ship from" address (store address)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding()
+                            .padding(Layout.bottomSheetPadding)
                             Divider()
-                            GridRow(alignment: .top) {
+                            HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
                                 Text(Localization.BottomSheet.shipTo)
+                                    .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
                                 VStack(alignment: .leading) {
                                     Text("1 Infinite Loop") // TODO: 14044 - Show real "ship to" address (customer address)
                                         .bold()
                                     Text("Cupertino, CA 95014")
                                     Text("USA")
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding()
+                            .padding(Layout.bottomSheetPadding)
                         }
                         .font(.subheadline)
                         .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)

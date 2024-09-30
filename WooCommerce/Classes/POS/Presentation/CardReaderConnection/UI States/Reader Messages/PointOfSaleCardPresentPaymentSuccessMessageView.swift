@@ -42,21 +42,11 @@ struct PointOfSaleCardPresentPaymentSuccessMessageView: View {
     }
 
     private var circleBackgroundColor: Color {
-        switch colorScheme {
-        case .dark:
-            Color(red: 0/255, green: 173/255, blue: 100/255)
-        default:
-            Color.white
-        }
+        Color(red: 8/255, green: 251/255, blue: 135/255)
     }
 
     private var checkmarkColor: Color {
-        switch colorScheme {
-        case .dark:
-            Color.white
-        default:
-            Color(.wooCommerceEmerald(.shade40))
-        }
+        Color.posSecondaryBackground
     }
 }
 

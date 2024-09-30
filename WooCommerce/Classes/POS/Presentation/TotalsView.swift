@@ -319,10 +319,10 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let paymentsButtonSpacing: CGFloat = 52
+        static let paymentsButtonSpacing: CGFloat = 80
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 22
+        static let newOrderButtonPadding: CGFloat = 32
         static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
 
         /// Used for synchronizing animations of shimmeringLine and textField

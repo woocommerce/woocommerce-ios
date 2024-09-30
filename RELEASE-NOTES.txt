@@ -3,6 +3,7 @@
 
 20.7
 -----
+- [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
 - [internal] Enhanced error logging in the `OrderDetailsDataSource` class to improve crash diagnostics. [https://github.com/woocommerce/woocommerce-ios/pull/14018]
 
 20.6

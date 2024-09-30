@@ -130,9 +130,9 @@ struct WooShippingCreateLabelsView: View {
                             }
                         }
                     }
-                    .padding(.bottom, Layout.bottomSheetPadding)
-                    .padding(.horizontal, Layout.bottomSheetPadding)
+                    .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
                 }
+                .ignoresSafeArea(edges: .horizontal)
             }
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)

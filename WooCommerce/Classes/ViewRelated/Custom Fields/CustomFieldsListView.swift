@@ -18,14 +18,14 @@ struct CustomFieldsListView: View {
                                 ) {
                                     CustomFieldRow(isEditable: true,
                                                    title: customField.title,
-                                                   content: customField.content,
+                                                   content: customField.content.removedHTMLTags,
                                                    contentURL: customField.contentURL)
                                 }
                             }
                             else {
                                 CustomFieldRow(isEditable: false,
                                                title: customField.title,
-                                               content: customField.content,
+                                               content: customField.content.removedHTMLTags,
                                                contentURL: customField.contentURL)
                             }
 

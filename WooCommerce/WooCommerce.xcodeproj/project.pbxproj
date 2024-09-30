@@ -1706,6 +1706,7 @@
 		86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */; };
 		8697AFBD2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697AFBC2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift */; };
 		8697AFBF2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697AFBE2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift */; };
+		869C2AA42C91791B00DDEE13 /* AztecEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869C2AA32C91791B00DDEE13 /* AztecEditorView.swift */; };
 		86A4EBBD2B2F1306008011F5 /* ThemesPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A4EBBC2B2F1306008011F5 /* ThemesPreviewViewModel.swift */; };
 		86B3E2552C6B1F160002420B /* HelpAndSupportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B3E2542C6B1F160002420B /* HelpAndSupportViewModel.swift */; };
 		86B3E2572C6B249C0002420B /* HelpAndSupportViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B3E2562C6B249C0002420B /* HelpAndSupportViewModelTests.swift */; };
@@ -4739,6 +4740,7 @@
 		86967D822B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdUrlParameter.swift; sourceTree = "<group>"; };
 		8697AFBC2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingViewModelTests.swift; sourceTree = "<group>"; };
 		8697AFBE2B622DEA00EFAF21 /* BlazeAddParameterViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterViewModelTests.swift; sourceTree = "<group>"; };
+		869C2AA32C91791B00DDEE13 /* AztecEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecEditorView.swift; sourceTree = "<group>"; };
 		86A4EBBC2B2F1306008011F5 /* ThemesPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModel.swift; sourceTree = "<group>"; };
 		86B3E2542C6B1F160002420B /* HelpAndSupportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewModel.swift; sourceTree = "<group>"; };
 		86B3E2562C6B249C0002420B /* HelpAndSupportViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewModelTests.swift; sourceTree = "<group>"; };
@@ -6728,6 +6730,7 @@
 				024DF3062372C18D006658FE /* AztecUIConfigurator.swift */,
 				024DF3082372CA00006658FE /* EditorViewProperties.swift */,
 				02D29A8F29F7C2DA00473D6D /* AztecAIViewFactory.swift */,
+				869C2AA32C91791B00DDEE13 /* AztecEditorView.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -16337,6 +16340,7 @@
 				E12FB786266E0CAE0039E9C2 /* ApllicationLogDetailView.swift in Sources */,
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */,
+				869C2AA42C91791B00DDEE13 /* AztecEditorView.swift in Sources */,
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				014BD4BA2C64FC0E0011A66E /* PointOfSaleOrderSyncErrorMessageViewModel.swift in Sources */,
 				DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */,

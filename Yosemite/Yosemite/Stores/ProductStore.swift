@@ -422,6 +422,11 @@ private extension ProductStore {
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
     func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+
+        guard !sku.isEmpty else {
+            return onCompletion(.failure(ProductLoadError.emptySKU))
+        }
+
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -1358,6 +1363,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
+    case emptySKU
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

@@ -10,6 +10,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
         let formattedOrderTotalPrice: String?
         let paymentCaptureErrorTryAgainAction: () -> Void
         let paymentCaptureErrorNewOrderAction: () -> Void
+        let paymentIntentCreationErrorEditOrderAction: () -> Void
         let dismissReaderConnectionModal: () -> Void
     }
 
@@ -221,6 +222,13 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                 viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel(
                     tryAgainButtonAction: dependencies.paymentCaptureErrorTryAgainAction,
                     newOrderButtonAction: dependencies.paymentCaptureErrorNewOrderAction)))
+
+        case .paymentIntentCreationError(let error, _):
+            self = .message(.paymentIntentCreationError(
+                viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel(
+                    error: error,
+                    tryPaymentAgainButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction,
+                    editOrderButtonAction: dependencies.paymentIntentCreationErrorEditOrderAction)))
 
         case .processing:
             self = .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))

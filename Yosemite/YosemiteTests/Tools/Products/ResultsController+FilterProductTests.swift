@@ -52,7 +52,11 @@ final class ResultsController_FilterProductTests: XCTestCase {
         }
 
         // Act
-        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, stockStatus: nil, productStatus: nil, productType: nil)
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID,
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           productIDs: nil)
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                   matching: predicate,
                                                                   sortOrder: .nameAscending)
@@ -134,6 +138,32 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(resultsController.fetchedObjects.contains(otherProduct))
+        XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
+    }
+
+    func test_predicate_with_non_nil_product_IDs() {
+        // Given
+        let otherProducts = [Product.fake().copy(siteID: sampleSiteID, productID: 1),
+                             Product.fake().copy(siteID: sampleSiteID, productID: 4)]
+
+        let expectedProducts = [
+            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", productTypeKey: ProductType.variable.rawValue),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", productTypeKey: ProductType.variable.rawValue),
+        ]
+
+        (otherProducts + expectedProducts).forEach { product in
+            storageManager.insertSampleProduct(readOnlyProduct: product)
+        }
+
+        // When
+        let predicate = NSPredicate.createProductPredicate(siteID: sampleSiteID, productIDs: [2, 62])
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
+                                                                  matching: predicate,
+                                                                  sortOrder: .nameAscending)
+        try? resultsController.performFetch()
+
+        // Then
+        XCTAssertFalse(Set(otherProducts).isSubset(of: Set(resultsController.fetchedObjects)))
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 }

@@ -223,13 +223,13 @@ private extension ProductDetailPreviewView {
     }
 
     var feedbackBanner: some View {
-        FeedbackView(title: Localization.feedbackQuestion,
-                     backgroundColor: Constants.feedbackViewColor,
-                     onVote: { vote in
+        FeedbackView(configuration: .init(title: Localization.feedbackQuestion,
+                                          backgroundColor: Constants.feedbackViewColor,
+                                          onVote: { vote in
             withAnimation {
                 viewModel.handleFeedback(vote)
             }
-        })
+        }))
         .renderedIf(viewModel.shouldShowFeedbackView)
     }
 
@@ -392,7 +392,8 @@ private extension View {
     func roundedRectBorderStyle(strokeColor: Color = ProductDetailPreviewView.Constants.separatorColor) -> some View {
         modifier(RoundedBorder(cornerRadius: ProductDetailPreviewView.Layout.cornerRadius,
                                lineColor: strokeColor,
-                               lineWidth: ProductDetailPreviewView.Layout.borderWidth))
+                               lineWidth: ProductDetailPreviewView.Layout.borderWidth,
+                               dashed: false))
     }
 }
 

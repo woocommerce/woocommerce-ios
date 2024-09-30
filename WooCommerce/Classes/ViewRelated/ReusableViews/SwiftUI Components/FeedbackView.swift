@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct FeedbackView: View {
-    let title: String
-    var backgroundColor: Color = .init(uiColor: .systemGray5)
-    let onVote: (Vote) -> Void
+    struct Configuration {
+        let title: String
+        var backgroundColor: Color = .init(uiColor: .systemGray5)
+        let onVote: (FeedbackView.Vote) -> Void
+    }
+
+    let configuration: Configuration
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -16,11 +20,14 @@ struct FeedbackView: View {
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(configuration.title)
                 .subheadlineStyle()
             Spacer()
             HStack(spacing: Layout.buttonSpacing) {
                 Button {
+                    guard vote == nil else {
+                        return
+                    }
                     vote = .up
                 } label: {
                     Image(systemName: vote == .up ? "hand.thumbsup.fill" : "hand.thumbsup")
@@ -32,6 +39,9 @@ struct FeedbackView: View {
                 .buttonStyle(.plain)
 
                 Button {
+                    guard vote == nil else {
+                        return
+                    }
                     vote = .down
                 } label: {
                     Image(systemName: vote == .down ?  "hand.thumbsdown.fill" : "hand.thumbsdown")
@@ -45,12 +55,12 @@ struct FeedbackView: View {
         }
         .padding(Layout.contentInsets)
         .background(
-            backgroundColor
+            configuration.backgroundColor
                 .cornerRadius(Layout.cornerRadius)
         )
         .onChange(of: vote) { newValue in
             if let newValue {
-                onVote(newValue)
+                configuration.onVote(newValue)
             }
         }
     }
@@ -67,6 +77,6 @@ private extension FeedbackView {
 
 struct FeedbackView_Previews: PreviewProvider {
     static var previews: some View {
-        FeedbackView(title: "Test", onVote: { _ in })
+        FeedbackView(configuration: .init(title: "Test", onVote: { _ in }))
     }
 }

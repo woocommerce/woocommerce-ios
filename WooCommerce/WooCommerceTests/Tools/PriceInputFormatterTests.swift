@@ -147,6 +147,22 @@ final class PriceInputFormatterTests: XCTestCase {
         XCTAssertEqual(formatter.format(input: input), "-12.34")
     }
 
+    func test_formatting_when_decimal_separator_has_spaces() {
+        // Given store decimal separator has spaces
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".   ",
+                                                numberOfDecimals: 2)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
+        // When
+        let input = "189.20"
+
+        // Then formatting ignores spaces in store decimal separator settings
+        XCTAssertEqual(formatter.format(input: input), "189.20")
+    }
+
     func test_value_is_correct() {
         // When
         let pointValue = "0.00"

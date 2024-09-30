@@ -40,6 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var appCoordinator: AppCoordinator?
 
+    /// Initializes storage manager along with AppDelegate
+    private let storageManager = ServiceLocator.storageManager
+
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
@@ -191,7 +194,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // When the app is put into an incative state, it's important to ensure that any pending changes to
             // Core Data context are saved to avoid data loss.
-            ServiceLocator.storageManager.viewStorage.saveIfNeeded()
+            storageManager.viewStorage.saveIfNeeded()
         }
     }
 
@@ -231,7 +234,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // When the app is put into the background, it's important to ensure that any pending changes to
         // Core Data context are saved to avoid data loss.
-        ServiceLocator.storageManager.viewStorage.saveIfNeeded()
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -253,7 +256,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.post(name: .applicationTerminating, object: nil)
 
         // Save changes in the application's managed object context before the application terminates.
-        ServiceLocator.storageManager.viewStorage.saveIfNeeded()
+        storageManager.viewStorage.saveIfNeeded()
     }
 
     func application(_ application: UIApplication,
@@ -459,7 +462,7 @@ private extension AppDelegate {
         }
 
         if ProcessConfiguration.shouldUseScreenshotsNetworkLayer {
-            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: storageManager))
         }
 
         if ProcessConfiguration.shouldSimulatePushNotification {

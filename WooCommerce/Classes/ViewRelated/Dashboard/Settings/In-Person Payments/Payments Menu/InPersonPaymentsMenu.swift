@@ -157,11 +157,7 @@ struct InPersonPaymentsMenu: View {
                         } label: {
                             PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
                                         title: Localization.managePaymentGateways,
-                                        subtitle: viewModel.selectedPaymentGatewayName,
-                                        isActive: $viewModel.presentManagePaymentGateways) {
-                                InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,
-                                                                 onPluginSelected: viewModel.preferredPluginSelected)
-                            }
+                                        subtitle: viewModel.selectedPaymentGatewayName)
                             .padding(.vertical, Layout.cellVerticalPadding)
                         }
                         .buttonStyle(.scrollViewRow)
@@ -178,6 +174,10 @@ struct InPersonPaymentsMenu: View {
             .navigationDestination(isPresented: $viewModel.presentSupport) {
                 SupportForm(isPresented: $viewModel.presentSupport,
                             viewModel: .init())
+            }
+            .navigationDestination(isPresented: $viewModel.presentManagePaymentGateways) {
+                InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,
+                                                 onPluginSelected: viewModel.preferredPluginSelected)
             }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {

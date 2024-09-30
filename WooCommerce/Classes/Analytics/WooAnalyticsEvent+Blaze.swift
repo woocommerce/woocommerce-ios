@@ -11,6 +11,7 @@ extension WooAnalyticsEvent {
             static let isAISuggestedAdContent = "is_ai_suggested_ad_content"
             static let campaignType = "campaign_type"
             static let objective = "objective"
+            static let satisfied = "satisfied"
         }
 
         private enum Values {
@@ -64,6 +65,11 @@ extension WooAnalyticsEvent {
         static func campaignObjectiveSaved(_ objective: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeCampaignObjectiveSaved,
                               properties: [Key.objective: objective])
+        }
+
+        /// Tracked when the feedback banner receives a response
+        static func campaignCreationFeedbackReceived(positive: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignCreationFeedback, properties: [Key.satisfied: positive])
         }
 
         enum CreationForm {

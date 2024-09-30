@@ -1,39 +1,18 @@
 import SwiftUI
 
-struct AztecEditorView: UIViewControllerRepresentable {
-    @Binding var html: String
-
-    func makeUIViewController(context: Context) -> AztecEditorViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: "Navigation title", /* todo replace string */
-                                                  placeholderText: "placeholder text", /* todo replace string */
-                                                  showSaveChangesActionSheet: true)
-
-        let controller = AztecEditorViewController(
-            content: html,
-            product: nil,
-            viewProperties: viewProperties,
-            isAIGenerationEnabled: false
-        )
-
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: AztecEditorViewController, context: Context) {
-        // Update the view controller if needed
-    }
-}
-
 struct CustomFieldEditorView: View {
     @State private var key: String
     @State private var value: String
-    @State private var hasUnsavedChanges: Bool = false
-    @State private var showRichTextEditor: Bool = false
-    @State private var showingActionSheet: Bool = false
+    @State private var showRichTextEditor = false
+    @State private var showingActionSheet = false
 
     private let initialKey: String
     private let initialValue: String
     private let isReadOnlyValue: Bool
 
+    private var hasUnsavedChanges: Bool {
+        key != initialKey || value != initialValue
+    }
 
     /// Initializer for custom field editor
     /// - Parameters:
@@ -53,54 +32,59 @@ struct CustomFieldEditorView: View {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 // Key Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
-                    Text("Key") // todo-13493: set String to be translatable
+                    Text(Localization.keyLabel)
                         .foregroundColor(Color(.text))
                         .subheadlineStyle()
 
-                    TextField("Enter key", text: $key) // todo-13493: set String to be translatable
-                        .bodyStyle()
+                    TextField(Localization.keyPlaceholder, text: $key)
+                        .foregroundColor(Color(.text))
+                        .subheadlineStyle()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
-                        .onChange(of: key) { _ in
-                            checkForModifications()
-                        }
                 }
 
                 // Value Input
                 VStack(alignment: .leading, spacing: Layout.subSectionsSpacing) {
                     HStack {
-                        Text("Value") // todo-13493: set String to be translatable
+                        Text(Localization.valueLabel)
                             .foregroundColor(Color(.text))
                             .subheadlineStyle()
+                            .frame(maxWidth: .infinity, alignment: .leading)
 
                         Spacer()
 
                         if !isReadOnlyValue {
-                            Button(action: {
-                                showRichTextEditor = true
-                            }) {
-                                Text("Edit in Rich Text Editor") // todo-13493: set String to be translatable
-                                    .font(.footnote)
+                            Picker(Localization.editorPickerLabel, selection: $showRichTextEditor) {
+                                Text(Localization.editorPickerText).tag(false)
+                                Text(Localization.editorPickerHTML).tag(true)
                             }
-                            .buttonStyle(.plain)
-                            .foregroundColor(Color(uiColor: .accent))
+                            .pickerStyle(.segmented)
                         }
                     }
 
-                    TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
-                        .bodyStyle()
+                    if showRichTextEditor {
+                        AztecEditorView(content: $value)
                         .frame(minHeight: Layout.minimumEditorSize)
+                        .clipped()
                         .padding(insets: Layout.inputInsets)
                         .background(Color(.listForeground(modal: false)))
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
-                        .onChange(of: value) { _ in
-                            checkForModifications()
-                        }
+                    } else {
+                        TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
+                            .foregroundColor(Color(.text))
+                            .subheadlineStyle()
+                            .frame(minHeight: Layout.minimumEditorSize)
+                            .padding(insets: Layout.inputInsets)
+                            .background(Color(.listForeground(modal: false)))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
+                            )
+                    }
                 }
             }
             .padding()
@@ -128,12 +112,6 @@ struct CustomFieldEditorView: View {
                 }
             }
         }
-        .sheet(isPresented: $showRichTextEditor) {
-            RichTextEditor(html: $value)
-                .onDisappear {
-                    checkForModifications()
-                }
-        }
     }
 
     @ViewBuilder
@@ -153,42 +131,8 @@ struct CustomFieldEditorView: View {
         }
     }
 
-    private func checkForModifications() {
-        hasUnsavedChanges = key != initialKey || value != initialValue
-    }
-
     private func saveChanges() {
         // todo-13493: add save logic
-    }
-}
-
-private struct RichTextEditor: View {
-    @Binding var html: String
-    @State private var isModified: Bool = false
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        NavigationView {
-            AztecEditorView(html: $html)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            presentationMode.wrappedValue.dismiss()
-                        } label: {
-                            Text("Cancel") // todo-13493: set String to be translatable
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            // todo-13493: implement save action
-                            presentationMode.wrappedValue.dismiss()
-                        } label: {
-                            Text("Done") // todo-13493: set String to be translatable
-                        }
-                        .disabled(!isModified)
-                    }
-                }
-        }
     }
 }
 
@@ -200,6 +144,44 @@ private extension CustomFieldEditorView {
         static let cornerRadius: CGFloat = 8
         static let inputInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
         static let minimumEditorSize: CGFloat = 400
+    }
+
+    enum Localization {
+        static let keyLabel = NSLocalizedString(
+            "customFieldEditorView.keyLabel",
+            value: "Key",
+            comment: "Label for the Key field"
+        )
+
+        static let keyPlaceholder = NSLocalizedString(
+            "customFieldEditorView.keyPlaceholder",
+            value: "Enter key",
+            comment: "Placeholder for the Key field"
+        )
+
+        static let valueLabel = NSLocalizedString(
+            "customFieldEditorView.valueLabel",
+            value: "Value",
+            comment: "Label for the Value field"
+        )
+
+        static let editorPickerLabel = NSLocalizedString(
+            "customFieldEditorView.editorPickerLabel",
+            value: "Choose text editing mode",
+            comment: "Label for the Editor type picker"
+        )
+
+        static let editorPickerText = NSLocalizedString(
+            "customFieldEditorView.editorPickerText",
+            value: "Text",
+            comment: "Picker option for using Text Editor"
+        )
+
+        static let editorPickerHTML = NSLocalizedString(
+            "customFieldEditorView.editorPickerHTML",
+            value: "HTML",
+            comment: "Picker option for using Text Editor"
+        )
     }
 }
 

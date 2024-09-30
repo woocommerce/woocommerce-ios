@@ -395,6 +395,7 @@ extension BlazeCampaignCreationFormViewModel {
 }
 
 private extension BlazeCampaignCreationFormViewModel {
+    @MainActor
     func loadProductImage() async -> MediaPickerImage? {
         guard let firstImage = product?.images.first,
               let image = try? await productImageLoader.requestImage(productImage: firstImage) else {

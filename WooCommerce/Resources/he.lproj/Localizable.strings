@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-19 14:54:04+0000 */
+/* Translation-Revision-Date: 2024-09-25 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -10764,6 +10764,12 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
 
+/* Message on the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.body" = "בעזרת Blaze, מיליונים יראו את המוצרים שלך והמכירות ישתפרו";
+
+/* Title of the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.title" = "רוצה לשפר את המכירות שלך?";
+
 /* Message on the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.body" = "לקדם מוצרים עם פרסומות של Blaze כדי להגדיל את המכירות שלך עכשיו.";
 
@@ -12430,6 +12436,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "ביטול";
+
+/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.items.count" = "%1$@ פריטים";
+
+/* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
+"wooShipping.createLabels.items.dimensions" = "‎%1$@ x %2$@ x %3$@ %4$@";
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "ליצור תוויות משלוח";

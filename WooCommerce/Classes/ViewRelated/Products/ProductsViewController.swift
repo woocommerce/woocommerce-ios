@@ -162,21 +162,20 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-            if filters != oldValue ||
-                categoryHasChangedRemotely {
-                updateLocalProductSettings(sort: sortOrder,
-                                           filters: filters)
-                updateFilterButtonTitle(filters: filters)
+            Task { @MainActor in
+                if filters != oldValue ||
+                    categoryHasChangedRemotely {
+                    updateLocalProductSettings(sort: sortOrder,
+                                               filters: filters)
+                    updateFilterButtonTitle(filters: filters)
 
-                resultsController.updatePredicate(siteID: siteID,
-                                                  stockStatus: filters.stockStatus,
-                                                  productStatus: filters.productStatus,
-                                                  productType: filters.promotableProductType?.productType)
+                    await updatePredicate(filters: filters)
 
-                /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                tableView.reloadData()
+                    /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+                    tableView.reloadData()
 
-                paginationTracker.resync()
+                    paginationTracker.resync()
+                }
             }
         }
     }
@@ -275,6 +274,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         }
 
         navigationController?.navigationBar.removeShadow()
+
+        reloadFavoriteProductsIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -1030,6 +1031,49 @@ private extension ProductsViewController {
         }
         return indexPathsForVisibleRows.contains(indexPath)
     }
+
+    func reloadFavoriteProductsIfNeeded() {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            // Reload only if favorite products filter is turned on
+            guard filters.favoriteProduct != nil else {
+                return
+            }
+
+            let previousFavoriteProductIDs = viewModel.favoriteProductIDs
+            await viewModel.loadFavoriteProductIDs()
+
+            // Reload only if favorite product IDs changed
+            guard viewModel.favoriteProductIDs != previousFavoriteProductIDs else {
+                return
+            }
+
+            await updatePredicate(filters: filters)
+
+            /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
+            tableView.reloadData()
+
+            paginationTracker.resync()
+        }
+    }
+
+    func updatePredicate(filters: FilterProductListViewModel.Filters) async {
+        let productIDs: [Int64]? = await {
+            guard filters.favoriteProduct != nil else {
+                return nil
+            }
+
+            await viewModel.loadFavoriteProductIDs()
+            return viewModel.favoriteProductIDs
+        }()
+
+        resultsController.updatePredicate(siteID: siteID,
+                                          stockStatus: filters.stockStatus,
+                                          productStatus: filters.productStatus,
+                                          productType: filters.promotableProductType?.productType,
+                                          productIDs: productIDs)
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -1175,10 +1219,15 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.productListPulledToRefresh)
+        Task { @MainActor in
 
-        paginationTracker.resync {
-            sender.endRefreshing()
+            ServiceLocator.analytics.track(.productListPulledToRefresh)
+
+            await updatePredicate(filters: filters)
+
+            paginationTracker.resync {
+                sender.endRefreshing()
+            }
         }
     }
 
@@ -1374,7 +1423,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                  productStatus: filters.productStatus,
                                  productType: filters.promotableProductType?.productType,
                                  productCategory: filters.productCategory,
-                                 sortOrder: sortOrder) { [weak self] result in
+                                 sortOrder: sortOrder,
+                                 productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
                                     guard let self = self else {
                                         return
                                     }
@@ -1409,7 +1459,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
-                                                              productCategoryFilter: filters.productCategory) { (error) in
+                                                              productCategoryFilter: filters.productCategory,
+                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -1431,6 +1482,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                                  productStatus: settings.productStatusFilter,
                                                                  promotableProductType: promotableProductType,
                                                                  productCategory: settings.productCategoryFilter,
+                                                                 favoriteProduct: settings.favoriteProduct ? FavoriteProductsFilter() : nil,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
                     onCompletion(result)
                 }
@@ -1476,7 +1528,8 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                                 stockStatusFilter: settings.stockStatusFilter,
                                                                 productStatusFilter: settings.productStatusFilter,
                                                                 productTypeFilter: settings.productTypeFilter,
-                                                                productCategoryFilter: updatingProductCategory)
+                                                                productCategoryFilter: updatingProductCategory,
+                                                                favoriteProduct: settings.favoriteProduct)
             }
 
             onCompletion(completionSettings)

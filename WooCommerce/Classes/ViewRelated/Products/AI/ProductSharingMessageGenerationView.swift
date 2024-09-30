@@ -50,11 +50,11 @@ struct ProductSharingMessageGenerationView: View {
                         .opacity(viewModel.generationInProgress ? 0 : 1)
                         .padding(insets: Constants.messageContentInsets)
 
-                    FeedbackView(title: Localization.feedbackQuestion,
+                    FeedbackView(configuration: .init(title: Localization.feedbackQuestion,
                                  backgroundColor: .init(uiColor: .systemGray6),
                                  onVote: { vote in
                         viewModel.handleFeedback(vote)
-                    })
+                    }))
                     .padding(insets: Constants.feedbackViewInsets)
                     .renderedIf(viewModel.shouldShowFeedbackView)
                 }

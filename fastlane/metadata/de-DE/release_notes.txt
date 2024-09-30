@@ -1,3 +1,3 @@
-In dieser Version haben wir ein Problem im Zusammenhang mit dem Onboarding von Bezahlungen behoben. Das Blaze-Werbungsmanagement wurde ebenfalls verbessert, um dir ein angenehmeres Erlebnis bieten zu können.
+Im Rahmen dieses Updates haben wir eine praktische Erinnerungsfunktion hinzugefügt, damit du abgebrochene Kamapagnenerstellungen fortsetzen kannst. Außerdem haben wir die Art und Weise verbessert, wie Benachrichtigungen direkt zur Kampagnenerstellung in Blaze geöffnet werden. Des Weiteren haben wir Formatierungsprobleme bei Rabatt- und Barzahlungen behoben, wenn die Währungseinstellungen für Gerät und Shop unterschiedlich sind. Genieße eine reibungslosere Shopverwaltung unterwegs!
 
 

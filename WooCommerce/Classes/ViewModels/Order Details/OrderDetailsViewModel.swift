@@ -488,7 +488,7 @@ extension OrderDetailsViewModel {
             let customFieldsView = UIHostingController(
                 rootView: CustomFieldsListView(
                     isEditable: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
-                    customFields: customFields))
+                    viewModel: CustomFieldsListViewModel(customFields: customFields)))
             viewController.present(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode

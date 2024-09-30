@@ -1414,6 +1414,9 @@ which should be translated separately and considered part of this sentence. */
 /* The total amount for weekly spend on the Blaze budget setting screen. Reads like: $35 USD weekly spend */
 "blazeBudgetSettingViewModel.weeklySpendAmount" = "%1$@ weekly spend";
 
+/* Question in the feedback banner after a Blaze campaign is successfully created */
+"blazeCampaignCreationCoordinator.feedbackQuestion" = "How was the experience with Blaze?";
+
 /* Button to dismiss the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.cancel" = "Cancel";
 
@@ -4470,6 +4473,9 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
+/* Description of the filter used to show only favorite products. */
+"favoriteProductsFilter.favoriteProducts" = "Favorite Products";
+
 /* Featured Product switch in Product Catalog Visibility */
 "Featured Product" = "Featured Product";
 
@@ -4527,6 +4533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
+
+/* Row title for filtering products by favorite products. */
+"filterProductListViewModel.favoriteProduct" = "Favorite Products";
 
 /* Filters button text on header bar on top of order list
    Navigation bar title format for filtering a list of products without filters applied. */
@@ -7527,6 +7536,13 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Try another payment method";
 
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
+   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "Try payment again";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Payment preparation error";
+
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Please wait...";
 
@@ -7760,6 +7776,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "This order may have failed";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Please wait";
 
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Disconnect Reader";
@@ -8311,6 +8330,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "The images are unavailable because your site is marked Private. You can change this by switching to Coming Soon mode.";
+
+/* Mark favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.markAsFavorite" = "Mark as favorite";
+
+/* Remove favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.removeAsFavorite" = "Remove from favorite";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Cancel";
@@ -12146,8 +12171,50 @@ which should be translated separately and considered part of this sentence. */
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
+/* Button to select a package to use for a shipment in the shipping label creation flow. */
+"wooShipping.createLabel.addPackage.button" = "Select a Package";
+
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "Cancel";
+
+/* Label for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatLabel" = "Are you shipping dangerous goods or hazardous materials?";
+
+/* Message in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderMessage" = "Enter your package's dimensions or pick a carrier package option to see the available shipping rates.";
+
+/* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderTitle" = "Select a package to get shipping rates";
+
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.markComplete" = "Mark this order complete and notify the customer";
+
+/* Header for order details section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.orderDetails" = "Order details";
+
+/* Label for the menu to select a paper size on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paperSize" = "Choose label paper size";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.purchase" = "Purchase Label";
+
+/* Label for address where the shipment is shipped from on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipFrom" = "Ship from";
+
+/* Header for shipment costs section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipmentCosts" = "Shipment costs";
+
+/* Label for address where the shipment is shipped to on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipTo" = "Ship to";
+
+/* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.subtotal" = "Subtotal";
+
+/* Label on the bottom sheet that can be expanded to show shipment detailson the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.title" = "Shipment details";
+
+/* Label for row showing the total for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.total" = "Total";
 
 /* Total number of items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ items";

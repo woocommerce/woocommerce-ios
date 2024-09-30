@@ -8,7 +8,6 @@ protocol ViewControllerPresenting: AnyObject {
     func dismiss(animated: Bool, completion: (() -> Void)?)
     func dismiss(animated: Bool)
     func show(_ vc: UIViewController, sender: Any?)
-    var presentingViewController: UIViewController? { get }
     var presentedViewController: UIViewController? { get }
     var navigationController: UINavigationController? { get }
 }
@@ -45,8 +44,6 @@ final class NullViewControllerPresenting: ViewControllerPresenting {
     func show(_ vc: UIViewController, sender: Any?) {
         // no-op
     }
-
-    var presentingViewController: UIViewController?
 
     var presentedViewController: UIViewController?
 

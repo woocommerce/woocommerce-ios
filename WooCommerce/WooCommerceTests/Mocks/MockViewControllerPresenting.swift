@@ -24,8 +24,6 @@ final class MockViewControllerPresenting: ViewControllerPresenting {
         // no-op
     }
 
-    var presentingViewController: UIViewController?
-
     var presentedViewController: UIViewController? = nil
 
     var navigationController: UINavigationController? = nil

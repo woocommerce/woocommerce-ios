@@ -66,12 +66,7 @@ struct CustomFieldEditorView: View {
                     }
 
                     if showRichTextEditor {
-                        AztecEditorView(initialValue: value,
-                                        onContentChanged: { content in
-                            DispatchQueue.main.async {
-                                value = content
-                            }
-                        })
+                        AztecEditorView(content: $value)
                         .frame(minHeight: Layout.minimumEditorSize)
                         .clipped()
                         .padding(insets: Layout.inputInsets)

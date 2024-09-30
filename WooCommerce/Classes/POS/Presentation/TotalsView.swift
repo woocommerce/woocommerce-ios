@@ -195,9 +195,6 @@ private extension TotalsView {
             viewModel.startNewOrder()
         }, label: {
             HStack(spacing: Constants.newOrderButtonSpacing) {
-                Image(systemName: Constants.newOrderImageName)
-                    .font(.body.bold())
-                    .aspectRatio(contentMode: .fit)
                 Text(Localization.newOrder)
                     .font(Constants.newOrderButtonFont)
             }
@@ -327,7 +324,6 @@ private extension TotalsView {
         static let newOrderButtonSpacing: CGFloat = 12
         static let newOrderButtonPadding: CGFloat = 22
         static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
-        static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"

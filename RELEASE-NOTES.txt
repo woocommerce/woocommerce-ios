@@ -3,7 +3,7 @@
 
 20.7
 -----
-
+- [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
 
 20.6
 -----
@@ -26,7 +26,6 @@
 - [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
 - [**] Fixed an issue that prevented users from adding prices to product variations. [https://github.com/woocommerce/woocommerce-ios/pull/14046]
 - [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
-- [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
 
 
 20.4

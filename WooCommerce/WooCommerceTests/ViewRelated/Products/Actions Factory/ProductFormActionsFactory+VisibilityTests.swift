@@ -178,8 +178,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.customFields),
-                      "Custom fields row should be visible when product has an ID and existing custom fields")
+        XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
     }
 
 
@@ -192,8 +191,9 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields),
-                       "Custom fields row should be invisible when product has an ID but empty custom fields")
+        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editCustomFields))
+
     }
 }
 

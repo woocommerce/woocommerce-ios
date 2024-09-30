@@ -234,6 +234,7 @@ enum WooAnalyticsStat: String {
     case blazeAddPaymentMethodSuccess = "blaze_creation_add_payment_method_success"
     case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
     case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
+    case blazeCampaignCreationFeedback = "blaze_campaign_creation_feedback"
 
     // MARK: Store Onboarding Events
     //
@@ -861,6 +862,8 @@ enum WooAnalyticsStat: String {
     //
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
+    case productDetailMarkAsFavoriteButtonTapped = "product_detail_mark_as_favorite_tapped"
+    case productDetailRemoveFromFavoriteButtonTapped = "product_detail_remove_from_favorite_tapped"
 
     // MARK: Product Settings
     //

@@ -1,3 +1,1 @@
-In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
-
-
+In this update, we’ve improved the dashboard with a cleaner, 2-column layout on larger screens. Jetpack setup is now smoother, and campaigns cancel instantly with immediate feedback options. Creating product categories is faster with an auto-opening keyboard, and your phone stays active during card reader updates for seamless transactions.

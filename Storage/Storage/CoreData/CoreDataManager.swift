@@ -41,7 +41,7 @@ public final class CoreDataManager: StorageManagerType {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
             let error = CoreDataManagerError.modelInventoryLoadingFailed(name, error)
-            crashLogger.logFatalErrorAndExit(error, userInfo: nil)
+            crashLogger.logFatalErrorAndExit(error, userInfo: ["storageUsage": Self.storageSizeLogProperties() as Any])
         }
     }
 
@@ -111,15 +111,17 @@ public final class CoreDataManager: StorageManagerType {
                                                      "persistentStoreRemovalError": persistentStoreRemovalError,
                                                      "retryError": underlyingError,
                                                      "appState": UIApplication.shared.applicationState.rawValue,
-                                                     "migrationMessages": migrationDebugMessages]
+                                                     "migrationMessages": migrationDebugMessages,
+                                                     "storageUsage": Self.storageSizeLogProperties()]
                 self?.crashLogger.logFatalErrorAndExit(error,
-                                                  userInfo: logProperties.compactMapValues { $0 })
+                                                       userInfo: logProperties.compactMapValues { $0 })
             }
 
             let logProperties: [String: Any?] = ["persistentStoreLoadingError": persistentStoreLoadingError,
                                                  "persistentStoreRemovalError": persistentStoreRemovalError,
                                                  "appState": UIApplication.shared.applicationState.rawValue,
-                                                 "migrationMessages": migrationDebugMessages]
+                                                 "migrationMessages": migrationDebugMessages,
+                                                 "storageUsage": Self.storageSizeLogProperties()]
             self.crashLogger.logMessage("[CoreDataManager] Recovered from persistent store loading error",
                                         properties: logProperties.compactMapValues { $0 },
                                         level: .info)
@@ -211,6 +213,66 @@ public final class CoreDataManager: StorageManagerType {
             debugMessages.append(migrationErrorMessage)
             DDLogError(migrationErrorMessage)
             return debugMessages
+        }
+    }
+
+    /// Note that we have to enumerate all the files in our sandbox to get these properties, so this takes some time.
+    /// It is intended _only_ for use when logging a crash, or other high-value log which won't get in the user's way.
+    private static func storageSizeLogProperties() -> [String: String]? {
+        let directoryUrls: [String: URL] = [
+            "Bundle": Bundle.main.bundleURL,
+            "Documents": FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+            "Library": FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first,
+            "Temp": FileManager.default.temporaryDirectory,
+        ].compactMapValues { $0 }
+
+        let sizes = directoryAndTotalSizes(for: directoryUrls)
+
+        return formatStorageSizeLogs(sizes)
+    }
+
+    private static func directoryAndTotalSizes(for directoryUrls: [String: URL]) -> [String: Int64] {
+        let directorySizes = directoryUrls.mapValues { url in
+            getAllocatedStorageSize(for: url)
+        }
+
+        let totalSize = directorySizes.values.reduce(0) { partialResult, size in
+            return partialResult + size
+        }
+
+        return directorySizes.merging(["Total": totalSize]) { first, _ in
+            first
+        }
+    }
+
+    /// Getting the size on disk isn't straightforward – this does not take into account all extended attributes, for example.
+    /// Generally the value returned here is an underestimate, but within 10% of the value iOS settings reports.
+    /// Using `fileAllocatedSize` as a fallback helps avoid counting some files as 0.
+    private static func getAllocatedStorageSize(for url: URL) -> Int64 {
+        let fileSizeKeys: [URLResourceKey] = [.totalFileAllocatedSizeKey, .fileAllocatedSizeKey]
+        guard let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: fileSizeKeys) else {
+            return 0
+        }
+
+        var totalSize: Int64 = 0
+
+        let fileSizeKeysSet = Set(fileSizeKeys)
+        for case let fileUrl as URL in enumerator {
+            if let fileSizeResource = try? fileUrl.resourceValues(forKeys: fileSizeKeysSet),
+               let fileSize = fileSizeResource.totalFileAllocatedSize ?? fileSizeResource.fileAllocatedSize {
+                totalSize += Int64(fileSize)
+            }
+        }
+
+        return totalSize
+    }
+
+    private static func formatStorageSizeLogs(_ sizes: [String: Int64]) -> [String: String] {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useMB]
+
+        return sizes.mapValues { byteCount in
+            formatter.string(fromByteCount: byteCount)
         }
     }
 }

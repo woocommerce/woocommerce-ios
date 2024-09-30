@@ -24,15 +24,24 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
     private let featureFlagService: FeatureFlagService
 
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
+    private(set) var favoriteProductIDs: [Int64] = []
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
+
+        Task { @MainActor [weak self] in
+            await self?.loadFavoriteProductIDs()
+        }
     }
 
     var selectedProductsCount: Int {
@@ -206,6 +215,13 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
                 completion(true)
             }
         })
+    }
+
+    /// Loads favorite product IDs
+    ///
+    @MainActor
+    func loadFavoriteProductIDs() async {
+        favoriteProductIDs = await favoriteProductsUseCase.favoriteProductIDs()
     }
 
     private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {

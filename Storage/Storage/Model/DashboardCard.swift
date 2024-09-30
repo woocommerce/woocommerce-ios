@@ -32,6 +32,9 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
         case lastOrders
         case coupons
         case googleAds
+        case inAppFeedback
+        case newCardsNotice
+        case shareStore
     }
 
     /// Card's availability state that determines whether it can be displayed and used.
@@ -40,5 +43,12 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
         case show           // Shown in Dashboard and Customize
         case unavailable    // Shown in Dashboard and Customize (as "Unavailable")
         case hide           // Not shown in Dashboard and Customize
+        case dashboardOnly  // Only shown on Dashboard
     }
+}
+
+public extension DashboardCard {
+    static var inAppFeedBackCard = DashboardCard(type: .inAppFeedback, availability: .dashboardOnly, enabled: true)
+    static var newCardsNoticeCard = DashboardCard(type: .newCardsNotice, availability: .dashboardOnly, enabled: true)
+    static var shareStoreCard = DashboardCard(type: .shareStore, availability: .dashboardOnly, enabled: true)
 }

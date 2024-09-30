@@ -13,6 +13,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: filterProductCategory,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStockStatus, .inStock)
@@ -26,6 +27,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: filterProductCategory,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStatus, .draft)
@@ -39,6 +41,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: filterProductCategory,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual((viewModel.selectedValue as? PromotableProductType)?.productType, .grouped)
@@ -53,6 +56,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: filterProductCategory,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
         let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductCategory, filterProductCategory)
@@ -65,6 +69,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productStatus: nil,
                                                          promotableProductType: nil,
                                                          productCategory: nil,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let mockStorage = MockStorageManager()
 
@@ -102,6 +107,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productStatus: nil,
                                                          promotableProductType: nil,
                                                          productCategory: nil,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,

@@ -34,12 +34,17 @@ public protocol StorageManagerType {
     @available(*, deprecated, message: "Use `performAndSave` to handle write operations instead.")
     func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void)
 
-    /// Helper method to perform a write operation and save the changes in a background context.
-    /// - Parameters:
-    ///   - closure: the write operation to be handled, given the derived StorageType.
-    ///   - completion: Callback to be executed on completion
+    /// Execute the given block with a background context and save the changes.
     ///
-    func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?)
+    /// This function _does not block_ its running thread. The block is executed in background and its return value
+    /// is passed onto the `completion` block which is executed on the given `queue`.
+    ///
+    /// - Parameters:
+    ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
+    ///   - completion: A closure which is called with the return value of the `block`, after the changed made
+    ///         by the `block` is saved.
+    ///   - queue: A queue on which to execute the completion block.
+    func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

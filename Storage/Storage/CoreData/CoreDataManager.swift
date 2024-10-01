@@ -15,6 +15,9 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
+    /// A serial queue used to ensure there is only one writing operation at a time.
+    private let writerQueue: OperationQueue
+
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -30,6 +33,9 @@ public final class CoreDataManager: StorageManagerType {
          modelsInventory: ManagedObjectModelsInventory?) {
         self.name = name
         self.crashLogger = crashLogger
+        self.writerQueue = OperationQueue()
+        self.writerQueue.name = "com.automattic.woocommerce.CoreDataManager.writer"
+        self.writerQueue.maxConcurrentOperationCount = 1
 
         do {
             if let modelsInventory = modelsInventory {
@@ -143,15 +149,27 @@ public final class CoreDataManager: StorageManagerType {
         }
     }
 
-    /// Handles a write operation using the background context and saves changes when done.
+    /// Execute the given block with a background context and save the changes.
     ///
-    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?) {
+    /// This function _does not block_ its running thread. The block is executed in background and its return value
+    /// is passed onto the `completion` block which is executed on the given `queue`.
+    ///
+    /// - Parameters:
+    ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
+    ///   - completion: A closure which is called with the return value of the `block`, after the changed made
+    ///         by the `block` is saved.
+    ///   - queue: A queue on which to execute the completion block.
+    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
-        derivedStorage.perform {
-            closure(derivedStorage)
-            derivedStorage.saveIfNeeded()
-            completion?()
-        }
+        self.writerQueue.addOperation(AsyncBlockOperation { done in
+            derivedStorage.perform {
+                closure(derivedStorage)
+
+                derivedStorage.saveIfNeeded()
+                queue.async { completion?() }
+                done()
+            }
+        })
     }
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
@@ -324,5 +342,68 @@ extension CoreDataManagerError: CustomStringConvertible {
         case .recoveryFailed:
             return "☠️ [CoreDataManager] Recovery Failed!"
         }
+    }
+}
+
+/// Helper types to support writing operations to be handled one by one.
+/// This implementation follows WP/JP's work at
+/// WordPress/Classes/Utility/ContextManager.swift#L131
+///
+extension CoreDataManager {
+    /// Helper type to support handling async operations by keeping track of their states
+    class AsyncOperation: Operation {
+        enum State: String {
+            case isReady, isExecuting, isFinished
+        }
+
+        override var isAsynchronous: Bool {
+            return true
+        }
+
+        var state = State.isReady {
+            willSet {
+                willChangeValue(forKey: state.rawValue)
+                willChangeValue(forKey: newValue.rawValue)
+            }
+            didSet {
+                didChangeValue(forKey: oldValue.rawValue)
+                didChangeValue(forKey: state.rawValue)
+            }
+        }
+
+        override var isExecuting: Bool {
+            return state == .isExecuting
+        }
+
+        override var isFinished: Bool {
+            return state == .isFinished
+        }
+
+        override func start() {
+            if isCancelled {
+                state = .isFinished
+                return
+            }
+
+            state = .isExecuting
+            main()
+        }
+    }
+
+    /// Helper type to handle async operations given a closure of code to be executed.
+    final class AsyncBlockOperation: AsyncOperation {
+
+        private let block: (@escaping () -> Void) -> Void
+
+        init(block: @escaping (@escaping () -> Void) -> Void) {
+            self.block = block
+        }
+
+        override func main() {
+            self.block { [weak self] in
+                self?.state = .isFinished
+            }
+        }
+
     }
 }

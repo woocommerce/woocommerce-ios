@@ -169,7 +169,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
 
     // MARK: - Custom fields
 
-    func test_givenExistingProductAndCustomFields_whenCreatingActions_thenCustomFieldsRowIsVisible() {
+    func test_given_existing_product_and_custom_fields_when_creating_actions_then_custom_fields_row_is_visible() {
         // Arrange
         let model = EditableProductModel(product: Fixtures.productWithCustomFields)
 
@@ -181,8 +181,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
     }
 
-
-    func test_givenExistingProductAndEmptyCustomFields_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
+    func test_given_existing_product_and_empty_custom_fields_when_creating_actions_then_custom_fields_row_is_invisible() {
         // Arrange
         let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
 

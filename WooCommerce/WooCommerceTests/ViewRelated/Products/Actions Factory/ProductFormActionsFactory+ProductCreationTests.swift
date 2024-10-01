@@ -56,7 +56,7 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
         }
     }
 
-    func test_givenNewProductCreation_whenCreatingActions_thenCustomFieldsRowIsInvisible() {
+    func test_given_new_product_creation_when_creating_actions_then_custom_fields_row_is_invisible() {
         // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)

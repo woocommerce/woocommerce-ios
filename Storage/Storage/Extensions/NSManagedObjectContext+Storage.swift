@@ -187,10 +187,8 @@ extension NSManagedObjectContext: StorageType {
         if enforceWriteInBackground {
             assert(Thread.isMainThread == false,
                    "Write operations for \(entityName) should only be done on a background context")
-        } else {
-            if Thread.isMainThread {
-                DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️")
-            }
+        } else if Thread.isMainThread {
+            DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️")
         }
         #endif
     }

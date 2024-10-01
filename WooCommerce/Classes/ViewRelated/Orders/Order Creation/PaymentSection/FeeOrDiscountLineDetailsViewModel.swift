@@ -114,7 +114,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Captures state when a discount value should be disallowed, for example,
     /// when the discount entered is higher than the total price of a product.
     ///
-    @Published var discountValueIsDisallowed: Bool = false
+    @Published private(set) var discountValueIsDisallowed: Bool = false
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///

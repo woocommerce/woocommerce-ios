@@ -9,12 +9,6 @@ public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -81,7 +75,9 @@ private extension AccountStore {
                 self?.upsertStoredAccount(readOnlyAccount: account)
             }
 
-            onCompletion(result)
+            DispatchQueue.main.async {
+                onCompletion(result)
+            }
         }
     }
 
@@ -94,8 +90,10 @@ private extension AccountStore {
             if case let .success(accountSettings) = result {
                 self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
             }
-
-            onCompletion(result)
+            
+            DispatchQueue.main.async {
+                onCompletion(result)
+            }
         }
     }
 
@@ -245,47 +243,36 @@ extension AccountStore {
     /// Updates (OR Inserts) the specified ReadOnly Account Entity into the Storage Layer.
     ///
     func upsertStoredAccount(readOnlyAccount: Networking.Account) {
-        assert(Thread.isMainThread)
+        storageManager.performAndSave({ storage in
+            let storageAccount = storage.loadAccount(userID: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
-        let storage = storageManager.viewStorage
-        let storageAccount = storage.loadAccount(userID: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
-
-        storageAccount.update(with: readOnlyAccount)
-        storage.saveIfNeeded()
+            storageAccount.update(with: readOnlyAccount)
+        }, completion: {}, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly AccountSettings Entity into the Storage Layer.
     ///
     func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageAccount = storage.loadAccountSettings(userID: readOnlyAccountSettings.userID) ??
+        storageManager.performAndSave({ storage in
+            let storageAccount = storage.loadAccountSettings(userID: readOnlyAccountSettings.userID) ??
             storage.insertNewObject(ofType: Storage.AccountSettings.self)
-
-        storageAccount.update(with: readOnlyAccountSettings)
-        storage.saveIfNeeded()
+            storageAccount.update(with: readOnlyAccountSettings)
+        }, completion: {}, on: .main)
     }
 
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.
     ///
     func updateStoredSitePlanInBackground(plan: SitePlan, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             let storageSite = derivedStorage.loadSite(siteID: plan.siteID)
             storageSite?.plan = plan.shortName
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
     func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], selectedSiteID: Int64? = nil, onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ derivedStorage in
             // Deletes sites in storage that are not in `readOnlySites` and not the selected site.
             let storageSites = derivedStorage.loadAllSites()
             let readOnlySiteIDs = readOnlySites.map(\.siteID)
@@ -298,11 +285,7 @@ extension AccountStore {
                 let storageSite = derivedStorage.loadSite(siteID: readOnlySite.siteID) ?? derivedStorage.insertNewObject(ofType: Storage.Site.self)
                 storageSite.update(with: readOnlySite)
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 }
 

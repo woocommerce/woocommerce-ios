@@ -14,6 +14,9 @@ struct WooShippingAddPackageView: View {
             }
         }
     }
+    enum Constants {
+        static let defaultVerticalSpacing: CGFloat = 16.0
+    }
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -89,11 +92,10 @@ struct WooShippingAddPackageView: View {
 
     @State var packageType: PackageType = .box
     @State var showSaveTemplate: Bool = false
-    @State var length: String = ""
     @State var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
 
     private var customPackageView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
             HStack {
                 Text(Localization.packageType)
                     .font(.subheadline)
@@ -121,7 +123,7 @@ struct WooShippingAddPackageView: View {
                 .padding()
             }
             .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
-            HStack(spacing: 8) {
+            AdaptiveStack(spacing: 8) {
                 ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
                     WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
                         return self.fieldValues[dimensionType] ?? ""

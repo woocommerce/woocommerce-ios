@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductType Entity.
 ///
-public enum ProductType: Codable, Hashable, GeneratedFakeable {
+public enum ProductType: Codable, Hashable, GeneratedFakeable, CaseIterable {
     case simple
     case grouped
     case affiliate
@@ -14,6 +14,21 @@ public enum ProductType: Codable, Hashable, GeneratedFakeable {
     case composite
     case booking
     case custom(String) // in case there are extensions modifying product types
+
+    public static var allCases: [ProductType] {
+        return [
+            .simple,
+            .grouped,
+            .affiliate,
+            .variable,
+            .subscription,
+            .variableSubscription,
+            .bundle,
+            .composite,
+            .booking,
+            .custom("exampleCustomType") // hardcoded to be able to include .custom in CaseIterable.
+        ]
+    }
 }
 
 

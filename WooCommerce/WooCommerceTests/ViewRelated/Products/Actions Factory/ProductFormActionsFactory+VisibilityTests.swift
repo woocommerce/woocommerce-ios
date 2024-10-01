@@ -170,29 +170,32 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
     // MARK: - Custom fields
 
     func test_given_existing_product_and_custom_fields_when_creating_actions_then_custom_fields_row_is_visible() {
-        // Arrange
-        let model = EditableProductModel(product: Fixtures.productWithCustomFields)
+        for productType in ProductType.allCases {
+            // Arrange
+            let model = EditableProductModel(product: Fixtures.productWithCustomFields.copy(productTypeKey: productType.rawValue))
 
-        // Act
-        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+            // Act
+            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
-        // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
+            // Assert
+            XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
+        }
     }
 
     func test_given_existing_product_and_empty_custom_fields_when_creating_actions_then_custom_fields_row_is_invisible() {
-        // Arrange
-        let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
+        for productType in ProductType.allCases {
+            // Arrange
+            let model = EditableProductModel(product: Fixtures.productWithNoCustomFields.copy(productTypeKey: productType.rawValue))
 
-        // Act
-        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+            // Act
+            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
 
-        // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.editCustomFields))
-
+            // Assert
+            XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
+            XCTAssertTrue(factory.bottomSheetActions().contains(.editCustomFields))
+        }
     }
 }
 

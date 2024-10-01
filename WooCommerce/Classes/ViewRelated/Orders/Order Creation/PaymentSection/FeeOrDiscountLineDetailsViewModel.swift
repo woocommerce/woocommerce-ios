@@ -285,6 +285,11 @@ extension FeeOrDiscountLineDetailsViewModel {
 }
 
 private extension FeeOrDiscountLineDetailsViewModel {
+    /*
+     The current implementation that we use to calculate a price after discount does not allow to update the discountValueIsDisallowed directly,
+     if we attempt to do so, it would happen while the state/view is being modified, leading to undefined behaviour, and/or crashing.
+     In order to avoid this we defer the state update until the current rendering cycle is complete.
+     */
     func updateDiscountDisallowedState(_ value: Bool) {
         DispatchQueue.main.async {
             self.discountValueIsDisallowed = value

@@ -206,23 +206,49 @@ struct WooShippingAddPackageDimensionView: View {
 
 extension WooShippingAddPackageView {
     enum Localization {
-        static let addPackage = NSLocalizedString("Add Package", comment: "Description")
-        static let packageType = NSLocalizedString("Package type", comment: "Description")
-        static let cancel = NSLocalizedString("Cancel", comment: "Description")
-        static let custom = NSLocalizedString("Custom", comment: "Description")
-        static let carrier = NSLocalizedString("Carrier", comment: "Description")
-        static let saved = NSLocalizedString("Saved", comment: "Description")
-        static let box = NSLocalizedString("Box", comment: "Description")
-        static let envelope = NSLocalizedString("Envelope", comment: "Description")
-        static let saveNewPackageTemplate = NSLocalizedString("Save this a new package template", comment: "Description")
-        static let savePackageTemplate = NSLocalizedString("Save package template", comment: "Description")
+        static let addPackage = NSLocalizedString("wooShipping.createLabel.addPackage.title",
+                                                  value: "Add Package",
+                                                  comment: "Title for the Add Package screen")
+        static let packageType = NSLocalizedString("wooShipping.createLabel.addPackage.packageType",
+                                                   value: "Package type",
+                                                   comment: "Info label for selecting package type")
+        static let cancel = NSLocalizedString("wooShipping.createLabel.addPackage.cancel",
+                                              value: "Cancel",
+                                              comment: "Cancel button in navigation bar to dismiss the screen")
+        static let custom = NSLocalizedString("wooShipping.createLabel.addPackage.custom",
+                                              value: "Custom",
+                                              comment: "Info label for custom package option")
+        static let carrier = NSLocalizedString("wooShipping.createLabel.addPackage.carrier",
+                                               value: "Carrier",
+                                               comment: "Info label for carrier package option")
+        static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
+                                             value: "Saved",
+                                             comment: "Info label for saved package option")
+        static let box = NSLocalizedString("wooShipping.createLabel.addPackage.box",
+                                           value: "Box",
+                                           comment: "Info label for selected box as a package type")
+        static let envelope = NSLocalizedString("wooShipping.createLabel.addPackage.envelope",
+                                                value: "Envelope",
+                                                comment: "Info label for selected envelope as a package type")
+        static let saveNewPackageTemplate = NSLocalizedString("wooShipping.createLabel.addPackage.saveNewPackageTemplate",
+                                                              value: "Save this as a new package template",
+                                                              comment: "Info label for saving package as a new template toggle")
+        static let savePackageTemplate = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplate",
+                                                           value: "Save package template",
+                                                           comment: "Button for saving package as a new template")
     }
 }
 
 extension WooShippingAddPackageDimensionView {
     enum Localization {
-        static let length = NSLocalizedString("Length", comment: "Description")
-        static let width = NSLocalizedString("Width", comment: "Description")
-        static let height = NSLocalizedString("Height", comment: "Description")
+        static let length = NSLocalizedString("wooShipping.createLabel.addPackage.length",
+                                              value: "Length",
+                                              comment: "Info label for length input field")
+        static let width = NSLocalizedString("wooShipping.createLabel.addPackage.width",
+                                             value: "Width",
+                                             comment: "Info label for width input field")
+        static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
+                                              value: "Height",
+                                              comment: "Info label for height input field")
     }
 }

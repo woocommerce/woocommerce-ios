@@ -14,10 +14,28 @@ struct WooShippingAddPackageView: View {
             }
         }
     }
+    enum PackageType: CaseIterable {
+        case box, envelope
+        var name: String {
+            switch self {
+            case .box:
+                return Localization.box
+            case .envelope:
+                return Localization.envelope
+            }
+        }
+    }
 
     @Environment(\.presentationMode) var presentationMode
 
     @State var selectedPackageType = PackageProviderType.custom
+    @State var packageType: PackageType = .box
+    @State var showSaveTemplate: Bool = false
+    @State var length: String = ""
+    @State var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
+    @State var packageName: String = ""
+    @FocusState var packageNameFieldFocused: Bool
+
     var addPackageButtonDisabled: Bool {
         for (_, value) in fieldValues {
             if value.isEmpty {
@@ -41,7 +59,7 @@ struct WooShippingAddPackageView: View {
                 selectedPackageTypeView
                 Spacer()
                 Button(Localization.addPackage) {
-                    // add package
+                    addPackageButtonTapped()
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(addPackageButtonDisabled)
@@ -62,6 +80,8 @@ struct WooShippingAddPackageView: View {
         .navigationViewStyle(.stack)
     }
 
+    // MARK: UI components
+
     @ViewBuilder
     private var selectedPackageTypeView: some View {
         ScrollView {
@@ -76,23 +96,6 @@ struct WooShippingAddPackageView: View {
         }
     }
 
-    enum PackageType: CaseIterable {
-        case box, envelope
-        var name: String {
-            switch self {
-            case .box:
-                return Localization.box
-            case .envelope:
-                return Localization.envelope
-            }
-        }
-    }
-
-    @State var packageType: PackageType = .box
-    @State var showSaveTemplate: Bool = false
-    @State var length: String = ""
-    @State var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
-
     private var customPackageView: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -100,7 +103,6 @@ struct WooShippingAddPackageView: View {
                     .font(.subheadline)
                 Spacer()
             }
-            // type selection
             Menu {
                 // show selection
                 ForEach(PackageType.allCases, id: \.self) { option in
@@ -113,9 +115,7 @@ struct WooShippingAddPackageView: View {
                 }
             } label: {
                 HStack {
-                    // text
                     Text(packageType.name)
-                    // arrows
                     Spacer()
                     Image(systemName: "chevron.up.chevron.down")
                 }
@@ -136,8 +136,16 @@ struct WooShippingAddPackageView: View {
                     .font(.subheadline)
             }
             if showSaveTemplate {
+                TextField("Enter a unique package name", text: $packageName)
+                    .keyboardType(.decimalPad)
+                    .font(.body)
+                    .focused($packageNameFieldFocused)
+                .padding()
+                .roundedBorder(cornerRadius: 8,
+                               lineColor: packageNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                               lineWidth: packageNameFieldFocused ? 2 : 1)
                 Button(Localization.savePackageTemplate) {
-                    // save template
+                    savePackageAsTemplateButtonTapped()
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }
@@ -147,12 +155,22 @@ struct WooShippingAddPackageView: View {
 
     private var carrierPackageView: some View {
         // TODO: just a placeholder
-        Text("carrier")
+        Text(Localization.carrier)
     }
 
     private var savedPackageView: some View {
         // TODO: just a placeholder
-        Text("saved")
+        Text(Localization.saved)
+    }
+
+    // MARK: - actions
+
+    private func addPackageButtonTapped() {
+        // TODO: implement adding a package
+    }
+
+    private func savePackageAsTemplateButtonTapped() {
+        // TODO: implement saving package as a template
     }
 }
 

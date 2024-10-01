@@ -74,10 +74,11 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     }
 
     private var isCustomFieldsEnabled: Bool {
-        /// There's a technical API limitation where product ID is required to save custom fields,
-        /// thus it needs to be disabled during new product creation
+        /// Custom fields should only be available on .edit form type. For other cases:
+        /// - .add: The API requires product ID is required to save custom fields, so it can't be added during product creation.
+        /// - .readonly: Hide Custom Fields setting as it won't be useful in this context.
         featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
-        && formType != .add
+        && formType == .edit
     }
 
     // TODO: Remove default parameter

@@ -10,6 +10,8 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     private let usLocale = Locale(identifier: "en_US")
     private let usStoreSettings = CurrencySettings() // Default is US settings
 
+    private var cancellables = Set<AnyCancellable>()
+
     func test_view_model_formats_amount_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
@@ -425,5 +427,59 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(discountedPrice, "$50.00")
+    }
+
+    func test_calculatePriceAfterDiscount_when_discountedPrice_is_positive_then_applying_the_discount_is_not_disallowed() {
+        // Given
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                          baseAmountForPercentage: 0,
+                                                          initialTotal: .zero,
+                                                          lineType: .fee,
+                                                          locale: usLocale,
+                                                          storeCurrencySettings: usStoreSettings,
+                                                          didSelectSave: { _ in })
+        viewModel.updateAmount("1,000.00")
+
+        // When
+        let discountedPrice = viewModel.calculatePriceAfterDiscount("1050.00")
+
+        waitForExpectation { exp in
+            viewModel.$discountValueIsDisallowed
+                .dropFirst()
+                .sink { isDisallowed in
+                    // Then
+                    XCTAssertEqual(discountedPrice, "$50.00")
+                    XCTAssertEqual(isDisallowed, false)
+                    exp.fulfill()
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    func test_calculatePriceAfterDiscount_when_discountedPrice_is_negative_then_applying_the_discount_is_disallowed() {
+        // Given
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                          baseAmountForPercentage: 0,
+                                                          initialTotal: .zero,
+                                                          lineType: .fee,
+                                                          locale: usLocale,
+                                                          storeCurrencySettings: usStoreSettings,
+                                                          didSelectSave: { _ in })
+        viewModel.updateAmount("1,050.00")
+
+        // When
+        let discountedPrice = viewModel.calculatePriceAfterDiscount("1000.00")
+
+        waitForExpectation { exp in
+            viewModel.$discountValueIsDisallowed
+                .dropFirst()
+                .sink { isDisallowed in
+                    // Then
+                    XCTAssertEqual(discountedPrice, "-$50.00")
+                    XCTAssertEqual(isDisallowed, true)
+                    exp.fulfill()
+                }
+                .store(in: &cancellables)
+        }
     }
 }

@@ -111,6 +111,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     @Published var percentage: String = ""
 
+    /// Captures state when a discount value should be disallowed, for example,
+    /// when the discount entered is higher than the total price of a product.
+    ///
+    @Published var discountValueIsDisallowed: Bool = false
+
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
     var hasInputAmount: Bool {
@@ -146,6 +151,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
         let discount = NSDecimalNumber(decimal: finalAmountDecimal)
         let priceAfterDiscount = price.subtracting(discount)
+        if priceAfterDiscount.compare(NSDecimalNumber.zero) == .orderedAscending {
+            updateDiscountDisallowedState(true)
+            return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+        }
+        updateDiscountDisallowedState(false)
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
 
@@ -271,5 +281,13 @@ extension FeeOrDiscountLineDetailsViewModel {
 
     func updateAmount(_ amountInput: String) {
         self.amount = priceFieldFormatter.formatUserInput(amountInput)
+    }
+}
+
+private extension FeeOrDiscountLineDetailsViewModel {
+    func updateDiscountDisallowedState(_ value: Bool) {
+        DispatchQueue.main.async {
+            self.discountValueIsDisallowed = value
+        }
     }
 }

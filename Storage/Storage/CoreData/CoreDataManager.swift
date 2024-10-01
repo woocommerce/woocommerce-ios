@@ -63,6 +63,7 @@ public final class CoreDataManager: StorageManagerType {
         /// This simplifies the process of merging updates from persistent container to view context.
         /// When disable auto merge, we need to handle merging manually using `NSManagedObjectContextDidSave` notifications.
         context.automaticallyMergesChangesFromParent = true
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
     }
 

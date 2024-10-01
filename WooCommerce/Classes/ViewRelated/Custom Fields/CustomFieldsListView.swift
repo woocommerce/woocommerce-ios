@@ -42,6 +42,7 @@ struct CustomFieldsListView: View {
                         presentationMode.wrappedValue.dismiss()
                     }, label: {
                         Image(systemName: "chevron.backward")
+                            .headlineLinkStyle()
                     })
                 }
 
@@ -64,9 +65,8 @@ struct CustomFieldsListView: View {
                     }
                 }
             }
+            .wooNavigationBarStyle()
         }
-        .wooNavigationBarStyle()
-        .navigationViewStyle(.stack)
     }
 }
 

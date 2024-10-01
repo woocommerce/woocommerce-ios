@@ -491,13 +491,13 @@ extension OrderDetailsViewModel {
                     viewModel: CustomFieldsListViewModel(customFields: customFields),
                     onBackButtonTapped: {
                     // Restore the hidden navigation bar
-                    viewController.navigationController?.setNavigationBarHidden(false, animated: true)
+                    viewController.navigationController?.setNavigationBarHidden(false, animated: false)
                 })
             )
 
             // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
-            viewController.navigationController?.setNavigationBarHidden(true, animated: true)
-            viewController.navigationController?.pushViewController(customFieldsView, animated: true)
+            viewController.navigationController?.setNavigationBarHidden(true, animated: false)
+            viewController.navigationController?.pushViewController(customFieldsView, animated: false)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))

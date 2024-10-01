@@ -1477,13 +1477,13 @@ private extension ProductFormViewController {
                 viewModel: CustomFieldsListViewModel(customFields: customFields),
                 onBackButtonTapped: { [weak self] in
                     // Restore the hidden navigation bar
-                    self?.navigationController?.setNavigationBarHidden(false, animated: true)
+                    self?.navigationController?.setNavigationBarHidden(false, animated: false)
             })
         )
 
         // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
-        navigationController?.setNavigationBarHidden(true, animated: true)
-        navigationController?.pushViewController(customFieldsView, animated: true)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.pushViewController(customFieldsView, animated: false)
 
     }
 }

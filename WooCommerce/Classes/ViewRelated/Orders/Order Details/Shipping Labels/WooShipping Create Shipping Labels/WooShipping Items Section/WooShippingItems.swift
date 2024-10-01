@@ -17,6 +17,7 @@ struct WooShippingItems: View {
     var body: some View {
         CollapsibleView(isCollapsed: $isCollapsed,
                         shouldShowDividers: false,
+                        backgroundColor: .clear,
                         label: {
             AdaptiveStack {
                 Text(itemsCountLabel)

@@ -14,7 +14,7 @@ steps:
       .buildkite/commands/configure-environment.sh
 
       echo '--- :git: Checkout Release Branch'
-      .buildkite/commands/checkout-release-branch.sh
+      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
 
       echo '--- :closed_lock_with_key: Access Secrets'
       bundle exec fastlane run configure_apply

@@ -483,13 +483,21 @@ extension OrderDetailsViewModel {
         case .customFields:
             ServiceLocator.analytics.track(.orderViewCustomFieldsTapped)
             let customFields = order.customFields.map {
-                CustomFieldsViewModel(metadata: $0)
+                CustomFieldViewModel(metadata: $0)
             }
             let customFieldsView = UIHostingController(
-                rootView: CustomFieldsDetailsView(
+                rootView: CustomFieldsListView(
                     isEditable: featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
-                    customFields: customFields))
-            viewController.present(customFieldsView, animated: true)
+                    viewModel: CustomFieldsListViewModel(customFields: customFields),
+                    onBackButtonTapped: {
+                    // Restore the hidden navigation bar
+                    viewController.navigationController?.setNavigationBarHidden(false, animated: true)
+                })
+            )
+
+            // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
+            viewController.navigationController?.setNavigationBarHidden(true, animated: true)
+            viewController.navigationController?.pushViewController(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))

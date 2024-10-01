@@ -104,8 +104,8 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
                                                                               locale: locale,
                                                                               storeCurrencySettings: storeCurrencySettings,
                                                                               allowNegativeNumber: true)
-        if isExistingShippingLine {
-            formattableAmountViewModel.presetAmount(shippingTotal)
+        if isExistingShippingLine, let initialAmount = self.initialAmount {
+            formattableAmountViewModel.presetAmount(initialAmount)
         }
 
         self.didSelectSave = didSelectSave

@@ -746,6 +746,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
         try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
 
+        // Attributes
+        try container.encode(attributes, forKey: .attributes)
+
         // Password
         try container.encode(password, forKey: .password)
 

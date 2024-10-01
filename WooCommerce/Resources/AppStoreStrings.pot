@@ -61,11 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v20.4-whats-new"
+msgctxt "v20.6-whats-new"
 msgid ""
-"In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.\n"
-"\n"
-"\n"
+"In this update, we’ve improved the dashboard with a cleaner, 2-column layout on larger screens. Jetpack setup is now smoother, and campaigns cancel instantly with immediate feedback options. Creating product categories is faster with an auto-opening keyboard, and your phone stays active during card reader updates for seamless transactions.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

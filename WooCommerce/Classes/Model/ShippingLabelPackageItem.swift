@@ -27,6 +27,9 @@ struct ShippingLabelPackageItem: Equatable {
 
     /// Attributes of the variation
     let attributes: [VariationAttributeViewModel]
+
+    /// Image URL of the product or variation
+    let imageURL: URL?
 }
 
 // MARK: Custom initializers
@@ -40,6 +43,7 @@ extension ShippingLabelPackageItem {
         self.dimensions = copy.dimensions
         self.attributes = copy.attributes
         self.value = copy.value
+        self.imageURL = copy.imageURL
     }
 
     init?(orderItem: OrderItem, products: [Product], productVariations: [ProductVariation]) {
@@ -56,10 +60,12 @@ extension ShippingLabelPackageItem {
             self.productOrVariationID = productVariation.productVariationID
             self.weight = Double(productVariation.weight ?? "0") ?? 0
             self.dimensions = productVariation.dimensions
+            self.imageURL = productVariation.imageURL
         } else if let product = product, !product.virtual {
             self.productOrVariationID = product.productID
             self.weight = Double(product.weight ?? "0") ?? 0
             self.dimensions = product.dimensions
+            self.imageURL = product.imageURL
         } else {
             return nil
         }

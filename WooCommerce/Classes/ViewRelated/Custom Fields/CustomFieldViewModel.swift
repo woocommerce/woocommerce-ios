@@ -1,8 +1,8 @@
 import Foundation
 import Yosemite
 
-/// ViewModel for `CustomFieldsDetailsView`
-struct CustomFieldsViewModel: Identifiable {
+/// ViewModel for an individual custom field
+struct CustomFieldViewModel: Identifiable {
     /// Unique identifier, required by `SwiftUI`
     ///
     let id: Int64
@@ -37,7 +37,7 @@ struct CustomFieldsViewModel: Identifiable {
         self.init(
             id: metadata.metadataID,
             title: metadata.key,
-            content: metadata.value.removedHTMLTags,
+            content: metadata.value,
             contentURL: contentURL
         )
     }

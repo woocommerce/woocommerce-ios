@@ -90,6 +90,7 @@ public class ProductStore: Store {
                                   let productType,
                                   let productCategory,
                                   let sortOrder,
+                                  let productIDs,
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
@@ -101,6 +102,7 @@ public class ProductStore: Store {
                                 productType: productType,
                                 productCategory: productCategory,
                                 sortOrder: sortOrder,
+                                productIDs: productIDs,
                                 excludedProductIDs: excludedProductIDs,
                                 shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
                                 onCompletion: onCompletion)
@@ -287,6 +289,7 @@ private extension ProductStore {
                              productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
+                             productIDs: [Int64],
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -300,6 +303,7 @@ private extension ProductStore {
                                productCategory: productCategory,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder,
+                               productIDs: productIDs,
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):
@@ -418,6 +422,11 @@ private extension ProductStore {
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
     func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+
+        guard !sku.isEmpty else {
+            return onCompletion(.failure(ProductLoadError.emptySKU))
+        }
+
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -1354,6 +1363,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
+    case emptySKU
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

@@ -5,11 +5,12 @@ import WordPressEditor
 /// Aztec's Native Editor!
 final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
+    var onContentChanged: ((String) -> Void)?
 
     private var content: String
     private var productName: String?
 
-    private let product: ProductFormDataModel
+    private let product: ProductFormDataModel?
 
     private let viewProperties: EditorViewProperties
 
@@ -110,7 +111,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
 
     required init(content: String?,
-                  product: ProductFormDataModel,
+                  product: ProductFormDataModel? = nil,
                   viewProperties: EditorViewProperties,
                   textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler(),
                   isAIGenerationEnabled: Bool) {
@@ -300,6 +301,7 @@ extension AztecEditorViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         refreshPlaceholderVisibility()
         formatBar.update(editorView: editorView)
+        onContentChanged?(getHTML())
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
@@ -313,6 +315,11 @@ private extension AztecEditorViewController {
         guard let navigationController else {
             return
         }
+
+        guard let product else {
+            return
+        }
+
         let coordinator = ProductDescriptionAICoordinator(product: product,
                                                           navigationController: navigationController,
                                                           source: .aztecEditor,

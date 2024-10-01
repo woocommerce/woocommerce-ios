@@ -1,2 +1,3 @@
-In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
-Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
+
+

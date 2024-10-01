@@ -114,8 +114,8 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.firstObject(ofType: Storage.Account.self, matching: nil))
 
         // When
-        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
-        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountUpdate())
+        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountPristine(), onCompletion: {})
+        accountStore.upsertStoredAccount(readOnlyAccount: sampleAccountUpdate(), onCompletion: {})
 
         // Then
         XCTAssert(viewStorage.countObjects(ofType: Storage.Account.self, matching: nil) == 1)
@@ -134,7 +134,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
 
         // When
-        accountStore.upsertStoredAccount(readOnlyAccount: remoteAccount)
+        accountStore.upsertStoredAccount(readOnlyAccount: remoteAccount, onCompletion: {})
 
         // Then
         let storageAccount = viewStorage.loadAccount(userID: remoteAccount.userID)!
@@ -622,7 +622,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
-        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine(), onCompletion: {})
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
 
         // When
@@ -644,7 +644,7 @@ final class AccountStoreTests: XCTestCase {
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 0)
-        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine())
+        store.upsertStoredAccount(readOnlyAccount: sampleAccountPristine(), onCompletion: {})
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Account.self), 1)
 
         // When

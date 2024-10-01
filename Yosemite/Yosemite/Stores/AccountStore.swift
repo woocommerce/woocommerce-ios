@@ -72,10 +72,10 @@ private extension AccountStore {
     func synchronizeAccount(onCompletion: @escaping (Result<Account, Error>) -> Void) {
         remote.loadAccount { [weak self] result in
             if case let .success(account) = result {
-                self?.upsertStoredAccount(readOnlyAccount: account)
-            }
-
-            DispatchQueue.main.async {
+                self?.upsertStoredAccount(readOnlyAccount: account, onCompletion: {
+                    onCompletion(result)
+                })
+            } else {
                 onCompletion(result)
             }
         }
@@ -88,10 +88,10 @@ private extension AccountStore {
     func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (Result<AccountSettings, Error>) -> Void) {
         remote.loadAccountSettings(for: userID) { [weak self] result in
             if case let .success(accountSettings) = result {
-                self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
-            }
-            
-            DispatchQueue.main.async {
+                self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings, onCompletion: {
+                    onCompletion(result)
+                })
+            } else {
                 onCompletion(result)
             }
         }
@@ -242,22 +242,22 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Account Entity into the Storage Layer.
     ///
-    func upsertStoredAccount(readOnlyAccount: Networking.Account) {
+    func upsertStoredAccount(readOnlyAccount: Networking.Account, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             let storageAccount = storage.loadAccount(userID: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
             storageAccount.update(with: readOnlyAccount)
-        }, completion: {}, on: .main)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly AccountSettings Entity into the Storage Layer.
     ///
-    func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings) {
+    func upsertStoredAccountSettings(readOnlyAccountSettings: Networking.AccountSettings, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             let storageAccount = storage.loadAccountSettings(userID: readOnlyAccountSettings.userID) ??
             storage.insertNewObject(ofType: Storage.AccountSettings.self)
             storageAccount.update(with: readOnlyAccountSettings)
-        }, completion: {}, on: .main)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the specified ReadOnly Site Plan attribute in the Site entity, in the Storage Layer.

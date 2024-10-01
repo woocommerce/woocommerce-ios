@@ -37,7 +37,6 @@ struct WooShippingAddPackageView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                Spacer()
                 selectedPackageTypeView
                 Spacer()
                 Button(Localization.addPackage) {
@@ -48,7 +47,7 @@ struct WooShippingAddPackageView: View {
                 .padding()
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
                     }, label: {
@@ -142,7 +141,7 @@ struct WooShippingAddPackageView: View {
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
-        .padding()
+        .padding(.horizontal)
     }
 
     private var carrierPackageView: some View {

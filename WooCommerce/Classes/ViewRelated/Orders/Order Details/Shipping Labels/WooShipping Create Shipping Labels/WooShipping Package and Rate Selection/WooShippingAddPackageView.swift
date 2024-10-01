@@ -137,7 +137,6 @@ struct WooShippingAddPackageView: View {
             }
             if showSaveTemplate {
                 TextField("Enter a unique package name", text: $packageName)
-                    .keyboardType(.decimalPad)
                     .font(.body)
                     .focused($packageNameFieldFocused)
                 .padding()

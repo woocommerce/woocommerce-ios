@@ -109,13 +109,17 @@ struct WooShippingAddPackageView: View {
                         packageType = option
                     } label: {
                         Text(option.name)
-                            .font(.body)
+                            .bodyStyle()
+                        if packageType == option {
+                            Image(uiImage: .checkmarkStyledImage)
+                        }
                     }
                 }
             } label: {
                 HStack {
                     // text
                     Text(packageType.name)
+                        .bodyStyle()
                     // arrows
                     Spacer()
                     Image(systemName: "chevron.up.chevron.down")
@@ -186,7 +190,7 @@ struct WooShippingAddPackageDimensionView: View {
             HStack {
                 TextField("", text: $fieldValue)
                     .keyboardType(.decimalPad)
-                    .font(.body)
+                    .bodyStyle()
                     .focused($fieldFocused)
                 Text("cm")
                     .font(.subheadline)

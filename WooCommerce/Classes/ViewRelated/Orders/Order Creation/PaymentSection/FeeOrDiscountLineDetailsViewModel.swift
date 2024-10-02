@@ -142,7 +142,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
-    func calculatePriceAfterDiscount() -> String {
+    var recalculateFormattedPriceAfterDiscount: String {
         let price = baseAmount
         let discount = finalAmountDecimal
         let priceAfterDiscount = (price - discount)

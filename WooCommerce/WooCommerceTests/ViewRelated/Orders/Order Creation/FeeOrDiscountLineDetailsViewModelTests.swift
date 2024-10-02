@@ -428,7 +428,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Simulates the amount the merchant inputs in the discount input field
         viewModel.updateAmount(discountStringInInputField)
 
-        let discountedPrice = viewModel.calculatePriceAfterDiscount()
+        let discountedPrice = viewModel.recalculateFormattedPriceAfterDiscount
 
         // Then
         XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
@@ -452,7 +452,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Simulates the amount the merchant inputs in the discount input field
         viewModel.updateAmount(discountStringInInputField)
 
-        let discountedPrice = viewModel.calculatePriceAfterDiscount()
+        let discountedPrice = viewModel.recalculateFormattedPriceAfterDiscount
 
         XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
         XCTAssertEqual(viewModel.discountExceedsProductPrice, false)
@@ -476,7 +476,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Simulates the amount the merchant inputs in the discount input field
         viewModel.updateAmount(discountStringInInputField)
 
-        let discountedPrice = viewModel.calculatePriceAfterDiscount()
+        let discountedPrice = viewModel.recalculateFormattedPriceAfterDiscount
 
         XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
         XCTAssertEqual(viewModel.discountExceedsProductPrice, true)

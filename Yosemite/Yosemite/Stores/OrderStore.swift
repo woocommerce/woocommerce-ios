@@ -669,18 +669,11 @@ private extension OrderStore {
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
     func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
-            self.upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)

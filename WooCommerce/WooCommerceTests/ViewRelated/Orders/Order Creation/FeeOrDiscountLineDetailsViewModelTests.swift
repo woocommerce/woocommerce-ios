@@ -413,73 +413,72 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_calculatePriceAfterDiscount_when_discount_has_thousands_separators_calculates_price_correctly() {
         // Given
+        let baseAmount: Decimal = 1000
+        let discountStringInInputField = "950.00"
+        let expectedFormattedDiscountedPrice = "$50.00"
+
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmount: 0,
+                                                          baseAmount: baseAmount,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
                                                           storeCurrencySettings: usStoreSettings,
                                                           didSelectSave: { _ in })
-        viewModel.updateAmount("1,000.00")
-
         // When
+        // Simulates the amount the merchant inputs in the discount input field
+        viewModel.updateAmount(discountStringInInputField)
+
         let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
         // Then
-        XCTAssertEqual(discountedPrice, "$50.00")
+        XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
     }
 
-    func test_calculatePriceAfterDiscount_when_discountedPrice_is_positive_then_applying_the_discount_is_not_disallowed() {
+    func test_calculatePriceAfterDiscount_when_discount_is_smaller_than_price_then_discountExceedsProductPrice_returns_false() {
         // Given
+        let baseAmount: Decimal = 1000
+        let discountStringInInputField = "950.00"
+        let expectedFormattedDiscountedPrice = "$50.00"
+
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmount: 0,
+                                                          baseAmount: baseAmount,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
                                                           storeCurrencySettings: usStoreSettings,
                                                           didSelectSave: { _ in })
-        viewModel.updateAmount("1,000.00")
 
         // When
+        // Simulates the amount the merchant inputs in the discount input field
+        viewModel.updateAmount(discountStringInInputField)
+
         let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
-        waitForExpectation { exp in
-            viewModel.$discountExceedsProductPrice
-                .dropFirst()
-                .sink { isDisallowed in
-                    // Then
-                    XCTAssertEqual(discountedPrice, "$50.00")
-                    XCTAssertEqual(isDisallowed, false)
-                    exp.fulfill()
-                }
-                .store(in: &cancellables)
-        }
+        XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
+        XCTAssertEqual(viewModel.discountExceedsProductPrice, false)
     }
 
-    func test_calculatePriceAfterDiscount_when_discountedPrice_is_negative_then_applying_the_discount_is_disallowed() {
+    func test_calculatePriceAfterDiscount_when_discount_is_higher_than_price_then_discountExceedsProductPrice_returns_true() {
         // Given
+        let baseAmount: Decimal = 1000
+        let discountStringInInputField = "1050.00"
+        let expectedFormattedDiscountedPrice = "-$50.00"
+
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmount: 0,
+                                                          baseAmount: baseAmount,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
                                                           storeCurrencySettings: usStoreSettings,
                                                           didSelectSave: { _ in })
-        viewModel.updateAmount("1,050.00")
 
         // When
+        // Simulates the amount the merchant inputs in the discount input field
+        viewModel.updateAmount(discountStringInInputField)
+
         let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
-        waitForExpectation { exp in
-            viewModel.$discountExceedsProductPrice
-                .dropFirst()
-                .sink { isDisallowed in
-                    // Then
-                    XCTAssertEqual(discountedPrice, "-$50.00")
-                    XCTAssertEqual(isDisallowed, true)
-                    exp.fulfill()
-                }
-                .store(in: &cancellables)
-        }
+        XCTAssertEqual(discountedPrice, expectedFormattedDiscountedPrice)
+        XCTAssertEqual(viewModel.discountExceedsProductPrice, true)
     }
 }

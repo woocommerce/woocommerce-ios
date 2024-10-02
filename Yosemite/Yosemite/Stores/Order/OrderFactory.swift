@@ -50,9 +50,9 @@ public enum OrderFactory {
 
     /// Creates a fee line suitable to be used within a simple payments order.
     ///
-    static func simplePaymentFee(feeID: Int64, amount: String, taxable: Bool) -> OrderFeeLine {
+    static func simplePaymentFee(feeID: Int64, amount: String, name: String? = nil, taxable: Bool) -> OrderFeeLine {
         .init(feeID: feeID,
-              name: "Simple Payments",
+              name: name ?? "Simple Payments",
               taxClass: "",
               taxStatus: taxable ? .taxable : .none,
               total: amount,

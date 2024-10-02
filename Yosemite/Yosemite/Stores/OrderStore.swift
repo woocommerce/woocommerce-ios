@@ -152,105 +152,30 @@ private extension OrderStore {
                              onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
-
-        // Synchronous variables.
-        //
-        // The variables `fetchErrors` and `hasDeletedAllOrders` should only be accessed
-        // **inside** the `serialQueue` (e.g. `serialQueue.async()`). The only exception is in
-        // the `group.notify()` call below which only _reads_ `fetchErrors` and all the _writes_
-        // have finished.
-        var fetchErrors = [Error]()
-        var fetchedOrders: [Order]?
-        var hasDeletedAllOrders = false
-        let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
         let startTime = Date()
-
-        // Delete all the orders if we haven't yet.
-        // This should only be called inside the `serialQueue` block.
-        let deleteAllOrdersOnce: (@escaping () -> Void) -> Void = { [weak self] onCompletion in
-            guard let self, hasDeletedAllOrders == false else {
-                return
-            }
-
-            resetStoredOrders {
-                hasDeletedAllOrders = true
-                onCompletion()
-            }
-        }
-
-        // The handler for fetching requests.
-        let loadAllOrders: ([String]?, @escaping (() -> Void)) -> Void = { [weak self] statuses, completion in
-            guard let self = self else {
-                return
-            }
-            self.remote.loadAllOrders(for: siteID,
-                                      statuses: statuses,
-                                      after: after,
-                                      before: before,
-                                      modifiedAfter: modifiedAfter,
-                                      customerID: customerID,
-                                      productID: productID,
-                                      pageNumber: pageNumber,
-                                      pageSize: pageSize) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-                serialQueue.async { [weak self] in
-                    guard let self = self else {
-                        completion()
-                        return
-                    }
-
-                    switch result {
-                    case .success(let orders):
-                        fetchedOrders = orders
-
-                        switch writeStrategy {
-                        case .doNotSave:
-                            completion()
-                        case .deleteAllBeforeSaving:
-                            deleteAllOrdersOnce { [weak self] in
-                                self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
-                                    completion()
-                                })
-                            }
-                        case .save:
-                            self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
-                                completion()
-                            })
-                        }
-                    case .failure(let error):
-                        fetchErrors.append(error)
-                        completion()
+        self.remote.loadAllOrders(for: siteID,
+                                  statuses: statuses,
+                                  after: after,
+                                  before: before,
+                                  modifiedAfter: modifiedAfter,
+                                  customerID: customerID,
+                                  productID: productID,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .success(let orders):
+                switch writeStrategy {
+                case .doNotSave:
+                    onCompletion(Date().timeIntervalSince(startTime), result)
+                case .deleteAllBeforeSaving, .save:
+                    let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                        onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
+            case .failure(let error):
+                onCompletion(Date().timeIntervalSince(startTime), result)
             }
-        }
-
-        // Perform fetch and wait to finish before calling `onCompletion`.
-        let group = DispatchGroup()
-
-        group.enter()
-        if let statuses = statuses {
-            loadAllOrders(statuses) {
-                group.leave()
-            }
-        }
-        else {
-            loadAllOrders([OrdersRemote.Defaults.statusAny]) {
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) {
-            let result: Result<[Order], Error> = {
-                if let error = fetchErrors.first {
-                    .failure(error)
-                } else {
-                    .success(fetchedOrders ?? [])
-                }
-            }()
-            onCompletion(Date().timeIntervalSince(startTime), result)
         }
     }
 
@@ -724,9 +649,14 @@ private extension OrderStore {
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
+                                                removeAllStoredOrders: Bool = false,
+                                                onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
+            if removeAllStoredOrders {
+                derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
+            }
             upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }

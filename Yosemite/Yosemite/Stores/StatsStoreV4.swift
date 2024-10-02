@@ -424,7 +424,7 @@ private extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)?) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
@@ -480,7 +480,7 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageSiteVisitStats = storage.loadSiteVisitStats(
@@ -515,7 +515,7 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: @escaping () -> Void) {
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else { return }
             let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
@@ -551,7 +551,7 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: @escaping () -> Void) {
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ storage in
             let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
                 ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)

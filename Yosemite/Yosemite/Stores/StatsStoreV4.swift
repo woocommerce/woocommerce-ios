@@ -252,9 +252,12 @@ private extension StatsStoreV4 {
                 switch result {
                 case .success(let siteSummaryStats):
                     if saveInStorage {
-                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats)
+                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats) {
+                            onCompletion(.success(siteSummaryStats))
+                        }
+                    } else {
+                        onCompletion(.success(siteSummaryStats))
                     }
-                    onCompletion(.success(siteSummaryStats))
                 case .failure(let error):
                     onCompletion(.failure(SiteStatsStoreError(error: error)))
                 }
@@ -476,6 +479,7 @@ extension StatsStoreV4 {
     ///
     func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
             let storageSiteVisitStats = storage.loadSiteVisitStats(
                 granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
             storageSiteVisitStats.update(with: readOnlyStats)
@@ -545,14 +549,12 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
-            ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
-        storageSiteSummaryStats.update(with: readOnlyStats)
-        storage.saveIfNeeded()
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
+                ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
+            storageSiteSummaryStats.update(with: readOnlyStats)
+        }, completion: onCompletion, on: .main)
     }
 }
 

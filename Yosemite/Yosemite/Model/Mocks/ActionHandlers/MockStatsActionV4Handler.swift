@@ -29,8 +29,9 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisWeek:
                 success(onCompletion)
             case .thisMonth:
-                store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisMonthOrderStats, timeRange: timeRange)
+            store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisMonthOrderStats, timeRange: timeRange) {
                 onCompletion(.success(()))
+            }
             case .thisYear:
                 success(onCompletion)
             case .custom:
@@ -47,8 +48,9 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisWeek:
                 success(onCompletion)
             case .thisMonth:
-                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisMonthVisitStats, timeRange: timeRange)
+            store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisMonthVisitStats, timeRange: timeRange) {
                 onCompletion(.success(()))
+            }
             case .thisYear:
                 success(onCompletion)
             case .custom:

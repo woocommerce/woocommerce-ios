@@ -3,15 +3,11 @@ import SwiftUI
 /// Hosting controller for `AddProductWithAIContainerView`
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
-    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
     private var selectPackageImageCoordinator: SelectPackageImageCoordinator?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
-        rootView.onUsePackagePhoto = { [weak self] productName in
-            self?.presentPackageFlow(productName: productName)
-        }
         viewModel.startingInfoViewModel.onPickPackagePhoto = { [weak self] source in
             await self?.presentImageSelectionFlow(source: source)
         }
@@ -45,23 +41,6 @@ extension AddProductWithAIContainerHostingController: UIAdaptivePresentationCont
 }
 
 private extension AddProductWithAIContainerHostingController {
-    /// Presents the image to product flow to detect product details from image using AI
-    ///
-    func presentPackageFlow(productName: String?) {
-        guard let navigationController else {
-            return
-        }
-        let coordinator = AddProductFromImageCoordinator(siteID: viewModel.siteID,
-                                                         source: viewModel.source,
-                                                         productName: productName,
-                                                         sourceNavigationController: navigationController,
-                                                         onAIGenerationCompleted: { [weak self] data in
-            self?.viewModel.didGenerateDataFromPackage(data)
-        })
-        self.addProductFromImageCoordinator = coordinator
-        coordinator.start()
-    }
-
     /// Presents the image selection flow to select package photo
     ///
     @MainActor
@@ -85,10 +64,6 @@ private extension AddProductWithAIContainerHostingController {
 
 /// Container view for the product creation with AI flow.
 struct AddProductWithAIContainerView: View {
-    /// Closure invoked when the close button is pressed
-    ///
-    var onUsePackagePhoto: (String?) -> Void = { _ in }
-
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
     init(viewModel: AddProductWithAIContainerViewModel) {
@@ -97,55 +72,22 @@ struct AddProductWithAIContainerView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) == false {
-                progressView
-            }
-
             switch viewModel.currentStep {
-            case .productName:
-                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
-                    ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
-                                                      onContinueWithFeatures: { features in
-                        withAnimation {
-                            viewModel.onProductFeaturesAdded(features: features)
-                        }
-                    })
-                } else {
-                    AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
-                                             onUsePackagePhoto: onUsePackagePhoto,
-                                             onContinueWithProductName: { name in
-                        withAnimation {
-                            viewModel.onContinueWithProductName(name: name)
-                        }
-                    })
-                }
-            case .aboutProduct:
-                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
-                                                        productName: viewModel.productName,
-                                                        productFeatures: viewModel.productFeatures) { features in
+            case .productFeatures:
+                ProductCreationAIStartingInfoView(viewModel: viewModel.startingInfoViewModel,
+                                                  onContinueWithFeatures: { features in
                     withAnimation {
                         viewModel.onProductFeaturesAdded(features: features)
                     }
                 })
             case .preview:
-                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M1) {
-                    ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
-                                                                                      productFeatures: viewModel.productFeatures,
-                                                                                      imageState: viewModel.startingInfoViewModel.imageState) { product in
-                        viewModel.didCreateProduct(product)
-                    }, onDismiss: {
-                        viewModel.backtrackOrDismiss()
-                    })
-                } else {
-                    LegacyProductDetailPreviewView(viewModel: LegacyProductDetailPreviewViewModel(siteID: viewModel.siteID,
-                                                                                                  productName: viewModel.productName,
-                                                                                                  productDescription: viewModel.productDescription,
-                                                                                                  productFeatures: viewModel.productFeatures) { product in
-                        viewModel.didCreateProduct(product)
-                    }, onDismiss: {
-                        viewModel.backtrackOrDismiss()
-                    })
-                }
+                ProductDetailPreviewView(viewModel: ProductDetailPreviewViewModel(siteID: viewModel.siteID,
+                                                                                  productFeatures: viewModel.productFeatures,
+                                                                                  imageState: viewModel.startingInfoViewModel.imageState) { product in
+                    viewModel.didCreateProduct(product)
+                }, onDismiss: {
+                    viewModel.backtrackOrDismiss()
+                })
             }
         }
         .onAppear() {
@@ -170,26 +112,9 @@ struct AddProductWithAIContainerView: View {
     }
 }
 
-
-private extension AddProductWithAIContainerView {
-    var progressView: some View {
-        ProgressView(value: viewModel.currentStep.progress)
-            .frame(height: Layout.ProgressView.height)
-            .tint(.init(uiColor: .accent))
-            .progressViewStyle(.linear)
-    }
-}
-
 private extension AddProductWithAIContainerView {
     enum Localization {
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the AI product creation flow.")
-    }
-
-
-    enum Layout {
-        enum ProgressView {
-            static let height: CGFloat = 2
-        }
     }
 }
 

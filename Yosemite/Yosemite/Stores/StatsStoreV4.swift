@@ -149,15 +149,15 @@ public final class StatsStoreV4: Store {
 private extension StatsStoreV4 {
     /// Deletes all of the Stats data.
     ///
-    func resetStoredStats(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4Interval.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Stats V4 deleted")
-
-        onCompletion()
+    func resetStoredStats(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4Interval.self)
+        }, completion: {
+            DDLogDebug("Stats V4 deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).

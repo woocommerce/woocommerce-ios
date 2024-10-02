@@ -43,7 +43,6 @@ struct InPersonPaymentsSelectPluginRow: View {
 }
 
 struct InPersonPaymentsSelectPluginView: View {
-    @Environment(\.presentationMode) var presentation
     @State var selectedPlugin: CardPresentPaymentsPlugin?
     let onPluginSelected: (CardPresentPaymentsPlugin) -> Void
 
@@ -94,7 +93,6 @@ struct InPersonPaymentsSelectPluginView: View {
             return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")
         }
         onPluginSelected(selectedPlugin)
-        presentation.wrappedValue.dismiss()
     }
 }
 

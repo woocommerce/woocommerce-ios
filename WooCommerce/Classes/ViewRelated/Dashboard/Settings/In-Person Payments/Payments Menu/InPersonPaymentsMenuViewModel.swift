@@ -212,6 +212,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
         dependencies.onboardingUseCase.clearPluginSelection()
         dependencies.onboardingUseCase.selectPlugin(plugin)
+        presentManagePaymentGateways = false
     }
 
     lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {

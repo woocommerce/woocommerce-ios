@@ -56,6 +56,8 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     ///
     let providedAmount: String
 
+    let amountName: String?
+
     private let unformattedProvidedAmount: String
 
     /// Store tax lines.
@@ -157,6 +159,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
     lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
+         amountName: String? = nil,
          totalWithTaxes: String,
          taxLines: [TaxLine],
          noteContent: String? = nil,
@@ -183,6 +186,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         self.analytics = analytics
         self.flow = analyticsFlow
         self.providedAmount = currencyFormatter.formatAmount(providedAmount) ?? providedAmount
+        self.amountName = amountName
         self.unformattedProvidedAmount = providedAmount
         self.totalWithTaxes = currencyFormatter.formatAmount(totalWithTaxes) ?? totalWithTaxes
         self.unformattedTotalWithTaxes = totalWithTaxes
@@ -205,6 +209,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     convenience init(order: Order,
                      providedAmount: String,
+                     amountName: String? = nil,
                      presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores,
@@ -217,6 +222,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
         })
 
         self.init(providedAmount: providedAmount,
+                  amountName: amountName,
                   totalWithTaxes: order.total,
                   taxLines: taxLines,
                   siteID: order.siteID,
@@ -254,6 +260,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
                                                            feeID: feeID,
                                                            status: .pending, // Force .pending status to properly generate the payment link in the next screen.
                                                            amount: removeCurrencySymbolFromAmount(providedAmount),
+                                                           amountName: amountName,
                                                            taxable: enableTaxes,
                                                            orderNote: noteContent,
                                                            email: email.isEmpty ? nil : email) { [weak self] result in

@@ -14,28 +14,13 @@ struct WooShippingAddPackageView: View {
             }
         }
     }
-    enum PackageType: CaseIterable {
-        case box, envelope
-        var name: String {
-            switch self {
-            case .box:
-                return Localization.box
-            case .envelope:
-                return Localization.envelope
-            }
-        }
+    enum Constants {
+        static let defaultVerticalSpacing: CGFloat = 16.0
     }
 
     @Environment(\.presentationMode) var presentationMode
 
     @State var selectedPackageType = PackageProviderType.custom
-    @State var packageType: PackageType = .box
-    @State var showSaveTemplate: Bool = false
-    @State var length: String = ""
-    @State var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
-    @State var packageName: String = ""
-    @FocusState var packageNameFieldFocused: Bool
-
     var addPackageButtonDisabled: Bool {
         for (_, value) in fieldValues {
             if value.isEmpty {
@@ -55,18 +40,17 @@ struct WooShippingAddPackageView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding()
-                Spacer()
                 selectedPackageTypeView
                 Spacer()
                 Button(Localization.addPackage) {
-                    addPackageButtonTapped()
+                    // add package
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(addPackageButtonDisabled)
                 .padding()
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
                     }, label: {
@@ -79,8 +63,6 @@ struct WooShippingAddPackageView: View {
         }
         .navigationViewStyle(.stack)
     }
-
-    // MARK: UI components
 
     @ViewBuilder
     private var selectedPackageTypeView: some View {
@@ -96,13 +78,30 @@ struct WooShippingAddPackageView: View {
         }
     }
 
+    enum PackageType: CaseIterable {
+        case box, envelope
+        var name: String {
+            switch self {
+            case .box:
+                return Localization.box
+            case .envelope:
+                return Localization.envelope
+            }
+        }
+    }
+
+    @State var packageType: PackageType = .box
+    @State var showSaveTemplate: Bool = false
+    @State var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
+
     private var customPackageView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
             HStack {
                 Text(Localization.packageType)
                     .font(.subheadline)
                 Spacer()
             }
+            // type selection
             Menu {
                 // show selection
                 ForEach(PackageType.allCases, id: \.self) { option in
@@ -110,19 +109,25 @@ struct WooShippingAddPackageView: View {
                         packageType = option
                     } label: {
                         Text(option.name)
-                            .font(.body)
+                            .bodyStyle()
+                        if packageType == option {
+                            Image(uiImage: .checkmarkStyledImage)
+                        }
                     }
                 }
             } label: {
                 HStack {
+                    // text
                     Text(packageType.name)
+                        .bodyStyle()
+                    // arrows
                     Spacer()
                     Image(systemName: "chevron.up.chevron.down")
                 }
                 .padding()
             }
             .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
-            HStack(spacing: 8) {
+            AdaptiveStack(spacing: 8) {
                 ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
                     WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
                         return self.fieldValues[dimensionType] ?? ""
@@ -136,40 +141,23 @@ struct WooShippingAddPackageView: View {
                     .font(.subheadline)
             }
             if showSaveTemplate {
-                TextField("Enter a unique package name", text: $packageName)
-                    .font(.body)
-                    .focused($packageNameFieldFocused)
-                .padding()
-                .roundedBorder(cornerRadius: 8,
-                               lineColor: packageNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
-                               lineWidth: packageNameFieldFocused ? 2 : 1)
                 Button(Localization.savePackageTemplate) {
-                    savePackageAsTemplateButtonTapped()
+                    // save template
                 }
                 .buttonStyle(SecondaryButtonStyle())
             }
         }
-        .padding()
+        .padding(.horizontal)
     }
 
     private var carrierPackageView: some View {
         // TODO: just a placeholder
-        Text(Localization.carrier)
+        Text("carrier")
     }
 
     private var savedPackageView: some View {
         // TODO: just a placeholder
-        Text(Localization.saved)
-    }
-
-    // MARK: - actions
-
-    private func addPackageButtonTapped() {
-        // TODO: implement adding a package
-    }
-
-    private func savePackageAsTemplateButtonTapped() {
-        // TODO: implement saving package as a template
+        Text("saved")
     }
 }
 
@@ -202,7 +190,7 @@ struct WooShippingAddPackageDimensionView: View {
             HStack {
                 TextField("", text: $fieldValue)
                     .keyboardType(.decimalPad)
-                    .font(.body)
+                    .bodyStyle()
                     .focused($fieldFocused)
                 Text("cm")
                     .font(.subheadline)

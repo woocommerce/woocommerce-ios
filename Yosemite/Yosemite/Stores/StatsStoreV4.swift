@@ -225,8 +225,9 @@ private extension StatsStoreV4 {
                                     quantity: quantity) { [weak self] result in
             switch result {
             case .success(let siteVisitStats):
-                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(SiteStatsStoreError(error: error)))
             }
@@ -473,16 +474,14 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
-        storageSiteVisitStats.update(with: readOnlyStats)
-        storageSiteVisitStats.timeRange = timeRange.rawValue
-        handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
-        storage.saveIfNeeded()
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            let storageSiteVisitStats = storage.loadSiteVisitStats(
+                granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            storageSiteVisitStats.update(with: readOnlyStats)
+            storageSiteVisitStats.timeRange = timeRange.rawValue
+            handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items

@@ -9,12 +9,6 @@ import Storage
 public class OrderStore: Store {
     private let remote: OrdersRemote
 
-    /// Shared private StorageType for use during the entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)

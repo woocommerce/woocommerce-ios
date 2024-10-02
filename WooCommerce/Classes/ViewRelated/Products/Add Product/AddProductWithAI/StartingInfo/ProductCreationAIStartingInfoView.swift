@@ -41,8 +41,7 @@ struct ProductCreationAIStartingInfoView: View {
                             VStack(spacing: Layout.editorBlockSpacing) {
                                 textField(with: proxy)
 
-                                if viewModel.featureFlagService.isFeatureFlagEnabled(.productCreationAIv2M3) &&
-                                    (editorIsFocused || viewModel.features.isNotEmpty) {
+                                if editorIsFocused || viewModel.features.isNotEmpty {
                                     ProductCreationAIPromptProgressBar(text: $viewModel.features)
                                 }
 

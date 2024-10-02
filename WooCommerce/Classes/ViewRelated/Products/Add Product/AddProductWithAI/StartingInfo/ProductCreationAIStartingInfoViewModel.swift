@@ -26,7 +26,6 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
     private let analytics: Analytics
     private let imageTextScanner: ImageTextScannerProtocol
     private var subscriptions: Set<AnyCancellable> = []
-    let featureFlagService: FeatureFlagService
 
     var productFeatures: String? {
         guard features.isNotEmpty else {
@@ -37,13 +36,11 @@ final class ProductCreationAIStartingInfoViewModel: ObservableObject {
 
     init(siteID: Int64,
          imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.features = ""
         self.imageTextScanner = imageTextScanner
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         imageState = .empty
         listenToImageStateAndClearTextDetectionError()
     }

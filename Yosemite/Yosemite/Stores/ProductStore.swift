@@ -267,9 +267,9 @@ private extension ProductStore {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,

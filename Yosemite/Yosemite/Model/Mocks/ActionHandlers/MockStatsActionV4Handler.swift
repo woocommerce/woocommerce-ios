@@ -67,8 +67,9 @@ struct MockStatsActionV4Handler: MockActionHandler {
         case .thisWeek:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         case .thisMonth:
-            store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts)
-            onCompletion(.success(objectGraph.thisMonthTopProducts))
+            store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisMonthTopProducts) {
+                onCompletion(.success(objectGraph.thisMonthTopProducts))
+            }
         case .thisYear:
             onCompletion(.success(objectGraph.thisMonthTopProducts))
         case .custom:

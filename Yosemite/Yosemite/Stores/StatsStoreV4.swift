@@ -311,9 +311,12 @@ private extension StatsStoreV4 {
                                                                    quantity: quantity,
                                                                    forceRefresh: forceRefresh)
                 if saveInStorage {
-                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
+                        onCompletion(.success(topEarnersStats))
+                    }
+                } else {
+                    onCompletion(.success(topEarnersStats))
                 }
-                onCompletion(.success(topEarnersStats))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -512,16 +515,15 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
-                                                               granularity: readOnlyStats.granularity.rawValue)
-            ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
-        storageTopEarnerStats.update(with: readOnlyStats)
-        handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
-        storage.saveIfNeeded()
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
+                                                                   granularity: readOnlyStats.granularity.rawValue)
+                ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
+            storageTopEarnerStats.update(with: readOnlyStats)
+            handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items

@@ -111,10 +111,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     @Published var percentage: String = ""
 
-    /// Captures state when a discount value should be disallowed, for example,
-    /// when the discount entered is higher than the total price of a product.
-    ///
-    @Published private(set) var discountValueIsDisallowed: Bool = false
+    @Published private(set) var discountExceedsProductPrice: Bool = false
 
     /// Returns true when a discount is entered, either fixed or percentage.
     ///
@@ -145,17 +142,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
-    func calculatePriceAfterDiscount(_ price: String) -> String {
-        guard let price = currencyFormatter.convertToDecimal(price) else {
-            return ""
-        }
-        let discount = NSDecimalNumber(decimal: finalAmountDecimal)
-        let priceAfterDiscount = price.subtracting(discount)
-        if priceAfterDiscount.compare(NSDecimalNumber.zero) == .orderedAscending {
-            updateDiscountDisallowedState(true)
-            return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
-        }
-        updateDiscountDisallowedState(false)
+    func calculatePriceAfterDiscount() -> String {
+        let price = baseAmountForPercentage
+        let discount = finalAmountDecimal
+        let priceAfterDiscount = (price - discount)
+
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
 
@@ -277,22 +268,17 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 extension FeeOrDiscountLineDetailsViewModel {
     func updatePercentage(_ percentageInput: String) {
         self.percentage = percentageFieldFormatter.formatUserInput(percentageInput)
+        checkDiscountValidity()
     }
 
     func updateAmount(_ amountInput: String) {
         self.amount = priceFieldFormatter.formatUserInput(amountInput)
+        checkDiscountValidity()
     }
-}
 
-private extension FeeOrDiscountLineDetailsViewModel {
-    /*
-     The current implementation that we use to calculate a price after discount does not allow to update the discountValueIsDisallowed directly,
-     if we attempt to do so, it would happen while the state/view is being modified, leading to undefined behaviour, and/or crashing.
-     In order to avoid this we defer the state update until the current rendering cycle is complete.
-     */
-    func updateDiscountDisallowedState(_ value: Bool) {
-        DispatchQueue.main.async {
-            self.discountValueIsDisallowed = value
-        }
+    func checkDiscountValidity() {
+        let priceAfterDiscount = baseAmountForPercentage - finalAmountDecimal
+
+        discountExceedsProductPrice = (priceAfterDiscount < 0)
     }
 }

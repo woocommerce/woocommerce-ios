@@ -41,7 +41,7 @@ struct ProductDiscountView: View {
                     Text(Localization.discountDisallowedLabel)
                         .padding(.horizontal)
                         .foregroundColor(.red)
-                        .renderedIf(viewModel.discountDetailsViewModel.discountValueIsDisallowed)
+                        .renderedIf(viewModel.discountDetailsViewModel.discountExceedsProductPrice)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
                             .flipsForRightToLeftLayoutDirection(true)
@@ -60,7 +60,7 @@ struct ProductDiscountView: View {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
                         if let price = viewModel.totalPricePreDiscount {
-                            Text(discountDetailsViewModel.calculatePriceAfterDiscount(price))
+                            Text(discountDetailsViewModel.calculatePriceAfterDiscount())
                         }
                     }
                     .padding()
@@ -89,7 +89,7 @@ struct ProductDiscountView: View {
                         discountDetailsViewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
-                    .disabled(viewModel.discountDetailsViewModel.discountValueIsDisallowed)
+                    .disabled(viewModel.discountDetailsViewModel.discountExceedsProductPrice)
                 }
             }
             .wooNavigationBarStyle()

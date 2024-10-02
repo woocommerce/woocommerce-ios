@@ -9,6 +9,7 @@
 - [*] Payments: Fixed a bug preventing payments onboarding from being automatically hidden when complete [https://github.com/woocommerce/woocommerce-ios/pull/14017]
 - [*] Payments: Give a specific label to Tap to Pay trial payments [https://github.com/woocommerce/woocommerce-ios/pull/14022]
 - [*] Some error views were misaligned on iPad when the store was not a WordPress site or didn't have Jetpack installed. Now, everything is perfectly centered. [https://github.com/woocommerce/woocommerce-ios/pull/13991]
+- [*] Orders: Fixed a crash when searching for products to add to an order. [https://github.com/woocommerce/woocommerce-ios/pull/14095]
 
 20.6
 -----

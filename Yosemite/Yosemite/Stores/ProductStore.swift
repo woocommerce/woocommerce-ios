@@ -263,13 +263,13 @@ private extension ProductStore {
     }
 
     func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
-        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let namePredicate = NSPredicate(format: "name CONTAINS[c] %@", keyword)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,

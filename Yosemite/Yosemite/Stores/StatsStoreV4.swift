@@ -179,8 +179,9 @@ private extension StatsStoreV4 {
                                         forceRefresh: forceRefresh) { [weak self] result in
             switch result {
             case .success(let orderStatsV4):
-                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -416,19 +417,17 @@ private extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
+                storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
 
-        let storage = storageManager.viewStorage
-
-        let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
-            storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
-
-        storageOrderStats.timeRange = timeRange.rawValue
-        storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
-        storageOrderStats.update(with: readOnlyStats)
-        handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
-        storage.saveIfNeeded()
+            storageOrderStats.timeRange = timeRange.rawValue
+            storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
+            storageOrderStats.update(with: readOnlyStats)
+            handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items

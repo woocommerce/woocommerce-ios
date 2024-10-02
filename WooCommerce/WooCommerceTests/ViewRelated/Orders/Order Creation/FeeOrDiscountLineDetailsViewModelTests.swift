@@ -10,8 +10,6 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     private let usLocale = Locale(identifier: "en_US")
     private let usStoreSettings = CurrencySettings() // Default is US settings
 
-    private var cancellables = Set<AnyCancellable>()
-
     func test_view_model_formats_amount_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,

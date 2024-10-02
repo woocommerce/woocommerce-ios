@@ -100,13 +100,13 @@ private extension OrderStore {
 
     /// Nukes all of the Stored Orders.
     ///
-    func resetStoredOrders(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Order.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Orders deleted")
-
-        onCompletion()
+    func resetStoredOrders(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Order.self)
+        }, completion: {
+            DDLogDebug("Orders deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Searches all of the orders that contain a given Keyword.
@@ -167,17 +167,15 @@ private extension OrderStore {
 
         // Delete all the orders if we haven't yet.
         // This should only be called inside the `serialQueue` block.
-        let deleteAllOrdersOnce = { [weak self] in
-            guard hasDeletedAllOrders == false else {
+        let deleteAllOrdersOnce: (@escaping () -> Void) -> Void = { [weak self] onCompletion in
+            guard let self, hasDeletedAllOrders == false else {
                 return
             }
 
-            // Use the main thread because `resetStoredOrders` uses `viewStorage`.
-            DispatchQueue.main.sync { [weak self] in
-                self?.resetStoredOrders { }
+            resetStoredOrders {
+                hasDeletedAllOrders = true
+                onCompletion()
             }
-
-            hasDeletedAllOrders = true
         }
 
         // The handler for fetching requests.
@@ -210,11 +208,13 @@ private extension OrderStore {
                         switch writeStrategy {
                         case .doNotSave:
                             completion()
-                        case .deleteAllBeforeSaving, .save:
-                            if writeStrategy == .deleteAllBeforeSaving {
-                                deleteAllOrdersOnce()
+                        case .deleteAllBeforeSaving:
+                            deleteAllOrdersOnce { [weak self] in
+                                self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
+                                    completion()
+                                })
                             }
-
+                        case .save:
                             self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
                                 completion()
                             })

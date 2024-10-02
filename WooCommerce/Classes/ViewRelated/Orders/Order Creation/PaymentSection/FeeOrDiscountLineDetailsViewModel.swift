@@ -130,7 +130,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         case .fixed:
             return decimalInput as Decimal
         case .percentage:
-            return baseAmountForPercentage * (decimalInput as Decimal) * 0.01
+            return baseAmount * (decimalInput as Decimal) * 0.01
         }
     }
 
@@ -143,7 +143,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
     ///
     func calculatePriceAfterDiscount() -> String {
-        let price = baseAmountForPercentage
+        let price = baseAmount
         let discount = finalAmountDecimal
         let priceAfterDiscount = (price - discount)
 
@@ -152,11 +152,11 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// The base amount to apply percentage fee or discount on.
     ///
-    private let baseAmountForPercentage: Decimal
+    private let baseAmount: Decimal
 
     /// The initial fee or discount amount.
     ///
-    private let initialAmount: Decimal
+    private let initialTotal: Decimal
 
     /// Returns true when existing line is edited.
     ///
@@ -165,7 +165,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Returns true when base amount for percentage > 0.
     ///
     var isPercentageOptionAvailable: Bool {
-        !isExistingLine && baseAmountForPercentage > 0
+        !isExistingLine && baseAmount > 0
     }
 
     /// Returns true when there are no valid pending changes.
@@ -175,7 +175,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
             return true
         }
 
-        return finalAmountDecimal == initialAmount
+        return finalAmountDecimal == initialTotal
     }
 
     let lineTypeViewModel: FeeOrDiscountLineTypeViewModel
@@ -219,7 +219,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     @Published var feeOrDiscountType: FeeOrDiscountType = .fixed
 
     init(isExistingLine: Bool,
-         baseAmountForPercentage: Decimal,
+         baseAmount: Decimal,
          initialTotal: Decimal,
          lineType: LineType,
          locale: Locale = Locale.autoupdatingCurrent,
@@ -236,12 +236,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         self.analytics = analytics
 
         self.isExistingLine = isExistingLine
-        self.baseAmountForPercentage = baseAmountForPercentage
-        self.initialAmount = initialTotal
+        self.baseAmount = baseAmount
+        self.initialTotal = initialTotal
 
-        if initialAmount != 0 {
-            self.amount = priceFieldFormatter.formatAmount(initialAmount)
-            self.percentage = percentageFieldFormatter.formatAmount(initialAmount / baseAmountForPercentage * 100)
+        if initialTotal != 0 {
+            self.amount = priceFieldFormatter.formatAmount(initialTotal)
+            self.percentage = percentageFieldFormatter.formatAmount(initialTotal / baseAmount * 100)
         }
 
         self.didSelectSave = didSelectSave
@@ -277,7 +277,7 @@ extension FeeOrDiscountLineDetailsViewModel {
     }
 
     func checkDiscountValidity() {
-        let priceAfterDiscount = baseAmountForPercentage - finalAmountDecimal
+        let priceAfterDiscount = baseAmount - finalAmountDecimal
 
         discountExceedsProductPrice = (priceAfterDiscount < 0)
     }

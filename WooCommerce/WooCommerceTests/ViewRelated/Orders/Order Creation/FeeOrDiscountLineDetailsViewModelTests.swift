@@ -15,7 +15,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_amount_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -34,7 +34,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_negative_amount_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -60,7 +60,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                               numberOfDecimals: 3)
 
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -80,7 +80,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_amount_with_grouping_separators_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -99,7 +99,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_percentage_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 100,
+                                                          baseAmount: 100,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -119,7 +119,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_formats_negative_percentage_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 100,
+                                                          baseAmount: 100,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -138,7 +138,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_prefills_input_data_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                          baseAmountForPercentage: 200,
+                                                          baseAmount: 200,
                                                           initialTotal: NSDecimalNumber(string: "10").decimalValue,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -156,7 +156,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_prefills_negative_input_data_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                          baseAmountForPercentage: 200,
+                                                          baseAmount: 200,
                                                           initialTotal: NSDecimalNumber(string: "-10").decimalValue,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -174,7 +174,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 200,
+                                                          baseAmount: 200,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -210,7 +210,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_changes() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                          baseAmountForPercentage: 100,
+                                                          baseAmount: 100,
                                                           initialTotal: NSDecimalNumber(string: "11.30").decimalValue,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -235,7 +235,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         // Initial fee is $10/5%
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                          baseAmountForPercentage: 200,
+                                                          baseAmount: 200,
                                                           initialTotal: NSDecimalNumber(string: "10").decimalValue,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -259,7 +259,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         var savedFeeLine: Decimal?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -280,7 +280,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         var savedFeeLine: Decimal?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 200,
+                                                          baseAmount: 200,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -302,7 +302,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         var savedFeeLine: Decimal?
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -322,7 +322,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_amount_placeholder_has_expected_value() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -336,7 +336,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_initializes_correctly_with_no_existing_fee_line() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -352,7 +352,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .discount,
                                                           locale: usLocale,
@@ -374,7 +374,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .discount,
                                                           locale: usLocale,
@@ -396,7 +396,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .discount,
                                                           locale: usLocale,
@@ -414,7 +414,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_calculatePriceAfterDiscount_when_discount_has_thousands_separators_calculates_price_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -423,7 +423,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         viewModel.updateAmount("1,000.00")
 
         // When
-        let discountedPrice = viewModel.calculatePriceAfterDiscount("1050.00")
+        let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
         // Then
         XCTAssertEqual(discountedPrice, "$50.00")
@@ -432,7 +432,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_calculatePriceAfterDiscount_when_discountedPrice_is_positive_then_applying_the_discount_is_not_disallowed() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -441,10 +441,10 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         viewModel.updateAmount("1,000.00")
 
         // When
-        let discountedPrice = viewModel.calculatePriceAfterDiscount("1050.00")
+        let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
         waitForExpectation { exp in
-            viewModel.$discountValueIsDisallowed
+            viewModel.$discountExceedsProductPrice
                 .dropFirst()
                 .sink { isDisallowed in
                     // Then
@@ -459,7 +459,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_calculatePriceAfterDiscount_when_discountedPrice_is_negative_then_applying_the_discount_is_disallowed() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
-                                                          baseAmountForPercentage: 0,
+                                                          baseAmount: 0,
                                                           initialTotal: .zero,
                                                           lineType: .fee,
                                                           locale: usLocale,
@@ -468,10 +468,10 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         viewModel.updateAmount("1,050.00")
 
         // When
-        let discountedPrice = viewModel.calculatePriceAfterDiscount("1000.00")
+        let discountedPrice = viewModel.calculatePriceAfterDiscount()
 
         waitForExpectation { exp in
-            viewModel.$discountValueIsDisallowed
+            viewModel.$discountExceedsProductPrice
                 .dropFirst()
                 .sink { isDisallowed in
                     // Then

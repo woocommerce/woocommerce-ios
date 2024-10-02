@@ -124,7 +124,7 @@ private extension DiscountLineDetailsView {
 struct DiscountLineDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         let feeOrDiscountViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                                       baseAmountForPercentage: 10.0,
+                                                                       baseAmount: 10.0,
                                                                        initialTotal: Decimal(string: "100") ?? .zero,
                                                                        lineType: .discount,
                                                                        didSelectSave: { _ in })

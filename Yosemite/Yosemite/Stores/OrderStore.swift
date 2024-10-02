@@ -731,17 +731,10 @@ private extension OrderStore {
     /// on the main thread!
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.

@@ -451,8 +451,8 @@ private extension OrderStore {
                 }
             } else {
                 self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+                onCompletion(result)
             }
-            onCompletion(result)
         }
     }
 

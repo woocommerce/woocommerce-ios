@@ -580,7 +580,7 @@ private extension OrderStore {
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
         let oldReadOnlyOrder = storageOrder?.toReadOnly()
 
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+        upsertStoredOrdersInBackground(readOnlyOrders: [readOnlyOrder])
 
         if storageOrder == nil {
             DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
@@ -655,7 +655,7 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,
-                                                onCompletion: @escaping () -> Void) {
+                                                onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             if removeAllStoredOrders {

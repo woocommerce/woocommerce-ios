@@ -181,7 +181,7 @@ public final class CoreDataManager: StorageManagerType {
     /// - Parameters:
     ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
     ///   - completion: A closure which is called with the `closure`'s execution result,
-    ///   which is either an error thrown by the `closure` or the return value of the `block`.
+    ///   which is either an error thrown by the `closure` or the return value of the `closure`.
     ///   - queue: A queue on which to execute the completion block.
     public func performAndSave<T>(_ closure: @escaping (StorageType) throws -> T,
                                   completion: @escaping (Result<T, Error>) -> Void,

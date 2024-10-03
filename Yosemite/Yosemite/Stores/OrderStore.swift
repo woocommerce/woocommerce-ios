@@ -375,19 +375,23 @@ private extension OrderStore {
     ///
     func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status)
-
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
-            guard let error = error else {
-                if let order = order {
-                    self?.upsertStoredOrder(readOnlyOrder: order)
-                }
-                return onCompletion(nil)
+        updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status) { [weak self] previousStatus in
+            guard let self else {
+                return onCompletion(UpdateOrderStatusError.undefinedState)
             }
+            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
+                guard let error else {
+                    if let order {
+                        self?.upsertStoredOrder(readOnlyOrder: order)
+                    }
+                    return onCompletion(nil)
+                }
 
-            /// Revert Optimistic Update
-            self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: oldStatus)
-            onCompletion(error)
+                /// Revert Optimistic Update
+                self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: previousStatus) { _ in
+                    onCompletion(error)
+                }
+            }
         }
     }
 
@@ -538,20 +542,24 @@ extension OrderStore {
 
     /// Updates the Status of the specified Order, as requested.
     ///
-    /// - Returns: Status, prior to performing the Update OP.
-    ///
-    @discardableResult
-    func updateOrderStatus(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return statusKey
-        }
-
-        let oldStatus = order.statusKey
-        order.statusKey = statusKey.rawValue
-        storage.saveIfNeeded()
-
-        return OrderStatusEnum(rawValue: oldStatus)
+    func updateOrderStatus(siteID: Int64, orderID: Int64,
+                           statusKey: OrderStatusEnum,
+                           onCompletion: @escaping (_ previousStatus: OrderStatusEnum) -> Void) {
+        storageManager.performAndSave({ storage -> OrderStatusEnum in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return statusKey
+            }
+            let oldStatus = order.statusKey
+            order.statusKey = statusKey.rawValue
+            return OrderStatusEnum(rawValue: oldStatus)
+        }, completion: { result in
+            switch result {
+            case .success(let status):
+                onCompletion(status)
+            case .failure: // this case should not happen
+                onCompletion(statusKey)
+            }
+        }, on: .main)
     }
 }
 
@@ -690,6 +698,10 @@ private extension OrderStore {
 extension OrderStore {
     enum MarkOrderAsPaidLocallyError: Error {
         case orderNotFoundInStorage
+    }
+
+    enum UpdateOrderStatusError: Error {
+        case undefinedState
     }
 
     enum RetrieveOrderError: Error {

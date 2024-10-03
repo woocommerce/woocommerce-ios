@@ -230,3 +230,20 @@ private extension ProductFormActionsFactory_VisibilityTests {
         static let productWithNoCustomFields = Product.fake().copy(customFields: [])
     }
 }
+
+extension ProductType: CaseIterable {
+    public static var allCases: [ProductType] {
+        return [
+            .simple,
+            .grouped,
+            .affiliate,
+            .variable,
+            .subscription,
+            .variableSubscription,
+            .bundle,
+            .composite,
+            .booking,
+            .custom("exampleCustomType") // hardcoded to be able to include .custom in CaseIterable.
+        ]
+    }
+}

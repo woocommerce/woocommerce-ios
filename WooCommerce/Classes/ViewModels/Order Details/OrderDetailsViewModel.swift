@@ -497,7 +497,7 @@ extension OrderDetailsViewModel {
 
             // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
             viewController.navigationController?.setNavigationBarHidden(true, animated: false)
-            viewController.navigationController?.pushViewController(customFieldsView, animated: false)
+            viewController.navigationController?.pushViewController(customFieldsView, animated: true)
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))

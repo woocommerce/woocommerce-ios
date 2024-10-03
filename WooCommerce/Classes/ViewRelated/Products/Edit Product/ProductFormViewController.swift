@@ -1483,8 +1483,7 @@ private extension ProductFormViewController {
 
         // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
         navigationController?.setNavigationBarHidden(true, animated: false)
-        navigationController?.pushViewController(customFieldsView, animated: false)
-
+        navigationController?.pushViewController(customFieldsView, animated: true)
     }
 }
 

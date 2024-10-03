@@ -111,6 +111,7 @@ public enum OrderAction: Action {
                                    feeID: Int64,
                                    status: OrderStatusEnum,
                                    amount: String,
+                                   amountName: String?,
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,

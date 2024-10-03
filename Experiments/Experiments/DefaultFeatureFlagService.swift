@@ -72,10 +72,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productCreationAIv2M1:
-            return true
-        case .productCreationAIv2M3:
-            return true
         case .googleAdsCampaignCreationOnWebView:
             return true
         case .backgroundTasks:
@@ -88,6 +84,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .blazeCampaignObjective:
             return true
+        case .favoriteProducts:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

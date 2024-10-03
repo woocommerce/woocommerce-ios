@@ -1,15 +1,35 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.7
+-----
+- [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
+- [internal] Enhanced error logging in the `OrderDetailsDataSource` class to improve crash diagnostics. [https://github.com/woocommerce/woocommerce-ios/pull/14018]
+- [internal] Removed product creation AI feature flag and unused code. [https://github.com/woocommerce/woocommerce-ios/pull/14010]
+- [*] Payments: Fixed a bug preventing payments onboarding from being automatically hidden when complete [https://github.com/woocommerce/woocommerce-ios/pull/14017]
+- [*] Payments: Give a specific label to Tap to Pay trial payments [https://github.com/woocommerce/woocommerce-ios/pull/14022]
+- [*] Some error views were misaligned on iPad when the store was not a WordPress site or didn't have Jetpack installed. Now, everything is perfectly centered. [https://github.com/woocommerce/woocommerce-ios/pull/13991]
+- [*] Orders: Fixed a crash when searching for products to add to an order. [https://github.com/woocommerce/woocommerce-ios/pull/14095]
+
 20.6
 -----
+- [*] Dashboard: Cards are now displayed in 2 columns on large screen sizes. [https://github.com/woocommerce/woocommerce-ios/pull/13983]
+- [*] Jetpack setup: fixed issue checking site info after activating Jetpack for sites with Jetpack connection package. [https://github.com/woocommerce/woocommerce-ios/pull/13993]
+- [*] Blaze: Campaign status is now updated immediately after being canceled. [https://github.com/woocommerce/woocommerce-ios/pull/13992]
+- [*] Blaze: Show feedback banner and survey for user feedback after campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/14040]
+- [*] Now the keyboard will be open automatically when creating a new Product Category. [https://github.com/woocommerce/woocommerce-ios/pull/14031]
+- [*] Payments: Prevent phone from sleeping during card reader updates [https://github.com/woocommerce/woocommerce-ios/pull/14021]
 - [internal] Logging for app storage size added in Core Data crash logs [https://github.com/woocommerce/woocommerce-ios/pull/14008]
+- [internal] Fixed concurrency issue with Blaze local notification scheduler.
+- [internal] Fixed concurrency issue with Blaze local notification scheduler. [https://github.com/woocommerce/woocommerce-ios/pull/14012]
+- [internal] We added ability to mark and filter favorite products. This feature isn't released yet. But please smoke test product filtering work as expected. [https://github.com/woocommerce/woocommerce-ios/pull/14001]
 
 20.5
 -----
 - [*] Blaze: Schedule a reminder local notification asking to continue abandoned campaign creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/13950]
 - [**] Fixed formatting issues for discount and cash payment input values when the device and store currency settings are different. [https://github.com/woocommerce/woocommerce-ios/pull/13979]
 - [*] Blaze: Handle tap on local notifications to open campaign creation. [https://github.com/woocommerce/woocommerce-ios/pull/13968]
+- [**] Fixed an issue that prevented users from adding prices to product variations. [https://github.com/woocommerce/woocommerce-ios/pull/14046]
 - [internal] Mobile Payments: Log errors from Stripe Terminal [https://github.com/woocommerce/woocommerce-ios/pull/13976]
 
 

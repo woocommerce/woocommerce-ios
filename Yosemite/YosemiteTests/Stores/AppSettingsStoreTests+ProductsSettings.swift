@@ -50,7 +50,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                             stockStatusFilter: .outOfStock,
                                                             productStatusFilter: .pending,
                                                             productTypeFilter: .simple,
-                                                            productCategoryFilter: filterProductCategory)
+                                                            productCategoryFilter: filterProductCategory,
+                                                            favoriteProduct: true)
 
         // When
         let result: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
@@ -67,7 +68,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                    stockStatusFilter: productSettings.stockStatusFilter,
                                                                    productStatusFilter: productSettings.productStatusFilter,
                                                                    productTypeFilter: productSettings.productTypeFilter,
-                                                                   productCategoryFilter: productSettings.productCategoryFilter) { (error) in
+                                                                   productCategoryFilter: productSettings.productCategoryFilter,
+                                                                   favoriteProduct: productSettings.favoriteProduct) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction)
@@ -98,13 +100,15 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                              stockStatusFilter: .outOfStock,
                                                              productStatusFilter: .pending,
                                                              productTypeFilter: .simple,
-                                                             productCategoryFilter: filterProductCategory1)
+                                                             productCategoryFilter: filterProductCategory1,
+                                                             favoriteProduct: false)
         let productSettings2 = StoredProductSettings.Setting(siteID: siteID2,
                                                              sort: ProductsSortOrder.nameAscending.rawValue,
                                                              stockStatusFilter: .inStock,
                                                              productStatusFilter: .draft,
                                                              productTypeFilter: .grouped,
-                                                             productCategoryFilter: filterProductCategory2)
+                                                             productCategoryFilter: filterProductCategory2,
+                                                             favoriteProduct: true)
 
         // When
         let writeAction1 = AppSettingsAction.upsertProductsSettings(siteID: siteID1,
@@ -112,7 +116,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                     stockStatusFilter: productSettings1.stockStatusFilter,
                                                                     productStatusFilter: productSettings1.productStatusFilter,
                                                                     productTypeFilter: productSettings1.productTypeFilter,
-                                                                    productCategoryFilter: productSettings1.productCategoryFilter) { (error) in
+                                                                    productCategoryFilter: productSettings1.productCategoryFilter,
+                                                                    favoriteProduct: productSettings1.favoriteProduct) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
@@ -122,7 +127,8 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                     stockStatusFilter: productSettings2.stockStatusFilter,
                                                                     productStatusFilter: productSettings2.productStatusFilter,
                                                                     productTypeFilter: productSettings2.productTypeFilter,
-                                                                    productCategoryFilter: productSettings2.productCategoryFilter) { (error) in
+                                                                    productCategoryFilter: productSettings2.productCategoryFilter,
+                                                                    favoriteProduct: productSettings2.favoriteProduct) { (error) in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)

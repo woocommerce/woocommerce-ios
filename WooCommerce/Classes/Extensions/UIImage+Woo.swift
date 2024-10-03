@@ -1525,6 +1525,10 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "email-outline-icon")
     }
 
+    static var shippingIcon: UIImage {
+        UIImage(imageLiteralResourceName: "icon-shipping")
+    }
+
     static var shippingOutlineIcon: UIImage {
         UIImage(imageLiteralResourceName: "shipping-outline-icon")
     }
@@ -1543,6 +1547,10 @@ extension UIImage {
 
     static var premiumThemesIcon: UIImage {
         UIImage(imageLiteralResourceName: "premium-themes-icon")
+    }
+
+    static var productIcon: UIImage {
+        UIImage(imageLiteralResourceName: "icon-product")
     }
 
     static var siteSecurityIcon: UIImage {

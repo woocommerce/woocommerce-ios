@@ -273,6 +273,33 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 2)
     }
 
+    // MARK: - Synchronize single campaign
+
+    func test_synchronizeCampaign_updates_campaign_in_storage_upon_success() throws {
+        // Given
+        let campaignID = "315"
+        let storedCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: campaignID, uiStatus: "pending")
+        storeCampaignListItem(storedCampaign)
+
+        // When
+        let updatedCampaign = storedCampaign.copy(uiStatus: "canceled")
+        remote.whenRetrieveCampaignDetail(thenReturn: .success(updatedCampaign))
+        let stores = BlazeStore(dispatcher: Dispatcher(),
+                                storageManager: storageManager,
+                                network: network,
+                                remote: remote)
+        let result = waitFor { promise in
+            stores.onAction(BlazeAction.synchronizeCampaign(campaignID: campaignID, siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssert(result.isSuccess == true, "Synchronize campaign detail request failed!")
+        let syncedCampaign = try XCTUnwrap(viewStorage.loadBlazeCampaignListItem(siteID: sampleSiteID, campaignID: campaignID)?.toReadOnly())
+        XCTAssert(syncedCampaign.status == .canceled, "Blaze campaign was not synced successfully.")
+    }
+
     // MARK: - Synchronize target devices
 
     func test_synchronizeTargetDevices_is_successful_when_fetching_successfully() throws {

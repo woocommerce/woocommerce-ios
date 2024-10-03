@@ -74,6 +74,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value of order status indicating the last selected order status in the Most recent orders dashboard card.
     public var lastSelectedOrderStatus: String?
 
+    /// Products marked as favorite by users.
+    ///
+    public var favoriteProductIDs: [Int64]
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -90,7 +94,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedTopPerformersTimeRange: String = "",
                 lastSelectedMostActiveCouponsTimeRange: String = "",
                 lastSelectedStockType: String? = nil,
-                lastSelectedOrderStatus: String? = nil) {
+                lastSelectedOrderStatus: String? = nil,
+                favoriteProductIDs: [Int64] = []) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -108,6 +113,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange
         self.lastSelectedStockType = lastSelectedStockType
         self.lastSelectedOrderStatus = lastSelectedOrderStatus
+        self.favoriteProductIDs = favoriteProductIDs
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -126,7 +132,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
                              lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
                              lastSelectedStockType: lastSelectedStockType,
-                             lastSelectedOrderStatus: lastSelectedOrderStatus)
+                             lastSelectedOrderStatus: lastSelectedOrderStatus,
+                             favoriteProductIDs: favoriteProductIDs)
     }
 }
 
@@ -156,6 +163,8 @@ extension GeneralStoreSettings {
         self.lastSelectedMostActiveCouponsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedMostActiveCouponsTimeRange) ?? ""
         self.lastSelectedStockType = try container.decodeIfPresent(String.self, forKey: .lastSelectedStockType)
         self.lastSelectedOrderStatus = try container.decodeIfPresent(String.self, forKey: .lastSelectedOrderStatus)
+        self.favoriteProductIDs = try container.decodeIfPresent([Int64].self,
+                                                                forKey: .favoriteProductIDs) ?? []
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

@@ -321,9 +321,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Action Sheet
 
-    /// More Options Action Sheet
+    /// More Options button action
     ///
-    @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
+    @objc func didTapMoreOptions(_ sender: UIBarButtonItem) {
+        Task { @MainActor in
+            await presentMoreOptionsActionSheet(sender)
+        }
+    }
+
+    /// Present More Options Action Sheet
+    ///
+    @MainActor
+    func presentMoreOptionsActionSheet(_ moreOptionsButton: UIBarButtonItem) async {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -349,7 +358,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canShareProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                self?.displayShareProduct(from: sender, analyticSource: .moreMenu)
+                self?.displayShareProduct(from: moreOptionsButton, analyticSource: .moreMenu)
+            }
+        }
+
+        if viewModel.canFavoriteProduct() {
+            if await viewModel.isFavorite() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
+                    self?.viewModel.removeFromFavorite()
+                }
+            } else {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
+                    self?.viewModel.markAsFavorite()
+                }
             }
         }
 
@@ -377,11 +400,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
+        popoverController?.barButtonItem = moreOptionsButton
 
         present(actionSheet, animated: true)
     }
-
 
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1090,6 +1112,7 @@ private extension ProductFormViewController {
             switch result {
             case .success:
                 ServiceLocator.analytics.track(.productDetailProductDeleted)
+                self.viewModel.removeFromFavorite()
                 // Dismisses the in-progress UI.
                 self.navigationController?.dismiss(animated: true, completion: nil)
                 // Dismiss or Pop the Product Form
@@ -1257,7 +1280,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreOptionsActionSheet(_:)))
+                                     action: #selector(didTapMoreOptions(_:)))
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
@@ -2095,6 +2118,20 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+
+    enum Favorite {
+        static let markAsFavorite = NSLocalizedString(
+            "productFormViewController.markAsFavorite",
+            value: "Mark as favorite",
+            comment: "Mark favorite button title in Edit Product More Options Action Sheet"
+        )
+        static let removeFromFavorite = NSLocalizedString(
+            "productFormViewController.removeAsFavorite",
+            value: "Remove from favorite",
+            comment: "Remove favorite button title in Edit Product More Options Action Sheet"
+        )
+    }
+
     static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
     static let trashProduct = NSLocalizedString("productForm.bottomSheet.trashAction",
                                                 value: "Trash product",

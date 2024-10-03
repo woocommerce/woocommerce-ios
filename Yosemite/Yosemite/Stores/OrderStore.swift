@@ -275,9 +275,12 @@ private extension OrderStore {
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
                 if case NetworkError.notFound? = error {
-                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID)
+                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
                 return
             }
 
@@ -443,7 +446,9 @@ private extension OrderStore {
             /// didn't exist locally. So, we have to delete the stored order as workaround.
             /// Otherwise, we have to revert the updated fields.
             if order == backupOrder {
-                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                    onCompletion(result)
+                }
             } else {
                 self?.upsertStoredOrder(readOnlyOrder: backupOrder)
             }
@@ -515,14 +520,13 @@ extension OrderStore {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
-    func deleteStoredOrder(siteID: Int64, orderID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return
-        }
-
-        storage.deleteObject(order)
-        storage.saveIfNeeded()
+    func deleteStoredOrder(siteID: Int64, orderID: Int64, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            storage.deleteObject(order)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the Status of the specified Order, as requested.

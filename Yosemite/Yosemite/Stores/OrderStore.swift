@@ -173,7 +173,7 @@ private extension OrderStore {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
-            case .failure(let error):
+            case .failure:
                 onCompletion(Date().timeIntervalSince(startTime), result)
             }
         }

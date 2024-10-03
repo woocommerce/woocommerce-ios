@@ -459,15 +459,22 @@ private extension OrderStore {
     /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
     ///
-    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return onCompletion(.failure(MarkOrderAsPaidLocallyError.orderNotFoundInStorage))
-        }
-        order.datePaid = datePaid
-        order.statusKey = OrderStatusEnum.processing.rawValue
-        storage.saveIfNeeded()
-        onCompletion(.success(order.toReadOnly()))
+    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                throw MarkOrderAsPaidLocallyError.orderNotFoundInStorage
+            }
+            order.datePaid = datePaid
+            order.statusKey = OrderStatusEnum.processing.rawValue
+            return order
+        }, completion: { result in
+            switch result {
+            case .success(let storageOrder):
+                onCompletion(.success(storageOrder.toReadOnly()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }, on: .main)
     }
 
     /// Deletes a given order.

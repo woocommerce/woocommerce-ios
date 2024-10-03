@@ -156,10 +156,11 @@ public final class CoreDataManager: StorageManagerType {
     ///
     /// - Parameters:
     ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
-    ///   - completion: A closure which is called with the return value of the `block`, after the changed made
-    ///         by the `block` is saved.
+    ///   - completion: A closure which is called after the changed made by the `block` is saved.
     ///   - queue: A queue on which to execute the completion block.
-    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue) {
+    public func performAndSave(_ closure: @escaping (StorageType) -> Void,
+                               completion: (() -> Void)?,
+                               on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
         self.writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
@@ -167,6 +168,32 @@ public final class CoreDataManager: StorageManagerType {
 
                 derivedStorage.saveIfNeeded()
                 queue.async { completion?() }
+                done()
+            }
+        })
+    }
+
+    /// Execute the given block with a background context and save the changes.
+    ///
+    /// This function _does not block_ its running thread. The block is executed in background and its return value
+    /// is passed onto the `completion` block which is executed on the given `queue`.
+    ///
+    /// - Parameters:
+    ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
+    ///   - completion: A closure which is called with the `closure`'s execution result,
+    ///   which is either an error thrown by the `closure` or the return value of the `block`.
+    ///   - queue: A queue on which to execute the completion block.
+    public func performAndSave<T>(_ closure: @escaping (StorageType) throws -> T,
+                                  completion: @escaping (Result<T, Error>) -> Void,
+                                  on queue: DispatchQueue) {
+        let derivedStorage = writerDerivedStorage
+        self.writerQueue.addOperation(AsyncBlockOperation { done in
+            derivedStorage.perform {
+                let result = Result(catching: { try closure(derivedStorage) })
+                if case .success = result {
+                    derivedStorage.saveIfNeeded()
+                }
+                queue.async { completion(result) }
                 done()
             }
         })
@@ -351,7 +378,7 @@ extension CoreDataManagerError: CustomStringConvertible {
 ///
 extension CoreDataManager {
     /// Helper type to support handling async operations by keeping track of their states
-    class AsyncOperation: Operation {
+    class AsyncOperation: Operation, @unchecked Sendable {
         enum State: String {
             case isReady, isExecuting, isFinished
         }
@@ -391,7 +418,7 @@ extension CoreDataManager {
     }
 
     /// Helper type to handle async operations given a closure of code to be executed.
-    final class AsyncBlockOperation: AsyncOperation {
+    final class AsyncBlockOperation: AsyncOperation, @unchecked Sendable {
 
         private let block: (@escaping () -> Void) -> Void
 

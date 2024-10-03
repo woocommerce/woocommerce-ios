@@ -41,10 +41,25 @@ public protocol StorageManagerType {
     ///
     /// - Parameters:
     ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
-    ///   - completion: A closure which is called with the return value of the `block`, after the changed made
-    ///         by the `block` is saved.
+    ///   - completion: A closure which is called after the changed made by the `closure` is saved.
     ///   - queue: A queue on which to execute the completion block.
-    func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue)
+    func performAndSave(_ closure: @escaping (StorageType) -> Void,
+                        completion: (() -> Void)?,
+                        on queue: DispatchQueue)
+
+    /// Execute the given block with a background context and save the changes.
+    ///
+    /// This function _does not block_ its running thread. The block is executed in background and its return value
+    /// is passed onto the `completion` block which is executed on the given `queue`.
+    ///
+    /// - Parameters:
+    ///   - closure: A closure which uses the given `NSManagedObjectContext` to make Core Data model changes.
+    ///   - completion: A closure which is called with the `closure`'s execution result,
+    ///   which is either an error thrown by the `closure` or the return value of the `block`.
+    ///   - queue: A queue on which to execute the completion block.
+    func performAndSave<T>(_ closure: @escaping (StorageType) throws -> T,
+                           completion: @escaping (Result<T, Error>) -> Void,
+                           on queue: DispatchQueue)
 
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.

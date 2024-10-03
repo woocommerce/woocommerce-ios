@@ -158,13 +158,13 @@ public final class CoreDataManager: StorageManagerType {
     ///   - operation: A closure which uses the given `StorageType` to make data changes in background.
     ///   - completion: A closure which is called after the changed made by the `operation` is saved.
     ///   - queue: A queue on which to execute the completion closure.
-    public func performAndSave(_ closure: @escaping (StorageType) -> Void,
+    public func performAndSave(_ operation: @escaping (StorageType) -> Void,
                                completion: (() -> Void)?,
                                on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
-                closure(derivedStorage)
+                operation(derivedStorage)
 
                 derivedStorage.saveIfNeeded()
                 queue.async { completion?() }
@@ -183,13 +183,13 @@ public final class CoreDataManager: StorageManagerType {
     ///   - completion: A closure which is called with the `operation`'s execution result,
     ///   which is either an error thrown by the `operation` or the return value of the `operation`.
     ///   - queue: A queue on which to execute the completion closure.
-    public func performAndSave<T>(_ closure: @escaping (StorageType) throws -> T,
+    public func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
                                   completion: @escaping (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
-                let result = Result(catching: { try closure(derivedStorage) })
+                let result = Result(catching: { try operation(derivedStorage) })
                 if case .success = result {
                     derivedStorage.saveIfNeeded()
                 }

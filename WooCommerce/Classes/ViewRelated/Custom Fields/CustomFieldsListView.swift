@@ -17,21 +17,26 @@ struct CustomFieldsListView: View {
 
     var body: some View {
         NavigationStack {
-            List(viewModel.combinedList) { customField in
-                if isEditable {
-                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { updatedKey, updatedValue in
-                        viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                    })) {
-                        CustomFieldRow(isEditable: true,
+            List {
+                ForEach(Array(viewModel.combinedList.enumerated()), id: \.element.id) { index, customField in
+                    if isEditable {
+                        NavigationLink(destination: CustomFieldEditorView(
+                            customField: customField,
+                            onDone: { editedField in
+                                viewModel.editField(at: index, newField: editedField)
+                            })
+                        ) {
+                            CustomFieldRow(isEditable: true,
+                                           title: customField.key,
+                                           content: customField.value.removedHTMLTags,
+                                           contentURL: nil)
+                        }
+                    } else {
+                        CustomFieldRow(isEditable: false,
                                        title: customField.key,
                                        content: customField.value.removedHTMLTags,
                                        contentURL: nil)
                     }
-                } else {
-                    CustomFieldRow(isEditable: false,
-                                   title: customField.key,
-                                   content: customField.value.removedHTMLTags,
-                                   contentURL: nil)
                 }
             }
             .navigationTitle(Localization.title)

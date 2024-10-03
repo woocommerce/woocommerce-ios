@@ -99,23 +99,21 @@ private extension CustomFieldsListViewModel {
     }
 }
 
-extension CustomFieldsListViewModel {
-    struct CustomFieldUI: Identifiable {
-        let id = UUID()
-        let key: String
-        let value: String
-        let fieldId: Int64?
+struct CustomFieldUI: Identifiable {
+    let id = UUID()
+    let key: String
+    let value: String
+    let fieldId: Int64?
 
-        init(key: String, value: String, fieldId: Int64? = nil) {
-            self.key = key
-            self.value = value
-            self.fieldId = fieldId
-        }
+    init(key: String, value: String, fieldId: Int64? = nil) {
+        self.key = key
+        self.value = value
+        self.fieldId = fieldId
+    }
 
-        init(customField: CustomFieldViewModel) {
-            self.key = customField.title
-            self.value = customField.content
-            self.fieldId = customField.id
-        }
+    init(customField: CustomFieldViewModel) {
+        self.key = customField.title
+        self.value = customField.content
+        self.fieldId = customField.id
     }
 }

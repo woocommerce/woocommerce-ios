@@ -7,28 +7,25 @@ struct CustomFieldEditorView: View {
     @State private var showRichTextEditor = false
     @State private var showingActionSheet = false
 
-    private let initialKey: String
-    private let initialValue: String
+    private let initialCustomField: CustomFieldUI
     private let isReadOnlyValue: Bool
-    private let onSave: (String, String) -> Void
+    private let onDone: (CustomFieldUI) -> Void
 
     private var hasUnsavedChanges: Bool {
-        key != initialKey || value != initialValue
+        key != initialCustomField.key || value != initialCustomField.value
     }
 
     /// Initializer for custom field editor
     /// - Parameters:
-    ///  - key: The key for the custom field
-    ///  - value: The value for the custom field
+    ///  - customField: The current custom field to be edited
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    ///  - onSave: Closure to handle save action
-    init(key: String, value: String, isReadOnlyValue: Bool = false, onSave: @escaping (String, String) -> Void) {
-        self._key = State(initialValue: key)
-        self._value = State(initialValue: value)
-        self.initialKey = key
-        self.initialValue = value
+    ///  - onDone: Closure to handle Done action
+    init(customField: CustomFieldUI, isReadOnlyValue: Bool = false, onDone: @escaping (CustomFieldUI) -> Void) {
+        self._key = State(initialValue: customField.key)
+        self._value = State(initialValue: customField.value)
+        self.initialCustomField = customField
         self.isReadOnlyValue = isReadOnlyValue
-        self.onSave = onSave
+        self.onDone = onDone
     }
 
     var body: some View {
@@ -106,7 +103,7 @@ struct CustomFieldEditorView: View {
                         saveChanges()
                         presentationMode.wrappedValue.dismiss()
                     } label: {
-                        Text("Save") // todo-13493: set String to be translatable
+                        Text("Done") // todo-13493: set String to be translatable
                     }
                     .disabled(!hasUnsavedChanges)
 
@@ -142,7 +139,8 @@ struct CustomFieldEditorView: View {
     }
 
     private func saveChanges() {
-        onSave(key, value)
+        let editedCustomField = CustomFieldUI(key: key, value: value, fieldId: initialCustomField.fieldId)
+        onDone(editedCustomField)
     }
 }
 
@@ -195,6 +193,9 @@ private extension CustomFieldEditorView {
     }
 }
 
-#Preview {
-    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in })
-}
+
+ #Preview {
+ CustomFieldEditorView(customField: CustomFieldUI(key: "key", value: "value", fieldId: nil),
+                       isReadOnlyValue: false,
+                       onDone: { _ in })
+ }

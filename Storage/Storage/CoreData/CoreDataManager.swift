@@ -162,7 +162,7 @@ public final class CoreDataManager: StorageManagerType {
                                completion: (() -> Void)?,
                                on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
-        self.writerQueue.addOperation(AsyncBlockOperation { done in
+        writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
                 closure(derivedStorage)
 
@@ -187,7 +187,7 @@ public final class CoreDataManager: StorageManagerType {
                                   completion: @escaping (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
         let derivedStorage = writerDerivedStorage
-        self.writerQueue.addOperation(AsyncBlockOperation { done in
+        writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {
                 let result = Result(catching: { try closure(derivedStorage) })
                 if case .success = result {

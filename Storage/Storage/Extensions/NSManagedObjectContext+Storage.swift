@@ -137,6 +137,9 @@ extension NSManagedObjectContext: StorageType {
             return
         }
 
+        /// cannot infer the entity name here, so leaving it empty
+        Self.ensureCorrectContextUsageIfNeeded(for: "")
+
         do {
             try save()
         } catch {
@@ -183,13 +186,19 @@ extension NSManagedObjectContext: StorageType {
     ///
     private static func ensureCorrectContextUsageIfNeeded(for entityName: String) {
         #if DEBUG
-        let enforceWriteInBackground = ProcessInfo.processInfo.arguments.contains("-enforce-core-data-write-in-background")
-        if enforceWriteInBackground {
-            assert(Thread.isMainThread == false,
-                   "Write operations for \(entityName) should only be done on a background context")
-        } else if Thread.isMainThread {
-            DDLogWarn("⚠️ Write operations for \(entityName) should only be done on a background context ⚠️")
+        guard Thread.isMainThread else {
+            return
         }
+        let message: String = {
+            if entityName.isEmpty {
+                "⚠️ Saving data should only be done on a background context"
+            } else {
+                "⚠️ Write operations for \(entityName) should only be done on a background context"
+            }
+        }()
+
+        let enforceWriteInBackground = ProcessInfo.processInfo.arguments.contains("-enforce-core-data-write-in-background")
+        enforceWriteInBackground ? assertionFailure(message) : DDLogWarn(message)
         #endif
     }
 }

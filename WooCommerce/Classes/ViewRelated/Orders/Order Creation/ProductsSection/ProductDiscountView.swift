@@ -60,7 +60,7 @@ struct ProductDiscountView: View {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
                         if let price = viewModel.totalPricePreDiscount {
-                            Text(discountDetailsViewModel.recalculateFormattedPriceAfterDiscount)
+                            Text(discountDetailsViewModel.formattedPriceAfterDiscount)
                         }
                     }
                     .padding()

@@ -128,9 +128,9 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
 
         switch feeOrDiscountType {
         case .fixed:
-            return decimalInput as Decimal
+            return decimalInput
         case .percentage:
-            return baseAmount * (decimalInput as Decimal) * 0.01
+            return baseAmount * decimalInput * 0.01
         }
     }
 

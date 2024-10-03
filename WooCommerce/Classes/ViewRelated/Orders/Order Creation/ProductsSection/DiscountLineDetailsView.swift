@@ -20,6 +20,9 @@ struct DiscountLineDetailsView: View {
                     discountTypeButtonToggle
                         .padding()
                 })
+                .onAppear {
+                    viewModel.checkDiscountValidity()
+                }
             case .percentage:
                 LineDetailView(label: {
                     Text(Localization.percentagePriceDiscountLabel)
@@ -30,6 +33,9 @@ struct DiscountLineDetailsView: View {
                     discountTypeButtonToggle
                         .padding()
                 })
+                .onAppear {
+                    viewModel.checkDiscountValidity()
+                }
             }
         }
     }

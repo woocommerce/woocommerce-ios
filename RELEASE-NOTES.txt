@@ -5,9 +5,12 @@
 -----
 - [*] Payments: Mitigated Custom Amounts issue where CTA was not tappable unless keyboard was manually dismissed first [https://github.com/woocommerce/woocommerce-ios/pull/13994]
 - [internal] Enhanced error logging in the `OrderDetailsDataSource` class to improve crash diagnostics. [https://github.com/woocommerce/woocommerce-ios/pull/14018]
+- [internal] Removed product creation AI feature flag and unused code. [https://github.com/woocommerce/woocommerce-ios/pull/14010]
 - [*] Payments: Fixed a bug preventing payments onboarding from being automatically hidden when complete [https://github.com/woocommerce/woocommerce-ios/pull/14017]
 - [*] Payments: Give a specific label to Tap to Pay trial payments [https://github.com/woocommerce/woocommerce-ios/pull/14022]
 - [*] Orders: Applying a discount higher than the product price is no longer allowed [https://github.com/woocommerce/woocommerce-ios/pull/14083]
+- [*] Some error views were misaligned on iPad when the store was not a WordPress site or didn't have Jetpack installed. Now, everything is perfectly centered. [https://github.com/woocommerce/woocommerce-ios/pull/13991]
+- [*] Orders: Fixed a crash when searching for products to add to an order. [https://github.com/woocommerce/woocommerce-ios/pull/14095]
 
 20.6
 -----

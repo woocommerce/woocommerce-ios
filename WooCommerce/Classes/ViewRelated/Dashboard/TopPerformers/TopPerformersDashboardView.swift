@@ -55,7 +55,7 @@ struct TopPerformersDashboardView: View {
 
                 Divider()
                     .padding(.leading, Layout.padding)
-                
+
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])

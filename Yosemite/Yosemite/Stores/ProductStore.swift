@@ -1171,21 +1171,21 @@ extension ProductStore {
         let readOnlyMetadataIDs = Set(readOnlyProduct.customFields.map { $0.metadataID })
 
         // Remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
-                storageProduct.customFields?.forEach { storageCustomField in
-                    if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
-                        storageProduct.removeFromCustomFields(storageCustomField)
-                        storage.deleteObject(storageCustomField)
-                    }
-                }
-        
+        storageProduct.customFields?.forEach { storageCustomField in
+            if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
+                storageProduct.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
+            }
+        }
+
         var newStorageMetaDataArray: [Storage.MetaData] = []
 
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
-                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
-                newStorageMetaData.update(with: readOnlyCustomField)
-                newStorageMetaDataArray.append(newStorageMetaData)
-            
+            let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
+            newStorageMetaData.update(with: readOnlyCustomField)
+            newStorageMetaDataArray.append(newStorageMetaData)
+
         }
 
         // Batch writing process of multiple custom fields

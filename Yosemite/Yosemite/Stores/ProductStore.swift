@@ -1167,6 +1167,9 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Create a set of metadata IDs from the read-only product for quick lookup
+        let readOnlyMetadataIDs = Set(readOnlyProduct.customFields.map { $0.metadataID })
+
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
             if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
@@ -1180,9 +1183,9 @@ extension ProductStore {
             }
         }
 
-        // Now, remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
+        // Remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
         storageProduct.customFields?.forEach { storageCustomField in
-            if readOnlyProduct.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
                 storageProduct.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }

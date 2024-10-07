@@ -369,6 +369,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var shippingLineViewModel: EditableOrderShippingLineViewModel
 
+    /// View model to display, add, edit, or remove coupon lines.
+    ///
+    @Published var couponLineViewModel: EditableOrderCouponLineViewModel
+
     // MARK: Customer data properties
 
     /// View model for the customer section.
@@ -511,6 +515,7 @@ final class EditableOrderViewModel: ObservableObject {
         )
 
         self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
         configureCollectPaymentDisabledState()

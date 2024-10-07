@@ -69,10 +69,10 @@ struct OrderPaymentSection: View {
 private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
-            ForEach(viewModel.couponLineViewModels, id: \.title) { couponViewModel in
+            ForEach(viewModel.couponLineViewModels, id: \.code) { couponViewModel in
                 VStack(alignment: .leading, spacing: .zero) {
                     HStack {
-                        Text(couponViewModel.title)
+                        Text(Localization.coupon)
                             .foregroundColor(.primary)
                         Spacer()
                         Text(couponViewModel.discount)

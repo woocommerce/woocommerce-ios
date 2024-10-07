@@ -2306,11 +2306,11 @@ private extension EditableOrderViewModel {
     ///
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
-            CouponLineViewModel(title: String.localizedStringWithFormat(Localization.CouponSummary.singular, $0.code),
-                          discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
-                          detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
-                                                                       siteID: siteID,
-                                                                       didSelectSave: saveCouponLine))
+            CouponLineViewModel(code: $0.code,
+                                discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
+                                detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
+                                                                             siteID: siteID,
+                                                                             didSelectSave: saveCouponLine))
 
         }
     }
@@ -2602,14 +2602,6 @@ private extension EditableOrderViewModel {
             comment: "Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
             "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
             "In this case, the product is not added to the order as the merchant wanted it to be.")
-
-
-        enum CouponSummary {
-            static let singular = NSLocalizedString("Coupon (%1$@)",
-                                                   comment: "The singular coupon summary. Reads like: Coupon (code1)")
-            static let plural = NSLocalizedString("Coupons (%1$@)",
-                                                   comment: "The plural coupon summary. Reads like: Coupon (code1, code2)")
-        }
     }
 
     enum SystemPluginPaths {

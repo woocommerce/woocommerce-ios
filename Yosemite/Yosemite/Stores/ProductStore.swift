@@ -1165,6 +1165,8 @@ extension ProductStore {
         // Create a set of metadata IDs from the read-only product for quick lookup
         let readOnlyMetadataIDs = Set(readOnlyProduct.customFields.map { $0.metadataID })
 
+        var newStorageMetaDataArray: [Storage.MetaData] = []
+
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
             if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
@@ -1174,8 +1176,13 @@ extension ProductStore {
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
                 newStorageMetaData.update(with: readOnlyCustomField)
-                storageProduct.addToCustomFields(newStorageMetaData)
+                newStorageMetaDataArray.append(newStorageMetaData)
             }
+        }
+
+        // Batch writing process of multiple custom fields
+        if !newStorageMetaDataArray.isEmpty {
+            storageProduct.addToCustomFields(NSSet(array: newStorageMetaDataArray))
         }
 
         // Remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`

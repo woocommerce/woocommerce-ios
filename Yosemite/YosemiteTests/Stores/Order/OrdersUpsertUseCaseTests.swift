@@ -281,6 +281,8 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
         let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
         XCTAssertEqual(storageProductCustomField.toReadOnly(), customField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
     }
 
     func test_it_persists_changes_to_identical_custom_fields_separately_for_order_and_product() throws {
@@ -311,6 +313,8 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
         let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
         XCTAssertEqual(storageProductCustomField.toReadOnly(), updatedProductCustomField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
     }
 
     func test_it_deletes_order_custom_field_but_persists_product_custom_field() throws {
@@ -336,6 +340,8 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
         let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
         XCTAssertEqual(storageProductCustomField.toReadOnly(), initialCustomField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
     }
 
     func test_it_persists_order_gift_card_in_storage() throws {

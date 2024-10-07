@@ -19,12 +19,4 @@ final class EditableOrderCouponLineViewModel: ObservableObject {
             .removeDuplicates()
             .assign(to: &$couponLineRows)
     }
-
-    func temporary_addCouponLine(_ input: OrderCouponLine) {
-        couponLineRows.append(input)
-    }
-
-    func temporary_deleteCoupon() {
-        couponLineRows.removeLast()
-    }
 }

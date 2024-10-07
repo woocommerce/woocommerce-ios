@@ -24,12 +24,12 @@ struct OrderCouponSectionView: View {
 
             }
             .padding(.horizontal)
-            ForEach(couponViewModel.couponLineRows, id: \.couponID) { couponRow in
+            ForEach(couponViewModel.couponLineRows, id: \.couponID) { coupon in
                 HStack {
-                    Text(couponRow.code)
+                    Text(coupon.code)
                     Spacer()
                     Button(action: {
-                        couponViewModel.temporary_deleteCoupon()
+                        removeCouponLine(with: coupon.code)
                     }, label: {
                         Image(uiImage: .trashImage)
                             .foregroundColor(Color(.primary))
@@ -37,14 +37,13 @@ struct OrderCouponSectionView: View {
                 }
             }
         }
-        .border(.green, width: 2.0)
         .renderedIf(couponViewModel.couponLineRows.isNotEmpty)
         .sheet(isPresented: $shouldShowCouponList) {
             CouponListView(siteID: viewModel.siteID,
                            emptyStateActionTitle: "",
                            emptyStateAction: { },
                            onCouponSelected: { coupon in
-                viewModel.saveCouponLine(result: .added(newCode: coupon.code))
+                addCouponLine(with: coupon.code)
                 shouldShowCouponList = false
             })
         }
@@ -53,6 +52,17 @@ struct OrderCouponSectionView: View {
 
 private extension OrderCouponSectionView {
     enum Localization {
-        static let couponsSectionTitle = NSLocalizedString("", value: "Coupons", comment: "")
+        static let couponsSectionTitle = NSLocalizedString(
+            "OrderCouponSectionView.header.coupons",
+            value: "Coupons",
+            comment: "Title of the section that display coupons applied to an order, within the order creation screen.")
+    }
+
+    func addCouponLine(with code: String) {
+        viewModel.saveCouponLine(result: .added(newCode: code))
+    }
+
+    func removeCouponLine(with code: String) {
+        viewModel.saveCouponLine(result: .removed(code: code))
     }
 }

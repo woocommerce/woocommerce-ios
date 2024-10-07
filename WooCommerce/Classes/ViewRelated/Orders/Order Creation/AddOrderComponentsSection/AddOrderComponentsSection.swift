@@ -235,8 +235,9 @@ struct AddOrderComponentsSection_Previews: PreviewProvider {
         let shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: 1,
                                                                        flow: .creation,
                                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
-        let couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, 
+        let couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: RemoteOrderSynchronizer(siteID: 1,
                                                                                                               flow: .creation))
+
         AddOrderComponentsSection(viewModel: viewModel,
                                   shippingLineViewModel: shippingLineViewModel,
                                   couponLineViewModel: couponLineViewModel,

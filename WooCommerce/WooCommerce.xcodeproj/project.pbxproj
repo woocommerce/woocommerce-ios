@@ -1547,6 +1547,8 @@
 		68D3E98D2C7C371B005B6278 /* POSBottomShadowViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D3E98C2C7C371B005B6278 /* POSBottomShadowViewModifier.swift */; };
 		68D5094E2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D5094D2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift */; };
 		68D8FBD12BFEF9C700477C42 /* TotalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D8FBD02BFEF9C700477C42 /* TotalsView.swift */; };
+		68DF5A8D2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68DF5A8C2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift */; };
+		68DF5A8F2CB38F20000154C9 /* OrderCouponSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68DF5A8E2CB38F20000154C9 /* OrderCouponSectionView.swift */; };
 		68E4E8B52C0EF39D00CFA0C3 /* PreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */; };
 		68E6749F2A4DA01C0034BA1E /* WooWPComPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */; };
 		68E674A12A4DA0B30034BA1E /* InAppPurchasesError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E674A02A4DA0B30034BA1E /* InAppPurchasesError.swift */; };
@@ -4577,6 +4579,8 @@
 		68D3E98C2C7C371B005B6278 /* POSBottomShadowViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBottomShadowViewModifier.swift; sourceTree = "<group>"; };
 		68D5094D2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountLineDetailsView.swift; sourceTree = "<group>"; };
 		68D8FBD02BFEF9C700477C42 /* TotalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalsView.swift; sourceTree = "<group>"; };
+		68DF5A8C2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderCouponLineViewModel.swift; sourceTree = "<group>"; };
+		68DF5A8E2CB38F20000154C9 /* OrderCouponSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCouponSectionView.swift; sourceTree = "<group>"; };
 		68E4E8B42C0EF39D00CFA0C3 /* PreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelpers.swift; sourceTree = "<group>"; };
 		68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooWPComPlan.swift; sourceTree = "<group>"; };
 		68E674A02A4DA0B30034BA1E /* InAppPurchasesError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesError.swift; sourceTree = "<group>"; };
@@ -9411,6 +9415,15 @@
 			path = InAppPurchases;
 			sourceTree = "<group>";
 		};
+		68DF5A8B2CB38EC5000154C9 /* Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				68DF5A8C2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift */,
+				68DF5A8E2CB38F20000154C9 /* OrderCouponSectionView.swift */,
+			);
+			path = Coupons;
+			sourceTree = "<group>";
+		};
 		68F151DF2C0DA7800082AEC8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -11376,6 +11389,7 @@
 			isa = PBXGroup;
 			children = (
 				20BBD62A2B30608200A903F6 /* AddOrderComponentsSection */,
+				68DF5A8B2CB38EC5000154C9 /* Coupons */,
 				B9F148922AD43E05008FC795 /* CustomAmounts */,
 				CE29FEEB2BFF7706007679C2 /* Shipping */,
 				B935D35A2A9F44A10067B927 /* Taxes */,
@@ -15190,6 +15204,7 @@
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				2004E2CC2C07795E00D62521 /* CardPresentPaymentError.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
+				68DF5A8F2CB38F20000154C9 /* OrderCouponSectionView.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				DE4A33552A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift in Sources */,
 				860476E82B6CA0FC00AF0AEB /* BottomSheetProductType.swift in Sources */,
@@ -16382,6 +16397,7 @@
 				DE8BEB932ABAF07700F5E56C /* AddProductFeaturesViewModel.swift in Sources */,
 				7E7C5F872719A93C00315B61 /* ProductCategoryListViewController.swift in Sources */,
 				2631D4FE29F2141D00F13F20 /* StorePlanBannerPresenter.swift in Sources */,
+				68DF5A8D2CB38EEA000154C9 /* EditableOrderCouponLineViewModel.swift in Sources */,
 				CEC3CC762C934F5500B93FBE /* WooShippingItemsDataSource.swift in Sources */,
 				DEC51B06276B3F3C009F3DF4 /* Int64+Helpers.swift in Sources */,
 				02BE9CC029C05CFD00292333 /* SitePreviewView.swift in Sources */,

@@ -23,10 +23,10 @@ struct OrderCouponSectionView: View {
                 })
 
             }
-            .padding(.horizontal)
             ForEach(couponViewModel.couponLineRows, id: \.couponID) { coupon in
                 HStack {
                     Text(coupon.code)
+                        .subheadlineStyle()
                     Spacer()
                     Button(action: {
                         removeCouponLine(with: coupon.code)
@@ -35,9 +35,23 @@ struct OrderCouponSectionView: View {
                             .foregroundColor(Color(.primary))
                     })
                 }
+                .padding(Layout.contentPadding)
+                .contentShape(Rectangle())
+                .background(
+                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                        .fill(Color(uiColor: .init(light: UIColor.clear,
+                                                   dark: UIColor.systemGray5)))
+                )
+                .overlay {
+                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                        .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
+                }
             }
         }
+        .padding()
         .renderedIf(couponViewModel.couponLineRows.isNotEmpty)
+        .background(Color(.listForeground(modal: true)))
+        .addingTopAndBottomDividers()
         .sheet(isPresented: $shouldShowCouponList) {
             CouponListView(siteID: viewModel.siteID,
                            emptyStateActionTitle: "",
@@ -56,6 +70,12 @@ private extension OrderCouponSectionView {
             "OrderCouponSectionView.header.coupons",
             value: "Coupons",
             comment: "Title of the section that display coupons applied to an order, within the order creation screen.")
+    }
+
+    enum Layout {
+        static let cornerRadius: CGFloat = 8
+        static let borderLineWidth: CGFloat = 0.5
+        static let contentPadding: CGFloat = 16
     }
 
     func addCouponLine(with code: String) {

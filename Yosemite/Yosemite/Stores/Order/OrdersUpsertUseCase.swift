@@ -304,25 +304,29 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the `customFields` from the `readOnlyOrder`
-        readOnlyOrder.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID,
-                                                                       orderID: storageOrder.orderID,
-                                                                       metadataID: readOnlyCustomField.metadataID) {
-                existingStorageMetaData.update(with: readOnlyCustomField)
-            } else {
-                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
-                newStorageMetaData.update(with: readOnlyCustomField)
-                storageOrder.addToCustomFields(newStorageMetaData)
-            }
-        }
+        // Create a set of metadata IDs from the read-only order for quick lookup
+        let readOnlyMetadataIDs = Set(readOnlyOrder.customFields.map { $0.metadataID })
 
-        // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
+        // Remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
         storageOrder.customFields?.forEach { storageCustomField in
-            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
                 storageOrder.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }
+        }
+
+        var newStorageMetaDataArray: [Storage.MetaData] = []
+
+        // Upsert the `customFields` from the `readOnlyOrder`
+        readOnlyOrder.customFields.forEach { readOnlyCustomField in
+            let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
+            newStorageMetaData.update(with: readOnlyCustomField)
+            newStorageMetaDataArray.append(newStorageMetaData)
+        }
+
+        // Batch writing process of multiple custom fields
+        if !newStorageMetaDataArray.isEmpty {
+            storageOrder.addToCustomFields(NSSet(array: newStorageMetaDataArray))
         }
     }
 

@@ -1167,20 +1167,15 @@ extension ProductStore {
 
         // Remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
         storageProduct.customFields?.forEach { storageCustomField in
-            if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
-                storageProduct.removeFromCustomFields(storageCustomField)
-                storage.deleteObject(storageCustomField)
-            }
+            storageProduct.removeFromCustomFields(storageCustomField)
+            storage.deleteObject(storageCustomField)
         }
 
-        var newStorageMetaDataArray: [Storage.MetaData] = []
-
-        // Upsert the `customFields` from the `readOnlyProduct`
-        readOnlyProduct.customFields.forEach { readOnlyCustomField in
+        // Create `customFields` objects from the `readOnlyProduct`
+        let newStorageMetaDataArray = readOnlyProduct.customFields.map { readOnlyCustomField in
             let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
             newStorageMetaData.update(with: readOnlyCustomField)
-            newStorageMetaDataArray.append(newStorageMetaData)
-
+            return newStorageMetaData
         }
 
         // Batch writing process of multiple custom fields

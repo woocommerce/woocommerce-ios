@@ -309,19 +309,15 @@ struct OrdersUpsertUseCase {
 
         // Remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
         storageOrder.customFields?.forEach { storageCustomField in
-            if !readOnlyMetadataIDs.contains(storageCustomField.metadataID) {
-                storageOrder.removeFromCustomFields(storageCustomField)
-                storage.deleteObject(storageCustomField)
-            }
+            storageOrder.removeFromCustomFields(storageCustomField)
+            storage.deleteObject(storageCustomField)
         }
 
-        var newStorageMetaDataArray: [Storage.MetaData] = []
-
-        // Upsert the `customFields` from the `readOnlyOrder`
-        readOnlyOrder.customFields.forEach { readOnlyCustomField in
+        // Create `customFields` objects from the `readOnlyOrder`
+        let newStorageMetaDataArray = readOnlyOrder.customFields.map { readOnlyCustomField in
             let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
             newStorageMetaData.update(with: readOnlyCustomField)
-            newStorageMetaDataArray.append(newStorageMetaData)
+            return newStorageMetaData
         }
 
         // Batch writing process of multiple custom fields

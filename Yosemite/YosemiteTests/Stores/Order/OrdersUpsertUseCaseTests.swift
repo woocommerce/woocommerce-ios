@@ -261,7 +261,6 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
-
     func test_it_handles_large_number_of_custom_fields_for_order_and_product_without_deadlock_in_small_amount_of_time() throws {
         // Given
         let customFields = (1...2500).map { MetaData(metadataID: $0, key: "Key\($0)", value: "Value\($0)") }
@@ -281,7 +280,6 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         }
 
         // Then
-
         self.waitUntil {
             self.viewStorage.countObjects(ofType: Storage.MetaData.self) == 5000
         }

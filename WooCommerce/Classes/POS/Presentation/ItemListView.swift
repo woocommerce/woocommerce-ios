@@ -19,8 +19,17 @@ struct ItemListView: View {
                 // a specific view within the ItemListView to handle them
                 EmptyView()
             case .loading, .loaded:
+                // The view just renders whatever it's in memory, shouldn't need to know about anything else:
                 listView(viewModel.items)
             }
+            Button(action: {
+                Task {
+                    await viewModel.populatePointOfSaleItems()
+                }
+            }, label: {
+                Text("Next Page")
+            })
+            .buttonStyle(PrimaryButtonStyle())
         }
         .refreshable {
             await viewModel.reload()

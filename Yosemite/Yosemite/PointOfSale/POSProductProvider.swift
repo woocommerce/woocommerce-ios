@@ -26,9 +26,10 @@ public final class POSProductProvider: POSItemProvider {
                   network: AlamofireNetwork(credentials: credentials))
     }
 
-    public func providePointOfSaleItems() async throws -> [POSItem] {
+    // If none provided from the app layer, we fetch the first page by default:
+    public func providePointOfSaleItems(_ nextPage: Int = 1) async throws -> [POSItem] {
         do {
-            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
+            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID, pageNumber: nextPage)
 
             let eligibilityCriteria: [(Product) -> Bool] = [
                 isNotVirtual,

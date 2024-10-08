@@ -24,5 +24,5 @@ extension POSItem {
 }
 
 public protocol POSItemProvider {
-    func providePointOfSaleItems() async throws -> [POSItem]
+    func providePointOfSaleItems(_ nextPage: Int) async throws -> [POSItem]
 }

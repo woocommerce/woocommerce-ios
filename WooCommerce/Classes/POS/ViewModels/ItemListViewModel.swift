@@ -10,6 +10,9 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
+    private var currentPage: Int = 0
+    private var nextPage: Int = 1
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -39,11 +42,26 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func populatePointOfSaleItems() async {
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems()
+            // (!) We cannot override the array anymore with new content, subsequent calls should append to existing items
+            // Problem: Potentially stale data. Most likely this also should be done in Yosemite.
+            if nextPage == 1 {
+                items = try await itemProvider.providePointOfSaleItems(nextPage)
+            } else {
+                let newItems = try await itemProvider.providePointOfSaleItems(nextPage)
+                items.append(contentsOf: newItems)
+            }
+
             if items.count == 0 {
                 state = .empty
+                // If nothing is found let's reset the pagination counter
+                currentPage = 0
+                nextPage = 1
             } else {
                 state = .loaded(items)
+                // Problem: Sync issues.
+                // Updating items via web may make some of these never found if pagination keeps counting forward
+                currentPage = (currentPage + 1)
+                nextPage = (nextPage + 1)
             }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
@@ -56,7 +74,19 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
-        await populatePointOfSaleItems()
+        // Problem: We need to evaluate which products appear after a Pull-To-Refresh
+        // Right now would just call the next page, rather than the initial one.
+        // await populatePointOfSaleItems()
+        do {
+            let freshFirstPageItems = try await itemProvider.providePointOfSaleItems(1)
+            // This will throw errors if used straight-away:
+            // `ForEach<Array<POSItem>, Int64, Button<ItemCardView>>: the ID 2956 occurs multiple times within the collection, this will give undefined results!`
+            // While the product ID exists, the internals might have changed (eg: price), and we still need to update those, we
+            // may need to not use productID as the identifiable prop.
+            items.append(contentsOf: freshFirstPageItems)
+        } catch {
+            debugPrint(error.localizedDescription.debugDescription)
+        }
     }
 
     func dismissBanner() {

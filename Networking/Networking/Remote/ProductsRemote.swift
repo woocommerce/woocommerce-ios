@@ -196,11 +196,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
+    /// - pageNumber: ...
     ///
-    public func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
+    public func loadAllSimpleProductsForPointOfSale(for siteID: Int64, pageNumber: Int = 1) async throws -> [Product] {
         let parameters = [
-            ParameterKey.page: POSConstants.page,
-            ParameterKey.perPage: POSConstants.productsPerPage,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: "5", // Temporary for testing.
             ParameterKey.productType: POSConstants.productType,
             ParameterKey.orderBy: OrderKey.name.value,
             ParameterKey.order: Order.ascending.value,

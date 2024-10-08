@@ -13,6 +13,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     private var currentPage: Int = 0
     private var nextPage: Int = 1
 
+    // Item threeshold before the next pagination call is performed
+    // Set to 5 for testing, so it fits the per_page param for the remote
+    private var itemsThreeshold: Int = 5
+    private var isfetching: Bool = false
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -60,8 +65,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 state = .loaded(items)
                 // Problem: Sync issues.
                 // Updating items via web may make some of these never found if pagination keeps counting forward
-                currentPage = (currentPage + 1)
-                nextPage = (nextPage + 1)
+                currentPage += 1
+                nextPage += 1
             }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
@@ -69,6 +74,21 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                                       subtitle: Constants.failedToLoadSubtitle,
                                       buttonText: Constants.failedToLoadButtonTitle)
             state = .error(itemListError)
+        }
+    }
+
+    func requestMoreItemsIfNeeded(at index: Int) {
+        // Update threeshold
+        itemsThreeshold = items.count - 1
+ 
+        if index == itemsThreeshold && !isfetching {
+            isfetching = true
+            // We don't really know if there's more items to be fetched from the API,
+            // we just know that we should attempt to fetch now, because there could be.
+            Task { @MainActor in
+                await populatePointOfSaleItems()
+                isfetching = false
+            }
         }
     }
 

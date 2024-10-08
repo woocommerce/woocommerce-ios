@@ -22,14 +22,9 @@ struct ItemListView: View {
                 // The view just renders whatever it's in memory, shouldn't need to know about anything else:
                 listView(viewModel.items)
             }
-            Button(action: {
-                Task {
-                    await viewModel.populatePointOfSaleItems()
-                }
-            }, label: {
-                Text("Next Page")
-            })
-            .buttonStyle(PrimaryButtonStyle())
+            Text("Keep scrolling...")
+                .titleStyle()
+                .padding(.vertical)
         }
         .refreshable {
             await viewModel.reload()
@@ -132,16 +127,32 @@ private extension ItemListView {
                 if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.productID) { item in
+                // Enumerate them so we can attach an index to the cards upon rendering them.
+                // Later we use this index to calculate if we need to prefetch more items based what's loaded
+                ForEach(Array(items.enumerated()), id: \.element.productID) { index, item in
                     Button(action: {
                         viewModel.select(item)
                     }, label: {
                         ItemCardView(item: item)
+                            .onAppear {
+                                viewModel.requestMoreItemsIfNeeded(at: index)
+                            }
                     })
                 }
             }
             .padding(.bottom, floatingControlAreaSize.height)
             .padding(.horizontal, Constants.itemListPadding)
+            .background(GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.frame(in: .global).maxY) { maxY in
+                        // Detects scroll bottom
+                        let viewHeight = UIScreen.main.bounds.height
+                        if maxY < viewHeight {
+                            // Careful here, as index != number of items, off by 1.
+                            viewModel.requestMoreItemsIfNeeded(at: items.count - 1)
+                        }
+                    }
+            })
         }
     }
 }

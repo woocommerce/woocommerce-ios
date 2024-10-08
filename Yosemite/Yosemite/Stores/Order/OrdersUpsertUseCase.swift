@@ -307,7 +307,7 @@ struct OrdersUpsertUseCase {
         // Create a set of metadata IDs from the read-only order for quick lookup
         let readOnlyMetadataIDs = Set(readOnlyOrder.customFields.map { $0.metadataID })
 
-        // Remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
+        // Remove any objects that exist in `storageOrder.customFields` regarding a specific order.
         storageOrder.customFields?.forEach { storageCustomField in
             storageOrder.removeFromCustomFields(storageCustomField)
             storage.deleteObject(storageCustomField)

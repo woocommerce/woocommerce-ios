@@ -1165,7 +1165,7 @@ extension ProductStore {
         // Create a set of metadata IDs from the read-only product for quick lookup
         let readOnlyMetadataIDs = Set(readOnlyProduct.customFields.map { $0.metadataID })
 
-        // Remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
+        // Remove any objects that exist in `storageProduct.customFields` regarding a specific product.
         storageProduct.customFields?.forEach { storageCustomField in
             storageProduct.removeFromCustomFields(storageCustomField)
             storage.deleteObject(storageCustomField)

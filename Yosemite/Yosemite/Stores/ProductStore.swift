@@ -1162,8 +1162,6 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        // Create a set of metadata IDs from the read-only product for quick lookup
-        let readOnlyMetadataIDs = Set(readOnlyProduct.customFields.map { $0.metadataID })
 
         // Remove any objects that exist in `storageProduct.customFields` regarding a specific product.
         storageProduct.customFields?.forEach { storageCustomField in

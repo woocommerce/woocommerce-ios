@@ -276,7 +276,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         DispatchQueue.global(qos: .background).async {
             orderUseCase.upsert([order])
             productStore.upsertStoredProducts(readOnlyProducts: [product], in: backgroundContext)
-        backgroundContext.saveIfNeeded()
+            backgroundContext.saveIfNeeded()
         }
 
         // Then

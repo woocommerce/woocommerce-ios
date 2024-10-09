@@ -1162,23 +1162,24 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let storedMetaData = storageProduct.customFields
+        // Upsert the `customFields` from the `readOnlyProduct`
+        readOnlyProduct.customFields.forEach { readOnlyCustomField in
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
+                existingStorageMetaData.update(with: readOnlyCustomField)
+            } else {
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
+                newStorageMetaData.update(with: readOnlyCustomField)
+                storageProduct.addToCustomFields(newStorageMetaData)
+            }
+        }
 
-        // Remove any objects that exist in `storageProduct.customFields` regarding a specific product.
+        // Now, remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
         storageProduct.customFields?.forEach { storageCustomField in
-            storageProduct.removeFromCustomFields(storageCustomField)
-            storage.deleteObject(storageCustomField)
-        }
-
-        // Create `customFields` objects from the `readOnlyProduct`
-        let newStorageMetaDataArray = readOnlyProduct.customFields.map { readOnlyCustomField in
-            let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
-            newStorageMetaData.update(with: readOnlyCustomField)
-            return newStorageMetaData
-        }
-
-        // Batch writing process of multiple custom fields
-        if !newStorageMetaDataArray.isEmpty {
-            storageProduct.addToCustomFields(NSSet(array: newStorageMetaDataArray))
+            if readOnlyProduct.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+                storageProduct.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
+            }
         }
     }
 }

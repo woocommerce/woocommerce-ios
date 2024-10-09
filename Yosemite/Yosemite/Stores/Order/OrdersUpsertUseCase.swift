@@ -304,23 +304,24 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        let storedMetaData = storageOrder.customFields
+        // Upsert the `customFields` from the `readOnlyOrder`
+        readOnlyOrder.customFields.forEach { readOnlyCustomField in
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
+                existingStorageMetaData.update(with: readOnlyCustomField)
+            } else {
+                let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
+                newStorageMetaData.update(with: readOnlyCustomField)
+                storageOrder.addToCustomFields(newStorageMetaData)
+            }
+        }
 
-        // Remove any objects that exist in `storageOrder.customFields` regarding a specific order.
+        // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
         storageOrder.customFields?.forEach { storageCustomField in
-            storageOrder.removeFromCustomFields(storageCustomField)
-            storage.deleteObject(storageCustomField)
-        }
-
-        // Create `customFields` objects from the `readOnlyOrder`
-        let newStorageMetaDataArray = readOnlyOrder.customFields.map { readOnlyCustomField in
-            let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
-            newStorageMetaData.update(with: readOnlyCustomField)
-            return newStorageMetaData
-        }
-
-        // Batch writing process of multiple custom fields
-        if !newStorageMetaDataArray.isEmpty {
-            storageOrder.addToCustomFields(NSSet(array: newStorageMetaDataArray))
+            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+                storageOrder.removeFromCustomFields(storageCustomField)
+                storage.deleteObject(storageCustomField)
+            }
         }
     }
 

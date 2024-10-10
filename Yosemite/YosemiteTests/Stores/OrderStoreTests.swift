@@ -1414,16 +1414,19 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: Tests for `markOrderAsPaidLocally`
 
-    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() throws {
+    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing_on_success() throws {
         // Given
-        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let order = Order.fake().copy(status: .pending)
-        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
+        let initialStatus = OrderStatusEnum.pending
+        let expectedStatus = OrderStatusEnum.processing
         // GMT: Wednesday, May 11, 2022 3:45:03 AM
         let datePaid = Date(timeIntervalSince1970: 1652240703)
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let order = Order.fake().copy(siteID: 1234, orderID: 5678, status: initialStatus)
+
+        store.upsertStoredOrder(readOnlyOrder: order, in: viewStorage)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
                 promise(result)
             }
@@ -1432,12 +1435,11 @@ final class OrderStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let orderOnCompletion = try XCTUnwrap(result.get())
-        // `customerNote` is default to an empty string when converting from an order in storage.
-        assertEqual(order.copy(status: .processing, customerNote: "", datePaid: datePaid), orderOnCompletion)
-
-        let orderInStorage = try XCTUnwrap(viewStorage.loadOrder(siteID: order.siteID, orderID: order.orderID)?.toReadOnly())
-        assertEqual(orderInStorage, orderOnCompletion)
+        guard let storageOrder = viewStorage.loadOrder(siteID: order.siteID, orderID: order.orderID) else {
+            return XCTFail("Expected order. Got nothing")
+        }
+        assertEqual(storageOrder.datePaid, datePaid)
+        assertEqual(storageOrder.statusKey, expectedStatus.rawValue)
     }
 
     func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() throws {
@@ -1448,7 +1450,7 @@ final class OrderStoreTests: XCTestCase {
         let datePaid = Date(timeIntervalSince1970: 1652240703)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
                 promise(result)
             }

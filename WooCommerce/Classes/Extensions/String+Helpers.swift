@@ -101,6 +101,14 @@ extension String {
 
         return Set(arrayOfTags)
     }
+
+    func removingSuffix(_ suffix: String) -> String {
+        guard hasSuffix(suffix) else {
+            return self
+        }
+
+        return String(self.dropLast(suffix.count))
+    }
 }
 
 #if !os(watchOS)

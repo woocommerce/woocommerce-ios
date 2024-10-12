@@ -28,6 +28,8 @@ public class EntityListener<T: ReadOnlyType> {
     ///
     public var onDelete: (() -> Void)?
 
+    /// Serial queue for thread safety.
+    private let queue = DispatchQueue(label: "com.automattic.woocommerce.CoreDataManager.syncQueue")
 
     /// Designated Initializer.
     ///
@@ -66,22 +68,24 @@ private extension EntityListener {
     /// Handles the ContextObjectDidChange Notification triggered by the ViewContext.
     ///
     func viewContextDidChange(notification: Notification) {
-        guard let note = ManagedObjectsDidChangeNotification(notification: notification) else {
-            return
-        }
+        queue.sync {
+            guard let note = ManagedObjectsDidChangeNotification(notification: notification) else {
+                return
+            }
 
-        /// Scenario: Upsert (Insert + Update + Refresh)
-        ///
-        if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
-            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T {
-            readOnlyEntity = updatedEntity
-            onUpsert?(readOnlyEntity)
-        }
+            /// Scenario: Upsert (Insert + Update + Refresh)
+            ///
+            if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
+               let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T {
+                readOnlyEntity = updatedEntity
+                onUpsert?(readOnlyEntity)
+            }
 
-        /// Scenario: Nuked
-        ///
-        if let _ = readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) {
-            onDelete?()
+            /// Scenario: Nuked
+            ///
+            if let _ = readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) {
+                onDelete?()
+            }
         }
     }
 

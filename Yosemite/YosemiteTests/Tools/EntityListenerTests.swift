@@ -145,4 +145,47 @@ class EntityListenerTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    /// Tests the thread safety of the readOnlyEntity property.
+    ///
+    func test_thread_safety_for_readOnlyEntity() {
+        // Given: A sample storage account is inserted and saved.
+        let storageAccount = storageManager.insertSampleAccount()
+        viewContext.saveIfNeeded()
+
+        // And: An EntityListener is set up with the readOnly entity being the inserted storage account.
+        let listener = EntityListener(viewContext: viewContext, readOnlyEntity: storageAccount.toReadOnly())
+
+        // And: Expectations for multiple threads.
+        let expectation1 = self.expectation(description: "Thread 1")
+        let expectation2 = self.expectation(description: "Thread 2")
+        let expectation3 = self.expectation(description: "Thread 3")
+
+        // When: Multiple threads access the readOnlyEntity property concurrently.
+        DispatchQueue.global().async {
+            for _ in 0..<1000 {
+                _ = listener.readOnlyEntity
+            }
+            expectation1.fulfill()
+        }
+
+        DispatchQueue.global().async {
+            for _ in 0..<1000 {
+                _ = listener.readOnlyEntity
+            }
+            expectation2.fulfill()
+        }
+
+        DispatchQueue.global().async {
+            for _ in 0..<1000 {
+                _ = listener.readOnlyEntity
+            }
+            expectation3.fulfill()
+        }
+
+        // Then
+        wait(for: [expectation1, expectation2, expectation3], timeout: 0.1)
+    }
+
 }

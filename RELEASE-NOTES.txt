@@ -197,6 +197,7 @@
 -----
 - [***] Now you can add more sections to the My Store screen including contents for the last orders, top products with low stock, top active coupons and more! [https://github.com/woocommerce/woocommerce-ios/pull/12890]
 - [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]
+- [internal] Enhanced Thread Safety in Core Data Management. [https://github.com/woocommerce/woocommerce-ios/pull/12805]
 - [internal] Bump Tracks iOS library to v.3.4.1, that fix a deadlock while getting device info. [https://github.com/woocommerce/woocommerce-ios/pull/12939]
 
 18.9
@@ -209,8 +210,8 @@
 18.8
 -----
 - [*] Menu > Payments > Collect Payment: fix the the "card reader" & "Tap To Pay" payment methods where it was no-op before. [https://github.com/woocommerce/woocommerce-ios/pull/12801]
-- [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
 - [**] Adds edit support for the Min/Max Quantities extension in product details. [https://github.com/woocommerce/woocommerce-ios/pull/12758]
+- [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
 
 18.7
 -----

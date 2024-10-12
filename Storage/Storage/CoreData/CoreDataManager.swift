@@ -15,6 +15,9 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
+    // A dispatch queue for synchronizing access to shared attributes
+    private let syncQueue = DispatchQueue(label: "com.automattic.woocommerce.CoreDataManager.syncQueue")
+
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -59,21 +62,26 @@ public final class CoreDataManager: StorageManagerType {
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
-        return persistentContainer.viewContext
+        return syncQueue.sync {
+            return persistentContainer.viewContext
+        }
     }
 
     /// Returns a shared derived storage instance dedicated for write operations.
     ///
     public lazy var writerDerivedStorage: StorageType = {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
-        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return childManagedObjectContext
+        return syncQueue.sync {
+            let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+            childManagedObjectContext.parent = persistentContainer.viewContext
+            childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            return childManagedObjectContext
+        }
     }()
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
+
         let container = NSPersistentContainer(name: name, managedObjectModel: modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
 
@@ -154,14 +162,16 @@ public final class CoreDataManager: StorageManagerType {
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {
-        let viewContext = persistentContainer.viewContext
+        syncQueue.sync {
+            let viewContext = persistentContainer.viewContext
 
-        viewContext.performAndWait {
-            viewContext.reset()
-            self.deleteAllStoredObjects()
+            viewContext.performAndWait {
+                viewContext.reset()
+                self.deleteAllStoredObjects()
 
-            DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
-            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+                DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
+                NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+            }
         }
     }
 

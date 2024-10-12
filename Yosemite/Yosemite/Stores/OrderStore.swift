@@ -470,11 +470,11 @@ private extension OrderStore {
             }
             order.datePaid = datePaid
             order.statusKey = OrderStatusEnum.processing.rawValue
-            return order
+            return order.toReadOnly()
         }, completion: { result in
             switch result {
-            case .success(let storageOrder):
-                onCompletion(.success(storageOrder.toReadOnly()))
+            case .success(let readonlyOrder):
+                onCompletion(.success(readonlyOrder))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

@@ -556,7 +556,8 @@ extension OrderStore {
             switch result {
             case .success(let status):
                 onCompletion(status)
-            case .failure: // this case should not happen
+            case .failure:
+                // this case should not happen as we don't return any error in the operation closure above
                 onCompletion(statusKey)
             }
         }, on: .main)

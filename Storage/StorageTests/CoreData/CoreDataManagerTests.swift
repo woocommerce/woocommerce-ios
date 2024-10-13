@@ -98,12 +98,13 @@ final class CoreDataManagerTests: XCTestCase {
         let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
+        let expectedUserID: Int64 = 135
 
         // Action
         let result: Result<Int64, Error> = waitFor { promise in
             manager.performAndSave({ storage -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
-                let account = self.insertAccount(to: storage)
+                let account = self.insertAccount(userID: expectedUserID, to: storage)
                 return account.userID
             }, completion: { result in
                 promise(result)
@@ -112,7 +113,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         // Assert
         let userID = try result.get()
-        XCTAssertEqual(userID, 0)
+        XCTAssertEqual(userID, expectedUserID)
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
     }
 
@@ -264,10 +265,12 @@ final class CoreDataManagerTests: XCTestCase {
 
 private extension CoreDataManagerTests {
     @discardableResult
-    func insertAccount(to storage: StorageType) -> Account {
+    func insertAccount(userID: Int64 = 0,
+                       username: String = "",
+                       to storage: StorageType) -> Account {
         let account = storage.insertNewObject(ofType: Account.self)
-        account.userID = 0
-        account.username = ""
+        account.userID = userID
+        account.username = username
         return account
     }
 

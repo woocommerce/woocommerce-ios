@@ -186,6 +186,7 @@ public final class CoreDataManager: StorageManagerType {
     public func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
                                   completion: @escaping (Result<T, Error>) -> Void,
                                   on queue: DispatchQueue) {
+        assert((T.self is NSManagedObject.Type) == false, "Managed objects should not be sent between different contexts to avoid threading issues.")
         let derivedStorage = writerDerivedStorage
         writerQueue.addOperation(AsyncBlockOperation { done in
             derivedStorage.perform {

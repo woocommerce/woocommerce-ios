@@ -100,20 +100,19 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
 
         // Action
-        let result: Result<Account, Error> = waitFor { promise in
-            manager.performAndSave({ storage -> Account in
+        let result: Result<Int64, Error> = waitFor { promise in
+            manager.performAndSave({ storage -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread)
                 let account = self.insertAccount(to: storage)
-                return account
+                return account.userID
             }, completion: { result in
                 promise(result)
             }, on: .main)
         }
 
         // Assert
-        let account = try result.get()
-        XCTAssertEqual(account.userID, 0)
-        XCTAssertEqual(account.username, "")
+        let userID = try result.get()
+        XCTAssertEqual(userID, 0)
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
     }
 
@@ -125,8 +124,8 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
 
         // Action
-        let result: Result<Account, Error> = waitFor { promise in
-            manager.performAndSave({ storage -> Account in
+        let result: Result<Int64, Error> = waitFor { promise in
+            manager.performAndSave({ storage -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread)
                 throw CoreDataManagerTestsError.unexpectedFailure
             }, completion: { result in

@@ -80,10 +80,10 @@ final class CoreDataManagerTests: XCTestCase {
         // Action
         waitForExpectation(count: 1) { expectation in
             manager.performAndSave({ storage in
-                XCTAssertFalse(Thread.current.isMainThread)
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 self.insertAccount(to: storage)
             }, completion: {
-                XCTAssertTrue(Thread.current.isMainThread)
+                XCTAssertTrue(Thread.current.isMainThread, "Completion should be called in the main queue as defined in the function call.")
                 expectation.fulfill()
             }, on: .main)
         }
@@ -102,7 +102,7 @@ final class CoreDataManagerTests: XCTestCase {
         // Action
         let result: Result<Int64, Error> = waitFor { promise in
             manager.performAndSave({ storage -> Int64 in
-                XCTAssertFalse(Thread.current.isMainThread)
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 let account = self.insertAccount(to: storage)
                 return account.userID
             }, completion: { result in
@@ -126,7 +126,7 @@ final class CoreDataManagerTests: XCTestCase {
         // Action
         let result: Result<Int64, Error> = waitFor { promise in
             manager.performAndSave({ storage -> Int64 in
-                XCTAssertFalse(Thread.current.isMainThread)
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 throw CoreDataManagerTestsError.unexpectedFailure
             }, completion: { result in
                 promise(result)

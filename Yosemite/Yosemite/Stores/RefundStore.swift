@@ -56,7 +56,7 @@ private extension RefundStore {
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: [refund]) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
                 onCompletion(refund, nil)
             }
         }
@@ -77,7 +77,7 @@ private extension RefundStore {
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: [refund]) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
                 onCompletion(refund, nil)
             }
         }
@@ -106,7 +106,7 @@ private extension RefundStore {
                 return onCompletion(error)
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: refunds) {
                 onCompletion(nil)
             }
         }
@@ -121,7 +121,7 @@ private extension RefundStore {
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: refunds) {
                 onCompletion(nil)
             }
         }
@@ -158,9 +158,12 @@ private extension RefundStore {
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities *in a background thread*.
     /// onCompletion will be called on the main thread!
     ///
-    func upsertStoredRefundsInBackground(readOnlyRefunds: [Networking.Refund], onCompletion: @escaping () -> Void) {
+    func upsertStoredRefundsInBackground(siteID: Int64,
+                                         orderID: Int64,
+                                         readOnlyRefunds: [Networking.Refund],
+                                         onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
-            self.upsertStoredRefunds(readOnlyRefunds: readOnlyRefunds, in: storage)
+            self.upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: readOnlyRefunds, in: storage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -170,9 +173,13 @@ private extension RefundStore {
     ///     - readOnlyRefunds: Remote Refunds to be persisted.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredRefunds(readOnlyRefunds: [Networking.Refund], in storage: StorageType) {
+    func upsertStoredRefunds(siteID: Int64,
+                             orderID: Int64,
+                             readOnlyRefunds: [Networking.Refund],
+                             in storage: StorageType) {
+        let storedRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
         for readOnlyRefund in readOnlyRefunds {
-            let storageRefund = storage.loadRefund(siteID: readOnlyRefund.siteID, orderID: readOnlyRefund.orderID, refundID: readOnlyRefund.refundID) ??
+            let storageRefund = storedRefunds.first(where: { $0.refundID == readOnlyRefund.refundID }) ??
                 storage.insertNewObject(ofType: Storage.Refund.self)
 
             storageRefund.update(with: readOnlyRefund)
@@ -190,9 +197,11 @@ private extension RefundStore {
         let siteID = readOnlyRefund.siteID
         let refundID = readOnlyRefund.refundID
 
+        let storedRefundItems = storage.loadRefundItems(siteID: siteID, refundID: refundID)
+
         // Upsert items from the read-only refund
         for readOnlyItem in readOnlyRefund.items {
-            if let existingStorageItem = storage.loadRefundItem(siteID: siteID, refundID: refundID, itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storedRefundItems.first(where: { $0.itemID == readOnlyItem.itemID }) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {
@@ -218,12 +227,14 @@ private extension RefundStore {
     /// Updates, inserts, or prunes the provided StorageRefund's shipping lines.
     ///
     func handleShippingLines(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
+
+        let storedShippingLines = storage.loadRefundShippingLines(siteID: readOnlyRefund.siteID)
+
         // Upsert shipping lines from the read-only refund
         for readOnlyShippingLine in readOnlyRefund.shippingLines ?? [] {
             // Load or create a shipping line from the read only version
             let storageShippingLine: Storage.ShippingLine = {
-                guard let existingShippingLine = storage.loadRefundShippingLine(siteID: readOnlyRefund.siteID,
-                                                                                shippingID: readOnlyShippingLine.shippingID) else {
+                guard let existingShippingLine = storedShippingLines.first(where: { $0.shippingID == readOnlyShippingLine.shippingID }) else {
                     let newShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
                     storageRefund.addToShippingLines(newShippingLine)
                     return newShippingLine
@@ -311,7 +322,7 @@ extension RefundStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Refund in a given Storage Layer.
     ///
-    func upsertStoredRefund(readOnlyRefund: Networking.Refund, in storage: StorageType) {
-        upsertStoredRefunds(readOnlyRefunds: [readOnlyRefund], in: storage)
+    func upsertStoredRefund(siteID: Int64, orderID: Int64, readOnlyRefund: Networking.Refund, in storage: StorageType) {
+        upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: [readOnlyRefund], in: storage)
     }
 }

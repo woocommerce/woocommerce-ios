@@ -522,7 +522,7 @@ extension UIImage {
     /// House Outlined Image
     ///
     static var houseOutlinedImage: UIImage {
-        UIImage(imageLiteralResourceName: "icon-house-outlined")
+        UIImage(named: "icon-house-outlined")
     }
 
     /// Mailbox Icon - used in hub menu
@@ -1251,7 +1251,7 @@ extension UIImage {
     }
 
     static var syncDotIcon: UIImage {
-        return UIImage(imageLiteralResourceName: "icon-sync-dot")
+        return UIImage(named: "icon-sync-dot")
     }
 
     /// Variations Icon
@@ -1275,7 +1275,7 @@ extension UIImage {
     /// No store image
     ///
     static var noStoreImage: UIImage {
-        return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(named: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// No connection image
@@ -1287,19 +1287,19 @@ extension UIImage {
     /// Upgrade plan error
     ///
     static var planUpgradeError: UIImage {
-        return UIImage(imageLiteralResourceName: "plan-upgrade-error")
+        return UIImage(named: "plan-upgrade-error")
     }
 
     /// Upgrade plan success celebratory image
     ///
     static var planUpgradeSuccessCelebration: UIImage {
-        return UIImage(imageLiteralResourceName: "plan-upgrade-success-celebration")
+        return UIImage(named: "plan-upgrade-success-celebration")
     }
 
     /// Megaphone Icon
     ///
     static var megaphoneIcon: UIImage {
-        return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(named: "megaphone").imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Speaker icon
@@ -1317,13 +1317,13 @@ extension UIImage {
     /// Error image
     ///
     static var errorImage: UIImage {
-        return UIImage(imageLiteralResourceName: "woo-error").imageFlippedForRightToLeftLayoutDirection()
+        return UIImage(named: "woo-error").imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Empty box image
     ///
     static var emptyBoxImage: UIImage {
-        UIImage(imageLiteralResourceName: "empty-box")
+        UIImage(named: "empty-box")
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
@@ -1381,7 +1381,7 @@ extension UIImage {
     /// Welcome Image
     ///
     static var welcomeImage: UIImage {
-        UIImage(imageLiteralResourceName: "img-welcome")
+        UIImage(named: "img-welcome")
     }
 
     /// Icon Circular Rate Discount (used in WCShip onboarding)
@@ -1496,33 +1496,33 @@ extension UIImage {
     }
 
     static var iconBolt: UIImage {
-        UIImage(imageLiteralResourceName: "icon-bolt")
+        UIImage(named: "icon-bolt")
     }
 
     /// Illustration for the free trial summary screen.
     ///
     static var freeTrialIllustration: UIImage {
-        UIImage(imageLiteralResourceName: "free-trial-ilustration")
+        UIImage(named: "free-trial-ilustration")
     }
 
     static var ecommerceIcon: UIImage {
-        UIImage(imageLiteralResourceName: "ecommerce-icon")
+        UIImage(named: "ecommerce-icon")
     }
 
     static var supportIcon: UIImage {
-        UIImage(imageLiteralResourceName: "support-icon")
+        UIImage(named: "support-icon")
     }
 
     static var backupsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "backups-icon")
+        UIImage(named: "backups-icon")
     }
 
     static var giftIcon: UIImage {
-        UIImage(imageLiteralResourceName: "gifts-icon")
+        UIImage(named: "gifts-icon")
     }
 
     static var emailOutlineIcon: UIImage {
-        UIImage(imageLiteralResourceName: "email-outline-icon")
+        UIImage(named: "email-outline-icon")
     }
 
     static var shippingIcon: UIImage {
@@ -1530,23 +1530,23 @@ extension UIImage {
     }
 
     static var shippingOutlineIcon: UIImage {
-        UIImage(imageLiteralResourceName: "shipping-outline-icon")
+        UIImage(named: "shipping-outline-icon")
     }
 
     static var advertisingIcon: UIImage {
-        UIImage(imageLiteralResourceName: "advertising-icon")
+        UIImage(named: "advertising-icon")
     }
 
     static var launchIcon: UIImage {
-        UIImage(imageLiteralResourceName: "launch-icon")
+        UIImage(named: "launch-icon")
     }
 
     static var paymentOptionsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "payment-options-icon")
+        UIImage(named: "payment-options-icon")
     }
 
     static var premiumThemesIcon: UIImage {
-        UIImage(imageLiteralResourceName: "premium-themes-icon")
+        UIImage(named: "premium-themes-icon")
     }
 
     static var productIcon: UIImage {
@@ -1554,11 +1554,11 @@ extension UIImage {
     }
 
     static var siteSecurityIcon: UIImage {
-        UIImage(imageLiteralResourceName: "site-security-icon")
+        UIImage(named: "site-security-icon")
     }
 
     static var unlimitedProductsIcon: UIImage {
-        UIImage(imageLiteralResourceName: "unlimited-products-icon")
+        UIImage(named: "unlimited-products-icon")
     }
 
     static var feedbackOutlineIcon: UIImage {

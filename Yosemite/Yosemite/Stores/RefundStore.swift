@@ -68,9 +68,12 @@ private extension RefundStore {
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
             guard let refund = refund else {
                 if case NetworkError.notFound? = error {
-                    self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID)
+                    self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
                 return
             }
 
@@ -143,14 +146,13 @@ private extension RefundStore {
 
     /// Deletes any Storage.Refund with the specified `siteID`, `orderID`, and `refundID`
     ///
-    func deleteStoredRefund(siteID: Int64, orderID: Int64, refundID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let refund = storage.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) else {
-            return
-        }
-
-        storage.deleteObject(refund)
-        storage.saveIfNeeded()
+    func deleteStoredRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let refund = storage.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) else {
+                return
+            }
+            storage.deleteObject(refund)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities *in a background thread*.

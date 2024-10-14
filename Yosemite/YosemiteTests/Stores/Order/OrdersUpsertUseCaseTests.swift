@@ -344,6 +344,30 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
     }
 
+    func test_it_handles_large_number_of_custom_fields_for_order_and_product_without_deadlock_in_small_amount_of_time() throws {
+        // Given
+        let customFields = (1...2500).map { MetaData(metadataID: $0, key: "Key\($0)", value: "Value\($0)") }
+        let order = makeOrder().copy(siteID: 3, orderID: 98, customFields: customFields)
+        let product = Product.fake().copy(siteID: 3, productID: 99, customFields: customFields)
+        let backgroundContext = storageManager.writerDerivedStorage
+        let orderUseCase = OrdersUpsertUseCase(storage: backgroundContext)
+        let dispatcher = Dispatcher()
+        let network = MockNetwork()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        DispatchQueue.global(qos: .background).async {
+            orderUseCase.upsert([order])
+            productStore.upsertStoredProducts(readOnlyProducts: [product], in: backgroundContext)
+            backgroundContext.saveIfNeeded()
+        }
+
+        // Then
+        self.waitUntil {
+            self.viewStorage.countObjects(ofType: Storage.MetaData.self) == 5000
+        }
+    }
+
     func test_it_persists_order_gift_card_in_storage() throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)

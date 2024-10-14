@@ -3,6 +3,7 @@
 
 20.8
 -----
+- [internal] Updated Core Data Stack - smoke testing for all features with Core Data usage is needed. Please refer to the test plan for testing guide. [https://github.com/woocommerce/woocommerce-ios/pull/14013]
 
 
 20.7

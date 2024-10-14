@@ -8,10 +8,6 @@ import Storage
 public class RefundStore: Store {
     private let remote: RefundsRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = RefundsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -161,14 +157,9 @@ private extension RefundStore {
     /// onCompletion will be called on the main thread!
     ///
     func upsertStoredRefundsInBackground(readOnlyRefunds: [Networking.Refund], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertStoredRefunds(readOnlyRefunds: readOnlyRefunds, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ storage in
+            self.upsertStoredRefunds(readOnlyRefunds: readOnlyRefunds, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities into the Storage Layer.

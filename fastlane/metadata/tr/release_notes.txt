@@ -1,3 +1,1 @@
-Bu güncellemede terk edilmiş kampanyayı oluşturmaya devam etmenize yardımcı olacak kullanışlı bir hatırlatma özelliği ekledik ve Blaze'de bildirimlerin doğrudan kampanya oluşturmaya açılma şeklini iyileştirdik. Ayrıca cihaz ve mağaza para birimi ayarları farklı olduğunda indirim ve nakit ödemelerde oluşan biçimlendirme sorunlarını da düzelttik. Daha sorunsuz bir şekilde mağazanızı hareket halindeyken yönetme deneyiminizin keyfini çıkarın!
-
-
+Bu güncellemede daha büyük ekranlarda daha temiz, 2 sütunlu bir düzenle panoyu iyileştirdik. Jetpack kurulumu artık daha sorunsuz ve kampanyalar, anında geri bildirim seçenekleriyle hemen iptal ediliyor. Otomatik açılan klavye sayesinde ürün kategorileri oluşturmak daha hızlıdır ve işlemlerin sorunsuz olması için kart okuyucu güncellemeleri sırasında telefonunuz etkin kalır.

@@ -263,13 +263,13 @@ private extension ProductStore {
     }
 
     func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
-        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let namePredicate = NSPredicate(format: "name CONTAINS[c] %@", keyword)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
@@ -422,6 +422,11 @@ private extension ProductStore {
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
     func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+
+        guard !sku.isEmpty else {
+            return onCompletion(.failure(ProductLoadError.emptySKU))
+        }
+
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -1162,11 +1167,10 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let storedMetaData = storageProduct.customFields
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
-                                                                         productID: storageProduct.productID,
-                                                                         metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
@@ -1358,6 +1362,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
+    case emptySKU
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

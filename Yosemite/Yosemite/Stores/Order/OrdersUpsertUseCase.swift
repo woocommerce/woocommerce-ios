@@ -304,11 +304,10 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        let storedMetaData = storageOrder.customFields
         // Upsert the `customFields` from the `readOnlyOrder`
         readOnlyOrder.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID,
-                                                                       orderID: storageOrder.orderID,
-                                                                       metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)

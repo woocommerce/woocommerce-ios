@@ -129,13 +129,13 @@ private extension RefundStore {
 
     /// Deletes all of the stored Refunds.
     ///
-    func resetStoredRefunds(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Refund.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Refunds deleted")
-
-        onCompletion()
+    func resetStoredRefunds(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Refund.self)
+        }, completion: {
+            DDLogDebug("Refunds deleted")
+            onCompletion()
+        }, on: .main)
     }
 }
 

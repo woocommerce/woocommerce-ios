@@ -64,13 +64,13 @@ private extension OrderStatusStore {
 
     /// Nukes all of the Stored OrderStatuses.
     ///
-    func resetStoredOrderStatuses(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.OrderStatus.self)
-        storage.saveIfNeeded()
-        DDLogDebug("OrderStatuses deleted")
-
-        onCompletion()
+    func resetStoredOrderStatuses(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.OrderStatus.self)
+        }, completion: {
+            DDLogDebug("OrderStatuses deleted")
+            onCompletion()
+        }, on: .main)
     }
 }
 

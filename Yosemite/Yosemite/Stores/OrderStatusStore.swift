@@ -78,14 +78,15 @@ extension OrderStatusStore {
     ///
     func upsertStatusesInBackground(siteID: Int64, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
+            let storageStatuses = storage.loadOrderStatuses(siteID: siteID)
             for readOnlyItem in readOnlyOrderStatuses {
-                let storageStatusItem = storage.loadOrderStatus(siteID: readOnlyItem.siteID, slug: readOnlyItem.slug) ??
+                let storageStatusItem = storageStatuses?.first(where: { $0.slug == readOnlyItem.slug }) ??
                 storage.insertNewObject(ofType: Storage.OrderStatus.self)
                 storageStatusItem.update(with: readOnlyItem)
             }
 
             // Now, remove any objects that exist in storage but not in readOnlyOrderStatuses
-            if let storageStatuses = storage.loadOrderStatuses(siteID: siteID) {
+            if let storageStatuses {
                 storageStatuses.forEach({ storageStatus in
                     if readOnlyOrderStatuses.first(where: { $0.slug == storageStatus.slug } ) == nil {
                         storage.deleteObject(storageStatus)

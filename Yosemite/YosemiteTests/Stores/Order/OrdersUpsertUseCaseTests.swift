@@ -261,6 +261,89 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
+    func test_it_separates_identical_custom_fields_between_order_and_product() throws {
+        // Given
+        let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, orderID: 98, customFields: [customField])
+        let product = Product.fake().copy(siteID: 3, productID: 99, customFields: [customField])
+        let orderUseCase = OrdersUpsertUseCase(storage: viewStorage)
+        let dispatcher = Dispatcher()
+        let network = MockNetwork()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        orderUseCase.upsert([order])
+        productStore.upsertStoredProducts(readOnlyProducts: [product], in: viewStorage)
+
+        // Then
+        let storageOrderCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: 98, metadataID: 1))
+        XCTAssertEqual(storageOrderCustomField.toReadOnly(), customField)
+
+        let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
+        XCTAssertEqual(storageProductCustomField.toReadOnly(), customField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
+    }
+
+    func test_it_persists_changes_to_identical_custom_fields_separately_for_order_and_product() throws {
+        // Given
+        let initialCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, orderID: 98, customFields: [initialCustomField])
+        let product = Product.fake().copy(siteID: 3, productID: 99, customFields: [initialCustomField])
+        let orderUseCase = OrdersUpsertUseCase(storage: viewStorage)
+        let dispatcher = Dispatcher()
+        let network = MockNetwork()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        orderUseCase.upsert([order])
+        productStore.upsertStoredProducts(readOnlyProducts: [product], in: viewStorage)
+
+        // Update the custom field for order
+        let updatedOrderCustomField = MetaData(metadataID: 1, key: "Key", value: "Updated Order Value")
+        orderUseCase.upsert([order.copy(customFields: [updatedOrderCustomField])])
+
+        // Update the custom field for product
+        let updatedProductCustomField = MetaData(metadataID: 1, key: "Key", value: "Updated Product Value")
+        productStore.upsertStoredProducts(readOnlyProducts: [product.copy(customFields: [updatedProductCustomField])], in: viewStorage)
+
+        // Then
+        let storageOrderCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: 98, metadataID: 1))
+        XCTAssertEqual(storageOrderCustomField.toReadOnly(), updatedOrderCustomField)
+
+        let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
+        XCTAssertEqual(storageProductCustomField.toReadOnly(), updatedProductCustomField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
+    }
+
+    func test_it_deletes_order_custom_field_but_persists_product_custom_field() throws {
+        // Given
+        let initialCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, orderID: 98, customFields: [initialCustomField])
+        let product = Product.fake().copy(siteID: 3, productID: 99, customFields: [initialCustomField])
+        let orderUseCase = OrdersUpsertUseCase(storage: viewStorage)
+        let dispatcher = Dispatcher()
+        let network = MockNetwork()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        orderUseCase.upsert([order])
+        productStore.upsertStoredProducts(readOnlyProducts: [product], in: viewStorage)
+
+        // Delete the custom field for order
+        orderUseCase.upsert([order.copy(customFields: [])])
+
+        // Then
+        let storageOrderCustomField = viewStorage.loadOrderMetaData(siteID: 3, orderID: 98, metadataID: 1)
+        XCTAssertNil(storageOrderCustomField)
+
+        let storageProductCustomField = try XCTUnwrap(viewStorage.loadProductMetaData(siteID: 3, productID: 99, metadataID: 1))
+        XCTAssertEqual(storageProductCustomField.toReadOnly(), initialCustomField)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
+    }
+
     func test_it_handles_large_number_of_custom_fields_for_order_and_product_without_deadlock_in_small_amount_of_time() throws {
         // Given
         let customFields = (1...2500).map { MetaData(metadataID: $0, key: "Key\($0)", value: "Value\($0)") }

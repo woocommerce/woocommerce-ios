@@ -141,7 +141,7 @@ private extension DefaultBlazeLocalNotificationScheduler {
                 guard let self, await isEligibleForBlaze() else {
                     return
                 }
-                MainTabBarController.navigateToBlazeCampaignCreation(for: siteID)
+                AppDelegate.shared.tabBarController?.navigateToBlazeCampaignCreation(for: siteID)
             }
         }
     }

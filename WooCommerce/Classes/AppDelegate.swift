@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Tab Bar Controller
     ///
-    var tabBarController: MainTabBarController? {
+    var tabBarController: MainTabBarControllerProtocol? {
         appCoordinator?.tabBarController
     }
 
@@ -202,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         switch quickAction {
         case QuickAction.addProduct:
-            MainTabBarController.presentAddProductFlow()
+            tabBarController.presentAddProductFlow()
             completionHandler(true)
         case QuickAction.addOrder:
             tabBarController.navigate(to: OrdersDestination.createOrder)

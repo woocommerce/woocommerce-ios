@@ -5,9 +5,9 @@ import Yosemite
 @objc(TestingAppDelegate)
 class TestingAppDelegate: AppDelegate {
     /// Enables mocking of `tabBarController` property in unit tests. It is strongly recommended to reset it back to `nil` after each test case that sets this.
-    static var mockTabBarController: MainTabBarController?
+    static var mockTabBarController: MainTabBarControllerProtocol?
 
-    override var tabBarController: MainTabBarController? {
+    override var tabBarController: MainTabBarControllerProtocol? {
         Self.mockTabBarController ?? super.tabBarController
     }
 

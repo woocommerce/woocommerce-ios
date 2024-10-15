@@ -20,7 +20,7 @@ struct OrderDetailsRoute: Route {
             return false
         }
 
-        MainTabBarController.navigateToOrderDetails(with: orderId, siteID: storeId)
+        AppDelegate.shared.tabBarController?.navigateToOrderDetails(with: orderId, siteID: storeId)
 
         return true
     }

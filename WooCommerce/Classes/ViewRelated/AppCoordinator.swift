@@ -8,7 +8,7 @@ import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 final class AppCoordinator {
-    let tabBarController: MainTabBarController
+    let tabBarController: MainTabBarControllerProtocol
 
     private let window: UIWindow
     private let stores: StoresManager

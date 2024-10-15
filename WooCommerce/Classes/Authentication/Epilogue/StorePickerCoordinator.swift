@@ -115,7 +115,7 @@ private extension StorePickerCoordinator {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self = self else { return }
             if self.selectedConfiguration == .login {
-                MainTabBarController.switchToMyStoreTab(animated: true)
+                AppDelegate.shared.tabBarController?.switchToMyStoreTab(animated: true)
             }
 
             if siteChanged {

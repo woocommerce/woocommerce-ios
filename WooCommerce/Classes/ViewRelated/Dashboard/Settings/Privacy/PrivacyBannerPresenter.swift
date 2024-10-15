@@ -45,7 +45,7 @@ final class PrivacyBannerPresenter {
             case .success(let destination):
                 viewController.dismiss(animated: true)
                 if destination == .settings {
-                    MainTabBarController.navigateToPrivacySettings()
+                    AppDelegate.shared.tabBarController?.navigateToPrivacySettings()
                 }
 
             case .failure(let error):
@@ -57,7 +57,7 @@ final class PrivacyBannerPresenter {
                     /// Even if we fail, we should redirect the user to settings screen so they can further customize their privacy settings
                     ///
                     if intendedDestination == .settings {
-                        MainTabBarController.navigateToPrivacySettings()
+                        AppDelegate.shared.tabBarController?.navigateToPrivacySettings()
                     }
                 }
             }

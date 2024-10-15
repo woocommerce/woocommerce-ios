@@ -33,7 +33,7 @@ extension UIApplication: ApplicationAdapter {
     /// Presents the Details for the specified Notification
     ///
     func presentNotificationDetails(notification: WooCommerce.PushNotification) {
-        MainTabBarController.switchStoreIfNeededAndPresentNotificationDetails(notification: notification)
+        AppDelegate.shared.tabBarController?.switchStoreIfNeededAndPresentNotificationDetails(notification: notification)
     }
 
     /// Presents a given Message with an "In App" notification

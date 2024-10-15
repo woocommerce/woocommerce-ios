@@ -303,12 +303,12 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureLastOrdersView() {
         rootView.onViewAllOrders = {
-            MainTabBarController.switchToOrdersTab()
+            AppDelegate.shared.tabBarController?.switchToOrdersTab(completion: nil)
         }
 
         rootView.onViewOrderDetail = { [weak self] order in
             guard let self else { return }
-            MainTabBarController.navigateToOrderDetails(with: order.orderID, siteID: viewModel.siteID)
+            AppDelegate.shared.tabBarController?.navigateToOrderDetails(with: order.orderID, siteID: viewModel.siteID)
         }
     }
 }

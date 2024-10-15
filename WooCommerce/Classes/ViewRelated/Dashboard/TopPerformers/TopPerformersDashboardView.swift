@@ -53,6 +53,9 @@ struct TopPerformersDashboardView: View {
                     .redacted(reason: viewModel.periodViewModel.redacted.rows ? [.placeholder] : [])
                     .shimmering(active: viewModel.periodViewModel.redacted.rows)
 
+                Divider()
+                    .padding(.leading, Layout.padding)
+
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])

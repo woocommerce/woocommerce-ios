@@ -44,6 +44,7 @@ struct CustomFieldEditorView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
+                        .cornerRadius(Layout.cornerRadius)
                 }
 
                 // Value Input
@@ -74,6 +75,7 @@ struct CustomFieldEditorView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
+                        .cornerRadius(Layout.cornerRadius)
                     } else {
                         TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
                             .foregroundColor(Color(.text))
@@ -84,6 +86,7 @@ struct CustomFieldEditorView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .cornerRadius(Layout.cornerRadius)
                     }
                 }
             }

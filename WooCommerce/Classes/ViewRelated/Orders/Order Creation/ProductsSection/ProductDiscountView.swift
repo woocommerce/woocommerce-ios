@@ -38,6 +38,10 @@ struct ProductDiscountView: View {
                 .padding()
                 VStack(alignment: .leading) {
                     DiscountLineDetailsView(viewModel: discountDetailsViewModel)
+                    Text(Localization.discountDisallowedLabel)
+                        .padding(.horizontal)
+                        .foregroundColor(.red)
+                        .renderedIf(viewModel.discountDetailsViewModel.discountExceedsProductPrice)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
                             .flipsForRightToLeftLayoutDirection(true)
@@ -56,7 +60,7 @@ struct ProductDiscountView: View {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
                         if let price = viewModel.totalPricePreDiscount {
-                            Text(discountDetailsViewModel.calculatePriceAfterDiscount(price))
+                            Text(discountDetailsViewModel.formattedPriceAfterDiscount)
                         }
                     }
                     .padding()
@@ -85,6 +89,7 @@ struct ProductDiscountView: View {
                         discountDetailsViewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
+                    .disabled(viewModel.discountDetailsViewModel.discountExceedsProductPrice)
                 }
             }
             .wooNavigationBarStyle()
@@ -124,5 +129,9 @@ private extension ProductDiscountView {
         static let discountLabel = NSLocalizedString(
                     "Discount",
                     comment: "Text in the product row card when a discount has been added to a product")
+        static let discountDisallowedLabel = NSLocalizedString(
+            "productDiscountView.text.discountDisallowedLabel",
+            value: "Discount cannot be greater than the price",
+            comment: "Text describing the value that has been entered in the discount textfield is not allowed")
     }
 }

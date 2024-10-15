@@ -652,8 +652,7 @@ private extension OrderStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
-    /// on the main thread!
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*.
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,

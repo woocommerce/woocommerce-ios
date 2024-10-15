@@ -12,12 +12,6 @@ public class ShipmentStore: Store {
     ///
     public static let customGroupName = NSLocalizedString("Custom", comment: "Name of the group of tracking providers created manually by users")
 
-    /// Shared private StorageType for use during then entire ShipmentStore sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShipmentsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -123,28 +117,23 @@ extension ShipmentStore {
                                                 orderID: Int64,
                                                 readOnlyShipmentTrackingData: [Networking.ShipmentTracking],
                                                 onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = derivedStorage.loadShipmentTracking(siteID: readOnlyTracking.siteID, orderID: readOnlyTracking.orderID,
-                    trackingID: readOnlyTracking.trackingID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+                let storageTracking = storage.loadShipmentTracking(siteID: readOnlyTracking.siteID, orderID: readOnlyTracking.orderID,
+                    trackingID: readOnlyTracking.trackingID) ?? storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
-            if let storageTrackings = derivedStorage.loadShipmentTrackingList(siteID: siteID,
-                                                                              orderID: orderID) {
+            if let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID,
+                                                                       orderID: orderID) {
                 storageTrackings.forEach({ storageTracking in
                     if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
-                        derivedStorage.deleteObject(storageTracking)
+                        storage.deleteObject(storageTracking)
                     }
                 })
             }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        }, completion: onCompletion, on: .main)
     }
 
     func upsertTrackingProviderData(siteID: Int64, orderID: Int64, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup]) {
@@ -157,16 +146,11 @@ extension ShipmentStore {
                                                 orderID: Int64,
                                                 readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
             self.upsertShipmentTrackingGroups(siteID: siteID,
                                               readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
-                                              in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+                                              in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     private func upsertShipmentTrackingGroups(siteID: Int64,

@@ -2411,6 +2411,27 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
+    func test_retrieveFirstPurchasableItemMatchFromSKU_errors_on_empty_SKU() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let emptySKU = ""
+        let result = waitFor { promise in
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
+                                                                        sku: emptySKU,
+                                                                        onCompletion: { product in
+                promise(product)
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ProductLoadError)
+        XCTAssertEqual(result.isFailure, true)
+        XCTAssertEqual(error, ProductLoadError.emptySKU)
+    }
+
     func test_retrieveFirstPurchasableItemMatchFromSKU_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

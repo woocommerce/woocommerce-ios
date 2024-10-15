@@ -76,7 +76,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let _: String = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _, _):
                     promise(amount)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -109,7 +109,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let _: String = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _, _):
                     promise(amount)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -132,7 +132,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let updatedAmount: String = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _):
+                case let .updateSimplePaymentsOrder(_, _, _, _, amount, _, _, _, _, _):
                     promise(amount)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -145,6 +145,29 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual("$1.00", viewModel.providedAmount)
         assertEqual("$1.00", viewModel.total)
         assertEqual("1.00", updatedAmount)
+    }
+
+    func test_when_updateOrder_then_amount_name_is_added_to_order_when_provided() {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1", amountName: "One dollar fee", totalWithTaxes: "1", taxLines: [], stores: mockStores)
+
+        // When
+        let updatedAmountName = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, amountName, _, _, _, _):
+                    promise(amountName)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            viewModel.updateOrder()
+        }
+
+        // Then
+        assertEqual("One dollar fee", viewModel.amountName)
+        assertEqual("One dollar fee", updatedAmountName)
     }
 
     func test_provided_amount_with_taxes_gets_properly_formatted() {
@@ -249,7 +272,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                                                        stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, onCompletion):
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(Order.fake()))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -284,7 +307,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                                                        stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, onCompletion):
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -347,7 +370,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let updateStatus: OrderStatusEnum = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, status, _, _, _, _, _):
+                case let .updateSimplePaymentsOrder(_, _, _, status, _, _, _, _, _, _):
                     promise(status)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -370,7 +393,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
                                                        stores: mockStores)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, onCompletion):
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(Order.fake()))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -398,7 +421,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let trimmedEmail: String? = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, email, _):
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, email, _):
                     promise(email)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -425,7 +448,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let emailSent: String? = waitFor { promise in
             mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, email, _):
+                case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, email, _):
                     promise(email)
                 default:
                     XCTFail("Unexpected action: \(action)")
@@ -513,7 +536,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, onCompletion):
+            case let .updateSimplePaymentsOrder(_, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             default:
                 XCTFail("Unexpected action: \(action)")

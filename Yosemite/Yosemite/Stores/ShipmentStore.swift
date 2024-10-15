@@ -185,8 +185,9 @@ extension ShipmentStore {
 
                                         self?.addStoredShipment(siteID: siteID,
                                                                 orderID: orderID,
-                                                                readOnlyTracking: newTracking)
-                                        onCompletion(nil)
+                                                                readOnlyTracking: newTracking) {
+                                            onCompletion(nil)
+                                        }
         }
     }
 
@@ -251,12 +252,12 @@ extension ShipmentStore {
 
     func addStoredShipment(siteID: Int64,
                            orderID: Int64,
-                           readOnlyTracking: Networking.ShipmentTracking) {
-        let storage = storageManager.viewStorage
-
-        let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
-        newStoredTracking.update(with: readOnlyTracking)
-        storage.saveIfNeeded()
+                           readOnlyTracking: Networking.ShipmentTracking,
+                           onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+            newStoredTracking.update(with: readOnlyTracking)
+        }, completion: onCompletion, on: .main)
     }
 
     func addCustomStoredShipment(siteID: Int64,

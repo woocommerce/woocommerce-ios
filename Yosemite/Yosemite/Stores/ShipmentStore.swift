@@ -149,8 +149,9 @@ extension ShipmentStore {
     private func upsertShipmentTrackingGroups(siteID: Int64,
                                               readOnlyGroups: [Networking.ShipmentTrackingProviderGroup],
                                               in storage: StorageType) {
+        let storageTrackingGroups = storage.loadShipmentTrackingProviderGroupList(siteID: siteID)
         for readOnlyGroup in readOnlyGroups {
-            let storageGroup = storage.loadShipmentTrackingProviderGroup(siteID: siteID, providerGroupName: readOnlyGroup.name) ??
+            let storageGroup = storageTrackingGroups?.first(where: { $0.name == readOnlyGroup.name }) ??
                 storage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
 
             storageGroup.update(with: readOnlyGroup)
@@ -158,13 +159,11 @@ extension ShipmentStore {
         }
 
         // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
-        if let storageTrackingGroups = storage.loadShipmentTrackingProviderGroupList(siteID: siteID) {
-            storageTrackingGroups.forEach({ storageTrackingGroup in
-                if readOnlyGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
-                    storage.deleteObject(storageTrackingGroup)
-                }
-            })
-        }
+        storageTrackingGroups?.forEach({ storageTrackingGroup in
+            if readOnlyGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
+                storage.deleteObject(storageTrackingGroup)
+            }
+        })
     }
 
     func addTracking(siteID: Int64,

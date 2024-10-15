@@ -719,7 +719,8 @@ extension HubMenuViewModel {
             comment: "Title of the POS menu in the hub menu")
 
         static let posDescription = NSLocalizedString(
-            "Use the app as a cash register",
+            "hubMenu.pointOfSale.description",
+            value: "Accept payments at your physical store",
             comment: "Description of the POS menu in the hub menu")
 
         static let woocommerceAdmin = NSLocalizedString(

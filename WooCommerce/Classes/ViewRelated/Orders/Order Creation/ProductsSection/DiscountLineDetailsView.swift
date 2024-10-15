@@ -20,6 +20,9 @@ struct DiscountLineDetailsView: View {
                     discountTypeButtonToggle
                         .padding()
                 })
+                .onAppear {
+                    viewModel.checkDiscountValidity()
+                }
             case .percentage:
                 LineDetailView(label: {
                     Text(Localization.percentagePriceDiscountLabel)
@@ -30,6 +33,9 @@ struct DiscountLineDetailsView: View {
                     discountTypeButtonToggle
                         .padding()
                 })
+                .onAppear {
+                    viewModel.checkDiscountValidity()
+                }
             }
         }
     }
@@ -124,7 +130,7 @@ private extension DiscountLineDetailsView {
 struct DiscountLineDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         let feeOrDiscountViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
-                                                                       baseAmountForPercentage: 10.0,
+                                                                       baseAmount: 10.0,
                                                                        initialTotal: Decimal(string: "100") ?? .zero,
                                                                        lineType: .discount,
                                                                        didSelectSave: { _ in })

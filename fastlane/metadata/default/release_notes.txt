@@ -1,3 +1,1 @@
-In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
-
-
+In this update, we’ve improved the dashboard with a cleaner, 2-column layout on larger screens. Jetpack setup is now smoother, and campaigns cancel instantly with immediate feedback options. Creating product categories is faster with an auto-opening keyboard, and your phone stays active during card reader updates for seamless transactions.

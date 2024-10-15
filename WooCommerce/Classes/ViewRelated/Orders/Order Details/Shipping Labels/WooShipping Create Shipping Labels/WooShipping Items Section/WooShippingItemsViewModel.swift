@@ -13,14 +13,14 @@ final class WooShippingItemsViewModel: ObservableObject {
     private var dataSource: WooShippingItemsDataSource
 
     /// Label with the total number of items to ship.
-    @Published var itemsCountLabel: String = ""
+    @Published private(set) var itemsCountLabel: String = ""
 
     /// Label with the details of the items to ship.
     /// Include total weight and total price for all items in the shipment.
-    @Published var itemsDetailLabel: String = ""
+    @Published private(set) var itemsDetailLabel: String = ""
 
     /// View models for rows of items to ship.
-    @Published var itemRows: [WooShippingItemRowViewModel] = []
+    @Published private(set) var itemRows: [WooShippingItemRowViewModel] = []
 
     init(dataSource: WooShippingItemsDataSource,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,

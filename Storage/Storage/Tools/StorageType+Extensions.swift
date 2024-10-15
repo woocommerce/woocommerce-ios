@@ -480,6 +480,7 @@ public extension StorageType {
     ///
     func loadRefundShippingLines(siteID: Int64) -> [ShippingLine] {
         let predicate = \ShippingLine.refund?.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \ShippingLine.shippingID, ascending: false)
         return allObjects(ofType: ShippingLine.self, matching: predicate, sortedBy: nil)
     }
 

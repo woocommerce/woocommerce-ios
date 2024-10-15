@@ -915,28 +915,6 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(refund, storedRefund)
     }
 
-    func test_loadRefundItems_by_siteID_and_refundID() throws {
-        // Given
-        let refundID: Int64 = 123
-        let refundItem1 = storage.insertNewObject(ofType: OrderItemRefund.self)
-        refundItem1.itemID = 135
-
-        let refundItem2 = storage.insertNewObject(ofType: OrderItemRefund.self)
-        refundItem2.itemID = 136
-
-        let refund = storage.insertNewObject(ofType: Refund.self)
-        refund.siteID = sampleSiteID
-        refund.refundID = refundID
-        refund.addToItems(refundItem1)
-        refund.addToItems(refundItem2)
-
-        // When
-        let storedRefundItems = try XCTUnwrap(storage.loadRefundItems(siteID: sampleSiteID, refundID: refundID))
-
-        // Then
-        XCTAssertEqual(storedRefundItems, [refundItem2, refundItem1])
-    }
-
     func test_loadRefundItem_by_siteID_refundID_itemID() throws {
         // Given
         let refundID: Int64 = 123
@@ -954,26 +932,6 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(refundItem, storedRefundItem)
-    }
-
-    func test_loadRefundShippingLines_by_siteID() throws {
-        // Given
-        let shippingLine1 = storage.insertNewObject(ofType: ShippingLine.self)
-        shippingLine1.shippingID = 123
-
-        let shippingLine2 = storage.insertNewObject(ofType: ShippingLine.self)
-        shippingLine2.shippingID = 124
-
-        let refund = storage.insertNewObject(ofType: Refund.self)
-        refund.siteID = sampleSiteID
-        refund.addToShippingLines(shippingLine1)
-        refund.addToShippingLines(shippingLine2)
-
-        // When
-        let storedShippingLines = try XCTUnwrap(storage.loadRefundShippingLines(siteID: sampleSiteID))
-
-        // Then
-        XCTAssertEqual(storedShippingLines, [shippingLine2, shippingLine1])
     }
 
     func test_loadRefundShippingLine_by_siteID_shippingID() throws {

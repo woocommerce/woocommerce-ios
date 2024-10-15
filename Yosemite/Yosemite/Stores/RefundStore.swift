@@ -232,11 +232,11 @@ private extension RefundStore {
         let siteID = readOnlyRefund.siteID
         let refundID = readOnlyRefund.refundID
 
-        let storedRefundItems = storage.loadRefundItems(siteID: siteID, refundID: refundID)
+        let storedRefundItems = storageRefund.items
 
         // Upsert items from the read-only refund
         for readOnlyItem in readOnlyRefund.items {
-            if let existingStorageItem = storedRefundItems.first(where: { $0.itemID == readOnlyItem.itemID }) {
+            if let existingStorageItem = storedRefundItems?.first(where: { $0.itemID == readOnlyItem.itemID }) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {
@@ -251,7 +251,7 @@ private extension RefundStore {
         }
 
         // Now, remove any objects that exist in storageRefund.items but not in readOnlyRefund.items
-        storageRefund.items?.forEach { storageItem in
+        storedRefundItems?.forEach { storageItem in
             if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name } ) == nil {
                 storageRefund.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
@@ -263,13 +263,13 @@ private extension RefundStore {
     ///
     func handleShippingLines(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
 
-        let storedShippingLines = storage.loadRefundShippingLines(siteID: readOnlyRefund.siteID)
+        let storedShippingLines = storageRefund.shippingLines
 
         // Upsert shipping lines from the read-only refund
         for readOnlyShippingLine in readOnlyRefund.shippingLines ?? [] {
             // Load or create a shipping line from the read only version
             let storageShippingLine: Storage.ShippingLine = {
-                guard let existingShippingLine = storedShippingLines.first(where: { $0.shippingID == readOnlyShippingLine.shippingID }) else {
+                guard let existingShippingLine = storedShippingLines?.first(where: { $0.shippingID == readOnlyShippingLine.shippingID }) else {
                     let newShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
                     storageRefund.addToShippingLines(newShippingLine)
                     return newShippingLine
@@ -282,7 +282,7 @@ private extension RefundStore {
         }
 
         // Now, remove any object that exist in storageRefund.shippingLines but not in readOnlyRefund.shippingLines
-        storageRefund.shippingLines?.forEach { storedShippingLine in
+        storedShippingLines?.forEach { storedShippingLine in
             if let shippingLines = readOnlyRefund.shippingLines, !shippingLines.contains(where: { $0.shippingID == storedShippingLine.shippingID }) {
                 storageRefund.removeFromShippingLines(storedShippingLine)
                 storage.deleteObject(storedShippingLine)

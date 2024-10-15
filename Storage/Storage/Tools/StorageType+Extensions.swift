@@ -461,27 +461,11 @@ public extension StorageType {
         return firstObject(ofType: Refund.self, matching: predicate)
     }
 
-    /// Retrieves Stored OrderItemRefund for a given refund ID.
-    ///
-    func loadRefundItems(siteID: Int64, refundID: Int64) -> [OrderItemRefund] {
-        let predicate = \OrderItemRefund.refund?.siteID == siteID && \OrderItemRefund.refund?.refundID == refundID
-        let descriptor = NSSortDescriptor(keyPath: \OrderItemRefund.refundedItemID, ascending: false)
-        return allObjects(ofType: OrderItemRefund.self, matching: predicate, sortedBy: [descriptor])
-    }
-
     /// Retrieves the Stored OrderItemRefund.
     ///
     func loadRefundItem(siteID: Int64, refundID: Int64, itemID: Int64) -> OrderItemRefund? {
         let predicate = \OrderItemRefund.refund?.siteID == siteID && \OrderItemRefund.refund?.refundID == refundID && \OrderItemRefund.itemID == itemID
         return firstObject(ofType: OrderItemRefund.self, matching: predicate)
-    }
-
-    /// Retrieves all the Stored Refund Shipping Line given the site ID.
-    ///
-    func loadRefundShippingLines(siteID: Int64) -> [ShippingLine] {
-        let predicate = \ShippingLine.refund?.siteID == siteID
-        let descriptor = NSSortDescriptor(keyPath: \ShippingLine.shippingID, ascending: false)
-        return allObjects(ofType: ShippingLine.self, matching: predicate, sortedBy: nil)
     }
 
     /// Retrieves the Stored Refund Shipping Line.

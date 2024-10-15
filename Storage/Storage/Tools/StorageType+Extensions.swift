@@ -35,6 +35,14 @@ public extension StorageType {
 
     // MARK: - Orders
 
+    /// Retrieves the Stored Orders given the IDs.
+    ///
+    func loadOrders(siteID: Int64, orderIDs: [Int64]) -> [Order] {
+        let predicate = NSPredicate(format: "orderID in %@", orderIDs)
+        let descriptor = NSSortDescriptor(keyPath: \Order.orderID, ascending: false)
+        return allObjects(ofType: Order.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     /// Retrieves the Stored Order.
     ///
     func loadOrder(siteID: Int64, orderID: Int64) -> Order? {

@@ -66,6 +66,30 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(site, storedSite)
     }
 
+    func test_loadOrders_list_by_siteID_and_orderIDs() {
+        // Given
+        let orderID1: Int64 = 123
+        let order1 = storage.insertNewObject(ofType: Order.self)
+        order1.siteID = sampleSiteID
+        order1.orderID = orderID1
+
+        let orderID2: Int64 = 125
+        let order2 = storage.insertNewObject(ofType: Order.self)
+        order2.siteID = sampleSiteID
+        order2.orderID = orderID2
+
+        let orderID3: Int64 = 126
+        let order3 = storage.insertNewObject(ofType: Order.self)
+        order3.siteID = sampleSiteID
+        order3.orderID = orderID3
+
+        // When
+        let storedOrders = storage.loadOrders(siteID: sampleSiteID, orderIDs: [orderID1, orderID3])
+
+        // Then
+        XCTAssertEqual(storedOrders, [order3, order1])
+    }
+
     func test_loadOrder_by_siteID_and_orderID() throws {
         // Given
         let orderID: Int64 = 123

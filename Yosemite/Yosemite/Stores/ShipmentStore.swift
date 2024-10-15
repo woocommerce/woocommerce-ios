@@ -287,10 +287,11 @@ extension ShipmentStore {
     private func handleProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,
                                       _ storageGroup: Storage.ShipmentTrackingProviderGroup,
                                       _ storage: StorageType) {
+        let storageProviders = storageGroup.providers
+
         // Upsert the items from the read-only group
         for readOnlyProvider in readOnlyGroup.providers {
-            if let existingProvider = storage.loadShipmentTrackingProvider(siteID: readOnlyProvider.siteID,
-                                                                           name: readOnlyProvider.name) {
+            if let existingProvider = storageProviders?.first(where: { $0.name == readOnlyProvider.name }) {
                 existingProvider.update(with: readOnlyProvider)
             } else {
                 let newStorageProvider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
@@ -300,14 +301,12 @@ extension ShipmentStore {
         }
 
         // Now, remove any objects that exist in storageGroup.providers but not in readOnlyGroup.providers
-        if let storageProviders = storageGroup.providers {
-            storageProviders.forEach({ storageProvider in
-                if readOnlyGroup.providers.first(where: { $0.name == storageProvider.name } ) == nil {
-                    storageGroup.removeFromProviders(storageProvider)
-                    storage.deleteObject(storageProvider)
-                }
-            })
-        }
+        storageProviders?.forEach({ storageProvider in
+            if readOnlyGroup.providers.first(where: { $0.name == storageProvider.name } ) == nil {
+                storageGroup.removeFromProviders(storageProvider)
+                storage.deleteObject(storageProvider)
+            }
+        })
     }
 
     private func customGroup(siteID: Int64, storage: StorageType) -> Storage.ShipmentTrackingProviderGroup {

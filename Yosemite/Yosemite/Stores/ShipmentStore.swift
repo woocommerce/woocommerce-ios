@@ -285,8 +285,8 @@ extension ShipmentStore {
     }
 
     private func handleProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,
-                                      _ storageGroup: Storage.ShipmentTrackingProviderGroup,
-                                      _ storage: StorageType) {
+                                 _ storageGroup: Storage.ShipmentTrackingProviderGroup,
+                                 _ storage: StorageType) {
         let storageProviders = storageGroup.providers
 
         // Upsert the items from the read-only group

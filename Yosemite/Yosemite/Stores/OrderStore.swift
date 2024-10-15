@@ -71,12 +71,13 @@ public class OrderStore: Store {
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
 
-        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
                                       feeID: feeID,
                                       status: status,
                                       amount: amount,
+                                      amountName: amountName,
                                       taxable: taxable,
                                       orderNote: orderNote,
                                       email: email,
@@ -322,6 +323,7 @@ private extension OrderStore {
                                    feeID: Int64,
                                    status: OrderStatusEnum,
                                    amount: String,
+                                   amountName: String?,
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
@@ -331,7 +333,7 @@ private extension OrderStore {
         let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
 
         // Create updated fields
-        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
+        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, name: amountName, taxable: taxable)
         let newBillingAddress = Address(firstName: "",
                                         lastName: "",
                                         company: nil,
@@ -666,8 +668,7 @@ private extension OrderStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
-    /// on the main thread!
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*.
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,

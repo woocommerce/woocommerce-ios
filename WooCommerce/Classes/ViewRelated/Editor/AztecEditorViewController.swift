@@ -5,6 +5,7 @@ import WordPressEditor
 /// Aztec's Native Editor!
 final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
+    var onContentChanged: ((String) -> Void)?
 
     private var content: String
     private var productName: String?
@@ -300,6 +301,7 @@ extension AztecEditorViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         refreshPlaceholderVisibility()
         formatBar.update(editorView: editorView)
+        onContentChanged?(getHTML())
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {

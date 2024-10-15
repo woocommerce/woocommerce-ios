@@ -10,6 +10,7 @@ enum PointOfSaleAssets: CaseIterable {
     case readerConnectionLowBattery
     case readerConnectionSuccess
     case shoppingBags
+    case successCheck
 
     var imageName: String {
         switch self {
@@ -31,6 +32,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-complete"
         case .shoppingBags:
             "shopping-bags"
+        case .successCheck:
+            "pos-success-check"
         }
     }
 }

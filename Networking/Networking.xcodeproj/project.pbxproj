@@ -633,6 +633,7 @@
 		93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */; };
 		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
 		93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */; };
+		95122E3E2CB82C0A0079FF0A /* generate-product-success-wrapped.json in Resources */ = {isa = PBXBuildFile; fileRef = 95122E3D2CB82C0A0079FF0A /* generate-product-success-wrapped.json */; };
 		A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */; };
 		AE1950F3296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1950F2296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift */; };
 		AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D6622272A8F6E004A2C3A /* TelemetryRemoteTests.swift */; };
@@ -1786,6 +1787,7 @@
 		93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapper.swift; sourceTree = "<group>"; };
 		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
 		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
+		95122E3D2CB82C0A0079FF0A /* generate-product-success-wrapped.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "generate-product-success-wrapped.json"; sourceTree = "<group>"; };
 		9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-deleted-refunds.json"; sourceTree = "<group>"; };
 		AE1950F2296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsBulkUpdateMapper.swift; sourceTree = "<group>"; };
@@ -3466,6 +3468,7 @@
 				45B79AC52C9355F800DCCB2C /* meta-data-products-and-orders_nested_in_data.json */,
 				453954D12C90D84200A3E64A /* meta-data-products-and-orders.json */,
 				453954D52C9193BC00A3E64A /* meta-data-products-orders-update.json */,
+				95122E3D2CB82C0A0079FF0A /* generate-product-success-wrapped.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -4582,6 +4585,7 @@
 				D865CE5B278CA10B002C8520 /* stripe-payment-intent-requires-payment-method.json in Resources */,
 				CC9A254626442CA7005DE56E /* shipping-label-eligibility-failure.json in Resources */,
 				DE78DE4E2B2BF0EA002E58DE /* product-subscription-alternative-types.json in Resources */,
+				95122E3E2CB82C0A0079FF0A /* generate-product-success-wrapped.json in Resources */,
 				4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */,
 				020220E223966CD900290165 /* product-shipping-classes-load-one.json in Resources */,
 				3158FE7826129DF300E566B9 /* wcpay-account-restricted.json in Resources */,

@@ -65,7 +65,7 @@ class PriceFieldFormatter {
     ///
     private lazy var decimalFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.decimalSeparator = storeCurrencySettings.decimalSeparator
+        formatter.decimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
         formatter.maximumFractionDigits = storeCurrencySettings.fractionDigits
         formatter.minimumFractionDigits = storeCurrencySettings.fractionDigits
         formatter.usesGroupingSeparator = false
@@ -118,7 +118,7 @@ private extension PriceFieldFormatter {
 
         let negativePrefix = allowNegativeNumber && amount.hasPrefix(minusSign) ? minusSign : ""
         let deviceDecimalSeparator = userLocale.decimalSeparator ?? "."
-        let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
+        let storeDecimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
 
         // Removes any unwanted character & makes sure to use the store decimal separator
         let sanitized = amount
@@ -132,7 +132,7 @@ private extension PriceFieldFormatter {
     ///
     func formatSanitizedAmount(_ amount: String) -> String {
         // Trim to two decimals & remove any extra "."
-        let storeDecimalSeparator = storeCurrencySettings.decimalSeparator
+        let storeDecimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
         let storeNumberOfDecimals = storeCurrencySettings.fractionDigits
 
         let components = amount.components(separatedBy: storeDecimalSeparator)

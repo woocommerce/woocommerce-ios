@@ -211,4 +211,21 @@ final class PriceFieldFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(priceFieldFormatter.formattedAmount, "-$12.00")
     }
+
+    func test_formatAmount_when_decimal_separator_has_spaces() {
+        // Given store decimal separator has spaces
+        let customSettings = CurrencySettings(currencyCode: .USD,
+                                              currencyPosition: .left,
+                                              thousandSeparator: ",",
+                                              decimalSeparator: ".  ",
+                                              numberOfDecimals: 2)
+
+        let priceFieldFormatter = PriceFieldFormatter(locale: usLocale, storeCurrencySettings: customSettings)
+
+        // When
+        _ = priceFieldFormatter.formatUserInput("1000.5123")
+
+        // Then formatting ignores spaces in store decimal separator settings
+        XCTAssertEqual(priceFieldFormatter.formattedAmount, "$1000.51")
+    }
 }

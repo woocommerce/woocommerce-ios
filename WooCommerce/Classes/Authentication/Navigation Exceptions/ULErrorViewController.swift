@@ -34,8 +34,6 @@ final class ULErrorViewController: UIViewController {
     /// Used to adjust the button width in unified views provided by WPAuthenticator
     @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     private var primaryButtonSubscription: AnyCancellable?
     private var siteFaviconSubscription: AnyCancellable?
@@ -245,9 +243,6 @@ private extension ULErrorViewController {
 
         buttonViewLeadingConstraint?.constant = margin
         buttonViewTrailingConstraint?.constant = margin
-
-        stackViewLeadingConstraint?.constant = margin
-        stackViewTrailingConstraint?.constant = margin
     }
 
     private enum ButtonViewMarginMultipliers {

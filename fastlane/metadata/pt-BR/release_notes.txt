@@ -1,3 +1,1 @@
-Nesta atualização, adicionamos uma funcionalidade de lembrete para ajudar a retomar a criação de campanhas abandonadas e melhoramos a forma que as notificações abrem diretamente a criação de campanhas do Blaze. Corrigimos também alguns problemas de formatação em descontos e pagamentos em dinheiro para quando as configurações de moeda do dispositivo e da loja forem diferentes. Aproveite uma experiência mais fluida ao gerenciar sua loja em qualquer lugar!
-
-
+Nesta atualização, aprimoramos o painel com um layout de duas colunas mais organizado em telas maiores. Agora o Jetpack ficou mais fácil de configurar, e as campanhas são canceladas na hora com opções de feedback imediato. Crie categorias de produtos com mais agilidade usando o teclado, que aparece automaticamente. Além disso, seu celular continua ativo durante atualizações no leitor de cartão para não atrapalhar as transações.

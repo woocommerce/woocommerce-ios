@@ -110,6 +110,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                 self.summaryViewModel = TryAPaymentSummaryViewModel(
                     simplePaymentSummaryViewModel: SimplePaymentsSummaryViewModel(order: order,
                                                                                   providedAmount: order.total,
+                                                                                  amountName: Localization.tryAPaymentAmountName,
                                                                                   presentNoticeSubject: self.presentNoticeSubject,
                                                                                   analyticsFlow: .tapToPayTryAPayment),
                     siteID: self.siteID,
@@ -236,6 +237,12 @@ extension SetUpTapToPayTryPaymentPromptViewModel {
             value: "Trial Tap to Pay payment auto refund",
             comment: "After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When " +
             "this is sent to the server, we provide a reason for later identification.")
+
+        static let tryAPaymentAmountName = NSLocalizedString(
+            "tap.to.pay.try.payment.amount.name",
+            value: "Try out Tap to Pay on iPhone",
+            comment: "On a trial Tap to Pay order, this is the name of the line item for the trial amount."
+        )
     }
 }
 

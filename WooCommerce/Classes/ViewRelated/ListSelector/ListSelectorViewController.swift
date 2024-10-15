@@ -89,11 +89,12 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
-        let model = command.data[indexPath.row]
-        // Configures the cell's `accessoryType` before calling `command.configureCell` so that the command could override the `accessoryType`.
-        cell.accessoryType = command.isSelected(model: model) ? .checkmark: .none
-        command.configureCell(cell: cell, model: model)
 
+        if let model = command.data[safe: indexPath.row] {
+            // Configures the cell's `accessoryType` before calling `command.configureCell` so that the command could override the `accessoryType`.
+            cell.accessoryType = command.isSelected(model: model) ? .checkmark: .none
+            command.configureCell(cell: cell, model: model)
+        }
         return cell
     }
 
@@ -102,8 +103,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let selected = command.data[indexPath.row]
-        if !command.isSelected(model: selected) {
+        if let selected = command.data[safe: indexPath.row], !command.isSelected(model: selected) {
             command.handleSelectedChange(selected: selected, viewController: self)
             tableView.reloadData()
         }

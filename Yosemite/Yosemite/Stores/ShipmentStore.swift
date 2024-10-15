@@ -121,7 +121,8 @@ extension ShipmentStore {
             let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID, orderID: orderID)
 
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ?? storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ?? 
+                    storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
 
@@ -132,12 +133,6 @@ extension ShipmentStore {
                 }
             })
         }, completion: onCompletion, on: .main)
-    }
-
-    func upsertTrackingProviderData(siteID: Int64, orderID: Int64, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup]) {
-        let storage = storageManager.viewStorage
-        upsertShipmentTrackingGroups(siteID: siteID, readOnlyGroups: readOnlyShipmentTrackingProviderGroups, in: storage)
-        storage.saveIfNeeded()
     }
 
     func upsertTrackingProviderDataInBackground(siteID: Int64,

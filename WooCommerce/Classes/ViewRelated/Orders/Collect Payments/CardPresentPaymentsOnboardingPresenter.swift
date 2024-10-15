@@ -51,19 +51,27 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
         readinessSubscription = readinessUseCase.$readiness
             .subscribe(on: DispatchQueue.main)
-            .sink(receiveValue: { readiness in
+            .sink(receiveValue: { [weak self] readiness in
                 guard case .ready = readiness else {
                     return
                 }
 
-                if let navigationController = viewController as? UINavigationController {
-                    navigationController.popViewController(animated: true)
-                } else {
-                    viewController.navigationController?.popViewController(animated: true)
-                }
+                self?.hideOnboarding(onboardingViewController)
 
                 completion()
+
+                self?.readinessSubscription = nil
             })
+    }
+
+    // The corresponding `show` we used can either push or present the onboardingViewController.
+    // This function allows us to hide it in the appropriate way for how it was shown.
+    private func hideOnboarding(_ onboardingViewController: UIViewController) {
+        if let navigationController = onboardingViewController.navigationController {
+            navigationController.popViewController(animated: true)
+        } else if let presentingViewController = onboardingViewController.presentingViewController {
+            presentingViewController.dismiss(animated: true)
+        }
     }
 
     func refresh() {

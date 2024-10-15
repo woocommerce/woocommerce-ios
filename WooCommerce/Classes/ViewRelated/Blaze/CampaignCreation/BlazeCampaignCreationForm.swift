@@ -301,22 +301,6 @@ private extension BlazeCampaignCreationForm {
                         .background(Color(uiColor: .systemGray6))
                         .cornerRadius(Layout.adButtonCornerRadius)
                 }
-
-                // Label "Suggested by AI"
-                HStack {
-                    HStack(spacing: 0) {
-                        Image(uiImage: .sparklesImage)
-                            .renderingMode(.template)
-                            .resizable()
-                            .foregroundColor(Color(uiColor: .textSubtle))
-                            .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
-
-                        Text(Localization.suggestedByAI)
-                            .subheadlineStyle()
-                    }
-                    Spacer()
-                }
-                .renderedIf(viewModel.isUsingAISuggestions)
             }
             .padding(Layout.contentPadding)
             .background(Color(uiColor: .systemBackground))
@@ -326,19 +310,36 @@ private extension BlazeCampaignCreationForm {
                     x: 0,
                     y: Layout.shadowYOffset)
 
-            // Button to edit ad details
-            Button(action: {
-                viewModel.didTapEditAd()
-            }, label: {
-                Text(Localization.editAd)
-                    .fontWeight(.semibold)
-                    .font(.body)
-                    .foregroundColor(.accentColor)
-            })
-            .buttonStyle(.plain)
-            .disabled(!viewModel.canEditAd)
-            .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
-            .shimmering(active: !viewModel.canEditAd)
+            VStack(spacing: Layout.contentPadding) {
+                // Label "Suggested by AI"
+                HStack(spacing: 0) {
+                    Image(uiImage: .sparklesImage)
+                        .renderingMode(.template)
+                        .resizable()
+                        .foregroundColor(Color(uiColor: .textSubtle))
+                        .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
+
+                    Text(Localization.suggestedByAI)
+                        .subheadlineStyle()
+
+                    Spacer()
+                }
+                .renderedIf(viewModel.isUsingAISuggestions)
+
+                // Button to edit ad details
+                Button(action: {
+                    viewModel.didTapEditAd()
+                }, label: {
+                    Text(Localization.editAd)
+                        .fontWeight(.semibold)
+                        .font(.body)
+                        .foregroundColor(.accentColor)
+                })
+                .buttonStyle(.plain)
+                .disabled(!viewModel.canEditAd)
+                .redacted(reason: !viewModel.canEditAd ? .placeholder : [])
+                .shimmering(active: !viewModel.canEditAd)
+            }
         }
         .environment(\.colorScheme, .light)
         .padding(Layout.contentPadding)

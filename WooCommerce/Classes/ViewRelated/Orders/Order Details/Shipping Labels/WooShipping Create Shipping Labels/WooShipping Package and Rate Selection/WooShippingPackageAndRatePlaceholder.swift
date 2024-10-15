@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct WooShippingPackageAndRatePlaceholder: View {
+    @State private var showAddPackage: Bool = false
     var body: some View {
         VStack(spacing: .zero) {
             Button {
-                // TODO-13551: Open package selection UI
+                showAddPackage.toggle()
             } label: {
                 Text(Localization.addPackage)
             }
@@ -22,6 +23,9 @@ struct WooShippingPackageAndRatePlaceholder: View {
         .multilineTextAlignment(.center)
         .padding(Layout.padding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.border), lineWidth: Layout.borderLineWidth, dashed: true)
+        .sheet(isPresented: $showAddPackage) {
+            WooShippingAddPackageView()
+        }
     }
 }
 

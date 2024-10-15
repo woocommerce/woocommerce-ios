@@ -1,3 +1,1 @@
-I den här uppdateringen har vi lagt till en praktisk påminnelsefunktion som hjälper dig att fortsätta vid avbrutet kampanjskapande. Dessutom har vi förbättrat notiserna så att de leder direkt till kampanjskapandet i Blaze. Vi har också åtgärdat ett antal formateringsproblem rörande rabatter och kontanta betalningar när valutainställningarna för enhet och butik skiljer sig åt. Ta del av en smidigare upplevelse vid hantering av din butik i farten.
-
-
+I den här uppdateringen har vi förbättrat adminpanelen med en renare tvåkolumnslayout på större skärmar. Jetpack-konfigurationen är nu smidigare, och kampanjer kan avbrytas omedelbart med direkta feedbackalternativ. Skapandet av produktkategorier är snabbare, med ett tangentbord som öppnas automatiskt, och din telefon förblir aktiv under kortläsaruppdateringar för sömlösa transaktioner.

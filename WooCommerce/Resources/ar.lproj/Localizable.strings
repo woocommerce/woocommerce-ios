@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-23 18:54:03+0000 */
+/* Translation-Revision-Date: 2024-10-01 09:54:07+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9476,6 +9476,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.title" = " لم يتم العثور على منتج";
 
+/* Question in the feedback banner after a Blaze campaign is successfully created */
+"blazeCampaignCreationCoordinator.feedbackQuestion" = "كيف كانت تجربتك مع Blaze؟";
+
 /* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successCTA" = "تم";
 
@@ -10584,11 +10587,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.redactionInfoTitle" = "بيانات الزائرين والتحويل غير متاحة";
 
+/* Description of the filter used to show only favorite products. */
+"favoriteProductsFilter.favoriteProducts" = "المنتجات المفضلة";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "العميل";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "المنتج";
+
+/* Row title for filtering products by favorite products. */
+"filterProductListViewModel.favoriteProduct" = "المنتجات المفضلة";
 
 /* Status name of a disabled Google Ads campaign */
 "googleAdsCampaign.status.disabled" = "معطَّل";
@@ -11256,6 +11265,13 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "تجربة طريقة دفع أخرى";
 
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
+   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "محاولة الدفع مجددًا";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "خطأ في تحضير الدفع";
+
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "يرجى الانتظار...";
 
@@ -11489,6 +11505,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "قد يفشل هذا الطلب";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "يرجى الانتظار";
 
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "فصل ربط القارئ";
@@ -11813,6 +11832,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "الصور غير متاحة نظرًا إلى وسم موقعك بأنه \"خاص\". يمكنك تغيير ذلك عن طريق التبديل إلى وضع \"قريبًا\".";
+
+/* Mark favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.markAsFavorite" = "وضع علامة كمفضلة";
+
+/* Remove favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.removeAsFavorite" = "الإزالة من المفضلة";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "إلغاء";
@@ -12434,8 +12459,50 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "أسابيع";
 
+/* Button to select a package to use for a shipment in the shipping label creation flow. */
+"wooShipping.createLabel.addPackage.button" = "تحديد طرد";
+
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "إلغاء";
+
+/* Label for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatLabel" = "هل تشحن بضائع خطيرة أو مواد خطرة؟";
+
+/* Message in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderMessage" = "أدخل أبعاد الطرد الخاص بك أو استلم خيار الطرد الخاص بشركة النقل للاطلاع على أسعار الشحن المتاحة.";
+
+/* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderTitle" = "تحديد طرد للحصول على أسعار الشحن";
+
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.markComplete" = "وضع علامة على هذا الطلب بأنه مكتمل وتنبيه العميل";
+
+/* Header for order details section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.orderDetails" = "تفاصيل الطلب";
+
+/* Label for the menu to select a paper size on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paperSize" = "اختيار مقاس ورق الملصقات";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.purchase" = "ملصق الشراء";
+
+/* Label for address where the shipment is shipped from on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipFrom" = "الشحن من";
+
+/* Label for address where the shipment is shipped to on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipTo" = "الشحن إلى";
+
+/* Header for shipment costs section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipmentCosts" = "تكاليف الشحنات";
+
+/* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.subtotal" = "الإجمالي الفرعي";
+
+/* Label on the bottom sheet that can be expanded to show shipment detailson the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.title" = "تفاصيل الشحنة";
+
+/* Label for row showing the total for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.total" = "الإجمالي";
 
 /* Total number of items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ من العناصر";

@@ -125,7 +125,7 @@ private extension RefundStore {
                 return onCompletion(error)
             }
 
-            self?.upsertStoredRefundsInBackground(siteID: siteID, 
+            self?.upsertStoredRefundsInBackground(siteID: siteID,
                                                   orderID: orderID,
                                                   readOnlyRefunds: refunds,
                                                   staleRefundIDs: staleRefundIDs) {

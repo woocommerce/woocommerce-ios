@@ -213,9 +213,10 @@ extension ShipmentStore {
                                           orderID: orderID,
                                           trackingProvider: trackingProvider,
                                           trackingURL: trackingURL,
-                                          readOnlyTracking: newTracking)
-
-            onCompletion(nil)
+                                          readOnlyTracking: newTracking) {
+                
+                onCompletion(nil)
+            }
         }
     }
 
@@ -261,23 +262,24 @@ extension ShipmentStore {
     }
 
     func addCustomStoredShipment(siteID: Int64,
-                           orderID: Int64,
-                           trackingProvider: String,
-                           trackingURL: String,
-                           readOnlyTracking: Networking.ShipmentTracking) {
-        let storage = storageManager.viewStorage
-        let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
-        newStoredTracking.update(with: readOnlyTracking)
-
-        let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
-        provider.name = trackingProvider
-        provider.url = trackingURL
-        provider.siteID = siteID
-
-
-        let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
-        customProvidersGroup.addToProviders(provider)
-        storage.saveIfNeeded()
+                                 orderID: Int64,
+                                 trackingProvider: String,
+                                 trackingURL: String,
+                                 readOnlyTracking: Networking.ShipmentTracking,
+                                 onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+            newStoredTracking.update(with: readOnlyTracking)
+            
+            let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
+            provider.name = trackingProvider
+            provider.url = trackingURL
+            provider.siteID = siteID
+            
+            
+            let customProvidersGroup = self.customGroup(siteID: siteID, storage: storage)
+            customProvidersGroup.addToProviders(provider)
+        }, completion: onCompletion, on: .main)
     }
 
     private func handleProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,

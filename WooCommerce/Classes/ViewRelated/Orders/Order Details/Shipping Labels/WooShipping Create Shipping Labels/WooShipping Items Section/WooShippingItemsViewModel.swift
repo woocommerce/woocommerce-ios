@@ -91,12 +91,14 @@ private extension WooShippingItemsViewModel {
 private extension WooShippingItemsViewModel {
     enum Localization {
         static func itemsCount(_ count: Decimal) -> String {
-            let formattedCount = NumberFormatter.localizedString(from: count as NSDecimalNumber, number: .decimal)
-            return String(format: Localization.itemsCountFormat, formattedCount)
+            return String.pluralize(count, singular: Localization.itemsCountSingularFormat, plural: Localization.itemsCountPluralFormat)
         }
-        static let itemsCountFormat = NSLocalizedString("wooShipping.createLabels.items.count",
-                                                        value: "%1$@ items",
-                                                        comment: "Total number of items to ship during shipping label creation. Reads like: '3 items'")
+        static let itemsCountSingularFormat = NSLocalizedString("wooShipping.createLabels.items.countSingular",
+                                                                value: "%1$@ item",
+                                                                comment: "Label for singular item to ship during shipping label creation. Reads like: '1 item'")
+        static let itemsCountPluralFormat = NSLocalizedString("wooShipping.createLabels.items.count",
+                                                              value: "%1$@ items",
+                                                              comment: "Label for plural items to ship during shipping label creation. Reads like: '3 items'")
         static let dimensionsFormat = NSLocalizedString("wooShipping.createLabels.items.dimensions",
                                                         value: "%1$@ x %2$@ x %3$@ %4$@",
                                                         comment: "Length, width, and height dimensions with the unit for an item to ship. "

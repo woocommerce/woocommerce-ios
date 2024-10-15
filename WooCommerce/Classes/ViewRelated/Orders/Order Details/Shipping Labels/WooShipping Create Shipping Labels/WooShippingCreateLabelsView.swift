@@ -156,16 +156,18 @@ private extension WooShippingCreateLabelsView {
                 Text(viewModel.items.itemsPriceLabel)
             }
             .frame(idealHeight: Layout.rowHeight)
-            AdaptiveStack {
-                Image(uiImage: .shippingIcon)
-                    .frame(width: Layout.iconSize)
-                Text("Flat rate shipping") // TODO: 14044 - Show real shipping name
-                    .bold()
-                    .lineLimit(nil)
-                Spacer()
-                Text("$25.00") // TODO: 14044 - Show real shipping amount
+            ForEach(viewModel.shippingLines) { shippingLine in
+                AdaptiveStack {
+                    Image(uiImage: .shippingIcon)
+                        .frame(width: Layout.iconSize)
+                    Text(shippingLine.title)
+                        .bold()
+                        .lineLimit(nil)
+                    Spacer()
+                    Text(shippingLine.formattedTotal)
+                }
+                .frame(idealHeight: Layout.rowHeight)
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
     }
 

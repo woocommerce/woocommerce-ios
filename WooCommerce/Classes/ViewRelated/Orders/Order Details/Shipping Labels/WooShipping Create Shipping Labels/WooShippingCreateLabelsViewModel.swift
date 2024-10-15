@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
@@ -12,6 +13,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     let destinationAddressLines: [String]
+
+    /// Shipping lines for the order, with formatted amount.
+    let shippingLines: [WooShipping_ShippingLineViewModel]
 
     /// Whether to mark the order as complete after the label is purchased.
     @Published var markOrderComplete: Bool = false
@@ -26,6 +30,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.onLabelPurchase = onLabelPurchase
         self.originAddress = Self.formatOriginAddress(siteAddress: siteAddress)
         self.destinationAddressLines = (order.shippingAddress?.formattedPostalAddress ?? "").components(separatedBy: .newlines)
+        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0) })
     }
 
     /// Purchases a shipping label with the provided label details and settings.

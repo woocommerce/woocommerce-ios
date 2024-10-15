@@ -39,6 +39,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(expectedAddressLines, viewModel.destinationAddressLines)
     }
 
+    func test_order_shipping_lines_converted_to_shippingLineViewModels() {
+        // Given
+        let order = Order.fake().copy(shippingLines: [ShippingLine.fake().copy(shippingID: 1),
+                                                      ShippingLine.fake().copy(shippingID: 2),
+                                                      ShippingLine.fake().copy(shippingID: 3)])
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+
+        // Then
+        XCTAssertEqual(order.shippingLines.map({ $0.shippingID }), viewModel.shippingLines.map({ $0.id }))
+    }
+
     func test_onLabelPurchase_notifies_when_order_should_not_be_marked_complete() {
         // Given
         let order = Order.fake()

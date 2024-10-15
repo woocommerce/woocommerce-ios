@@ -15,6 +15,7 @@ public enum OrderStatusEnum: Codable, Hashable, Comparable, Sendable, GeneratedF
     case cancelled
     case refunded
     case failed
+    case trash
     case custom(String)
 }
 
@@ -71,6 +72,12 @@ public extension OrderStatusEnum {
                 value: "Refunded",
                 comment: "Display label for refunded order status."
             )
+        case .trash:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.trash",
+                value: "Trash",
+                comment: "Display label for trashed order status."
+            )
         case .custom(let payload):
             return payload // unable to localize at runtime.
         }
@@ -101,6 +108,8 @@ extension OrderStatusEnum: RawRepresentable {
             self = .completed
         case Keys.refunded:
             self = .refunded
+        case Keys.trash:
+            self = .trash
         default:
             self = .custom(rawValue)
         }
@@ -118,6 +127,7 @@ extension OrderStatusEnum: RawRepresentable {
         case .cancelled:            return Keys.cancelled
         case .completed:            return Keys.completed
         case .refunded:             return Keys.refunded
+        case .trash:                return Keys.trash
         case .custom(let payload):  return payload
         }
     }
@@ -135,4 +145,5 @@ private enum Keys {
     static let cancelled    = "cancelled"
     static let completed    = "completed"
     static let refunded     = "refunded"
+    static let trash        = "trash"
 }

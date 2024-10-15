@@ -141,7 +141,7 @@ struct OrdersUpsertUseCase {
 
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadOrderItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storageItem.taxes?.first(where: { $0.taxID == readOnlyTax.taxID }) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)

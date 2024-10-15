@@ -87,13 +87,33 @@ public class MockStorageManager: StorageManagerType {
     /// Handles a write operation using the background context and saves changes when done.
     /// Using view storage to write for simplicity in tests
     ///
-    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue) {
+    public func performAndSave(_ operation: @escaping (StorageType) -> Void,
+                               completion: (() -> Void)?,
+                               on queue: DispatchQueue) {
         let context = persistentContainer.viewContext
         context.performAndWait {
-            closure(context)
+            operation(context)
             context.saveIfNeeded()
             queue.async {
                 completion?()
+            }
+        }
+    }
+
+    /// Handles a write operation using the background context and saves changes and returns result when done.
+    /// Using view storage to write for simplicity in tests.
+    ///
+    public func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
+                                  completion: @escaping (Result<T, Error>) -> Void,
+                                  on queue: DispatchQueue) {
+        let context = persistentContainer.viewContext
+        context.performAndWait {
+            let result = Result(catching: { try operation(context) })
+            if case .success = result {
+                context.saveIfNeeded()
+            }
+            queue.async {
+                completion(result)
             }
         }
     }

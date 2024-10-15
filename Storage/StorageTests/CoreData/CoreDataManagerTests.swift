@@ -70,28 +70,77 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
     }
 
-    func test_saving_derived_storage_while_resetting_CoreData_does_not_save_data() throws {
+    func test_performAndSave_executes_changes_in_background_then_updates_viewContext() throws {
         // Arrange
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        manager.reset()
+        let modelsInventory = try makeModelsInventory()
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = try XCTUnwrap(manager.writerDerivedStorage as? NSManagedObjectContext)
+        XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
 
         // Action
-        waitForExpectation(count: 2) { expectation in
-            derivedContext.perform {
-                _ = derivedContext.insertNewObject(ofType: ShippingLine.self)
-            }
-            manager.saveDerivedType(derivedStorage: derivedContext, {
-                XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+        waitForExpectation(count: 1) { expectation in
+            manager.performAndSave({ storage in
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
+                self.insertAccount(to: storage)
+            }, completion: {
+                XCTAssertTrue(Thread.current.isMainThread, "Completion should be called in the main queue as defined in the function call.")
                 expectation.fulfill()
-            })
-            manager.reset()
-            expectation.fulfill()
+            }, on: .main)
         }
 
         // Assert
-        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
+        XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
+    }
+
+    func test_performAndSave_with_result_returns_correct_result_upon_success() throws {
+        // Arrange
+        let modelsInventory = try makeModelsInventory()
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+        let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
+        XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
+        let expectedUserID: Int64 = 135
+
+        // Action
+        let result: Result<Int64, Error> = waitFor { promise in
+            manager.performAndSave({ storage -> Int64 in
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
+                let account = self.insertAccount(userID: expectedUserID, to: storage)
+                return account.userID
+            }, completion: { result in
+                promise(result)
+            }, on: .main)
+        }
+
+        // Assert
+        let userID = try result.get()
+        XCTAssertEqual(userID, expectedUserID)
+        XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 1)
+    }
+
+    func test_performAndSave_with_result_returns_correct_result_upon_failure() throws {
+        // Arrange
+        let modelsInventory = try makeModelsInventory()
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+        let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
+        XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
+
+        // Action
+        let result: Result<Int64, Error> = waitFor { promise in
+            manager.performAndSave({ storage -> Int64 in
+                XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
+                throw CoreDataManagerTestsError.unexpectedFailure
+            }, completion: { result in
+                promise(result)
+            }, on: .main)
+        }
+
+        // Assert
+        switch result {
+        case .success:
+            XCTFail("Result should be failure")
+        case .failure(let error):
+            XCTAssertTrue(error is CoreDataManagerTestsError)
+        }
     }
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
@@ -216,10 +265,12 @@ final class CoreDataManagerTests: XCTestCase {
 
 private extension CoreDataManagerTests {
     @discardableResult
-    func insertAccount(to storage: StorageType) -> Account {
+    func insertAccount(userID: Int64 = 0,
+                       username: String = "",
+                       to storage: StorageType) -> Account {
         let account = storage.insertNewObject(ofType: Account.self)
-        account.userID = 0
-        account.username = ""
+        account.userID = userID
+        account.username = username
         return account
     }
 
@@ -270,5 +321,11 @@ private extension CoreDataManagerTests {
                       "Expected store at \(String(describing: store.url)) to be compatible with model \(model).",
                       file: file,
                       line: line)
+    }
+}
+
+private extension CoreDataManagerTests {
+    enum CoreDataManagerTestsError: Error {
+        case unexpectedFailure
     }
 }

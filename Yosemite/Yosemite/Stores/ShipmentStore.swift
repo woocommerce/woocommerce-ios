@@ -118,21 +118,19 @@ extension ShipmentStore {
                                                 readOnlyShipmentTrackingData: [Networking.ShipmentTracking],
                                                 onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
+            let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID, orderID: orderID)
+
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = storage.loadShipmentTracking(siteID: readOnlyTracking.siteID, orderID: readOnlyTracking.orderID,
-                    trackingID: readOnlyTracking.trackingID) ?? storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ?? storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
-            if let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID,
-                                                                       orderID: orderID) {
-                storageTrackings.forEach({ storageTracking in
-                    if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
-                        storage.deleteObject(storageTracking)
-                    }
-                })
-            }
+            storageTrackings?.forEach({ storageTracking in
+                if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
+                    storage.deleteObject(storageTracking)
+                }
+            })
         }, completion: onCompletion, on: .main)
     }
 

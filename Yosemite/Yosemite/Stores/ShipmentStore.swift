@@ -230,8 +230,9 @@ extension ShipmentStore {
                 return
             }
 
-            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID)
-            onCompletion(nil)
+            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -239,16 +240,17 @@ extension ShipmentStore {
     ///
     func deleteStoredShipment(siteID: Int64,
                               orderID: Int64,
-                              trackingID: String) {
-        let storage = storageManager.viewStorage
-        guard let tracking = storage.loadShipmentTracking(siteID: siteID,
-                                                          orderID: orderID,
-                                                          trackingID: trackingID) else {
-            return
-        }
+                              trackingID: String,
+                              onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let tracking = storage.loadShipmentTracking(siteID: siteID,
+                                                              orderID: orderID,
+                                                              trackingID: trackingID) else {
+                return
+            }
 
-        storage.deleteObject(tracking)
-        storage.saveIfNeeded()
+            storage.deleteObject(tracking)
+        }, completion: onCompletion, on: .main)
     }
 
     func addStoredShipment(siteID: Int64,

@@ -121,7 +121,7 @@ extension ShipmentStore {
             let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID, orderID: orderID)
 
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ?? 
+                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ??
                     storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
@@ -214,7 +214,6 @@ extension ShipmentStore {
                                           trackingProvider: trackingProvider,
                                           trackingURL: trackingURL,
                                           readOnlyTracking: newTracking) {
-                
                 onCompletion(nil)
             }
         }
@@ -272,13 +271,12 @@ extension ShipmentStore {
         storageManager.performAndSave({ storage in
             let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
             newStoredTracking.update(with: readOnlyTracking)
-            
+
             let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
             provider.name = trackingProvider
             provider.url = trackingURL
             provider.siteID = siteID
-            
-            
+
             let customProvidersGroup = self.customGroup(siteID: siteID, storage: storage)
             customProvidersGroup.addToProviders(provider)
         }, completion: onCompletion, on: .main)

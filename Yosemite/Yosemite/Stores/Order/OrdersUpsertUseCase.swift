@@ -69,8 +69,6 @@ struct OrdersUpsertUseCase {
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         var storageItem: Storage.OrderItem
-        let siteID = readOnlyOrder.siteID
-        let orderID = readOnlyOrder.orderID
 
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
@@ -137,7 +135,6 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
     ///
     private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
-        let itemID = readOnlyItem.itemID
 
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
@@ -256,7 +253,6 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided StorageShippingLine's taxes using the provided read-only ShippingLine
     ///
     private func handleShippingLineTaxes(_ readOnlyItem: Networking.ShippingLine, _ storageItem: Storage.ShippingLine, _ storage: StorageType) {
-        let shippingID = readOnlyItem.shippingID
 
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {

@@ -71,15 +71,15 @@ struct WooShippingAddPackageView: View {
                 .pickerStyle(.segmented)
                 .padding()
                 selectedPackageTypeView
-                Spacer()
-                Button(Localization.addPackage) {
-                    addPackageButtonTapped()
+                if !showSaveTemplate {
+                    Spacer()
+                    Button(Localization.addPackage) {
+                        addPackageButtonTapped()
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding()
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(viewModel.addPackageButtonDisabled)
-                .padding()
             }
-            .ignoresSafeArea(.keyboard)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(action: {
@@ -193,6 +193,7 @@ struct WooShippingAddPackageView: View {
                     savePackageAsTemplateButtonTapped()
                 }
                 .buttonStyle(SecondaryButtonStyle())
+                .padding(.bottom)
             }
         }
         .padding(.horizontal)

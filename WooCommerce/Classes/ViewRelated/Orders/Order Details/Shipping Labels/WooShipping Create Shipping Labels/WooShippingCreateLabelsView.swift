@@ -153,7 +153,7 @@ private extension WooShippingCreateLabelsView {
                 Text(viewModel.items.itemsCountLabel)
                     .bold()
                 Spacer()
-                Text("$148.50") // TODO: 14044 - Show real item total
+                Text(viewModel.items.itemsPriceLabel)
             }
             .frame(idealHeight: Layout.rowHeight)
             AdaptiveStack {

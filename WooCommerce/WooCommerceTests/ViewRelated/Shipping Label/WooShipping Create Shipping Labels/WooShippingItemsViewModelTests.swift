@@ -26,6 +26,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
         // Then
         assertEqual("2 items", viewModel.itemsCountLabel)
+        assertEqual("$12.50", viewModel.itemsPriceLabel)
         assertEqual("7 oz • $12.50", viewModel.itemsDetailLabel)
         assertEqual(2, viewModel.itemRows.count)
     }

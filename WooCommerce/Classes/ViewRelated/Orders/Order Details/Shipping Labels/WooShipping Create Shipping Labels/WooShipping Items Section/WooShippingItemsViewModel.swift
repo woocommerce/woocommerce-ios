@@ -15,9 +15,17 @@ final class WooShippingItemsViewModel: ObservableObject {
     /// Label with the total number of items to ship.
     @Published private(set) var itemsCountLabel: String = ""
 
+    /// Label with the total price for all items in the shipment.
+    private(set) var itemsPriceLabel = ""
+
+    /// Label with the total weight for all items in the shipment.
+    private var itemsWeightLabel = ""
+
     /// Label with the details of the items to ship.
-    /// Include total weight and total price for all items in the shipment.
-    @Published private(set) var itemsDetailLabel: String = ""
+    /// Includes total weight and total price for all items in the shipment.
+    var itemsDetailLabel: String {
+        "\(itemsWeightLabel) • \(itemsPriceLabel)"
+    }
 
     /// View models for rows of items to ship.
     @Published private(set) var itemRows: [WooShippingItemRowViewModel] = []
@@ -38,8 +46,10 @@ private extension WooShippingItemsViewModel {
     /// Configures the labels in the section header.
     ///
     func configureSectionHeader() {
-        itemsCountLabel = generateItemsCountLabel()
-        itemsDetailLabel = generateItemsDetailLabel()
+        let itemsCount = dataSource.items.map(\.quantity).reduce(0, +)
+        itemsCountLabel = Localization.itemsCount(itemsCount)
+        itemsWeightLabel = formatWeight(for: dataSource.items)
+        itemsPriceLabel = formatPrice(for: dataSource.items)
     }
 
     /// Configures the item rows.
@@ -48,22 +58,6 @@ private extension WooShippingItemsViewModel {
         itemRows = dataSource.items.map { item in
             WooShippingItemRowViewModel(item: item)
         }
-    }
-
-    /// Generates a label with the total number of items to ship.
-    ///
-    func generateItemsCountLabel() -> String {
-        let itemsCount = dataSource.items.map(\.quantity).reduce(0, +)
-        return Localization.itemsCount(itemsCount)
-    }
-
-    /// Generates a label with the details of the items to ship.
-    /// This includes the total weight and total price of all items.
-    ///
-    func generateItemsDetailLabel() -> String {
-        let formattedWeight = formatWeight(for: dataSource.items)
-        let formattedPrice = formatPrice(for: dataSource.items)
-        return "\(formattedWeight) • \(formattedPrice)"
     }
 
     /// Calculates and formats the total weight of the given items based on each item's weight and quantity.

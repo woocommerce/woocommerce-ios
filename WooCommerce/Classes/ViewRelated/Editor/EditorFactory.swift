@@ -1,39 +1,81 @@
 import Yosemite
 
 protocol Editor {
-    typealias OnContentSave = (_ content: String, _ productName: String?) -> Void
+    typealias OnContentSave = (_ content: String, _ additionalInfo: String?) -> Void
     var onContentSave: OnContentSave? { get }
 }
 
 /// This class takes care of instantiating the editor.
 ///
 final class EditorFactory {
+    struct EditorContext {
+        let initialContent: String?
+        let navigationTitle: String
+        let placeholderText: String
+        let showSaveChangesActionSheet: Bool
+        let isAIGenerationEnabled: Bool
+    }
 
     // MARK: - Editor: Instantiation
 
     func productDescriptionEditor(product: ProductFormDataModel,
                                   isAIGenerationEnabled: Bool,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: Localization.productDescriptionTitle,
-                                                  placeholderText: Localization.placeholderText(product: product),
-                                                  showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.description,
-                                               product: product,
-                                               viewProperties: viewProperties,
-                                               isAIGenerationEnabled: isAIGenerationEnabled)
-        editor.onContentSave = onContentSave
-        return editor
+        let context = EditorContext(
+            initialContent: product.description,
+            navigationTitle: Localization.productDescriptionTitle,
+            placeholderText: Localization.placeholderText(product: product),
+            showSaveChangesActionSheet: true,
+            isAIGenerationEnabled: isAIGenerationEnabled
+        )
+
+        return createEditor(context: context, product: product, onContentSave: onContentSave)
     }
 
     func productShortDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
-        let viewProperties = EditorViewProperties(navigationTitle: Localization.productShortDescriptionTitle,
-                                                  placeholderText: Localization.placeholderText(product: product),
-                                                  showSaveChangesActionSheet: true)
-        let editor = AztecEditorViewController(content: product.shortDescription,
-                                               product: product,
-                                               viewProperties: viewProperties,
-                                               isAIGenerationEnabled: false)
+        let context = EditorContext(
+            initialContent: product.shortDescription,
+            navigationTitle: Localization.productShortDescriptionTitle,
+            placeholderText: Localization.placeholderText(product: product),
+            showSaveChangesActionSheet: true,
+            isAIGenerationEnabled: false
+        )
+
+        return createEditor(context: context, product: product, onContentSave: onContentSave)
+    }
+
+    // onContentSave is optional because this can be used in SwiftUI with `UIViewControllerRepresentable` and the
+    // saving callback is to be managed separately there.
+    func customFieldRichTextEditor(initialValue: String,
+                                   onContentSave: Editor.OnContentSave? = nil) -> Editor & UIViewController {
+        let context = EditorContext(
+            initialContent: initialValue,
+            navigationTitle: Localization.customFieldsValueTitle,
+            placeholderText: Localization.customFieldsValuePlaceholder,
+            showSaveChangesActionSheet: true,
+            isAIGenerationEnabled: false
+        )
+
+        return createEditor(context: context, onContentSave: onContentSave)
+    }
+
+    func createEditor(context: EditorContext,
+                      product: ProductFormDataModel? = nil,
+                      onContentSave: Editor.OnContentSave?) -> Editor & UIViewController {
+        let viewProperties = EditorViewProperties(
+            navigationTitle: context.navigationTitle,
+            placeholderText: context.placeholderText,
+            showSaveChangesActionSheet: context.showSaveChangesActionSheet
+        )
+
+        let editor = AztecEditorViewController(
+            content: context.initialContent,
+            product: product,
+            viewProperties: viewProperties,
+            isAIGenerationEnabled: context.isAIGenerationEnabled
+        )
+
         editor.onContentSave = onContentSave
         return editor
     }
@@ -57,5 +99,16 @@ private extension EditorFactory {
             }
             return String(format: Localization.placeholderFormat, product.name)
         }
+
+        static let customFieldsValueTitle = NSLocalizedString(
+            "editorFactory.customFieldsValueTitle",
+            value: "Value",
+            comment: "The value of custom field to be edited.")
+
+        static let customFieldsValuePlaceholder = NSLocalizedString(
+            "editorFactory.customFieldsValuePlaceholder",
+            value: "Enter custom field value",
+            comment: "Placeholder text inside the editor's text field.")
+
     }
 }

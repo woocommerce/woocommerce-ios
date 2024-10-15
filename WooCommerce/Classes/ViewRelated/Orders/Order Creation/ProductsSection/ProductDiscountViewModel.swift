@@ -74,7 +74,7 @@ final class ProductDiscountViewModel: Identifiable {
     /// View model used for the `DiscountLineDetailsView`
     private(set) lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
         FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount != 0,
-                                          baseAmountForPercentage: baseAmountForDiscountPercentage,
+                                          baseAmount: baseAmountForDiscountPercentage,
                                           initialTotal: addedDiscount,
                                           lineType: .discount,
                                           didSelectSave: { [weak self] discount in

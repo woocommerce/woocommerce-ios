@@ -149,15 +149,15 @@ public final class StatsStoreV4: Store {
 private extension StatsStoreV4 {
     /// Deletes all of the Stats data.
     ///
-    func resetStoredStats(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
-        storage.deleteAllObjects(ofType: Storage.OrderStatsV4Interval.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Stats V4 deleted")
-
-        onCompletion()
+    func resetStoredStats(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4.self)
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4Totals.self)
+            storage.deleteAllObjects(ofType: Storage.OrderStatsV4Interval.self)
+        }, completion: {
+            DDLogDebug("Stats V4 deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
@@ -179,8 +179,9 @@ private extension StatsStoreV4 {
                                         forceRefresh: forceRefresh) { [weak self] result in
             switch result {
             case .success(let orderStatsV4):
-                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -224,8 +225,9 @@ private extension StatsStoreV4 {
                                     quantity: quantity) { [weak self] result in
             switch result {
             case .success(let siteVisitStats):
-                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
-                onCompletion(.success(()))
+                self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(SiteStatsStoreError(error: error)))
             }
@@ -250,9 +252,12 @@ private extension StatsStoreV4 {
                 switch result {
                 case .success(let siteSummaryStats):
                     if saveInStorage {
-                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats)
+                        self?.upsertStoredSiteSummaryStats(readOnlyStats: siteSummaryStats) {
+                            onCompletion(.success(siteSummaryStats))
+                        }
+                    } else {
+                        onCompletion(.success(siteSummaryStats))
                     }
-                    onCompletion(.success(siteSummaryStats))
                 case .failure(let error):
                     onCompletion(.failure(SiteStatsStoreError(error: error)))
                 }
@@ -306,9 +311,12 @@ private extension StatsStoreV4 {
                                                                    quantity: quantity,
                                                                    forceRefresh: forceRefresh)
                 if saveInStorage {
-                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats)
+                    upsertStoredTopEarnerStats(readOnlyStats: topEarnersStats) {
+                        onCompletion(.success(topEarnersStats))
+                    }
+                } else {
+                    onCompletion(.success(topEarnersStats))
                 }
-                onCompletion(.success(topEarnersStats))
             } catch {
                 onCompletion(.failure(error))
             }
@@ -416,19 +424,17 @@ private extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly OrderStatsV4 Entity into the Storage Layer.
     ///
-    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
+    func upsertStoredOrderStats(readOnlyStats: Networking.OrderStatsV4, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)?) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
+                storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
 
-        let storage = storageManager.viewStorage
-
-        let storageOrderStats = storage.loadOrderStatsV4(siteID: readOnlyStats.siteID, timeRange: timeRange.rawValue) ??
-            storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
-
-        storageOrderStats.timeRange = timeRange.rawValue
-        storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
-        storageOrderStats.update(with: readOnlyStats)
-        handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
-        storage.saveIfNeeded()
+            storageOrderStats.timeRange = timeRange.rawValue
+            storageOrderStats.totals = storage.insertNewObject(ofType: Storage.OrderStatsV4Totals.self)
+            storageOrderStats.update(with: readOnlyStats)
+            handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
@@ -474,16 +480,15 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
-        storageSiteVisitStats.update(with: readOnlyStats)
-        storageSiteVisitStats.timeRange = timeRange.rawValue
-        handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
-        storage.saveIfNeeded()
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageSiteVisitStats = storage.loadSiteVisitStats(
+                granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            storageSiteVisitStats.update(with: readOnlyStats)
+            storageSiteVisitStats.timeRange = timeRange.rawValue
+            handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
@@ -510,16 +515,15 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly TopEarnerStats Entity into the Storage Layer.
     ///
-    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
-                                                               granularity: readOnlyStats.granularity.rawValue)
-            ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
-        storageTopEarnerStats.update(with: readOnlyStats)
-        handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
-        storage.saveIfNeeded()
+    func upsertStoredTopEarnerStats(readOnlyStats: Networking.TopEarnerStats, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
+                                                                   granularity: readOnlyStats.granularity.rawValue)
+                ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
+            storageTopEarnerStats.update(with: readOnlyStats)
+            handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the provided StorageTopEarnerStats items using the provided read-only TopEarnerStats items
@@ -547,14 +551,12 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteSummaryStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats) {
-        assert(Thread.isMainThread)
-
-        let storage = storageManager.viewStorage
-        let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
-            ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
-        storageSiteSummaryStats.update(with: readOnlyStats)
-        storage.saveIfNeeded()
+    func upsertStoredSiteSummaryStats(readOnlyStats: Networking.SiteSummaryStats, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ storage in
+            let storageSiteSummaryStats = storage.loadSiteSummaryStats(date: readOnlyStats.date, period: readOnlyStats.period.rawValue)
+                ?? storage.insertNewObject(ofType: Storage.SiteSummaryStats.self)
+            storageSiteSummaryStats.update(with: readOnlyStats)
+        }, completion: onCompletion, on: .main)
     }
 }
 

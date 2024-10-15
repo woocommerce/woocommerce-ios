@@ -54,15 +54,6 @@ public class MockStorageManager: StorageManagerType {
         }
     }
 
-    /// Performs the received closure in Background. Note that you should use the received Storage instance (BG friendly!).
-    ///
-    public func performBackgroundTask(_ closure: @escaping (StorageType) -> Void) {
-        persistentContainer.performBackgroundTask { context in
-            closure(context as StorageType)
-        }
-    }
-
-
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {
@@ -90,6 +81,20 @@ public class MockStorageManager: StorageManagerType {
 
             NSLog("💣 [CoreDataManager] Stack Destroyed!")
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+    }
+
+    /// Handles a write operation using the background context and saves changes when done.
+    /// Using view storage to write for simplicity in tests
+    ///
+    public func performAndSave(_ closure: @escaping (StorageType) -> Void, completion: (() -> Void)?, on queue: DispatchQueue) {
+        let context = persistentContainer.viewContext
+        context.performAndWait {
+            closure(context)
+            context.saveIfNeeded()
+            queue.async {
+                completion?()
+            }
         }
     }
 }

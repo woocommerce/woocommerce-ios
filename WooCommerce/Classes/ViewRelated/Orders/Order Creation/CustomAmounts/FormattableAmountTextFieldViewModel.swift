@@ -16,10 +16,6 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     @Published var textFieldAmountText: String = ""
 
-    /// Stores whether the text field is focused.
-    ///
-    @Published var isFocused = false
-
     /// When true, the amount will be reset with the new input instead of appending.
     /// This is useful when we want to edit the amount with a new one from a source different than the view,
     /// otherwise we would be appending non visible decimals on the next time we edit it.
@@ -35,8 +31,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {
-        // As we don't show a cursor when editing due to implementation constraints, let's change the color also when it's focused for better visibility
-        amount.isEmpty && !isFocused ? .textPlaceholder : .text
+        amount.isEmpty ? .textPlaceholder : .text
     }
 
     /// Defines the amount text size.

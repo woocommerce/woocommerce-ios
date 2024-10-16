@@ -17,9 +17,7 @@ struct FormattableAmountTextField: View {
             // Hidden input text field
             TextField("", text: $viewModel.textFieldAmountText)
                 .onChange(of: viewModel.textFieldAmountText, perform: viewModel.updateAmount)
-                .onChange(of: focusAmountInput) {
-                    viewModel.isFocused = $0
-                }
+                .focused()
                 .focused($focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
@@ -30,6 +28,8 @@ struct FormattableAmountTextField: View {
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(5)
+                .roundedBorder(cornerRadius: 8, lineColor: focusAmountInput ? Color(.wooCommercePurple(.shade60)) : .clear, lineWidth: 1)
                 .onTapGesture {
                     focusAmountInput = true
                 }

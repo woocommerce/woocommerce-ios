@@ -487,8 +487,9 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
-                self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                self.upsertStoredAccountInBackground(readonlyAccount: account) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
                 onCompletion(.failure(error))
@@ -508,8 +509,9 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
-                self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                self.upsertStoredAccountInBackground(readonlyAccount: account) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
                 onCompletion(.failure(error))
@@ -568,12 +570,13 @@ private extension CardPresentPaymentStore {
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
-    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
-        let storage = storageManager.viewStorage
-        let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
-            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
+    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
+                storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
 
-        storageAccount.update(with: readonlyAccount)
+            storageAccount.update(with: readonlyAccount)
+        }, completion: onCompletion, on: .main)
     }
 
     func deleteStaleAccount(siteID: Int64, gatewayID: String) {

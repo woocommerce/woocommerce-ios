@@ -475,8 +475,6 @@ private extension CardPresentPaymentStore {
     }
 
     func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any WCPay account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
 
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
@@ -491,16 +489,14 @@ private extension CardPresentPaymentStore {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
-                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
-                onCompletion(.failure(error))
+                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID) {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }
 
     func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any Stripe account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
-
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
@@ -513,8 +509,9 @@ private extension CardPresentPaymentStore {
                     onCompletion(.success(()))
                 }
             case .failure(let error):
-                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
-                onCompletion(.failure(error))
+                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID) {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }
@@ -573,6 +570,9 @@ private extension CardPresentPaymentStore {
 private extension CardPresentPaymentStore {
     func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
+            /// Delete any account present. There can be only one.
+            self.deleteStaleAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID, in: storage)
+
             let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
                 storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
 
@@ -580,14 +580,17 @@ private extension CardPresentPaymentStore {
         }, completion: onCompletion, on: .main)
     }
 
-    func deleteStaleAccount(siteID: Int64, gatewayID: String) {
-        let storage = storageManager.viewStorage
+    func deleteStaleAccount(siteID: Int64, gatewayID: String, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            self.deleteStaleAccount(siteID: siteID, gatewayID: gatewayID, in: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    func deleteStaleAccount(siteID: Int64, gatewayID: String, in storage: StorageType) {
         guard let storageAccount = storage.loadPaymentGatewayAccount(siteID: siteID, gatewayID: gatewayID) else {
             return
         }
-
         storage.deleteObject(storageAccount)
-        storage.saveIfNeeded()
     }
 
     func upsertCharge(readonlyCharge: WCPayCharge, onCompletion: @escaping () -> Void) {

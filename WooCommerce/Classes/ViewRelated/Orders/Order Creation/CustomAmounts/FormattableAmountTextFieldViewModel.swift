@@ -68,51 +68,14 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         resetAmountWithNewValue = true
     }
 
-    // this probably deserves a better naming :D
-    // I'm not very happy that it doesn't have a single responsibility, it updates the amount and returns whether it was updated with a Bool
-    // Probably it needs some refactor
-    func updateAmountWithResult(_ newAmount: String) -> Bool {
-        debugPrint("newAmount", newAmount)
-        guard amount != newAmount else {
-            debugPrint("return because it's the same as before")
-            return false
-        }
-
-        let decimalAmount = Decimal(string: amount)
-        debugPrint("amount", amount)
-        debugPrint("decimalAmount", decimalAmount)
-
-        // If the previous amount is 0 we have to reset it, otherwise the new input will be added to 0.00, e.g. 0.001...
-        // Converting "-" to decimal returns 0, but in this case we don't want to reset the text field.
-        if decimalAmount == 0 &&
-            amount != "-" {
-            debugPrint("reset")
-            resetAmountWithNewValue = true
-        }
-
-        if resetAmountWithNewValue,
-            let newInput = newAmount.last {
-            amount = priceFieldFormatter.formatUserInput(String(newInput))
-            debugPrint("amount with reset", amount)
-            resetAmountWithNewValue = false
-            return true
-        }
-
-        amount = priceFieldFormatter.formatUserInput(newAmount)
-        debugPrint("amount without reset", amount)
-        return true
-    }
-
-    // This function won't be necessary anymore if the function above works fine
     func updateAmount(_ newAmount: String) {
-        guard amount != newAmount else {
-            return
-        }
+        guard amount != newAmount else { return }
 
         if resetAmountWithNewValue,
             let newInput = newAmount.last {
             amount = priceFieldFormatter.formatUserInput(String(newInput))
             resetAmountWithNewValue = false
+            return
         }
 
         amount = priceFieldFormatter.formatUserInput(newAmount)

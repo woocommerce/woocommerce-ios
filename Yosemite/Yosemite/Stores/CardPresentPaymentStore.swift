@@ -579,10 +579,9 @@ private extension CardPresentPaymentStore {
             /// Delete any account present. There can be only one.
             deleteStaleAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID, in: storage)
 
-            let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
-                storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
-
+            let storageAccount = storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
             storageAccount.update(with: readonlyAccount)
+
         }, completion: onCompletion, on: .main)
     }
 

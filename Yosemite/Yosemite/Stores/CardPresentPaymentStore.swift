@@ -553,8 +553,9 @@ private extension CardPresentPaymentStore {
             remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
                 switch result {
                 case .success(let charge):
-                    self.upsertCharge(readonlyCharge: charge)
-                    completion(.success(charge))
+                    self.upsertCharge(readonlyCharge: charge) {
+                        completion(.success(charge))
+                    }
                 case .failure(let error):
                     if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
                         self.deleteCharge(siteID: siteID, chargeID: chargeID)
@@ -589,21 +590,22 @@ private extension CardPresentPaymentStore {
         storage.saveIfNeeded()
     }
 
-    func upsertCharge(readonlyCharge: WCPayCharge) {
-        let storage = storageManager.viewStorage
-        let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
+    func upsertCharge(readonlyCharge: WCPayCharge, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storageWCPayCharge = self.existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
-        switch readonlyCharge.paymentMethodDetails {
-        case .cardPresent(let details), .interacPresent(let details):
-            upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
-        case .card(let details):
-            upsertCardDetails(details, for: storageWCPayCharge, in: storage)
-        case .unknown:
-            storageWCPayCharge.cardDetails = nil
-            storageWCPayCharge.cardPresentDetails = nil
-        }
+            switch readonlyCharge.paymentMethodDetails {
+            case .cardPresent(let details), .interacPresent(let details):
+                self.upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
+            case .card(let details):
+                self.upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+            case .unknown:
+                storageWCPayCharge.cardDetails = nil
+                storageWCPayCharge.cardPresentDetails = nil
+            }
 
-        storageWCPayCharge.update(with: readonlyCharge)
+            storageWCPayCharge.update(with: readonlyCharge)
+        }, completion: onCompletion, on: .main)
     }
 
     private func existingOrNewWCPayCharge(siteID: Int64, chargeID: String, in storage: StorageType) -> Storage.WCPayCharge {

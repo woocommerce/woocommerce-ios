@@ -65,13 +65,13 @@ private extension ProductReviewStore {
 
     /// Deletes all of the Stored ProductReviews.
     ///
-    func resetStoredProductReviews(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.ProductReview.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Product Reviews deleted")
-
-        onCompletion()
+    func resetStoredProductReviews(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.ProductReview.self)
+        }, completion: {
+            DDLogDebug("Product Reviews deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Synchronizes the product reviews associated with a given Site ID (if any!).

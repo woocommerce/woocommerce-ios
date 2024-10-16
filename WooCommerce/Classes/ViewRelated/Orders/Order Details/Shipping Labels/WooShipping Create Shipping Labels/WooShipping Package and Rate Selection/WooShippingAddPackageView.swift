@@ -278,13 +278,11 @@ struct WooShippingAddPackageView: View {
     private func addPackageButtonTapped() {
         // TODO: implement adding a package
         guard validateCustomPackageInputFields() else { return }
-        print("✅ VALID")
     }
 
     private func savePackageAsTemplateButtonTapped() {
         // TODO: implement saving package as a template
         guard validateCustomPackageInputFields() else { return }
-        print("✅ VALID")
     }
 }
 

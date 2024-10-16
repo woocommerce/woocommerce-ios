@@ -7,6 +7,7 @@
 - [internal] Moved write operations in AccountStore to background [https://github.com/woocommerce/woocommerce-ios/pull/14084]
 - [internal] Moved write operations for store stats to background [https://github.com/woocommerce/woocommerce-ios/pull/14089]
 - [internal] Updated storage usage in OrderStore [https://github.com/woocommerce/woocommerce-ios/pull/14093, https://github.com/woocommerce/woocommerce-ios/pull/14099]
+- [internal] Updated storage usage in RefundStore [https://github.com/woocommerce/woocommerce-ios/pull/14124]
 
 
 20.7

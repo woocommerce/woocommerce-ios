@@ -6,7 +6,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // if needed just by adding new case in enum
     @Published var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
 
-    var addPackageButtonDisabled: Bool {
+    var areFieldValuesInvalid: Bool {
         for (_, value) in fieldValues {
             if value.isEmpty {
                 return true
@@ -47,7 +47,7 @@ struct WooShippingAddPackageView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @StateObject private var viewModel = WooShippingAddPackageViewModel()
+    @StateObject private var customPackageViewModel = WooShippingAddPackageViewModel()
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
     // Holds selected package type when custom package is selected, it can be `box` or `envelope`
@@ -57,6 +57,7 @@ struct WooShippingAddPackageView: View {
     @State var packageTemplateName: String = ""
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
+    private let saveTemplateButtonID: String = "saveTemplateButtonID"
 
     // MARK: - UI
 
@@ -71,14 +72,6 @@ struct WooShippingAddPackageView: View {
                 .pickerStyle(.segmented)
                 .padding()
                 selectedPackageTypeView
-                if !showSaveTemplate {
-                    Spacer()
-                    Button(Localization.addPackage) {
-                        addPackageButtonTapped()
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding()
-                }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -99,106 +92,129 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var selectedPackageTypeView: some View {
-        ScrollView {
-            switch selectedPackageType {
-            case .custom:
-                customPackageView
-            case .carrier:
-                carrierPackageView
-            case .saved:
-                savedPackageView
-            }
+        switch selectedPackageType {
+        case .custom:
+            customPackageView
+        case .carrier:
+            carrierPackageView
+        case .saved:
+            savedPackageView
         }
     }
 
+    @ViewBuilder
     private var customPackageView: some View {
-        VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
-            HStack {
-                Text(Localization.packageType)
-                    .font(.subheadline)
-                Spacer()
-            }
-            Menu {
-                // show selection
-                ForEach(PackageType.allCases, id: \.self) { option in
-                    Button {
-                        packageType = option
-                    } label: {
-                        Text(option.name)
-                            .bodyStyle()
-                        if packageType == option {
-                            Image(uiImage: .checkmarkStyledImage)
-                        }
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(packageType.name)
-                        .bodyStyle()
-                    Spacer()
-                    Image(systemName: "chevron.up.chevron.down")
-                }
-                .padding()
-            }
-            .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
-            AdaptiveStack(spacing: 8) {
-                ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
-                    WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
-                        return self.viewModel.fieldValues[dimensionType] ?? ""
-                    }, set: { value in
-                        self.viewModel.fieldValues[dimensionType] = value
-                    }), focusedField: _focusedField)
-                }
-            }
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Group {
-                        Button(action: {
-                            onBackwardButtonTapped()
-                        }, label: {
-                            Image(systemName: "chevron.backward")
-                        })
-                        .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.first)
-                        Button(action: {
-                            onForwardButtonTapped()
-                        }, label: {
-                            Image(systemName: "chevron.forward")
-                        })
-                        .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.last)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: Constants.defaultVerticalSpacing) {
+                    HStack {
+                        Text(Localization.packageType)
+                            .font(.subheadline)
                         Spacer()
-                        Button {
-                            dismissKeyboard()
-                        } label: {
-                            Text(Localization.keyboardDoneButton)
-                                .bold()
+                    }
+                    Menu {
+                        // show selection
+                        ForEach(PackageType.allCases, id: \.self) { option in
+                            Button {
+                                packageType = option
+                            } label: {
+                                Text(option.name)
+                                    .bodyStyle()
+                                if packageType == option {
+                                    Image(uiImage: .checkmarkStyledImage)
+                                }
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text(packageType.name)
+                                .bodyStyle()
+                            Spacer()
+                            Image(systemName: "chevron.up.chevron.down")
+                        }
+                        .padding()
+                    }
+                    .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
+                    AdaptiveStack(spacing: 8) {
+                        ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
+                            WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
+                                return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
+                            }, set: { value in
+                                self.customPackageViewModel.fieldValues[dimensionType] = value
+                            }), focusedField: _focusedField)
                         }
                     }
-                    .renderedIf(focusedField != nil)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Group {
+                                Button(action: {
+                                    onBackwardButtonTapped()
+                                }, label: {
+                                    Image(systemName: "chevron.backward")
+                                })
+                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.first)
+                                Button(action: {
+                                    onForwardButtonTapped()
+                                }, label: {
+                                    Image(systemName: "chevron.forward")
+                                })
+                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.last)
+                                Spacer()
+                                Button {
+                                    dismissKeyboard()
+                                } label: {
+                                    Text(Localization.keyboardDoneButton)
+                                        .bold()
+                                }
+                            }
+                            .renderedIf(focusedField != nil)
+                        }
+                    }
+                    Toggle(isOn: $showSaveTemplate) {
+                        Text(Localization.saveNewPackageTemplate)
+                            .font(.subheadline)
+                    }
+                    .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
+                    if showSaveTemplate {
+                        TextField("Enter a unique package name", text: $packageTemplateName)
+                            .font(.body)
+                            .focused($packageTemplateNameFieldFocused)
+                            .padding()
+                            .roundedBorder(cornerRadius: 8,
+                                           lineColor: packageTemplateNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                                           lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
+                        Button(Localization.savePackageTemplate) {
+                            savePackageAsTemplateButtonTapped()
+                        }
+                        .disabled(!validateCustomPackageInputFields())
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.bottom)
+                        .id(saveTemplateButtonID) // Set the id for the button so we can scroll to it
+                    }
                 }
-            }
-            Toggle(isOn: $showSaveTemplate) {
-                Text(Localization.saveNewPackageTemplate)
-                    .font(.subheadline)
-            }
-            .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
-            if showSaveTemplate {
-                TextField("Enter a unique package name", text: $packageTemplateName)
-                    .font(.body)
-                    .focused($packageTemplateNameFieldFocused)
-                    .padding()
-                    .roundedBorder(cornerRadius: 8,
-                                   lineColor: packageTemplateNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
-                                   lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
-                Button(Localization.savePackageTemplate) {
-                    savePackageAsTemplateButtonTapped()
+                .padding(.horizontal)
+                .onChange(of: showSaveTemplate) { newValue in
+                    packageTemplateNameFieldFocused = newValue
                 }
-                .buttonStyle(SecondaryButtonStyle())
-                .padding(.bottom)
+                .onChange(of: packageTemplateNameFieldFocused) { focused in
+                    if focused {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                            withAnimation {
+                                proxy.scrollTo(saveTemplateButtonID, anchor: .bottom)
+                            }
+                        })
+                    }
+                }
             }
         }
-        .padding(.horizontal)
-        .onChange(of: showSaveTemplate) { newValue in
-            packageTemplateNameFieldFocused = newValue
+        if !showSaveTemplate {
+            Spacer()
+            Button(Localization.addPackage) {
+                addPackageButtonTapped()
+            }
+            .disabled(!validateCustomPackageInputFields())
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
         }
     }
 
@@ -245,12 +261,26 @@ struct WooShippingAddPackageView: View {
 
     // MARK: - actions
 
+    private func validateCustomPackageInputFields() -> Bool {
+        guard !customPackageViewModel.areFieldValuesInvalid else {
+            return false
+        }
+        if showSaveTemplate {
+            return !packageTemplateName.isEmpty
+        }
+        return true
+    }
+
     private func addPackageButtonTapped() {
         // TODO: implement adding a package
+        guard validateCustomPackageInputFields() else { return }
+        print("✅ VALID")
     }
 
     private func savePackageAsTemplateButtonTapped() {
         // TODO: implement saving package as a template
+        guard validateCustomPackageInputFields() else { return }
+        print("✅ VALID")
     }
 }
 

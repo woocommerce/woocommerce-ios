@@ -6,6 +6,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // if needed just by adding new case in enum
     @Published var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
 
+    // Field values are invalid if one of them is empty
     var areFieldValuesInvalid: Bool {
         for (_, value) in fieldValues {
             if value.isEmpty {
@@ -30,6 +31,7 @@ struct WooShippingAddPackageView: View {
             }
         }
     }
+
     enum PackageType: CaseIterable {
         case box, envelope
         var name: String {
@@ -41,8 +43,11 @@ struct WooShippingAddPackageView: View {
             }
         }
     }
+
     enum Constants {
         static let defaultVerticalSpacing: CGFloat = 16.0
+        static let saveTemplateButtonID: String = "saveTemplateButtonID"
+        static let scrollToDelay: Double = 0.5
     }
 
     @Environment(\.presentationMode) var presentationMode
@@ -57,7 +62,6 @@ struct WooShippingAddPackageView: View {
     @State var packageTemplateName: String = ""
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
-    private let saveTemplateButtonID: String = "saveTemplateButtonID"
 
     // MARK: - UI
 
@@ -189,7 +193,7 @@ struct WooShippingAddPackageView: View {
                         .disabled(!validateCustomPackageInputFields())
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.bottom)
-                        .id(saveTemplateButtonID) // Set the id for the button so we can scroll to it
+                        .id(Constants.saveTemplateButtonID) // Set the id for the button so we can scroll to it
                     }
                 }
                 .padding(.horizontal)
@@ -198,9 +202,9 @@ struct WooShippingAddPackageView: View {
                 }
                 .onChange(of: packageTemplateNameFieldFocused) { focused in
                     if focused {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.scrollToDelay, execute: {
                             withAnimation {
-                                proxy.scrollTo(saveTemplateButtonID, anchor: .bottom)
+                                proxy.scrollTo(Constants.saveTemplateButtonID, anchor: .bottom)
                             }
                         })
                     }

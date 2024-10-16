@@ -9,11 +9,7 @@ public final class ProductReviewStore: Store {
     private let remote: ProductReviewsRemote
 
     private lazy var productReviewFromNoteUseCase =
-        RetrieveProductReviewFromNoteUseCase(network: network, derivedStorage: sharedDerivedStorage)
-
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
+    RetrieveProductReviewFromNoteUseCase(network: network, storageManager: storageManager)
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductReviewsRemote(network: network)

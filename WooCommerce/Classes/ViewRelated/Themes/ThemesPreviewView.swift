@@ -146,12 +146,8 @@ struct ThemesPreviewView: View {
         }
         .task { await viewModel.fetchPages() }
         .sheet(isPresented: $showPagesMenu) {
-            if #available(iOS 16, *) {
-                pagesListSheet
-                    .presentationDetents([.medium, .large])
-            } else {
-                pagesListSheet
-            }
+            pagesListSheet
+                .presentationDetents([.medium, .large])
         }
         .notice($viewModel.notice)
         .onAppear {

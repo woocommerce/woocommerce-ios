@@ -15,24 +15,11 @@ struct RefreshablePlainList<Content: View>: View {
     }
 
     var body: some View {
-        if #available(iOS 16, *) {
-            ScrollView {
-                content
-            }
-            .refreshable {
-                await action()
-            }
-        } else {
-            List {
-                content
-                    .listRowSeparatorTint(.clear)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets.zero)
-            }
-            .listStyle(.plain)
-            .refreshable {
-                await action()
-            }
+        ScrollView {
+            content
+        }
+        .refreshable {
+            await action()
         }
     }
 }

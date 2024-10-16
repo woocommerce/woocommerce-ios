@@ -130,8 +130,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 
         // Validate necessary data
-        guard #available(iOS 16, *),
-              let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
+        guard let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
             return handleError(.webAuthChallengeRequestFailed)

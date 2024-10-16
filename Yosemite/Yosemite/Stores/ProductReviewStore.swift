@@ -104,9 +104,12 @@ private extension ProductReviewStore {
             switch result {
             case .failure(let error):
                 if case NetworkError.notFound = error {
-                    self.deleteStoredProductReview(siteID: siteID, reviewID: reviewID)
+                    self.deleteStoredProductReview(siteID: siteID, reviewID: reviewID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
             case .success(let productReview):
                 self.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
                     onCompletion(productReview, nil)
@@ -154,14 +157,13 @@ private extension ProductReviewStore {
 
     /// Deletes any Storage.ProductReview with the specified `siteID` and `reviewID`
     ///
-    func deleteStoredProductReview(siteID: Int64, reviewID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let productReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) else {
-            return
-        }
-
-        storage.deleteObject(productReview)
-        storage.saveIfNeeded()
+    func deleteStoredProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let productReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) else {
+                return
+            }
+            storage.deleteObject(productReview)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called

@@ -253,14 +253,16 @@ struct WooShippingAddPackageView: View {
         packageTemplateNameFieldFocused = false
     }
 
+    @ViewBuilder
     private var carrierPackageView: some View {
         // TODO: just a placeholder
-        Text(Localization.carrier)
+        Spacer()
     }
 
+    @ViewBuilder
     private var savedPackageView: some View {
         // TODO: just a placeholder
-        Text(Localization.saved)
+        Spacer()
     }
 
     // MARK: - actions

@@ -175,17 +175,12 @@ private extension ProductReviewStore {
                                                 siteID: Int64,
                                                 shouldDeleteAllStoredProductReviews: Bool = false,
                                                 onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ [weak self] storage in
             if shouldDeleteAllStoredProductReviews {
-                derivedStorage.deleteProductReviews(siteID: siteID)
+                storage.deleteProductReviews(siteID: siteID)
             }
-            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self?.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {

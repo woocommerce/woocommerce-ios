@@ -555,9 +555,12 @@ private extension CardPresentPaymentStore {
                     }
                 case .failure(let error):
                     if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
-                        self.deleteCharge(siteID: siteID, chargeID: chargeID)
+                        self.deleteCharge(siteID: siteID, chargeID: chargeID) {
+                            completion(.failure(error))
+                        }
+                    } else {
+                        completion(.failure(error))
                     }
-                    completion(.failure(error))
                 }
             }
         case .stripe:
@@ -569,9 +572,12 @@ private extension CardPresentPaymentStore {
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
     func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else {
+                return
+            }
             /// Delete any account present. There can be only one.
-            self.deleteStaleAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID, in: storage)
+            deleteStaleAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID, in: storage)
 
             let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
                 storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
@@ -581,8 +587,8 @@ private extension CardPresentPaymentStore {
     }
 
     func deleteStaleAccount(siteID: Int64, gatewayID: String, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
-            self.deleteStaleAccount(siteID: siteID, gatewayID: gatewayID, in: storage)
+        storageManager.performAndSave({ [weak self] storage in
+            self?.deleteStaleAccount(siteID: siteID, gatewayID: gatewayID, in: storage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -594,14 +600,15 @@ private extension CardPresentPaymentStore {
     }
 
     func upsertCharge(readonlyCharge: WCPayCharge, onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
-            let storageWCPayCharge = self.existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
             switch readonlyCharge.paymentMethodDetails {
             case .cardPresent(let details), .interacPresent(let details):
-                self.upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
+                upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
             case .card(let details):
-                self.upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+                upsertCardDetails(details, for: storageWCPayCharge, in: storage)
             case .unknown:
                 storageWCPayCharge.cardDetails = nil
                 storageWCPayCharge.cardPresentDetails = nil
@@ -640,14 +647,14 @@ private extension CardPresentPaymentStore {
         storageWCPayCharge.cardPresentDetails = nil
     }
 
-    func deleteCharge(siteID: Int64, chargeID: String) {
-        let storage = storageManager.viewStorage
-        guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
-            return
-        }
+    func deleteCharge(siteID: Int64, chargeID: String, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
+                return
+            }
 
-        storage.deleteObject(charge)
-        storage.saveIfNeeded()
+            storage.deleteObject(charge)
+        }, completion: onCompletion, on: .main)
     }
 }
 

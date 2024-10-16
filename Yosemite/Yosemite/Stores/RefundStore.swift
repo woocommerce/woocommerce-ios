@@ -214,8 +214,7 @@ private extension RefundStore {
                              readOnlyRefunds: [Networking.Refund],
                              in storage: StorageType) {
         for readOnlyRefund in readOnlyRefunds {
-            let storageRefund = storedRefunds.first(where: { $0.refundID == readOnlyRefund.refundID }) ??
-                storage.insertNewObject(ofType: Storage.Refund.self)
+            let storageRefund = storedRefunds.first(where: { $0.refundID == readOnlyRefund.refundID }) ?? storage.insertNewObject(ofType: Storage.Refund.self)
 
             storageRefund.update(with: readOnlyRefund)
 
@@ -229,8 +228,6 @@ private extension RefundStore {
     ///
     func handleOrderItemRefunds(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
         var storageItem: Storage.OrderItemRefund
-        let siteID = readOnlyRefund.siteID
-        let refundID = readOnlyRefund.refundID
 
         let storedRefundItems = storageRefund.items
 

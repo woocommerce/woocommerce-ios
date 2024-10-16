@@ -262,7 +262,19 @@ struct WooShippingAddPackageView: View {
     @ViewBuilder
     private var savedPackageView: some View {
         // TODO: just a placeholder
-        Spacer()
+        SavedPackagesSelectionView(packages: [
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "USPS Priority Mail Flat Rate Boxes", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "USPS Priority Mail Flat Rate Boxes", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+            SavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+        ])
     }
 
     // MARK: - actions
@@ -386,5 +398,95 @@ extension WooShippingAddPackageDimensionView {
         static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
                                               value: "Height",
                                               comment: "Info label for height input field")
+    }
+}
+
+protocol SavedPackageDataRepresentable {
+    var name: String { get }
+    var type: String { get }
+    var dimensions: String { get }
+    var weight: String { get }
+}
+
+struct SavedPackageData: SavedPackageDataRepresentable {
+    let name: String
+    let type: String
+    let dimensions: String
+    let weight: String
+}
+
+struct SavedPackagesSelectionView: View {
+    @State private var selectedPackageIndex: Int? = nil  // Track the selected package index
+    let packages: [SavedPackageDataRepresentable]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Divider()
+            List {
+                ForEach(packages.indices, id: \.self) { index in
+                    PackageOptionView(
+                        isSelected: selectedPackageIndex == index, // Check if this package is selected
+                        package: packages[index],
+                        showTopDivider: false,
+                        action: {
+                            selectedPackageIndex = selectedPackageIndex == index ? nil : index
+                        }
+                    )
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in
+                        return 16
+                    }
+                    .swipeActions {
+                        Button {
+                            // remove package
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                        .tint(Color.withColorStudio(name: .red, shade: .shade50))
+                    }
+                }
+                .listRowInsets(.zero)
+            }
+            .listStyle(.plain)
+            Divider()
+            Button(WooShippingAddPackageView.Localization.addPackage) {
+            }
+            .disabled(selectedPackageIndex == nil || packages.isEmpty)
+            .buttonStyle(PrimaryButtonStyle())
+            .padding()
+        }
+    }
+}
+
+struct PackageOptionView: View {
+    var isSelected: Bool
+    var package: SavedPackageDataRepresentable
+    var showTopDivider: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        HStack {
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(isSelected ? Color(.withColorStudio(.wooCommercePurple, shade: .shade60)) : .gray)
+                .font(.title)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(package.type)
+                    .captionStyle()
+                Text(package.name)
+                    .bodyStyle()
+                HStack {
+                    Text(package.dimensions)
+                    Text("•")
+                    Text(package.weight)
+                }
+                .subheadlineStyle()
+                .foregroundColor(.gray)
+            }
+            .padding(.leading, 4)
+            Spacer()
+        }
+        .padding(16)
+        .onTapGesture {
+            action()
+        }
     }
 }

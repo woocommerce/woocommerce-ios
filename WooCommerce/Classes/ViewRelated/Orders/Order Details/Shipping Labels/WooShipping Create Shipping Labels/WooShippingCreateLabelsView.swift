@@ -61,7 +61,7 @@ struct WooShippingCreateLabelsView: View {
                                 Text(Localization.BottomSheet.purchase)
                             }
                             .buttonStyle(PrimaryButtonStyle())
-                            .disabled(true) // TODO: 14044 - Enable button when shipping label is ready to purchase
+                            .disabled(true) // TODO: 13556 - Enable button when shipping label is ready to purchase
                         }
                         .padding(.horizontal, Layout.bottomSheetPadding)
                     } else {
@@ -179,8 +179,8 @@ private extension WooShippingCreateLabelsView {
             AdaptiveStack {
                 Text(Localization.BottomSheet.subtotal)
                 Spacer()
-                Text("$0.00") // TODO: 13555 - Show real subtotal value
-                    .if(true) { subtotal in // TODO: 14044 - Only show placeholder if subtotal is not available
+                Text("$0.00") // TODO: 13554 - Show subtotal value(s) for selected rate
+                    .if(true) { subtotal in // TODO: 13554 - Only show placeholder if subtotal is not available
                         subtotal.redacted(reason: .placeholder)
                     }
             }
@@ -189,8 +189,8 @@ private extension WooShippingCreateLabelsView {
                 Text(Localization.BottomSheet.total)
                     .bold()
                 Spacer()
-                Text("$0.00") // TODO: 13555 - Show real total value
-                    .if(true) { total in // TODO: 14044 - Only show placeholder if total is not available
+                Text("$0.00") // TODO: 13554 - Show total value for selected shipping rate
+                    .if(true) { total in // TODO: 13554 - Only show placeholder if total is not available
                         total.redacted(reason: .placeholder)
                     }
             }

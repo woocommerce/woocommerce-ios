@@ -1,3 +1,1 @@
-In dieser Version haben wir ein Problem im Zusammenhang mit dem Onboarding von Bezahlungen behoben. Das Blaze-Werbungsmanagement wurde ebenfalls verbessert, um dir ein angenehmeres Erlebnis bieten zu können.
-
-
+In diesem Update haben wir das Dashboard verbessert: Es verfügt nun über ein klareres Layout mit 2 Spalten auf größeren Bildschirmen. Das Einrichten von Jetpack verläuft nun reibungsloser und Kampagnen werden unverzüglich mit sofortigen Feedback-Optionen abgebrochen. Das Erstellen von Produktkategorien läuft jetzt dank einer sich automatisch öffnenden Tastatur schneller. Außerdem bleibt dein Smartphone auch während Updates des Kartenlesegeräts stets aktiv, um nahtlose Transaktionen zu ermöglichen.

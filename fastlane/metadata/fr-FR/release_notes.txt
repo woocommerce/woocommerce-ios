@@ -1,3 +1,1 @@
-Dans cette version, nous avons corrigé un problème lié à l’intégration des paiements. La gestion des publicités Blaze a également été améliorée pour une meilleure expérience.
-
-
+Dans cette mise à jour, nous avons amélioré le tableau de bord grâce à une mise en page plus nette sur deux colonnes pour les grands écrans. La configuration de Jetpack est dorénavant plus fluide et les campagnes peuvent être annulées instantanément avec des options de commentaires immédiats. Créer des catégories de produit est plus rapide avec un clavier qui s’ouvre automatiquement et votre téléphone reste actif lors des mises à jour du lecteur de carte pour des transactions fluides.

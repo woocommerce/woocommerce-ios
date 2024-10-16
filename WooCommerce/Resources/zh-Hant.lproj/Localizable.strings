@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-18 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-10-01 09:54:16+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -9476,6 +9476,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.title" = "找不到產品";
 
+/* Question in the feedback banner after a Blaze campaign is successfully created */
+"blazeCampaignCreationCoordinator.feedbackQuestion" = "Blaze 帶給你怎樣的體驗呢？";
+
 /* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successCTA" = "完成";
 
@@ -10584,11 +10587,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.redactionInfoTitle" = "無法使用訪客和轉換資料";
 
+/* Description of the filter used to show only favorite products. */
+"favoriteProductsFilter.favoriteProducts" = "最愛的商品";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "顧客";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
+
+/* Row title for filtering products by favorite products. */
+"filterProductListViewModel.favoriteProduct" = "最愛的商品";
 
 /* Status name of a disabled Google Ads campaign */
 "googleAdsCampaign.status.disabled" = "已停用";
@@ -10763,6 +10772,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
+
+/* Message on the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.body" = "運用 Blaze 讓數百萬使用者看見你的商品，並強化銷售表現";
+
+/* Title of the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.title" = "想要強化銷售表現嗎？";
 
 /* Message on the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.body" = "運用 Blaze 廣告宣傳商品，立即提升銷售表現。";
@@ -11250,6 +11265,13 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "嘗試其他付款方式";
 
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
+   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "再次嘗試付款";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "付款準備作業錯誤";
+
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "請稍候…";
 
@@ -11483,6 +11505,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "此訂單可能失敗";
+
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "請稍候";
 
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "與讀卡機中斷連結";
@@ -11807,6 +11832,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "由於你的網站已標記為私人網站，故無法使用圖片。 若要使用，可切換至「即將推出」模式。";
+
+/* Mark favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.markAsFavorite" = "標記為我的最愛";
+
+/* Remove favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.removeAsFavorite" = "從我的最愛中移除";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "取消";
@@ -12428,8 +12459,56 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "週";
 
+/* Button to select a package to use for a shipment in the shipping label creation flow. */
+"wooShipping.createLabel.addPackage.button" = "選取包裹";
+
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "取消";
+
+/* Label for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatLabel" = "你要寄送的貨件是否屬於有害或危險物品類別？";
+
+/* Message in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderMessage" = "輸入包裹尺寸，或挑選貨運業者專用包裝選項，以查看適用的貨運費率。";
+
+/* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderTitle" = "選取包裹以取得貨運費率";
+
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.markComplete" = "將此訂單標示為完成並通知客戶";
+
+/* Header for order details section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.orderDetails" = "訂單詳細資料";
+
+/* Label for the menu to select a paper size on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paperSize" = "選擇標籤紙張大小";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.purchase" = "購買標籤";
+
+/* Label for address where the shipment is shipped from on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipFrom" = "出貨地址";
+
+/* Label for address where the shipment is shipped to on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipTo" = "到貨地址";
+
+/* Header for shipment costs section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipmentCosts" = "貨運費用";
+
+/* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.subtotal" = "小計";
+
+/* Label on the bottom sheet that can be expanded to show shipment detailson the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.title" = "貨件詳細資料";
+
+/* Label for row showing the total for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.total" = "總計";
+
+/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.items.count" = "%1$@ 個品項";
+
+/* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
+"wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
 
 /* Title for the screen to create a shipping label */
 "wooShipping.createLabels.title" = "建立貨運標籤";

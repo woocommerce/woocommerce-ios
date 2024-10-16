@@ -2,53 +2,67 @@ import SwiftUI
 
 struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
-    let customFields: [CustomFieldViewModel]
+    let onBackButtonTapped: () -> Void
+
+    init(isEditable: Bool,
+         viewModel: CustomFieldsListViewModel,
+         onBackButtonTapped: @escaping () -> Void) {
+        self.isEditable = isEditable
+        self.viewModel = viewModel
+        self.onBackButtonTapped = onBackButtonTapped
+    }
 
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(customFields) { customField in
-                            if isEditable {
-                                NavigationLink(destination: CustomFieldEditorView(key: customField.title,
-                                                                                  value: customField.content)
-                                ) {
-                                    CustomFieldRow(isEditable: true,
-                                                   title: customField.title,
-                                                   content: customField.content,
-                                                   contentURL: customField.contentURL)
-                                }
-                            }
-                            else {
-                                CustomFieldRow(isEditable: false,
-                                               title: customField.title,
-                                               content: customField.content,
-                                               contentURL: customField.contentURL)
-                            }
+        NavigationStack {
+            List(viewModel.combinedList) { customField in
+                if isEditable {
+                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value)) {
+                        CustomFieldRow(isEditable: true,
+                                       title: customField.key,
+                                       content: customField.value.removedHTMLTags,
+                                       contentURL: nil)
+                    }
+                } else {
+                    CustomFieldRow(isEditable: false,
+                                   title: customField.key,
+                                   content: customField.value.removedHTMLTags,
+                                   contentURL: nil)
+                }
+            }
+            .listStyle(.plain)
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        onBackButtonTapped()
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Image(systemName: "chevron.backward")
+                    })
+                }
 
-                            Divider()
-                                .padding(.leading)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if isEditable {
+                        HStack {
+                            Button {
+                                // todo-13493: add save handling
+                            } label: {
+                                Text("Save") // todo-13493: set String to be translatable
+                            }
+                            .disabled(!viewModel.hasChanges)
+                            Button(action: {
+                                // todo-13493: add addition handling
+                            }, label: {
+                                Image(systemName: "plus")
+                                    .renderingMode(.template)
+                            })
                         }
                     }
-                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                    .background(Color(.listForeground(modal: false)))
                 }
-                .background(Color(.listBackground))
-                .ignoresSafeArea(edges: .horizontal)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            presentationMode.wrappedValue.dismiss()
-                        }, label: {
-                            Image(uiImage: .closeButton)
-                        })
-                    }
-                }
-                .navigationTitle(Localization.title)
-                .navigationBarTitleDisplayMode(.inline)
             }
         }
         .wooNavigationBarStyle()
@@ -105,15 +119,6 @@ private struct CustomFieldRow: View {
                         .footnoteStyle()
                         .lineLimit(isEditable ? 2 : nil)
                 }
-            }.padding([.leading, .trailing], Constants.vStackPadding)
-
-            Spacer()
-
-            if isEditable {
-                // Chevron icon
-                Image(uiImage: .chevronImage)
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundStyle(Color(.textTertiary))
             }
         }
         .padding(Constants.hStackPadding)
@@ -133,7 +138,6 @@ extension CustomFieldsListView {
 private extension CustomFieldRow {
     enum Constants {
         static let spacing: CGFloat = 8
-        static let vStackPadding: CGFloat = 16
         static let hStackPadding: CGFloat = 10
         static let height: CGFloat = 64
     }
@@ -144,11 +148,14 @@ private extension CustomFieldRow {
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         CustomFieldsListView(
-            isEditable: false,
-            customFields: [
-                CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
-                CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-            ])
+            isEditable: true,
+            viewModel: CustomFieldsListViewModel(
+                customFields: [
+                    CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
+                    CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
+                ]),
+            onBackButtonTapped: { }
+            )
     }
 }
 

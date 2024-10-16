@@ -1,3 +1,1 @@
-In deze versie hebben we een probleem opgelost met de onboarding van betalingen. Het beheer van Blaze-advertenties is ook verbeterd voor een betere ervaring.
-
-
+In deze update hebben we het dashboard verbeterd met een strakkere lay-out met twee kolommen op een groter scherm. De Jetpack-configuratie is nu soepeler en campagnes kunnen onmiddellijk worden geannuleerd, waarna je direct feedbackopties kan kiezen. Je kan nu nog sneller productcategorieën aanmaken met een toetsenbord dat automatisch verschijnt en je telefoon blijft actief terwijl de kaartlezer wordt geüpdatet voor een gemakkelijk transactieproces.

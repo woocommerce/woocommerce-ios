@@ -49,7 +49,7 @@ class NotificationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
         let action = NotificationAction.synchronizeNotifications() { (error) in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 44)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), MockNetwork.notificationLoadAllJSONCount)
 
             if let note = self.viewStorage.loadNotification(noteID: 100036, noteHash: 987654)?.toReadOnly() {
                 // Plain Fields
@@ -111,7 +111,7 @@ class NotificationStoreTests: XCTestCase {
         /// Initial Sync
         ///
         let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), 44)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), MockNetwork.notificationLoadAllJSONCount)
             notificationStore.onAction(nestedSyncAction)
         }
 

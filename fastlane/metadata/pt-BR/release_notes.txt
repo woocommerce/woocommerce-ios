@@ -1,3 +1,1 @@
-Nesta versão, corrigimos um problema relacionado à integração de pagamentos. Para uma experiência melhor, o gerenciamento de anúncios do Blaze também foi melhorado.
-
-
+Nesta atualização, aprimoramos o painel com um layout de duas colunas mais organizado em telas maiores. Agora o Jetpack ficou mais fácil de configurar, e as campanhas são canceladas na hora com opções de feedback imediato. Crie categorias de produtos com mais agilidade usando o teclado, que aparece automaticamente. Além disso, seu celular continua ativo durante atualizações no leitor de cartão para não atrapalhar as transações.

@@ -1,3 +1,1 @@
-I den här versionen har vi åtgärdat ett problem som rörde onboarding av betalningar. Dessutom har Blaze-annonshanteringen förbättrats för en bättre upplevelse.
-
-
+I den här uppdateringen har vi förbättrat adminpanelen med en renare tvåkolumnslayout på större skärmar. Jetpack-konfigurationen är nu smidigare, och kampanjer kan avbrytas omedelbart med direkta feedbackalternativ. Skapandet av produktkategorier är snabbare, med ett tangentbord som öppnas automatiskt, och din telefon förblir aktiv under kortläsaruppdateringar för sömlösa transaktioner.

@@ -1,3 +1,1 @@
-En esta versión hemos solucionado un problema relacionado con la incorporación de pagos. También se ha mejorado la gestión de los anuncios de Blaze para mejorar la experiencia.
-
-
+En esta actualización, hemos mejorado el escritorio con un diseño más limpio a 2 columnas en pantallas grandes. La configuración de Jetpack es ahora más fluida, y las campañas se cancelan al instante con opciones de respuesta inmediata. La creación de categorías de productos es más rápida gracias al teclado de apertura automática, y el teléfono permanece activo durante las actualizaciones del lector de tarjetas para realizar transacciones sin problemas.

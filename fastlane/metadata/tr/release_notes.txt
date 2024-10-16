@@ -1,3 +1,1 @@
-Bu sürümde ödemelerinin kabulüyle ilgili bir sorunu düzelttik. Blaze reklamları yönetimi de daha iyi deneyimler için geliştirildi.
-
-
+Bu güncellemede daha büyük ekranlarda daha temiz, 2 sütunlu bir düzenle panoyu iyileştirdik. Jetpack kurulumu artık daha sorunsuz ve kampanyalar, anında geri bildirim seçenekleriyle hemen iptal ediliyor. Otomatik açılan klavye sayesinde ürün kategorileri oluşturmak daha hızlıdır ve işlemlerin sorunsuz olması için kart okuyucu güncellemeleri sırasında telefonunuz etkin kalır.

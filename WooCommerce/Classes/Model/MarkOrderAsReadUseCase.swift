@@ -25,6 +25,7 @@ struct MarkOrderAsReadUseCase {
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
     /// Returns syncronized note if marking was successful and error if some error happened
+    @MainActor
     static func markOrderNoteAsReadIfNeeded(stores: StoresManager, noteID: Int64, orderID: Int) async -> Result<Note, Error> {
         let syncronizedNoteResult: Result<Note, Error> = await withCheckedContinuation { continuation in
             let action = NotificationAction.synchronizeNotification(noteID: noteID) { syncronizedNote, error in
@@ -40,7 +41,8 @@ struct MarkOrderAsReadUseCase {
         switch syncronizedNoteResult {
         case .success(let syncronizedNote):
             guard let syncronizedNoteOrderID = syncronizedNote.meta.identifier(forKey: .order),
-                  syncronizedNoteOrderID == orderID else {
+                  syncronizedNoteOrderID == orderID,
+                  syncronizedNote.read == false else {
                 return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
             }
 
@@ -88,11 +90,14 @@ struct MarkOrderAsReadUseCase {
 
         switch loadedNotes {
         case .success(let notes):
-            guard let note = notes.first else {
+            guard let note = notes.first(where: { goalNote in
+                return goalNote.noteID == noteID
+            }) else {
                 return .failure(MarkOrderAsReadUseCase.Error.unavailableNote)
             }
-            guard let syncronizedNoteOrderID = note.meta.identifier(forKey: .order),
-               syncronizedNoteOrderID == orderID else {
+            guard let loadedNoteOrderID = note.meta.identifier(forKey: .order),
+                  loadedNoteOrderID == orderID,
+                  note.read == false else {
                 return .failure(MarkOrderAsReadUseCase.Error.noNeedToMarkAsRead)
             }
 

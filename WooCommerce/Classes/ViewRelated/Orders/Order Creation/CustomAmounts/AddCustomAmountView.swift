@@ -73,13 +73,21 @@ struct AddCustomAmountView: View {
                     })
                 }
                 .frame(width: geometry.size.width)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .onTapGesture {
+                    dismissKeyboard()
+                }
             }
         }
         .wooNavigationBarStyle()
     }
 }
 
-
+private extension AddCustomAmountView {
+    func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
 
 private extension AddCustomAmountView {
     enum Layout {

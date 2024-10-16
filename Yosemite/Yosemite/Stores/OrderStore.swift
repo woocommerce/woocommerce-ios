@@ -9,12 +9,6 @@ import Storage
 public class OrderStore: Store {
     private let remote: OrdersRemote
 
-    /// Shared private StorageType for use during the entire Orders sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -77,12 +71,13 @@ public class OrderStore: Store {
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
 
-        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
                                       feeID: feeID,
                                       status: status,
                                       amount: amount,
+                                      amountName: amountName,
                                       taxable: taxable,
                                       orderNote: orderNote,
                                       email: email,
@@ -106,13 +101,13 @@ private extension OrderStore {
 
     /// Nukes all of the Stored Orders.
     ///
-    func resetStoredOrders(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Order.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Orders deleted")
-
-        onCompletion()
+    func resetStoredOrders(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Order.self)
+        }, completion: {
+            DDLogDebug("Orders deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Searches all of the orders that contain a given Keyword.
@@ -158,105 +153,30 @@ private extension OrderStore {
                              onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
-
-        // Synchronous variables.
-        //
-        // The variables `fetchErrors` and `hasDeletedAllOrders` should only be accessed
-        // **inside** the `serialQueue` (e.g. `serialQueue.async()`). The only exception is in
-        // the `group.notify()` call below which only _reads_ `fetchErrors` and all the _writes_
-        // have finished.
-        var fetchErrors = [Error]()
-        var fetchedOrders: [Order]?
-        var hasDeletedAllOrders = false
-        let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
         let startTime = Date()
-
-        // Delete all the orders if we haven't yet.
-        // This should only be called inside the `serialQueue` block.
-        let deleteAllOrdersOnce = { [weak self] in
-            guard hasDeletedAllOrders == false else {
-                return
-            }
-
-            // Use the main thread because `resetStoredOrders` uses `viewStorage`.
-            DispatchQueue.main.sync { [weak self] in
-                self?.resetStoredOrders { }
-            }
-
-            hasDeletedAllOrders = true
-        }
-
-        // The handler for fetching requests.
-        let loadAllOrders: ([String]?, @escaping (() -> Void)) -> Void = { [weak self] statuses, completion in
-            guard let self = self else {
-                return
-            }
-            self.remote.loadAllOrders(for: siteID,
-                                      statuses: statuses,
-                                      after: after,
-                                      before: before,
-                                      modifiedAfter: modifiedAfter,
-                                      customerID: customerID,
-                                      productID: productID,
-                                      pageNumber: pageNumber,
-                                      pageSize: pageSize) { [weak self] result in
-                guard let self = self else {
-                    return
-                }
-                serialQueue.async { [weak self] in
-                    guard let self = self else {
-                        completion()
-                        return
-                    }
-
-                    switch result {
-                    case .success(let orders):
-                        fetchedOrders = orders
-
-                        switch writeStrategy {
-                        case .doNotSave:
-                            completion()
-                        case .deleteAllBeforeSaving, .save:
-                            if writeStrategy == .deleteAllBeforeSaving {
-                                deleteAllOrdersOnce()
-                            }
-
-                            self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
-                                completion()
-                            })
-                        }
-                    case .failure(let error):
-                        fetchErrors.append(error)
-                        completion()
+        self.remote.loadAllOrders(for: siteID,
+                                  statuses: statuses,
+                                  after: after,
+                                  before: before,
+                                  modifiedAfter: modifiedAfter,
+                                  customerID: customerID,
+                                  productID: productID,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .success(let orders):
+                switch writeStrategy {
+                case .doNotSave:
+                    onCompletion(Date().timeIntervalSince(startTime), result)
+                case .deleteAllBeforeSaving, .save:
+                    let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                        onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
+            case .failure:
+                onCompletion(Date().timeIntervalSince(startTime), result)
             }
-        }
-
-        // Perform fetch and wait to finish before calling `onCompletion`.
-        let group = DispatchGroup()
-
-        group.enter()
-        if let statuses = statuses {
-            loadAllOrders(statuses) {
-                group.leave()
-            }
-        }
-        else {
-            loadAllOrders([OrdersRemote.Defaults.statusAny]) {
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) {
-            let result: Result<[Order], Error> = {
-                if let error = fetchErrors.first {
-                    .failure(error)
-                } else {
-                    .success(fetchedOrders ?? [])
-                }
-            }()
-            onCompletion(Date().timeIntervalSince(startTime), result)
         }
     }
 
@@ -356,9 +276,12 @@ private extension OrderStore {
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let order = order else {
                 if case NetworkError.notFound? = error {
-                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID)
+                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
                 return
             }
 
@@ -400,6 +323,7 @@ private extension OrderStore {
                                    feeID: Int64,
                                    status: OrderStatusEnum,
                                    amount: String,
+                                   amountName: String?,
                                    taxable: Bool,
                                    orderNote: String?,
                                    email: String?,
@@ -409,7 +333,7 @@ private extension OrderStore {
         let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
 
         // Create updated fields
-        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, taxable: taxable)
+        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, name: amountName, taxable: taxable)
         let newBillingAddress = Address(firstName: "",
                                         lastName: "",
                                         company: nil,
@@ -453,19 +377,23 @@ private extension OrderStore {
     ///
     func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
-        let oldStatus = updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status)
-
-        remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
-            guard let error = error else {
-                if let order = order {
-                    self?.upsertStoredOrder(readOnlyOrder: order)
-                }
-                return onCompletion(nil)
+        updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status) { [weak self] previousStatus in
+            guard let self else {
+                return onCompletion(UpdateOrderStatusError.undefinedState)
             }
+            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
+                guard let error else {
+                    if let order {
+                        self?.upsertStoredOrder(readOnlyOrder: order)
+                    }
+                    return onCompletion(nil)
+                }
 
-            /// Revert Optimistic Update
-            self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: oldStatus)
-            onCompletion(error)
+                /// Revert Optimistic Update
+                self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: previousStatus) { _ in
+                    onCompletion(error)
+                }
+            }
         }
     }
 
@@ -524,26 +452,35 @@ private extension OrderStore {
             /// didn't exist locally. So, we have to delete the stored order as workaround.
             /// Otherwise, we have to revert the updated fields.
             if order == backupOrder {
-                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                    onCompletion(result)
+                }
             } else {
                 self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+                onCompletion(result)
             }
-            onCompletion(result)
         }
     }
 
     /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
     ///
-    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void) {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return onCompletion(.failure(MarkOrderAsPaidLocallyError.orderNotFoundInStorage))
-        }
-        order.datePaid = datePaid
-        order.statusKey = OrderStatusEnum.processing.rawValue
-        storage.saveIfNeeded()
-        onCompletion(.success(order.toReadOnly()))
+    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                throw MarkOrderAsPaidLocallyError.orderNotFoundInStorage
+            }
+            order.datePaid = datePaid
+            order.statusKey = OrderStatusEnum.processing.rawValue
+            return order.toReadOnly()
+        }, completion: { result in
+            switch result {
+            case .success(let readonlyOrder):
+                onCompletion(.success(readonlyOrder))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }, on: .main)
     }
 
     /// Deletes a given order.
@@ -596,32 +533,36 @@ extension OrderStore {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
-    func deleteStoredOrder(siteID: Int64, orderID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return
-        }
-
-        storage.deleteObject(order)
-        storage.saveIfNeeded()
+    func deleteStoredOrder(siteID: Int64, orderID: Int64, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            storage.deleteObject(order)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the Status of the specified Order, as requested.
     ///
-    /// - Returns: Status, prior to performing the Update OP.
-    ///
-    @discardableResult
-    func updateOrderStatus(siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum) -> OrderStatusEnum {
-        let storage = storageManager.viewStorage
-        guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
-            return statusKey
-        }
-
-        let oldStatus = order.statusKey
-        order.statusKey = statusKey.rawValue
-        storage.saveIfNeeded()
-
-        return OrderStatusEnum(rawValue: oldStatus)
+    func updateOrderStatus(siteID: Int64, orderID: Int64,
+                           statusKey: OrderStatusEnum,
+                           onCompletion: @escaping (_ previousStatus: OrderStatusEnum) -> Void) {
+        storageManager.performAndSave({ storage -> OrderStatusEnum in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return statusKey
+            }
+            let oldStatus = order.statusKey
+            order.statusKey = statusKey.rawValue
+            return OrderStatusEnum(rawValue: oldStatus)
+        }, completion: { result in
+            switch result {
+            case .success(let status):
+                onCompletion(status)
+            case .failure:
+                // this case should not happen as we don't return any error in the operation closure above
+                onCompletion(statusKey)
+            }
+        }, on: .main)
     }
 }
 
@@ -657,7 +598,7 @@ private extension OrderStore {
         let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
         let oldReadOnlyOrder = storageOrder?.toReadOnly()
 
-        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], in: storageManager.viewStorage)
+        upsertStoredOrdersInBackground(readOnlyOrders: [readOnlyOrder])
 
         if storageOrder == nil {
             DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
@@ -669,18 +610,11 @@ private extension OrderStore {
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
     func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
-            self.upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
@@ -734,21 +668,18 @@ private extension OrderStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
-    /// on the main thread!
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*.
     ///
-    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else {
-                return
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
+                                                removeAllStoredOrders: Bool = false,
+                                                onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            if removeAllStoredOrders {
+                derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
             }
-            self.upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
@@ -769,6 +700,10 @@ private extension OrderStore {
 extension OrderStore {
     enum MarkOrderAsPaidLocallyError: Error {
         case orderNotFoundInStorage
+    }
+
+    enum UpdateOrderStatusError: Error {
+        case undefinedState
     }
 
     enum RetrieveOrderError: Error {

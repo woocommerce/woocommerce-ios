@@ -61,11 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v20.5-whats-new"
+msgctxt "v20.7-whats-new"
 msgid ""
-"In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!\n"
-"\n"
-"\n"
+"In this update we've resolved a couple of minor issues regarding automatic dismissal of different views, as well as improvement to the UI alignment on iPads. We've also fixed a crash when searching for products to add to an order. Lastly, entering discounts higher than the product price is no longer possible.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

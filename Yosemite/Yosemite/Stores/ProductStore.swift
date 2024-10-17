@@ -9,10 +9,6 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
@@ -868,17 +864,13 @@ extension ProductStore {
                                           siteID: Int64,
                                           shouldDeleteExistingProducts: Bool = false,
                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
             if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
+                storage.deleteProducts(siteID: siteID)
             }
-            self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Product Entities into the Storage Layer.
@@ -1256,15 +1248,11 @@ private extension ProductStore {
                                                  filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
                                                  onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave ({ [weak self] storage in
+            guard let self else { return }
+            upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
+            upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)

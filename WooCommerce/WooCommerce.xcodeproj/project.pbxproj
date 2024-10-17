@@ -2204,6 +2204,7 @@
 		CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */; };
 		CE2A9FCF23C4F2C8002BEC1C /* RefundedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FCD23C4F2C8002BEC1C /* RefundedProductsViewController.xib */; };
 		CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */; };
+		CE2DF92C2CC162EB001AA394 /* WooShippingServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ButtonTableViewCell.swift */; };
@@ -5252,6 +5253,7 @@
 		CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsDataSource.swift; sourceTree = "<group>"; };
 		CE2A9FCD23C4F2C8002BEC1C /* RefundedProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RefundedProductsViewController.xib; sourceTree = "<group>"; };
 		CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
+		CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingServiceView.swift; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -11905,6 +11907,7 @@
 			children = (
 				CECEFA6C2CA2CEB50071C7DB /* WooShippingPackageAndRatePlaceholder.swift */,
 				DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */,
+				CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */,
 			);
 			path = "WooShipping Package and Rate Selection";
 			sourceTree = "<group>";
@@ -15721,6 +15724,7 @@
 				DEC6C51C27477890006832D3 /* JCPJetpackInstallStepsView.swift in Sources */,
 				E15FC74526BC213500CF83E6 /* InPersonPaymentsLearnMore.swift in Sources */,
 				D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */,
+				CE2DF92C2CC162EB001AA394 /* WooShippingServiceView.swift in Sources */,
 				68D8FBD12BFEF9C700477C42 /* TotalsView.swift in Sources */,
 				E1ABAEF728479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift in Sources */,
 				207823E52C5D1B2F00025A59 /* PointOfSaleCardPresentPaymentConnectionSuccessAlertView.swift in Sources */,

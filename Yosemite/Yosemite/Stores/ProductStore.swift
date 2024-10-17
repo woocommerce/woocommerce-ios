@@ -203,13 +203,13 @@ private extension ProductStore {
 
     /// Deletes all of the Stored Products.
     ///
-    func resetStoredProducts(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Product.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Products deleted")
-
-        onCompletion()
+    func resetStoredProducts(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Product.self)
+        }, completion: {
+            DDLogDebug("Products deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Searches all of the products that contain a given Keyword.

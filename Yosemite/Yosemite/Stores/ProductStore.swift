@@ -1269,8 +1269,9 @@ private extension ProductStore {
         searchResults.keyword = keyword
         searchResults.filterKey = filter.rawValue
 
+        let storedProducts = storage.loadProducts(siteID: siteID, productsIDs: readOnlyProducts.map { $0.productID })
         for readOnlyProduct in readOnlyProducts {
-            guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {
+            guard let storedProduct = storedProducts.first(where: { $0.productID == readOnlyProduct.productID }) else {
                 continue
             }
 

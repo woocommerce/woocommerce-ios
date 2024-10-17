@@ -52,16 +52,16 @@ struct WooShippingCreateLabelsView: View {
                 }) {
                     if isShipmentDetailsExpanded {
                         CollapsibleHStack(spacing: Layout.bottomSheetSpacing) {
-                            Toggle(Localization.BottomSheet.markComplete, isOn: .constant(false)) // TODO: 14044 - Handle this toggle setting
+                            Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
                                 .font(.subheadline)
 
                             Button {
-                                // TODO: 13556 - Trigger purchase action
+                                viewModel.purchaseLabel()
                             } label: {
                                 Text(Localization.BottomSheet.purchase)
                             }
                             .buttonStyle(PrimaryButtonStyle())
-                            .disabled(true) // TODO: 14044 - Enable button when shipping label is ready to purchase
+                            .disabled(true) // TODO: 13556 - Enable button when shipping label is ready to purchase
                         }
                         .padding(.horizontal, Layout.bottomSheetPadding)
                     } else {
@@ -79,7 +79,7 @@ struct WooShippingCreateLabelsView: View {
                             HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
                                 Text(Localization.BottomSheet.shipFrom)
                                     .trackSize(size: $shipmentDetailsShipFromSize)
-                                Text("417 MONTGOMERY ST, SAN FRANCISCO") // TODO: 14044 - Show real "ship from" address (store address)
+                                Text(viewModel.originAddress)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -90,10 +90,12 @@ struct WooShippingCreateLabelsView: View {
                                 Text(Localization.BottomSheet.shipTo)
                                     .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
                                 VStack(alignment: .leading) {
-                                    Text("1 Infinite Loop") // TODO: 14044 - Show real "ship to" address (customer address)
-                                        .bold()
-                                    Text("Cupertino, CA 95014")
-                                    Text("USA")
+                                    ForEach(viewModel.destinationAddressLines, id: \.self) { addressLine in
+                                        Text(addressLine)
+                                            .if(addressLine == viewModel.destinationAddressLines.first) { line in
+                                                line.bold()
+                                            }
+                                    }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
@@ -151,19 +153,21 @@ private extension WooShippingCreateLabelsView {
                 Text(viewModel.items.itemsCountLabel)
                     .bold()
                 Spacer()
-                Text("$148.50") // TODO: 14044 - Show real item total
+                Text(viewModel.items.itemsPriceLabel)
             }
             .frame(idealHeight: Layout.rowHeight)
-            AdaptiveStack {
-                Image(uiImage: .shippingIcon)
-                    .frame(width: Layout.iconSize)
-                Text("Flat rate shipping") // TODO: 14044 - Show real shipping name
-                    .bold()
-                    .lineLimit(nil)
-                Spacer()
-                Text("$25.00") // TODO: 14044 - Show real shipping amount
+            ForEach(viewModel.shippingLines) { shippingLine in
+                AdaptiveStack {
+                    Image(uiImage: .shippingIcon)
+                        .frame(width: Layout.iconSize)
+                    Text(shippingLine.title)
+                        .bold()
+                        .lineLimit(nil)
+                    Spacer()
+                    Text(shippingLine.formattedTotal)
+                }
+                .frame(idealHeight: Layout.rowHeight)
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
     }
 
@@ -175,8 +179,8 @@ private extension WooShippingCreateLabelsView {
             AdaptiveStack {
                 Text(Localization.BottomSheet.subtotal)
                 Spacer()
-                Text("$0.00") // TODO: 13555 - Show real subtotal value
-                    .if(true) { subtotal in // TODO: 14044 - Only show placeholder if subtotal is not available
+                Text("$0.00") // TODO: 13554 - Show subtotal value(s) for selected rate
+                    .if(true) { subtotal in // TODO: 13554 - Only show placeholder if subtotal is not available
                         subtotal.redacted(reason: .placeholder)
                     }
             }
@@ -185,8 +189,8 @@ private extension WooShippingCreateLabelsView {
                 Text(Localization.BottomSheet.total)
                     .bold()
                 Spacer()
-                Text("$0.00") // TODO: 13555 - Show real total value
-                    .if(true) { total in // TODO: 14044 - Only show placeholder if total is not available
+                Text("$0.00") // TODO: 13554 - Show total value for selected shipping rate
+                    .if(true) { total in // TODO: 13554 - Only show placeholder if total is not available
                         total.redacted(reason: .placeholder)
                     }
             }

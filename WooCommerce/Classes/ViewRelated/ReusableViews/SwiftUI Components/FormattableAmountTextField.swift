@@ -28,6 +28,10 @@ struct FormattableAmountTextField: View {
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(5)
+                .if(focusAmountInput, transform: { field in
+                    field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+                })
                 .onTapGesture {
                     focusAmountInput = true
                 }

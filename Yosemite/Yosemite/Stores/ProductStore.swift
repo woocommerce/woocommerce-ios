@@ -1035,6 +1035,9 @@ extension ProductStore {
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
 
         let siteID = readOnlyProduct.siteID
+        // Load all tags at once supposing tags are lightweight enough to do this.
+        // To further improve performance, we could load only tags of specified IDs.
+        let allSiteTags = storage.loadProductTags(siteID: siteID)
 
         // Removes all the tags first.
         for tag in storageProduct.tagsArray {
@@ -1045,7 +1048,7 @@ extension ProductStore {
         var storageTags = [StorageProductTag]()
         for readOnlyTag in readOnlyProduct.tags {
 
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = allSiteTags.first(where: { $0.tagID == readOnlyTag.tagID }) {
                 existingStorageTag.update(with: readOnlyTag)
                 storageTags.append(existingStorageTag)
             } else {

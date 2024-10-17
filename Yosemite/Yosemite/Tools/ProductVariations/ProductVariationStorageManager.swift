@@ -55,11 +55,11 @@ final class ProductVariationStorageManager {
                                        siteID: Int64,
                                        productID: Int64) {
         let product = storage.loadProduct(siteID: siteID, productID: productID)
-
+        let variations = storage.loadProductVariations(siteID: siteID, productID: productID)
+        
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {
-            let storageProductVariation = storage.loadProductVariation(siteID: siteID,
-                                                                       productVariationID: readOnlyProductVariation.productVariationID)
+            let storageProductVariation = variations?.first(where: { $0.productVariationID == readOnlyProductVariation.productVariationID })
             ?? storage.insertNewObject(ofType: Storage.ProductVariation.self)
             storageProductVariation.update(with: readOnlyProductVariation)
             storageProductVariation.product = product

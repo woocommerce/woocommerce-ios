@@ -63,11 +63,27 @@ struct WooShippingServiceCardView: View {
                                     selectionCircle(selected: signatureSelection == .signatureRequired)
                                     Text(signatureRequiredLabel)
                                 }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    if signatureSelection == .signatureRequired {
+                                        signatureSelection = .none
+                                    } else {
+                                        signatureSelection = .signatureRequired
+                                    }
+                                }
                             }
                             if let adultSignatureRequiredLabel {
                                 HStack {
                                     selectionCircle(selected: signatureSelection == .adultSignatureRequired)
                                     Text(adultSignatureRequiredLabel)
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    if signatureSelection == .adultSignatureRequired {
+                                        signatureSelection = .none
+                                    } else {
+                                        signatureSelection = .adultSignatureRequired
+                                    }
                                 }
                             }
                         }

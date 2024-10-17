@@ -347,8 +347,9 @@ private extension ProductVariationStore {
             switch result {
             case .success(let productVariation):
                 self.productVariationStorageManager.deleteStoredProductVariation(siteID: productVariation.siteID,
-                                                                                 productVariationID: productVariation.productVariationID)
-                onCompletion(.success(()))
+                                                                                 productVariationID: productVariation.productVariationID) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             }

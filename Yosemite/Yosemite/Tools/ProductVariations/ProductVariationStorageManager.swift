@@ -28,18 +28,18 @@ final class ProductVariationStorageManager {
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
     ///
-    func deleteStoredProductVariations(siteID: Int64, productID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductVariations(siteID: siteID, productID: productID)
-        storage.saveIfNeeded()
+    func deleteStoredProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductVariations(siteID: siteID, productID: productID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
     ///
-    func deleteStoredProductVariation(siteID: Int64, productVariationID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductVariation(siteID: siteID, productVariationID: productVariationID)
-        storage.saveIfNeeded()
+    func deleteStoredProductVariation(siteID: Int64, productVariationID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductVariation(siteID: siteID, productVariationID: productVariationID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly ProductVariation Entities into the Storage Layer.

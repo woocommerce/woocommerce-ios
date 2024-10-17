@@ -960,15 +960,13 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's default attributes using the provided read-only Product's default attributes
     ///
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
-            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(siteID: siteID,
-                                                                                         productID: productID,
-                                                                                         defaultAttributeID: readOnlyDefaultAttribute.attributeID,
-                                                                                         name: readOnlyDefaultAttribute.name ?? "") {
+            if let existingStorageDefaultAttribute = storageProduct.defaultAttributes?.first(where: {
+                $0.attributeID == readOnlyDefaultAttribute.attributeID &&
+                $0.name == readOnlyDefaultAttribute.name ?? ""
+            }) {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
             } else {
                 let newStorageDefaultAttribute = storage.insertNewObject(ofType: Storage.ProductDefaultAttribute.self)

@@ -142,6 +142,8 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
+        fixTarBarTraitCollectionOnIpadForiOS18()
+
         configureTabViewControllers()
         observeSiteIDForViewControllers()
         observeProductImageUploadStatusUpdates()
@@ -229,6 +231,38 @@ final class MainTabBarController: UITabBarController {
         navigateTo(.hubMenu) { [weak self] in
             self?.hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
         }
+    }
+
+    // MARK: - iPadOS 18 tabs support
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+         super.traitCollectionDidChange(previousTraitCollection)
+         fixTarBarTraitCollectionOnIpadForiOS18()
+     }
+
+
+    /// Force a previous bottom tab bar design on iPadOS 18 when built with Xcode 16
+    ///
+    /// Override a trait collection for the tab bar controller to be compact to show the same tab layout as on iPhone
+    /// Set a trait collection to the default one for child view controllers to support split views
+    ///
+    /// The code is only executed when built with Xcode 16 and run on iPadOS 18
+    ///
+    /// The solution is borrowed from https://github.com/Automattic/pocket-casts-ios/pull/2077
+    private func fixTarBarTraitCollectionOnIpadForiOS18() {
+    #if compiler(>=6)
+        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            traitOverrides.horizontalSizeClass = .compact
+            if let rootHorizontalSizeClass = view.window?.traitCollection.horizontalSizeClass {
+                tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
+                if let viewControllers {
+                    for vc in viewControllers {
+                        vc.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
+                    }
+                }
+            }
+        }
+    #endif
     }
 }
 

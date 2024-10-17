@@ -141,8 +141,9 @@ struct WooShippingServiceCardView: View {
                                freePickupLabel: nil,
                                signatureRequiredLabel: nil,
                                adultSignatureRequiredLabel: nil)
+}
 
-
+#Preview {
     WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
                                title: "USPS - Media Mail",
                                rate: "$7.63",

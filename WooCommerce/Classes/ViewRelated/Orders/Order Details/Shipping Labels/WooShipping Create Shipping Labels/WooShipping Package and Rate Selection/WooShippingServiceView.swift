@@ -2,8 +2,18 @@ import SwiftUI
 
 struct WooShippingServiceView: View {
     var body: some View {
-        Text(Localization.shippingService)
-            .headlineStyle()
+        VStack(alignment: .leading) {
+            HStack {
+                Text(Localization.shippingService)
+                    .headlineStyle()
+                Spacer()
+            }
+            WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
+                                       title: "USPS - Media Mail",
+                                       rate: "$7.63",
+                                       daysToDelivery: "7 business days",
+                                       extraInfo: "Includes tracking, insurance (up to $100.00), free pickup")
+        }
     }
 }
 

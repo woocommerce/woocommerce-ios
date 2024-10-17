@@ -11,6 +11,7 @@ public enum CardReaderType: String, Codable {
     case wisepad3
     /// Tap on Mobile: Apple built in reader
     case appleBuiltIn
+    case remoteTapToPay
     /// Other
     case other
 }

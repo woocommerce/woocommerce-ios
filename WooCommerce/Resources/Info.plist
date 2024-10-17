@@ -149,5 +149,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_card-reader._tcp</string>
+		<string>_card-reader._udp</string>
+	</array>
 </dict>
 </plist>

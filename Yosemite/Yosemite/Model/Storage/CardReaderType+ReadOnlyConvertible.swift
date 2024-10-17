@@ -18,6 +18,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             self = .wisepad3
         case .appleBuiltIn:
             self = .appleBuiltIn
+        case .remoteTapToPay:
+            self = .remoteTapToPay
         case .other:
             self = .other
         }
@@ -35,6 +37,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             return .wisepad3
         case .appleBuiltIn:
             return .appleBuiltIn
+        case .remoteTapToPay:
+            return .remoteTapToPay
         case .other:
             return .other
         }

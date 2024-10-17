@@ -91,6 +91,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
                 self?.paymentEventSubject.send(.idle)
             })))
+            if connectionMethod == .remoteTapToPay {
+                readerConnectionStatusSubject.send(.connected(connectedReader))
+            }
             return .connected(connectedReader)
         case .canceled:
             readerConnectionStatusSubject.send(.disconnected)

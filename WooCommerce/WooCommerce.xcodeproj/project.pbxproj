@@ -832,6 +832,7 @@
 		20BCF6EE2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */; };
 		20BCF6F02B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */; };
 		20BCF6F72B0E5AF000954840 /* MockSystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F62B0E5AEF00954840 /* MockSystemStatusService.swift */; };
+		20C9634D2CA2B143005A6F7C /* RemoteBuiltInCardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C9634C2CA2B143005A6F7C /* RemoteBuiltInCardReaderConnectionController.swift */; };
 		20CC1EDB2AFA8381006BD429 /* InPersonPaymentsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */; };
 		20CC1EDD2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */; };
 		20CCBF212B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CCBF202B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift */; };
@@ -848,6 +849,7 @@
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
 		20DA6DDB2B681175002AA0FB /* AdaptiveModalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */; };
 		20E188842AD059A50053E945 /* AboutTapToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* AboutTapToPayView.swift */; };
+		20EF9BAC2CA6C690001047F2 /* RemoteTapToPayServerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EF9BAB2CA6C690001047F2 /* RemoteTapToPayServerView.swift */; };
 		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
 		24C5AC7625A53021008FD769 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
@@ -3910,6 +3912,7 @@
 		20BCF6ED2B0E478B00954840 /* WooPaymentsDepositsOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModel.swift; sourceTree = "<group>"; };
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsDepositsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewViewModelTests.swift; sourceTree = "<group>"; };
 		20BCF6F62B0E5AEF00954840 /* MockSystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSystemStatusService.swift; sourceTree = "<group>"; };
+		20C9634C2CA2B143005A6F7C /* RemoteBuiltInCardReaderConnectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteBuiltInCardReaderConnectionController.swift; sourceTree = "<group>"; };
 		20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenu.swift; sourceTree = "<group>"; };
 		20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenuViewModel.swift; sourceTree = "<group>"; };
 		20CCBF202B0E15C0003102E6 /* WooPaymentsDepositsCurrencyOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsCurrencyOverviewViewModelTests.swift; sourceTree = "<group>"; };
@@ -3926,6 +3929,7 @@
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
 		20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveModalContainer.swift; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* AboutTapToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayView.swift; sourceTree = "<group>"; };
+		20EF9BAB2CA6C690001047F2 /* RemoteTapToPayServerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTapToPayServerView.swift; sourceTree = "<group>"; };
 		247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ScreenshotImages.xcassets; sourceTree = "<group>"; };
 		24C579D124F476300076E1B4 /* Woo-Alpha.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha.entitlements"; sourceTree = "<group>"; };
 		24F98C4F2502AEE200F49B68 /* EventLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLogging.swift; sourceTree = "<group>"; };
@@ -12256,6 +12260,8 @@
 				037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */,
 				D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */,
 				03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */,
+				20C9634C2CA2B143005A6F7C /* RemoteBuiltInCardReaderConnectionController.swift */,
+				20EF9BAB2CA6C690001047F2 /* RemoteTapToPayServerView.swift */,
 				03BB9EA4292E2D0C00251E9E /* CardReaderConnectionController.swift */,
 				035DBA46292D0994003E5125 /* CardPresentPaymentPreflightController.swift */,
 				D8EE9690264D328A0033B2F9 /* LegacyReceiptViewController.swift */,
@@ -15003,6 +15009,7 @@
 				45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */,
 				DEC51A9D274F8528009F3DF4 /* JCPJetpackInstallStepsViewModel.swift in Sources */,
 				455DC3A327393C7E00D4644C /* OrderDatesFilterViewController.swift in Sources */,
+				20EF9BAC2CA6C690001047F2 /* RemoteTapToPayServerView.swift in Sources */,
 				45B6F4EF27592A4000C18782 /* ReviewsView.swift in Sources */,
 				86A4EBBD2B2F1306008011F5 /* ThemesPreviewViewModel.swift in Sources */,
 				B6F37970293798ED00718561 /* AnalyticsHubTodayRangeData.swift in Sources */,
@@ -16166,6 +16173,7 @@
 				4520A15C2721B2A9001FA573 /* FilterOrderListViewModel.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */,
+				20C9634D2CA2B143005A6F7C /* RemoteBuiltInCardReaderConnectionController.swift in Sources */,
 				B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
 				DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */,

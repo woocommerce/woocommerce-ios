@@ -81,6 +81,8 @@ final class ServiceLocator {
 
     private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider()
 
+    private static var _remoteCardReaderClient: RemoteTapToPayReaderClient = RemoteTapToPayReaderClient()
+
     /// Support for printing receipts
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
@@ -226,6 +228,10 @@ final class ServiceLocator {
 
     static var cardReaderConfigProvider: CommonReaderConfigProviding {
         _cardReaderConfigProvider
+    }
+
+    static var remoteCardReaderClient: RemoteTapToPayReaderClient {
+        _remoteCardReaderClient
     }
 
     /// Provides the access point to the ReceiptPrinterService.

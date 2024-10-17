@@ -13,6 +13,7 @@ struct CardPresentCapturedPaymentData {
 
 protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
+                        using reader: CardReader,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
@@ -49,6 +50,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     private let personNameComponentsFormatter = PersonNameComponentsFormatter()
     private let paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer
 
+    private let remoteCardPaymentClient: RemoteTapToPayReaderClient = ServiceLocator.remoteCardReaderClient
+
     private let celebration: PaymentCaptureCelebrationProtocol
 
     private var walletSuppressionRequestToken: PKSuppressionRequestToken?
@@ -66,6 +69,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     private var handlersForActivePayment: PaymentHandlers? = nil
 
     func collectPayment(for order: Order,
+                        using reader: CardReader,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [String],
@@ -90,16 +94,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier)
 
-        /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
-        /// reader begins to collect payment.
-        ///
-        suppressPassPresentation()
-
-        let paymentAction = CardPresentPaymentAction.collectPayment(
-            siteID: order.siteID,
-            orderID: order.orderID,
-            parameters: parameters,
-            onCardReaderMessage: { event in
+        switch reader.readerType {
+        case .remoteTapToPay:
+            remoteCardPaymentClient.onCardReaderMessage = { event in
                 switch event {
                 case .waitingForInput(let inputMethods):
                     onWaitingForInput(inputMethods)
@@ -110,21 +107,73 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
                     DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
-            },
-            onProcessingCompletion: { intent in
-                onProcessingCompletion(intent)
-            },
-            onCompletion: { [weak self] result in
-                self?.allowPassPresentation()
-                self?.completePaymentIntentCapture(
-                    order: order,
-                    captureResult: result,
-                    onCompletion: onCompletion
-                )
             }
-        )
+            remoteCardPaymentClient.onProcessingCompletion = { intent in
+                onProcessingCompletion(intent)
+            }
+            remoteCardPaymentClient.onPaymentCompletion = { [weak self] result in
+                DDLogInfo("[Client] Payment capture orchestrator onPaymentCompletion called")
+                switch result {
+                case .success(let intent):
+                    let action = CardPresentPaymentAction.captureOrderPaymentOnSite(
+                        siteID: order.siteID,
+                        orderID: order.orderID,
+                        paymentIntent: intent) { result in
+                            let captureResult = result.map { _ in
+                                return intent
+                            }
+                            self?.completePaymentIntentCapture(
+                                order: order,
+                                captureResult: captureResult,
+                                onCompletion: onCompletion
+                            )
+                        }
+                    DispatchQueue.main.async {
+                        self?.stores.dispatch(action)
+                    }
+                case .failure(let error):
+                    DDLogError("Remote card reader payment capture error: \(error)")
+                }
 
-        stores.dispatch(paymentAction)
+            }
+            remoteCardPaymentClient.collectPayment(amount: orderTotal.decimalValue, orderID: order.orderID)
+        default:
+            /// Briefly suppress pass (wallet) presentation so that the merchant doesn't attempt to pay for the buyer's order when the
+            /// reader begins to collect payment.
+            ///
+            suppressPassPresentation()
+
+            let paymentAction = CardPresentPaymentAction.collectPayment(
+                siteID: order.siteID,
+                orderID: order.orderID,
+                parameters: parameters,
+                onCardReaderMessage: { event in
+                    switch event {
+                    case .waitingForInput(let inputMethods):
+                        onWaitingForInput(inputMethods)
+                    case .displayMessage(let message):
+                        onDisplayMessage(message)
+                    case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
+                        onProcessingMessage()
+                    case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                        DDLogInfo("💳 Unhandled card reader event received: \(event)")
+                    }
+                },
+                onProcessingCompletion: { intent in
+                    onProcessingCompletion(intent)
+                },
+                onCompletion: { [weak self] result in
+                    self?.allowPassPresentation()
+                    self?.completePaymentIntentCapture(
+                        order: order,
+                        captureResult: result,
+                        onCompletion: onCompletion
+                    )
+                }
+            )
+
+            stores.dispatch(paymentAction)
+        }
     }
 
     func retryPayment(for order: Order,

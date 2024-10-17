@@ -63,6 +63,11 @@ public enum CardPresentPaymentAction: Action {
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
+    case collectPaymentMethod(parameters: PaymentParameters,
+                              onCardReaderMessage: (CardReaderEvent) -> Void,
+                              onProcessingCompletion: (String) -> Void,
+                              onCompletion: (Result<String, Error>) -> Void)
+
     /// Cancels an active attempt to collect a payment.
     case cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?)
 
@@ -98,4 +103,9 @@ public enum CardPresentPaymentAction: Action {
     /// Fetches Charge details by charge ID
     ///
     case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
+
+    case captureOrderPaymentOnSite(siteID: Int64,
+                                   orderID: Int64,
+                                   paymentIntent: PaymentIntent,
+                                   onCompletion: (Result<Void, Error>) -> Void)
 }

@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import WordPressAuthenticator
 import Experiments
@@ -33,6 +34,7 @@ final class LoginPrologueViewController: UIViewController {
         return .portrait
     }
 
+    private var tapToPayServer: RemoteTapToPayReaderServer?
 
     // MARK: - Overridden Methods
 
@@ -55,6 +57,17 @@ final class LoginPrologueViewController: UIViewController {
         setupContainerView()
         setupCurvedRectangle()
         setupCarousel()
+    }
+
+    @IBAction func remoteTapToPayTapped(_ sender: Any) {
+        guard tapToPayServer == nil else {
+            return
+        }
+        let tapToPayServer = RemoteTapToPayReaderServer()
+        tapToPayServer.start()
+        self.tapToPayServer = tapToPayServer
+        let hostingController = UIHostingController<RemoteTapToPayServerView>(rootView: RemoteTapToPayServerView(server: tapToPayServer))
+        present(hostingController, animated: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {

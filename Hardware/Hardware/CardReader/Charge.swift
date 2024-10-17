@@ -1,7 +1,7 @@
 import Codegen
 
 /// A struct representing a charge.
-public struct Charge: Identifiable, GeneratedCopiable, GeneratedFakeable {
+public struct Charge: Identifiable, GeneratedCopiable, GeneratedFakeable, Codable {
     /// The unique identifier for the charge.
     public let id: String
 

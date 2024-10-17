@@ -65,7 +65,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
+    private var builtInConnectionController: BuiltInCardReaderConnectionControlling
 
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
@@ -88,7 +88,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          tapToPayAlertProvider: TapToPayAlertProvider,
          externalReaderConnectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
+         tapToPayConnectionController: BuiltInCardReaderConnectionControlling,
          tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
@@ -113,7 +113,11 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     @MainActor
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
         self.discoveryMethod = discoveryMethod
-        observeConnectedReaders()
+        if discoveryMethod == .remoteMobile {
+            observeRemotelyConnectedReaders()
+        } else {
+            observeConnectedReaders()
+        }
         await checkForConnectedReader()
     }
 
@@ -190,7 +194,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-        case (.localMobile, true):
+        case (.localMobile, true), (.remoteMobile, _):
             builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
@@ -203,7 +207,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter) { [weak self] result in
             guard let self = self else { return }
             switch self.discoveryMethod {
-            case .bluetoothScan:
+            case .bluetoothScan, .remoteMobile:
                 Task { [weak self] in
                     try await self?.automaticallyDisconnectFromReader()
                     await self?.startReaderConnection(using: paymentGatewayAccount)
@@ -284,6 +288,14 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             self?.connectedReader = readers.first
         }
         stores.dispatch(action)
+    }
+
+
+    var cancellables = Set<AnyCancellable>()
+    private func observeRemotelyConnectedReaders() {
+        builtInConnectionController.connectedReaders.sink(receiveValue: { [weak self] reader in
+            self?.connectedReader = reader
+        }).store(in: &cancellables)
     }
 }
 

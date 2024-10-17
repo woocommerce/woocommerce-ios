@@ -1,5 +1,5 @@
 /// The possible events from a connected reader.
-public enum CardReaderEvent: Equatable {
+public enum CardReaderEvent: Equatable, Codable {
     /// The reader begins waiting for input.
     /// The app should prompt the customer to present a payment method
     case waitingForInput(CardReaderInput)

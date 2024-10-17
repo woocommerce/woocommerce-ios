@@ -43,8 +43,17 @@ struct CardReaderConnectionStatusView: View {
             case .cancellingConnection:
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
-                Button {
-                    connectionViewModel.connectReader()
+                Menu {
+                    Button {
+                        connectionViewModel.connectReader()
+                    } label: {
+                        Text("Bluetooth reader")
+                    }
+                    Button {
+                        connectionViewModel.connectRemoteReader()
+                    } label: {
+                        Text("Tap to Pay on iPhone (remote)")
+                    }
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
                         circleIcon(with: Color(.wooCommerceAmber(.shade60)))

@@ -562,7 +562,7 @@ enum PaymentMethodsError: Error {
 private extension CardReaderDiscoveryMethod {
     var analyticsCardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType {
         switch self {
-        case .localMobile:
+        case .localMobile, .remoteMobile:
             return .builtIn
         case .bluetoothScan:
             return .external

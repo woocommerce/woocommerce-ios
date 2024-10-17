@@ -15,9 +15,14 @@ final class ProductVariationStorageManager {
     func upsertStoredProductVariationsInBackground(readOnlyProductVariations: [Networking.ProductVariation],
                                                    siteID: Int64,
                                                    productID: Int64,
+                                                   shouldDeleteAllStoredVariations: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            self?.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: storage, siteID: siteID, productID: productID)
+            guard let self else { return }
+            if shouldDeleteAllStoredVariations {
+                storage.deleteProductVariations(siteID: siteID, productID: productID)
+            }
+            upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: storage, siteID: siteID, productID: productID)
         }, completion: onCompletion, on: .main)
     }
 

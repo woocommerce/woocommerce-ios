@@ -399,10 +399,12 @@ private extension ProductStore {
                 let error = ProductLoadError(underlyingError: originalError)
 
                 if case ProductLoadError.notFound = error {
-                    self.deleteStoredProduct(siteID: siteID, productID: productID)
+                    self.deleteStoredProduct(siteID: siteID, productID: productID) {
+                        onCompletion(.failure(error))
+                    }
+                } else {
+                    onCompletion(.failure(error))
                 }
-
-                onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
@@ -485,8 +487,9 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self.deleteStoredProduct(siteID: siteID, productID: productID)
-                onCompletion(.success(product))
+                self.deleteStoredProduct(siteID: siteID, productID: productID) {
+                    onCompletion(.success(product))
+                }
             }
         }
     }
@@ -846,14 +849,13 @@ extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int64, productID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
-            return
-        }
-
-        storage.deleteObject(product)
-        storage.saveIfNeeded()
+    func deleteStoredProduct(siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
+                return
+            }
+            storage.deleteObject(product)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*.

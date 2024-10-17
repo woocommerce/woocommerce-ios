@@ -20,7 +20,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
-    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
@@ -88,7 +87,6 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
     var orderStatePublisher: Published<OrderState>.Publisher { $orderState }
     var paymentStatePublisher: Published<PaymentState>.Publisher { $paymentState }
     private var cardPresentPaymentAlertViewModelPublisher: Published<PointOfSaleCardPresentPaymentAlertType?>.Publisher { $cardPresentPaymentAlertViewModel }
-    private var cardPresentPaymentEventPublisher: Published<CardPresentPaymentEvent>.Publisher { $cardPresentPaymentEvent }
     private var connectionStatusPublisher: Published<CardPresentPaymentReaderConnectionStatus>.Publisher { $connectionStatus }
     private var formattedCartTotalPricePublisher: Published<String?>.Publisher { $formattedCartTotalPrice }
     private var formattedOrderTotalPricePublisher: Published<String?>.Publisher { $formattedOrderTotalPrice }
@@ -313,7 +311,6 @@ private extension TotalsViewModel {
     }
 
     func observeCardPresentPaymentEvents() {
-        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
 
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in

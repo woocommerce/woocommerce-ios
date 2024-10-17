@@ -7,10 +7,6 @@ import Storage
 public final class ProductAttributeStore: Store {
     private let remote: ProductAttributesRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -117,14 +113,9 @@ private extension ProductAttributeStore {
     func upsertStoredProductAttributesInBackground(_ readOnlyProductAttributes: [Networking.ProductAttribute],
                                                    siteID: Int64,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductAttributes(readOnlyProductAttributes, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductAttributes(readOnlyProductAttributes, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 }
 

@@ -1011,9 +1011,13 @@ extension ProductStore {
         // Remove previous linked categories
         storageProduct.categories?.removeAll()
 
+        // Load all categories at once supposing categories are lightweight enough to do this.
+        // To further improve performance, we could load only categories of specified IDs.
+        let allSiteCategories = storage.loadProductCategories(siteID: siteID)
+
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = allSiteCategories.first(where: { $0.categoryID == readOnlyCategory.categoryID }) {
                 // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
                 let completeReadOnlyCategory = readOnlyCategory.parentIDUpdated(parentID: existingStorageCategory.parentID)
                 existingStorageCategory.update(with: completeReadOnlyCategory)

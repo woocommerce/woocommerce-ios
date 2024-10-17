@@ -933,15 +933,13 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's attributes using the provided read-only Product's attributes
     ///
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
-            if let existingStorageAttribute = storage.loadProductAttribute(siteID: siteID,
-                                                                           productID: productID,
-                                                                           attributeID: readOnlyAttribute.attributeID,
-                                                                           name: readOnlyAttribute.name) {
+            if let existingStorageAttribute = storageProduct.attributes?.first(where: {
+                $0.attributeID == readOnlyAttribute.attributeID &&
+                $0.name == readOnlyAttribute.name
+            }) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
             } else {
                 let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductAttribute.self)

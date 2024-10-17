@@ -5,10 +5,6 @@ import Storage
 final class ProductVariationStorageManager {
     private let storageManager: StorageManagerType
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(storageManager: StorageManagerType) {
         self.storageManager = storageManager
     }
@@ -20,14 +16,9 @@ final class ProductVariationStorageManager {
                                                    siteID: Int64,
                                                    productID: Int64,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: derivedStorage, siteID: siteID, productID: productID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: storage, siteID: siteID, productID: productID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`

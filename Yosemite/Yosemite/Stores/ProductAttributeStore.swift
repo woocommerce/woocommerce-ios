@@ -49,8 +49,9 @@ private extension ProductAttributeStore {
         remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
             switch result {
             case .success(let productAttributes):
-                self?.deleteUnusedStoredProductAttributes(siteID: siteID)
-                self?.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
+                self?.upsertStoredProductAttributesInBackground(productAttributes,
+                                                                siteID: siteID,
+                                                                shouldDeleteUnusedAttributes: true) {
                     onCompletion(.success(productAttributes))
                 }
             case .failure(let error):
@@ -112,9 +113,14 @@ private extension ProductAttributeStore {
     ///
     func upsertStoredProductAttributesInBackground(_ readOnlyProductAttributes: [Networking.ProductAttribute],
                                                    siteID: Int64,
+                                                   shouldDeleteUnusedAttributes: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            self?.upsertStoredProductAttributes(readOnlyProductAttributes, in: storage, siteID: siteID)
+            guard let self else { return }
+            if shouldDeleteUnusedAttributes {
+                storage.deleteUnusedProductAttributes(siteID: siteID)
+            }
+            upsertStoredProductAttributes(readOnlyProductAttributes, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 }

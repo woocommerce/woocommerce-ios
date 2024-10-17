@@ -139,10 +139,10 @@ extension ShipmentStore {
                                                 orderID: Int64,
                                                 readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
                                                         onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
-            self.upsertShipmentTrackingGroups(siteID: siteID,
-                                              readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
-                                              in: storage)
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertShipmentTrackingGroups(siteID: siteID,
+                                               readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
+                                               in: storage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -268,7 +268,7 @@ extension ShipmentStore {
                                  trackingURL: String,
                                  readOnlyTracking: Networking.ShipmentTracking,
                                  onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
+        storageManager.performAndSave({ [weak self] storage in
             let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
             newStoredTracking.update(with: readOnlyTracking)
 
@@ -277,7 +277,7 @@ extension ShipmentStore {
             provider.url = trackingURL
             provider.siteID = siteID
 
-            let customProvidersGroup = self.customGroup(siteID: siteID, storage: storage)
+            let customProvidersGroup = self?.customGroup(siteID: siteID, storage: storage)
             customProvidersGroup.addToProviders(provider)
         }, completion: onCompletion, on: .main)
     }

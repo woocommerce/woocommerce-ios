@@ -20,6 +20,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let blazeEvergreenCampaigns: Bool
     private let blazeCampaignObjective: Bool
     private let revampedShippingLabelCreation: Bool
+    private let viewEditCustomFieldsInProductsAndOrders: Bool
     private let favoriteProducts: Bool
 
     init(isInboxOn: Bool = false,
@@ -40,6 +41,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
+         viewEditCustomFieldsInProductsAndOrders: Bool = false,
          favoriteProducts: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
@@ -59,6 +61,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
+        self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
     }
 
@@ -100,6 +103,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
+        case .viewEditCustomFieldsInProductsAndOrders:
+            return viewEditCustomFieldsInProductsAndOrders
         case .favoriteProducts:
             return favoriteProducts
         default:

@@ -333,14 +333,8 @@ private extension ProductStore {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
-        let storage = storageManager.viewStorage
-        var missingIDs = [Int64]()
-        for productID in productIDs {
-            let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
-            if storageProduct == nil {
-                missingIDs.append(productID)
-            }
-        }
+        let foundStoredProductIDs = storageManager.viewStorage.loadProducts(siteID: order.siteID, productsIDs: productIDs).map { $0.productID }
+        let missingIDs = productIDs.filter { foundStoredProductIDs.contains($0) == false }
 
         // Do not trigger API request for empty array of items
         guard !missingIDs.isEmpty else {

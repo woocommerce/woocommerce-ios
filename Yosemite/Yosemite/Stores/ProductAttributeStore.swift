@@ -96,8 +96,9 @@ private extension ProductAttributeStore {
         remote.deleteProductAttribute(for: siteID, productAttributeID: attributeID) { [weak self] (result) in
             switch result {
             case .success(let productAttribute):
-                self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID)
-                onCompletion(.success(productAttribute))
+                self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID) {
+                    onCompletion(.success(productAttribute))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -151,21 +152,12 @@ private extension ProductAttributeStore {
 
     /// Deletes any Storage.ProductAttribute with the specified `siteID` and `attributeID`
     ///
-    func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let productAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID) else {
-            return
-        }
-
-        storage.deleteObject(productAttribute)
-        storage.saveIfNeeded()
-    }
-
-    /// Deletes any Storage.ProductAttribute that is not associated to a product on the specified `siteID`
-    ///
-    func deleteUnusedStoredProductAttributes(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteUnusedProductAttributes(siteID: siteID)
-        storage.saveIfNeeded()
+    func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let productAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID) else {
+                return
+            }
+            storage.deleteObject(productAttribute)
+        }, completion: onCompletion, on: .main)
     }
 }

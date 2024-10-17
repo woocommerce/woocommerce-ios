@@ -19,7 +19,9 @@ struct CustomFieldsListView: View {
         NavigationStack {
             List(viewModel.combinedList) { customField in
                 if isEditable {
-                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value)) {
+                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { updatedKey, updatedValue in
+                        viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
+                    })) {
                         CustomFieldRow(isEditable: true,
                                        title: customField.key,
                                        content: customField.value.removedHTMLTags,

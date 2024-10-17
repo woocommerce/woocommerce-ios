@@ -462,7 +462,7 @@ struct PackageOptionView: View {
     var package: SavedPackageDataRepresentable
     var showTopDivider: Bool
     var action: () -> Void
-    
+
     var body: some View {
         HStack {
             Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")

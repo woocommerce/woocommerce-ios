@@ -17,7 +17,10 @@ The default implementation of the `StorageManagerType` and `StorageType` protoco
 
 When clients of this class request a `StorageType`, `CoreDataManager` will return an `NSManagedObjectContext`. 
 
-When `CoreDataManager` is requested a  `viewContext`, it will provide  the persistent container’s `viewContext` . When it is requested a `newDerivedStorage` it will return a new child context with  a private dispatch queue.
+When `CoreDataManager` is requested a  `viewContext`, it will provide  the persistent container’s `viewContext`. `viewContext` should only be used for reading and not writing.
+
+`CoreDataManager` manages a single background context for write operations, which cannot be accessed directly. Instead, there are two versions of `performAndSave` methods to use for writing - depending on whether you need to send a result back to the completion closure. 
+Note: For thread safety, do not send any `NSManagedObject` instance to the completion closure of `performAndSave`. There's an assertion to ensure at debug runtime this does not happen.
 
 ## File storage
 The Storage module also exposes a protocol, called [`FileStorage`](../Storage/Storage/Protocols/FileStorage.swift) to abstract saving and reading data to and from local storage. 

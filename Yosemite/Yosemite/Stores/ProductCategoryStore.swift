@@ -161,10 +161,10 @@ private extension ProductCategoryStore {
 
     /// Deletes any Storage.ProductCategory  that is not associated to a product on the specified `siteID`
     ///
-    func deleteUnusedStoredProductCategories(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteUnusedProductCategories(siteID: siteID)
-        storage.saveIfNeeded()
+    func deleteUnusedStoredProductCategories(siteID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteUnusedProductCategories(siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates an existing product category.
@@ -188,8 +188,9 @@ private extension ProductCategoryStore {
         Task { @MainActor in
             do {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
-                deleteUnusedStoredProductCategories(siteID: siteID)
-                onCompletion(.success(()))
+                deleteUnusedStoredProductCategories(siteID: siteID) {
+                    onCompletion(.success(()))
+                }
             } catch {
                 onCompletion(.failure(error))
             }

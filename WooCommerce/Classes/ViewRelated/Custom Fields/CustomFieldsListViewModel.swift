@@ -12,6 +12,7 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
+    @Published var notice: Notice?
 
     @Published private var editedFields: [CustomFieldUI] = []
     @Published private var addedFields: [CustomFieldUI] = []
@@ -67,7 +68,12 @@ extension CustomFieldsListViewModel {
 
         updateCombinedList()
 
-        // TODO: show an undo notice
+        notice = Notice(title: CustomFieldsListHostingController.Localization.deleteNoticeTitle,
+                        feedbackType: .success,
+                        actionTitle: CustomFieldsListHostingController.Localization.deleteNoticeUndo,
+                        actionHandler: { [weak self] in
+                            self?.undoDeletion(of: field)
+                        })
     }
 
     func saveField(key: String, value: String, fieldId: Int64?) {
@@ -79,6 +85,16 @@ extension CustomFieldsListViewModel {
         } else {
             addField(newField)
         }
+    }
+
+    private func undoDeletion(of field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.removeAll { $0 == fieldId }
+        } else {
+            addedFields.append(field)
+        }
+
+        updateCombinedList()
     }
 }
 

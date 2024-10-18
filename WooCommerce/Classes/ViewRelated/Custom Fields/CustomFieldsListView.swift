@@ -102,6 +102,7 @@ struct CustomFieldsListView: View {
                                       })
             }
         }
+        .notice($viewModel.notice)
     }
 }
 
@@ -164,7 +165,7 @@ private struct CustomFieldRow: View {
 
 // MARK: - Constants
 //
-private extension CustomFieldsListHostingController {
+extension CustomFieldsListHostingController {
     enum Localization {
         static let title = NSLocalizedString(
             "customFieldsListHostingController.title",
@@ -185,6 +186,16 @@ private extension CustomFieldsListHostingController {
             "customFieldsListHostingController.save",
             value: "Save",
             comment: "Button to save the changes on Custom Fields list")
+        static let deleteNoticeTitle = NSLocalizedString(
+            "customFieldsListHostingController.deleteNoticeTitle",
+            value: "Custom field deleted",
+             comment: "Title for the notice when a custom field is deleted"
+             )
+        static let deleteNoticeUndo = NSLocalizedString(
+            "customFieldsListHostingController.deleteNoticeUndo",
+            value: "Undo",
+            comment: "Action to undo the deletion of a custom field"
+        )
     }
 }
 

@@ -166,6 +166,37 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         // Assert
         XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
+
+    // MARK: - Custom fields
+
+    func test_given_existing_product_and_custom_fields_when_creating_actions_then_custom_fields_row_is_visible() {
+        for productType in ProductType.allCases {
+            // Arrange
+            let model = EditableProductModel(product: Fixtures.productWithCustomFields.copy(productTypeKey: productType.rawValue))
+
+            // Act
+            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+
+            // Assert
+            XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
+        }
+    }
+
+    func test_given_existing_product_and_empty_custom_fields_when_creating_actions_then_custom_fields_row_is_invisible() {
+        for productType in ProductType.allCases {
+            // Arrange
+            let model = EditableProductModel(product: Fixtures.productWithNoCustomFields.copy(productTypeKey: productType.rawValue))
+
+            // Act
+            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+
+            // Assert
+            XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
+            XCTAssertTrue(factory.bottomSheetActions().contains(.editCustomFields))
+        }
+    }
 }
 
 private extension ProductFormActionsFactory_VisibilityTests {
@@ -194,5 +225,25 @@ private extension ProductFormActionsFactory_VisibilityTests {
         static let downloadableProduct = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, downloadable: true)
         static let nonDownloadableProduct = downloadableProduct.copy(downloadable: false)
 
+        // Custom fields
+        static let productWithCustomFields = Product.fake().copy(customFields: [MetaData(metadataID: 1, key: "test", value: "value")])
+        static let productWithNoCustomFields = Product.fake().copy(customFields: [])
+    }
+}
+
+extension ProductType: CaseIterable {
+    public static var allCases: [ProductType] {
+        return [
+            .simple,
+            .grouped,
+            .affiliate,
+            .variable,
+            .subscription,
+            .variableSubscription,
+            .bundle,
+            .composite,
+            .booking,
+            .custom("exampleCustomType") // hardcoded to be able to include .custom in CaseIterable.
+        ]
     }
 }

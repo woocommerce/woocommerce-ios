@@ -52,6 +52,17 @@ extension CustomFieldsListViewModel {
         addedFields.append(field)
         updateCombinedList()
     }
+
+    func saveField(key: String, value: String, fieldId: Int64?) {
+        let newField = CustomFieldUI(key: key, value: value, fieldId: fieldId)
+        if let fieldId = fieldId {
+            if let index = combinedList.firstIndex(where: { $0.fieldId == fieldId }) {
+                editField(at: index, newField: newField)
+            }
+        } else {
+            addField(newField)
+        }
+    }
 }
 
 private extension CustomFieldsListViewModel {

@@ -2,16 +2,16 @@ import XCTest
 @testable import WooCommerce
 
 final class CustomFieldsListViewModelTests: XCTestCase {
-
+    private let originalFields = [
+            CustomFieldViewModel(id: 1, title: "Key1", content: "Value1"),
+            CustomFieldViewModel(id: 2, title: "Key2", content: "Value2")
+        ]
     private var viewModel: CustomFieldsListViewModel!
 
     override func setUp() {
         super.setUp()
-        let customFields = [
-            CustomFieldViewModel(id: 1, title: "Key1", content: "Value1"),
-            CustomFieldViewModel(id: 2, title: "Key2", content: "Value2")
-        ]
-        viewModel = CustomFieldsListViewModel(customFields: customFields)
+
+        viewModel = CustomFieldsListViewModel(customFields: originalFields)
     }
 
     override func tearDown() {
@@ -75,6 +75,33 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.combinedList[0].value, "EditedValue1")
         XCTAssertEqual(viewModel.combinedList[2].key, "NewKey")
         XCTAssertEqual(viewModel.combinedList[2].value, "NewValue")
+    }
+
+    func test_given_existingField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
+        // Given: the field to delete
+        let fieldToDelete = CustomFieldsListViewModel.CustomFieldUI(key: originalFields[0].title,
+                                                                    value: originalFields[0].content,
+                                                                    fieldId: originalFields[0].id)
+
+        // When: Deleting the field
+        viewModel.deleteField(fieldToDelete)
+
+        // Then: The number of displayed items remains the same as before and the value is edited correctly
+        XCTAssertEqual(viewModel.combinedList.count, 1)
+        XCTAssertEqual(viewModel.combinedList[0].fieldId, originalFields[1].id)
+    }
+
+    func test_given_newField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {
+        // Given: A new field to delete
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "NewKey", value: "NewValue")
+
+        // When: Deleting the new field
+        viewModel.addField(newField)
+        viewModel.deleteField(newField)
+
+        // Then: The displayed items should be updated
+        XCTAssertEqual(viewModel.combinedList.count, 2)
+        XCTAssertFalse(viewModel.hasChanges)
     }
 
     func test_given_variousChanges_when_pendingChangesUpdated_then_hasChangesReflectsCorrectState() {

@@ -99,7 +99,7 @@ struct WooShippingServiceCardView: View {
         }
         .padding(16)
         .if(isSelected) { card in
-            card.background(Color(.wooCommercePurple(.shade0)))
+            card.background { Color(.wooCommercePurple(.shade0)) }
         }
         .roundedBorder(cornerRadius: 8, lineColor: isSelected ? Color(.primary) : Color(.separator), lineWidth: isSelected ? 2 : 1)
     }

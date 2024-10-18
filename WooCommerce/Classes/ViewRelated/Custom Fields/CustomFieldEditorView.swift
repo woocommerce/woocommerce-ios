@@ -151,7 +151,7 @@ struct CustomFieldEditorView: View {
         }
 
         if !isCreatingNewField {
-            Button("Delete Custom Field", role: .destructive) {
+            Button(Localization.deleteButton, role: .destructive) {
                 onDelete()
                 presentationMode.wrappedValue.dismiss()
             }
@@ -208,6 +208,12 @@ private extension CustomFieldEditorView {
             "customFieldEditorView.editorPickerHTML",
             value: "HTML",
             comment: "Picker option for using Text Editor"
+        )
+
+        static let deleteButton = NSLocalizedString(
+            "customFieldEditorView.deleteButton",
+            value: "Delete Custom Field",
+            comment: "Button title for deleting a custom field"
         )
     }
 }

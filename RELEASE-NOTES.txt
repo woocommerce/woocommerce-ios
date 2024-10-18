@@ -10,6 +10,7 @@
 - [internal] Updated storage usage in RefundStore [https://github.com/woocommerce/woocommerce-ios/pull/14124]
 - [internal] Updated storage usage in OrderStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14125]
 - [internal] Updated storage usage in CardPresentPaymentStore [https://github.com/woocommerce/woocommerce-ios/pull/14131]
+- [internal] Updated storage usage in ShipmentStore [https://github.com/woocommerce/woocommerce-ios/pull/14126]
 - [internal] Fixed formatted amount field visibility in Custom Amounts, Shipping, and Cash Payments [https://github.com/woocommerce/woocommerce-ios/pull/14030]
 
 

@@ -203,20 +203,22 @@ public final class CoreDataManager: StorageManagerType {
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
     public func reset() {
-        let viewContext = persistentContainer.viewContext
-
-        viewContext.performAndWait {
-            viewContext.reset()
-            self.deleteAllStoredObjects()
-
+        performAndSave({ storage in
+            guard let backgroundContext = storage as? NSManagedObjectContext else {
+                DDLogError("⛔️ CoreDataManager failed to reset due to unexpected storage type!")
+                return
+            }
+            /// persist self to complete deleting objects
+            self.deleteAllStoredObjects(in: backgroundContext)
+            backgroundContext.reset()
+        }, completion: {
             DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
             NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
-        }
+        }, on: .main)
     }
 
-    private func deleteAllStoredObjects() {
+    private func deleteAllStoredObjects(in context: NSManagedObjectContext) {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
-        let viewContext = persistentContainer.viewContext
         do {
             let entities = storeCoordinator.managedObjectModel.entities
             for entity in entities {
@@ -224,11 +226,10 @@ public final class CoreDataManager: StorageManagerType {
                     continue
                 }
                 let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-                let objects = try viewContext.fetch(fetchRequest) as? [NSManagedObject]
+                let objects = try context.fetch(fetchRequest) as? [NSManagedObject]
                 objects?.forEach { object in
-                    viewContext.delete(object)
+                    context.delete(object)
                 }
-                viewContext.saveIfNeeded()
             }
         } catch {
             logErrorAndExit("☠️ [CoreDataManager] Cannot delete stored objects! \(error)")

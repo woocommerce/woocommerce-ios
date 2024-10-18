@@ -248,9 +248,9 @@ class DefaultStoresManager: StoresManager {
         let resetAction = CardPresentPaymentAction.reset
         dispatch(resetAction)
 
+        sessionManager.reset()
         state = DeauthenticatedState()
 
-        sessionManager.reset()
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()

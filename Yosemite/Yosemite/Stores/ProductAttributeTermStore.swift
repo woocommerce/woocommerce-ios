@@ -57,17 +57,18 @@ private extension ProductAttributeTermStore {
                                          attributeID: attributeID,
                                          pageNumber: fromPageNumber,
                                          pageSize: pageSizeRequest) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
 
             // If terms count is less than the requested page size, end the recursion and call `onCompletion`
             case let .success(terms) where terms.count < self.pageSizeRequest:
-                self.deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms)
-                onCompletion(nil)
+                deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms) {
+                    onCompletion(nil)
+                }
 
             // If there could be more(non-empty) terms, request the next page recursively.
             case let .success(terms):
-                self.synchronizeAllProductAttributeTerms(siteID: siteID,
+                synchronizeAllProductAttributeTerms(siteID: siteID,
                                                          attributeID: attributeID,
                                                          synchronizedTerms: synchronizedTerms + terms,
                                                          fromPageNumber: fromPageNumber + 1,
@@ -161,23 +162,23 @@ private extension ProductAttributeTermStore {
 
     /// Deletes previously stored terms that where not retrieved during the synchronization.
     ///
-    func deleteStaleTerms(siteID: Int64, attributeID: Int64, activeTerms: [Yosemite.ProductAttributeTerm]) {
-        let storage = storageManager.viewStorage
-        guard let attribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID),
-              let previousTerms = attribute.terms else {
-            return
-        }
+    func deleteStaleTerms(siteID: Int64, attributeID: Int64, activeTerms: [Yosemite.ProductAttributeTerm], onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let attribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID),
+                  let previousTerms = attribute.terms else {
+                return
+            }
 
-        // Filter `previousTerms` that are not in `activeTerms`
-        let staleTerms = previousTerms.filter { previousTerm -> Bool in
-            !activeTerms.contains(where: { $0.termID == previousTerm.termID })
-        }
+            // Filter `previousTerms` that are not in `activeTerms`
+            let staleTerms = previousTerms.filter { previousTerm -> Bool in
+                !activeTerms.contains(where: { $0.termID == previousTerm.termID })
+            }
 
-        // Delete stale terms
-        staleTerms.forEach { staleTerm in
-            storage.deleteObject(staleTerm)
-        }
-        storage.saveIfNeeded()
+            // Delete stale terms
+            staleTerms.forEach { staleTerm in
+                storage.deleteObject(staleTerm)
+            }
+        }, completion: onCompletion, on: .main)
     }
 }
 

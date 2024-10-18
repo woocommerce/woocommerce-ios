@@ -188,4 +188,8 @@ public enum FeatureFlag: Int {
     /// Allows marking product as favorite
     ///
     case favoriteProducts
+
+    /// Enables support for the new product global unique identifier
+    /// 
+    case productGlobalUniqueIdentifierSupport
 }

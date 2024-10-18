@@ -83,6 +83,10 @@ final class StorageTypeExtensionsTests: XCTestCase {
         order3.siteID = sampleSiteID
         order3.orderID = orderID3
 
+        let order4 = storage.insertNewObject(ofType: Order.self)
+        order4.siteID = 0
+        order4.orderID = orderID3
+
         // When
         let storedOrders = storage.loadOrders(siteID: sampleSiteID, orderIDs: [orderID1, orderID3])
 

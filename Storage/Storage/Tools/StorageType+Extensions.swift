@@ -38,7 +38,7 @@ public extension StorageType {
     /// Retrieves the Stored Orders given the IDs.
     ///
     func loadOrders(siteID: Int64, orderIDs: [Int64]) -> [Order] {
-        let predicate = NSPredicate(format: "orderID in %@", orderIDs)
+        let predicate = NSPredicate(format: "siteID == %lld && orderID in %@", siteID, orderIDs)
         let descriptor = NSSortDescriptor(keyPath: \Order.orderID, ascending: false)
         return allObjects(ofType: Order.self, matching: predicate, sortedBy: [descriptor])
     }

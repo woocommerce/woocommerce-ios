@@ -178,14 +178,14 @@ struct WooShippingAddPackageView: View {
                         Text(Localization.saveNewPackageTemplate)
                             .font(.subheadline)
                     }
-                    .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
+                    .tint(Color.accentColor)
                     if showSaveTemplate {
                         TextField("Enter a unique package name", text: $packageTemplateName)
                             .font(.body)
                             .focused($packageTemplateNameFieldFocused)
                             .padding()
                             .roundedBorder(cornerRadius: 8,
-                                           lineColor: packageTemplateNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                                           lineColor: packageTemplateNameFieldFocused ? Color.accentColor : Color(.separator),
                                            lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                         Button(Localization.savePackageTemplate) {
                             savePackageAsTemplateButtonTapped()
@@ -325,7 +325,7 @@ struct WooShippingAddPackageDimensionView: View {
             }
             .padding()
             .roundedBorder(cornerRadius: 8,
-                           lineColor: focusedField == dimensionType ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                           lineColor: focusedField == dimensionType ? Color.accentColor : Color(.separator),
                            lineWidth: focusedField == dimensionType ? 2 : 1)
         }
         .frame(minHeight: 48)

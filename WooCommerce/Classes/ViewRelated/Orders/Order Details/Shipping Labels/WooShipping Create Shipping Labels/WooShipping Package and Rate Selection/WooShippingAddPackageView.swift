@@ -15,18 +15,6 @@ struct WooShippingAddPackageView: View {
         }
     }
 
-    enum PackageType: CaseIterable {
-        case box, envelope
-        var name: String {
-            switch self {
-            case .box:
-                return Localization.box
-            case .envelope:
-                return Localization.envelope
-            }
-        }
-    }
-
     enum Constants {
         static let defaultVerticalSpacing: CGFloat = 16.0
         static let saveTemplateButtonID: String = "saveTemplateButtonID"
@@ -35,16 +23,12 @@ struct WooShippingAddPackageView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @StateObject private var customPackageViewModel = WooShippingAddPackageViewModel()
+    @StateObject private var customPackageViewModel = WooShippingAddCustomPackageViewModel()
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    // Holds selected package type when custom package is selected, it can be `box` or `envelope`
-    @State var packageType: PackageType = .box
-    // Holds value for toggle that determines if we are showing button for saving the template
-    @State var showSaveTemplate: Bool = false
-    @State var packageTemplateName: String = ""
+
     @FocusState var packageTemplateNameFieldFocused: Bool
-    @FocusState var focusedField: WooShippingAddPackageDimensionType?
+    @FocusState var focusedField: WooShippingPackageDimensionType?
 
     // MARK: - UI
 
@@ -101,20 +85,20 @@ struct WooShippingAddPackageView: View {
                     }
                     Menu {
                         // show selection
-                        ForEach(PackageType.allCases, id: \.self) { option in
+                        ForEach(WooShippingPackageType.allCases, id: \.self) { option in
                             Button {
-                                packageType = option
+                                customPackageViewModel.packageType = option
                             } label: {
                                 Text(option.name)
                                     .bodyStyle()
-                                if packageType == option {
+                                if customPackageViewModel.packageType == option {
                                     Image(uiImage: .checkmarkStyledImage)
                                 }
                             }
                         }
                     } label: {
                         HStack {
-                            Text(packageType.name)
+                            Text(customPackageViewModel.packageType.name)
                                 .bodyStyle()
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
@@ -123,7 +107,7 @@ struct WooShippingAddPackageView: View {
                     }
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                     AdaptiveStack(spacing: 8) {
-                        ForEach(WooShippingAddPackageDimensionType.allCases, id: \.self) { dimensionType in
+                        ForEach(WooShippingPackageDimensionType.allCases, id: \.self) { dimensionType in
                             WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
                                 return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
                             }, set: { value in
@@ -139,13 +123,13 @@ struct WooShippingAddPackageView: View {
                                 }, label: {
                                     Image(systemName: "chevron.backward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionType.allCases.first)
+                                .disabled(focusedField == WooShippingPackageDimensionType.allCases.first)
                                 Button(action: {
                                     onForwardButtonTapped()
                                 }, label: {
                                     Image(systemName: "chevron.forward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionType.allCases.last)
+                                .disabled(focusedField == WooShippingPackageDimensionType.allCases.last)
                                 Spacer()
                                 Button {
                                     dismissKeyboard()
@@ -157,13 +141,13 @@ struct WooShippingAddPackageView: View {
                             .renderedIf(focusedField != nil)
                         }
                     }
-                    Toggle(isOn: $showSaveTemplate) {
+                    Toggle(isOn: $customPackageViewModel.showSaveTemplate) {
                         Text(Localization.saveNewPackageTemplate)
                             .font(.subheadline)
                     }
                     .tint(Color.accentColor)
-                    if showSaveTemplate {
-                        TextField("Enter a unique package name", text: $packageTemplateName)
+                    if customPackageViewModel.showSaveTemplate {
+                        TextField("Enter a unique package name", text: $customPackageViewModel.packageTemplateName)
                             .font(.body)
                             .focused($packageTemplateNameFieldFocused)
                             .padding()
@@ -180,7 +164,7 @@ struct WooShippingAddPackageView: View {
                     }
                 }
                 .padding(.horizontal)
-                .onChange(of: showSaveTemplate) { newValue in
+                .onChange(of: customPackageViewModel.showSaveTemplate) { newValue in
                     packageTemplateNameFieldFocused = newValue
                 }
                 .onChange(of: packageTemplateNameFieldFocused) { focused in
@@ -194,7 +178,7 @@ struct WooShippingAddPackageView: View {
                 }
             }
         }
-        if !showSaveTemplate {
+        if !customPackageViewModel.showSaveTemplate {
             Spacer()
             Button(Localization.addPackage) {
                 addPackageButtonTapped()
@@ -254,8 +238,8 @@ struct WooShippingAddPackageView: View {
         guard !customPackageViewModel.areFieldValuesInvalid else {
             return false
         }
-        if showSaveTemplate {
-            return !packageTemplateName.isEmpty
+        if customPackageViewModel.showSaveTemplate {
+            return !customPackageViewModel.packageTemplateName.isEmpty
         }
         return true
     }
@@ -272,9 +256,9 @@ struct WooShippingAddPackageView: View {
 }
 
 struct WooShippingAddPackageDimensionView: View {
-    let dimensionType: WooShippingAddPackageDimensionType
+    let dimensionType: WooShippingPackageDimensionType
     @Binding var fieldValue: String
-    @FocusState var focusedField: WooShippingAddPackageDimensionType?
+    @FocusState var focusedField: WooShippingPackageDimensionType?
 
     var body: some View {
         VStack {
@@ -325,12 +309,6 @@ extension WooShippingAddPackageView {
         static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
                                              value: "Saved",
                                              comment: "Info label for saved package option")
-        static let box = NSLocalizedString("wooShipping.createLabel.addPackage.box",
-                                           value: "Box",
-                                           comment: "Info label for selected box as a package type")
-        static let envelope = NSLocalizedString("wooShipping.createLabel.addPackage.envelope",
-                                                value: "Envelope",
-                                                comment: "Info label for selected envelope as a package type")
         static let saveNewPackageTemplate = NSLocalizedString("wooShipping.createLabel.addPackage.saveNewPackageTemplate",
                                                               value: "Save this as a new package template",
                                                               comment: "Info label for saving package as a new template toggle")

@@ -169,6 +169,8 @@ struct WooShippingAddPackageView: View {
                 }
                 .onChange(of: packageTemplateNameFieldFocused) { focused in
                     if focused {
+                        // More info about why small delay is added:
+                        // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901
                         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.scrollToDelay, execute: {
                             withAnimation {
                                 proxy.scrollTo(Constants.saveTemplateButtonID, anchor: .bottom)

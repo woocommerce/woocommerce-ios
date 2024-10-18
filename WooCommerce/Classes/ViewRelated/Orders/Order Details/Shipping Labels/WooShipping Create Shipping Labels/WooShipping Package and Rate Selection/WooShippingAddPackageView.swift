@@ -1,22 +1,5 @@
 import SwiftUI
 
-final class WooShippingAddPackageViewModel: ObservableObject {
-    // Holds values for all dimension input fields.
-    // Using a dictionary so we can easily add/remove new types
-    // if needed just by adding new case in enum
-    @Published var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
-
-    // Field values are invalid if one of them is empty
-    var areFieldValuesInvalid: Bool {
-        for (_, value) in fieldValues {
-            if value.isEmpty {
-                return true
-            }
-        }
-        return fieldValues.count != WooShippingAddPackageDimensionView.DimensionType.allCases.count
-    }
-}
-
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
         case custom, carrier, saved
@@ -32,18 +15,6 @@ struct WooShippingAddPackageView: View {
         }
     }
 
-    enum PackageType: CaseIterable {
-        case box, envelope
-        var name: String {
-            switch self {
-            case .box:
-                return Localization.box
-            case .envelope:
-                return Localization.envelope
-            }
-        }
-    }
-
     enum Constants {
         static let defaultVerticalSpacing: CGFloat = 16.0
         static let saveTemplateButtonID: String = "saveTemplateButtonID"
@@ -52,16 +23,12 @@ struct WooShippingAddPackageView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @StateObject private var customPackageViewModel = WooShippingAddPackageViewModel()
+    @StateObject private var customPackageViewModel = WooShippingAddCustomPackageViewModel()
     // Holds type of selected package, it can be `custom`, `carrier` or `saved`
     @State var selectedPackageType = PackageProviderType.custom
-    // Holds selected package type when custom package is selected, it can be `box` or `envelope`
-    @State var packageType: PackageType = .box
-    // Holds value for toggle that determines if we are showing button for saving the template
-    @State var showSaveTemplate: Bool = false
-    @State var packageTemplateName: String = ""
+
     @FocusState var packageTemplateNameFieldFocused: Bool
-    @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
+    @FocusState var focusedField: WooShippingPackageDimensionType?
 
     // MARK: - UI
 
@@ -118,20 +85,20 @@ struct WooShippingAddPackageView: View {
                     }
                     Menu {
                         // show selection
-                        ForEach(PackageType.allCases, id: \.self) { option in
+                        ForEach(WooShippingPackageType.allCases, id: \.self) { option in
                             Button {
-                                packageType = option
+                                customPackageViewModel.packageType = option
                             } label: {
                                 Text(option.name)
                                     .bodyStyle()
-                                if packageType == option {
+                                if customPackageViewModel.packageType == option {
                                     Image(uiImage: .checkmarkStyledImage)
                                 }
                             }
                         }
                     } label: {
                         HStack {
-                            Text(packageType.name)
+                            Text(customPackageViewModel.packageType.name)
                                 .bodyStyle()
                             Spacer()
                             Image(systemName: "chevron.up.chevron.down")
@@ -140,7 +107,7 @@ struct WooShippingAddPackageView: View {
                     }
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                     AdaptiveStack(spacing: 8) {
-                        ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
+                        ForEach(WooShippingPackageDimensionType.allCases, id: \.self) { dimensionType in
                             WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
                                 return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
                             }, set: { value in
@@ -156,13 +123,13 @@ struct WooShippingAddPackageView: View {
                                 }, label: {
                                     Image(systemName: "chevron.backward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.first)
+                                .disabled(focusedField == WooShippingPackageDimensionType.allCases.first)
                                 Button(action: {
                                     onForwardButtonTapped()
                                 }, label: {
                                     Image(systemName: "chevron.forward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.last)
+                                .disabled(focusedField == WooShippingPackageDimensionType.allCases.last)
                                 Spacer()
                                 Button {
                                     dismissKeyboard()
@@ -174,34 +141,36 @@ struct WooShippingAddPackageView: View {
                             .renderedIf(focusedField != nil)
                         }
                     }
-                    Toggle(isOn: $showSaveTemplate) {
+                    Toggle(isOn: $customPackageViewModel.showSaveTemplate) {
                         Text(Localization.saveNewPackageTemplate)
                             .font(.subheadline)
                     }
-                    .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
-                    if showSaveTemplate {
-                        TextField("Enter a unique package name", text: $packageTemplateName)
+                    .tint(Color.accentColor)
+                    if customPackageViewModel.showSaveTemplate {
+                        TextField("Enter a unique package name", text: $customPackageViewModel.packageTemplateName)
                             .font(.body)
                             .focused($packageTemplateNameFieldFocused)
                             .padding()
                             .roundedBorder(cornerRadius: 8,
-                                           lineColor: packageTemplateNameFieldFocused ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                                           lineColor: packageTemplateNameFieldFocused ? Color.accentColor : Color(.separator),
                                            lineWidth: packageTemplateNameFieldFocused ? 2 : 1)
                         Button(Localization.savePackageTemplate) {
                             savePackageAsTemplateButtonTapped()
                         }
-                        .disabled(!validateCustomPackageInputFields())
+                        .disabled(!customPackageViewModel.validateCustomPackageInputFields())
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.bottom)
                         .id(Constants.saveTemplateButtonID) // Set the id for the button so we can scroll to it
                     }
                 }
                 .padding(.horizontal)
-                .onChange(of: showSaveTemplate) { newValue in
+                .onChange(of: customPackageViewModel.showSaveTemplate) { newValue in
                     packageTemplateNameFieldFocused = newValue
                 }
                 .onChange(of: packageTemplateNameFieldFocused) { focused in
                     if focused {
+                        // More info about why small delay is added:
+                        // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901
                         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.scrollToDelay, execute: {
                             withAnimation {
                                 proxy.scrollTo(Constants.saveTemplateButtonID, anchor: .bottom)
@@ -211,12 +180,12 @@ struct WooShippingAddPackageView: View {
                 }
             }
         }
-        if !showSaveTemplate {
+        if !customPackageViewModel.showSaveTemplate {
             Spacer()
             Button(Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(!validateCustomPackageInputFields())
+            .disabled(!customPackageViewModel.validateCustomPackageInputFields())
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -292,45 +261,19 @@ struct WooShippingAddPackageView: View {
 
     // MARK: - actions
 
-    private func validateCustomPackageInputFields() -> Bool {
-        guard !customPackageViewModel.areFieldValuesInvalid else {
-            return false
-        }
-        if showSaveTemplate {
-            return !packageTemplateName.isEmpty
-        }
-        return true
-    }
-
     private func addPackageButtonTapped() {
-        // TODO: implement adding a package
-        guard validateCustomPackageInputFields() else { return }
+        customPackageViewModel.addPackageAction()
     }
 
     private func savePackageAsTemplateButtonTapped() {
-        // TODO: implement saving package as a template
-        guard validateCustomPackageInputFields() else { return }
+        customPackageViewModel.savePackageAsTemplateAction()
     }
 }
 
 struct WooShippingAddPackageDimensionView: View {
-    enum DimensionType: CaseIterable {
-        case length, width, height
-        var name: String {
-            switch self {
-            case .length:
-                return Localization.length
-            case .width:
-                return Localization.width
-            case .height:
-                return Localization.height
-            }
-        }
-    }
-
-    let dimensionType: DimensionType
+    let dimensionType: WooShippingPackageDimensionType
     @Binding var fieldValue: String
-    @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
+    @FocusState var focusedField: WooShippingPackageDimensionType?
 
     var body: some View {
         VStack {
@@ -350,7 +293,7 @@ struct WooShippingAddPackageDimensionView: View {
             }
             .padding()
             .roundedBorder(cornerRadius: 8,
-                           lineColor: focusedField == dimensionType ? Color(UIColor.wooCommercePurple(.shade60)) : Color(.separator),
+                           lineColor: focusedField == dimensionType ? Color.accentColor : Color(.separator),
                            lineWidth: focusedField == dimensionType ? 2 : 1)
         }
         .frame(minHeight: 48)
@@ -381,12 +324,6 @@ extension WooShippingAddPackageView {
         static let saved = NSLocalizedString("wooShipping.createLabel.addPackage.saved",
                                              value: "Saved",
                                              comment: "Info label for saved package option")
-        static let box = NSLocalizedString("wooShipping.createLabel.addPackage.box",
-                                           value: "Box",
-                                           comment: "Info label for selected box as a package type")
-        static let envelope = NSLocalizedString("wooShipping.createLabel.addPackage.envelope",
-                                                value: "Envelope",
-                                                comment: "Info label for selected envelope as a package type")
         static let saveNewPackageTemplate = NSLocalizedString("wooShipping.createLabel.addPackage.saveNewPackageTemplate",
                                                               value: "Save this as a new package template",
                                                               comment: "Info label for saving package as a new template toggle")
@@ -397,19 +334,5 @@ extension WooShippingAddPackageView {
             "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title",
             value: "Done",
             comment: "The title for a button to dismiss the keyboard on the order creation/editing screen")
-    }
-}
-
-extension WooShippingAddPackageDimensionView {
-    enum Localization {
-        static let length = NSLocalizedString("wooShipping.createLabel.addPackage.length",
-                                              value: "Length",
-                                              comment: "Info label for length input field")
-        static let width = NSLocalizedString("wooShipping.createLabel.addPackage.width",
-                                             value: "Width",
-                                             comment: "Info label for width input field")
-        static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
-                                              value: "Height",
-                                              comment: "Info label for height input field")
     }
 }

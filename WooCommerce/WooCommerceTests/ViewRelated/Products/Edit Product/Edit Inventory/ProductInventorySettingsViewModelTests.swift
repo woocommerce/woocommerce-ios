@@ -31,7 +31,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -60,7 +60,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -86,7 +86,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -107,7 +107,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku])
+            .init(rows: [.sku, .globalUniqueIdentifier])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, "134")
@@ -142,7 +142,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku]),
+            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -177,7 +177,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, true)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -204,7 +204,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -228,7 +228,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]

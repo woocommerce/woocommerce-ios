@@ -311,7 +311,6 @@ private extension TotalsViewModel {
     }
 
     func observeCardPresentPaymentEvents() {
-
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }

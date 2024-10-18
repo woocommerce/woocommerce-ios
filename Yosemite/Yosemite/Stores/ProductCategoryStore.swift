@@ -229,10 +229,14 @@ private extension ProductCategoryStore {
     func upsertStoredProductCategories(_ readOnlyProductCategories: [Networking.ProductCategory],
                                        in storage: StorageType,
                                        siteID: Int64) {
+
+        // Fetch all stored categories
+        let storedCategories = storage.loadProductCategories(siteID: siteID)
+
         // Upserts the ProductCategory models from the read-only version
         for readOnlyProductCategory in readOnlyProductCategories {
             let storageProductCategory: Storage.ProductCategory = {
-                if let storedCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyProductCategory.categoryID) {
+                if let storedCategory = storedCategories.first(where: { $0.categoryID == readOnlyProductCategory.categoryID }) {
                     return storedCategory
                 }
                 return storage.insertNewObject(ofType: Storage.ProductCategory.self)

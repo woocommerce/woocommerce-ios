@@ -22,6 +22,8 @@ When `CoreDataManager` is requested a  `viewContext`, it will provide  the persi
 `CoreDataManager` manages a single background context for write operations, which cannot be accessed directly. Instead, there are two versions of `performAndSave` methods to use for writing - depending on whether you need to send a result back to the completion closure. 
 Note: For thread safety, do not send any `NSManagedObject` instance to the completion closure of `performAndSave`. There's an assertion to ensure at debug runtime this does not happen.
 
+For performance, please be mindful when making fetch requests. Avoid making multiple fetch requests in for loops. This can be replaced by a single fetch request for a list of objects instead.
+
 ## File storage
 The Storage module also exposes a protocol, called [`FileStorage`](../Storage/Storage/Protocols/FileStorage.swift) to abstract saving and reading data to and from local storage. 
 

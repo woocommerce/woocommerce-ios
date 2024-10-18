@@ -92,6 +92,11 @@ private extension OrderStatusFilterViewController {
                 break
             }
         }
+
+        /// manually add trash option if not present
+        if !rows.contains(where: { $0 == .trash }) {
+            rows.append(.trash)
+        }
     }
 
     func selectOrDelesectRow(_ row: Row) {
@@ -148,7 +153,7 @@ extension OrderStatusFilterViewController: UITableViewDelegate {
 // MARK: - Cell configuration
 //
 private extension OrderStatusFilterViewController {
-    enum Row {
+    enum Row: Equatable {
 
         // The order of the statuses declaration is according to the Order's lifecycle
         // and it is used to determine the user facing display order using the synthesized allCases
@@ -160,6 +165,7 @@ private extension OrderStatusFilterViewController {
         case cancelled
         case refunded
         case failed
+        case trash
         case custom(OrderStatus)
 
         var status: OrderStatusEnum? {
@@ -180,6 +186,8 @@ private extension OrderStatusFilterViewController {
                 return .completed
             case .refunded:
                 return .refunded
+            case .trash:
+                return .trash
             case .custom(let value):
                 return value.status
             }

@@ -7,7 +7,7 @@ import protocol WooFoundation.Analytics
 ///
 @MainActor
 final class LastOrdersDashboardCardViewModel: ObservableObject {
-    enum OrderStatusRow: Identifiable {
+    enum OrderStatusRow: Identifiable, Equatable {
         case any
         case autoDraft
         case pending
@@ -17,6 +17,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         case cancelled
         case refunded
         case failed
+        case trash
         case custom(String)
 
         init(_ status: OrderStatusEnum?) {
@@ -42,6 +43,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                 self = .completed
             case .refunded:
                 self = .refunded
+            case .trash:
+                self = .trash
             case .custom(let value):
                 self = .custom(value)
             }
@@ -67,6 +70,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
                 return .completed
             case .refunded:
                 return .refunded
+            case .trash:
+                return .trash
             case .custom(let value):
                 return .custom(value)
             }
@@ -226,6 +231,11 @@ private extension LastOrdersDashboardCardViewModel {
             .map { OrderStatusEnum(rawValue: $0.slug) }
             .map { OrderStatusRow($0) }
         allStatuses = [.any] + remoteStatuses
+
+        /// manually add trash option if not present
+        if !allStatuses.contains(where: { $0 == .trash }) {
+            allStatuses.append(.trash)
+        }
     }
 
     @MainActor

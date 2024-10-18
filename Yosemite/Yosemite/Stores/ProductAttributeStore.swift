@@ -137,10 +137,12 @@ private extension ProductAttributeStore {
     func upsertStoredProductAttributes(_ readOnlyProductAttributes: [Networking.ProductAttribute],
                                        in storage: StorageType,
                                        siteID: Int64) {
+        let storedAttributes = storage.loadProductAttributes(siteID: siteID)
+
         // Upserts the ProductAttribute models from the read-only version
         for readOnlyProductAttribute in readOnlyProductAttributes {
             let storageProductAttribute: Storage.ProductAttribute = {
-                if let storedAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: readOnlyProductAttribute.attributeID) {
+                if let storedAttribute = storedAttributes.first(where: { $0.attributeID == readOnlyProductAttribute.attributeID }) {
                     return storedAttribute
                 }
                 return storage.insertNewObject(ofType: Storage.ProductAttribute.self)

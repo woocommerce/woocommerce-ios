@@ -7,10 +7,6 @@ import Storage
 public final class ProductCategoryStore: Store {
     private let remote: ProductCategoriesRemoteProtocol
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductCategoriesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -101,11 +97,10 @@ private extension ProductCategoryStore {
                 return
             }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteUnusedStoredProductCategories(siteID: siteID)
-            }
-
-            self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
+            let deleteUnusedCategories = pageNumber == Default.firstPageNumber
+            self?.upsertStoredProductCategoriesInBackground(productCategories,
+                                                            siteID: siteID,
+                                                            shouldDeleteUnusedCategories: deleteUnusedCategories) {
                 onCompletion(productCategories, nil)
             }
         }
@@ -166,10 +161,10 @@ private extension ProductCategoryStore {
 
     /// Deletes any Storage.ProductCategory  that is not associated to a product on the specified `siteID`
     ///
-    func deleteUnusedStoredProductCategories(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteUnusedProductCategories(siteID: siteID)
-        storage.saveIfNeeded()
+    func deleteUnusedStoredProductCategories(siteID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteUnusedProductCategories(siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates an existing product category.
@@ -193,8 +188,9 @@ private extension ProductCategoryStore {
         Task { @MainActor in
             do {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
-                deleteUnusedStoredProductCategories(siteID: siteID)
-                onCompletion(.success(()))
+                deleteUnusedStoredProductCategories(siteID: siteID) {
+                    onCompletion(.success(()))
+                }
             } catch {
                 onCompletion(.failure(error))
             }
@@ -210,15 +206,15 @@ private extension ProductCategoryStore {
     ///
     func upsertStoredProductCategoriesInBackground(_ readOnlyProductCategories: [Networking.ProductCategory],
                                                    siteID: Int64,
+                                                   shouldDeleteUnusedCategories: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductCategories(readOnlyProductCategories, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            if shouldDeleteUnusedCategories {
+                storage.deleteUnusedProductCategories(siteID: siteID)
+            }
+            upsertStoredProductCategories(readOnlyProductCategories, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 }
 
@@ -233,10 +229,14 @@ private extension ProductCategoryStore {
     func upsertStoredProductCategories(_ readOnlyProductCategories: [Networking.ProductCategory],
                                        in storage: StorageType,
                                        siteID: Int64) {
+
+        // Fetch all stored categories
+        let storedCategories = storage.loadProductCategories(siteID: siteID)
+
         // Upserts the ProductCategory models from the read-only version
         for readOnlyProductCategory in readOnlyProductCategories {
             let storageProductCategory: Storage.ProductCategory = {
-                if let storedCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyProductCategory.categoryID) {
+                if let storedCategory = storedCategories.first(where: { $0.categoryID == readOnlyProductCategory.categoryID }) {
                     return storedCategory
                 }
                 return storage.insertNewObject(ofType: Storage.ProductCategory.self)
@@ -250,7 +250,7 @@ private extension ProductCategoryStore {
 //
 private extension ProductCategoryStore {
     enum Constants {
-        /// Max number allwed by the API to maximize our changces on getting all item in one request.
+        /// Max number allowed by the API to maximize our chances on getting all item in one request.
         ///
         static let defaultMaxPageSize = 100
     }

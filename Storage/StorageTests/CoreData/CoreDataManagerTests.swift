@@ -59,15 +59,22 @@ final class CoreDataManagerTests: XCTestCase {
         let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         manager.reset()
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
-        _ = viewContext.insertNewObject(ofType: ShippingLine.self)
-        viewContext.saveIfNeeded()
-        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
 
         // Action
-        manager.reset()
+        waitForExpectation { expectation in
+            manager.performAndSave({ storage in
+                _ = storage.insertNewObject(ofType: ShippingLine.self)
+            }, completion: {
+                XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+                manager.reset()
+                expectation.fulfill()
+            }, on: .main)
+        }
 
         // Assert
-        XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
+        waitUntil {
+            viewContext.countObjects(ofType: ShippingLine.self) == 0
+        }
     }
 
     func test_performAndSave_executes_changes_in_background_then_updates_viewContext() throws {
@@ -78,7 +85,7 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: Account.self), 0)
 
         // Action
-        waitForExpectation(count: 1) { expectation in
+        waitForExpectation { expectation in
             manager.performAndSave({ storage in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 self.insertAccount(to: storage)

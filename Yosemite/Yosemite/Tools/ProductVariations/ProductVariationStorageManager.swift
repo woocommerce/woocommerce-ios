@@ -5,10 +5,6 @@ import Storage
 final class ProductVariationStorageManager {
     private let storageManager: StorageManagerType
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     init(storageManager: StorageManagerType) {
         self.storageManager = storageManager
     }
@@ -19,31 +15,31 @@ final class ProductVariationStorageManager {
     func upsertStoredProductVariationsInBackground(readOnlyProductVariations: [Networking.ProductVariation],
                                                    siteID: Int64,
                                                    productID: Int64,
+                                                   shouldDeleteAllStoredVariations: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: derivedStorage, siteID: siteID, productID: productID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            if shouldDeleteAllStoredVariations {
+                storage.deleteProductVariations(siteID: siteID, productID: productID)
+            }
+            upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: storage, siteID: siteID, productID: productID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
     ///
-    func deleteStoredProductVariations(siteID: Int64, productID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductVariations(siteID: siteID, productID: productID)
-        storage.saveIfNeeded()
+    func deleteStoredProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductVariations(siteID: siteID, productID: productID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
     ///
-    func deleteStoredProductVariation(siteID: Int64, productVariationID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteProductVariation(siteID: siteID, productVariationID: productVariationID)
-        storage.saveIfNeeded()
+    func deleteStoredProductVariation(siteID: Int64, productVariationID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteProductVariation(siteID: siteID, productVariationID: productVariationID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly ProductVariation Entities into the Storage Layer.
@@ -59,11 +55,11 @@ final class ProductVariationStorageManager {
                                        siteID: Int64,
                                        productID: Int64) {
         let product = storage.loadProduct(siteID: siteID, productID: productID)
+        let variations = storage.loadProductVariations(siteID: siteID, productID: productID)
 
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {
-            let storageProductVariation = storage.loadProductVariation(siteID: siteID,
-                                                                       productVariationID: readOnlyProductVariation.productVariationID)
+            let storageProductVariation = variations?.first(where: { $0.productVariationID == readOnlyProductVariation.productVariationID })
             ?? storage.insertNewObject(ofType: Storage.ProductVariation.self)
             storageProductVariation.update(with: readOnlyProductVariation)
             storageProductVariation.product = product

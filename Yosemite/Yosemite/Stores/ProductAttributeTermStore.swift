@@ -9,10 +9,6 @@ public final class ProductAttributeTermStore: Store {
     /// Set the size of the page size request for this store
     var pageSizeRequest = Constants.defaultMaxPageSize
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributeTermRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -134,14 +130,9 @@ private extension ProductAttributeTermStore {
                                                        siteID: Int64,
                                                        attributeID: Int64,
                                                        onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductAttributeTerms(readOnlyTerms, in: derivedStorage, siteID: siteID, attributeID: attributeID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertStoredProductAttributeTerms(readOnlyTerms, in: storage, siteID: siteID, attributeID: attributeID)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly `ProductAttributeTerm` entities into the Storage Layer.

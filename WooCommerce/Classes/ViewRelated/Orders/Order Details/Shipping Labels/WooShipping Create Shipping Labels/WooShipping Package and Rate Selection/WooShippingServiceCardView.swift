@@ -18,7 +18,7 @@ struct WooShippingServiceCardView: View {
     @State private var signatureSelection: SignatureSelection = .none
 
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .firstTextBaseline, spacing: 16) {
             if let carrierLogo {
                 Image(uiImage: carrierLogo)
                     .resizable()
@@ -26,9 +26,9 @@ struct WooShippingServiceCardView: View {
                     .frame(width: 20)
             }
             VStack(alignment: .leading) {
-                AdaptiveStack {
+                AdaptiveStack(horizontalAlignment: .leading) {
                     Text(title)
-                    Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     Text(rate)
                         .bold()
                 }

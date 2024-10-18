@@ -190,6 +190,6 @@ public enum FeatureFlag: Int {
     case favoriteProducts
 
     /// Enables support for the new product global unique identifier
-    /// 
+    ///
     case productGlobalUniqueIdentifierSupport
 }

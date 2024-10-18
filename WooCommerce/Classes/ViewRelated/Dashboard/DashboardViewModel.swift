@@ -482,7 +482,9 @@ private extension DashboardViewModel {
                            $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
-                guard let self else { return }
+                guard let self, stores.isAuthenticated else {
+                    return
+                }
                 let ((canShowOnboarding, canShowBlaze), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,

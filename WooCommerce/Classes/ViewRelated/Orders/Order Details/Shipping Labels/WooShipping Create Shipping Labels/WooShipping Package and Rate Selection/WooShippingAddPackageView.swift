@@ -1,22 +1,5 @@
 import SwiftUI
 
-final class WooShippingAddPackageViewModel: ObservableObject {
-    // Holds values for all dimension input fields.
-    // Using a dictionary so we can easily add/remove new types
-    // if needed just by adding new case in enum
-    @Published var fieldValues: [WooShippingAddPackageDimensionView.DimensionType: String] = [:]
-
-    // Field values are invalid if one of them is empty
-    var areFieldValuesInvalid: Bool {
-        for (_, value) in fieldValues {
-            if value.isEmpty {
-                return true
-            }
-        }
-        return fieldValues.count != WooShippingAddPackageDimensionView.DimensionType.allCases.count
-    }
-}
-
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
         case custom, carrier, saved
@@ -61,7 +44,7 @@ struct WooShippingAddPackageView: View {
     @State var showSaveTemplate: Bool = false
     @State var packageTemplateName: String = ""
     @FocusState var packageTemplateNameFieldFocused: Bool
-    @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
+    @FocusState var focusedField: WooShippingAddPackageDimensionType?
 
     // MARK: - UI
 
@@ -140,7 +123,7 @@ struct WooShippingAddPackageView: View {
                     }
                     .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                     AdaptiveStack(spacing: 8) {
-                        ForEach(WooShippingAddPackageDimensionView.DimensionType.allCases, id: \.self) { dimensionType in
+                        ForEach(WooShippingAddPackageDimensionType.allCases, id: \.self) { dimensionType in
                             WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
                                 return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
                             }, set: { value in
@@ -156,13 +139,13 @@ struct WooShippingAddPackageView: View {
                                 }, label: {
                                     Image(systemName: "chevron.backward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.first)
+                                .disabled(focusedField == WooShippingAddPackageDimensionType.allCases.first)
                                 Button(action: {
                                     onForwardButtonTapped()
                                 }, label: {
                                     Image(systemName: "chevron.forward")
                                 })
-                                .disabled(focusedField == WooShippingAddPackageDimensionView.DimensionType.allCases.last)
+                                .disabled(focusedField == WooShippingAddPackageDimensionType.allCases.last)
                                 Spacer()
                                 Button {
                                     dismissKeyboard()
@@ -289,23 +272,9 @@ struct WooShippingAddPackageView: View {
 }
 
 struct WooShippingAddPackageDimensionView: View {
-    enum DimensionType: CaseIterable {
-        case length, width, height
-        var name: String {
-            switch self {
-            case .length:
-                return Localization.length
-            case .width:
-                return Localization.width
-            case .height:
-                return Localization.height
-            }
-        }
-    }
-
-    let dimensionType: DimensionType
+    let dimensionType: WooShippingAddPackageDimensionType
     @Binding var fieldValue: String
-    @FocusState var focusedField: WooShippingAddPackageDimensionView.DimensionType?
+    @FocusState var focusedField: WooShippingAddPackageDimensionType?
 
     var body: some View {
         VStack {
@@ -372,19 +341,5 @@ extension WooShippingAddPackageView {
             "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title",
             value: "Done",
             comment: "The title for a button to dismiss the keyboard on the order creation/editing screen")
-    }
-}
-
-extension WooShippingAddPackageDimensionView {
-    enum Localization {
-        static let length = NSLocalizedString("wooShipping.createLabel.addPackage.length",
-                                              value: "Length",
-                                              comment: "Info label for length input field")
-        static let width = NSLocalizedString("wooShipping.createLabel.addPackage.width",
-                                             value: "Width",
-                                             comment: "Info label for width input field")
-        static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
-                                              value: "Height",
-                                              comment: "Info label for height input field")
     }
 }

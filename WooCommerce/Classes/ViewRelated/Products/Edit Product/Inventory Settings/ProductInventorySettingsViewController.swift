@@ -306,7 +306,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureGlobalUniqueIdentifier(cell: TitleAndTextFieldTableViewCell) {
-        var cellViewModel = Product.createGlobalUniqueIdentifierViewModel() {_ in
+        let cellViewModel = Product.createGlobalUniqueIdentifierViewModel() { _ in
         }
 
         cell.configure(viewModel: cellViewModel)

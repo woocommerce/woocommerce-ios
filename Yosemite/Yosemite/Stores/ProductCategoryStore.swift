@@ -250,7 +250,7 @@ private extension ProductCategoryStore {
 //
 private extension ProductCategoryStore {
     enum Constants {
-        /// Max number allwed by the API to maximize our changces on getting all item in one request.
+        /// Max number allowed by the API to maximize our chances on getting all item in one request.
         ///
         static let defaultMaxPageSize = 100
     }

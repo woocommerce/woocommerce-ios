@@ -104,7 +104,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), false)
-        
+
         // When
         viewModel.packageTemplateName = "a"
 

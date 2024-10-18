@@ -24,8 +24,13 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
-            .map { $0 && $1 && $2 }
+        guard featureFlagService.isFeatureFlagEnabled(.paymentsOnboardingInPointOfSale) else {
+            return Publishers.CombineLatest3(isOnboardingComplete, isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+                .map { $0 && $1 && $2 }
+                .eraseToAnyPublisher()
+        }
+        return Publishers.CombineLatest(isWooCommerceVersionSupported, isPointOfSaleFeatureFlagEnabled)
+            .map { $0 && $1 }
             .eraseToAnyPublisher()
     }
 

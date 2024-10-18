@@ -192,6 +192,26 @@ final class POSEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    func test_is_eligible_when_onboarding_state_is_not_completed_and_onboarding_feature_enabled_then_returns_true() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true, paymentsOnboardingInPointOfSale: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+                                            cardPresentPaymentsOnboarding: onboardingUseCase,
+                                            siteSettings: siteSettings,
+                                            currencySettings: Fixtures.usdCurrencySettings,
+                                            stores: stores,
+                                            featureFlagService: featureFlagService)
+        checker.isEligible.assign(to: &$isEligible)
+
+        // When
+        onboardingUseCase.state = .pluginNotInstalled
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
     func test_is_eligible_when_WooCommerce_version_is_below_6_6_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)

@@ -7,10 +7,6 @@ import Storage
 public final class ProductAttributeStore: Store {
     private let remote: ProductAttributesRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -53,8 +49,9 @@ private extension ProductAttributeStore {
         remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
             switch result {
             case .success(let productAttributes):
-                self?.deleteUnusedStoredProductAttributes(siteID: siteID)
-                self?.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
+                self?.upsertStoredProductAttributesInBackground(productAttributes,
+                                                                siteID: siteID,
+                                                                shouldDeleteUnusedAttributes: true) {
                     onCompletion(.success(productAttributes))
                 }
             case .failure(let error):
@@ -99,8 +96,9 @@ private extension ProductAttributeStore {
         remote.deleteProductAttribute(for: siteID, productAttributeID: attributeID) { [weak self] (result) in
             switch result {
             case .success(let productAttribute):
-                self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID)
-                onCompletion(.success(productAttribute))
+                self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID) {
+                    onCompletion(.success(productAttribute))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
@@ -116,15 +114,15 @@ private extension ProductAttributeStore {
     ///
     func upsertStoredProductAttributesInBackground(_ readOnlyProductAttributes: [Networking.ProductAttribute],
                                                    siteID: Int64,
+                                                   shouldDeleteUnusedAttributes: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductAttributes(readOnlyProductAttributes, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            if shouldDeleteUnusedAttributes {
+                storage.deleteUnusedProductAttributes(siteID: siteID)
+            }
+            upsertStoredProductAttributes(readOnlyProductAttributes, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 }
 
@@ -139,10 +137,12 @@ private extension ProductAttributeStore {
     func upsertStoredProductAttributes(_ readOnlyProductAttributes: [Networking.ProductAttribute],
                                        in storage: StorageType,
                                        siteID: Int64) {
+        let storedAttributes = storage.loadProductAttributes(siteID: siteID)
+
         // Upserts the ProductAttribute models from the read-only version
         for readOnlyProductAttribute in readOnlyProductAttributes {
             let storageProductAttribute: Storage.ProductAttribute = {
-                if let storedAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: readOnlyProductAttribute.attributeID) {
+                if let storedAttribute = storedAttributes.first(where: { $0.attributeID == readOnlyProductAttribute.attributeID }) {
                     return storedAttribute
                 }
                 return storage.insertNewObject(ofType: Storage.ProductAttribute.self)
@@ -154,21 +154,12 @@ private extension ProductAttributeStore {
 
     /// Deletes any Storage.ProductAttribute with the specified `siteID` and `attributeID`
     ///
-    func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let productAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID) else {
-            return
-        }
-
-        storage.deleteObject(productAttribute)
-        storage.saveIfNeeded()
-    }
-
-    /// Deletes any Storage.ProductAttribute that is not associated to a product on the specified `siteID`
-    ///
-    func deleteUnusedStoredProductAttributes(siteID: Int64) {
-        let storage = storageManager.viewStorage
-        storage.deleteUnusedProductAttributes(siteID: siteID)
-        storage.saveIfNeeded()
+    func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let productAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID) else {
+                return
+            }
+            storage.deleteObject(productAttribute)
+        }, completion: onCompletion, on: .main)
     }
 }

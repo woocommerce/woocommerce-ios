@@ -3531,9 +3531,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default component option field in the Component Settings view */
 "Default Option" = "Default Option";
 
-/* Details text for the Custom Fields row
-   Title for the Custom Fields row */
-"defaultProductFormTableViewModel.customFieldsDetails" = "Custom Fields";
+/* Details text for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsRowDetails" = "View and edit the product's custom fields";
+
+/* Title for the Custom Fields row */
+"defaultProductFormTableViewModel.customFieldsRowTitle" = "Custom Fields";
 
 /* Title for Subscription expiry row in the product form screen. */
 "defaultProductFormTableViewModel.expireAfter" = "Expire after";
@@ -8277,6 +8279,12 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for empty product ratings */
 "productForm.quantityRules.placeholder" = "No Quantity Rules";
 
+/* Subtitle of the product form bottom sheet action for custom fields */
+"productFormBottomSheetAction.customFieldsSubtitle" = "View and edit custom fields";
+
+/* Title of the product form bottom sheet action for custom fields */
+"productFormBottomSheetAction.customFieldsTitle" = "Custom Fields";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "every %1$@";
 
@@ -12177,8 +12185,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
-/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+/* Label for plural items to ship during shipping label creation. Reads like: '3 items' */
 "wooShipping.createLabels.items.count" = "%1$@ items";
+
+/* Label for singular item to ship during shipping label creation. Reads like: '1 item' */
+"wooShipping.createLabels.items.countSingular" = "%1$@ item";
 
 /* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
 "wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";

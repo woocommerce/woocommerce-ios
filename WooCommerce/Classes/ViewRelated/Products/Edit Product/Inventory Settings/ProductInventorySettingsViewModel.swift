@@ -258,9 +258,9 @@ private extension ProductInventorySettingsViewModel {
 
     func createSKUSection() -> Section {
         if let error = error {
-            return Section(errorTitle: error.errorDescription, rows: [.sku])
+            return Section(errorTitle: error.errorDescription, rows: [.sku, .globalUniqueIdentifier])
         } else {
-            return Section(rows: [.sku])
+            return Section(rows: [.sku, .globalUniqueIdentifier])
         }
     }
 }

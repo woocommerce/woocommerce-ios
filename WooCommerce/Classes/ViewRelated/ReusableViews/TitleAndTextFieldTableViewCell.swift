@@ -103,7 +103,7 @@ private extension TitleAndTextFieldTableViewCell {
     }
 
     func configureContentStackView() {
-        contentStackView.spacing = 30
+        contentStackView.spacing = 20
     }
 
     func configureTapGestureRecognizer() {

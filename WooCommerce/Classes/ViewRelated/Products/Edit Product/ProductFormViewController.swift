@@ -4,6 +4,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
+import SwiftUI
 import protocol Storage.StorageManagerType
 
 /// The entry UI for adding/editing a Product.
@@ -456,8 +457,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logPriceSettingsTapped()
                 editPriceSettings()
             case .customFields:
-                // TODO-13493: add tap handling.
-                return
+                showCustomFields()
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
@@ -957,6 +957,8 @@ private extension ProductFormViewController {
                                                                         case .editDownloadableFiles:
                                                                             ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                                                                             self?.showDownloadableFiles()
+                                                                        case .editCustomFields:
+                                                                            self?.showCustomFields()
                                                                         }
                                                                     }
         }
@@ -1478,6 +1480,33 @@ private extension ProductFormViewController {
                                       dateOnSaleEnd: dateOnSaleEnd,
                                       taxStatus: taxStatus,
                                       taxClass: taxClass)
+    }
+}
+
+// MARK: Action - Show Custom Fields
+private extension ProductFormViewController {
+    func showCustomFields() {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
+
+        let customFields = product.product.customFields.map {
+            CustomFieldViewModel(metadata: $0)
+        }
+
+        let customFieldsView = UIHostingController(
+            rootView: CustomFieldsListView(
+                isEditable: true,
+                viewModel: CustomFieldsListViewModel(customFields: customFields),
+                onBackButtonTapped: { [weak self] in
+                    // Restore the hidden navigation bar
+                    self?.navigationController?.setNavigationBarHidden(false, animated: false)
+            })
+        )
+
+        // Hide the navigation bar as `CustomFieldsListView` will create its own toolbar.
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.pushViewController(customFieldsView, animated: true)
     }
 }
 

@@ -1002,7 +1002,6 @@ private extension ProductFormActionsFactoryTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      isCustomFieldsEnabled: isCustomFieldsEnabled,
                                       variationsPrice: variationsPrice)
         }
     }

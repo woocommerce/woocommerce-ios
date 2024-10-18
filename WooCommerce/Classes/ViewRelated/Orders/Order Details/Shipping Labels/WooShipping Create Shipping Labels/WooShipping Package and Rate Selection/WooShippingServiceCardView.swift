@@ -18,7 +18,7 @@ struct WooShippingServiceCardView: View {
     @State private var signatureSelection: SignatureSelection = .none
 
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 16) {
             if let carrierLogo {
                 Image(uiImage: carrierLogo)
                     .resizable()
@@ -97,7 +97,7 @@ struct WooShippingServiceCardView: View {
                 }
             }
         }
-        .padding()
+        .padding(16)
         .if(isSelected) { card in
             card.background(Color(.wooCommercePurple(.shade0)))
         }

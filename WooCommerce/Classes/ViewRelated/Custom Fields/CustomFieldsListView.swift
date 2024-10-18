@@ -87,17 +87,19 @@ struct CustomFieldsListView: View {
                 CustomFieldEditorView(key: customField.key,
                                       value: customField.value,
                                       onSave: { updatedKey, updatedValue in
-                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                })
+                                          viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
+                                      },
+                                      onDelete: { viewModel.deleteField(customField) })
             }
         })
         .sheet(isPresented: $viewModel.isAddingNewField) {
             NavigationView {
                 CustomFieldEditorView(key: "",
                                       value: "",
+                                      isCreatingNewField: true,
                                       onSave: { updatedKey, updatedValue in
-                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
-                })
+                                          viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
+                                      })
             }
         }
     }

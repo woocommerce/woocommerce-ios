@@ -9,8 +9,10 @@ struct CustomFieldEditorView: View {
 
     private let initialKey: String
     private let initialValue: String
+    private let isCreatingNewField: Bool
     private let isReadOnlyValue: Bool
     private let onSave: (String, String) -> Void
+    private let onDelete: () -> Void
 
     private var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
@@ -22,13 +24,20 @@ struct CustomFieldEditorView: View {
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     ///  - onSave: Closure to handle save action
-    init(key: String, value: String, isReadOnlyValue: Bool = false, onSave: @escaping (String, String) -> Void) {
+    init(key: String, 
+         value: String,
+         isReadOnlyValue: Bool = false,
+         isCreatingNewField: Bool = false,
+         onSave: @escaping (String, String) -> Void,
+         onDelete: @escaping () -> Void = {}) {
         self._key = State(initialValue: key)
         self._value = State(initialValue: value)
         self.initialKey = key
         self.initialValue = value
         self.isReadOnlyValue = isReadOnlyValue
+        self.isCreatingNewField = isCreatingNewField
         self.onSave = onSave
+        self.onDelete = onDelete
     }
 
     var body: some View {
@@ -141,8 +150,11 @@ struct CustomFieldEditorView: View {
             // todo-13493: Show a notice that the value was copied
         }
 
-        Button("Delete Custom Field", role: .destructive) { // todo-13493: set String to be translatable
-            // todo-13493: Implement delete action
+        if !isCreatingNewField {
+            Button("Delete Custom Field", role: .destructive) {
+                onDelete()
+                presentationMode.wrappedValue.dismiss()
+            }
         }
     }
 
@@ -201,5 +213,5 @@ private extension CustomFieldEditorView {
 }
 
 #Preview {
-    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in })
+    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in }, onDelete: {})
 }

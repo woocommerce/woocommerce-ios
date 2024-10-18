@@ -97,11 +97,10 @@ private extension ProductCategoryStore {
                 return
             }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteUnusedStoredProductCategories(siteID: siteID)
-            }
-
-            self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
+            let deleteUnusedCategories = pageNumber == Default.firstPageNumber
+            self?.upsertStoredProductCategoriesInBackground(productCategories,
+                                                            siteID: siteID,
+                                                            shouldDeleteUnusedCategories: deleteUnusedCategories) {
                 onCompletion(productCategories, nil)
             }
         }
@@ -206,9 +205,14 @@ private extension ProductCategoryStore {
     ///
     func upsertStoredProductCategoriesInBackground(_ readOnlyProductCategories: [Networking.ProductCategory],
                                                    siteID: Int64,
+                                                   shouldDeleteUnusedCategories: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            self?.upsertStoredProductCategories(readOnlyProductCategories, in: storage, siteID: siteID)
+            guard let self else { return }
+            if shouldDeleteUnusedCategories {
+                storage.deleteUnusedProductCategories(siteID: siteID)
+            }
+            upsertStoredProductCategories(readOnlyProductCategories, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 }

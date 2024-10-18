@@ -2442,7 +2442,7 @@
 		DA25ADDF2C87403900AE81FE /* PushNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA25ADDE2C87403900AE81FE /* PushNotificationTests.swift */; };
 		DA3F99BA2C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F99B92C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift */; };
 		DA4080662CC24C5F002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080652CC24C5D002A4577 /* WooShippingAddCustomPackageViewModel.swift */; };
-		DA4080682CC24D84002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModel.swift */; };
+		DA4080682CC24D84002A4577 /* WooShippingAddCustomPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModelTests.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
 		DA706BF92C8063B600E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
@@ -5497,7 +5497,7 @@
 		DA25ADDE2C87403900AE81FE /* PushNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationTests.swift; sourceTree = "<group>"; };
 		DA3F99B92C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsReadUseCaseTests.swift; sourceTree = "<group>"; };
 		DA4080652CC24C5D002A4577 /* WooShippingAddCustomPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddCustomPackageViewModel.swift; sourceTree = "<group>"; };
-		DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddCustomPackageViewModel.swift; sourceTree = "<group>"; };
+		DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddCustomPackageViewModelTests.swift; sourceTree = "<group>"; };
 		DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderPreviewService.swift; sourceTree = "<group>"; };
 		DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageView.swift; sourceTree = "<group>"; };
 		DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModelTests.swift; sourceTree = "<group>"; };
@@ -11856,7 +11856,7 @@
 				CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */,
 				CEC3CC732C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift */,
 				CEC3CC7B2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift */,
-				DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModel.swift */,
+				DA4080672CC24D81002A4577 /* WooShippingAddCustomPackageViewModelTests.swift */,
 			);
 			path = "WooShipping Create Shipping Labels";
 			sourceTree = "<group>";
@@ -16949,7 +16949,7 @@
 				DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */,
 				02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */,
 				B90DACC22A31BBC800365897 /* BarcodeSKUScannerProductFinderTests.swift in Sources */,
-				DA4080682CC24D84002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */,
+				DA4080682CC24D84002A4577 /* WooShippingAddCustomPackageViewModelTests.swift in Sources */,
 				D88D5A3B230B5D63007B6E01 /* MockAnalyticsProvider.swift in Sources */,
 				CE5757AF2B7E7F7400AEEB6D /* AnalyticsHubCustomizeViewModelTests.swift in Sources */,
 				EEA3C2152CA3DB18000E82EC /* DefaultFavoriteProductsUseCaseTests.swift in Sources */,

@@ -24,6 +24,38 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     func clearFieldValues() {
         fieldValues.removeAll()
     }
+
+    func resetValues() {
+        clearFieldValues()
+        showSaveTemplate = false
+        packageTemplateName = ""
+    }
+
+    func addPackageAction() {
+        // TODO: implement adding a package
+        guard validateCustomPackageInputFields() else { return }
+
+        // Cleanup after adding package
+        resetValues()
+    }
+
+    func savePackageAsTemplateAction() {
+        // TODO: implement saving package as a template
+        guard validateCustomPackageInputFields() else { return }
+
+        // Cleanup after saving package template
+        resetValues()
+    }
+
+    func validateCustomPackageInputFields() -> Bool {
+        guard !areFieldValuesInvalid else {
+            return false
+        }
+        if showSaveTemplate {
+            return !packageTemplateName.isEmpty
+        }
+        return true
+    }
 }
 
 enum WooShippingPackageDimensionType: CaseIterable {

@@ -157,7 +157,7 @@ struct WooShippingAddPackageView: View {
                         Button(Localization.savePackageTemplate) {
                             savePackageAsTemplateButtonTapped()
                         }
-                        .disabled(!validateCustomPackageInputFields())
+                        .disabled(!customPackageViewModel.validateCustomPackageInputFields())
                         .buttonStyle(SecondaryButtonStyle())
                         .padding(.bottom)
                         .id(Constants.saveTemplateButtonID) // Set the id for the button so we can scroll to it
@@ -185,7 +185,7 @@ struct WooShippingAddPackageView: View {
             Button(Localization.addPackage) {
                 addPackageButtonTapped()
             }
-            .disabled(!validateCustomPackageInputFields())
+            .disabled(!customPackageViewModel.validateCustomPackageInputFields())
             .buttonStyle(PrimaryButtonStyle())
             .padding()
         }
@@ -236,24 +236,12 @@ struct WooShippingAddPackageView: View {
 
     // MARK: - actions
 
-    private func validateCustomPackageInputFields() -> Bool {
-        guard !customPackageViewModel.areFieldValuesInvalid else {
-            return false
-        }
-        if customPackageViewModel.showSaveTemplate {
-            return !customPackageViewModel.packageTemplateName.isEmpty
-        }
-        return true
-    }
-
     private func addPackageButtonTapped() {
-        // TODO: implement adding a package
-        guard validateCustomPackageInputFields() else { return }
+        customPackageViewModel.addPackageAction()
     }
 
     private func savePackageAsTemplateButtonTapped() {
-        // TODO: implement saving package as a template
-        guard validateCustomPackageInputFields() else { return }
+        customPackageViewModel.savePackageAsTemplateAction()
     }
 }
 

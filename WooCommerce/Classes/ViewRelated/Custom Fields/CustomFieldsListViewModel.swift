@@ -15,8 +15,9 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     @Published private var editedFields: [CustomFieldUI] = []
     @Published private var addedFields: [CustomFieldUI] = []
+    @Published private var deletedFieldIds: [Int64] = []
     var hasChanges: Bool {
-        !editedFields.isEmpty || !addedFields.isEmpty
+        editedFields.isNotEmpty || addedFields.isNotEmpty || deletedFieldIds.isNotEmpty
     }
 
     init(customFields: [CustomFieldViewModel]) {
@@ -54,6 +55,19 @@ extension CustomFieldsListViewModel {
     func addField(_ field: CustomFieldUI) {
         addedFields.append(field)
         updateCombinedList()
+    }
+
+    func deleteField(_ field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.append(fieldId)
+        } else {
+            // The deleted field is not yet saved on the server, so we remove it from the added fields
+            addedFields.removeAll { $0.id == field.id }
+        }
+
+        updateCombinedList()
+
+        // TODO: show an undo notice
     }
 
     func saveField(key: String, value: String, fieldId: Int64?) {
@@ -95,10 +109,10 @@ private extension CustomFieldsListViewModel {
     }
 
     func updateCombinedList() {
-        let editedList = originalCustomFields.map { field in
-            editedFields.first { $0.fieldId == field.id } ?? CustomFieldUI(customField: field)
-        }
-        combinedList = editedList + addedFields
+        combinedList = originalCustomFields
+            .filter { field in !deletedFieldIds.contains(where: { $0 == field.id }) }
+            .map { field in editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
+            + addedFields
     }
 }
 

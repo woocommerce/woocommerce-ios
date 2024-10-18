@@ -12,12 +12,6 @@ public class ShipmentStore: Store {
     ///
     public static let customGroupName = NSLocalizedString("Custom", comment: "Name of the group of tracking providers created manually by users")
 
-    /// Shared private StorageType for use during then entire ShipmentStore sync process
-    ///
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShipmentsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -123,57 +117,41 @@ extension ShipmentStore {
                                                 orderID: Int64,
                                                 readOnlyShipmentTrackingData: [Networking.ShipmentTracking],
                                                 onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ storage in
+            let storageTrackings = storage.loadShipmentTrackingList(siteID: siteID, orderID: orderID)
+
             for readOnlyTracking in readOnlyShipmentTrackingData {
-                let storageTracking = derivedStorage.loadShipmentTracking(siteID: readOnlyTracking.siteID, orderID: readOnlyTracking.orderID,
-                    trackingID: readOnlyTracking.trackingID) ?? derivedStorage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+                let storageTracking = storageTrackings?.first(where: { $0.trackingID == readOnlyTracking.trackingID }) ??
+                    storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
                 storageTracking.update(with: readOnlyTracking)
             }
 
             // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingData
-            if let storageTrackings = derivedStorage.loadShipmentTrackingList(siteID: siteID,
-                                                                              orderID: orderID) {
-                storageTrackings.forEach({ storageTracking in
-                    if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
-                        derivedStorage.deleteObject(storageTracking)
-                    }
-                })
-            }
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    func upsertTrackingProviderData(siteID: Int64, orderID: Int64, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup]) {
-        let storage = storageManager.viewStorage
-        upsertShipmentTrackingGroups(siteID: siteID, readOnlyGroups: readOnlyShipmentTrackingProviderGroups, in: storage)
-        storage.saveIfNeeded()
+            storageTrackings?.forEach({ storageTracking in
+                if readOnlyShipmentTrackingData.first(where: { $0.trackingID == storageTracking.trackingID } ) == nil {
+                    storage.deleteObject(storageTracking)
+                }
+            })
+        }, completion: onCompletion, on: .main)
     }
 
     func upsertTrackingProviderDataInBackground(siteID: Int64,
                                                 orderID: Int64,
                                                 readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup],
                                                         onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertShipmentTrackingGroups(siteID: siteID,
-                                              readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
-                                              in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            self?.upsertShipmentTrackingGroups(siteID: siteID,
+                                               readOnlyGroups: readOnlyShipmentTrackingProviderGroups,
+                                               in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     private func upsertShipmentTrackingGroups(siteID: Int64,
                                               readOnlyGroups: [Networking.ShipmentTrackingProviderGroup],
                                               in storage: StorageType) {
+        let storageTrackingGroups = storage.loadShipmentTrackingProviderGroupList(siteID: siteID)
         for readOnlyGroup in readOnlyGroups {
-            let storageGroup = storage.loadShipmentTrackingProviderGroup(siteID: siteID, providerGroupName: readOnlyGroup.name) ??
+            let storageGroup = storageTrackingGroups?.first(where: { $0.name == readOnlyGroup.name }) ??
                 storage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
 
             storageGroup.update(with: readOnlyGroup)
@@ -181,13 +159,11 @@ extension ShipmentStore {
         }
 
         // Now, remove any objects that exist in storage but not in readOnlyShipmentTrackingProviderGroups
-        if let storageTrackingGroups = storage.loadShipmentTrackingProviderGroupList(siteID: siteID) {
-            storageTrackingGroups.forEach({ storageTrackingGroup in
-                if readOnlyGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
-                    storage.deleteObject(storageTrackingGroup)
-                }
-            })
-        }
+        storageTrackingGroups?.forEach({ storageTrackingGroup in
+            if readOnlyGroups.first(where: { $0.name == storageTrackingGroup.name } ) == nil {
+                storage.deleteObject(storageTrackingGroup)
+            }
+        })
     }
 
     func addTracking(siteID: Int64,
@@ -209,8 +185,9 @@ extension ShipmentStore {
 
                                         self?.addStoredShipment(siteID: siteID,
                                                                 orderID: orderID,
-                                                                readOnlyTracking: newTracking)
-                                        onCompletion(nil)
+                                                                readOnlyTracking: newTracking) {
+                                            onCompletion(nil)
+                                        }
         }
     }
 
@@ -236,9 +213,9 @@ extension ShipmentStore {
                                           orderID: orderID,
                                           trackingProvider: trackingProvider,
                                           trackingURL: trackingURL,
-                                          readOnlyTracking: newTracking)
-
-            onCompletion(nil)
+                                          readOnlyTracking: newTracking) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -252,8 +229,9 @@ extension ShipmentStore {
                 return
             }
 
-            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID)
-            onCompletion(nil)
+            self?.deleteStoredShipment(siteID: siteID, orderID: orderID, trackingID: trackingID) {
+                onCompletion(nil)
+            }
         }
     }
 
@@ -261,55 +239,58 @@ extension ShipmentStore {
     ///
     func deleteStoredShipment(siteID: Int64,
                               orderID: Int64,
-                              trackingID: String) {
-        let storage = storageManager.viewStorage
-        guard let tracking = storage.loadShipmentTracking(siteID: siteID,
-                                                          orderID: orderID,
-                                                          trackingID: trackingID) else {
-            return
-        }
+                              trackingID: String,
+                              onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let tracking = storage.loadShipmentTracking(siteID: siteID,
+                                                              orderID: orderID,
+                                                              trackingID: trackingID) else {
+                return
+            }
 
-        storage.deleteObject(tracking)
-        storage.saveIfNeeded()
+            storage.deleteObject(tracking)
+        }, completion: onCompletion, on: .main)
     }
 
     func addStoredShipment(siteID: Int64,
                            orderID: Int64,
-                           readOnlyTracking: Networking.ShipmentTracking) {
-        let storage = storageManager.viewStorage
-
-        let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
-        newStoredTracking.update(with: readOnlyTracking)
-        storage.saveIfNeeded()
+                           readOnlyTracking: Networking.ShipmentTracking,
+                           onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+            newStoredTracking.update(with: readOnlyTracking)
+        }, completion: onCompletion, on: .main)
     }
 
     func addCustomStoredShipment(siteID: Int64,
-                           orderID: Int64,
-                           trackingProvider: String,
-                           trackingURL: String,
-                           readOnlyTracking: Networking.ShipmentTracking) {
-        let storage = storageManager.viewStorage
-        let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
-        newStoredTracking.update(with: readOnlyTracking)
+                                 orderID: Int64,
+                                 trackingProvider: String,
+                                 trackingURL: String,
+                                 readOnlyTracking: Networking.ShipmentTracking,
+                                 onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let newStoredTracking = storage.insertNewObject(ofType: Storage.ShipmentTracking.self)
+            newStoredTracking.update(with: readOnlyTracking)
 
-        let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
-        provider.name = trackingProvider
-        provider.url = trackingURL
-        provider.siteID = siteID
+            let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
+            provider.name = trackingProvider
+            provider.url = trackingURL
+            provider.siteID = siteID
 
-
-        let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
-        customProvidersGroup.addToProviders(provider)
-        storage.saveIfNeeded()
+            let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
+            customProvidersGroup.addToProviders(provider)
+        }, completion: onCompletion, on: .main)
     }
 
     private func handleProviders(_ readOnlyGroup: Networking.ShipmentTrackingProviderGroup,
-                                      _ storageGroup: Storage.ShipmentTrackingProviderGroup,
-                                      _ storage: StorageType) {
+                                 _ storageGroup: Storage.ShipmentTrackingProviderGroup,
+                                 _ storage: StorageType) {
+        let storageProviders = storageGroup.providers
+
         // Upsert the items from the read-only group
         for readOnlyProvider in readOnlyGroup.providers {
-            if let existingProvider = storage.loadShipmentTrackingProvider(siteID: readOnlyProvider.siteID,
-                                                                           name: readOnlyProvider.name) {
+            if let existingProvider = storageProviders?.first(where: { $0.name == readOnlyProvider.name }) {
                 existingProvider.update(with: readOnlyProvider)
             } else {
                 let newStorageProvider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
@@ -319,14 +300,12 @@ extension ShipmentStore {
         }
 
         // Now, remove any objects that exist in storageGroup.providers but not in readOnlyGroup.providers
-        if let storageProviders = storageGroup.providers {
-            storageProviders.forEach({ storageProvider in
-                if readOnlyGroup.providers.first(where: { $0.name == storageProvider.name } ) == nil {
-                    storageGroup.removeFromProviders(storageProvider)
-                    storage.deleteObject(storageProvider)
-                }
-            })
-        }
+        storageProviders?.forEach({ storageProvider in
+            if readOnlyGroup.providers.first(where: { $0.name == storageProvider.name } ) == nil {
+                storageGroup.removeFromProviders(storageProvider)
+                storage.deleteObject(storageProvider)
+            }
+        })
     }
 
     private func customGroup(siteID: Int64, storage: StorageType) -> Storage.ShipmentTrackingProviderGroup {

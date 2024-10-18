@@ -284,7 +284,7 @@ final class ShipmentStoreTests: XCTestCase {
     func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyUpdatesPreexistantShipmentTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
-        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        insertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
         let group = DispatchGroup()
@@ -320,7 +320,7 @@ final class ShipmentStoreTests: XCTestCase {
                                           storageManager: storageManager,
                                           network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
-        shipmentStore.upsertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
+        insertTrackingProviderData(siteID: sampleSiteID, orderID: sampleOrderID, readOnlyShipmentTrackingProviderGroups: australiaAndSweden())
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 2)
 
         let group = DispatchGroup()
@@ -572,7 +572,7 @@ final class ShipmentStoreTests: XCTestCase {
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 1)
 
-        shipmentStore.deleteStoredShipment(siteID: sampleSiteID, orderID: sampleOrderID, trackingID: mockTrackingID)
+        shipmentStore.deleteStoredShipment(siteID: sampleSiteID, orderID: sampleOrderID, trackingID: mockTrackingID) {}
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
     }
@@ -610,6 +610,25 @@ final class ShipmentStoreTests: XCTestCase {
 
         shipmentStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+// MARK: - Helpers
+//
+private extension ShipmentStoreTests {
+    func insertTrackingProviderData(siteID: Int64, orderID: Int64, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup]) {
+        for readOnlyGroup in readOnlyShipmentTrackingProviderGroups {
+            let storageGroup = viewStorage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
+            storageGroup.update(with: readOnlyGroup)
+
+            // Upsert the items from the read-only group
+            for readOnlyProvider in readOnlyGroup.providers {
+                let newStorageProvider = viewStorage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
+                newStorageProvider.update(with: readOnlyProvider)
+                storageGroup.addToProviders(newStorageProvider)
+            }
+        }
+        viewStorage.saveIfNeeded()
     }
 }
 

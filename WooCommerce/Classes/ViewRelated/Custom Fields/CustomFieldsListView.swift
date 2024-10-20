@@ -1,7 +1,10 @@
 import SwiftUI
 
 final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
+    private let viewModel: CustomFieldsListViewModel
+
     init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: CustomFieldsListView(isEditable: isEditable,
                                                   viewModel: viewModel)
         )
@@ -13,6 +16,21 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
         configureNavigation()
     }
 
+    /// Create a `UIBarButtonItem` to be used as the add custom field button on the top-right.
+    ///
+    private lazy var addCustomFieldButtonItem: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusImage,
+                style: .plain,
+                target: self,
+                action: #selector(openAddCustomFieldScreen))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.accessibilityLabelAddCustomField
+        button.accessibilityHint = Localization.accessibilityHintAddCustomField
+        button.accessibilityIdentifier = "add-custom-field-button"
+
+        return button
+    }()
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -21,6 +39,11 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
 private extension CustomFieldsListHostingController {
     func configureNavigation() {
         title = Localization.title
+        navigationItem.rightBarButtonItems = [addCustomFieldButtonItem]
+    }
+
+    @objc func openAddCustomFieldScreen() {
+        viewModel.isAddingNewField = true
     }
 }
 
@@ -49,6 +72,9 @@ struct CustomFieldsListView: View {
         .sheet(item: $viewModel.selectedCustomField, content: { customField in
             CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { _,_ in })
         })
+        .sheet(isPresented: $viewModel.isAddingNewField) {
+            CustomFieldEditorView(key: "", value: "", onSave: { _,_ in })
+        }
     }
 }
 
@@ -117,6 +143,17 @@ private extension CustomFieldsListHostingController {
             "customFieldsListHostingController.title",
             value: "Custom Fields",
             comment: "Title for the order custom fields list")
+
+        static let accessibilityLabelAddCustomField = NSLocalizedString(
+            "customFieldsListHostingController.accessibilityLabelAddCustomField",
+            value: "Add custom field",
+            comment: "Accessibility label for the Add Custom Field button")
+
+        static let accessibilityHintAddCustomField = NSLocalizedString(
+            "customFieldsListHostingController.accessibilityHintAddCustomField",
+            value: "Add a new Custom FIeld to the list",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to add custom field.")
+
     }
 }
 

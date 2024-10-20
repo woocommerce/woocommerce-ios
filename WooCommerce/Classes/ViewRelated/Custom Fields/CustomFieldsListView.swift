@@ -16,59 +16,18 @@ struct CustomFieldsListView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            List(viewModel.combinedList) { customField in
-                if isEditable {
-                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { updatedKey, updatedValue in
-                        viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                    })) {
-                        CustomFieldRow(isEditable: true,
-                                       title: customField.key,
-                                       content: customField.value.removedHTMLTags,
-                                       contentURL: nil)
-                    }
-                } else {
-                    CustomFieldRow(isEditable: false,
-                                   title: customField.key,
-                                   content: customField.value.removedHTMLTags,
-                                   contentURL: nil)
-                }
+        List(viewModel.combinedList) { customField in
+            Button(action: { viewModel.selectedCustomField = customField }) {
+                CustomFieldRow(isEditable: isEditable,
+                               title: customField.key,
+                               content: customField.value.removedHTMLTags,
+                               contentURL: nil)
             }
-            .listStyle(.plain)
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        onBackButtonTapped()
-                        presentationMode.wrappedValue.dismiss()
-                    }, label: {
-                        Image(systemName: "chevron.backward")
-                            .headlineLinkStyle()
-                    })
-                }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if isEditable {
-                        HStack {
-                            Button {
-                                // todo-13493: add save handling
-                            } label: {
-                                Text("Save") // todo-13493: set String to be translatable
-                            }
-                            .disabled(!viewModel.hasChanges)
-                            Button(action: {
-                                // todo-13493: add addition handling
-                            }, label: {
-                                Image(systemName: "plus")
-                                    .renderingMode(.template)
-                            })
-                        }
-                    }
-                }
-            }
-            .wooNavigationBarStyle()
         }
+        .listStyle(.plain)
+        .sheet(item: $viewModel.selectedCustomField, content: { customField in
+            CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { _,_ in })
+        })
     }
 }
 

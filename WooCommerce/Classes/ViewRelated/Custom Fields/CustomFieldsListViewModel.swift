@@ -7,6 +7,7 @@ final class CustomFieldsListViewModel: ObservableObject {
         savingError != nil
     }
 
+    @Published var selectedCustomField: CustomFieldUI? = nil
     @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
 

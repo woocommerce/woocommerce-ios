@@ -31,6 +31,14 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
         return button
     }()
 
+    /// Create a `UIBarButtonItem` to be used as the save custom field button on the top-right.
+    ///
+    private lazy var saveCustomFieldButtonItem =
+        UIBarButtonItem(title: Localization.save,
+                        style: .plain,
+                        target: self,
+                        action: #selector(saveCustomField))
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -39,11 +47,16 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
 private extension CustomFieldsListHostingController {
     func configureNavigation() {
         title = Localization.title
-        navigationItem.rightBarButtonItems = [addCustomFieldButtonItem]
+        navigationItem.rightBarButtonItems = [saveCustomFieldButtonItem, addCustomFieldButtonItem]
     }
 
     @objc func openAddCustomFieldScreen() {
         viewModel.isAddingNewField = true
+    }
+
+    @objc func saveCustomField() {
+        // todo: call viewmodel's save function
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -154,6 +167,10 @@ private extension CustomFieldsListHostingController {
             value: "Add a new Custom FIeld to the list",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to add custom field.")
 
+        static let save = NSLocalizedString(
+            "customFieldsListHostingController.save",
+            value: "Save",
+            comment: "Button to save the changes on Custom Fields list")
     }
 }
 

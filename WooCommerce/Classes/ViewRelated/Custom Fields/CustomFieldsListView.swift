@@ -7,8 +7,20 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
         )
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureNavigation()
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension CustomFieldsListHostingController {
+    func configureNavigation() {
+        title = Localization.title
     }
 }
 
@@ -99,9 +111,12 @@ private struct CustomFieldRow: View {
 
 // MARK: - Constants
 //
-extension CustomFieldsListView {
+private extension CustomFieldsListHostingController {
     enum Localization {
-        static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
+        static let title = NSLocalizedString(
+            "customFieldsListHostingController.title",
+            value: "Custom Fields",
+            comment: "Title for the order custom fields list")
     }
 }
 

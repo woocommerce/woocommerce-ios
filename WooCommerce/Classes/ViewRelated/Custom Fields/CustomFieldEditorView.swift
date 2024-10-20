@@ -98,6 +98,13 @@ struct CustomFieldEditorView: View {
         }
         .background(Color(.listBackground))
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Text("Cancel") // todo-13493: set String to be translatable
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
                     Button {

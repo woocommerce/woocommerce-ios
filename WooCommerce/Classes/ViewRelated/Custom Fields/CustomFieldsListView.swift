@@ -83,18 +83,22 @@ struct CustomFieldsListView: View {
         }
         .listStyle(.plain)
         .sheet(item: $viewModel.selectedCustomField, content: { customField in
-            CustomFieldEditorView(key: customField.key,
-                                  value: customField.value,
-                                  onSave: { updatedKey, updatedValue in
-                viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-            })
+            NavigationView {
+                CustomFieldEditorView(key: customField.key,
+                                      value: customField.value,
+                                      onSave: { updatedKey, updatedValue in
+                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
+                })
+            }
         })
         .sheet(isPresented: $viewModel.isAddingNewField) {
-            CustomFieldEditorView(key: "",
-                                  value: "",
-                                  onSave: { updatedKey, updatedValue in
-                viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
-            })
+            NavigationView {
+                CustomFieldEditorView(key: "",
+                                      value: "",
+                                      onSave: { updatedKey, updatedValue in
+                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
+                })
+            }
         }
     }
 }

@@ -1,18 +1,27 @@
 import SwiftUI
 
+final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
+    init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
+        super.init(rootView: CustomFieldsListView(isEditable: isEditable,
+                                                  viewModel: viewModel)
+        )
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
-    let onBackButtonTapped: () -> Void
 
     init(isEditable: Bool,
-         viewModel: CustomFieldsListViewModel,
-         onBackButtonTapped: @escaping () -> Void) {
+         viewModel: CustomFieldsListViewModel) {
         self.isEditable = isEditable
         self.viewModel = viewModel
-        self.onBackButtonTapped = onBackButtonTapped
     }
 
     var body: some View {
@@ -114,9 +123,7 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                 customFields: [
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-                ]),
-            onBackButtonTapped: { }
-            )
+                ]))
     }
 }
 

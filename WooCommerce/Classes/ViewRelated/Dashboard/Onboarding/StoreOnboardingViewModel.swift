@@ -97,8 +97,16 @@ class StoreOnboardingViewModel: ObservableObject {
 
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
-        .map { !($0 || $1) }
-        .assign(to: &$canShowInDashboard)
+            .filter { [weak self] _ in
+                /// Upon logging out, `UserDefaults` is reset causing `completedAllStoreOnboardingTasks` to change value.
+                /// Checking the authentication state helps avoiding reloading data in the unauthenticated state.
+                guard let self, self.stores.isAuthenticated else {
+                    return false
+                }
+                return true
+            }
+            .map { !($0 || $1) }
+            .assign(to: &$canShowInDashboard)
     }
 
     func reloadTasks() async {

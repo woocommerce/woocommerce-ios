@@ -20,7 +20,6 @@ struct WooCarrierPackageData: WooPackageDataRepresentable {
     let weight: String
 }
 
-
 struct WooCarrierPackagesSelectionView: View {
     let carriersPackages: [WooPackageCarrier]
     @State private var selectedPackageId: UUID? = nil  // Track the selected package index

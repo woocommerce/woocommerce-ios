@@ -231,16 +231,19 @@ struct WooShippingAddPackageView: View {
     }
 
     private func carriersPackages() -> [WooPackageCarrier] {
-        let package1: any WooPackageDataRepresentable = WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
-        let package2: any WooPackageDataRepresentable = WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
-        let package3: any WooPackageDataRepresentable = WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+        // TODO: dummy data for UI creation
         let packageGroups: [WooPackageGroup] = [
-            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [package1]),
-            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [package2, package3])
+            WooPackageGroup(name: "Flat Rate Boxes 1", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            ]),
+            WooPackageGroup(name: "Flat Rate Boxes 2", packages: [
+                WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
+                WooCarrierPackageData(name: "Small Flat Rate Box", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg")
+            ])
         ]
-        let carrier: WooPackageCarrier = WooPackageCarrier(id: UUID(), name: "USPS", icon: "icon", packageGroups: packageGroups)
+        let uspsCarrier: WooPackageCarrier = WooPackageCarrier(id: UUID(), name: "USPS", icon: "icon", packageGroups: packageGroups)
         return [
-            carrier
+            uspsCarrier
         ]
     }
 
@@ -251,19 +254,13 @@ struct WooShippingAddPackageView: View {
 
     @ViewBuilder
     private var savedPackageView: some View {
-        // TODO: just a placeholder
+        // TODO: dummy data for UI creation
         WooSavedPackagesSelectionView(packages: [
             WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
             WooSavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
             WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
             WooSavedPackageData(name: "Small Flat Rate Box", type: "USPS Priority Mail Flat Rate Boxes", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
             WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "USPS Priority Mail Flat Rate Boxes", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "Custom", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
-            WooSavedPackageData(name: "Small Flat Rate Box", type: "DHL Express", dimensions: "21.92 × 13.67 × 4.14 cm", weight: "5 kg"),
         ])
     }
 

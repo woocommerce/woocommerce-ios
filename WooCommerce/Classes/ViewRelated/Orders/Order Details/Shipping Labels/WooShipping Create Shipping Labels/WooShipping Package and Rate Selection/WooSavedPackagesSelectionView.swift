@@ -96,7 +96,6 @@ struct PackageOptionView: View {
                         Text(package.weight)
                     }
                     .subheadlineStyle()
-                    //                .foregroundColor(.gray)
                 }
                 .padding(.leading, Constants.textContentLeadingPadding)
                 Spacer()

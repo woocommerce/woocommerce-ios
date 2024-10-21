@@ -149,7 +149,7 @@ struct WooShippingAddPackageView: View {
                         .tint(Color.accentColor)
                         if customPackageViewModel.showSaveTemplate {
                             VStack {
-                                TextField("Enter a unique package name", text: $customPackageViewModel.packageTemplateName)
+                                TextField(Localization.savePackageTemplatePlaceholder, text: $customPackageViewModel.packageTemplateName)
                                     .font(.body)
                                     .focused($packageTemplateNameFieldFocused)
                                     .padding()
@@ -313,6 +313,9 @@ extension WooShippingAddPackageView {
         static let savePackageTemplate = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplate",
                                                            value: "Save package template",
                                                            comment: "Button for saving package as a new template")
+        static let savePackageTemplatePlaceholder = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder",
+                                                           value: "Enter a unique package name",
+                                                           comment: "Placeholder text for package name field")
         static let keyboardDoneButton = NSLocalizedString(
             "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title",
             value: "Done",

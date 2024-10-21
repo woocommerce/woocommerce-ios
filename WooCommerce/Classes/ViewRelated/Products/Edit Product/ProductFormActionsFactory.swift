@@ -64,6 +64,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let variationsPrice: VariationsPrice
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     private let isLinkedProductsPromoEnabled: Bool
     private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
@@ -71,7 +72,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         .init(analytics: ServiceLocator.analytics,
               configuration: linkedProductsPromoCampaign.configuration)
     }
-    private let isCustomFieldsEnabled: Bool
+
+    private var isCustomFieldsEnabled: Bool {
+        /// Custom fields should only be available on .edit form type. For other cases:
+        /// - .add: The API requires product ID is required to save custom fields, so it can't be added during product creation.
+        /// - .readonly: Hide Custom Fields setting as it won't be useful in this context.
+        featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
+        && formType == .edit
+    }
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -79,10 +87,9 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
-         isCustomFieldsEnabled: Bool =
-         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders),
          variationsPrice: VariationsPrice = .unknown,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -90,8 +97,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
-        self.isCustomFieldsEnabled = isCustomFieldsEnabled
         self.stores = stores
+        self.featureFlagService = featureFlagService
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -172,7 +179,6 @@ private extension ProductFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
-            isCustomFieldsEnabled ? .customFields: nil,
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
@@ -183,7 +189,8 @@ private extension ProductFormActionsFactory {
             .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil,
         ]
         return actions.compactMap { $0 }
     }
@@ -206,7 +213,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -227,7 +235,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -257,7 +266,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -279,7 +289,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -301,7 +312,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -327,7 +339,8 @@ private extension ProductFormActionsFactory {
             .downloadableFiles(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: canEditProductType)
+            .productType(editable: canEditProductType),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -359,7 +372,8 @@ private extension ProductFormActionsFactory {
                 .tags(editable: editable),
                 .shortDescription(editable: editable),
                 .linkedProducts(editable: editable),
-                .productType(editable: canEditProductType)
+                .productType(editable: canEditProductType),
+                isCustomFieldsEnabled ? .customFields: nil
             ]
         }()
 
@@ -381,7 +395,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: false),
+            isCustomFieldsEnabled ? .customFields: nil
         ]
         return actions.compactMap { $0 }
     }
@@ -398,8 +413,7 @@ private extension ProductFormActionsFactory {
             // The price settings action is always visible in the settings section.
             return true
         case .customFields:
-            // The custom fields action is always visible in the settings section.
-            return true
+            return product.product.customFields.isNotEmpty
         case .subscriptionFreeTrial:
             // The Free trial row is always visible in the settings section for a subscription product.
             return true

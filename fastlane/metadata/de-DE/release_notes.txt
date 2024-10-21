@@ -1,3 +1,1 @@
-Im Rahmen dieses Updates haben wir eine praktische Erinnerungsfunktion hinzugefügt, damit du abgebrochene Kamapagnenerstellungen fortsetzen kannst. Außerdem haben wir die Art und Weise verbessert, wie Benachrichtigungen direkt zur Kampagnenerstellung in Blaze geöffnet werden. Des Weiteren haben wir Formatierungsprobleme bei Rabatt- und Barzahlungen behoben, wenn die Währungseinstellungen für Gerät und Shop unterschiedlich sind. Genieße eine reibungslosere Shopverwaltung unterwegs!
-
-
+In diesem Update wurden einige kleinere Probleme mit dem automatischen Verwerfen unterschiedlicher Ansichten behoben. Die UI-Ausrichtung auf iPads wurde verbessert. Der Absturz bei der Suche nach Produkten, die einer Bestellung hinzugefügt werden sollen, wurde ebenfalls behoben. Des Weiteren ist es jetzt nicht mehr möglich, Rabatte anzugeben, die den Produktpreis übersteigen.

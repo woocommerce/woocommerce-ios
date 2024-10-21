@@ -1,3 +1,1 @@
-Dans cette mise à jour, nous avons ajouté une fonctionnalité de rappel pratique pour vous aider à poursuivre la création de campagnes abandonnées, mais aussi amélioré la façon dont les notifications s’ouvrent directement dès la création de campagnes dans Blaze. Nous avons également corrigé des problèmes de formatage des remises et des paiements en espèces lorsque l’appareil et la boutique n’utilisent pas les mêmes réglages pour les devises. Profitez d’une expérience plus fluide pour gérer votre boutique où que vous soyez !
-
-
+Dans cette mise à jour, nous avons résolu quelques problèmes mineurs concernant la fermeture automatique de différentes vues et amélioré l’alignement de l’interface sur iPad. Nous avons également corrigé un incident lors de la recherche de produits à ajouter à une commande. Enfin, il n’est plus possible de saisir des remises supérieures au prix du produit.

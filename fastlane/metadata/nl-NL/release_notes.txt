@@ -1,3 +1,1 @@
-In deze update hebben we een handige functie voor herinneringen toegevoegd zodat je het aanmaken van een campagne opnieuw kan oppakken, en hebben we het makkelijker gemaakt om via een melding Blaze te openen om een campagne aan te maken. We hebben ook indelingsproblemen opgelost met kortingen en contante betalingen wanneer de valuta-instellingen van het toestel en de winkel verschillen. Beheer je winkel nu makkelijker en soepeler onderweg!
-
-
+In deze update hebben we een paar kleine problemen opgelost met het automatisch negeren van verschillende weergaven en hebben we de UI-uitlijning op iPads verbeterd. We hebben ook een crash opgelost bij het zoeken van producten om toe te voegen aan een bestelling. Ten slotte is het niet langer mogelijk om kortingen die hoger zijn dan de productprijs in te voeren.

@@ -1,3 +1,1 @@
-In questo aggiornamento, abbiamo aggiunto una comoda funzionalità promemoria che ti consente di riprendere la creazione di campagne abbandonate e abbiamo ottimizzato la modalità di apertura delle notifiche direttamente durante la creazione di una campagna in Blaze. Inoltre, abbiamo risolto degli errori di formattazione relativi agli sconti e ai pagamenti in contanti nel caso in cui le impostazioni della valuta del dispositivo sono diverse da quelle del negozio. Preparati a un'esperienza più fluida con la gestione del tuo negozio ovunque tu sia!
-
-
+In questo aggiornamento, abbiamo risolto un paio di problemi minori relativi all'archiviazione automatica di varie viste e abbiamo migliorato l'allineamento dell'interfaccia utente sull'iPad. Inoltre, abbiamo sistemato l'arresto che si verificava durante la ricerca dei prodotti da aggiungere all'ordine. Infine, non è più possibile specificare uno sconto maggiore del prezzo del prodotto.

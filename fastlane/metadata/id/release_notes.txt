@@ -1,3 +1,1 @@
-Pada pembaruan ini, kami telah menambahkan fitur pengingat praktis untuk membantu Anda melanjutkan pembuatan kampanye yang terbengkalai sekaligus menyempurnakan agar pemberitahuan langsung mengarahkan Anda ke fitur pembuatan kampanye di Blaze. Kami juga telah memperbaiki isu pemformatan untuk diskon dan pembayaran tunai apabila pengaturan mata uang antara perangkat dan toko tidak sama. Nikmati pengalaman yang lebih baik dalam mengelola toko di mana saja!
-
-
+Dalam pembaruan ini, kami telah menangani sejumlah masalah ringan terkait berbagai tampilan yang otomatis tertutup, sekaligus memperbaiki penataan UI di iPad. Kami juga telah mengatasi gangguan saat mencari produk yang akan ditambahkan ke pesanan. Selain itu, kini Anda tidak akan bisa lagi memasukkan diskon yang nilainya melebihi harga produk.

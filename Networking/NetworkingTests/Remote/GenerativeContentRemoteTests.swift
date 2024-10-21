@@ -513,6 +513,28 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual(product.price, "250")
     }
 
+    func test_generateAIProduct_with_wrapped_json_returns_AIProduct() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "jetpack-ai-query", filename: "generate-product-success-wrapped")
+
+        // When
+        let product = try await remote.generateAIProduct(siteID: sampleSiteID,
+                                                         productName: "Cookie",
+                                                         keywords: "Crunchy, Crispy",
+                                                         language: "en",
+                                                         tone: "Casual",
+                                                         currencySymbol: "INR",
+                                                         dimensionUnit: "cm",
+                                                         weightUnit: "kg",
+                                                         categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                         tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        XCTAssertNotNil(product)
+    }
+
     func test_generateAIProduct_with_failure_returns_error() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)

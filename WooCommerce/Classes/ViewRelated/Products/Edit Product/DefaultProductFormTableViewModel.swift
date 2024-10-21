@@ -259,8 +259,8 @@ private extension DefaultProductFormTableViewModel {
     func customFieldsRow() -> ProductFormSection.SettingsRow.ViewModel {
         return ProductFormSection.SettingsRow.ViewModel(
             icon: UIImage.customFieldsImage,
-            title: Localization.customFieldsTitle,
-            details: Localization.customFieldsDetails
+            title: Localization.customFieldsRowTitle,
+            details: Localization.customFieldsRowDetails
         )
     }
 
@@ -790,14 +790,14 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Custom fields
-        static let customFieldsTitle = NSLocalizedString(
-            "defaultProductFormTableViewModel.customFieldsDetails",
+        static let customFieldsRowTitle = NSLocalizedString(
+            "defaultProductFormTableViewModel.customFieldsRowTitle",
             value: "Custom Fields",
             comment: "Title for the Custom Fields row"
         )
 
-        static let customFieldsDetails = NSLocalizedString(
-            "defaultProductFormTableViewModel.customFieldsDetails",
+        static let customFieldsRowDetails = NSLocalizedString(
+            "defaultProductFormTableViewModel.customFieldsRowDetails",
             value: "View and edit the product's custom fields",
             comment: "Details text for the Custom Fields row"
         )

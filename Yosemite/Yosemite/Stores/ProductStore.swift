@@ -263,13 +263,13 @@ private extension ProductStore {
     }
 
     func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
-        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let namePredicate = NSPredicate(format: "name CONTAINS[c] %@", keyword)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
@@ -1167,11 +1167,10 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let storedMetaData = storageProduct.customFields
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
-                                                                         productID: storageProduct.productID,
-                                                                         metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)

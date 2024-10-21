@@ -161,14 +161,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSale
 
-    /// Enables M1 updates of product creation AI version 2
-    ///
-    case productCreationAIv2M1
-
-    /// Enables M3 updates of product creation AI version 2
-    ///
-    case productCreationAIv2M3
-
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView

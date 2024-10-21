@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct CustomFieldEditorView: View {
+    @Environment(\.presentationMode) var presentationMode
     @State private var key: String
     @State private var value: String
     @State private var showRichTextEditor = false
@@ -9,6 +10,7 @@ struct CustomFieldEditorView: View {
     private let initialKey: String
     private let initialValue: String
     private let isReadOnlyValue: Bool
+    private let onSave: (String, String) -> Void
 
     private var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
@@ -19,12 +21,14 @@ struct CustomFieldEditorView: View {
     ///  - key: The key for the custom field
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
-    init(key: String, value: String, isReadOnlyValue: Bool = false) {
+    ///  - onSave: Closure to handle save action
+    init(key: String, value: String, isReadOnlyValue: Bool = false, onSave: @escaping (String, String) -> Void) {
         self._key = State(initialValue: key)
         self._value = State(initialValue: value)
         self.initialKey = key
         self.initialValue = value
         self.isReadOnlyValue = isReadOnlyValue
+        self.onSave = onSave
     }
 
     var body: some View {
@@ -44,6 +48,7 @@ struct CustomFieldEditorView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
+                        .cornerRadius(Layout.cornerRadius)
                 }
 
                 // Value Input
@@ -74,6 +79,7 @@ struct CustomFieldEditorView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                         )
+                        .cornerRadius(Layout.cornerRadius)
                     } else {
                         TextEditor(text: isReadOnlyValue ? .constant(value) : $value)
                             .foregroundColor(Color(.text))
@@ -84,6 +90,7 @@ struct CustomFieldEditorView: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .cornerRadius(Layout.cornerRadius)
                     }
                 }
             }
@@ -95,6 +102,7 @@ struct CustomFieldEditorView: View {
                 HStack {
                     Button {
                         saveChanges()
+                        presentationMode.wrappedValue.dismiss()
                     } label: {
                         Text("Save") // todo-13493: set String to be translatable
                     }
@@ -132,7 +140,7 @@ struct CustomFieldEditorView: View {
     }
 
     private func saveChanges() {
-        // todo-13493: add save logic
+        onSave(key, value)
     }
 }
 
@@ -186,5 +194,5 @@ private extension CustomFieldEditorView {
 }
 
 #Preview {
-    CustomFieldEditorView(key: "title", value: "value")
+    CustomFieldEditorView(key: "title", value: "value", onSave: { _, _ in })
 }

@@ -1,3 +1,1 @@
-Bu güncellemede terk edilmiş kampanyayı oluşturmaya devam etmenize yardımcı olacak kullanışlı bir hatırlatma özelliği ekledik ve Blaze'de bildirimlerin doğrudan kampanya oluşturmaya açılma şeklini iyileştirdik. Ayrıca cihaz ve mağaza para birimi ayarları farklı olduğunda indirim ve nakit ödemelerde oluşan biçimlendirme sorunlarını da düzelttik. Daha sorunsuz bir şekilde mağazanızı hareket halindeyken yönetme deneyiminizin keyfini çıkarın!
-
-
+Bu güncellemede, farklı görünümlerin otomatik olarak reddedilmesiyle ilgili birkaç küçük sorunu çözdük ve iPad'lerde kullanıcı arayüzü hizalamasında iyileştirmeler yaptık. Ayrıca siparişe eklenecek ürünleri ararken meydana gelen bir çökmeyi de düzelttik. Son olarak ürün fiyatından daha yüksek indirim girilmesi artık mümkün değil.

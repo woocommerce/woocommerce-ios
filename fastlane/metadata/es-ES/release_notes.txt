@@ -1,3 +1,1 @@
-En esta actualización, hemos añadido una práctica función de recordatorio para ayudarte a continuar con la creación de campañas abandonadas y hemos mejorado la forma en que las notificaciones se abren directamente a la creación de campañas en Blaze. También hemos solucionado problemas de formato en los pagos con descuento y en efectivo cuando los ajustes de moneda del dispositivo y de la tienda difieren. Disfruta de una experiencia más fluida al gestionar tu tienda sobre la marcha.
-
-
+En esta actualización hemos resuelto un par de problemas menores relacionados con el cierre automático de diferentes vistas, así como la mejora de la alineación de la interfaz de usuario en los iPad. También hemos corregido un fallo que ocurría al buscar productos para añadir a un pedido. Por último, ya no es posible introducir descuentos superiores al precio del producto.

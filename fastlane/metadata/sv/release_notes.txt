@@ -1,3 +1,1 @@
-I den här uppdateringen har vi lagt till en praktisk påminnelsefunktion som hjälper dig att fortsätta vid avbrutet kampanjskapande. Dessutom har vi förbättrat notiserna så att de leder direkt till kampanjskapandet i Blaze. Vi har också åtgärdat ett antal formateringsproblem rörande rabatter och kontanta betalningar när valutainställningarna för enhet och butik skiljer sig åt. Ta del av en smidigare upplevelse vid hantering av din butik i farten.
-
-
+I den här uppdateringen har vi löst ett antal mindre problem gällande automatisk avvisning av olika vyer, samt förbättrat anpassningen av gränssnittet på iPads. Vi har även åtgärdat en krasch som kunde uppstå vid sökning efter produkter att lägga till i en beställning. Slutligen, det är inte längre möjligt att ange rabatter som är högre än produktpriset.

@@ -1,3 +1,1 @@
-Nesta atualização, adicionamos uma funcionalidade de lembrete para ajudar a retomar a criação de campanhas abandonadas e melhoramos a forma que as notificações abrem diretamente a criação de campanhas do Blaze. Corrigimos também alguns problemas de formatação em descontos e pagamentos em dinheiro para quando as configurações de moeda do dispositivo e da loja forem diferentes. Aproveite uma experiência mais fluida ao gerenciar sua loja em qualquer lugar!
-
-
+Nesta atualização, resolvemos alguns problemas menos relevantes relacionados à dispensa automática de diferentes visualizações, assim como à melhoria no alinhamento da IU em iPads. Também corrigimos uma falha que ocorria ao pesquisar produtos para adicionar a um pedido. Por fim, não é mais possível adicionar descontos superiores ao preço do produto.

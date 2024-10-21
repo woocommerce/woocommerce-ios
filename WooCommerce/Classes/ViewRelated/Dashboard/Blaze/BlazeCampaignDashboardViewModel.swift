@@ -319,8 +319,14 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
-            self?.updateAvailability()
-            self?.updateResults()
+            /// Upon logging out, `CoreDataManager` resets the storage and triggers the reset notification
+            /// causing refetching data. Checking the authentication state helps avoiding reloading data
+            /// in the unauthenticated state.
+            guard let self, stores.isAuthenticated else {
+                return
+            }
+            updateAvailability()
+            updateResults()
         }
 
         do {

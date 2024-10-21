@@ -58,6 +58,19 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
+        .sheet(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel) { viewModel in
+            NavigationStack {
+                CardPresentPaymentsOnboardingView(viewModel: viewModel)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        Button(action: {
+                            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+                        }) {
+                            Text(Localization.cancelOnboarding)
+                        }
+                    }
+            }
+        }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
             totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
@@ -154,6 +167,11 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.support.done",
             value: "Done",
             comment: "Button to dismiss the support form from the POS dashboard."
+        )
+        static let cancelOnboarding = NSLocalizedString(
+            "pointOfSaleDashboard.payments.onboarding.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the payments onboarding sheet from the POS dashboard."
         )
     }
 }

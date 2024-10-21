@@ -188,4 +188,8 @@ public enum FeatureFlag: Int {
     /// Allows marking product as favorite
     ///
     case favoriteProducts
+
+    /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
+    ///
+    case paymentsOnboardingInPointOfSale
 }

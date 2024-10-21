@@ -26,11 +26,24 @@ final class WooShippingItemsViewModelTests: XCTestCase {
 
         // Then
         assertEqual("2 items", viewModel.itemsCountLabel)
+        assertEqual("$12.50", viewModel.itemsPriceLabel)
         assertEqual("7 oz • $12.50", viewModel.itemsDetailLabel)
         assertEqual(2, viewModel.itemRows.count)
     }
 
-    func test_total_items_count_handles_items_with_quantity_greater_than_one() {
+    func test_total_items_count_label_handles_single_item() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 1, value: 1, quantity: 1)]
+        let dataSource = MockDataSource(items: items)
+
+        // When
+        let viewModel = WooShippingItemsViewModel(dataSource: dataSource, currencySettings: currencySettings)
+
+        // Then
+        assertEqual("1 item", viewModel.itemsCountLabel)
+    }
+
+    func test_total_items_count_label_handles_items_with_quantity_greater_than_one() {
         // Given
         let items = [sampleItem(id: 1, weight: 1, value: 1, quantity: 1),
                      sampleItem(id: 2, weight: 1, value: 1, quantity: 2)]
@@ -43,7 +56,7 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         assertEqual("3 items", viewModel.itemsCountLabel)
     }
 
-    func test_total_items_details_handles_items_with_quantity_greater_than_one() {
+    func test_total_items_detail_label_handles_items_with_quantity_greater_than_one() {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]

@@ -1,12 +1,21 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+20.9
+-----
+
+
 20.8
 -----
 - [internal] Updated Core Data Stack - smoke testing for all features with Core Data usage is needed. Please refer to the test plan for testing guide. [https://github.com/woocommerce/woocommerce-ios/pull/14013]
 - [internal] Moved write operations in AccountStore to background [https://github.com/woocommerce/woocommerce-ios/pull/14084]
 - [internal] Moved write operations for store stats to background [https://github.com/woocommerce/woocommerce-ios/pull/14089]
 - [internal] Updated storage usage in OrderStore [https://github.com/woocommerce/woocommerce-ios/pull/14093, https://github.com/woocommerce/woocommerce-ios/pull/14099]
+- [internal] Updated storage usage in RefundStore [https://github.com/woocommerce/woocommerce-ios/pull/14124]
+- [internal] Updated storage usage in OrderStatusStore [https://github.com/woocommerce/woocommerce-ios/pull/14125]
+- [internal] Updated storage usage in CardPresentPaymentStore [https://github.com/woocommerce/woocommerce-ios/pull/14131]
+- [internal] Updated storage usage in ShipmentStore [https://github.com/woocommerce/woocommerce-ios/pull/14126]
+- [internal] Fixed formatted amount field visibility in Custom Amounts, Shipping, and Cash Payments [https://github.com/woocommerce/woocommerce-ios/pull/14030]
 
 
 20.7

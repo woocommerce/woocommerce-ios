@@ -8,10 +8,6 @@ import Storage
 public class RefundStore: Store {
     private let remote: RefundsRemote
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = RefundsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -60,7 +56,7 @@ private extension RefundStore {
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: [refund]) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
                 onCompletion(refund, nil)
             }
         }
@@ -72,13 +68,16 @@ private extension RefundStore {
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
             guard let refund = refund else {
                 if case NetworkError.notFound? = error {
-                    self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID)
+                    self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: [refund]) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
                 onCompletion(refund, nil)
             }
         }
@@ -87,18 +86,37 @@ private extension RefundStore {
     /// Retrieves all Refunds by an orderID.
     ///
     func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], deleteStaleRefunds: Bool, onCompletion: @escaping (Error?) -> Void) {
-        if deleteStaleRefunds {
-            self.deleteStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
-        }
-
         let storedRefunds = storageManager.viewStorage.loadRefunds(siteID: siteID, orderID: orderID)
+        let staleRefundIDs: [Int64] = {
+            guard deleteStaleRefunds else {
+                return []
+            }
+            return storedRefunds
+                .map { $0.refundID }
+                .filter { !refundIDs.contains($0) }
+        }()
+
         let missingRefundIDs = refundIDs.filter { refundID in
             !storedRefunds.contains { $0.refundID == refundID }
         }
 
-        // If all refund IDs exist in storage, skip the remote request.
+        // If all refund IDs exist in storage, delete stale items and skip the remote request.
         if missingRefundIDs.isEmpty {
-            return onCompletion(nil)
+            if deleteStaleRefunds {
+                storageManager.performAndSave({ storage in
+                    let storedRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
+                    self.deleteStaleRefunds(siteID: siteID,
+                                            orderID: orderID,
+                                            staleRefundIDs: staleRefundIDs,
+                                            storedRefunds: storedRefunds,
+                                            in: storage)
+                }, completion: {
+                    onCompletion(nil)
+                }, on: .main)
+            } else {
+                onCompletion(nil)
+            }
+            return
         }
 
         // Request any refunds that don't exist in storage.
@@ -107,7 +125,10 @@ private extension RefundStore {
                 return onCompletion(error)
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID,
+                                                  orderID: orderID,
+                                                  readOnlyRefunds: refunds,
+                                                  staleRefundIDs: staleRefundIDs) {
                 onCompletion(nil)
             }
         }
@@ -122,7 +143,7 @@ private extension RefundStore {
                 return
             }
 
-            self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
+            self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: refunds) {
                 onCompletion(nil)
             }
         }
@@ -130,13 +151,13 @@ private extension RefundStore {
 
     /// Deletes all of the stored Refunds.
     ///
-    func resetStoredRefunds(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Refund.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Refunds deleted")
-
-        onCompletion()
+    func resetStoredRefunds(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Refund.self)
+        }, completion: {
+            DDLogDebug("Refunds deleted")
+            onCompletion()
+        }, on: .main)
     }
 }
 
@@ -147,28 +168,38 @@ private extension RefundStore {
 
     /// Deletes any Storage.Refund with the specified `siteID`, `orderID`, and `refundID`
     ///
-    func deleteStoredRefund(siteID: Int64, orderID: Int64, refundID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let refund = storage.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) else {
-            return
-        }
-
-        storage.deleteObject(refund)
-        storage.saveIfNeeded()
+    func deleteStoredRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let refund = storage.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) else {
+                return
+            }
+            storage.deleteObject(refund)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities *in a background thread*.
     /// onCompletion will be called on the main thread!
     ///
-    func upsertStoredRefundsInBackground(readOnlyRefunds: [Networking.Refund], onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
-            self.upsertStoredRefunds(readOnlyRefunds: readOnlyRefunds, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+    func upsertStoredRefundsInBackground(siteID: Int64,
+                                         orderID: Int64,
+                                         readOnlyRefunds: [Networking.Refund],
+                                         staleRefundIDs: [Int64] = [],
+                                         onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storedRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
+            if staleRefundIDs.isEmpty == false {
+                self.deleteStaleRefunds(siteID: siteID,
+                                        orderID: orderID,
+                                        staleRefundIDs: staleRefundIDs,
+                                        storedRefunds: storedRefunds,
+                                        in: storage)
+            }
+            self.upsertStoredRefunds(siteID: siteID,
+                                     orderID: orderID,
+                                     storedRefunds: storedRefunds,
+                                     readOnlyRefunds: readOnlyRefunds,
+                                     in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities into the Storage Layer.
@@ -177,10 +208,13 @@ private extension RefundStore {
     ///     - readOnlyRefunds: Remote Refunds to be persisted.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredRefunds(readOnlyRefunds: [Networking.Refund], in storage: StorageType) {
+    func upsertStoredRefunds(siteID: Int64,
+                             orderID: Int64,
+                             storedRefunds: [Storage.Refund],
+                             readOnlyRefunds: [Networking.Refund],
+                             in storage: StorageType) {
         for readOnlyRefund in readOnlyRefunds {
-            let storageRefund = storage.loadRefund(siteID: readOnlyRefund.siteID, orderID: readOnlyRefund.orderID, refundID: readOnlyRefund.refundID) ??
-                storage.insertNewObject(ofType: Storage.Refund.self)
+            let storageRefund = storedRefunds.first(where: { $0.refundID == readOnlyRefund.refundID }) ?? storage.insertNewObject(ofType: Storage.Refund.self)
 
             storageRefund.update(with: readOnlyRefund)
 
@@ -194,12 +228,12 @@ private extension RefundStore {
     ///
     func handleOrderItemRefunds(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
         var storageItem: Storage.OrderItemRefund
-        let siteID = readOnlyRefund.siteID
-        let refundID = readOnlyRefund.refundID
+
+        let storedRefundItems = storageRefund.items
 
         // Upsert items from the read-only refund
         for readOnlyItem in readOnlyRefund.items {
-            if let existingStorageItem = storage.loadRefundItem(siteID: siteID, refundID: refundID, itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storedRefundItems?.first(where: { $0.itemID == readOnlyItem.itemID }) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {
@@ -214,7 +248,7 @@ private extension RefundStore {
         }
 
         // Now, remove any objects that exist in storageRefund.items but not in readOnlyRefund.items
-        storageRefund.items?.forEach { storageItem in
+        storedRefundItems?.forEach { storageItem in
             if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name } ) == nil {
                 storageRefund.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
@@ -225,12 +259,14 @@ private extension RefundStore {
     /// Updates, inserts, or prunes the provided StorageRefund's shipping lines.
     ///
     func handleShippingLines(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
+
+        let storedShippingLines = storageRefund.shippingLines
+
         // Upsert shipping lines from the read-only refund
         for readOnlyShippingLine in readOnlyRefund.shippingLines ?? [] {
             // Load or create a shipping line from the read only version
             let storageShippingLine: Storage.ShippingLine = {
-                guard let existingShippingLine = storage.loadRefundShippingLine(siteID: readOnlyRefund.siteID,
-                                                                                shippingID: readOnlyShippingLine.shippingID) else {
+                guard let existingShippingLine = storedShippingLines?.first(where: { $0.shippingID == readOnlyShippingLine.shippingID }) else {
                     let newShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
                     storageRefund.addToShippingLines(newShippingLine)
                     return newShippingLine
@@ -243,7 +279,7 @@ private extension RefundStore {
         }
 
         // Now, remove any object that exist in storageRefund.shippingLines but not in readOnlyRefund.shippingLines
-        storageRefund.shippingLines?.forEach { storedShippingLine in
+        storedShippingLines?.forEach { storedShippingLine in
             if let shippingLines = readOnlyRefund.shippingLines, !shippingLines.contains(where: { $0.shippingID == storedShippingLine.shippingID }) {
                 storageRefund.removeFromShippingLines(storedShippingLine)
                 storage.deleteObject(storedShippingLine)
@@ -301,14 +337,15 @@ private extension RefundStore {
 
     /// Deletes all refunds from an order when their IDs are not contained in the provided `newRefundIDs`array.
     ///
-    private func deleteStaleRefunds(siteID: Int64, orderID: Int64, newRefundIDs: [Int64]) {
-        let storage = storageManager.viewStorage
-        let previousRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
-        let staleRefunds = previousRefunds.filter { !newRefundIDs.contains($0.refundID) }
+    private func deleteStaleRefunds(siteID: Int64,
+                                    orderID: Int64,
+                                    staleRefundIDs: [Int64],
+                                    storedRefunds: [Storage.Refund],
+                                    in storage: StorageType) {
+        let staleRefunds = storedRefunds.filter { staleRefundIDs.contains($0.refundID) }
         staleRefunds.forEach { stale in
             storage.deleteObject(stale)
         }
-        storage.saveIfNeeded()
     }
 }
 
@@ -319,6 +356,13 @@ extension RefundStore {
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Refund in a given Storage Layer.
     ///
     func upsertStoredRefund(readOnlyRefund: Networking.Refund, in storage: StorageType) {
-        upsertStoredRefunds(readOnlyRefunds: [readOnlyRefund], in: storage)
+        let siteID = readOnlyRefund.siteID
+        let orderID = readOnlyRefund.orderID
+        let storedRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
+        upsertStoredRefunds(siteID: siteID,
+                            orderID: orderID,
+                            storedRefunds: storedRefunds,
+                            readOnlyRefunds: [readOnlyRefund],
+                            in: storage)
     }
 }

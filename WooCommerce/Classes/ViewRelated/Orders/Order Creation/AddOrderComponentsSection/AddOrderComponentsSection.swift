@@ -7,6 +7,9 @@ struct AddOrderComponentsSection: View {
     /// View model for shipping lines on an order
     @ObservedObject private var shippingLineViewModel: EditableOrderShippingLineViewModel
 
+    /// View model for coupon lines on an order
+    @ObservedObject private var couponLineViewModel: EditableOrderCouponLineViewModel
+
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
@@ -31,10 +34,12 @@ struct AddOrderComponentsSection: View {
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
          shippingLineViewModel: EditableOrderShippingLineViewModel,
+         couponLineViewModel: EditableOrderCouponLineViewModel,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
         self.shippingLineViewModel = shippingLineViewModel
+        self.couponLineViewModel = couponLineViewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
@@ -74,6 +79,7 @@ private extension AddOrderComponentsSection {
             }
             .renderedIf(viewModel.shouldRenderCouponsInfoTooltip)
         }
+        .renderedIf(couponLineViewModel.couponLineRows.isEmpty)
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
@@ -87,10 +93,8 @@ private extension AddOrderComponentsSection {
                                emptyStateActionTitle: Localization.goToCoupons,
                                emptyStateAction: {
                     shouldShowGoToCouponsAlert = true
-                },
-                               onCouponSelected: { coupon in
+                }, onCouponSelected: { coupon in
                     viewModel.addNewCouponLineClosure(coupon)
-                    shouldShowAddCouponLineDetails = false
                 })
                 .navigationTitle(Localization.addCoupon)
                 .navigationBarTitleDisplayMode(.inline)
@@ -231,9 +235,12 @@ struct AddOrderComponentsSection_Previews: PreviewProvider {
         let shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: 1,
                                                                        flow: .creation,
                                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
+        let couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: RemoteOrderSynchronizer(siteID: 1,
+                                                                                                              flow: .creation))
 
         AddOrderComponentsSection(viewModel: viewModel,
                                   shippingLineViewModel: shippingLineViewModel,
+                                  couponLineViewModel: couponLineViewModel,
                                   shouldShowCouponsInfoTooltip: .constant(true),
                                   shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)

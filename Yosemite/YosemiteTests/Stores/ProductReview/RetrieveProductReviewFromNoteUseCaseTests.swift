@@ -285,10 +285,10 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
     /// Create a UseCase using the mocks
     ///
     func makeUseCase() -> RetrieveProductReviewFromNoteUseCase {
-        RetrieveProductReviewFromNoteUseCase(derivedStorage: viewStorage,
-                                             notificationsRemote: notificationsRemote,
+        RetrieveProductReviewFromNoteUseCase(notificationsRemote: notificationsRemote,
                                              productReviewsRemote: productReviewsRemote,
-                                             productsRemote: productsRemote)
+                                             productsRemote: productsRemote,
+                                             storageManager: storageManager)
     }
 
     /// Retrieve the Parcel using the given UseCase

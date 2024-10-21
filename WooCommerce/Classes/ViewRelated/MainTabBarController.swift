@@ -142,7 +142,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        fixTarBarTraitCollectionOnIpadForiOS18()
+        fixTabBarTraitCollectionOnIpadForiOS18()
 
         configureTabViewControllers()
         observeSiteIDForViewControllers()
@@ -237,7 +237,7 @@ final class MainTabBarController: UITabBarController {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
          super.traitCollectionDidChange(previousTraitCollection)
-         fixTarBarTraitCollectionOnIpadForiOS18()
+         fixTabBarTraitCollectionOnIpadForiOS18()
      }
 
 
@@ -249,7 +249,7 @@ final class MainTabBarController: UITabBarController {
     /// The code is only executed when built with Xcode 16 and run on iPadOS 18
     ///
     /// The solution is borrowed from https://github.com/Automattic/pocket-casts-ios/pull/2077
-    private func fixTarBarTraitCollectionOnIpadForiOS18() {
+    private func fixTabBarTraitCollectionOnIpadForiOS18() {
     #if compiler(>=6)
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact

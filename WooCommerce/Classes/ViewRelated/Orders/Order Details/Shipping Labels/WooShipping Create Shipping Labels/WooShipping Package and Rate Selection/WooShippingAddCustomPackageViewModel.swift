@@ -27,6 +27,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
     func resetValues() {
         clearFieldValues()
+        packageType = .box
         showSaveTemplate = false
         packageTemplateName = ""
     }

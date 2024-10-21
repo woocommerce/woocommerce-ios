@@ -20,6 +20,7 @@ final class TotalsViewModel: ObservableObject, TotalsViewModelProtocol {
         case cardPaymentSuccessful
     }
 
+    @Published var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     @Published var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     @Published private(set) var isShowingCardReaderStatus: Bool = false
@@ -311,6 +312,15 @@ private extension TotalsViewModel {
     }
 
     func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher
+            .map { event -> CardPresentPaymentsOnboardingViewModel? in
+                guard case let .showOnboarding(viewModel) = event else {
+                    return nil
+                }
+                return viewModel
+            }
+            .assign(to: &$cardPresentPaymentOnboardingViewModel)
+
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }

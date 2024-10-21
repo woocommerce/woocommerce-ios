@@ -311,6 +311,9 @@ private extension ProductInventorySettingsViewController {
 
         cell.configure(viewModel: cellViewModel)
 
+        /// Global Unique Identifiers are usually long, let's make a bit more of room to display it at once without truncating it
+        cell.setSpacingBetweenTitleAndTextField(20)
+
         // Configures accessory view for adding SKU from barcode scanner if camera is available.
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
             return

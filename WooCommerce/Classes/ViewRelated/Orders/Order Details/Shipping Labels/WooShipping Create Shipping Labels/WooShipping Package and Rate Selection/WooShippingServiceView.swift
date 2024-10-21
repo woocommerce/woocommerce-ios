@@ -8,16 +8,16 @@ struct WooShippingServiceView: View {
                     .headlineStyle()
                 Spacer()
             }
-            WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
-                                       title: "USPS - Media Mail",
-                                       rate: "$7.63",
-                                       daysToDelivery: "7 business days",
-                                       extraInfo: "Includes tracking, insurance (up to $100.00), free pickup",
-                                       trackingLabel: "Tracking",
-                                       insuranceLabel: "Insurance (up to $100.00)",
-                                       freePickupLabel: "Free pickup",
-                                       signatureRequiredLabel: "Signature Required (+$3.70)",
-                                       adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)")
+            WooShippingServiceCardView(viewModel: WooShippingServiceCardViewModel(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
+                                                                                  title: "USPS - Media Mail",
+                                                                                  rateLabel: "$7.63",
+                                                                                  daysToDeliveryLabel: "7 business days",
+                                                                                  extraInfoLabel: "Includes tracking, insurance (up to $100.00), free pickup",
+                                                                                  trackingLabel: "Tracking",
+                                                                                  insuranceLabel: "Insurance (up to $100.00)",
+                                                                                  freePickupLabel: "Free pickup",
+                                                                                  signatureRequiredLabel: "Signature Required (+$3.70)",
+                                                                                  adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)"))
         }
     }
 }

@@ -26,7 +26,6 @@ struct OrderCouponSectionView: View {
             ForEach(couponViewModel.couponLineRows, id: \.couponID) { coupon in
                 HStack {
                     Text(coupon.code)
-                        .subheadlineStyle()
                     Spacer()
                     Button(action: {
                         removeCouponLine(with: coupon.code)

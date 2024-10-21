@@ -177,22 +177,22 @@ private extension WooShippingServiceCardViewModel {
                                                 value: "Tracking",
                                                 comment: "Label when shipping rate includes tracking in Woo Shipping label creation flow.")
         static let insuranceLiteral = NSLocalizedString("wooShipping.createLabels.shippingService.insuranceLiteral",
-                                                        value: "insurance (%1$@)",
+                                                        value: "Insurance (%1$@)",
                                                         comment: "Label when shipping rate includes insurance in Woo Shipping label creation flow. " +
                                                         "Placeholder is a literal. Reads like: 'Insurance (limited)'")
         static let insuranceAmount = NSLocalizedString("wooShipping.createLabels.shippingService.insuranceAmount",
-                                                       value: "insurance (up to %1$@)",
+                                                       value: "Insurance (up to %1$@)",
                                                        comment: "Label when shipping rate includes insurance in Woo Shipping label creation flow. " +
                                                        "Placeholder is an amount. Reads like: 'Insurance (up to $100)'")
         static let freePickup = NSLocalizedString("wooShipping.createLabels.shippingService.freePickup",
-                                                  value: "free pickup",
-                                                  comment: "Carrier eligible for free pickup in Shipping Labels > Carrier and Rates")
+                                                  value: "Free pickup",
+                                                  comment: "Label when shipping rate includes free pickup in Woo Shipping label creation flow.")
         static let signatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.signatureRequired",
-                                                         value: "Signature required (+%1$@)",
+                                                         value: "Signature Required (+%1$@)",
                                                          comment: "Label when shipping rate has option to require a signature in " +
                                                          "Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)'")
         static let adultSignatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.adultSignatureRequired",
-                                                              value: "Adult signature required (+%1$@)",
+                                                              value: "Adult Signature Required (+%1$@)",
                                                               comment: "Label when shipping rate has option to require an adult signature in " +
                                                               "Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)'")
     }

@@ -31,10 +31,6 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
     ///   - completion: Callback when the onboarding is complete
     func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
-        guard readinessSubscription == nil else {
-            return
-        }
-
         readinessUseCase.checkCardPaymentReadiness()
 
         guard case .ready = readinessUseCase.readiness else {

@@ -18,7 +18,6 @@ struct WooShippingTabView: View {
     let titleFont: Font
     let selectedStateColor: Color
     let unselectedStateColor: Color
-
     @Binding var selectedItem: Int?
 
     private func itemContentView(_ item: TabItem, selected: Bool) -> some View {
@@ -41,12 +40,10 @@ struct WooShippingTabView: View {
                 ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                     VStack(spacing: 0) {
                         itemContentView(item, selected: selectedItem == index)
-                        .padding(.horizontal, Layout.horizontalContentPadding)
-                        .padding(.vertical, Layout.verticalContentPadding)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedItem = index
-                        }
+                            .padding(.horizontal, Layout.horizontalContentPadding)
+                            .padding(.vertical, Layout.verticalContentPadding)
+                            .contentShape(Rectangle())
+                            .onTapGesture { selectedItem = index }
                         Rectangle()
                             .frame(height: Layout.selectionIndicatorHeight)
                             .foregroundColor(selectedItem == index ? selectedStateColor : Color.clear)
@@ -59,12 +56,12 @@ struct WooShippingTabView: View {
 }
 
 struct WooShippingTabViewPreviewWrapper: View {
-    @State var selectedItem: Int? = 0
-    let items: [WooShippingTabView.TabItem] = [
-        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
-        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express"),
-        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
-        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express")
+    @State private var selectedItem: Int? = 0
+    private let items: [WooShippingTabView.TabItem] = [
+        .init(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
+        .init(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express"),
+        .init(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
+        .init(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express")
     ]
 
     var contentView: some View {

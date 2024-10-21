@@ -24,7 +24,7 @@ struct CustomFieldEditorView: View {
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     ///  - onSave: Closure to handle save action
-    init(key: String, 
+    init(key: String,
          value: String,
          isReadOnlyValue: Bool = false,
          isCreatingNewField: Bool = false,

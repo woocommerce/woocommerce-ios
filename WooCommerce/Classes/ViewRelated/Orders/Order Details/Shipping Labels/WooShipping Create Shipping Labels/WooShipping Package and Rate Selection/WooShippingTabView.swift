@@ -9,14 +9,16 @@ struct WooShippingTabView: View {
 
     enum Layout {
         static let iconSize: CGFloat = 20.0
+        static let horizontalContentPadding: CGFloat = 16.0
+        static let verticalContentPadding: CGFloat = 9.0
         static let selectionIndicatorHeight: CGFloat = 3.0
     }
 
-    let items: [WooShippingTabView.TabItem]
+    let items: [TabItem]
     @Binding var selectedItem: Int?
 
     var body: some View {
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                     VStack(spacing: 0) {
@@ -32,7 +34,8 @@ struct WooShippingTabView: View {
                                 .bold()
                                 .foregroundColor(selectedItem == index ? Color.accentColor : Color.secondary)
                         }
-                        .padding()
+                        .padding(.horizontal, Layout.horizontalContentPadding)
+                        .padding(.vertical, Layout.verticalContentPadding)
                         .contentShape(Rectangle())
                         .onTapGesture {
                             selectedItem = index
@@ -42,28 +45,55 @@ struct WooShippingTabView: View {
                             .foregroundColor(selectedItem == index ? Color.accentColor : Color.clear)
                     }
                 }
-                Spacer()
             }
+            .padding(.horizontal)
         }
     }
 }
 
-#Preview {
-    struct Preview: View {
-        @State var selectedItem: Int? = 0
-        let items: [WooShippingTabView.TabItem] = [
-            WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
-            WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express")
-        ]
-        var body: some View {
+struct WooShippingTabViewPreviewWrapper: View {
+    @State var selectedItem: Int? = 0
+    let items: [WooShippingTabView.TabItem] = [
+        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
+        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express"),
+        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-usps-logo"), title: "USPS"),
+        WooShippingTabView.TabItem(icon: UIImage(named: "shipping-label-dhl-logo"), title: "DHL Express")
+    ]
+
+    var contentView: some View {
+        VStack {
+            Spacer()
+            WooShippingTabView(items: items, selectedItem: $selectedItem)
+            Spacer()
+        }
+        .accentColor(Color.purple)
+    }
+
+    var groupContent: some View {
+        ScrollView {
             VStack {
-                Spacer()
-                WooShippingTabView(items: items, selectedItem: $selectedItem)
-                Spacer()
+                ForEach(ContentSizeCategory.allCases, id: \.self) { sizeCategory in
+                    contentView
+                        .environment(\.sizeCategory, sizeCategory)
+                }
             }
-            .accentColor(.purple)
         }
     }
 
-    return Preview()
+    var body: some View {
+        Group {
+            groupContent
+                .preferredColorScheme(.light)  // Light mode
+                .previewDisplayName("Light Mode")
+            groupContent
+                .preferredColorScheme(.dark)  // Dark mode
+                .previewDisplayName("Dark Mode")
+        }
+    }
+}
+
+struct WooShippingTabView_Previews: PreviewProvider {
+    static var previews: some View {
+        WooShippingTabViewPreviewWrapper()
+    }
 }

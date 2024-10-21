@@ -59,17 +59,7 @@ struct PointOfSaleDashboardView: View {
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
         .sheet(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel) { viewModel in
-            NavigationStack {
-                CardPresentPaymentsOnboardingView(viewModel: viewModel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        Button(action: {
-                            totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
-                        }) {
-                            Text(Localization.cancelOnboarding)
-                        }
-                    }
-            }
+            paymentsOnboardingView(from: viewModel)
         }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
@@ -136,6 +126,20 @@ private extension PointOfSaleDashboardView {
             }
         }
         .navigationViewStyle(.stack)
+    }
+
+    func paymentsOnboardingView(from viewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
+        NavigationStack {
+            CardPresentPaymentsOnboardingView(viewModel: viewModel)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    Button(action: {
+                        totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+                    }) {
+                        Text(Localization.cancelOnboarding)
+                    }
+                }
+        }
     }
 }
 

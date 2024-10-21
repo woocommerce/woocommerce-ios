@@ -86,16 +86,6 @@ extension CustomFieldsListViewModel {
             addField(newField)
         }
     }
-
-    private func undoDeletion(of field: CustomFieldUI) {
-        if let fieldId = field.fieldId {
-            deletedFieldIds.removeAll { $0 == fieldId }
-        } else {
-            addedFields.append(field)
-        }
-
-        updateCombinedList()
-    }
 }
 
 private extension CustomFieldsListViewModel {
@@ -122,6 +112,16 @@ private extension CustomFieldsListViewModel {
             // First time the field is locally edited
             editedFields.append(newField)
         }
+    }
+
+    func undoDeletion(of field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.removeAll { $0 == fieldId }
+        } else {
+            addedFields.append(field)
+        }
+
+        updateCombinedList()
     }
 
     func updateCombinedList() {

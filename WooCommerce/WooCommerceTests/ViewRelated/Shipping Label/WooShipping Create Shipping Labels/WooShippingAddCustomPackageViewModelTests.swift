@@ -21,6 +21,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let viewModel = WooShippingAddCustomPackageViewModel()
 
         // When
+        viewModel.fillWithDummyFieldValues()
         viewModel.clearFieldValues()
 
         // Then
@@ -52,10 +53,9 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let viewModel = WooShippingAddCustomPackageViewModel()
 
         // When
-        viewModel.clearFieldValues()
+        viewModel.fieldValues[.height] = "1"
 
         // Then
-        viewModel.fieldValues[.height] = "1"
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
         XCTAssertEqual(viewModel.areFieldValuesInvalid, true)
     }
@@ -65,7 +65,6 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         let viewModel = WooShippingAddCustomPackageViewModel()
 
         // When
-        viewModel.clearFieldValues()
         viewModel.fillWithDummyFieldValues()
 
         // Then

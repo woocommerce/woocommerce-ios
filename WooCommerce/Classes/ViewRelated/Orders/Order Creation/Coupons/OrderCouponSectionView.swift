@@ -19,9 +19,9 @@ struct OrderCouponSectionView: View {
                     shouldShowCouponList = true
                 }, label: {
                     Image(uiImage: .plusImage)
-                        .foregroundColor(Color(.primary))
+                        .foregroundColor(viewModel.disabled ? Color(.textSubtle) : Color(.primary))
                 })
-
+                .disabled(viewModel.disabled)
             }
             ForEach(couponViewModel.couponLineRows, id: \.couponID) { coupon in
                 HStack {

@@ -3,6 +3,7 @@ import Foundation
 
 final class CustomFieldsListViewModel: ObservableObject {
     private let originalCustomFields: [CustomFieldViewModel]
+    private let customFieldsType: MetaDataType
 
     var shouldShowErrorState: Bool {
         savingError != nil
@@ -20,8 +21,10 @@ final class CustomFieldsListViewModel: ObservableObject {
     @Published private var deletedFieldIds: [Int64] = []
     @Published private(set) var hasChanges: Bool = false
 
-    init(customFields: [CustomFieldViewModel]) {
+    init(customFields: [CustomFieldViewModel], customFieldType: MetaDataType) {
         self.originalCustomFields = customFields
+        self.customFieldsType = customFieldType
+
         updateCombinedList()
         configureHasChanges()
     }

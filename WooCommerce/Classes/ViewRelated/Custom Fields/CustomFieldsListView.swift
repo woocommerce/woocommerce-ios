@@ -228,7 +228,9 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                 customFields: [
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-                ]))
+                ],
+                customFieldType: .order
+                ))
     }
 }
 

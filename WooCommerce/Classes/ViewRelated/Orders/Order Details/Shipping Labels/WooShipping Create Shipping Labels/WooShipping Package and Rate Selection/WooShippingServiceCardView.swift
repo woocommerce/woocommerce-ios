@@ -4,8 +4,8 @@ struct WooShippingServiceCardView: View {
     let carrierLogo: UIImage?
     let title: String
     let rate: String
-    let daysToDelivery: String
-    let extraInfo: String
+    let daysToDelivery: String?
+    let extraInfo: String?
 
     let trackingLabel: String?
     let insuranceLabel: String?
@@ -34,9 +34,11 @@ struct WooShippingServiceCardView: View {
                 }
                 if isSelected {
                     VStack(alignment: .leading) {
-                        Text(daysToDelivery)
-                            .bold()
-                            .font(.footnote)
+                        if let daysToDelivery {
+                            Text(daysToDelivery)
+                                .bold()
+                                .font(.footnote)
+                        }
                         Group {
                             VStack(alignment: .leading, spacing: 0) {
                                 if let trackingLabel {
@@ -91,7 +93,13 @@ struct WooShippingServiceCardView: View {
                     }
                 } else {
                     Group {
-                        Text(daysToDelivery).bold() + Text("  •  ") + Text(extraInfo)
+                        if let daysToDelivery, let extraInfo {
+                            Text(daysToDelivery).bold() + Text("  •  ") + Text(extraInfo)
+                        } else if let daysToDelivery {
+                            Text(daysToDelivery).bold()
+                        } else if let extraInfo {
+                            Text(extraInfo)
+                        }
                     }
                     .font(.footnote)
                 }

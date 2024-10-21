@@ -160,6 +160,7 @@ private extension ProductReviewStore {
     func deleteStoredProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             guard let productReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) else {
+                DDLogError("⛔️ Cannot find the product review with the given ID to delete from storage!")
                 return
             }
             storage.deleteObject(productReview)

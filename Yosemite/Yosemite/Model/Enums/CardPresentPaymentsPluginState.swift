@@ -2,7 +2,7 @@ import Foundation
 
 /// Contains the state related to active plugins when Card-Present Payments onboarding is complete
 ///
-public struct CardPresentPaymentsPluginState: Equatable {
+public struct CardPresentPaymentsPluginState: Equatable, Hashable {
     /// The plugin to use for Card-Present Payments
     ///
     public let preferred: CardPresentPaymentsPlugin

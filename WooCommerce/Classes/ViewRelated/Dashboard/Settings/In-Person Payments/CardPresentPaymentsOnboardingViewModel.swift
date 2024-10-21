@@ -178,3 +178,15 @@ private extension CardPresentPaymentsOnboardingViewModel {
                 gatewayID: state.gatewayID))
     }
 }
+
+extension CardPresentPaymentsOnboardingViewModel: Hashable, Identifiable {
+    static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
+        lhs.state == rhs.state &&
+        lhs.userIsAdministrator == rhs.userIsAdministrator
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(state)
+        hasher.combine(userIsAdministrator)
+    }
+}

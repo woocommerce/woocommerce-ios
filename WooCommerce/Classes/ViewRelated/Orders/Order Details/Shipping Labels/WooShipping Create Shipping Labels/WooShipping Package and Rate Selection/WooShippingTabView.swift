@@ -15,25 +15,32 @@ struct WooShippingTabView: View {
     }
 
     let items: [TabItem]
+    let titleFont: Font
+    let selectedStateColor: Color
+    let unselectedStateColor: Color
+
     @Binding var selectedItem: Int?
+
+    private func itemContentView(_ item: TabItem, selected: Bool) -> some View {
+        HStack {
+            if let icon = item.icon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: Layout.iconSize, height: Layout.iconSize)
+            }
+            Text(item.title)
+                .font(titleFont)
+                .foregroundColor(selected ? selectedStateColor : unselectedStateColor)
+        }
+    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 0) {
                 ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                     VStack(spacing: 0) {
-                        HStack {
-                            if let icon = item.icon {
-                                Image(uiImage: icon)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: Layout.iconSize, height: Layout.iconSize)
-                            }
-                            Text(item.title)
-                                .font(.subheadline)
-                                .bold()
-                                .foregroundColor(selectedItem == index ? Color.accentColor : Color.secondary)
-                        }
+                        itemContentView(item, selected: selectedItem == index)
                         .padding(.horizontal, Layout.horizontalContentPadding)
                         .padding(.vertical, Layout.verticalContentPadding)
                         .contentShape(Rectangle())
@@ -42,7 +49,7 @@ struct WooShippingTabView: View {
                         }
                         Rectangle()
                             .frame(height: Layout.selectionIndicatorHeight)
-                            .foregroundColor(selectedItem == index ? Color.accentColor : Color.clear)
+                            .foregroundColor(selectedItem == index ? selectedStateColor : Color.clear)
                     }
                 }
             }
@@ -61,11 +68,11 @@ struct WooShippingTabViewPreviewWrapper: View {
     ]
 
     var contentView: some View {
-        VStack {
-            Spacer()
-            WooShippingTabView(items: items, selectedItem: $selectedItem)
-            Spacer()
-        }
+        WooShippingTabView(items: items,
+                           titleFont: Font.subheadline.bold(),
+                           selectedStateColor: Color.accentColor,
+                           unselectedStateColor: Color.secondary,
+                           selectedItem: $selectedItem)
         .accentColor(Color.purple)
     }
 
@@ -83,10 +90,10 @@ struct WooShippingTabViewPreviewWrapper: View {
     var body: some View {
         Group {
             groupContent
-                .preferredColorScheme(.light)  // Light mode
+                .preferredColorScheme(.light)
                 .previewDisplayName("Light Mode")
             groupContent
-                .preferredColorScheme(.dark)  // Dark mode
+                .preferredColorScheme(.dark)
                 .previewDisplayName("Dark Mode")
         }
     }

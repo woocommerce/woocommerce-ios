@@ -202,7 +202,7 @@ public final class CoreDataManager: StorageManagerType {
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
-    public func reset() {
+    public func reset(completion: (() -> Void)?) {
         performAndSave({ storage in
             guard let backgroundContext = storage as? NSManagedObjectContext else {
                 DDLogError("⛔️ CoreDataManager failed to reset due to unexpected storage type!")

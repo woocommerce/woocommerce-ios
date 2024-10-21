@@ -56,25 +56,20 @@ final class CoreDataManagerTests: XCTestCase {
 
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
         // Arrange
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        manager.reset()
+        let modelsInventory = try makeModelsInventory()
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
 
         // Action
-        waitForExpectation { expectation in
-            manager.performAndSave({ storage in
-                _ = storage.insertNewObject(ofType: ShippingLine.self)
-            }, completion: {
-                XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
-                manager.reset()
-                expectation.fulfill()
-            }, on: .main)
-        }
-
-        // Assert
-        waitUntil {
-            viewContext.countObjects(ofType: ShippingLine.self) == 0
-        }
+        manager.performAndSave({ storage in
+            _ = storage.insertNewObject(ofType: ShippingLine.self)
+        }, completion: {
+            XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+            manager.reset {
+                // Assert
+                XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 0)
+            }
+        }, on: .main)
     }
 
     func test_performAndSave_executes_changes_in_background_then_updates_viewContext() throws {

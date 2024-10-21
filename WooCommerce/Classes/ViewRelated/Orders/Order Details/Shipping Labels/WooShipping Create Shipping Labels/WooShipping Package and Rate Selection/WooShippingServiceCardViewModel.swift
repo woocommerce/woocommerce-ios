@@ -40,19 +40,20 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
     /// Label if there is an option to require an adult signature.
     let adultSignatureRequiredLabel: String?
 
-    init(selected: Bool = false,
+    init(id: String = UUID().uuidString,
+         selected: Bool = false,
          signatureRequirement: SignatureRequirement = .none,
          carrierLogo: UIImage?,
          title: String,
          rateLabel: String,
          daysToDeliveryLabel: String?,
          extraInfoLabel: String?,
-         trackingLabel: String?,
+         hasTracking: Bool,
          insuranceLabel: String?,
-         freePickupLabel: String?,
+         hasFreePickup: Bool,
          signatureRequiredLabel: String?,
          adultSignatureRequiredLabel: String?) {
-        self.id = UUID().uuidString
+        self.id = id
         self.selected = selected
         self.signatureRequirement = signatureRequirement
         self.carrierLogo = carrierLogo
@@ -60,35 +61,22 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         self.rateLabel = rateLabel
         self.daysToDeliveryLabel = daysToDeliveryLabel
         self.extraInfoLabel = extraInfoLabel
-        self.trackingLabel = trackingLabel
+        self.trackingLabel = hasTracking ? Localization.tracking : nil
         self.insuranceLabel = insuranceLabel
-        self.freePickupLabel = freePickupLabel
+        self.freePickupLabel = hasFreePickup ? Localization.freePickup : nil
         self.signatureRequiredLabel = signatureRequiredLabel
         self.adultSignatureRequiredLabel = adultSignatureRequiredLabel
     }
 
-    init(selected: Bool = false,
-         signatureRequirement: SignatureRequirement = .none,
-         rate: ShippingLabelCarrierRate,
-         signatureRate: ShippingLabelCarrierRate? = nil,
-         adultSignatureRate: ShippingLabelCarrierRate? = nil,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        id = rate.rateID
-        self.selected = selected
-        self.signatureRequirement = signatureRequirement
-
-        title = rate.title
-        let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
-        if let deliveryDays = rate.deliveryDays {
-            daysToDeliveryLabel = String(format: formatString, deliveryDays)
-        }
-        else {
-            daysToDeliveryLabel = nil
-        }
+    convenience init(selected: Bool = false,
+                     signatureRequirement: SignatureRequirement = .none,
+                     rate: ShippingLabelCarrierRate,
+                     signatureRate: ShippingLabelCarrierRate? = nil,
+                     adultSignatureRate: ShippingLabelCarrierRate? = nil,
+                     currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-
-        rateLabel = {
+        let rateLabel = {
             switch (signatureRequirement, signatureRate, adultSignatureRate) {
             case (.signatureRequired, .some(let signatureRate), _):
                 currencyFormatter.formatAmount(Decimal(signatureRate.rate)) ?? ""
@@ -99,51 +87,58 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             }
         }()
 
-        carrierLogo = CarrierLogo(rawValue: rate.carrierID)?.image()
+        let daysToDeliveryLabel: String? = {
+            guard let deliveryDays = rate.deliveryDays else {
+                return nil
+            }
+            let formatString = rate.deliveryDays == 1 ? Localization.businessDaySingular : Localization.businessDaysPlural
+            return String(format: formatString, deliveryDays)
+        }()
 
-        var extras: [String] = []
-        if rate.hasTracking {
-            trackingLabel = Localization.tracking
-            extras.append(Localization.includesTracking)
-        } else {
-            trackingLabel = nil
-        }
+        let trackingLabel: String? = rate.hasTracking ? Localization.includesTracking.localizedLowercase : nil
+        let insuranceLabel: String? = {
+            if let doubleInsurance = Double(rate.insurance), doubleInsurance > 0 {
+                let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
+                return String(format: Localization.insuranceAmount, insuranceFormatted)
+            } else if rate.insurance.isNotEmpty {
+                return String(format: Localization.insuranceLiteral, rate.insurance)
+            } else {
+                return nil
+            }
+        }()
+        let freePickupLabel: String? = rate.isPickupFree ? Localization.freePickup.localizedLowercase : nil
+        let extras = [trackingLabel, insuranceLabel?.localizedLowercase, freePickupLabel]
+        let extraInfoLabel = extras.isNotEmpty ? extras.compacted().joined(separator: ", ") : nil
 
-        if let doubleInsurance = Double(rate.insurance), doubleInsurance > 0 {
-            let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
-            let insuranceString = String(format: Localization.insuranceAmount, insuranceFormatted)
-            insuranceLabel = insuranceString
-            extras.append(insuranceString.localizedLowercase)
-        } else if rate.insurance.isNotEmpty {
-            let insuranceString = String(format: Localization.insuranceLiteral, rate.insurance)
-            insuranceLabel = insuranceString
-            extras.append(insuranceString.localizedLowercase)
-        } else {
-            insuranceLabel = nil
-        }
-
-        if rate.isPickupFree {
-            freePickupLabel = Localization.freePickup
-            extras.append(Localization.freePickup.localizedLowercase)
-        } else {
-            freePickupLabel = nil
-        }
-
-        extraInfoLabel = extras.isNotEmpty ? extras.joined(separator: ", ") : nil
-
-        if let signatureRate {
+        let signatureRequiredLabel: String? = {
+            guard let signatureRate else {
+                return nil
+            }
             let amount = currencyFormatter.formatAmount(Decimal(signatureRate.rate - rate.rate)) ?? ""
-            signatureRequiredLabel = String(format: Localization.signatureRequired, amount)
-        } else {
-            signatureRequiredLabel = nil
-        }
+            return String(format: Localization.signatureRequired, amount)
+        }()
 
-        if let adultSignatureRate {
+        let adultSignatureRequiredLabel: String? = {
+            guard let adultSignatureRate else {
+                return nil
+            }
             let amount = currencyFormatter.formatAmount(Decimal(adultSignatureRate.rate - rate.rate)) ?? ""
-            adultSignatureRequiredLabel = String(format: Localization.adultSignatureRequired, amount)
-        } else {
-            adultSignatureRequiredLabel = nil
-        }
+            return String(format: Localization.adultSignatureRequired, amount)
+        }()
+
+        self.init(id: rate.rateID,
+                  selected: selected,
+                  signatureRequirement: signatureRequirement,
+                  carrierLogo: CarrierLogo(rawValue: rate.carrierID)?.image(),
+                  title: rate.title,
+                  rateLabel: rateLabel,
+                  daysToDeliveryLabel: daysToDeliveryLabel,
+                  extraInfoLabel: extraInfoLabel,
+                  hasTracking: rate.hasTracking,
+                  insuranceLabel: insuranceLabel,
+                  hasFreePickup: rate.isPickupFree,
+                  signatureRequiredLabel: signatureRequiredLabel,
+                  adultSignatureRequiredLabel: adultSignatureRequiredLabel)
     }
 
     func handleTap(on signatureRequirement: SignatureRequirement) {

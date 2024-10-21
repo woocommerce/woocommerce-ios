@@ -13,9 +13,9 @@ struct WooShippingServiceView: View {
                                                                                   rateLabel: "$7.63",
                                                                                   daysToDeliveryLabel: "7 business days",
                                                                                   extraInfoLabel: "Includes tracking, insurance (up to $100.00), free pickup",
-                                                                                  trackingLabel: "Tracking",
+                                                                                  hasTracking: true,
                                                                                   insuranceLabel: "Insurance (up to $100.00)",
-                                                                                  freePickupLabel: "Free pickup",
+                                                                                  hasFreePickup: true,
                                                                                   signatureRequiredLabel: "Signature Required (+$3.70)",
                                                                                   adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)"))
         }

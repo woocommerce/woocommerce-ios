@@ -141,6 +141,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
                   adultSignatureRequiredLabel: adultSignatureRequiredLabel)
     }
 
+    /// Sets `signatureRequirement` when a signature option is tapped.
     func handleTap(on signatureRequirement: SignatureRequirement) {
         if self.signatureRequirement == signatureRequirement {
             self.signatureRequirement = .none

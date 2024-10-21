@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Card to display the rate details for a shipping service with the Woo Shipping extension.
 struct WooShippingServiceCardView: View {
     @ObservedObject var viewModel: WooShippingServiceCardViewModel
 

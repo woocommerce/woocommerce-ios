@@ -190,6 +190,10 @@ public enum FeatureFlag: Int {
     case favoriteProducts
 
     /// Enables support for the new product global unique identifier
-    /// 
+    ///
     case productGlobalUniqueIdentifierSupport
+
+    /// Supports Woo Payments onboarding in POS so that merchants who have not completed onboarding can access POS.
+    ///
+    case paymentsOnboardingInPointOfSale
 }

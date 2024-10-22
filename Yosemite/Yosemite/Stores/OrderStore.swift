@@ -119,7 +119,7 @@ private extension OrderStore {
                 return
             }
 
-            self?.upsertSearchResultsInBackground(keyword: keyword, readOnlyOrders: orders) {
+            self?.upsertSearchResultsInBackground(for: siteID, keyword: keyword, readOnlyOrders: orders) {
                 onCompletion(nil)
             }
         }
@@ -579,8 +579,8 @@ extension OrderStore {
 
     /// Unit Testing Helper: Updates or Inserts a given Search Results page
     ///
-    func upsertStoredResults(keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
-        upsertStoredResults(keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+    func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
     }
 }
 
@@ -609,22 +609,24 @@ private extension OrderStore {
 
     /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
     ///
-    func upsertSearchResultsInBackground(keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+    func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
-            upsertStoredResults(keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
+            upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    func upsertStoredResults(keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+    func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
         let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
         searchResults.keyword = keyword
 
-        for readOnlyOrder in readOnlyOrders {
-            guard let storedOrder = storage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID) else {
+        let orderIDs = readOnlyOrders.map { $0.orderID }
+        let storedOrders = storage.loadOrders(siteID: siteID, orderIDs: orderIDs)
+        for orderID in orderIDs {
+            guard let storedOrder = storedOrders.first(where: { $0.orderID == orderID }) else {
                 continue
             }
 

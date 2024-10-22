@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Experiments
 
 /// Provides data needed for inventory settings.
 ///
@@ -91,8 +92,12 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
-    init(formType: FormType, productModel: ProductFormDataModel, stores: StoresManager = ServiceLocator.stores) {
+    init(formType: FormType,
+         productModel: ProductFormDataModel,
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productModel = productModel
         self.stores = stores
@@ -107,6 +112,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
         self.stockStatus = productModel.stockStatus
 
         self.isStockStatusEnabled = productModel.isStockStatusEnabled()
+        self.featureFlagService = featureFlagService
 
         reloadSections()
     }
@@ -257,10 +263,16 @@ private extension ProductInventorySettingsViewModel {
     }
 
     func createSKUSection() -> Section {
+        var rows: [ProductInventorySettingsViewController.Row] = [.sku]
+
+        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
+            rows.append(.globalUniqueIdentifier)
+        }
+
         if let error = error {
-            return Section(errorTitle: error.errorDescription, rows: [.sku])
+            return Section(errorTitle: error.errorDescription, rows: rows)
         } else {
-            return Section(rows: [.sku])
+            return Section(rows: rows)
         }
     }
 }

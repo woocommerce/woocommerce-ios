@@ -382,7 +382,6 @@ private extension CodeScannerViewController {
         let devices = AVCaptureDevice.DiscoverySession(deviceTypes:
                                                         [
                                                             .builtInWideAngleCamera,
-                                                            .builtInMicrophone,
                                                             .builtInDualCamera,
                                                             .builtInTelephotoCamera
                                                         ],

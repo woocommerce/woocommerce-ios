@@ -109,7 +109,9 @@ struct WooShippingAddPackageView: View {
                         .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                         AdaptiveStack(spacing: 8) {
                             ForEach(WooShippingPackageDimensionType.allCases, id: \.self) { dimensionType in
-                                WooShippingAddPackageDimensionView(dimensionType: dimensionType, fieldValue: Binding(get: {
+                                WooShippingAddPackageDimensionView(dimensionType: dimensionType,
+                                                                   dimensionUnit: customPackageViewModel.dimensionUnit,
+                                                                   fieldValue: Binding(get: {
                                     return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
                                 }, set: { value in
                                     self.customPackageViewModel.fieldValues[dimensionType] = value
@@ -255,6 +257,7 @@ struct WooShippingAddPackageView: View {
 
 struct WooShippingAddPackageDimensionView: View {
     let dimensionType: WooShippingPackageDimensionType
+    let dimensionUnit: String
     @Binding var fieldValue: String
     @FocusState var focusedField: WooShippingPackageDimensionType?
 
@@ -270,7 +273,7 @@ struct WooShippingAddPackageDimensionView: View {
                     .keyboardType(.decimalPad)
                     .bodyStyle()
                     .focused($focusedField, equals: dimensionType)
-                Text("cm")
+                Text(dimensionUnit)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -316,9 +319,8 @@ extension WooShippingAddPackageView {
         static let savePackageTemplatePlaceholder = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder",
                                                            value: "Enter a unique package name",
                                                            comment: "Placeholder text for package name field")
-        static let keyboardDoneButton = NSLocalizedString(
-            "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title",
-            value: "Done",
-            comment: "The title for a button to dismiss the keyboard on the order creation/editing screen")
+        static let keyboardDoneButton = NSLocalizedString("wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title",
+                                                          value: "Done",
+                                                          comment: "The title for a button to dismiss the keyboard on the order creation/editing screen")
     }
 }

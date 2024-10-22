@@ -69,6 +69,31 @@ private extension CustomFieldsListHostingController {
                 self?.saveCustomFieldButtonItem.isEnabled = pendingChanges.hasChanges
             }
             .store(in: &subscriptions)
+
+        viewModel.$isSavingChanges
+            .sink { [weak self] isSavingChanges in
+                if isSavingChanges {
+                    self?.displayInProgressController()
+                } else {
+                    self?.dismissInProgressController()
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    func displayInProgressController() {
+        let inProgressController = InProgressViewController(
+            viewProperties: InProgressViewProperties(
+                title: Localization.inProgressTitle,
+                message: Localization.inProgressMessage
+            )
+        )
+        inProgressController.modalPresentationStyle = .overFullScreen
+        present(inProgressController, animated: true)
+    }
+
+    func dismissInProgressController() {
+        dismiss(animated: true)
     }
 }
 
@@ -207,6 +232,16 @@ extension CustomFieldsListHostingController {
             "customFieldsListHostingController.deleteNoticeUndo",
             value: "Undo",
             comment: "Action to undo the deletion of a custom field"
+        )
+        static let inProgressTitle = NSLocalizedString(
+            "customFieldsListHostingController.inProgressTitle",
+            value: "Saving...",
+            comment: "Title for the in progress view shown when saving changes"
+        )
+        static let inProgressMessage = NSLocalizedString(
+            "customFieldsListHostingController.inProgressMessage",
+            value: "Please wait while we save your changes",
+            comment: "Message for the in progress view shown when saving changes"
         )
     }
 }

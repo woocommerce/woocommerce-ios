@@ -2,13 +2,16 @@ import SwiftUI
 
 struct TopTabItem<Content: View> {
     let name: String
+    let icon: UIImage?
     let content: () -> Content
     let onSelected: (() -> Void)?
 
     init(name: String,
+         icon: UIImage? = nil,
          @ViewBuilder content: @escaping () -> Content,
          onSelected: (() -> Void)? = nil) {
         self.name = name
+        self.icon = icon
         self.content = content
         self.onSelected = onSelected
     }

@@ -16,17 +16,25 @@ final class CustomFieldsListViewModel: ObservableObject {
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
 
-    @Published private var editedFields: [CustomFieldUI] = []
-    @Published private var addedFields: [CustomFieldUI] = []
-    @Published private var deletedFieldIds: [Int64] = []
-    @Published private(set) var hasChanges: Bool = false
+    @Published var pendingChanges: PendingCustomFieldsChanges
+    private var editedFields: [CustomFieldUI] {
+        get { pendingChanges.editedFields }
+        set { pendingChanges = pendingChanges.copy(editedFields: newValue) }
+    }
+    private var addedFields: [CustomFieldUI] {
+        get { pendingChanges.addedFields }
+        set { pendingChanges = pendingChanges.copy(addedFields: newValue) }
+    }
+    private var deletedFieldIds: [Int64] {
+        get { pendingChanges.deletedFieldIds }
+        set { pendingChanges = pendingChanges.copy(deletedFieldIds: newValue) }
+    }
 
     init(customFields: [CustomFieldViewModel], customFieldType: MetaDataType) {
         self.originalCustomFields = customFields
         self.customFieldsType = customFieldType
 
         updateCombinedList()
-        configureHasChanges()
     }
 }
 
@@ -133,12 +141,6 @@ private extension CustomFieldsListViewModel {
             .map { field in editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
             + addedFields
     }
-
-    func configureHasChanges() {
-        $editedFields.combineLatest($addedFields, $deletedFieldIds)
-            .map { $0.isNotEmpty || $1.isNotEmpty || $2.isNotEmpty }
-            .assign(to: &$hasChanges)
-    }
 }
 
 extension CustomFieldsListViewModel {
@@ -158,6 +160,36 @@ extension CustomFieldsListViewModel {
             self.key = customField.title
             self.value = customField.content
             self.fieldId = customField.id
+        }
+    }
+
+    struct PendingCustomFieldsChanges {
+        let editedFields: [CustomFieldUI]
+        let addedFields: [CustomFieldUI]
+        let deletedFieldIds: [Int64]
+
+        var hasChanges: Bool {
+            editedFields.isNotEmpty || addedFields.isNotEmpty || deletedFieldIds.isNotEmpty
+        }
+
+        func copy(editedFields: [CustomFieldUI]? = nil,
+                  addedFields: [CustomFieldUI]? = nil,
+                  deletedFieldIds: [Int64]? = nil) -> PendingCustomFieldsChanges {
+            PendingCustomFieldsChanges(editedFields: editedFields ?? self.editedFields,
+                                       addedFields: addedFields ?? self.addedFields,
+                                       deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
+        }
+
+        func asJsonString() -> String {
+            let changes = editedFields.map { field in
+                ["id": field.fieldId ?? 0, "key": field.key, "value": field.value]
+            } + addedFields.map { field in
+                ["key": field.key, "value": field.value]
+            } + deletedFieldIds.map { fieldId in
+                ["id": fieldId]
+            }
+
+            return try! JSONSerialization.data(withJSONObject: changes, options: .prettyPrinted).utf8String
         }
     }
 }

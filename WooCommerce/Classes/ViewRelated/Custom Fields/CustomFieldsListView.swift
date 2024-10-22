@@ -63,9 +63,9 @@ private extension CustomFieldsListHostingController {
     }
 
     func observeStateChange() {
-        viewModel.$hasChanges
-            .sink { [weak self] hasChanges in
-                self?.saveCustomFieldButtonItem.isEnabled = hasChanges
+        viewModel.$pendingChanges
+            .sink { [weak self] pendingChanges in
+                self?.saveCustomFieldButtonItem.isEnabled = pendingChanges.hasChanges
             }
             .store(in: &subscriptions)
     }

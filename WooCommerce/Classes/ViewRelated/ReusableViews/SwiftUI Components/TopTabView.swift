@@ -27,13 +27,11 @@ struct TopTabView<Content: View>: View {
     @Binding var showTabs: Bool
 
     let tabs: [TopTabItem<Content>]
+
+    // // tabs container customization
     // Specifies horizontal padding for the entire container of tabs.
     // - default value is 0
     let tabsContainerHorizontalPadding: CGFloat?
-    let tabsNameFont: Font
-    // Specifies the height and width of the icon
-    // - applied with the conditional modifier
-    let tabsIconSize: CGFloat?
     // Color used for tab name and underline selection indicator when selected
     let selectedStateColor: Color
     // Color used for tab name when not selected
@@ -43,30 +41,36 @@ struct TopTabView<Content: View>: View {
     let selectedTabIndicatorHeight: CGFloat
     // Padding between tab items
     let tabPadding: CGFloat
+
+    // // individual tab item customization
+    let tabsNameFont: Font
+    // Specifies the height and width of the icon
+    // - applied with the conditional modifier
+    let tabsIconSize: CGFloat?
     let tabItemContentHorizontalPadding: CGFloat?
     let tabItemContentVerticalPadding: CGFloat?
 
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
-         tabsNameFont: Font = .headline,
-         tabsIconSize: CGFloat? = 20.0,
          selectedStateColor: Color = Colors.selected,
          unselectedStateColor: Color = .primary,
          selectedTabIndicatorHeight: CGFloat = Layout.selectedTabIndicatorHeight,
          tabPadding: CGFloat = Layout.tabPadding,
+         tabsNameFont: Font = .headline,
+         tabsIconSize: CGFloat? = 20.0,
          tabItemContentHorizontalPadding: CGFloat? = nil,
          tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
         self._showTabs = showTabs
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
-        self.tabsNameFont = tabsNameFont
-        self.tabsIconSize = tabsIconSize
         self.selectedStateColor = selectedStateColor
         self.unselectedStateColor = unselectedStateColor
         self.selectedTabIndicatorHeight = selectedTabIndicatorHeight
         self.tabPadding = tabPadding
+        self.tabsNameFont = tabsNameFont
+        self.tabsIconSize = tabsIconSize
         self.tabItemContentHorizontalPadding = tabItemContentHorizontalPadding
         self.tabItemContentVerticalPadding = tabItemContentVerticalPadding
     }

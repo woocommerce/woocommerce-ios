@@ -3,7 +3,7 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
+final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel, Identifiable {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
@@ -176,17 +176,5 @@ private extension CardPresentPaymentsOnboardingViewModel {
                 remindLater: remindLater,
                 countryCode: countryCode,
                 gatewayID: state.gatewayID))
-    }
-}
-
-extension CardPresentPaymentsOnboardingViewModel: Hashable, Identifiable {
-    static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
-        lhs.state == rhs.state &&
-        lhs.userIsAdministrator == rhs.userIsAdministrator
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(state)
-        hasher.combine(userIsAdministrator)
     }
 }

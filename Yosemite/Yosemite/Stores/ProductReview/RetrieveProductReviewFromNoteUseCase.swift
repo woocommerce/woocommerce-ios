@@ -1,7 +1,7 @@
 
 import Foundation
 import Networking
-import protocol Storage.StorageType
+import protocol Storage.StorageManagerType
 
 /// Fetches the `Note`, `ProductReview`, and `Product` in sequence from the Storage and/or API
 /// using a `noteID`.
@@ -43,36 +43,31 @@ final class RetrieveProductReviewFromNoteUseCase {
     private let productReviewsRemote: ProductReviewsRemoteProtocol
     private let productsRemote: ProductsRemoteProtocol
 
-    /// The derived `StorageType` used by the `ProductReviewStore`.
-    ///
+    /// Storage Layer
     /// We should use `weak` because we have to guarantee that we will not do any saving if this
-    /// `StorageType` is deallocated, which is part of the `ProductReviewStore` lifecycle.
+    /// `StorageManagerType` is deallocated, which is part of the `ProductReviewStore` lifecycle.
     ///
-    private weak var derivedStorage: StorageType?
+    private weak var storageManager: StorageManagerType?
 
     /// Create an instance of self.
     ///
-    /// - Parameters:
-    ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
-    init(derivedStorage: StorageType,
-         notificationsRemote: NotificationsRemoteProtocol,
+    init(notificationsRemote: NotificationsRemoteProtocol,
          productReviewsRemote: ProductReviewsRemoteProtocol,
-         productsRemote: ProductsRemoteProtocol) {
-        self.derivedStorage = derivedStorage
+         productsRemote: ProductsRemoteProtocol,
+         storageManager: StorageManagerType) {
         self.notificationsRemote = notificationsRemote
         self.productReviewsRemote = productReviewsRemote
         self.productsRemote = productsRemote
+        self.storageManager = storageManager
     }
 
     /// Create an instance of self.
     ///
-    /// - Parameters:
-    ///   - derivedStorage: The derived (background) `StorageType` of `ProductReviewStore`.
-    convenience init(network: Network, derivedStorage: StorageType) {
-        self.init(derivedStorage: derivedStorage,
-                  notificationsRemote: NotificationsRemote(network: network),
+    convenience init(network: Network, storageManager: StorageManagerType) {
+        self.init(notificationsRemote: NotificationsRemote(network: network),
                   productReviewsRemote: ProductReviewsRemote(network: network),
-                  productsRemote: ProductsRemote(network: network))
+                  productsRemote: ProductsRemote(network: network),
+                  storageManager: storageManager)
     }
 
     /// Retrieve the `Note`, `ProductReview`, and `Product` based on the given `noteID`.
@@ -101,7 +96,7 @@ final class RetrieveProductReviewFromNoteUseCase {
     private func fetchNote(noteID: Int64,
                            abort: @escaping AbortBlock,
                            next: @escaping (Note) -> Void) {
-        if let noteInStorage = derivedStorage?.loadNotification(noteID: noteID) {
+        if let noteInStorage = storageManager?.viewStorage.loadNotification(noteID: noteID) {
             return next(noteInStorage.toReadOnly())
         }
 
@@ -129,7 +124,7 @@ final class RetrieveProductReviewFromNoteUseCase {
                 return abort(ProductReviewFromNoteRetrieveError.reviewNotFound)
         }
 
-        if let productReviewInStorage = derivedStorage?.loadProductReview(siteID: Int64(siteID), reviewID: Int64(reviewID)) {
+        if let productReviewInStorage = storageManager?.viewStorage.loadProductReview(siteID: Int64(siteID), reviewID: Int64(reviewID)) {
             return next(productReviewInStorage.toReadOnly())
         }
 
@@ -148,17 +143,14 @@ final class RetrieveProductReviewFromNoteUseCase {
     private func saveProductReview(_ review: ProductReview,
                                    abort: @escaping AbortBlock,
                                    next: @escaping () -> Void) {
-        guard let derivedStorage = derivedStorage else {
+        guard let storageManager else {
             return abort(ProductReviewFromNoteRetrieveError.storageNoLongerAvailable)
         }
-
-        derivedStorage.perform {
-            let storageReview = derivedStorage.loadProductReview(siteID: review.siteID, reviewID: review.reviewID)
-                ?? derivedStorage.insertNewObject(ofType: StorageProductReview.self)
+        storageManager.performAndSave({ storage in
+            let storageReview = storage.loadProductReview(siteID: review.siteID, reviewID: review.reviewID)
+                ?? storage.insertNewObject(ofType: StorageProductReview.self)
             storageReview.update(with: review)
-
-            DispatchQueue.main.async(execute: next)
-        }
+        }, completion: next, on: .main)
     }
 
     /// Fetch the `Product` from storage, or from the API if it is not available in storage.
@@ -167,7 +159,7 @@ final class RetrieveProductReviewFromNoteUseCase {
                               productID: Int64,
                               abort: @escaping AbortBlock,
                               next: @escaping (Product) -> Void) {
-        if let productInStorage = derivedStorage?.loadProduct(siteID: siteID, productID: productID) {
+        if let productInStorage = storageManager?.viewStorage.loadProduct(siteID: siteID, productID: productID) {
             return next(productInStorage.toReadOnly())
         }
 

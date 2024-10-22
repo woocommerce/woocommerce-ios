@@ -42,7 +42,7 @@ final class CustomFieldsListViewModel: ObservableObject {
         self.parentItemId = parentItemID
         self.customFieldsType = customFieldType
 
-        updateCombinedList()
+        observePendingChanges()
     }
 }
 
@@ -68,13 +68,10 @@ extension CustomFieldsListViewModel {
                 DDLogError("⛔️ Error: Trying to edit an existing field but it has no id. It might be the wrong field to edit.")
             }
         }
-
-        updateCombinedList()
     }
 
     func addField(_ field: CustomFieldUI) {
         addedFields.append(field)
-        updateCombinedList()
     }
 
     func deleteField(_ field: CustomFieldUI) {
@@ -84,8 +81,6 @@ extension CustomFieldsListViewModel {
             // The deleted field is not yet saved on the server, so we remove it from the added fields
             addedFields.removeAll { $0.id == field.id }
         }
-
-        updateCombinedList()
 
         notice = Notice(title: CustomFieldsListHostingController.Localization.deleteNoticeTitle,
                         feedbackType: .success,
@@ -115,7 +110,6 @@ extension CustomFieldsListViewModel {
             let result = try await dispatchSavingChanges()
             originalCustomFields = result.map { CustomFieldViewModel(metadata: $0) }
             pendingChanges = PendingCustomFieldsChanges()
-            updateCombinedList()
         } catch {
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,
@@ -158,15 +152,19 @@ private extension CustomFieldsListViewModel {
         } else {
             addedFields.append(field)
         }
-
-        updateCombinedList()
     }
 
-    func updateCombinedList() {
-        combinedList = originalCustomFields
-            .filter { field in !deletedFieldIds.contains(where: { $0 == field.id }) }
-            .map { field in editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
-            + addedFields
+    func observePendingChanges() {
+        $pendingChanges
+            .map { [weak self] pendingChanges in
+                guard let self = self else { return [] }
+                
+                return self.originalCustomFields
+                    .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.id }) }
+                    .map { field in pendingChanges.editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
+                    + pendingChanges.addedFields
+            }
+            .assign(to: &$combinedList)
     }
 
     @MainActor

@@ -54,10 +54,8 @@ public final class MetaDataStore: Store {
         }
 
         switch action {
-        case let .updateOrderMetaData(siteID, orderID, metadata, onCompletion):
-            updateOrderMetaData(siteID: siteID, orderID: orderID, metadata: metadata, onCompletion: onCompletion)
-        case let .updateProductMetaData(siteID, productID, metadata, onCompletion):
-            updateProductMetaData(siteID: siteID, productID: productID, metadata: metadata, onCompletion: onCompletion)
+        case let .updateMetaData(siteID, parentItemId, metaDataType, metadata, onCompletion):
+            updateMetaData(siteID: siteID, parentItemID: parentItemId, metaDataType: metaDataType, metadata: metadata, onCompletion: onCompletion)
         }
     }
 }
@@ -65,6 +63,25 @@ public final class MetaDataStore: Store {
 // MARK: - Upsert MetaData for Orders and Products
 //
 private extension MetaDataStore {
+    /// Updates metadata both remotely and in the local database.
+    /// - Parameters:
+    /// - siteID: Site id of the order.
+    /// - parentItemID: ID of the parent item.
+    /// - metaDataType: Type of metadata.
+    /// - metadata: Metadata to be updated.
+    func updateMetaData(siteID: Int64,
+                        parentItemID: Int64,
+                        metaDataType: MetaDataType,
+                        metadata: [[String: Any?]],
+                        onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
+        switch metaDataType {
+        case .order:
+            updateOrderMetaData(siteID: siteID, orderID: parentItemID, metadata: metadata, onCompletion: onCompletion)
+        case .product:
+            updateProductMetaData(siteID: siteID, productID: parentItemID, metadata: metadata, onCompletion: onCompletion)
+        }
+    }
+
     /// Updates order metadata both remotely and in the local database..
     /// - Parameters:
     ///   - siteID: Site id of the order.

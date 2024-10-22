@@ -116,7 +116,7 @@ extension CustomFieldsListViewModel {
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,
                             feedbackType: .error)
         }
-      
+
         isSavingChanges = false
     }
 }
@@ -159,7 +159,7 @@ private extension CustomFieldsListViewModel {
         $pendingChanges
             .map { [weak self] pendingChanges in
                 guard let self = self else { return [] }
-                
+
                 return self.originalCustomFields
                     .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.id }) }
                     .map { field in pendingChanges.editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
@@ -175,21 +175,11 @@ private extension CustomFieldsListViewModel {
     @MainActor
     func dispatchSavingChanges() async throws -> [MetaData] {
         return try await withCheckedThrowingContinuation { continuation in
-            let action = switch customFieldsType {
-            case .order:
-                MetaDataAction.updateOrderMetaData(siteID: siteId,
-                                                   orderID: parentItemId,
-                                                   metadata: pendingChanges.asJson(),
-                                                   onCompletion: { result in
-                                                        continuation.resume(with: result)
-                                                   })
-            case .product:
-                MetaDataAction.updateProductMetaData(siteID: siteId,
-                                                     productID: parentItemId,
-                                                     metadata: pendingChanges.asJson(),
-                                                     onCompletion: { result in
-                                                        continuation.resume(with: result)
-                                                     })
+            let action = MetaDataAction.updateMetaData(siteID: siteId,
+                                                       parentItemID: parentItemId,
+                                                       metaDataType: customFieldsType,
+                                                       metadata: pendingChanges.asJson()) { result in
+                continuation.resume(with: result)
             }
 
             stores.dispatch(action)

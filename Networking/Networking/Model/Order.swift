@@ -222,7 +222,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         let needsProcessing = try container.decodeIfPresent(Bool.self, forKey: .needsProcessing) ?? false
 
         // Filter out metadata if the key is prefixed with an underscore (internal meta keys) or the value is empty
-        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") && !$0.value.isEmpty }) ?? []
+        let customFields = allOrderMetaData?.filter({ !$0.key.hasPrefix("_") }) ?? []
 
         // Subscriptions extension
         let renewalSubscriptionID = allOrderMetaData?.first(where: { $0.key == "_subscription_renewal" })?.value

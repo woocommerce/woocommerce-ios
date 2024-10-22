@@ -919,7 +919,7 @@ final class ProductsRemoteTests: XCTestCase {
             $0 as? NetworkError == .notFound()
         })
     }
-    
+
     func test_loadAllSimpleProductsForPointOfSale_when_page_has_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)

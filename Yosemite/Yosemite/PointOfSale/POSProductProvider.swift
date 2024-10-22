@@ -26,7 +26,6 @@ public final class POSProductProvider: POSItemProvider {
                   network: AlamofireNetwork(credentials: credentials))
     }
 
-    
     /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
     /// and maps them to POSItem type.
     ///

@@ -58,8 +58,9 @@ private extension CustomFieldsListHostingController {
     }
 
     @objc func saveCustomField() {
-        // todo: call viewmodel's save function
-        navigationController?.popViewController(animated: true)
+        Task {
+            await viewModel.saveChanges()
+        }
     }
 
     func observeStateChange() {
@@ -229,6 +230,8 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
                 ],
+                siteID: 0,
+                parentItemID: 0,
                 customFieldType: .order
                 ))
     }

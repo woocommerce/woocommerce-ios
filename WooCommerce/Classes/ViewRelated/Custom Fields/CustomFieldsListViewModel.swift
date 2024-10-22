@@ -1,9 +1,14 @@
 import Combine
 import Foundation
+import Networking
+import Yosemite
 
 final class CustomFieldsListViewModel: ObservableObject {
-    private let originalCustomFields: [CustomFieldViewModel]
+    private let stores: StoresManager
+    private var originalCustomFields: [CustomFieldViewModel]
     private let customFieldsType: MetaDataType
+    private let siteId: Int64
+    private let parentItemId: Int64
 
     var shouldShowErrorState: Bool {
         savingError != nil
@@ -11,12 +16,13 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
+    @Published var isSavingChanges: Bool = false
 
     @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
 
-    @Published var pendingChanges: PendingCustomFieldsChanges
+    @Published private(set) var pendingChanges = PendingCustomFieldsChanges()
     private var editedFields: [CustomFieldUI] {
         get { pendingChanges.editedFields }
         set { pendingChanges = pendingChanges.copy(editedFields: newValue) }
@@ -30,8 +36,15 @@ final class CustomFieldsListViewModel: ObservableObject {
         set { pendingChanges = pendingChanges.copy(deletedFieldIds: newValue) }
     }
 
-    init(customFields: [CustomFieldViewModel], customFieldType: MetaDataType) {
+    init(customFields: [CustomFieldViewModel],
+         siteID: Int64,
+         parentItemID: Int64,
+         customFieldType: MetaDataType,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
         self.originalCustomFields = customFields
+        self.siteId = siteID
+        self.parentItemId = parentItemID
         self.customFieldsType = customFieldType
 
         updateCombinedList()
@@ -97,11 +110,28 @@ extension CustomFieldsListViewModel {
             addField(newField)
         }
     }
+
+    /// Save changes to the server, uses async/await
+    @MainActor
+    func saveChanges() async {
+        isSavingChanges = true
+
+        do {
+            let result = try await dispatchSavingChanges()
+            originalCustomFields = result.map { CustomFieldViewModel(metadata: $0) }
+            pendingChanges = PendingCustomFieldsChanges()
+            updateCombinedList()
+            isSavingChanges = false
+        } catch {
+            savingError = error
+            isSavingChanges = false
+        }
+    }
 }
 
 private extension CustomFieldsListViewModel {
     func editLocallyAddedField(oldField: CustomFieldUI, newField: CustomFieldUI) {
-        if let index = addedFields.firstIndex(where: { $0.key == oldField.key }) {
+        if let index = pendingChanges.addedFields.firstIndex(where: { $0.key == oldField.key }) {
             addedFields[index] = newField
         } else {
             // This shouldn't happen in normal flow, but logging just in case
@@ -141,6 +171,30 @@ private extension CustomFieldsListViewModel {
             .map { field in editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
             + addedFields
     }
+
+    @MainActor
+    func dispatchSavingChanges() async throws -> [MetaData] {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = switch customFieldsType {
+            case .order:
+                MetaDataAction.updateOrderMetaData(siteID: siteId,
+                                                   orderID: parentItemId,
+                                                   metadata: pendingChanges.asJson(),
+                                                   onCompletion: { result in
+                                                        continuation.resume(with: result)
+                                                   })
+            case .product:
+                MetaDataAction.updateProductMetaData(siteID: siteId,
+                                                     productID: parentItemId,
+                                                     metadata: pendingChanges.asJson(),
+                                                     onCompletion: { result in
+                                                        continuation.resume(with: result)
+                                                     })
+            }
+
+            stores.dispatch(action)
+        }
+    }
 }
 
 extension CustomFieldsListViewModel {
@@ -172,6 +226,14 @@ extension CustomFieldsListViewModel {
             editedFields.isNotEmpty || addedFields.isNotEmpty || deletedFieldIds.isNotEmpty
         }
 
+        init(editedFields: [CustomFieldUI] = [],
+             addedFields: [CustomFieldUI] = [],
+             deletedFieldIds: [Int64] = []) {
+            self.editedFields = editedFields
+            self.addedFields = addedFields
+            self.deletedFieldIds = deletedFieldIds
+        }
+
         func copy(editedFields: [CustomFieldUI]? = nil,
                   addedFields: [CustomFieldUI]? = nil,
                   deletedFieldIds: [Int64]? = nil) -> PendingCustomFieldsChanges {
@@ -180,16 +242,24 @@ extension CustomFieldsListViewModel {
                                        deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
         }
 
-        func asJsonString() -> String {
-            let changes = editedFields.map { field in
-                ["id": field.fieldId ?? 0, "key": field.key, "value": field.value]
-            } + addedFields.map { field in
-                ["key": field.key, "value": field.value]
-            } + deletedFieldIds.map { fieldId in
-                ["id": fieldId]
+        func asJson() -> [[String: Any?]] {
+            func metaDataAsJson(_ field: CustomFieldUI) -> [String: Any] {
+                var json: [String: Any] = [:]
+                if let fieldId = field.fieldId {
+                    json["id"] = fieldId
+                }
+                json["key"] = field.key
+                json["value"] = field.value
+                return json
             }
 
-            return try! JSONSerialization.data(withJSONObject: changes, options: .prettyPrinted).utf8String
+            var json: [[String: Any?]] = []
+            json.append(contentsOf: editedFields.map { metaDataAsJson($0) })
+            json.append(contentsOf: addedFields.map { metaDataAsJson($0) })
+            json.append(contentsOf: deletedFieldIds.map {
+                ["id": $0, "value": nil]
+            })
+            return json
         }
     }
 }

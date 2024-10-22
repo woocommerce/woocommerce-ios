@@ -14,7 +14,7 @@ public enum MetaDataAction: Action {
     ///
     case updateOrderMetaData(siteID: Int64,
                              orderID: Int64,
-                             metadata: [[String: Any]],
+                             metadata: [[String: Any?]],
                              onCompletion: (Result<[MetaData], Error>) -> Void)
 
     /// Updates product metadata both remotely and in the local database.
@@ -26,6 +26,6 @@ public enum MetaDataAction: Action {
     ///
     case updateProductMetaData(siteID: Int64,
                                productID: Int64,
-                               metadata: [[String: Any]],
+                               metadata: [[String: Any?]],
                                onCompletion: (Result<[MetaData], Error>) -> Void)
 }

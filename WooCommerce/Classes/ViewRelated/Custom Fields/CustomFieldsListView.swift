@@ -1,7 +1,9 @@
+import Combine
 import SwiftUI
 
 final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
     private let viewModel: CustomFieldsListViewModel
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
         self.viewModel = viewModel
@@ -14,6 +16,7 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
         super.viewDidLoad()
 
         configureNavigation()
+        observeStateChange()
     }
 
     /// Create a `UIBarButtonItem` to be used as the add custom field button on the top-right.
@@ -57,6 +60,14 @@ private extension CustomFieldsListHostingController {
     @objc func saveCustomField() {
         // todo: call viewmodel's save function
         navigationController?.popViewController(animated: true)
+    }
+
+    func observeStateChange() {
+        viewModel.$hasChanges
+            .sink { [weak self] hasChanges in
+                self?.saveCustomFieldButtonItem.isEnabled = hasChanges
+            }
+            .store(in: &subscriptions)
     }
 }
 

@@ -10,6 +10,14 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds value for toggle that determines if we are showing button for saving the template
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
+    // The dimension unit used in the store (e.g. "in")
+    let dimensionUnit: String
+
+    // MARK: Initialization
+
+    init(dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
+        self.dimensionUnit = dimensionUnit ?? ""
+    }
 
     // Field values are invalid if one of them is empty
     var areFieldValuesInvalid: Bool {

@@ -75,7 +75,9 @@ final class CodeScannerViewController: UIViewController {
     }
 
     private func configureSwapCameraButton() {
-        swapCameraButton.isHidden = captureDevice(with: .front) == nil || captureDevice(with: .back) == nil
+        let isFrontCameraAvailable = captureDevice(with: .front) != nil
+        let isBackCameraAvailable = captureDevice(with: .back) != nil
+        swapCameraButton.isHidden = !(isFrontCameraAvailable && isBackCameraAvailable)
         swapCameraButton.tintColor = UIColor.white
         swapCameraButton.addTarget(self, action: #selector(swapCamera), for: .touchUpInside)
     }

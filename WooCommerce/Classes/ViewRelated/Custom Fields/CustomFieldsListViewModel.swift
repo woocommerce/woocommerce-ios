@@ -10,15 +10,10 @@ final class CustomFieldsListViewModel: ObservableObject {
     private let siteId: Int64
     private let parentItemId: Int64
 
-    var shouldShowErrorState: Bool {
-        savingError != nil
-    }
-
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
     @Published var isSavingChanges: Bool = false
 
-    @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
 
@@ -121,11 +116,13 @@ extension CustomFieldsListViewModel {
             originalCustomFields = result.map { CustomFieldViewModel(metadata: $0) }
             pendingChanges = PendingCustomFieldsChanges()
             updateCombinedList()
-            isSavingChanges = false
         } catch {
-            savingError = error
-            isSavingChanges = false
+            notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
+                            message: CustomFieldsListHostingController.Localization.saveErrorMessage,
+                            feedbackType: .error)
         }
+      
+        isSavingChanges = false
     }
 }
 

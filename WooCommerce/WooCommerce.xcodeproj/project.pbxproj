@@ -1483,11 +1483,16 @@
 		57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */; };
 		57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */; };
 		581D5052274AA2480089B6AD /* View+AutofocusTextModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */; };
+		6809106F2CA25FAE0057B02A /* WebhooksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6809106E2CA25FAE0057B02A /* WebhooksView.swift */; };
+		6809107A2CA2B37F0057B02A /* WebhooksViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910792CA2B37F0057B02A /* WebhooksViewModel.swift */; };
 		680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680BA5992A4C377900F5559D /* UpgradeViewState.swift */; };
 		680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */; };
 		680E36B72BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */; };
+		681842D62CA4006700246C90 /* WebhookRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681842D52CA4006700246C90 /* WebhookRowView.swift */; };
+		681842D82CA400AD00246C90 /* WebhookRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
+		682820582CA5084B00295107 /* WebhooksViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682820572CA5084B00295107 /* WebhooksViewModelTests.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
 		6832C7CC26DA5FDF00BA4088 /* LabeledTextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */; };
 		683421642ACE9391009021D7 /* ProductDiscountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683421632ACE9391009021D7 /* ProductDiscountView.swift */; };
@@ -4500,11 +4505,16 @@
 		57F2C6CC246DECC10074063B /* SummaryTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		57F42E3F253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModelTests.swift; sourceTree = "<group>"; };
 		581D5051274AA2480089B6AD /* View+AutofocusTextModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AutofocusTextModifier.swift"; sourceTree = "<group>"; };
+		6809106E2CA25FAE0057B02A /* WebhooksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksView.swift; sourceTree = "<group>"; };
+		680910792CA2B37F0057B02A /* WebhooksViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksViewModel.swift; sourceTree = "<group>"; };
 		680BA5992A4C377900F5559D /* UpgradeViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeViewState.swift; sourceTree = "<group>"; };
 		680E36B42BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		680E36B62BD8C49F00E8BCEA /* OrderSubscriptionTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCellViewModel.swift; sourceTree = "<group>"; };
+		681842D52CA4006700246C90 /* WebhookRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRowView.swift; sourceTree = "<group>"; };
+		681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhookRowViewModel.swift; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
+		682820572CA5084B00295107 /* WebhooksViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksViewModelTests.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
 		6832C7CB26DA5FDE00BA4088 /* LabeledTextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LabeledTextViewTableViewCell.xib; sourceTree = "<group>"; };
 		683421632ACE9391009021D7 /* ProductDiscountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDiscountView.swift; sourceTree = "<group>"; };
@@ -9305,12 +9315,31 @@
 			path = TitleAndEditableValueTableViewCell;
 			sourceTree = "<group>";
 		};
+		6809106D2CA25F830057B02A /* Webhooks */ = {
+			isa = PBXGroup;
+			children = (
+				6809106E2CA25FAE0057B02A /* WebhooksView.swift */,
+				681842D52CA4006700246C90 /* WebhookRowView.swift */,
+				680910792CA2B37F0057B02A /* WebhooksViewModel.swift */,
+				681842D72CA400AD00246C90 /* WebhookRowViewModel.swift */,
+			);
+			path = Webhooks;
+			sourceTree = "<group>";
+		};
 		682210EB2909664800814E14 /* Customer */ = {
 			isa = PBXGroup;
 			children = (
 				682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */,
 			);
 			path = Customer;
+			sourceTree = "<group>";
+		};
+		682820562CA5081C00295107 /* Webhooks */ = {
+			isa = PBXGroup;
+			children = (
+				682820572CA5084B00295107 /* WebhooksViewModelTests.swift */,
+			);
+			path = Webhooks;
 			sourceTree = "<group>";
 		};
 		6850C5EC2B69E6460026A93B /* Receipts */ = {
@@ -11832,6 +11861,7 @@
 				E138D4F2269ED99A006EA5C6 /* In-Person Payments */,
 				CE27257A219249B5002B22EB /* Help */,
 				CE22E3F821714639005A6BEF /* Privacy */,
+				6809106D2CA25F830057B02A /* Webhooks */,
 				02E4A0842BFB1D1F006D4F87 /* POS */,
 				03191AE828E20C9200670723 /* PluginDetailsRowView.swift */,
 			);
@@ -12227,6 +12257,7 @@
 				2619FA2A25C897720006DAFF /* Add Attributes */,
 				454453C62755170100464AC5 /* HubMenu */,
 				261E91A129C9880C00A5C118 /* Upgrades */,
+				682820562CA5081C00295107 /* Webhooks */,
 				CE6302442BAB527600E3325C /* Customers */,
 				D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */,
 				D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */,
@@ -14811,6 +14842,7 @@
 				027EB56E29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift in Sources */,
 				26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
+				681842D82CA400AD00246C90 /* WebhookRowViewModel.swift in Sources */,
 				684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */,
 				CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */,
 				0230B4D62C33454900F2F660 /* PointOfSaleCardPresentPaymentCaptureErrorMessageView.swift in Sources */,
@@ -15004,6 +15036,7 @@
 				68E952D22875A44B0095A23D /* CardReaderType+Manual.swift in Sources */,
 				035DBA4B292E248C003E5125 /* CardPresentPaymentAlertsPresenter.swift in Sources */,
 				02D9EFCB2B69F91B00AE8968 /* ProductsSplitViewCoordinator.swift in Sources */,
+				6809107A2CA2B37F0057B02A /* WebhooksViewModel.swift in Sources */,
 				0211259F2578DE310075AD2A /* ShippingLabelPrintingStepView.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				20D2CCA52C7E328300051705 /* POSModalCloseButton.swift in Sources */,
@@ -15658,6 +15691,7 @@
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
+				6809106F2CA25FAE0057B02A /* WebhooksView.swift in Sources */,
 				0300201029C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift in Sources */,
 				EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */,
 				B6C78B8E293BAE68008934A1 /* AnalyticsHubLastMonthRangeData.swift in Sources */,
@@ -16183,6 +16217,7 @@
 				EE1905842B579B6700617C53 /* BlazeCampaignCreationLoadingView.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
 				EE66BB0E2B29BF2800518DAF /* ThemeInstaller.swift in Sources */,
+				681842D62CA4006700246C90 /* WebhookRowView.swift in Sources */,
 				0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */,
 				26C98F9829C1247000F96503 /* WPComSitePlan+FreeTrial.swift in Sources */,
 				3120491726DD807900A4EC4F /* LabelAndButtonTableViewCell.swift in Sources */,
@@ -16904,6 +16939,7 @@
 				DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */,
 				45B98E1F25DECC1C00A1232B /* ShippingLabelAddressFormViewModelTests.swift in Sources */,
 				EE4C75DF2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift in Sources */,
+				682820582CA5084B00295107 /* WebhooksViewModelTests.swift in Sources */,
 				028E1F722833E954001F8829 /* DashboardViewModelTests.swift in Sources */,
 				02BC5AA424D27F8900C43326 /* ProductVariationFormViewModel+ObservablesTests.swift in Sources */,
 				CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */,
@@ -17380,7 +17416,9 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = NotificationExtension/NotificationExtension.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NotificationExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationExtension;
@@ -17395,6 +17433,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.notificationcontentextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce.notificationcontentextension";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "WooCommerce Notification Content Exten Development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -17479,7 +17518,9 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=watchos*]" = PZYM8XX95Q;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -17497,6 +17538,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce.watchkitapp.widgets";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "WooCommerce Watch App Widgets Extension Developmen";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -17599,8 +17641,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_ASSET_PATHS = "\"Woo Watch App/Preview Content\"";
+				"DEVELOPMENT_TEAM[sdk=watchos*]" = PZYM8XX95Q;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -17619,6 +17663,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce.watchkitapp";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "WooCommerce Watch App Development";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -17713,7 +17758,9 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "StoreWidgets/Entitlements/StoreWidgets-Release.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StoreWidgets/Info.plist;
@@ -17728,6 +17775,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.storewidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce.storewidgets";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "WooCommerce Store Widgets Development";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -18051,7 +18099,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Resources/Woo-Release-macOS.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
 				INFOPLIST_PREFIX_HEADER = DerivedSources/InfoPlist.h;
@@ -18064,6 +18114,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.automattic.woocommerce";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "WooCommerce Development";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;

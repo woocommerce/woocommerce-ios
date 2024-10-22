@@ -253,6 +253,8 @@
 		578CE7942475F52F00492EBF /* MockNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7932475F52F00492EBF /* MockNote.swift */; };
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
+		680910782CA2B0AF0057B02A /* WebhooksService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680910772CA2B0AF0057B02A /* WebhooksService.swift */; };
+		6809107C2CA2B5900057B02A /* Webhook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6809107B2CA2B5900057B02A /* Webhook.swift */; };
 		681D952B28E0F62B00C4039E /* CustomerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681D952A28E0F62B00C4039E /* CustomerAction.swift */; };
 		687F83722C0EBF8900460AB3 /* POSProductProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687F83712C0EBF8900460AB3 /* POSProductProviderTests.swift */; };
 		6889089F28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */; };
@@ -758,6 +760,8 @@
 		578CE7962475FD8200492EBF /* MockProductReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductReview.swift; sourceTree = "<group>"; };
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		680910772CA2B0AF0057B02A /* WebhooksService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebhooksService.swift; sourceTree = "<group>"; };
+		6809107B2CA2B5900057B02A /* Webhook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webhook.swift; sourceTree = "<group>"; };
 		681D952A28E0F62B00C4039E /* CustomerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerAction.swift; sourceTree = "<group>"; };
 		687F83712C0EBF8900460AB3 /* POSProductProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductProviderTests.swift; sourceTree = "<group>"; };
 		6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1433,6 +1437,15 @@
 			path = SnapshotsProvider;
 			sourceTree = "<group>";
 		};
+		680910762CA2B08B0057B02A /* Webhooks */ = {
+			isa = PBXGroup;
+			children = (
+				6809107B2CA2B5900057B02A /* Webhook.swift */,
+				680910772CA2B0AF0057B02A /* WebhooksService.swift */,
+			);
+			path = Webhooks;
+			sourceTree = "<group>";
+		};
 		687F83702C0EBF3E00460AB3 /* PointOfSale */ = {
 			isa = PBXGroup;
 			children = (
@@ -1605,6 +1618,7 @@
 				02E262BB238CE45300B79588 /* ShippingSettings */,
 				209AD3CA2AC1A65700825D76 /* Payments */,
 				B52E002C2119E6C000700FDE /* Internal */,
+				680910762CA2B08B0057B02A /* Webhooks */,
 				B5631ECC2114DF8C008D3535 /* EntityListener.swift */,
 				B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */,
 				B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */,
@@ -2313,6 +2327,7 @@
 				02E3B623290267D3007E0F13 /* AccountCreationStore.swift in Sources */,
 				02FF056523DE9C8B0058E6E7 /* MediaStore.swift in Sources */,
 				7493751022498AB1007D85D1 /* ProductDefaultAttribute+ReadOnlyConvertible.swift in Sources */,
+				6809107C2CA2B5900057B02A /* Webhook.swift in Sources */,
 				261F94E6242EFF8700762B58 /* ProductCategoryStore.swift in Sources */,
 				57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */,
 				7492FAD9217FAD1000ED2C69 /* SiteSetting+ReadOnlyConvertible.swift in Sources */,
@@ -2361,6 +2376,7 @@
 				E18FDAFE28F97EB9008519BA /* AppAccountToken.swift in Sources */,
 				02FF055023D983F30058E6E7 /* ExportableAsset.swift in Sources */,
 				02C255022563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift in Sources */,
+				680910782CA2B0AF0057B02A /* WebhooksService.swift in Sources */,
 				7493750E224988DE007D85D1 /* ProductImage+ReadOnlyConvertible.swift in Sources */,
 				DA3F0E1C2C218EF100B8C2F8 /* POSOrderService.swift in Sources */,
 				26E5A08225A66868000DF8F6 /* ProductAttributeTermStore.swift in Sources */,

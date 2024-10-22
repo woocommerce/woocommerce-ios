@@ -6,7 +6,7 @@
 - [internal] Updated storage usage in ProductCategoryStore [https://github.com/woocommerce/woocommerce-ios/pull/14151]
 - [Internal] Updated storage usage in ProductReviewStore [https://github.com/woocommerce/woocommerce-ios/pull/14134]
 - [internal] Replace unnecessary fetch requests for upserting orders and order search results [https://github.com/woocommerce/woocommerce-ios/pull/14128]
-
+- [internal] Additions to TopTabView for customization options [https://github.com/woocommerce/woocommerce-ios/pull/14192]
 
 20.8
 -----

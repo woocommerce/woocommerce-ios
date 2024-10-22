@@ -37,9 +37,10 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func populatePointOfSaleItems() async {
+        let pageNumber: Int = 1
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems()
+            items = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber)
             if items.count == 0 {
                 state = .empty
             } else {

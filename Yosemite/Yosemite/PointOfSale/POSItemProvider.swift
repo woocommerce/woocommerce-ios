@@ -24,5 +24,13 @@ extension POSItem {
 }
 
 public protocol POSItemProvider {
-    func providePointOfSaleItems() async throws -> [POSItem]
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [POSItem]
+}
+
+// Default implementation for convenience, so we do not need to pass the first page explicitely
+// if no pageNumber is given.
+extension POSItemProvider {
+    func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
+        try await providePointOfSaleItems(pageNumber: 1)
+    }
 }

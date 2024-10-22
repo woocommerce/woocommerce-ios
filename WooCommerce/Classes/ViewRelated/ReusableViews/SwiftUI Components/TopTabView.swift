@@ -43,9 +43,8 @@ struct TopTabView<Content: View>: View {
     let selectedTabIndicatorHeight: CGFloat
     // Padding between tab items
     let tabPadding: CGFloat
-    //
-    let tabItemHorizontalPadding: CGFloat?
-    let tabItemVerticalPadding: CGFloat?
+    let tabItemContentHorizontalPadding: CGFloat?
+    let tabItemContentVerticalPadding: CGFloat?
 
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
@@ -56,8 +55,8 @@ struct TopTabView<Content: View>: View {
          unselectedStateColor: Color = .primary,
          selectedTabIndicatorHeight: CGFloat = Layout.selectedTabIndicatorHeight,
          tabPadding: CGFloat = Layout.tabPadding,
-         tabItemHorizontalPadding: CGFloat? = nil,
-         tabItemVerticalPadding: CGFloat? = nil) {
+         tabItemContentHorizontalPadding: CGFloat? = nil,
+         tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
         self._showTabs = showTabs
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
@@ -68,8 +67,8 @@ struct TopTabView<Content: View>: View {
         self.unselectedStateColor = unselectedStateColor
         self.selectedTabIndicatorHeight = selectedTabIndicatorHeight
         self.tabPadding = tabPadding
-        self.tabItemHorizontalPadding = tabItemHorizontalPadding
-        self.tabItemVerticalPadding = tabItemVerticalPadding
+        self.tabItemContentHorizontalPadding = tabItemContentHorizontalPadding
+        self.tabItemContentVerticalPadding = tabItemContentVerticalPadding
     }
 
     private func tabItemContentView(_ index: Int, selected: Bool) -> some View {
@@ -106,8 +105,8 @@ struct TopTabView<Content: View>: View {
                             HStack(spacing: tabPadding * 2) {
                                 ForEach(0..<tabs.count, id: \.self) { index in
                                     tabItemContentView(index, selected: selectedTab == index)
-                                        .padding(.vertical, tabItemVerticalPadding)
-                                        .padding(.horizontal, tabItemHorizontalPadding)
+                                        .padding(.vertical, tabItemContentVerticalPadding)
+                                        .padding(.horizontal, tabItemContentHorizontalPadding)
                                         .background(GeometryReader { geometry in
                                             Color.clear.onAppear {
                                                 if index < tabWidths.count {
@@ -339,8 +338,8 @@ struct ContentView_Previews: PreviewProvider {
                    unselectedStateColor: .secondary,
                    selectedTabIndicatorHeight: 3.0,
                    tabPadding: 0,
-                   tabItemHorizontalPadding: 16.0,
-                   tabItemVerticalPadding: 9.0)
+                   tabItemContentHorizontalPadding: 16.0,
+                   tabItemContentVerticalPadding: 9.0)
             .previewLayout(.sizeThatFits)
             .preferredColorScheme(.light)
             .previewDisplayName("Carrier Packages Light Style")
@@ -349,8 +348,8 @@ struct ContentView_Previews: PreviewProvider {
                    unselectedStateColor: .secondary,
                    selectedTabIndicatorHeight: 3.0,
                    tabPadding: 0,
-                   tabItemHorizontalPadding: 16.0,
-                   tabItemVerticalPadding: 9.0)
+                   tabItemContentHorizontalPadding: 16.0,
+                   tabItemContentVerticalPadding: 9.0)
             .previewLayout(.sizeThatFits)
             .preferredColorScheme(.dark)
             .previewDisplayName("Carrier Packages Dark Style")

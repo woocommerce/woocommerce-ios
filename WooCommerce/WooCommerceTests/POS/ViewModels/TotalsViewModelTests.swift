@@ -292,7 +292,7 @@ final class TotalsViewModelTests: XCTestCase {
         cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel)
 
         // Then
-        XCTAssertEqual(sut.cardPresentPaymentOnboardingViewModel, onboardingViewModel)
+        XCTAssertEqual(sut.cardPresentPaymentOnboardingViewModel?.state, .pluginNotActivated(plugin: .stripe))
     }
 }
 

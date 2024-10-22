@@ -1,17 +1,31 @@
 import XCTest
 @testable import WooCommerce
+@testable import Networking
+@testable import Yosemite
 
 final class CustomFieldsListViewModelTests: XCTestCase {
-    private let originalFields = [
-            CustomFieldViewModel(id: 1, title: "Key1", content: "Value1"),
-            CustomFieldViewModel(id: 2, title: "Key2", content: "Value2")
+    private let originalMetadata = [
+            MetaData(metadataID: 1, key: "Key1", value: "Value1"),
+            MetaData(metadataID: 2, key: "Key2", value: "Value2")
         ]
+    private var originalFields: [CustomFieldViewModel] {
+        originalMetadata.map(CustomFieldViewModel.init)
+    }
+    private let sampleSiteID: Int64 = 1
+    private let sampleParentItemID: Int64 = 1
+    private let sampleCustomFieldType = MetaDataType.product
+    private var stores: MockStoresManager!
+
     private var viewModel: CustomFieldsListViewModel!
 
     override func setUp() {
         super.setUp()
-
-        viewModel = CustomFieldsListViewModel(customFields: originalFields)
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        viewModel = CustomFieldsListViewModel(customFields: originalFields,
+                                              siteID: sampleSiteID,
+                                              parentItemID: sampleParentItemID,
+                                              customFieldType: sampleCustomFieldType,
+                                              stores: stores)
     }
 
     override func tearDown() {
@@ -181,5 +195,62 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.combinedList.last?.key, "NewKey")
         XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
         XCTAssertNil(viewModel.combinedList.last?.fieldId)
+    }
+
+    func test_given_savingSucceeds_when_saveChangesCalled_then_changesAreSaved() async {
+        // Given: successfully saving the changes
+        let newField = MetaData(metadataID: 10, key: "NewKey", value: "NewValue")
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { [self] action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.success(originalMetadata + [newField]))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: newField.key, value: newField.value, fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: The changes should be saved
+        XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
+        XCTAssertEqual(viewModel.combinedList.last?.key, newField.key)
+        XCTAssertEqual(viewModel.combinedList.last?.value, newField.value)
+        XCTAssertEqual(viewModel.combinedList.last?.fieldId, newField.metadataID)
+        XCTAssertFalse(viewModel.hasChanges)
+    }
+
+    func test_given_savingFails_when_saveChangesCalled_then_changesAreNotSaved() async {
+        // Given: failing to save the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.failure(NetworkError.timeout()))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: The changes should not be saved
+        XCTAssertEqual(viewModel.combinedList.count, originalFields.count + 1)
+        XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_given_savingFails_when_saveChangesCalled_then_errorIsThrown() async {
+        // Given: failing to save the changes
+        stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            switch action {
+                case let .updateMetaData(_, _, _, _, onCompletion):
+                    onCompletion(.failure(NetworkError.timeout()))
+            }
+        }
+
+        // When: Saving the changes
+        viewModel.saveField(key: "NewKey", value: "NewValue", fieldId: nil)
+        await viewModel.saveChanges()
+
+        // Then: An error should be thrown
+        XCTAssertNotNil(viewModel.notice)
     }
 }

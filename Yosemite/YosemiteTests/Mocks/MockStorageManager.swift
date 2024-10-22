@@ -56,7 +56,7 @@ public class MockStorageManager: StorageManagerType {
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
-    public func reset(completion: (() -> Void)?) {
+    public func reset() {
         let storeCoordinator = persistentContainer.persistentStoreCoordinator
         let storeDescriptor = self.storeDescription
         let viewContext = persistentContainer.viewContext

@@ -64,16 +64,5 @@ public protocol StorageManagerType: AnyObject {
     /// This method is expected to destroy all persisted data. A notification of type `StorageManagerDidResetStorage` should get
     /// posted.
     ///
-    /// - Parameters:
-    ///   - completion: A closure which is called when all stored data has been cleared from the storage.
-    ///
-    func reset(completion: (() -> Void)?)
-}
-
-public extension StorageManagerType {
-    /// Default implementation for the `reset` method without the completion closure.
-    ///
-    func reset() {
-        reset(completion: nil)
-    }
+    func reset()
 }

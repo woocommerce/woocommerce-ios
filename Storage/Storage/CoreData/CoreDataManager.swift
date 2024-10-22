@@ -202,7 +202,16 @@ public final class CoreDataManager: StorageManagerType {
 
     /// This method effectively destroys all of the stored data, and generates a blank Persistent Store from scratch.
     ///
-    public func reset(completion: (() -> Void)?) {
+    public func reset() {
+        /// Reset the view context first
+        let viewContext = persistentContainer.viewContext
+        viewContext.performAndWait {
+            viewContext.reset()
+            self.deleteAllStoredObjects(in: viewContext)
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+        }
+
+        /// Delete all objects in the background context to avoid discrepancy with the view context
         performAndSave({ storage in
             guard let backgroundContext = storage as? NSManagedObjectContext else {
                 DDLogError("⛔️ CoreDataManager failed to reset due to unexpected storage type!")
@@ -213,7 +222,6 @@ public final class CoreDataManager: StorageManagerType {
             backgroundContext.reset()
         }, completion: {
             DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
-            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
         }, on: .main)
     }
 

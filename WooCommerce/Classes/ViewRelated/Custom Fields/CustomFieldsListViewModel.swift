@@ -132,8 +132,8 @@ private extension CustomFieldsListViewModel {
     }
 
     func configureHasChanges() {
-        $editedFields.combineLatest($addedFields)
-            .map { !$0.isEmpty || !$1.isEmpty }
+        $editedFields.combineLatest($addedFields, $deletedFieldIds)
+            .map { $0.isNotEmpty || $1.isNotEmpty || $2.isNotEmpty }
             .assign(to: &$hasChanges)
     }
 }

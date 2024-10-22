@@ -342,6 +342,7 @@ struct ContentView_Previews: PreviewProvider {
                    unselectedStateColor: .secondary,
                    selectedTabIndicatorHeight: 3.0,
                    tabPadding: 0,
+                   tabsNameFont: Font.subheadline.bold(),
                    tabItemContentHorizontalPadding: 16.0,
                    tabItemContentVerticalPadding: 9.0)
             .previewLayout(.sizeThatFits)
@@ -352,6 +353,7 @@ struct ContentView_Previews: PreviewProvider {
                    unselectedStateColor: .secondary,
                    selectedTabIndicatorHeight: 3.0,
                    tabPadding: 0,
+                   tabsNameFont: Font.subheadline.bold(),
                    tabItemContentHorizontalPadding: 16.0,
                    tabItemContentVerticalPadding: 9.0)
             .previewLayout(.sizeThatFits)

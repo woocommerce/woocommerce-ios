@@ -106,6 +106,8 @@ extension CustomFieldsListViewModel {
     @MainActor
     func saveChanges() async {
         isSavingChanges = true
+        // Remove any existing notice before saving changes
+        notice = nil
 
         do {
             let result = try await dispatchSavingChanges()

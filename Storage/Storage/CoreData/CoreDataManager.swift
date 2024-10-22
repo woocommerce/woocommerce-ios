@@ -208,7 +208,7 @@ public final class CoreDataManager: StorageManagerType {
         viewContext.performAndWait {
             viewContext.reset()
             self.deleteAllStoredObjects(in: viewContext)
-            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
+            viewContext.saveIfNeeded()
         }
 
         /// Delete all objects in the background context to avoid discrepancy with the view context
@@ -222,6 +222,7 @@ public final class CoreDataManager: StorageManagerType {
             backgroundContext.reset()
         }, completion: {
             DDLogVerbose("💣 [CoreDataManager] Stack Destroyed!")
+            NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
         }, on: .main)
     }
 

@@ -946,7 +946,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowCoupon)
         let couponLineViewModel = try XCTUnwrap(viewModel.paymentDataViewModel.couponLineViewModels.first)
-        XCTAssertEqual(couponLineViewModel.title, "Coupon (\(couponCode))")
+        XCTAssertEqual(couponLineViewModel.formattedTitle, "Coupon (\(couponCode))")
         XCTAssertEqual(viewModel.paymentDataViewModel.couponCode, "COUPONCODE")
 
         // When

@@ -3,6 +3,7 @@
 
 20.9
 -----
+- [internal] Updated storage usage in ProductCategoryStore [https://github.com/woocommerce/woocommerce-ios/pull/14151]
 - [Internal] Updated storage usage in ProductReviewStore [https://github.com/woocommerce/woocommerce-ios/pull/14134]
 
 

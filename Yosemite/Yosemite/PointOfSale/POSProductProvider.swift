@@ -28,7 +28,7 @@ public final class POSProductProvider: POSItemProvider {
 
     public func providePointOfSaleItems() async throws -> [POSItem] {
         do {
-            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
+            let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID)
 
             let eligibilityCriteria: [(Product) -> Bool] = [
                 isNotVirtual,

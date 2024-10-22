@@ -300,7 +300,12 @@ struct ContentView_Previews: PreviewProvider {
         ]
         TopTabView(tabs: tabs)
             .previewLayout(.sizeThatFits)
-            .previewDisplayName("Default Style")
+            .previewDisplayName("Default Light Style")
+            .preferredColorScheme(.light)
+        TopTabView(tabs: tabs)
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Default Dark Style")
+            .preferredColorScheme(.dark)
 
         let carrierTabs: [TopTabItem] = [
             TopTabItem(name: "USPS", icon: UIImage(named: "shipping-label-usps-logo"), content: {

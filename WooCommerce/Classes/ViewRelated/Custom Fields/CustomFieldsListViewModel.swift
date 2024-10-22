@@ -17,7 +17,7 @@ final class CustomFieldsListViewModel: ObservableObject {
     @Published private(set) var combinedList: [CustomFieldUI] = []
     @Published var notice: Notice?
 
-    @Published private(set) var pendingChanges = PendingCustomFieldsChanges()
+    @Published private var pendingChanges = PendingCustomFieldsChanges()
     private var editedFields: [CustomFieldUI] {
         get { pendingChanges.editedFields }
         set { pendingChanges = pendingChanges.copy(editedFields: newValue) }
@@ -30,6 +30,7 @@ final class CustomFieldsListViewModel: ObservableObject {
         get { pendingChanges.deletedFieldIds }
         set { pendingChanges = pendingChanges.copy(deletedFieldIds: newValue) }
     }
+    @Published private(set) var hasChanges: Bool = false
 
     init(customFields: [CustomFieldViewModel],
          siteID: Int64,
@@ -165,6 +166,10 @@ private extension CustomFieldsListViewModel {
                     + pendingChanges.addedFields
             }
             .assign(to: &$combinedList)
+
+        $pendingChanges
+            .map { $0.hasChanges }
+            .assign(to: &$hasChanges)
     }
 
     @MainActor

@@ -23,7 +23,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -52,7 +53,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -78,7 +80,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -99,7 +102,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -121,7 +125,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: "", manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -156,7 +161,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku, manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -193,7 +199,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake()
             .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -217,7 +224,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake()
             .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue

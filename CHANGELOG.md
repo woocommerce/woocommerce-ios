@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.8
+This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
+
 ## 20.7
 In this update we've resolved a couple of minor issues regarding automatic dismissal of different views, as well as improvement to the UI alignment on iPads. We've also fixed a crash when searching for products to add to an order. Lastly, entering discounts higher than the product price is no longer possible.
 

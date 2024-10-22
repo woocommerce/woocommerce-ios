@@ -647,7 +647,7 @@ final class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
-        orderStore.upsertStoredResults(keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
+        orderStore.upsertStoredResults(for: sampleSiteID, keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
 
         let storageSearchResults = viewStorage.loadOrderSearchResults(keyword: defaultSearchKeyword)
         let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)

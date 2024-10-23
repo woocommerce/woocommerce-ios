@@ -12,7 +12,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var packageTemplateName: String = ""
     // The dimension unit used in the store (e.g. "in")
     let dimensionUnit: String
-    // The weight unit used in the store (e.g. "lg")
+    // The weight unit used in the store (e.g. "kg")
     let weightUnit: String
 
     // MARK: Initialization

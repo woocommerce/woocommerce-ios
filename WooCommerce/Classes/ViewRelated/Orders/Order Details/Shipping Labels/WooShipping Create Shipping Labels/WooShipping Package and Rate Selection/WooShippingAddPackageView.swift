@@ -109,23 +109,11 @@ struct WooShippingAddPackageView: View {
                         .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
                         VStack {
                             AdaptiveStack(spacing: 8) {
-                                ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionType in
-                                    WooShippingAddPackageUnitInputView(unitType: dimensionType,
-                                                                       unit: customPackageViewModel.dimensionUnit,
-                                                                       fieldValue: Binding(get: {
-                                        return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
-                                    }, set: { value in
-                                        self.customPackageViewModel.fieldValues[dimensionType] = value
-                                    }), focusedField: _focusedField)
+                                ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionUnit in
+                                    unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionUnit)
                                 }
                             }
-                            WooShippingAddPackageUnitInputView(unitType: WooShippingPackageUnitType.weight,
-                                                               unit: customPackageViewModel.weightUnit,
-                                                               fieldValue: Binding(get: {
-                                return self.customPackageViewModel.fieldValues[WooShippingPackageUnitType.weight] ?? ""
-                            }, set: { value in
-                                self.customPackageViewModel.fieldValues[WooShippingPackageUnitType.weight] = value
-                            }), focusedField: _focusedField)
+                            unitInputView(for: WooShippingPackageUnitType.weight, unit: customPackageViewModel.weightUnit)
                         }
                         .toolbar {
                             ToolbarItemGroup(placement: .keyboard) {
@@ -208,6 +196,16 @@ struct WooShippingAddPackageView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
         }
+    }
+
+    private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
+        WooShippingAddPackageUnitInputView(unitType: unitType,
+                                           unit: unit,
+                                           fieldValue: Binding(get: {
+            return self.customPackageViewModel.fieldValues[unitType] ?? ""
+        }, set: { value in
+            self.customPackageViewModel.fieldValues[unitType] = value
+        }), focusedField: _focusedField)
     }
 
     private func onBackwardButtonTapped() {

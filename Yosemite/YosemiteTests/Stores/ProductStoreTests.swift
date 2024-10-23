@@ -3051,6 +3051,47 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - requestMissingProducts
+
+    func test_requestMissingProducts_triggers_loading_request_only_for_missing_products_and_saves_fetched_products_to_storage() {
+        // Given
+        let existingProductIDs: [Int64] = [13, 53]
+        let missingProductIDs: [Int64] = [82, 45]
+
+        let productIDs = existingProductIDs + missingProductIDs
+        let orderItems = productIDs.map { Networking.OrderItem.fake().copy(productID: $0) }
+        let order = Networking.Order.fake().copy(siteID: sampleSiteID, items: orderItems)
+
+        for productID in existingProductIDs {
+            storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID, productID: productID))
+        }
+        XCTAssert(storageManager.viewStorage.loadProducts(siteID: sampleSiteID, productsIDs: existingProductIDs).count == 2)
+
+        let mockRemote = MockProductsRemote()
+        let fetchedItems = missingProductIDs.map { Networking.Product.fake().copy(siteID: sampleSiteID, productID: $0) }
+        mockRemote.whenLoadingProducts(siteID: sampleSiteID, productIDs: missingProductIDs, thenReturn: .success(fetchedItems))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.requestMissingProducts(for: order, onCompletion: { error in
+                promise(error)
+            }))
+        }
+
+        // Then
+        XCTAssertNil(result)
+        XCTAssert(mockRemote.requestedProductIDsForLoading == missingProductIDs)
+
+        let newStoredProducts = storageManager.viewStorage.loadProducts(siteID: sampleSiteID, productsIDs: missingProductIDs)
+        missingProductIDs.forEach { id in
+            XCTAssert(newStoredProducts.contains(where: { $0.productID == id }))
+        }
+    }
 }
 
 // MARK: - Private Helpers

@@ -39,7 +39,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     func populatePointOfSaleItems() async {
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems()
+            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.firstPageNumber)
             if items.count == 0 {
                 state = .empty
             } else {
@@ -150,5 +150,6 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
+        static let firstPageNumber: Int = 1
     }
 }

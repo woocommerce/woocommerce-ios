@@ -22,6 +22,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let revampedShippingLabelCreation: Bool
     private let viewEditCustomFieldsInProductsAndOrders: Bool
     private let favoriteProducts: Bool
+    private let paymentsOnboardingInPointOfSale: Bool
+    private let isProductGlobalUniqueIdentifierSupported: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -42,7 +44,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
-         favoriteProducts: Bool = false) {
+         favoriteProducts: Bool = false,
+         paymentsOnboardingInPointOfSale: Bool = false,
+         isProductGlobalUniqueIdentifierSupported: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -63,6 +67,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
+        self.paymentsOnboardingInPointOfSale = paymentsOnboardingInPointOfSale
+        self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -107,6 +113,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return viewEditCustomFieldsInProductsAndOrders
         case .favoriteProducts:
             return favoriteProducts
+        case .paymentsOnboardingInPointOfSale:
+            return paymentsOnboardingInPointOfSale
+        case .productGlobalUniqueIdentifierSupport:
+            return isProductGlobalUniqueIdentifierSupported
         default:
             return false
         }

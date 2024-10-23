@@ -891,7 +891,7 @@ final class ProductsRemoteTests: XCTestCase {
         })
     }
 
-    func test_loadAllSimpleProductsForPointOfSale_loads_simple_products() async throws {
+    func test_loadSimpleProductsForPointOfSale_loads_simple_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let expectedProductsFromResponse = 6
@@ -908,7 +908,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
     }
 
-    func test_loadAllSimpleProductsForPointOfSale_relays_networking_error() async throws {
+    func test_loadSimpleProductsForPointOfSale_relays_networking_error() async throws {
         // Given
         let remote = ProductsRemote(network: network)
 
@@ -920,7 +920,7 @@ final class ProductsRemoteTests: XCTestCase {
         })
     }
 
-    func test_loadAllSimpleProductsForPointOfSale_when_page_has_products_then_loads_expected_products() async throws {
+    func test_loadSimpleProductsForPointOfSale_when_page_has_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let initialPageNumber = 1
@@ -938,7 +938,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
     }
 
-    func test_loadAllSimpleProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
+    func test_loadSimpleProductsForPointOfSale_when_page_has_no_products_then_loads_expected_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let pageNumber = 2

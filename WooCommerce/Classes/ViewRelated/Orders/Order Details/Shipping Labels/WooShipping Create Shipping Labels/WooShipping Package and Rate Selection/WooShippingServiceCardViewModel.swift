@@ -133,7 +133,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         self.init(id: rate.rateID,
                   selected: selected,
                   signatureRequirement: signatureRequirement,
-                  carrierLogo: CarrierLogo(rawValue: rate.carrierID)?.image(),
+                  carrierLogo: WooShippingCarrier(rawValue: rate.carrierID)?.logo,
                   title: rate.title,
                   rateLabel: rateLabel,
                   daysToDeliveryLabel: daysToDeliveryLabel,
@@ -199,24 +199,5 @@ private extension WooShippingServiceCardViewModel {
                                                               value: "Adult Signature Required (+%1$@)",
                                                               comment: "Label when shipping rate has option to require an adult signature in " +
                                                               "Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)'")
-    }
-
-    enum CarrierLogo: String {
-        case ups
-        case usps
-        case dhlExpress = "dhlexpress"
-        case dhlEcommerce = "dhlecommerce"
-        case dhlEcommerceAsia = "dhlecommerceasia"
-
-        func image() -> UIImage? {
-            switch self {
-            case .ups:
-                return UIImage(named: "shipping-label-ups-logo")
-            case .usps:
-                return UIImage(named: "shipping-label-usps-logo")
-            case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
-                return UIImage(named: "shipping-label-dhl-logo")
-            }
-        }
     }
 }

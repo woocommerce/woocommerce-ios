@@ -28,9 +28,9 @@ struct TopTabView<Content: View>: View {
 
     let tabs: [TopTabItem<Content>]
 
-    // // tabs container customization
+    // // Tabs container customization
     // Specifies horizontal padding for the entire container of tabs.
-    // - default value is 0
+    // - Default value is 0
     let tabsContainerHorizontalPadding: CGFloat?
     // Color used for tab name and underline selection indicator when selected
     let selectedStateColor: Color
@@ -42,10 +42,10 @@ struct TopTabView<Content: View>: View {
     // Padding between tab items
     let tabPadding: CGFloat
 
-    // // individual tab item customization
+    // // Individual tab item customization
     let tabsNameFont: Font
     // Specifies the height and width of the icon
-    // - applied with the conditional modifier
+    // - Applied with the conditional modifier
     let tabsIconSize: CGFloat?
     let tabItemContentHorizontalPadding: CGFloat?
     let tabItemContentVerticalPadding: CGFloat?

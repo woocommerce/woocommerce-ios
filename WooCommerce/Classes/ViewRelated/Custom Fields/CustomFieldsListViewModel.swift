@@ -244,13 +244,9 @@ extension CustomFieldsListViewModel {
                 return json
             }
 
-            var json: [[String: Any?]] = []
-            json.append(contentsOf: editedFields.map { metaDataAsJson($0) })
-            json.append(contentsOf: addedFields.map { metaDataAsJson($0) })
-            json.append(contentsOf: deletedFieldIds.map {
-                ["id": $0, "value": nil]
-            })
-            return json
+            return editedFields.map { metaDataAsJson($0) } +
+                addedFields.map { metaDataAsJson($0) } +
+                deletedFieldIds.map { ["id": $0, "value": nil] }
         }
     }
 }

@@ -215,6 +215,29 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
         // Assert
         XCTAssert(factory.settingsSectionActions().contains(.inventorySettings(editable: true)))
     }
+
+    // MARK: - Custom fields
+    func test_given_readonly_mode_when_product_has_custom_fields_then_do_not_show_custom_fields_row() {
+        // Arrange
+        let model = EditableProductModel(product: Fixtures.productWithCustomFields)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
+    }
+
+    func test_given_readonly_mode_when_product_does_not_have_custom_fields_then_do_not_show_custom_fields_row() {
+        // Arrange
+        let model = EditableProductModel(product: Fixtures.productWithNoCustomFields)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model, formType: .readonly)
+
+        // Assert
+        XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))
+    }
 }
 
 private extension ProductFormActionsFactory_ReadonlyProductTests {
@@ -265,5 +288,9 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let variableProduct = simpleProduct.copy(name: "Grouped",
                                                         productTypeKey: ProductType.variable.rawValue,
                                                         variations: [12])
+
+        // Custom fields
+        static let productWithCustomFields = Product.fake().copy(customFields: [MetaData(metadataID: 1, key: "test", value: "value")])
+        static let productWithNoCustomFields = Product.fake().copy(customFields: [])
     }
 }

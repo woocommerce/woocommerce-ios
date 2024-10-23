@@ -55,6 +55,22 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
             XCTAssertTrue(actions.contains(.productType(editable: false)))
         }
     }
+
+    func test_given_new_product_creation_when_creating_actions_then_custom_fields_row_is_invisible() {
+        // Given
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+
+        // When
+        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
+        let actions = Fixtures.actionsFactory(product: model, formType: .add, featureFlagService: featureFlagService).settingsSectionActions()
+        let bottomSheetActions = Fixtures.actionsFactory(product: model, formType: .add, featureFlagService: featureFlagService).bottomSheetActions()
+
+        // Then
+        XCTAssertFalse(actions.contains(.customFields))
+        XCTAssertFalse(bottomSheetActions.contains(.editCustomFields))
+
+    }
 }
 
 private extension ProductFormActionsFactory_ProductCreationTests {
@@ -64,12 +80,14 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
+                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown,
+                                   featureFlagService: MockFeatureFlagService = MockFeatureFlagService()) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      variationsPrice: variationsPrice)
+                                      variationsPrice: variationsPrice,
+                                      featureFlagService: featureFlagService)
         }
     }
 }

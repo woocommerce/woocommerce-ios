@@ -94,33 +94,65 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
         // Then: hasChanges should be true
         XCTAssertTrue(viewModel.hasChanges)
+    }
 
-        func test_given_invalidIndex_when_editFieldCalled_then_noChangesAreMade() {
-            // Given: An invalid index and a custom field UI
-            let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
+    func test_given_invalidIndex_when_editFieldCalled_then_noChangesAreMade() {
+        // Given: An invalid index and a custom field UI
+        let editedField = CustomFieldsListViewModel.CustomFieldUI(key: "EditedKey1", value: "EditedValue1", fieldId: 1)
 
-            // When: Trying to edit a field at an invalid index
-            viewModel.editField(at: -1, newField: editedField)
+        // When: Trying to edit a field at an invalid index
+        viewModel.editField(at: -1, newField: editedField)
 
-            // Then: No changes should be made
-            XCTAssertEqual(viewModel.combinedList.count, 2)
-            XCTAssertEqual(viewModel.combinedList[0].key, "Key1")
-            XCTAssertEqual(viewModel.combinedList[0].value, "Value1")
-            XCTAssertEqual(viewModel.combinedList[1].key, "Key2")
-            XCTAssertEqual(viewModel.combinedList[1].value, "Value2")
-        }
+        // Then: No changes should be made
+        XCTAssertEqual(viewModel.combinedList.count, 2)
+        XCTAssertEqual(viewModel.combinedList[0].key, "Key1")
+        XCTAssertEqual(viewModel.combinedList[0].value, "Value1")
+        XCTAssertEqual(viewModel.combinedList[1].key, "Key2")
+        XCTAssertEqual(viewModel.combinedList[1].value, "Value2")
+    }
 
-        func test_given_duplicateKey_when_addFieldCalled_then_fieldIsAdded() {
-            // Given: A new custom field UI with a duplicate key
-            let newField = CustomFieldsListViewModel.CustomFieldUI(key: "Key1", value: "NewValue")
+    func test_given_duplicateKey_when_addFieldCalled_then_fieldIsAdded() {
+        // Given: A new custom field UI with a duplicate key
+        let newField = CustomFieldsListViewModel.CustomFieldUI(key: "Key1", value: "NewValue")
 
-            // When: Adding the new field
-            viewModel.addField(newField)
+        // When: Adding the new field
+        viewModel.addField(newField)
 
-            // Then: The field should be added to the list
-            XCTAssertEqual(viewModel.combinedList.count, 3)
-            XCTAssertEqual(viewModel.combinedList.last?.key, "Key1")
-            XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
-        }
+        // Then: The field should be added to the list
+        XCTAssertEqual(viewModel.combinedList.count, 3)
+        XCTAssertEqual(viewModel.combinedList.last?.key, "Key1")
+        XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
+    }
+
+    func test_given_saveFieldCalled_when_fieldExists_then_fieldIsUpdated() {
+        // Given: An existing field to be updated
+        let key = "UpdatedKey1"
+        let value = "UpdatedValue1"
+        let fieldId: Int64 = 1
+
+        // When: Saving the field
+        viewModel.saveField(key: key, value: value, fieldId: fieldId)
+
+        // Then: The field should be updated in the list
+        XCTAssertEqual(viewModel.combinedList.count, 2)
+        XCTAssertEqual(viewModel.combinedList[0].key, "UpdatedKey1")
+        XCTAssertEqual(viewModel.combinedList[0].value, "UpdatedValue1")
+        XCTAssertEqual(viewModel.combinedList[0].fieldId, 1)
+    }
+
+    func test_given_saveFieldCalled_when_fieldDoesNotExist_then_fieldIsAdded() {
+        // Given: A new field to be added
+        let key = "NewKey"
+        let value = "NewValue"
+        let fieldId: Int64? = nil
+
+        // When: Saving the field
+        viewModel.saveField(key: key, value: value, fieldId: fieldId)
+
+        // Then: The field should be added to the list
+        XCTAssertEqual(viewModel.combinedList.count, 3)
+        XCTAssertEqual(viewModel.combinedList.last?.key, "NewKey")
+        XCTAssertEqual(viewModel.combinedList.last?.value, "NewValue")
+        XCTAssertNil(viewModel.combinedList.last?.fieldId)
     }
 }

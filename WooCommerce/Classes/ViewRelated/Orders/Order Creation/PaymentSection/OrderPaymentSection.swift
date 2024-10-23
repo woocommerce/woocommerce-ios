@@ -18,10 +18,6 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowTaxEducationalDialog: Bool = false
 
-    /// Keeps track of the selected coupon line details view model.
-    ///
-    @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
-
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -73,23 +69,20 @@ struct OrderPaymentSection: View {
 private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
-            ForEach(viewModel.couponLineViewModels, id: \.title) { couponViewModel in
+            ForEach(viewModel.couponLineViewModels, id: \.code) { couponViewModel in
                 VStack(alignment: .leading, spacing: .zero) {
-                    TitleAndValueRow(title: Localization.coupon,
-                                     titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                                     value: .content(couponViewModel.discount),
-                                     selectionStyle: editableRowsSelectionStyle,
-                                     isLoading: viewModel.isLoading) {
-                        selectedCouponLineDetailsViewModel = couponViewModel.detailsViewModel
+                    HStack {
+                        Text(Localization.coupon)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text(couponViewModel.discount)
+                            .foregroundColor(.primary)
                     }
                     Text(couponViewModel.detailsViewModel.code)
                         .footnoteStyle()
-                        .padding(.horizontal, Constants.horizontalPadding)
                 }
+                .padding(.horizontal)
             }
-        }
-        .sheet(item: $selectedCouponLineDetailsViewModel) { viewModel in
-            CouponLineDetails(viewModel: viewModel)
         }
     }
 

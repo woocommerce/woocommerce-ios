@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-10-01 09:54:06+0000 */
+/* Translation-Revision-Date: 2024-10-17 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -361,9 +361,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Tentang aplikasi";
 
-/* Title on the add product features screen. */
-"About your product" = "Tentang produk Anda";
-
 /* No comment provided by engineer. */
 "Accept local payments'" = "Terima pembayaran lokal";
 
@@ -552,9 +549,6 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Tambahkan tiap pililhan, lalu tekan kembali";
 
-/* Description for the text field on the add product features screen */
-"Add key features, benefits, or details to help your product get found online." = "Tambahkan detail, manfaat, atau fitur utama agar produk Anda lebih mudah ditemukan secara online.";
-
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Tambahkan detail selengkapnya";
@@ -564,9 +558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the option to generate just one variation */
 "Add new variation" = "Tambah variasi baru";
-
-/* Navigation bar title of the add product from image form. */
-"Add product" = "Tambahkan produk";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Tambahkan tautan produk";
@@ -600,9 +591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Tambahkan toko pertama Anda";
-
-/* Title on the add product name screen. */
-"Add your product name" = "Tambahkan nama produk Anda";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Alamat";
@@ -770,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Terjadi error saat mencoba memproses permintaan Anda: ";
 
-/* Text detection failed error message on the add product from image form. */
-"An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Terjadi error saat memindai foto. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
-
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Transaksi yang identik dilakukan baru-baru ini. Jika ingin melanjutkan, coba metode pembayaran lainnya";
 
@@ -844,8 +829,7 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Nama Aplikasi";
 
-/* Action button to apply the generated name for the new product
-   Apply navigation button in custom range date picker
+/* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
    Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
@@ -1225,7 +1209,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1260,7 +1243,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
-   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
@@ -1415,7 +1397,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
-   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategori";
@@ -1829,8 +1810,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
-   Continue button on the add product from image form.
-   Continue button on the product name field
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -1866,13 +1845,10 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Kebijakan Cookie";
 
-/* Text in the notice after copying the generated text in the product description AI generator view.
-   Text in the notice after copying the generated text on the product name generation screen. */
+/* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "Disalin.";
 
-/* Action button to copy the generated name for the new product
-   Button title to copy generated text in the add product from image form.
-   Button title to copy generated text in the product description AI generator view.
+/* Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Salin";
 
@@ -1983,9 +1959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Buat Kupon";
-
-/* Continue button on the add product features screen */
-"Create Product Details" = "Buat Detail Produk";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2231,15 +2204,11 @@ which should be translated separately and considered part of this sentence. */
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "Jelaskan produk Anda ke calon pelanggan...";
 
-/* Product description placeholder on the add product from image form.
-   The navigation bar title of the Aztec editor screen.
+/* The navigation bar title of the Aztec editor screen.
    Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Deskripsi";
-
-/* Title of the details field on the add product with AI Preview screen. */
-"Details" = "Rincian";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "Gunakan %1$@ untuk mencari tahu apakah produk Anda dapat dikirim.";
@@ -2839,9 +2808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Terjadi kesalahan saat membuat Kode QR. Silakan coba lagi";
 
-/* Default error message on the add product from image form. */
-"Error generating product details. Please try again." = "Terjadi error saat membuat detail produk. Harap coba lagi.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Terjadi error saat mencari alamat di Apple Maps";
 
@@ -3108,11 +3074,6 @@ which should be translated separately and considered part of this sentence. */
 /* User role badge */
 "Follower" = "Pengikut";
 
-/* Placeholder text on the product features field
-   Placeholder text on the product name field
-   Placeholder text on the product name generation screen */
-"For example, Soft fabric, durable stitching, unique design" = "Misalnya, kain lembut, jahitan awet, desain unik";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Lupa kata sandi?";
 
@@ -3188,11 +3149,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Membuat Variasi";
 
-/* Loading state for the suggested text in the add product from image form. */
-"Generating suggestion from photo..." = "Membuat saran dari foto...";
-
-/* Text to show the loading state on the product name generation screen
-   Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Membuat...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3472,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Sembunyikan daftar penyiapan toko";
 
-/* Subtitle on the add product features screen. */
-"Highlight what makes your product unique, and let AI do the magic." = "Tonjolkan keunikan produk Anda dan AI akan membuat keajaiban.";
-
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Soroti fitur unik dan audiens produk Anda dengan kata kunci untuk menghasilkan deskripsi yang pas dan khas.";
 
@@ -3555,8 +3509,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab
-   Value of the inventory field on the add product with AI Preview screen. */
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "Tersedia";
 
 /* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
@@ -3719,6 +3672,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "SKU Produk Tidak Valid";
 
+/* Error when an empty SKU is returned from the barcode scanner */
+"Invalid SKU" = "SKU tidak valid";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Alamat Situs Tak Sah";
 
@@ -3750,7 +3706,6 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Berat tidak valid";
 
 /* Product Inventory Settings navigation title
-   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Persediaan";
@@ -3769,9 +3724,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Apakah pesan yang dibuat bermanfaat?";
-
-/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
-"Is the result helpful?" = "Apakah hasil ini bermanfaat?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Pulau Man";
@@ -4007,9 +3959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
-
-/* Subtitle on the product name generation screen */
-"Let AI generate captivating titles for you." = "AI akan membuat judul yang memikat untuk Anda.";
 
 /* Message info on the support screen. */
 "Let us know your site address (URL) and tell us as much as you can about the problem," = "Masukkan alamat situs (URL) Anda dan ceritakan masalah yang Anda temui.";
@@ -4469,7 +4418,6 @@ which should be translated separately and considered part of this sentence. */
 "N\/A" = "Tidak tersedia";
 
 /* Name text field placeholder
-   Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
    Title of the customer search filter to search by name. */
@@ -4703,9 +4651,6 @@ which should be translated separately and considered part of this sentence. */
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Kelas pajak belum ditetapkan";
 
-/* No text detected message on the add product from image form. */
-"No text detected. Please select another packaging photo or enter product details manually." = "Tidak ada teks yang terdeteksi. Pilih foto kemasan lainnya atau masukkan detail produk secara manual.";
-
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Tidak ada variasi yang bisa dibuat";
 
@@ -4889,9 +4834,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Atau ketuk untuk memilih atribut yang sudah ada";
-
-/* Subtitle on the add product name screen. */
-"Or, expand your choices by tapping for more name suggestions." = "Atau sarankan nama lainnya dengan mengetuk dan pilihan Anda akan diperluas.";
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
@@ -5470,8 +5412,7 @@ which should be translated separately and considered part of this sentence. */
 "Present card to refund" = "Siapkan kartu untuk mengembalikan dana";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen.
-   Title on the add product with AI Preview screen. */
+   Title of the store onboarding > launch store screen. */
 "Preview" = "Pratampil";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5481,8 +5422,7 @@ which should be translated separately and considered part of this sentence. */
    Section header title for product price
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
-   Title for editing the price settings row on Product main screen
-   Title of the price field on the add product with AI Preview screen. */
+   Title for editing the price settings row on Product main screen */
 "Price" = "Harga";
 
 /* The label that points to the updated price of a product after a discount has been applied */
@@ -5610,19 +5550,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produk disalin";
 
-/* Title of the description field on the add product with AI Preview screen. */
-"Product description" = "Deskripsi produk";
-
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Draf produk disimpan";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Tautan produk";
-
-/* Product name text field's label on the add product name screen.
-   Title of the name field on the add product with AI Preview screen.
-   Title on the product name generation screen */
-"Product name" = "Nama produk";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produk dipublikasikan";
@@ -5633,11 +5565,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produk disimpan";
 
-/* Title of the short description field on the add product with AI Preview screen. */
-"Product short description" = "Deskripsi singkat produk";
-
-/* Title of the product type field on the add product with AI Preview screen.
-   Title of the Product Type row on Product main screen */
+/* Title of the Product Type row on Product main screen */
 "Product type" = "Tipe produk";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -5879,9 +5807,7 @@ which should be translated separately and considered part of this sentence. */
 "Refunding payment" = "Mengembalikan dana pembayaran";
 
 /* Action button to regenerate message on the product sharing message generation screen
-   Action button to regenerate title for a new product with AI.
-   Button title to regenerate product description with Jetpack AI.
-   Regenerate button on the add product from image form to regenerate product details. */
+   Button title to regenerate product description with Jetpack AI. */
 "Regenerate" = "Buat Ulang";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -6031,7 +5957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
@@ -6202,8 +6127,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Simpan sebagai Draf";
 
-/* Button title to save a product as draft in Product More Options Action Sheet
-   Button to save product details on the add product with AI Preview screen. */
+/* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "Simpan sebagai draf";
 
 /* Button title to save a shipping label to print later */
@@ -6375,9 +6299,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Pilih item";
 
-/* Instruction to select scanned text for product detail generation on the add product from image form. */
-"Select one or more scans to generate product details" = "Pilih satu atau beberapa pindaian untuk membuat detail produk";
-
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Pilih gaya paragraf";
 
@@ -6450,12 +6371,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Tentukan persentase diskon yang ingin Anda tawarkan.";
-
-/* Subtitle of the AI tone and voice selection sheet. */
-"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Tentukan nada dan suara agar presentasi produk sesuai dengan merek Anda.";
-
-/* Button to select tone and voice for generating product details with AI */
-"Set tone and voice" = "Tetapkan nada dan suara";
 
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "Siapkan %1$@";
@@ -6549,7 +6464,6 @@ which should be translated separately and considered part of this sentence. */
    Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
-   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Pengiriman";
 
@@ -6956,12 +6870,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Sudan" = "Sudan";
 
-/* Suggest name button on the product name field */
-"Suggest a name" = "Sarankan nama";
-
-/* Header of the suggested text in the add product from image form. */
-"Suggestion from photo" = "Saran dari foto";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Jumlah produk dan berat kemasan";
 
@@ -7039,7 +6947,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
-   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Tag";
 
@@ -7055,9 +6962,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Terima Pembayaran (%1$@)";
-
-/* Tip in the add product from image form to add a packaging image for AI-generated product details. */
-"Take a packaging photo to create product details with AI" = "Ambil foto kemasan untuk membuat detail produk menggunakan AI";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Ambil foto";
@@ -7218,9 +7122,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Bisa berikan info lebih lanjut tentang toko Anda?";
-
-/* Description text on the product name generation screen */
-"Tell us what your product is and what makes it unique!" = "Ceritakan tentang produk Anda dan keunikannya.";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7796,9 +7697,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Tokelau" = "Tokelau";
 
-/* Title of the AI tone and voice selection sheet. */
-"Tone and voice" = "Nada dan suara";
-
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
@@ -7970,9 +7868,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
-
-/* Info text about the scanned text list on the add product from image form. */
-"Tweak your text: Unselect scans you don't need or tap to edit" = "Ubah teks Anda: Urungkan pilihan pindaian yang tidak Anda perlukan atau ketuk untuk mengedit";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Ketik nama untuk toko Anda";
@@ -8409,14 +8304,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Gunakan alat berbasis AI untuk membuat deskripsi produk secara cepat. Cukup masukkan kata kunci dan biarkan kami mengurus selebihnya!";
 
-/* Use package photo button on the add product name screen. */
-"Use package photo (Optional)" = "Gunakan foto kemasan (Opsional)";
-
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Gunakan kata sandi untuk login";
-
-/* Description of the POS menu in the hub menu */
-"Use the app as a cash register" = "Gunakan aplikasi sebagai mesin kasir";
 
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "Pakai aplikasi guna memproses pengembalian dana untuk pesanan uji coba.";
@@ -8880,7 +8769,6 @@ which should be translated separately and considered part of this sentence. */
 "Write a description" = "Tulis deskripsi";
 
 /* Action button to generate message on the product sharing message generation screen
-   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -8922,9 +8810,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "Anda berlangganan paket %1$@. Anda dapat mengakses semua fitur kami sampai %2$@.";
-
-/* Subtitle on the add product with AI Preview screen. */
-"You can always change the below details later." = "Informasi berikut bisa diubah kapan saja.";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Anda dapat menyunting produk bundel di dasbor web.";
@@ -10237,6 +10122,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Edit jumlah";
 
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerHTML" = "HTML";
+
+/* Label for the Editor type picker */
+"customFieldEditorView.editorPickerLabel" = "Pilih mode edit teks";
+
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerText" = "Teks";
+
+/* Label for the Key field */
+"customFieldEditorView.keyLabel" = "Kunci";
+
+/* Placeholder for the Key field */
+"customFieldEditorView.keyPlaceholder" = "Masukkan kunci";
+
+/* Label for the Value field */
+"customFieldEditorView.valueLabel" = "Nilai";
+
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Cari pelanggan";
 
@@ -10547,6 +10450,12 @@ which should be translated separately and considered part of this sentence. */
 /* The string to show on order taxes when they are calculated based on the shop base address */
 "editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "Dihitung sesuai alamat toko.";
 
+/* Placeholder text inside the editor's text field. */
+"editorFactory.customFieldsValuePlaceholder" = "Masukkan nilai kolom khusus";
+
+/* The value of custom field to be edited. */
+"editorFactory.customFieldsValueTitle" = "Nilai";
+
 /* Message of the notice when inventory fails to be updatedReads like: 'There was an error updating My Product Name. Please try again.' */
 "errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel" = "Terjadi error saat memperbarui %@. Coba lagi.";
 
@@ -10667,6 +10576,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "Dapatkan wawasan pelanggan";
+
+/* Description of the POS menu in the hub menu */
+"hubMenu.pointOfSale.description" = "Terima pembayaran di toko fisik Anda";
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Ulasan Produk";
@@ -11803,6 +11715,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to undo the package photo removal action. */
 "productDetailPreviewViewModel.photoRemovedNotice.undo" = "Batal";
 
+/* Text describing the value that has been entered in the discount textfield is not allowed */
+"productDiscountView.text.discountDisallowedLabel" = "Diskon tidak boleh melebihi harga produk";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Error saat mengunggah file. Coba lagi.";
 
@@ -12243,6 +12158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Laporan Status Sistem";
 
+/* On a trial Tap to Pay order, this is the name of the line item for the trial amount. */
+"tap.to.pay.try.payment.amount.name" = "Coba Tap to Pay di iPhone";
+
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Pengembalian dana otomatis Uji Coba Pembayaran Ketuk untuk Bayar";
 
@@ -12459,8 +12377,47 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Minggu";
 
+/* Info label for selected box as a package type */
+"wooShipping.createLabel.addPackage.box" = "Kotak";
+
 /* Button to select a package to use for a shipment in the shipping label creation flow. */
 "wooShipping.createLabel.addPackage.button" = "Pilih Paket";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.createLabel.addPackage.cancel" = "Batal";
+
+/* Info label for carrier package option */
+"wooShipping.createLabel.addPackage.carrier" = "Operator";
+
+/* Info label for custom package option */
+"wooShipping.createLabel.addPackage.custom" = "Kustom";
+
+/* Info label for selected envelope as a package type */
+"wooShipping.createLabel.addPackage.envelope" = "Amplop";
+
+/* Info label for height input field */
+"wooShipping.createLabel.addPackage.height" = "Tinggi";
+
+/* Info label for length input field */
+"wooShipping.createLabel.addPackage.length" = "Panjang";
+
+/* Info label for selecting package type */
+"wooShipping.createLabel.addPackage.packageType" = "Tipe paket";
+
+/* Info label for saving package as a new template toggle */
+"wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "Simpan ini sebagai templat paket baru";
+
+/* Button for saving package as a new template */
+"wooShipping.createLabel.addPackage.savePackageTemplate" = "Simpan templat paket";
+
+/* Info label for saved package option */
+"wooShipping.createLabel.addPackage.saved" = "Disimpan";
+
+/* Title for the Add Package screen */
+"wooShipping.createLabel.addPackage.title" = "Tambah Paket";
+
+/* Info label for width input field */
+"wooShipping.createLabel.addPackage.width" = "Lebar";
 
 /* Title of the button to dismiss the shipping label creation screen */
 "wooShipping.createLabel.cancelButton" = "Batal";

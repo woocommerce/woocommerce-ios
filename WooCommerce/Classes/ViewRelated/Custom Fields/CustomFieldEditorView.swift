@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomFieldEditorView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State private var key: String
     @State private var value: String
     @State private var showRichTextEditor = false
@@ -109,7 +109,7 @@ struct CustomFieldEditorView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 } label: {
                     Text("Cancel") // todo-13493: set String to be translatable
                 }
@@ -118,7 +118,7 @@ struct CustomFieldEditorView: View {
                 HStack {
                     Button {
                         saveChanges()
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     } label: {
                         Text("Save") // todo-13493: set String to be translatable
                     }
@@ -153,7 +153,7 @@ struct CustomFieldEditorView: View {
         if !isCreatingNewField {
             Button(Localization.deleteButton, role: .destructive) {
                 onDelete()
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }
         }
     }

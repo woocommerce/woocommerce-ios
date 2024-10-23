@@ -179,7 +179,7 @@ private extension CustomFieldsListViewModel {
             let action = MetaDataAction.updateMetaData(siteID: siteID,
                                                        parentItemID: parentItemID,
                                                        metaDataType: customFieldsType,
-                                                       metadata: pendingChanges.asJson()) { result in
+                                                       metadata: pendingChanges.asDictionary()) { result in
                 continuation.resume(with: result)
             }
 
@@ -233,8 +233,8 @@ extension CustomFieldsListViewModel {
                                        deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
         }
 
-        func asJson() -> [[String: Any?]] {
-            func metaDataAsJson(_ field: CustomFieldUI) -> [String: Any] {
+        func asDictionary() -> [[String: Any?]] {
+            func metaDataAsDictionary(_ field: CustomFieldUI) -> [String: Any] {
                 var json: [String: Any] = [:]
                 if let fieldId = field.fieldId {
                     json["id"] = fieldId
@@ -244,8 +244,8 @@ extension CustomFieldsListViewModel {
                 return json
             }
 
-            return editedFields.map { metaDataAsJson($0) } +
-                addedFields.map { metaDataAsJson($0) } +
+            return editedFields.map { metaDataAsDictionary($0) } +
+                addedFields.map { metaDataAsDictionary($0) } +
                 deletedFieldIds.map { ["id": $0, "value": nil] }
         }
     }

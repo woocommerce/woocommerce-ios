@@ -7,7 +7,7 @@
 - [Internal] Updated storage usage in ProductReviewStore [https://github.com/woocommerce/woocommerce-ios/pull/14134]
 - [internal] Replace unnecessary fetch requests for upserting orders and order search results [https://github.com/woocommerce/woocommerce-ios/pull/14128]
 - [internal] Optimized storage usage in ProductStore [https://github.com/woocommerce/woocommerce-ios/pull/14139]
-
+- [Internal] Update Stripe Terminal SDK to 3.9.1 [https://github.com/woocommerce/woocommerce-ios/pull/14198]
 
 20.8
 -----

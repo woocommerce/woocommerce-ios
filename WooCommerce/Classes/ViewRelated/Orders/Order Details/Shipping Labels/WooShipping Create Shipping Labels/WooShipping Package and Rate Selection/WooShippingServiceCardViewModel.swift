@@ -95,7 +95,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             return String(format: formatString, deliveryDays)
         }()
 
-        let trackingLabel: String? = rate.hasTracking ? Localization.includesTracking.localizedLowercase : nil
+        let trackingLabel: String? = rate.hasTracking ? Localization.includesTracking : nil
         let insuranceLabel: String? = {
             guard rate.insurance.isNotEmpty else {
                 return nil
@@ -111,8 +111,8 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             }
         }()
         let freePickupLabel: String? = rate.isPickupFree ? Localization.freePickup.localizedLowercase : nil
-        let extras = [trackingLabel, insuranceLabel?.localizedLowercase, freePickupLabel]
-        let extraInfoLabel = extras.isNotEmpty ? extras.compacted().joined(separator: ", ") : nil
+        let extras = [trackingLabel, insuranceLabel?.localizedLowercase, freePickupLabel].compactMap { $0 }
+        let extraInfoLabel = extras.isNotEmpty ? extras.joined(separator: ", ") : nil
 
         let signatureRequiredLabel: String? = {
             guard let signatureRate else {

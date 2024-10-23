@@ -21,11 +21,6 @@ struct ItemListView: View {
             case .loading, .loaded:
                 listView(viewModel.items)
             }
-            Button("Load more") {
-                Task { @MainActor in
-                    await viewModel.loadNextPage()
-                }
-            }
         }
         .refreshable {
             await viewModel.reload()
@@ -128,14 +123,11 @@ private extension ItemListView {
                 if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(Array(items.enumerated()), id: \.element.productID) { index, item in
+                ForEach(items, id: \.productID) { item in
                     Button(action: {
                         viewModel.select(item)
                     }, label: {
                         ItemCardView(item: item)
-                            .onAppear {
-                                debugPrint("🍍 item: \(item.name) index: \(index) currentPage: \(viewModel.currentPage)")
-                            }
                     })
                 }
             }
@@ -150,7 +142,7 @@ private extension ItemListView {
                         let viewHeight = UIScreen.main.bounds.height
                         if maxY < viewHeight {
                             Task {
-                                await viewModel.loadNextPage()
+                                await viewModel.populatePointOfSaleItems()
                             }
                         }
                     }

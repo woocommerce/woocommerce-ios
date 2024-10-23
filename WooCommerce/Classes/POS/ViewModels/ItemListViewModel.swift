@@ -73,10 +73,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         }
     }
 
-    func loadNextPage() async {
-        await populatePointOfSaleItems()
-    }
-
     @MainActor
     func reload() async {
         await populatePointOfSaleItems()

@@ -365,12 +365,19 @@ private extension CodeScannerViewController {
             newDevice = captureDevice(with: .back)
         }
 
+        // Ensure newDevice is not nil
+        guard let validDevice = newDevice else {
+            DDLogError("Failed to find a new camera device.")
+            return
+        }
+
         // Create new capture input
         var deviceInput: AVCaptureDeviceInput!
         do {
-            deviceInput = try AVCaptureDeviceInput(device: newDevice!)
+            deviceInput = try AVCaptureDeviceInput(device: validDevice)
         } catch let error {
             print(error.localizedDescription)
+            DDLogError("Error creating device input: \(error)")
             return
         }
 

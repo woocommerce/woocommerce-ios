@@ -23,7 +23,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -31,7 +32,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -52,7 +53,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -60,7 +62,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -78,7 +80,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -86,7 +89,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -99,7 +102,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Act
-        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .sku, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -107,7 +111,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku])
+            .init(rows: [.sku, .globalUniqueIdentifier])
         ]
         XCTAssertEqual(sections, expectedSections)
         XCTAssertEqual(viewModel.sku, "134")
@@ -121,7 +125,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: "", manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -142,7 +147,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, false)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku]),
+            .init(errorTitle: ProductUpdateError.duplicatedSKU.errorDescription, rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -156,7 +161,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake().copy(sku: sku, manageStock: false)
         let model = EditableProductModel(product: product)
         let stores = MockProductSKUValidationStoresManager(existingSKUs: [sku])
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, stores: stores, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -177,7 +183,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(isSKUValid, true)
         XCTAssertEqual(shouldBringUpKeyboard, true)
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -193,7 +199,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake()
             .copy(sku: sku, manageStock: true, stockQuantity: 12, backordersKey: ProductBackordersSetting.allowed.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -204,7 +211,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockStatus]),
             .init(rows: [.limitOnePerOrder])
         ]
@@ -217,7 +224,8 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         let product = Product.fake()
             .copy(sku: sku, manageStock: false, stockStatusKey: ProductStockStatus.onBackOrder.rawValue, soldIndividually: true)
         let model = EditableProductModel(product: product)
-        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model)
+        let featureFlagService = MockFeatureFlagService(isProductGlobalUniqueIdentifierSupported: true)
+        let viewModel = ProductInventorySettingsViewModel(formType: .inventory, productModel: model, featureFlagService: featureFlagService)
         var sections: [Section] = []
         cancellable = viewModel.sections.sink { sectionsValue in
             sections = sectionsValue
@@ -228,7 +236,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
         // Assert
         let expectedSections: [Section] = [
-            .init(rows: [.sku]),
+            .init(rows: [.sku, .globalUniqueIdentifier]),
             .init(rows: [.manageStock, .stockQuantity, .backorders]),
             .init(rows: [.limitOnePerOrder])
         ]

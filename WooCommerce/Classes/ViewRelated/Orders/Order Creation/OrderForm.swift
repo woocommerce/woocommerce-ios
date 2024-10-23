@@ -310,9 +310,17 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
+                            Group {
+                                OrderCouponSectionView(viewModel: viewModel, couponViewModel: viewModel.couponLineViewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(viewModel.couponLineViewModel.couponLineRows.isNotEmpty)
+
                             AddOrderComponentsSection(
                                 viewModel: viewModel.paymentDataViewModel,
                                 shippingLineViewModel: viewModel.shippingLineViewModel,
+                                couponLineViewModel: viewModel.couponLineViewModel,
                                 shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                 shouldShowGiftCardForm: $shouldShowGiftCardForm)
                             .addingTopAndBottomDividers()

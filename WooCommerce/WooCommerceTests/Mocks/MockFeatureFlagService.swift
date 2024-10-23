@@ -20,7 +20,10 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let blazeEvergreenCampaigns: Bool
     private let blazeCampaignObjective: Bool
     private let revampedShippingLabelCreation: Bool
+    private let viewEditCustomFieldsInProductsAndOrders: Bool
     private let favoriteProducts: Bool
+    private let paymentsOnboardingInPointOfSale: Bool
+    private let isProductGlobalUniqueIdentifierSupported: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -40,7 +43,10 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
-         favoriteProducts: Bool = false) {
+         viewEditCustomFieldsInProductsAndOrders: Bool = false,
+         favoriteProducts: Bool = false,
+         paymentsOnboardingInPointOfSale: Bool = false,
+         isProductGlobalUniqueIdentifierSupported: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -59,7 +65,10 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
+        self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.favoriteProducts = favoriteProducts
+        self.paymentsOnboardingInPointOfSale = paymentsOnboardingInPointOfSale
+        self.isProductGlobalUniqueIdentifierSupported = isProductGlobalUniqueIdentifierSupported
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -100,8 +109,14 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
+        case .viewEditCustomFieldsInProductsAndOrders:
+            return viewEditCustomFieldsInProductsAndOrders
         case .favoriteProducts:
             return favoriteProducts
+        case .paymentsOnboardingInPointOfSale:
+            return paymentsOnboardingInPointOfSale
+        case .productGlobalUniqueIdentifierSupport:
+            return isProductGlobalUniqueIdentifierSupported
         default:
             return false
         }

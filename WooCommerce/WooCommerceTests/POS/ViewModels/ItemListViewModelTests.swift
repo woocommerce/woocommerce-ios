@@ -360,7 +360,7 @@ private extension ItemListViewModelTests {
         var shouldThrowError = false
         var shouldReturnZeroItems = false
 
-        func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+        func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
             if shouldThrowError {
                 throw NSError(domain: "Some error", code: 0)
             }

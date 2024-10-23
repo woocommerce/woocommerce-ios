@@ -66,6 +66,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @MainActor
     func reload() async {
         currentPage = 0
+        items.removeAll()
         await populatePointOfSaleItems()
     }
 

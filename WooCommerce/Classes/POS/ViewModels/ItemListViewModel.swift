@@ -43,20 +43,6 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         do {
             state = .loading
             let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: nextPage)
-            if newItems.count == 0 {
-                // Current limitation:
-                // If newItems returns 0 here, that should mark the last page with items, so no further pagination would be needed.
-                // This doesn't work in our usecase, as we filter eligible products AFTER the remote call, this means there could be
-                // more eligible products in subsequent pages, so we cannot really stop paginating at this point.
-                // This is more of an issue if the `per_page` is low (ex: 5 when testing), but since we fetch 100 product on each call,
-                // we should be fine here and consider this edge case good for now, as we expect to find at least 1 eligible items in the
-                // subsequent 100 items.
-                // If we hit it, we could would stop here as currentPage == lastPage, but for now let's assign the new page anyway to account
-                // for the temporary limitations.
-                currentPage = nextPage
-                return
-            }
-
             let uniqueNewItems = newItems.filter { newItem in
                 !items.contains(where: { $0.productID == newItem.productID })
             }

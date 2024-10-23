@@ -1,7 +1,16 @@
 import SwiftUI
 
+/// View to display the available shipping services (carriers and rates) with the Woo Shipping extension.
 struct WooShippingServiceView: View {
     @ObservedObject var viewModel: WooShippingServiceViewModel
+
+    private var carriers: [TopTabItem<WooShippingServiceCardListView>] {
+        viewModel.carrierRates.map { (carrierID, cards) in
+            TopTabItem(name: carrierID) {
+                WooShippingServiceCardListView(cards: cards)
+            }
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -10,12 +19,22 @@ struct WooShippingServiceView: View {
                     .headlineStyle()
                 Spacer()
             }
-            VStack {
-                ForEach(viewModel.rates) { rate in
-                    WooShippingServiceCardView(viewModel: rate)
-                }
+            TopTabView(tabs: carriers)
+        }
+    }
+}
+
+/// View to display a provided list of shipping rate cards with the Woo Shipping extension.
+private struct WooShippingServiceCardListView: View {
+    var cards: [WooShippingServiceCardViewModel]
+
+    var body: some View {
+        VStack {
+            ForEach(cards) { card in
+                WooShippingServiceCardView(viewModel: card)
             }
         }
+        .padding(.vertical)
     }
 }
 

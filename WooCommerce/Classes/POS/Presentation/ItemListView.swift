@@ -21,6 +21,11 @@ struct ItemListView: View {
             case .loading, .loaded:
                 listView(viewModel.items)
             }
+            Button("Load more") {
+                Task { @MainActor in
+                    await viewModel.debug_forceNext()
+                }
+            }
         }
         .refreshable {
             await viewModel.reload()
@@ -123,11 +128,14 @@ private extension ItemListView {
                 if dynamicTypeSize.isAccessibilitySize, viewModel.shouldShowHeaderBanner {
                     bannerCardView
                 }
-                ForEach(items, id: \.productID) { item in
+                ForEach(Array(items.enumerated()), id: \.element.productID) { index, item in
                     Button(action: {
                         viewModel.select(item)
                     }, label: {
                         ItemCardView(item: item)
+                            .onAppear {
+                                debugPrint("🍍 item: \(item.name) index: \(index) currentPage: \(viewModel.currentPage)")
+                            }
                     })
                 }
             }

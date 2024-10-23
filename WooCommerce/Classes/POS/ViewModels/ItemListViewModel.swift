@@ -10,6 +10,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
+    @Published private(set) var currentPage: Int = 0
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -37,13 +39,30 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func populatePointOfSaleItems() async {
+        let nextPage = currentPage + 1
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.firstPageNumber)
+            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: nextPage)
+            if newItems.count == 0 {
+                // Current limitation:
+                // If newItems returns 0 here, that should mark the last page with items, so no further pagination would be needed.
+                // This doesn't work in our usecase, as we filter eligible products AFTER the remote call, this means there could be
+                // more eligible products in subsequent pages, so we cannot really stop paginating at this point.
+                // This is more of an issue if the `per_page` is low (ex: 5 when testing), but since we fetch 100 product on each call,
+                // we should be fine here and consider this edge case good for now, as we expect to find at least 1 eligible items in the
+                // subsequent 100 items.
+                debugPrint("🍍 next page \(nextPage) has no new items")
+                // If we hit it, it would stop as currentPage == lastPage, so for now let's assign the new page anyway for testing:
+                currentPage = nextPage
+                return
+            }
+
+            items.append(contentsOf: newItems)
             if items.count == 0 {
                 state = .empty
             } else {
                 state = .loaded(items)
+                currentPage = nextPage
             }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
@@ -52,6 +71,10 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                                       buttonText: Constants.failedToLoadButtonTitle)
             state = .error(itemListError)
         }
+    }
+
+    func debug_forceNext() async {
+        await populatePointOfSaleItems()
     }
 
     @MainActor
@@ -150,6 +173,5 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
-        static let firstPageNumber: Int = 1
     }
 }

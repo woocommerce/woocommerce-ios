@@ -107,7 +107,6 @@ struct CustomFieldsListView: View {
             NavigationView {
                 CustomFieldEditorView(key: "",
                                       value: "",
-                                      isCreatingNewField: true,
                                       onSave: { updatedKey, updatedValue in
                                           viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
                                       })

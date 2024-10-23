@@ -9,10 +9,9 @@ struct CustomFieldEditorView: View {
 
     private let initialKey: String
     private let initialValue: String
-    private let isCreatingNewField: Bool
     private let isReadOnlyValue: Bool
     private let onSave: (String, String) -> Void
-    private let onDelete: () -> Void
+    private let onDelete: (() -> Void)?
 
     private var hasUnsavedChanges: Bool {
         key != initialKey || value != initialValue
@@ -24,18 +23,17 @@ struct CustomFieldEditorView: View {
     ///  - value: The value for the custom field
     ///  - isReadOnlyValue: Whether the value is read-only or not. To be used if the value is not string but JSON.
     ///  - onSave: Closure to handle save action
+    ///  - onDelete: Closure to handle delete action, defaults to nil when the editor doesn't support deleting.
     init(key: String,
          value: String,
          isReadOnlyValue: Bool = false,
-         isCreatingNewField: Bool = false,
          onSave: @escaping (String, String) -> Void,
-         onDelete: @escaping () -> Void = {}) {
+         onDelete: (() -> Void)? = nil) {
         self._key = State(initialValue: key)
         self._value = State(initialValue: value)
         self.initialKey = key
         self.initialValue = value
         self.isReadOnlyValue = isReadOnlyValue
-        self.isCreatingNewField = isCreatingNewField
         self.onSave = onSave
         self.onDelete = onDelete
     }
@@ -150,7 +148,7 @@ struct CustomFieldEditorView: View {
             // todo-13493: Show a notice that the value was copied
         }
 
-        if !isCreatingNewField {
+        if let onDelete = onDelete {
             Button(Localization.deleteButton, role: .destructive) {
                 onDelete()
                 dismiss()

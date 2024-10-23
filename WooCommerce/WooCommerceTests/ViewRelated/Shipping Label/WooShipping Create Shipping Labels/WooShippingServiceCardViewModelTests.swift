@@ -57,4 +57,34 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.insuranceLabel, "Insurance (limited)")
     }
 
+    func test_handleTap_enables_newly_selected_rate() {
+        // Given
+        let newSelection: WooShippingServiceCardViewModel.SignatureRequirement = .signatureRequired
+        let viewModel = WooShippingServiceCardViewModel(signatureRequirement: .none,
+                                                        rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
+                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33))
+
+        // When
+        viewModel.handleTap(on: newSelection)
+
+        // Then
+        XCTAssertEqual(viewModel.signatureRequirement, newSelection)
+    }
+
+    func test_handleTap_disables_previously_selected_rate() {
+        // Given
+        let previousSelection: WooShippingServiceCardViewModel.SignatureRequirement = .adultSignatureRequired
+        let viewModel = WooShippingServiceCardViewModel(signatureRequirement: previousSelection,
+                                                        rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
+                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33))
+
+        // When
+        viewModel.handleTap(on: previousSelection)
+
+        // Then
+        XCTAssertEqual(viewModel.signatureRequirement, .none)
+    }
+
 }

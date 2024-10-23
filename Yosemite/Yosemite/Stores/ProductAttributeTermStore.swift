@@ -69,10 +69,10 @@ private extension ProductAttributeTermStore {
             // If there could be more(non-empty) terms, request the next page recursively.
             case let .success(terms):
                 synchronizeAllProductAttributeTerms(siteID: siteID,
-                                                         attributeID: attributeID,
-                                                         synchronizedTerms: synchronizedTerms + terms,
-                                                         fromPageNumber: fromPageNumber + 1,
-                                                         onCompletion: onCompletion)
+                                                    attributeID: attributeID,
+                                                    synchronizedTerms: synchronizedTerms + terms,
+                                                    fromPageNumber: fromPageNumber + 1,
+                                                    onCompletion: onCompletion)
 
             // If there is an error, end the recursion and call `onCompletion`
             case let .failure(error):

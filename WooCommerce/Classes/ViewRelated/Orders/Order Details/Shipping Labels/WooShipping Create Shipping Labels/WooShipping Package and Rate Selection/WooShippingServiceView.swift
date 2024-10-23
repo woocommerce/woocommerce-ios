@@ -5,9 +5,10 @@ struct WooShippingServiceView: View {
     @ObservedObject var viewModel: WooShippingServiceViewModel
 
     private var carriers: [TopTabItem<WooShippingServiceCardListView>] {
-        viewModel.carrierRates.map { (carrierID, cards) in
-            TopTabItem(name: carrierID) {
-                WooShippingServiceCardListView(cards: cards)
+        viewModel.serviceTabs.map { tab in
+            TopTabItem(name: tab.id.name,
+                       icon: tab.id.logo) {
+                WooShippingServiceCardListView(cards: tab.cards)
             }
         }
     }

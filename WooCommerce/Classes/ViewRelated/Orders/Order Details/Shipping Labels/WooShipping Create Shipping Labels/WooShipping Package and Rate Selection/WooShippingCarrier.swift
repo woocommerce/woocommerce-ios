@@ -19,6 +19,21 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
         }
     }
 
+    var name: String {
+        switch self {
+        case .ups:
+            "UPS"
+        case .usps:
+            "USPS"
+        case .dhlExpress:
+            "DHL Express"
+        case .dhlEcommerce:
+            "DHL eCommerce"
+        case .dhlEcommerceAsia:
+            "DHL eCommerce Asia"
+        }
+    }
+
     static func < (lhs: WooShippingCarrier, rhs: WooShippingCarrier) -> Bool {
         guard let lhsIndex = allCases.firstIndex(of: lhs),
               let rhsIndex = allCases.firstIndex(of: rhs) else {

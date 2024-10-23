@@ -3,16 +3,16 @@ import XCTest
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 
-    func test_generateCarrierRates_returns_expected_data() throws {
+    func test_generateServiceTabs_returns_expected_data() throws {
         // Given
         let viewModel = WooShippingServiceViewModel()
 
         // Then
-        XCTAssertEqual(viewModel.carrierRates.count, 2)
-        XCTAssertEqual(viewModel.carrierRates["usps"]?.count, 2)
-        XCTAssertEqual(viewModel.carrierRates["dhlexpress"]?.count, 1)
+        XCTAssertEqual(viewModel.serviceTabs.count, 2)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards.count, 2)
+        XCTAssertEqual(viewModel.serviceTabs[1].cards.count, 1)
 
-        let rate = try XCTUnwrap(viewModel.carrierRates["usps"]?.first)
+        let rate = try XCTUnwrap(viewModel.serviceTabs[0].cards[0])
         XCTAssertEqual(rate.selected, false)
         XCTAssertEqual(rate.signatureRequirement, .none)
         XCTAssertEqual(rate.title, "USPS - Media Mail")
@@ -26,7 +26,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(rate.signatureRequiredLabel)
         XCTAssertNil(rate.adultSignatureRequiredLabel)
 
-        let rate2 = try XCTUnwrap(viewModel.carrierRates["usps"]?[1])
+        let rate2 = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
         XCTAssertEqual(rate2.selected, false)
         XCTAssertEqual(rate2.signatureRequirement, .none)
         XCTAssertEqual(rate2.title, "USPS - Parcel Select Mail")
@@ -40,7 +40,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(rate2.signatureRequiredLabel, "Signature Required (+$2.70)")
         XCTAssertEqual(rate2.adultSignatureRequiredLabel, "Adult Signature Required (+$6.90)")
 
-        let rate3 = try XCTUnwrap(viewModel.carrierRates["dhlexpress"]?.first)
+        let rate3 = try XCTUnwrap(viewModel.serviceTabs[1].cards[0])
         XCTAssertEqual(rate3.selected, false)
         XCTAssertEqual(rate3.signatureRequirement, .none)
         XCTAssertEqual(rate3.title, "DHL - Next Day")

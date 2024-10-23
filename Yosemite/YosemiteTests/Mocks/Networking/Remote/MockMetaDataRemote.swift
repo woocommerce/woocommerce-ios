@@ -12,7 +12,7 @@ final class MockMetaDataRemote {
 }
 
 extension MockMetaDataRemote: MetaDataRemoteProtocol {
-    func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any]]) async throws -> [MetaData] {
+    func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any?]]) async throws -> [MetaData] {
         guard let result = updatingMetaDataResult else {
             XCTFail("Could not find result for updating metadata.")
             throw NetworkError.notFound()

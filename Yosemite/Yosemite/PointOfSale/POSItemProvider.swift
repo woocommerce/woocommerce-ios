@@ -31,6 +31,6 @@ public protocol POSItemProvider {
 // if no pageNumber is given.
 extension POSItemProvider {
     func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
-        try await providePointOfSaleItems(pageNumber: 1)
+        try await providePointOfSaleItems(pageNumber: pageNumber)
     }
 }

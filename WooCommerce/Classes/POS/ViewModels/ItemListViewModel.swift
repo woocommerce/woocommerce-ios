@@ -51,8 +51,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 // This is more of an issue if the `per_page` is low (ex: 5 when testing), but since we fetch 100 product on each call,
                 // we should be fine here and consider this edge case good for now, as we expect to find at least 1 eligible items in the
                 // subsequent 100 items.
-                debugPrint("🍍 next page \(nextPage) has no new items")
-                // If we hit it, it would stop as currentPage == lastPage, so for now let's assign the new page anyway for testing:
+                // If we hit it, we could would stop here as currentPage == lastPage, but for now let's assign the new page anyway to account
+                // for the temporary limitations.
                 currentPage = nextPage
                 return
             }
@@ -73,7 +73,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
         }
     }
 
-    func debug_forceNext() async {
+    func loadNextPage() async {
         await populatePointOfSaleItems()
     }
 

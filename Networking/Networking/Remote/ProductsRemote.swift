@@ -196,10 +196,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
+    /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
+    public func loadSimpleProductsForPointOfSale(for siteID: Int64, pageNumber: Int = 1) async throws -> [Product] {
         let parameters = [
-            ParameterKey.page: POSConstants.page,
+            ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
             ParameterKey.productType: POSConstants.productType,
             ParameterKey.orderBy: OrderKey.name.value,
@@ -609,7 +610,6 @@ public extension ProductsRemote {
 
 private extension ProductsRemote {
     enum POSConstants {
-        static let page = "1"
         static let productsPerPage = "100"
         static let productType = "simple"
         static let productStatus = "publish"

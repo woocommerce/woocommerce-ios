@@ -57,7 +57,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
                 return
             }
 
-            items.append(contentsOf: newItems)
+            let uniqueNewItems = newItems.filter { newItem in
+                !items.contains(where: { $0.productID == newItem.productID })
+            }
+            items.append(contentsOf: uniqueNewItems)
+
             if items.count == 0 {
                 state = .empty
             } else {
@@ -75,6 +79,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
+        currentPage = 0
         await populatePointOfSaleItems()
     }
 

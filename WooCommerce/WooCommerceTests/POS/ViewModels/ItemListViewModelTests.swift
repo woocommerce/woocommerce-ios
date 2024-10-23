@@ -352,6 +352,30 @@ final class ItemListViewModelTests: XCTestCase {
 
         XCTAssertTrue(sut.showSimpleProductsModal)
     }
+
+    func test_currentPage_when_populatePointOfSaleItems_is_invoked_multiple_times_then_updates_to_next_page() async {
+        XCTAssertTrue(sut.currentPage == 0, "Initial state.")
+
+        // When/Then
+        await sut.populatePointOfSaleItems()
+        XCTAssertTrue(sut.currentPage == 1)
+
+        // When/Then
+        await sut.populatePointOfSaleItems()
+        XCTAssertTrue(sut.currentPage == 2)
+    }
+
+    func test_currentPage_when_reload_is_invoked_multiple_times_then_stays_on_first_page() async {
+        XCTAssertTrue(sut.currentPage == 0, "Initial state.")
+
+        // When/Then
+        await sut.reload()
+        XCTAssertTrue(sut.currentPage == 1)
+
+        // When/Then
+        await sut.reload()
+        XCTAssertTrue(sut.currentPage == 1)
+    }
 }
 
 private extension ItemListViewModelTests {

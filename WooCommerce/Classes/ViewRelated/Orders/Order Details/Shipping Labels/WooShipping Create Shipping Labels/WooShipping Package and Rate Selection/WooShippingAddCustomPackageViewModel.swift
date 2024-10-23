@@ -4,7 +4,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
     // if needed just by adding new case in enum
-    @Published var fieldValues: [WooShippingPackageDimensionType: String] = [:]
+    @Published var fieldValues: [WooShippingPackageUnitType: String] = [:]
     // Holds selected package type when custom package is selected, it can be `box` or `envelope`
     @Published var packageType: WooShippingPackageType = .box
     // Holds value for toggle that determines if we are showing button for saving the template
@@ -12,11 +12,15 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var packageTemplateName: String = ""
     // The dimension unit used in the store (e.g. "in")
     let dimensionUnit: String
+    // The weight unit used in the store (e.g. "lg")
+    let weightUnit: String
 
     // MARK: Initialization
 
-    init(dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit) {
+    init(dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.dimensionUnit = dimensionUnit ?? ""
+        self.weightUnit = weightUnit ?? ""
     }
 
     // Field values are invalid if one of them is empty
@@ -26,7 +30,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                 return true
             }
         }
-        return fieldValues.count != WooShippingPackageDimensionType.allCases.count
+        return fieldValues.count != WooShippingPackageUnitType.allCases.count
     }
 
     func clearFieldValues() {
@@ -67,8 +71,9 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 }
 
-enum WooShippingPackageDimensionType: CaseIterable {
+enum WooShippingPackageUnitType: CaseIterable {
     case length, width, height
+    case weight
     var name: String {
         switch self {
         case .length:
@@ -77,11 +82,17 @@ enum WooShippingPackageDimensionType: CaseIterable {
             return Localization.width
         case .height:
             return Localization.height
+        case .weight:
+            return Localization.emptyPackageWeight
         }
+    }
+
+    static var dimensionUnits: [WooShippingPackageUnitType] {
+        return [.length, .width, .height]
     }
 }
 
-extension WooShippingPackageDimensionType {
+extension WooShippingPackageUnitType {
     enum Localization {
         static let length = NSLocalizedString("wooShipping.createLabel.addPackage.length",
                                               value: "Length",
@@ -92,6 +103,9 @@ extension WooShippingPackageDimensionType {
         static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
                                               value: "Height",
                                               comment: "Info label for height input field")
+        static let emptyPackageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.emptyPackageWeight",
+                                              value: "Empty Package Weight",
+                                              comment: "Info label for weight input field")
     }
 }
 

@@ -12,15 +12,18 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.checkDefaultInitProperties()
     }
 
-    func test_it_inits_with_dimension_unit() {
+    func test_it_inits_with_dimension_weight_unit() {
         // Given/When
         let expectedDimensionUnit = "in"
-        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit)
+        let expectedWeightUnit = "in"
+        let viewModel = WooShippingAddCustomPackageViewModel(dimensionUnit: expectedDimensionUnit,
+                                                             weightUnit: expectedWeightUnit)
 
         // Then
         XCTAssertNotNil(viewModel)
         viewModel.checkDefaultInitProperties()
         XCTAssertEqual(viewModel.dimensionUnit, expectedDimensionUnit)
+        XCTAssertEqual(viewModel.weightUnit, expectedWeightUnit)
     }
 
     func test_clear_field_values() {
@@ -149,7 +152,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
 extension WooShippingAddCustomPackageViewModel {
     func fillWithDummyFieldValues() {
-        for dimensionType in WooShippingPackageDimensionType.allCases {
+        for dimensionType in WooShippingPackageUnitType.allCases {
             fieldValues[dimensionType] = "1"
         }
     }

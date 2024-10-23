@@ -28,7 +28,7 @@ struct WooShippingAddPackageView: View {
     @State var selectedPackageType = PackageProviderType.custom
 
     @FocusState var packageTemplateNameFieldFocused: Bool
-    @FocusState var focusedField: WooShippingPackageDimensionType?
+    @FocusState var focusedField: WooShippingPackageUnitType?
 
     // MARK: - UI
 
@@ -107,16 +107,25 @@ struct WooShippingAddPackageView: View {
                             .padding()
                         }
                         .roundedBorder(cornerRadius: 8, lineColor: Color(.separator), lineWidth: 1)
-                        AdaptiveStack(spacing: 8) {
-                            ForEach(WooShippingPackageDimensionType.allCases, id: \.self) { dimensionType in
-                                WooShippingAddPackageDimensionView(dimensionType: dimensionType,
-                                                                   dimensionUnit: customPackageViewModel.dimensionUnit,
-                                                                   fieldValue: Binding(get: {
-                                    return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
-                                }, set: { value in
-                                    self.customPackageViewModel.fieldValues[dimensionType] = value
-                                }), focusedField: _focusedField)
+                        VStack {
+                            AdaptiveStack(spacing: 8) {
+                                ForEach(WooShippingPackageUnitType.dimensionUnits, id: \.self) { dimensionType in
+                                    WooShippingAddPackageUnitInputView(unitType: dimensionType,
+                                                                       unit: customPackageViewModel.dimensionUnit,
+                                                                       fieldValue: Binding(get: {
+                                        return self.customPackageViewModel.fieldValues[dimensionType] ?? ""
+                                    }, set: { value in
+                                        self.customPackageViewModel.fieldValues[dimensionType] = value
+                                    }), focusedField: _focusedField)
+                                }
                             }
+                            WooShippingAddPackageUnitInputView(unitType: WooShippingPackageUnitType.weight,
+                                                               unit: customPackageViewModel.weightUnit,
+                                                               fieldValue: Binding(get: {
+                                return self.customPackageViewModel.fieldValues[WooShippingPackageUnitType.weight] ?? ""
+                            }, set: { value in
+                                self.customPackageViewModel.fieldValues[WooShippingPackageUnitType.weight] = value
+                            }), focusedField: _focusedField)
                         }
                         .toolbar {
                             ToolbarItemGroup(placement: .keyboard) {
@@ -126,13 +135,13 @@ struct WooShippingAddPackageView: View {
                                     }, label: {
                                         Image(systemName: "chevron.backward")
                                     })
-                                    .disabled(focusedField == WooShippingPackageDimensionType.allCases.first)
+                                    .disabled(focusedField == WooShippingPackageUnitType.allCases.first)
                                     Button(action: {
                                         onForwardButtonTapped()
                                     }, label: {
                                         Image(systemName: "chevron.forward")
                                     })
-                                    .disabled(focusedField == WooShippingPackageDimensionType.allCases.last)
+                                    .disabled(focusedField == WooShippingPackageUnitType.allCases.last)
                                     Spacer()
                                     Button {
                                         dismissKeyboard()
@@ -209,6 +218,8 @@ struct WooShippingAddPackageView: View {
             focusedField = .length
         case .height:
             focusedField = .width
+        case .weight:
+            focusedField = .height
         case nil:
             return
         }
@@ -221,6 +232,8 @@ struct WooShippingAddPackageView: View {
         case .width:
             focusedField = .height
         case .height:
+            focusedField = .weight
+        case .weight:
             return
         case nil:
             return
@@ -255,16 +268,20 @@ struct WooShippingAddPackageView: View {
     }
 }
 
-struct WooShippingAddPackageDimensionView: View {
-    let dimensionType: WooShippingPackageDimensionType
-    let dimensionUnit: String
+struct WooShippingAddPackageUnitInputView: View {
+    let unitType: WooShippingPackageUnitType
+    let unit: String
     @Binding var fieldValue: String
-    @FocusState var focusedField: WooShippingPackageDimensionType?
+    @FocusState var focusedField: WooShippingPackageUnitType?
+
+    private var isFocused: Bool {
+        return focusedField == unitType
+    }
 
     var body: some View {
         VStack {
             HStack {
-                Text(dimensionType.name)
+                Text(unitType.name)
                     .font(.subheadline)
                 Spacer()
             }
@@ -272,15 +289,15 @@ struct WooShippingAddPackageDimensionView: View {
                 TextField("", text: $fieldValue)
                     .keyboardType(.decimalPad)
                     .bodyStyle()
-                    .focused($focusedField, equals: dimensionType)
-                Text(dimensionUnit)
+                    .focused($focusedField, equals: unitType)
+                Text(unit)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
             .padding()
             .roundedBorder(cornerRadius: 8,
-                           lineColor: focusedField == dimensionType ? Color.accentColor : Color(.separator),
-                           lineWidth: focusedField == dimensionType ? 2 : 1)
+                           lineColor: isFocused ? Color.accentColor : Color(.separator),
+                           lineWidth: isFocused ? 2 : 1)
         }
         .frame(minHeight: 48)
     }

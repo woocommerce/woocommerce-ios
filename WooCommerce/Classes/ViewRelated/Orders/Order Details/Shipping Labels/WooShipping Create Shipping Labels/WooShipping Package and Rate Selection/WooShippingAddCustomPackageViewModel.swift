@@ -112,7 +112,7 @@ extension WooShippingPackageUnitType {
                                               value: "Height",
                                               comment: "Info label for height input field")
         static let packageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.packageWeight",
-                                              value: "Package Weight",
+                                              value: "Package weight",
                                               comment: "Info label for weight input field")
     }
 }

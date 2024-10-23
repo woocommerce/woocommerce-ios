@@ -10,6 +10,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
+    @Published private(set) var currentPage: Int = 0
+
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
         if UserDefaults.standard.bool(forKey: BannerState.isSimpleProductsOnlyBannerDismissedKey) == true {
@@ -37,13 +39,20 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func populatePointOfSaleItems() async {
+        let nextPage = currentPage + 1
         do {
             state = .loading
-            items = try await itemProvider.providePointOfSaleItems(pageNumber: Constants.firstPageNumber)
+            let newItems = try await itemProvider.providePointOfSaleItems(pageNumber: nextPage)
+            let uniqueNewItems = newItems.filter { newItem in
+                !items.contains(where: { $0.productID == newItem.productID })
+            }
+            items.append(contentsOf: uniqueNewItems)
+
             if items.count == 0 {
                 state = .empty
             } else {
                 state = .loaded(items)
+                currentPage = nextPage
             }
         } catch {
             DDLogError("Error on load while fetching product data: \(error)")
@@ -56,6 +65,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func reload() async {
+        currentPage = 0
+        items.removeAll()
         await populatePointOfSaleItems()
     }
 
@@ -150,6 +161,5 @@ private extension ItemListViewModel {
             value: "Retry",
             comment: "Text for the button appearing on the item list screen when there's an error loading products."
         )
-        static let firstPageNumber: Int = 1
     }
 }

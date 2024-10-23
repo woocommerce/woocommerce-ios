@@ -46,6 +46,9 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `loadAllProducts`
     private var loadAllProductsResultsBySiteID = [Int64: Result<[Product], Error>]()
 
+    /// List of product IDs requested for `loadProducts`
+    private(set) var requestedProductIDsForLoading: [Int64] = []
+
     /// The results to return based on the given site ID in `loadNumberOfProducts`.
     private var loadNumberOfProductsResultsBySiteID = [Int64: Result<Int64, Error>]()
 
@@ -181,6 +184,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
+        requestedProductIDsForLoading = productIDs
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return

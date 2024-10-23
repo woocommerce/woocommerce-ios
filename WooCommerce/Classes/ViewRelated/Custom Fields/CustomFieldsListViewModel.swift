@@ -1,6 +1,6 @@
 import Combine
 import Foundation
-import Networking
+import enum Networking.MetaDataType
 import Yosemite
 
 final class CustomFieldsListViewModel: ObservableObject {

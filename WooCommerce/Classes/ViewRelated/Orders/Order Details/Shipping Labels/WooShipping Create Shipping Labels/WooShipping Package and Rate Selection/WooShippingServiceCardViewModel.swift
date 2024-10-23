@@ -97,13 +97,17 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
 
         let trackingLabel: String? = rate.hasTracking ? Localization.includesTracking.localizedLowercase : nil
         let insuranceLabel: String? = {
-            if let doubleInsurance = Double(rate.insurance), doubleInsurance > 0 {
+            guard rate.insurance.isNotEmpty else {
+                return nil
+            }
+            if let doubleInsurance = Double(rate.insurance) {
+                guard doubleInsurance > 0 else {
+                    return nil
+                }
                 let insuranceFormatted = currencyFormatter.formatAmount(Decimal(doubleInsurance)) ?? ""
                 return String(format: Localization.insuranceAmount, insuranceFormatted)
-            } else if rate.insurance.isNotEmpty {
-                return String(format: Localization.insuranceLiteral, rate.insurance)
             } else {
-                return nil
+                return String(format: Localization.insuranceLiteral, rate.insurance)
             }
         }()
         let freePickupLabel: String? = rate.isPickupFree ? Localization.freePickup.localizedLowercase : nil

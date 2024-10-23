@@ -5,7 +5,7 @@ import Yosemite
 
 final class CustomFieldsListViewModel: ObservableObject {
     private let stores: StoresManager
-    private var originalCustomFields: [CustomFieldViewModel]
+    @Published private var originalCustomFields: [CustomFieldViewModel]
     private let customFieldsType: MetaDataType
     private let siteId: Int64
     private let parentItemId: Int64
@@ -159,10 +159,9 @@ private extension CustomFieldsListViewModel {
 
     func observePendingChanges() {
         $pendingChanges
-            .map { [weak self] pendingChanges in
-                guard let self = self else { return [] }
-
-                return self.originalCustomFields
+            .combineLatest($originalCustomFields)
+            .map { (pendingChanges, originalFields) in
+                return originalFields
                     .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.id }) }
                     .map { field in pendingChanges.editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
                     + pendingChanges.addedFields

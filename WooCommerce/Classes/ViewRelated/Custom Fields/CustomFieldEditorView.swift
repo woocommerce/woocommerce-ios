@@ -212,7 +212,7 @@ private extension CustomFieldEditorView {
 
         static let deleteButton = NSLocalizedString(
             "customFieldEditorView.deleteButton",
-            value: "Delete Custom Field",
+            value: "Delete custom field",
             comment: "Button title for deleting a custom field"
         )
     }

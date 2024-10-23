@@ -20,7 +20,11 @@ struct WooShippingServiceView: View {
                     .headlineStyle()
                 Spacer()
             }
-            TopTabView(tabs: carriers)
+            TopTabView(tabs: carriers,
+                       unselectedStateColor: .secondary,
+                       tabsNameFont: .subheadline.bold(),
+                       tabItemContentHorizontalPadding: 16,
+                       tabItemContentVerticalPadding: 12)
         }
     }
 }

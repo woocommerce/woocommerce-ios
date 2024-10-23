@@ -7,6 +7,7 @@
 - [Internal] Updated storage usage in ProductReviewStore [https://github.com/woocommerce/woocommerce-ios/pull/14134]
 - [internal] Replace unnecessary fetch requests for upserting orders and order search results [https://github.com/woocommerce/woocommerce-ios/pull/14128]
 - [internal] Optimized storage usage in ProductStore [https://github.com/woocommerce/woocommerce-ios/pull/14139]
+- [internal] Optimized storage usage in ProductAttributeStore and ProductAttributeTermStore [https://github.com/woocommerce/woocommerce-ios/pull/14145]
 
 
 20.8

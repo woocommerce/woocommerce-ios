@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct WooShippingServiceView: View {
+    @ObservedObject var viewModel: WooShippingServiceViewModel
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -8,16 +10,11 @@ struct WooShippingServiceView: View {
                     .headlineStyle()
                 Spacer()
             }
-            WooShippingServiceCardView(viewModel: WooShippingServiceCardViewModel(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
-                                                                                  title: "USPS - Media Mail",
-                                                                                  rateLabel: "$7.63",
-                                                                                  daysToDeliveryLabel: "7 business days",
-                                                                                  extraInfoLabel: "Includes tracking, insurance (up to $100.00), free pickup",
-                                                                                  hasTracking: true,
-                                                                                  insuranceLabel: "Insurance (up to $100.00)",
-                                                                                  hasFreePickup: true,
-                                                                                  signatureRequiredLabel: "Signature Required (+$3.70)",
-                                                                                  adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)"))
+            VStack {
+                ForEach(viewModel.rates) { rate in
+                    WooShippingServiceCardView(viewModel: rate)
+                }
+            }
         }
     }
 }
@@ -31,5 +28,5 @@ private extension WooShippingServiceView {
 }
 
 #Preview {
-    WooShippingServiceView()
+    WooShippingServiceView(viewModel: .init())
 }

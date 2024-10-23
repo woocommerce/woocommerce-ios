@@ -2208,6 +2208,7 @@
 		CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */; };
 		CE2DF92C2CC162EB001AA394 /* WooShippingServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */; };
 		CE2DF92E2CC16C95001AA394 /* WooShippingServiceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2DF92D2CC16C95001AA394 /* WooShippingServiceCardView.swift */; };
+		CE315DC42CC91A4A00A06748 /* WooShippingServiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE315DC32CC91A4500A06748 /* WooShippingServiceViewModel.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* ButtonTableViewCell.swift */; };
@@ -5263,6 +5264,7 @@
 		CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
 		CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingServiceView.swift; sourceTree = "<group>"; };
 		CE2DF92D2CC16C95001AA394 /* WooShippingServiceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingServiceCardView.swift; sourceTree = "<group>"; };
+		CE315DC32CC91A4500A06748 /* WooShippingServiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingServiceViewModel.swift; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -11931,6 +11933,7 @@
 				CECEFA6C2CA2CEB50071C7DB /* WooShippingPackageAndRatePlaceholder.swift */,
 				DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */,
 				CE2DF92B2CC162EB001AA394 /* WooShippingServiceView.swift */,
+				CE315DC32CC91A4500A06748 /* WooShippingServiceViewModel.swift */,
 				CE2DF92D2CC16C95001AA394 /* WooShippingServiceCardView.swift */,
 				CEE125502CC66C8100D3183D /* WooShippingServiceCardViewModel.swift */,
 				DA4080712CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift */,
@@ -15199,6 +15202,7 @@
 				DE4D23A629B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift in Sources */,
 				EEA3C21F2CA543D9000E82EC /* FavoriteProductsUseCase.swift in Sources */,
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
+				CE315DC42CC91A4A00A06748 /* WooShippingServiceViewModel.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
 				DEB3879E2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift in Sources */,
 				EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */,

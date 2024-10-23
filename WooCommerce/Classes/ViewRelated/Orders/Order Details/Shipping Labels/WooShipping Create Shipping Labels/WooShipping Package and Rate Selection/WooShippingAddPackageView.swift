@@ -113,7 +113,10 @@ struct WooShippingAddPackageView: View {
                                     unitInputView(for: dimensionUnit, unit: customPackageViewModel.dimensionUnit)
                                 }
                             }
-                            unitInputView(for: WooShippingPackageUnitType.weight, unit: customPackageViewModel.weightUnit)
+                            // showing weight input only if we are saving the template
+                            if customPackageViewModel.showSaveTemplate {
+                                unitInputView(for: WooShippingPackageUnitType.weight, unit: customPackageViewModel.weightUnit)
+                            }
                         }
                         .toolbar {
                             ToolbarItemGroup(placement: .keyboard) {

@@ -82,6 +82,45 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
     }
 
+    func test_it_with_all_dimension_field_values_set_not_saving_template() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = false
+
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
+    }
+
+    func test_it_with_all_dimension_field_values_set_saving_template() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = true
+
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, true)
+    }
+
+    func test_it_with_all_dimension_weight_field_values_set() {
+        // Given
+        let viewModel = WooShippingAddCustomPackageViewModel()
+
+        // When
+        viewModel.fillWithDummyDimensionFieldValues()
+        viewModel.showSaveTemplate = true
+        viewModel.fieldValues[.weight] = "1"
+        // Then
+        XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesInvalid, false)
+    }
+
     func test_validate_custom_package_input_fields_when_init() {
         // Given/When
         let viewModel = WooShippingAddCustomPackageViewModel()
@@ -153,6 +192,12 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 extension WooShippingAddCustomPackageViewModel {
     func fillWithDummyFieldValues() {
         for dimensionType in WooShippingPackageUnitType.allCases {
+            fieldValues[dimensionType] = "1"
+        }
+    }
+
+    func fillWithDummyDimensionFieldValues() {
+        for dimensionType in WooShippingPackageUnitType.dimensionUnits {
             fieldValues[dimensionType] = "1"
         }
     }

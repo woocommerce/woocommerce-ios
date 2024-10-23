@@ -24,13 +24,21 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     // Field values are invalid if one of them is empty
+    // - if we are saving template we check all field values
+    // - if we are not saving template we check only dimensions
     var areFieldValuesInvalid: Bool {
-        for (_, value) in fieldValues {
+        let keysToCheck: [WooShippingPackageUnitType] = showSaveTemplate ? WooShippingPackageUnitType.allCases : WooShippingPackageUnitType.dimensionUnits
+
+        var validFieldsCount: Int = 0
+
+        for (key, value) in fieldValues {
+            guard keysToCheck.contains(key) else { continue }
             if value.isEmpty {
                 return true
             }
+            validFieldsCount += 1
         }
-        return fieldValues.count != WooShippingPackageUnitType.allCases.count
+        return validFieldsCount != keysToCheck.count
     }
 
     func clearFieldValues() {
@@ -83,7 +91,7 @@ enum WooShippingPackageUnitType: CaseIterable {
         case .height:
             return Localization.height
         case .weight:
-            return Localization.emptyPackageWeight
+            return Localization.packageWeight
         }
     }
 
@@ -103,8 +111,8 @@ extension WooShippingPackageUnitType {
         static let height = NSLocalizedString("wooShipping.createLabel.addPackage.height",
                                               value: "Height",
                                               comment: "Info label for height input field")
-        static let emptyPackageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.emptyPackageWeight",
-                                              value: "Empty Package Weight",
+        static let packageWeight = NSLocalizedString("wooShipping.createLabel.addPackage.packageWeight",
+                                              value: "Package Weight",
                                               comment: "Info label for weight input field")
     }
 }

@@ -89,6 +89,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         // Then: The number of displayed items remains the same as before and the value is edited correctly
         XCTAssertEqual(viewModel.combinedList.count, 1)
         XCTAssertEqual(viewModel.combinedList[0].fieldId, originalFields[1].id)
+        XCTAssertTrue(viewModel.hasChanges)
     }
 
     func test_given_newField_when_deleteFieldCalled_then_displayedItemsAndPendingChangesAreUpdated() {

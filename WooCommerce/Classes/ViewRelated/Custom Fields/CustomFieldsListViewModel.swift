@@ -113,6 +113,8 @@ extension CustomFieldsListViewModel {
             let result = try await dispatchSavingChanges()
             originalCustomFields = result.map { CustomFieldViewModel(metadata: $0) }
             pendingChanges = PendingCustomFieldsChanges()
+            notice = Notice(title: CustomFieldsListHostingController.Localization.saveSuccessTitle,
+                            feedbackType: .success)
         } catch {
             notice = Notice(title: CustomFieldsListHostingController.Localization.saveErrorTitle,
                             message: CustomFieldsListHostingController.Localization.saveErrorMessage,

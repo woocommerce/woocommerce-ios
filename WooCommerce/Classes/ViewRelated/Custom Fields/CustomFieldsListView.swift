@@ -243,6 +243,11 @@ extension CustomFieldsListHostingController {
             value: "Please wait while we save your changes",
             comment: "Message for the in progress view shown when saving changes"
         )
+        static let saveSuccessTitle = NSLocalizedString(
+            "customFieldsListHostingController.saveSuccessTitle",
+            value: "Changes saved",
+            comment: "Title for the success message when saving changes"
+        )
         static let saveErrorTitle = NSLocalizedString(
             "customFieldsListHostingController.saveErrorTitle",
             value: "Error saving changes",

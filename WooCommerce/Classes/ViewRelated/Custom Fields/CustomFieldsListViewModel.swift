@@ -7,8 +7,8 @@ final class CustomFieldsListViewModel: ObservableObject {
     private let stores: StoresManager
     @Published private var originalCustomFields: [CustomFieldViewModel]
     private let customFieldsType: MetaDataType
-    private let siteId: Int64
-    private let parentItemId: Int64
+    private let siteID: Int64
+    private let parentItemID: Int64
 
     @Published var selectedCustomField: CustomFieldUI? = nil
     @Published var isAddingNewField: Bool = false
@@ -39,8 +39,8 @@ final class CustomFieldsListViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.originalCustomFields = customFields
-        self.siteId = siteID
-        self.parentItemId = parentItemID
+        self.siteID = siteID
+        self.parentItemID = parentItemID
         self.customFieldsType = customFieldType
 
         observePendingChanges()
@@ -176,8 +176,8 @@ private extension CustomFieldsListViewModel {
     @MainActor
     func dispatchSavingChanges() async throws -> [MetaData] {
         return try await withCheckedThrowingContinuation { continuation in
-            let action = MetaDataAction.updateMetaData(siteID: siteId,
-                                                       parentItemID: parentItemId,
+            let action = MetaDataAction.updateMetaData(siteID: siteID,
+                                                       parentItemID: parentItemID,
                                                        metaDataType: customFieldsType,
                                                        metadata: pendingChanges.asJson()) { result in
                 continuation.resume(with: result)

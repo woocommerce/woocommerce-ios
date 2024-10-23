@@ -29,16 +29,16 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let rate2 = try XCTUnwrap(viewModel.carrierRates["usps"]?[1])
         XCTAssertEqual(rate2.selected, false)
         XCTAssertEqual(rate2.signatureRequirement, .none)
-        XCTAssertEqual(rate2.title, "USPS - Ground Advantage")
-        XCTAssertEqual(rate2.daysToDeliveryLabel, "7 business days")
-        XCTAssertEqual(rate2.rateLabel, "$7.53")
+        XCTAssertEqual(rate2.title, "USPS - Parcel Select Mail")
+        XCTAssertEqual(rate2.daysToDeliveryLabel, "2 business days")
+        XCTAssertEqual(rate2.rateLabel, "$40.06")
         XCTAssertEqual(rate2.carrierLogo, WooShippingCarrier.usps.logo)
         XCTAssertEqual(rate2.trackingLabel, "Tracking")
         XCTAssertEqual(rate2.insuranceLabel, "Insurance (up to $100.00)")
         XCTAssertEqual(rate2.freePickupLabel, "Free pickup")
         XCTAssertEqual(rate2.extraInfoLabel, "Includes tracking, insurance (up to $100.00), free pickup")
-        XCTAssertNil(rate.signatureRequiredLabel)
-        XCTAssertNil(rate.adultSignatureRequiredLabel)
+        XCTAssertEqual(rate2.signatureRequiredLabel, "Signature Required (+$2.70)")
+        XCTAssertEqual(rate2.adultSignatureRequiredLabel, "Adult Signature Required (+$6.90)")
 
         let rate3 = try XCTUnwrap(viewModel.carrierRates["dhlexpress"]?.first)
         XCTAssertEqual(rate3.selected, false)
@@ -51,8 +51,8 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(rate3.insuranceLabel, "Insurance (up to $100.00)")
         XCTAssertEqual(rate3.freePickupLabel, "Free pickup")
         XCTAssertEqual(rate3.extraInfoLabel, "Includes tracking, insurance (up to $100.00), free pickup")
-        XCTAssertNil(rate.signatureRequiredLabel)
-        XCTAssertNil(rate.adultSignatureRequiredLabel)
+        XCTAssertNil(rate3.signatureRequiredLabel)
+        XCTAssertNil(rate3.adultSignatureRequiredLabel)
     }
 
 }

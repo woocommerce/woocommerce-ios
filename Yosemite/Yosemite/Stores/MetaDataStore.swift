@@ -91,7 +91,7 @@ private extension MetaDataStore {
     ///
     func updateOrderMetaData(siteID: Int64,
                              orderID: Int64,
-                             metadata: [[String: Any]],
+                             metadata: [[String: Any?]],
                              onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -162,7 +162,7 @@ private extension MetaDataStore {
     ///
     func updateProductMetaData(siteID: Int64,
                                productID: Int64,
-                               metadata: [[String: Any]],
+                               metadata: [[String: Any?]],
                                onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {

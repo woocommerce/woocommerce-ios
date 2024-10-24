@@ -20,7 +20,7 @@ struct POSProductPreview: POSItem {
 }
 
 final class POSItemProviderPreview: POSItemProvider {
-    func providePointOfSaleItems() async throws -> [Yosemite.POSItem] {
+    func providePointOfSaleItems(pageNumber: Int) async throws -> [Yosemite.POSItem] {
         []
     }
 

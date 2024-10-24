@@ -32,7 +32,6 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
 
 struct CardPresentPaymentsOnboardingView: View {
     @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
-    var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
         Group {

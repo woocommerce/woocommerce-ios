@@ -26,9 +26,14 @@ public final class POSProductProvider: POSItemProvider {
                   network: AlamofireNetwork(credentials: credentials))
     }
 
-    public func providePointOfSaleItems() async throws -> [POSItem] {
+    /// Provides a list of products for the Point of Sale, by fetching simple products from the remote, applying any eligibility criteria,
+    /// and maps them to POSItem type.
+    ///
+    /// - pageNumber: Number of the page that should be retrieved. If none given, defaults to 1
+    ///
+    public func providePointOfSaleItems(pageNumber: Int = 1) async throws -> [POSItem] {
         do {
-            let products = try await productsRemote.loadAllSimpleProductsForPointOfSale(for: siteID)
+            let products = try await productsRemote.loadSimpleProductsForPointOfSale(for: siteID, pageNumber: pageNumber)
 
             let eligibilityCriteria: [(Product) -> Bool] = [
                 isNotVirtual,

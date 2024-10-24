@@ -75,7 +75,9 @@ final class CodeScannerViewController: UIViewController {
     }
 
     private func configureSwapCameraButton() {
-        swapCameraButton.isHidden = captureDevice(with: .front) == nil || captureDevice(with: .back) == nil
+        let isFrontCameraAvailable = captureDevice(with: .front) != nil
+        let isBackCameraAvailable = captureDevice(with: .back) != nil
+        swapCameraButton.isHidden = !(isFrontCameraAvailable && isBackCameraAvailable)
         swapCameraButton.tintColor = UIColor.white
         swapCameraButton.addTarget(self, action: #selector(swapCamera), for: .touchUpInside)
     }
@@ -363,12 +365,18 @@ private extension CodeScannerViewController {
             newDevice = captureDevice(with: .back)
         }
 
+        // Ensure newDevice is not nil
+        guard let validDevice = newDevice else {
+            DDLogError("Failed to find a new camera device.")
+            return
+        }
+
         // Create new capture input
         var deviceInput: AVCaptureDeviceInput!
         do {
-            deviceInput = try AVCaptureDeviceInput(device: newDevice!)
+            deviceInput = try AVCaptureDeviceInput(device: validDevice)
         } catch let error {
-            print(error.localizedDescription)
+            DDLogError("Error creating device input: \(error)")
             return
         }
 
@@ -382,7 +390,6 @@ private extension CodeScannerViewController {
         let devices = AVCaptureDevice.DiscoverySession(deviceTypes:
                                                         [
                                                             .builtInWideAngleCamera,
-                                                            .builtInMicrophone,
                                                             .builtInDualCamera,
                                                             .builtInTelephotoCamera
                                                         ],

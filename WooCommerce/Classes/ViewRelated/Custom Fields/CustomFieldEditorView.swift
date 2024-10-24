@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CustomFieldEditorView: View {
     @Environment(\.dismiss) private var dismiss
+
     @State private var key: String
     @State private var value: String
     @State private var showRichTextEditor = false
@@ -105,11 +106,11 @@ struct CustomFieldEditorView: View {
         }
         .background(Color(.listBackground))
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Cancel") // todo-13493: set String to be translatable
+                    Text(Localization.cancelButton)
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -118,7 +119,7 @@ struct CustomFieldEditorView: View {
                         saveChanges()
                         dismiss()
                     } label: {
-                        Text("Save") // todo-13493: set String to be translatable
+                        Text(Localization.saveButton)
                     }
                     .disabled(!hasUnsavedChanges)
 
@@ -172,6 +173,18 @@ private extension CustomFieldEditorView {
     }
 
     enum Localization {
+        static let cancelButton = NSLocalizedString(
+            "customFieldEditorView.cancel",
+            value: "Cancel",
+            comment: "Label for the Cancel button to close the editor"
+        )
+
+        static let saveButton = NSLocalizedString(
+            "customFieldEditorView.save",
+            value: "Save",
+            comment: "Label for the Save button to save changes"
+        )
+
         static let keyLabel = NSLocalizedString(
             "customFieldEditorView.keyLabel",
             value: "Key",

@@ -93,24 +93,11 @@ struct CustomFieldsListView: View {
             }
         }
         .listStyle(.plain)
-        .sheet(item: $viewModel.selectedCustomField, content: { customField in
-            NavigationView {
-                CustomFieldEditorView(key: customField.key,
-                                      value: customField.value,
-                                      onSave: { updatedKey, updatedValue in
-                                          viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                                      },
-                                      onDelete: { viewModel.deleteField(customField) })
-            }
-        })
+        .sheet(item: $viewModel.selectedCustomField) { customField in
+            buildCustomFieldEditorView(customField: customField)
+        }
         .sheet(isPresented: $viewModel.isAddingNewField) {
-            NavigationView {
-                CustomFieldEditorView(key: "",
-                                      value: "",
-                                      onSave: { updatedKey, updatedValue in
-                                          viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
-                                      })
-            }
+            buildCustomFieldEditorView(customField: nil)
         }
         .notice($viewModel.notice)
     }
@@ -172,6 +159,28 @@ private struct CustomFieldRow: View {
     }
 }
 
+// MARK: - Helpers
+//
+private extension CustomFieldsListView {
+    /// Builds the Custom Field Editor View.
+    /// - When `customField` is provided, it configures the editor for editing an existing field
+    /// - When `customField` is nil, it configures the editor for creating a new field
+    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?) -> some View {
+        NavigationView {
+            CustomFieldEditorView(
+                key: customField?.key ?? "",
+                value: customField?.value ?? "",
+                onSave: { updatedKey, updatedValue in
+                    viewModel.saveField(
+                        key: updatedKey,
+                        value: updatedValue,
+                        fieldId: customField?.fieldId
+                    )
+                }
+            )
+        }
+    }
+}
 
 // MARK: - Constants
 //
@@ -189,7 +198,7 @@ extension CustomFieldsListHostingController {
 
         static let accessibilityHintAddCustomField = NSLocalizedString(
             "customFieldsListHostingController.accessibilityHintAddCustomField",
-            value: "Add a new Custom FIeld to the list",
+            value: "Add a new custom field to the list",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to add custom field.")
 
         static let save = NSLocalizedString(

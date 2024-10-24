@@ -9,11 +9,7 @@ public final class ProductReviewStore: Store {
     private let remote: ProductReviewsRemote
 
     private lazy var productReviewFromNoteUseCase =
-        RetrieveProductReviewFromNoteUseCase(network: network, derivedStorage: sharedDerivedStorage)
-
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
+    RetrieveProductReviewFromNoteUseCase(network: network, storageManager: storageManager)
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductReviewsRemote(network: network)
@@ -65,13 +61,13 @@ private extension ProductReviewStore {
 
     /// Deletes all of the Stored ProductReviews.
     ///
-    func resetStoredProductReviews(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.ProductReview.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Product Reviews deleted")
-
-        onCompletion()
+    func resetStoredProductReviews(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.ProductReview.self)
+        }, completion: {
+            DDLogDebug("Product Reviews deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
@@ -108,9 +104,12 @@ private extension ProductReviewStore {
             switch result {
             case .failure(let error):
                 if case NetworkError.notFound = error {
-                    self.deleteStoredProductReview(siteID: siteID, reviewID: reviewID)
+                    self.deleteStoredProductReview(siteID: siteID, reviewID: reviewID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
                 }
-                onCompletion(nil, error)
             case .success(let productReview):
                 self.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
                     onCompletion(productReview, nil)
@@ -158,14 +157,14 @@ private extension ProductReviewStore {
 
     /// Deletes any Storage.ProductReview with the specified `siteID` and `reviewID`
     ///
-    func deleteStoredProductReview(siteID: Int64, reviewID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let productReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) else {
-            return
-        }
-
-        storage.deleteObject(productReview)
-        storage.saveIfNeeded()
+    func deleteStoredProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let productReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) else {
+                DDLogError("⛔️ Cannot find the product review with the given ID to delete from storage!")
+                return
+            }
+            storage.deleteObject(productReview)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called
@@ -175,32 +174,28 @@ private extension ProductReviewStore {
                                                 siteID: Int64,
                                                 shouldDeleteAllStoredProductReviews: Bool = false,
                                                 onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ [weak self] storage in
             if shouldDeleteAllStoredProductReviews {
-                derivedStorage.deleteProductReviews(siteID: siteID)
+                storage.deleteProductReviews(siteID: siteID)
             }
-            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage, siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            self?.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: storage, siteID: siteID)
+        }, completion: onCompletion, on: .main)
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
-        let storage = storageManager.viewStorage
-        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
-            guard let productReview = productReview else {
+        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { [weak self] (productReview, error) in
+            guard let self, let productReview else {
                 onCompletion(nil, error)
                 return
             }
 
-            if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
-                existingStorageProductReview.update(with: productReview)
-            }
-
-            onCompletion(productReview.status, nil)
+            storageManager.performAndSave({ storage in
+                if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
+                    existingStorageProductReview.update(with: productReview)
+                }
+            }, completion: {
+                onCompletion(productReview.status, nil)
+            }, on: .main)
         }
     }
 }

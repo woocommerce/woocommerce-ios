@@ -13,9 +13,11 @@ final class CustomFieldsListViewModel: ObservableObject {
 
     @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
+    @Published var notice: Notice?
 
     @Published private var editedFields: [CustomFieldUI] = []
     @Published private var addedFields: [CustomFieldUI] = []
+    @Published private var deletedFieldIds: [Int64] = []
     @Published private(set) var hasChanges: Bool = false
 
     init(customFields: [CustomFieldViewModel]) {
@@ -56,6 +58,24 @@ extension CustomFieldsListViewModel {
         updateCombinedList()
     }
 
+    func deleteField(_ field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.append(fieldId)
+        } else {
+            // The deleted field is not yet saved on the server, so we remove it from the added fields
+            addedFields.removeAll { $0.id == field.id }
+        }
+
+        updateCombinedList()
+
+        notice = Notice(title: CustomFieldsListHostingController.Localization.deleteNoticeTitle,
+                        feedbackType: .success,
+                        actionTitle: CustomFieldsListHostingController.Localization.deleteNoticeUndo,
+                        actionHandler: { [weak self] in
+                            self?.undoDeletion(of: field)
+                        })
+    }
+
     func saveField(key: String, value: String, fieldId: Int64?) {
         let newField = CustomFieldUI(key: key, value: value, fieldId: fieldId)
         if let fieldId = fieldId {
@@ -94,16 +114,26 @@ private extension CustomFieldsListViewModel {
         }
     }
 
-    func updateCombinedList() {
-        let editedList = originalCustomFields.map { field in
-            editedFields.first { $0.fieldId == field.id } ?? CustomFieldUI(customField: field)
+    func undoDeletion(of field: CustomFieldUI) {
+        if let fieldId = field.fieldId {
+            deletedFieldIds.removeAll { $0 == fieldId }
+        } else {
+            addedFields.append(field)
         }
-        combinedList = editedList + addedFields
+
+        updateCombinedList()
+    }
+
+    func updateCombinedList() {
+        combinedList = originalCustomFields
+            .filter { field in !deletedFieldIds.contains(where: { $0 == field.id }) }
+            .map { field in editedFields.first(where: { $0.fieldId == field.id }) ?? CustomFieldUI(customField: field) }
+            + addedFields
     }
 
     func configureHasChanges() {
-        $editedFields.combineLatest($addedFields)
-            .map { !$0.isEmpty || !$1.isEmpty }
+        $editedFields.combineLatest($addedFields, $deletedFieldIds)
+            .map { $0.isNotEmpty || $1.isNotEmpty || $2.isNotEmpty }
             .assign(to: &$hasChanges)
     }
 }

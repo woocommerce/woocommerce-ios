@@ -3,7 +3,7 @@ import Foundation
 /// Interface for remote requests to Product and Orders meta data.
 ///
 public protocol MetaDataRemoteProtocol {
-    func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any]]) async throws -> [MetaData]
+    func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any?]]) async throws -> [MetaData]
 }
 
 public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
@@ -19,7 +19,7 @@ public final class MetaDataRemote: Remote, MetaDataRemoteProtocol {
     ///     - metadata: The metadata to be updated.
     /// - Returns: An array of updated MetaData.
     ///
-    public func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any]]) async throws -> [MetaData] {
+    public func updateMetaData(for siteID: Int64, for parentID: Int64, type: MetaDataType, metadata: [[String: Any?]]) async throws -> [MetaData] {
 
         let parameters: [String: Any] = [ParameterKey.metaData: metadata, ParameterKey.fields: ParameterKey.metaData]
         let path: String

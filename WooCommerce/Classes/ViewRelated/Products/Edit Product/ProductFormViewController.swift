@@ -1494,7 +1494,7 @@ private extension ProductFormViewController {
             CustomFieldViewModel(metadata: $0)
         }
 
-        let viewModel = CustomFieldsListViewModel(customFields: customFields)
+        let viewModel = CustomFieldsListViewModel(customFields: customFields, siteID: product.siteID, parentItemID: product.productID, customFieldType: .product)
 
         let customFieldsListViewController = CustomFieldsListHostingController(isEditable: true,
                                                                                viewModel: viewModel)

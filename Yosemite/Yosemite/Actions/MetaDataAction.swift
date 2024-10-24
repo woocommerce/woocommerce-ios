@@ -5,27 +5,17 @@ import Networking
 ///
 public enum MetaDataAction: Action {
 
-    /// Updates order metadata both remotely and in the local database.
+    /// Updates metadata of a parent item both remotely and in the local database.
     ///
-    /// - Parameter siteID: Site id of the order.
-    /// - Parameter orderID: ID of the order.
+    /// - Parameter siteID: Site id of the item.
+    /// - Parameter parentItemID: ID of the parent item.
+    /// - Parameter metaDataType: Type of metadata.
     /// - Parameter metadata: Metadata to be updated.
     /// - Parameter onCompletion: Callback called when the action is finished, including the result of the update operation.
     ///
-    case updateOrderMetaData(siteID: Int64,
-                             orderID: Int64,
-                             metadata: [[String: Any]],
-                             onCompletion: (Result<[MetaData], Error>) -> Void)
-
-    /// Updates product metadata both remotely and in the local database.
-    ///
-    /// - Parameter siteID: Site id of the product.
-    /// - Parameter productID: ID of the product.
-    /// - Parameter metadata: Metadata to be updated.
-    /// - Parameter onCompletion: Callback called when the action is finished, including the result of the update operation.
-    ///
-    case updateProductMetaData(siteID: Int64,
-                               productID: Int64,
-                               metadata: [[String: Any]],
-                               onCompletion: (Result<[MetaData], Error>) -> Void)
+    case updateMetaData(siteID: Int64,
+                        parentItemID: Int64,
+                        metaDataType: MetaDataType,
+                        metadata: [[String: Any?]],
+                        onCompletion: (Result<[MetaData], Error>) -> Void)
 }

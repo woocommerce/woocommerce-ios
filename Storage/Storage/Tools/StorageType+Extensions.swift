@@ -767,7 +767,7 @@ public extension StorageType {
     }
 
     /// Retrieves all stored MetaData of a given Order
-    /// 
+    ///
     func loadOrderMetaData(siteID: Int64, orderID: Int64) -> [MetaData] {
         let predicate = \MetaData.order?.siteID == siteID && \MetaData.order?.orderID == orderID
         return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)
@@ -781,7 +781,7 @@ public extension StorageType {
     }
 
     /// Retrieves all stored MetaData of a given Product
-    /// 
+    ///
     func loadProductMetaData(siteID: Int64, productID: Int64) -> [MetaData] {
         let predicate = \MetaData.product?.siteID == siteID && \MetaData.product?.productID == productID
         return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)

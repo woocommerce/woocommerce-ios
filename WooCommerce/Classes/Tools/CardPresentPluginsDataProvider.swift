@@ -32,8 +32,6 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
     private let stores: StoresManager
     private let configurationLoader: CardPresentConfigurationLoader
 
-    static let shared = CardPresentPluginsDataProvider(configurationLoader: CardPresentConfigurationLoader(stores: ServiceLocator.stores))
-
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,

@@ -1,2 +1,1 @@
-En esta versión, hemos habilitado el escaneo de números de seguimiento de pedidos y mejorado la gestión de contraseñas de productos. También hemos añadido mejoras para el escáner de productos, los pagos en efectivo y los descuentos.
-La creación de campañas de Blaze Ads se ha actualizado con una mejor experiencia para la selección de imágenes y los ajustes del presupuesto.
+En esta actualización hemos resuelto un par de problemas menores relacionados con el cierre automático de diferentes vistas, así como la mejora de la alineación de la interfaz de usuario en los iPad. También hemos corregido un fallo que ocurría al buscar productos para añadir a un pedido. Por último, ya no es posible introducir descuentos superiores al precio del producto.

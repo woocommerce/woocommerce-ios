@@ -86,6 +86,8 @@ protocol ProductFormViewModelProtocol {
 
     func canShareProduct() -> Bool
 
+    func canFavoriteProduct() -> Bool
+
     func canPromoteWithBlaze() -> Bool
 
     func canDeleteProduct() -> Bool
@@ -177,11 +179,19 @@ protocol ProductFormViewModelProtocol {
 
     /// Tracks when the product form is loaded
     func trackProductFormLoaded()
+
+    // Favorite actions
+
+    func isFavorite() async -> Bool
+
+    func markAsFavorite()
+
+    func removeFromFavorite()
 }
 
 extension ProductFormViewModelProtocol {
     func shouldShowMoreOptionsMenu() -> Bool {
-        canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct()
+        canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct() || canFavoriteProduct()
     }
 
     /// Returns `.publish` when the product does not exists remotely and it's gonna be published for the first time.

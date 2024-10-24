@@ -50,6 +50,7 @@ public enum ProductAction: Action {
                              productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
+                             productIDs: [Int64] = [],
                              excludedProductIDs: [Int64] = [],
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
                              onCompletion: (Result<Bool, Error>) -> Void)

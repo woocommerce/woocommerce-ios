@@ -2411,6 +2411,27 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
+    func test_retrieveFirstPurchasableItemMatchFromSKU_errors_on_empty_SKU() throws {
+        // Given
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let emptySKU = ""
+        let result = waitFor { promise in
+            let action = ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
+                                                                        sku: emptySKU,
+                                                                        onCompletion: { product in
+                promise(product)
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ProductLoadError)
+        XCTAssertEqual(result.isFailure, true)
+        XCTAssertEqual(error, ProductLoadError.emptySKU)
+    }
+
     func test_retrieveFirstPurchasableItemMatchFromSKU_when_unsuccessful_SKU_match_then_does_not_upsert_product_to_storage() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -3029,6 +3050,47 @@ final class ProductStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - requestMissingProducts
+
+    func test_requestMissingProducts_triggers_loading_request_only_for_missing_products_and_saves_fetched_products_to_storage() {
+        // Given
+        let existingProductIDs: [Int64] = [13, 53]
+        let missingProductIDs: [Int64] = [82, 45]
+
+        let productIDs = existingProductIDs + missingProductIDs
+        let orderItems = productIDs.map { Networking.OrderItem.fake().copy(productID: $0) }
+        let order = Networking.Order.fake().copy(siteID: sampleSiteID, items: orderItems)
+
+        for productID in existingProductIDs {
+            storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID, productID: productID))
+        }
+        XCTAssert(storageManager.viewStorage.loadProducts(siteID: sampleSiteID, productsIDs: existingProductIDs).count == 2)
+
+        let mockRemote = MockProductsRemote()
+        let fetchedItems = missingProductIDs.map { Networking.Product.fake().copy(siteID: sampleSiteID, productID: $0) }
+        mockRemote.whenLoadingProducts(siteID: sampleSiteID, productIDs: missingProductIDs, thenReturn: .success(fetchedItems))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.requestMissingProducts(for: order, onCompletion: { error in
+                promise(error)
+            }))
+        }
+
+        // Then
+        XCTAssertNil(result)
+        XCTAssert(mockRemote.requestedProductIDsForLoading == missingProductIDs)
+
+        let newStoredProducts = storageManager.viewStorage.loadProducts(siteID: sampleSiteID, productsIDs: missingProductIDs)
+        missingProductIDs.forEach { id in
+            XCTAssert(newStoredProducts.contains(where: { $0.productID == id }))
+        }
     }
 }
 

@@ -22,6 +22,8 @@ struct BarcodeSKUScannerErrorNoticeFactory {
             return String(format: Localization.productNotFoundMessage, code.payloadStringValue)
         case .notPurchasable:
             return String(format: Localization.productNotPurchasableMessage, code.payloadStringValue)
+        case .emptySKU:
+            return Localization.invalidSKU
         default:
             return Localization.defaultTitle
         }
@@ -32,6 +34,8 @@ private extension BarcodeSKUScannerErrorNoticeFactory {
     enum Localization {
         static let defaultTitle = NSLocalizedString("Cannot add Product to Order.",
                                                     comment: "Generic error when a product can't be added to an order after being scanned.")
+        static let invalidSKU = NSLocalizedString("Invalid SKU",
+                                                    comment: "Error when an empty SKU is returned from the barcode scanner")
         static let productNotFoundMessage = NSLocalizedString("Product with SKU \"%@\" not found.",
                                                             comment: "Error message when the scanner cannot find a matching product. %@ is the SKU code.")
         static let productNotPurchasableMessage = NSLocalizedString("Product with SKU \"%@\" is not purchasable.",

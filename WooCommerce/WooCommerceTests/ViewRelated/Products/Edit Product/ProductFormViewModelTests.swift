@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import Experiments
 import protocol WooFoundation.Analytics
 
 final class ProductFormViewModelTests: XCTestCase {
@@ -223,7 +224,76 @@ final class ProductFormViewModelTests: XCTestCase {
                     viewModel.canPromoteWithBlaze() == false
                 }
             }
-        }
+    }
+
+    // MARK: - Favorite
+
+    func test_canFavoriteProduct_is_true_when_form_type_is_not_add() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        XCTAssertTrue(viewModel.canFavoriteProduct())
+    }
+
+    func test_canFavoriteProduct_is_false_when_form_type_add() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        XCTAssertFalse(viewModel.canFavoriteProduct())
+    }
+
+    func test_canFavoriteProduct_is_false_when_feature_flag_off() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: false))
+
+        // When
+        XCTAssertFalse(viewModel.canFavoriteProduct())
+    }
+
+    @MainActor
+    func test_markAsFavorite_marks_product_as_favorite() async {
+        // Given
+        let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        favoriteProductsUseCase: mockUseCase,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        viewModel.markAsFavorite()
+
+        // Then
+        XCTAssertEqual(mockUseCase.markAsFavoriteCalledForProductID, product.productID)
+    }
+
+    @MainActor
+    func test_removeFromFavorite_removes_product_as_favorite() async {
+        // Given
+        let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        favoriteProductsUseCase: mockUseCase,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        viewModel.removeFromFavorite()
+
+        // Then
+        XCTAssertEqual(mockUseCase.removeFromFavoriteCalledForProductID, product.productID)
+    }
 
     // MARK: `canDeleteProduct`
 
@@ -767,7 +837,9 @@ private extension ProductFormViewModelTests {
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
                          analytics: Analytics = ServiceLocator.analytics,
-                         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) -> ProductFormViewModel {
+                         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+                         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
+                         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let siteID: Int64 = 123
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID, product: model)
@@ -776,6 +848,8 @@ private extension ProductFormViewModelTests {
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
                                     analytics: analytics,
-                                    blazeEligibilityChecker: blazeEligibilityChecker)
+                                    blazeEligibilityChecker: blazeEligibilityChecker,
+                                    favoriteProductsUseCase: favoriteProductsUseCase,
+                                    featureFlagService: featureFlagService)
     }
 }

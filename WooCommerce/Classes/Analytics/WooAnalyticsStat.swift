@@ -234,6 +234,7 @@ enum WooAnalyticsStat: String {
     case blazeAddPaymentMethodSuccess = "blaze_creation_add_payment_method_success"
     case blazeCampaignCreationSuccess = "blaze_campaign_creation_success"
     case blazeCampaignCreationFailed = "blaze_campaign_creation_failed"
+    case blazeCampaignCreationFeedback = "blaze_campaign_creation_feedback"
 
     // MARK: Store Onboarding Events
     //
@@ -717,14 +718,6 @@ enum WooAnalyticsStat: String {
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
 
-    // MARK: Add product from image events
-    case addProductFromImageDisplayed = "add_product_from_image_displayed"
-    case addProductFromImageScanCompleted = "add_product_from_image_scan_completed"
-    case addProductFromImageScanFailed = "add_product_from_image_scan_failed"
-    case addProductFromImageDetailsGenerated = "add_product_from_image_details_generated"
-    case addProductFromImageDetailGenerationFailed = "add_product_from_image_detail_generation_failed"
-    case addProductFromImageContinueButtonTapped = "add_product_from_image_continue_button_tapped"
-
     // MARK: Duplicate Product events
     case duplicateProductSuccess = "duplicate_product_success"
     case duplicateProductFailed = "duplicate_product_failed"
@@ -861,6 +854,8 @@ enum WooAnalyticsStat: String {
     //
     case productDetailViewProductButtonTapped = "product_detail_view_external_tapped"
     case productDetailShareButtonTapped = "product_detail_share_button_tapped"
+    case productDetailMarkAsFavoriteButtonTapped = "product_detail_mark_as_favorite_tapped"
+    case productDetailRemoveFromFavoriteButtonTapped = "product_detail_remove_from_favorite_tapped"
 
     // MARK: Product Settings
     //

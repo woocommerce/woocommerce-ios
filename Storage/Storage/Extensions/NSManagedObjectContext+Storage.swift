@@ -60,6 +60,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes the specified Object Instance
     ///
     public func deleteObject<T: Object>(_ object: T) {
+        Self.ensureCorrectContextUsageIfNeeded(for: T.entityName)
         guard let object = object as? NSManagedObject else {
             logErrorAndExit("Invalid Object Kind")
         }
@@ -70,6 +71,7 @@ extension NSManagedObjectContext: StorageType {
     /// Deletes all of the NSMO instances associated to the specified kind
     ///
     public func deleteAllObjects<T: Object>(ofType type: T.Type) {
+        Self.ensureCorrectContextUsageIfNeeded(for: T.entityName)
         let request = fetchRequest(forType: type)
         request.includesPropertyValues = false
         request.includesSubentities = false
@@ -104,6 +106,7 @@ extension NSManagedObjectContext: StorageType {
     /// Inserts a new Entity. For performance reasons, this helper *DOES NOT* persists the context.
     ///
     public func insertNewObject<T: Object>(ofType type: T.Type) -> T {
+        Self.ensureCorrectContextUsageIfNeeded(for: T.entityName)
         return NSEntityDescription.insertNewObject(forEntityName: T.entityName, into: self) as! T
     }
 
@@ -133,6 +136,9 @@ extension NSManagedObjectContext: StorageType {
         guard hasChanges else {
             return
         }
+
+        /// cannot infer the entity name here, so leaving it empty
+        Self.ensureCorrectContextUsageIfNeeded(for: "")
 
         do {
             try save()
@@ -174,5 +180,25 @@ extension NSManagedObjectContext: StorageType {
     ///
     private func fetchRequest<T: Object>(forType type: T.Type) -> NSFetchRequest<NSFetchRequestResult> {
         return NSFetchRequest<NSFetchRequestResult>(entityName: type.entityName)
+    }
+
+    /// Helper to trigger failure in debug mode or print warning when write operations are called from the view context (main thread).
+    ///
+    private static func ensureCorrectContextUsageIfNeeded(for entityName: String) {
+        #if DEBUG
+        guard Thread.isMainThread else {
+            return
+        }
+        let message: String = {
+            if entityName.isEmpty {
+                "⚠️ Saving data should only be done on a background context"
+            } else {
+                "⚠️ Write operations for \(entityName) should only be done on a background context"
+            }
+        }()
+
+        let enforceWriteInBackground = ProcessInfo.processInfo.arguments.contains("-enforce-core-data-write-in-background")
+        enforceWriteInBackground ? assertionFailure(message) : DDLogWarn(message)
+        #endif
     }
 }

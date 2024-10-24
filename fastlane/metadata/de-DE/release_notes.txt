@@ -1,2 +1,1 @@
-Bei dieser Version haben wir das Scannen von Sendungsverfolgungsnummern für Bestellungen aktiviert und das Passwortmanagement für Produkte verbessert. Außerdem haben wir Verbesserungen vorgenommen, die Produktscanner, Barzahlungen und Rabatte betreffen.
-Beim Erstellen von Blaze-Werbekampagnen haben wir die Bildauswahl und die Budgeteinstellungen aktualisiert und optimiert.
+In diesem Update wurden einige kleinere Probleme mit dem automatischen Verwerfen unterschiedlicher Ansichten behoben. Die UI-Ausrichtung auf iPads wurde verbessert. Der Absturz bei der Suche nach Produkten, die einer Bestellung hinzugefügt werden sollen, wurde ebenfalls behoben. Des Weiteren ist es jetzt nicht mehr möglich, Rabatte anzugeben, die den Produktpreis übersteigen.

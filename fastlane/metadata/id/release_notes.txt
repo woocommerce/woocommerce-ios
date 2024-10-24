@@ -1,2 +1,1 @@
-Dalam versi ini, kami telah mengaktifkan pemindaian nomor pelacakan pesanan dan memperbaiki manajemen kata sandi produk. Selain itu, kami telah meningkatkan fitur pemindai produk, pembayaran tunai, dan diskon.
-Pembuatan kampanye iklan Blaze telah diperbarui dengan fitur pemilihan gambar dan pengaturan anggaran yang lebih baik.
+Dalam pembaruan ini, kami telah menangani sejumlah masalah ringan terkait berbagai tampilan yang otomatis tertutup, sekaligus memperbaiki penataan UI di iPad. Kami juga telah mengatasi gangguan saat mencari produk yang akan ditambahkan ke pesanan. Selain itu, kini Anda tidak akan bisa lagi memasukkan diskon yang nilainya melebihi harga produk.

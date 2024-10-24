@@ -69,12 +69,10 @@ struct OrdersUpsertUseCase {
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         var storageItem: Storage.OrderItem
-        let siteID = readOnlyOrder.siteID
-        let orderID = readOnlyOrder.orderID
 
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
-            if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storageOrder.orderItemsArray.first(where: { $0.itemID == readOnlyItem.itemID }) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {
@@ -137,11 +135,10 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
     ///
     private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
-        let itemID = readOnlyItem.itemID
 
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadOrderItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storageItem.taxes?.first(where: { $0.taxID == readOnlyTax.taxID }) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)
@@ -164,7 +161,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the coupons from the read-only order
         for readOnlyCoupon in readOnlyOrder.coupons {
-            if let existingStorageCoupon = storage.loadOrderCoupon(siteID: readOnlyOrder.siteID, couponID: readOnlyCoupon.couponID) {
+            if let existingStorageCoupon = storageOrder.coupons?.first(where: { $0.couponID == readOnlyCoupon.couponID }) {
                 existingStorageCoupon.update(with: readOnlyCoupon)
             } else {
                 let newStorageCoupon = storage.insertNewObject(ofType: Storage.OrderCoupon.self)
@@ -187,7 +184,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderFees(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the coupons from the read-only order
         for readOnlyFee in readOnlyOrder.fees {
-            if let existingStorageFee = storage.loadOrderFeeLine(siteID: readOnlyOrder.siteID, feeID: readOnlyFee.feeID) {
+            if let existingStorageFee = storageOrder.fees?.first(where: { $0.feeID == readOnlyFee.feeID }) {
                 existingStorageFee.update(with: readOnlyFee)
             } else {
                 let newStorageFee = storage.insertNewObject(ofType: Storage.OrderFeeLine.self)
@@ -210,7 +207,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderRefundsCondensed(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the refunds from the read-only order
         for readOnlyRefund in readOnlyOrder.refunds {
-            if let existingStorageRefund = storage.loadOrderRefundCondensed(siteID: readOnlyOrder.siteID, refundID: readOnlyRefund.refundID) {
+            if let existingStorageRefund = storageOrder.refunds?.first(where: { $0.refundID == readOnlyRefund.refundID }) {
                 existingStorageRefund.update(with: readOnlyRefund)
             } else {
                 let newStorageRefund = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
@@ -233,7 +230,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the shipping lines from the read-only order
         for readOnlyShippingLine in readOnlyOrder.shippingLines {
-            if let existingStorageShippingLine = storage.loadOrderShippingLine(siteID: readOnlyOrder.siteID, shippingID: readOnlyShippingLine.shippingID) {
+            if let existingStorageShippingLine = storageOrder.shippingLines?.first(where: { $0.shippingID == readOnlyShippingLine.shippingID }) {
                 existingStorageShippingLine.update(with: readOnlyShippingLine)
                 handleShippingLineTaxes(readOnlyShippingLine, existingStorageShippingLine, storage)
             } else {
@@ -256,11 +253,10 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided StorageShippingLine's taxes using the provided read-only ShippingLine
     ///
     private func handleShippingLineTaxes(_ readOnlyItem: Networking.ShippingLine, _ storageItem: Storage.ShippingLine, _ storage: StorageType) {
-        let shippingID = readOnlyItem.shippingID
 
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadShippingLineTax(shippingID: shippingID, taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storageItem.taxes?.first(where: { $0.taxID == readOnlyTax.taxID }) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.ShippingLineTax.self)
@@ -283,7 +279,7 @@ struct OrdersUpsertUseCase {
     private func handleOrderTaxes(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the `taxes` from the `readOnlyOrder`
         readOnlyOrder.taxes.forEach { readOnlyTax in
-            if let existingStorageTax = storage.loadOrderTaxLine(siteID: readOnlyOrder.siteID, taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storageOrder.taxes?.first(where: { $0.taxID == readOnlyTax.taxID }) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.OrderTaxLine.self)
@@ -304,11 +300,10 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s custom fields using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderCustomFields(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        let storedMetaData = storageOrder.customFields
         // Upsert the `customFields` from the `readOnlyOrder`
         readOnlyOrder.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadOrderMetaData(siteID: readOnlyOrder.siteID,
-                                                                       orderID: storageOrder.orderID,
-                                                                       metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)

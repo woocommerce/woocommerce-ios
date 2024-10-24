@@ -14,6 +14,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
                                                          productStatus: .draft,
                                                          promotableProductType: nil,
                                                          productCategory: nil,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
         XCTAssertEqual(filterTypeViewModels.numberOfActiveFilters, 1)
@@ -24,6 +25,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
                                                          productStatus: .published,
                                                          promotableProductType: nil,
                                                          productCategory: nil,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
         XCTAssertEqual(filterTypeViewModels.numberOfActiveFilters, 2)
@@ -36,6 +38,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: nil,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
         XCTAssertEqual(filterTypeViewModels.numberOfActiveFilters, 3)
@@ -49,9 +52,24 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
                                                                                                       isAvailable: true,
                                                                                                       promoteUrl: nil),
                                                          productCategory: filterProductCategory,
+                                                         favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
         XCTAssertEqual(filterTypeViewModels.numberOfActiveFilters, 4)
+    }
+
+    func test_five_active_filters() {
+        let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")
+        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
+                                                         productStatus: .published,
+                                                         promotableProductType: PromotableProductType(productType: .variable,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
+                                                         productCategory: filterProductCategory,
+                                                         favoriteProduct: FavoriteProductsFilter(),
+                                                         numberOfActiveFilters: 0)
+        let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
+        XCTAssertEqual(filterTypeViewModels.numberOfActiveFilters, 5)
     }
 }
 
@@ -61,7 +79,8 @@ private extension FilterProductListViewModel_numberOfActiveFiltersTests {
             FilterProductListViewModel.ProductListFilter.stockStatus.createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productStatus.createViewModel(filters: filters),
             FilterProductListViewModel.ProductListFilter.productType(siteID: 123).createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters)
+            FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters),
+            FilterProductListViewModel.ProductListFilter.favoriteProducts.createViewModel(filters: filters)
         ]
     }
 }

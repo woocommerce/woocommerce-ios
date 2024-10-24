@@ -1,2 +1,1 @@
-Dans cette version, il est à présent possible de scanner les numéros de suivi des commandes. Nous avons aussi amélioré la gestion des mots de passe de produits. Nous avons également ajouté des améliorations pour le scanner de produits, les paiements en espèces et les remises.
-La création de campagnes publicitaires Blaze a été optimisée en ce qui concerne la sélection d’images et les réglages de budget.
+Dans cette mise à jour, nous avons résolu quelques problèmes mineurs concernant la fermeture automatique de différentes vues et amélioré l’alignement de l’interface sur iPad. Nous avons également corrigé un incident lors de la recherche de produits à ajouter à une commande. Enfin, il n’est plus possible de saisir des remises supérieures au prix du produit.

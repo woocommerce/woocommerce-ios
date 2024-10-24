@@ -9,10 +9,6 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.writerDerivedStorage
-    }()
-
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
@@ -90,6 +86,7 @@ public class ProductStore: Store {
                                   let productType,
                                   let productCategory,
                                   let sortOrder,
+                                  let productIDs,
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
@@ -101,6 +98,7 @@ public class ProductStore: Store {
                                 productType: productType,
                                 productCategory: productCategory,
                                 sortOrder: sortOrder,
+                                productIDs: productIDs,
                                 excludedProductIDs: excludedProductIDs,
                                 shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
                                 onCompletion: onCompletion)
@@ -205,13 +203,13 @@ private extension ProductStore {
 
     /// Deletes all of the Stored Products.
     ///
-    func resetStoredProducts(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.Product.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Products deleted")
-
-        onCompletion()
+    func resetStoredProducts(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Product.self)
+        }, completion: {
+            DDLogDebug("Products deleted")
+            onCompletion()
+        }, on: .main)
     }
 
     /// Searches all of the products that contain a given Keyword.
@@ -261,13 +259,13 @@ private extension ProductStore {
     }
 
     func searchInCache(siteID: Int64, keyword: String, pageSize: Int, onCompletion: @escaping (Bool) -> Void) {
-        let namePredicate = NSPredicate(format: "name LIKE[c] %@", keyword)
+        let namePredicate = NSPredicate(format: "name CONTAINS[c] %@", keyword)
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [namePredicate, sitePredicate])
 
-        let results = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                      matching: predicate,
-                                                      sortedBy: nil)
+        let results = storageManager.viewStorage.allObjects(ofType: StorageProduct.self,
+                                                            matching: predicate,
+                                                            sortedBy: nil)
 
         handleSearchResults(siteID: siteID,
                             keyword: keyword,
@@ -287,6 +285,7 @@ private extension ProductStore {
                              productType: ProductType?,
                              productCategory: ProductCategory?,
                              sortOrder: ProductsSortOrder,
+                             productIDs: [Int64],
                              excludedProductIDs: [Int64],
                              shouldDeleteStoredProductsOnFirstPage: Bool,
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -300,6 +299,7 @@ private extension ProductStore {
                                productCategory: productCategory,
                                orderBy: sortOrder.remoteOrderKey,
                                order: sortOrder.remoteOrder,
+                               productIDs: productIDs,
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):
@@ -333,14 +333,8 @@ private extension ProductStore {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
-        let storage = storageManager.viewStorage
-        var missingIDs = [Int64]()
-        for productID in productIDs {
-            let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
-            if storageProduct == nil {
-                missingIDs.append(productID)
-            }
-        }
+        let foundStoredProductIDs = storageManager.viewStorage.loadProducts(siteID: order.siteID, productsIDs: productIDs).map { $0.productID }
+        let missingIDs = productIDs.filter { foundStoredProductIDs.contains($0) == false }
 
         // Do not trigger API request for empty array of items
         guard !missingIDs.isEmpty else {
@@ -399,10 +393,12 @@ private extension ProductStore {
                 let error = ProductLoadError(underlyingError: originalError)
 
                 if case ProductLoadError.notFound = error {
-                    self.deleteStoredProduct(siteID: siteID, productID: productID)
+                    self.deleteStoredProduct(siteID: siteID, productID: productID) {
+                        onCompletion(.failure(error))
+                    }
+                } else {
+                    onCompletion(.failure(error))
                 }
-
-                onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID) { [weak self] in
                     guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: siteID, productID: productID) else {
@@ -418,6 +414,11 @@ private extension ProductStore {
     /// Retrieves the first product associated with a given siteID and exact-matching SKU (if any)
     ///
     func retrieveFirstPurchasableItemMatchFromSKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<SKUSearchResult, Error>) -> Void) {
+
+        guard !sku.isEmpty else {
+            return onCompletion(.failure(ProductLoadError.emptySKU))
+        }
+
         remote.searchProductsBySKU(for: siteID,
                                    keyword: sku,
                                    pageNumber: Remote.Default.firstPageNumber,
@@ -480,8 +481,9 @@ private extension ProductStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
-                self.deleteStoredProduct(siteID: siteID, productID: productID)
-                onCompletion(.success(product))
+                self.deleteStoredProduct(siteID: siteID, productID: productID) {
+                    onCompletion(.success(product))
+                }
             }
         }
     }
@@ -841,14 +843,13 @@ extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int64, productID: Int64) {
-        let storage = storageManager.viewStorage
-        guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
-            return
-        }
-
-        storage.deleteObject(product)
-        storage.saveIfNeeded()
+    func deleteStoredProduct(siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
+                return
+            }
+            storage.deleteObject(product)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*.
@@ -859,17 +860,13 @@ extension ProductStore {
                                           siteID: Int64,
                                           shouldDeleteExistingProducts: Bool = false,
                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
             if shouldDeleteExistingProducts {
-                derivedStorage.deleteProducts(siteID: siteID)
+                storage.deleteProducts(siteID: siteID)
             }
-            self.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+            upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Product Entities into the Storage Layer.
@@ -930,15 +927,13 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's attributes using the provided read-only Product's attributes
     ///
     func handleProductAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the attributes from the read-only product
         for readOnlyAttribute in readOnlyProduct.attributes {
-            if let existingStorageAttribute = storage.loadProductAttribute(siteID: siteID,
-                                                                           productID: productID,
-                                                                           attributeID: readOnlyAttribute.attributeID,
-                                                                           name: readOnlyAttribute.name) {
+            if let existingStorageAttribute = storageProduct.attributes?.first(where: {
+                $0.attributeID == readOnlyAttribute.attributeID &&
+                $0.name == readOnlyAttribute.name
+            }) {
                 existingStorageAttribute.update(with: readOnlyAttribute)
             } else {
                 let newStorageAttribute = storage.insertNewObject(ofType: Storage.ProductAttribute.self)
@@ -959,15 +954,13 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's default attributes using the provided read-only Product's default attributes
     ///
     func handleProductDefaultAttributes(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
 
         // Upsert the default attributes from the read-only product
         for readOnlyDefaultAttribute in readOnlyProduct.defaultAttributes {
-            if let existingStorageDefaultAttribute = storage.loadProductDefaultAttribute(siteID: siteID,
-                                                                                         productID: productID,
-                                                                                         defaultAttributeID: readOnlyDefaultAttribute.attributeID,
-                                                                                         name: readOnlyDefaultAttribute.name ?? "") {
+            if let existingStorageDefaultAttribute = storageProduct.defaultAttributes?.first(where: {
+                $0.attributeID == readOnlyDefaultAttribute.attributeID &&
+                $0.name == readOnlyDefaultAttribute.name ?? ""
+            }) {
                 existingStorageDefaultAttribute.update(with: readOnlyDefaultAttribute)
             } else {
                 let newStorageDefaultAttribute = storage.insertNewObject(ofType: Storage.ProductDefaultAttribute.self)
@@ -1012,9 +1005,13 @@ extension ProductStore {
         // Remove previous linked categories
         storageProduct.categories?.removeAll()
 
+        // Load all categories at once supposing categories are lightweight enough to do this.
+        // To further improve performance, we could load only categories of specified IDs.
+        let allSiteCategories = storage.loadProductCategories(siteID: siteID)
+
         // Upsert the categories from the read-only product
         for readOnlyCategory in readOnlyProduct.categories {
-            if let existingStorageCategory = storage.loadProductCategory(siteID: siteID, categoryID: readOnlyCategory.categoryID) {
+            if let existingStorageCategory = allSiteCategories.first(where: { $0.categoryID == readOnlyCategory.categoryID }) {
                 // ProductCategory response comes without a `parentID` so we update it with the `existingStorageCategory` one
                 let completeReadOnlyCategory = readOnlyCategory.parentIDUpdated(parentID: existingStorageCategory.parentID)
                 existingStorageCategory.update(with: completeReadOnlyCategory)
@@ -1032,6 +1029,9 @@ extension ProductStore {
     func handleProductTags(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
 
         let siteID = readOnlyProduct.siteID
+        // Load all tags at once supposing tags are lightweight enough to do this.
+        // To further improve performance, we could load only tags of specified IDs.
+        let allSiteTags = storage.loadProductTags(siteID: siteID)
 
         // Removes all the tags first.
         for tag in storageProduct.tagsArray {
@@ -1042,7 +1042,7 @@ extension ProductStore {
         var storageTags = [StorageProductTag]()
         for readOnlyTag in readOnlyProduct.tags {
 
-            if let existingStorageTag = storage.loadProductTag(siteID: siteID, tagID: readOnlyTag.tagID) {
+            if let existingStorageTag = allSiteTags.first(where: { $0.tagID == readOnlyTag.tagID }) {
                 existingStorageTag.update(with: readOnlyTag)
                 storageTags.append(existingStorageTag)
             } else {
@@ -1158,11 +1158,10 @@ extension ProductStore {
     /// Updates, inserts, or prunes the provided `storageProduct`'s custom fields using the provided `readOnlyProduct`'s custom fields
     ///
     private func handleProductCustomFields(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        let storedMetaData = storageProduct.customFields
         // Upsert the `customFields` from the `readOnlyProduct`
         readOnlyProduct.customFields.forEach { readOnlyCustomField in
-            if let existingStorageMetaData = storage.loadProductMetaData(siteID: readOnlyProduct.siteID,
-                                                                         productID: storageProduct.productID,
-                                                                         metadataID: readOnlyCustomField.metadataID) {
+            if let existingStorageMetaData = storedMetaData?.first(where: { $0.metadataID == readOnlyCustomField.metadataID }) {
                 existingStorageMetaData.update(with: readOnlyCustomField)
             } else {
                 let newStorageMetaData = storage.insertNewObject(ofType: Storage.MetaData.self)
@@ -1248,15 +1247,11 @@ private extension ProductStore {
                                                  filter: ProductSearchFilter,
                                                  readOnlyProducts: [Networking.Product],
                                                  onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
-            self?.upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: derivedStorage)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
+        storageManager.performAndSave ({ [weak self] storage in
+            guard let self else { return }
+            upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: storage)
+            upsertStoredResults(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: readOnlyProducts, in: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
@@ -1271,8 +1266,9 @@ private extension ProductStore {
         searchResults.keyword = keyword
         searchResults.filterKey = filter.rawValue
 
+        let storedProducts = storage.loadProducts(siteID: siteID, productsIDs: readOnlyProducts.map { $0.productID })
         for readOnlyProduct in readOnlyProducts {
-            guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {
+            guard let storedProduct = storedProducts.first(where: { $0.productID == readOnlyProduct.productID }) else {
                 continue
             }
 
@@ -1354,6 +1350,7 @@ public enum ProductLoadError: Error, Equatable {
     case notFound
     case notFoundInStorage
     case notPurchasable
+    case emptySKU
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-10 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-10-16 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -361,9 +361,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Over de app";
 
-/* Title on the add product features screen. */
-"About your product" = "Over je product";
-
 /* No comment provided by engineer. */
 "Accept local payments'" = "Accepteer plaatselijke betalingen";
 
@@ -552,9 +549,6 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Voeg elke optie toe en druk op terug";
 
-/* Description for the text field on the add product features screen */
-"Add key features, benefits, or details to help your product get found online." = "Voeg belangrijke functies, voordelen of details toe om je product beter online vindbaar te laten worden.";
-
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Meer gegevens toevoegen";
@@ -564,9 +558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the option to generate just one variation */
 "Add new variation" = "Nieuwe variatie toevoegen";
-
-/* Navigation bar title of the add product from image form. */
-"Add product" = "Product toevoegen";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Productlink toevoegen";
@@ -600,9 +591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Voeg je eerste winkel toe";
-
-/* Title on the add product name screen. */
-"Add your product name" = "Voeg je productnaam toe";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "Adres";
@@ -770,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Er deed zich een fout voor tijdens verwerken van je verzoek:";
 
-/* Text detection failed error message on the add product from image form. */
-"An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "Er is een fout opgetreden bij het scannen van de afbeelding. Kies een andere foto van de verpakking of voer de productgegevens handmatig in.";
-
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Er is recent een identieke transactie ingediend. Als je door wilt gaan, probeer een andere betaalmethode";
 
@@ -844,8 +829,7 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Toepassingsnaam";
 
-/* Action button to apply the generated name for the new product
-   Apply navigation button in custom range date picker
+/* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
    Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
@@ -1225,7 +1209,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1260,7 +1243,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
-   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
@@ -1415,7 +1397,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
-   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categorieën";
@@ -1826,8 +1807,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
-   Continue button on the add product from image form.
-   Continue button on the product name field
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -1863,13 +1842,10 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookiebeleid";
 
-/* Text in the notice after copying the generated text in the product description AI generator view.
-   Text in the notice after copying the generated text on the product name generation screen. */
+/* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "Gekopieerd!";
 
-/* Action button to copy the generated name for the new product
-   Button title to copy generated text in the add product from image form.
-   Button title to copy generated text in the product description AI generator view.
+/* Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiëren";
 
@@ -1980,9 +1956,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Coupon aanmaken";
-
-/* Continue button on the add product features screen */
-"Create Product Details" = "Productgegevens aanmaken";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2228,15 +2201,11 @@ which should be translated separately and considered part of this sentence. */
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "Beschrijf je product voor je toekomstige klanten...";
 
-/* Product description placeholder on the add product from image form.
-   The navigation bar title of the Aztec editor screen.
+/* The navigation bar title of the Aztec editor screen.
    Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beschrijving";
-
-/* Title of the details field on the add product with AI Preview screen. */
-"Details" = "Details";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "Controleer de verzendbaarheid van je product met behulp van de %1$@.";
@@ -2836,9 +2805,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "Fout bij het genereren van de QR-code. Probeer het later opnieuw";
 
-/* Default error message on the add product from image form. */
-"Error generating product details. Please try again." = "Fout bij het genereren van productgegevens. Probeer het opnieuw.";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Er is een fout opgetreden bij het vinden van het adres op Apple Maps";
 
@@ -3105,11 +3071,6 @@ which should be translated separately and considered part of this sentence. */
 /* User role badge */
 "Follower" = "Volger";
 
-/* Placeholder text on the product features field
-   Placeholder text on the product name field
-   Placeholder text on the product name generation screen */
-"For example, Soft fabric, durable stitching, unique design" = "Bijvoorbeeld Zachte stof, duurzaam stikwerk, uniek ontwerp";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Wachtwoord vergeten?";
 
@@ -3185,11 +3146,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Variatie aan het genereren";
 
-/* Loading state for the suggested text in the add product from image form. */
-"Generating suggestion from photo..." = "Suggestie uit de foto genereren ...";
-
-/* Text to show the loading state on the product name generation screen
-   Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Bezig met genereren...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3469,9 +3426,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Lijst voor configuratie winkel verbergen";
 
-/* Subtitle on the add product features screen. */
-"Highlight what makes your product unique, and let AI do the magic." = "Markeer wat je product uniek maakt en laat AI het werk voor je doen.";
-
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Licht de unieke eigenschappen en doelgroep van de product uit met trefwoorden voor een op maat gemaakte beschrijving.";
 
@@ -3552,8 +3506,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab
-   Value of the inventory field on the add product with AI Preview screen. */
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "Op voorraad";
 
 /* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
@@ -3716,6 +3669,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "Ongeldige product-SKU";
 
+/* Error when an empty SKU is returned from the barcode scanner */
+"Invalid SKU" = "Ongeldige SKU";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Ongeldig site-adres";
 
@@ -3747,7 +3703,6 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Ongeldig gewicht";
 
 /* Product Inventory Settings navigation title
-   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventaris";
@@ -3766,9 +3721,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Is het gegenereerde bericht nuttig?";
-
-/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
-"Is the result helpful?" = "Is het resultaat nuttig?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Man (eiland)";
@@ -4004,9 +3956,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
-
-/* Subtitle on the product name generation screen */
-"Let AI generate captivating titles for you." = "Laat AI pakkende titels voor je genereren.";
 
 /* Message info on the support screen. */
 "Let us know your site address (URL) and tell us as much as you can about the problem," = "Vertel ons je siteadres (URL) en zoveel mogelijk over het probleem,";
@@ -4466,7 +4415,6 @@ which should be translated separately and considered part of this sentence. */
 "N\/A" = "N.v.t.";
 
 /* Name text field placeholder
-   Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
    Title of the customer search filter to search by name. */
@@ -4700,9 +4648,6 @@ which should be translated separately and considered part of this sentence. */
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "Nog geen belastinggroepen";
 
-/* No text detected message on the add product from image form. */
-"No text detected. Please select another packaging photo or enter product details manually." = "Geen tekst gedetecteerd. Kies een andere foto van de verpakking of voer de productgegevens handmatig in.";
-
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Geen variaties om te genereren";
 
@@ -4886,9 +4831,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Of tik om een bestaande eigenschap te selecteren";
-
-/* Subtitle on the add product name screen. */
-"Or, expand your choices by tapping for more name suggestions." = "Of breid je keuzes uit door te tikken voor meer naamvoorstellen.";
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
@@ -5467,8 +5409,7 @@ which should be translated separately and considered part of this sentence. */
 "Present card to refund" = "Geef kaart op om terug te betalen";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen.
-   Title on the add product with AI Preview screen. */
+   Title of the store onboarding > launch store screen. */
 "Preview" = "Voorbeeld";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5478,8 +5419,7 @@ which should be translated separately and considered part of this sentence. */
    Section header title for product price
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
-   Title for editing the price settings row on Product main screen
-   Title of the price field on the add product with AI Preview screen. */
+   Title for editing the price settings row on Product main screen */
 "Price" = "Prijs";
 
 /* The label that points to the updated price of a product after a discount has been applied */
@@ -5607,19 +5547,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Product gekopieerd";
 
-/* Title of the description field on the add product with AI Preview screen. */
-"Product description" = "Productbeschrijving";
-
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Productconcept opgeslagen";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Productlink";
-
-/* Product name text field's label on the add product name screen.
-   Title of the name field on the add product with AI Preview screen.
-   Title on the product name generation screen */
-"Product name" = "Productnaam";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product gepubliceerd";
@@ -5630,11 +5562,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Product opgeslagen.";
 
-/* Title of the short description field on the add product with AI Preview screen. */
-"Product short description" = "Korte productomschrijving";
-
-/* Title of the product type field on the add product with AI Preview screen.
-   Title of the Product Type row on Product main screen */
+/* Title of the Product Type row on Product main screen */
 "Product type" = "Producttype";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -5876,9 +5804,7 @@ which should be translated separately and considered part of this sentence. */
 "Refunding payment" = "Betaling terugbetalen";
 
 /* Action button to regenerate message on the product sharing message generation screen
-   Action button to regenerate title for a new product with AI.
-   Button title to regenerate product description with Jetpack AI.
-   Regenerate button on the add product from image form to regenerate product details. */
+   Button title to regenerate product description with Jetpack AI. */
 "Regenerate" = "Regenereren";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -6028,7 +5954,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
@@ -6199,8 +6124,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Opslaan als concept";
 
-/* Button title to save a product as draft in Product More Options Action Sheet
-   Button to save product details on the add product with AI Preview screen. */
+/* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "Opslaan als concept";
 
 /* Button title to save a shipping label to print later */
@@ -6372,9 +6296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "Selecteer items";
 
-/* Instruction to select scanned text for product detail generation on the add product from image form. */
-"Select one or more scans to generate product details" = "Selecteer een of meer scans om productgegevens te genereren";
-
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "Alineastijl selecteren";
 
@@ -6447,12 +6368,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Stel de korting die je wilt bieden, in procenten in.";
-
-/* Subtitle of the AI tone and voice selection sheet. */
-"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Stel de toon in om de presentatie van je product af te stemmen op je merk.";
-
-/* Button to select tone and voice for generating product details with AI */
-"Set tone and voice" = "Toon instellen";
 
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "%1$@ instellen";
@@ -6546,7 +6461,6 @@ which should be translated separately and considered part of this sentence. */
    Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
-   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Verzending";
 
@@ -6953,12 +6867,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Sudan" = "Soedan";
 
-/* Suggest name button on the product name field */
-"Suggest a name" = "Stel een naam voor";
-
-/* Header of the suggested text in the add product from image form. */
-"Suggestion from photo" = "Suggestie uit de foto";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Totaalaantal producten en gewicht van pakket";
 
@@ -7036,7 +6944,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
-   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Tags";
 
@@ -7052,9 +6959,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "Betaling ontvangen (%1$@)";
-
-/* Tip in the add product from image form to add a packaging image for AI-generated product details. */
-"Take a packaging photo to create product details with AI" = "Gebruik een foto van de verpakking om productgegevens te genereren met behulp van AI";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
@@ -7215,9 +7119,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Vertel ons meer over je winkel";
-
-/* Description text on the product name generation screen */
-"Tell us what your product is and what makes it unique!" = "Vertels wat jouw product is en wat dit uniek maakt!";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7793,9 +7694,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Tokelau" = "Tokelau";
 
-/* Title of the AI tone and voice selection sheet. */
-"Tone and voice" = "Toon";
-
 /* Country option for a site address. */
 "Tonga" = "Tonga";
 
@@ -7967,9 +7865,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
-
-/* Info text about the scanned text list on the add product from image form. */
-"Tweak your text: Unselect scans you don't need or tap to edit" = "Pas je tekst aan: Deselecteer scans die je niet nodig hebt of klik erop om ze te bewerken";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Type een naam voor je winkel";
@@ -8406,14 +8301,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Gebruik onze door AI aangedreven tool om snel productbeschrijvingen te genereren. Voer gewoon wat trefwoorden in en wij doen de rest!";
 
-/* Use package photo button on the add product name screen. */
-"Use package photo (Optional)" = "Pakketfoto gebruiken (optioneel)";
-
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Gebruik je wachtwoord om je aan te melden";
-
-/* Description of the POS menu in the hub menu */
-"Use the app as a cash register" = "Gebruik de app als kassa";
 
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "Gebruik de app om de restitutie voor de proefbestelling te verwerken.";
@@ -8877,7 +8766,6 @@ which should be translated separately and considered part of this sentence. */
 "Write a description" = "Stel een beschrijving op";
 
 /* Action button to generate message on the product sharing message generation screen
-   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -8919,9 +8807,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "Je bent geabonneerd op het %1$@-abonnement! Tot %2$@ heb je toegang tot al onze functies.";
-
-/* Subtitle on the add product with AI Preview screen. */
-"You can always change the below details later." = "Je kan de onderstaande gegevens later altijd wijzigen.";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "Je kunt gebundelde producten bewerken in de nieuwe online dashboard.";
@@ -9473,6 +9358,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.title" = "Geen product gevonden";
 
+/* Question in the feedback banner after a Blaze campaign is successfully created */
+"blazeCampaignCreationCoordinator.feedbackQuestion" = "Hoe was je ervaring met Blaze?";
+
 /* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successCTA" = "Gereed";
 
@@ -9522,9 +9410,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination.empty" = "URL van bestemming selecteren";
 
-/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "Annuleren";
-
 /* Error message indicating that loading suggestions for tagline and description failed */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "Kon geen suggesties laden voor de slogan en beschrijving";
 
@@ -9536,6 +9421,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "Budget";
+
+/* Dismiss button on an error alert on the Blaze campaign creation form */
+"blazeCampaignCreationForm.cancel" = "Annuleren";
 
 /* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
 "blazeCampaignCreationForm.chooseObjective" = "Campagnedoel kiezen";
@@ -9567,8 +9455,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "Locatie";
 
-/* Dismiss button on the alert asking to select a destination URL for the Blaze campaign */
-"blazeCampaignCreationForm.noDestinationURLAlert.cancel" = "Annuleren";
+/* Button on the alert to select an objective for the Blaze campaign */
+"blazeCampaignCreationForm.missingObjectiveAlert.selectObjective" = "Doel selecteren";
+
+/* No comment provided by engineer. */
+"blazeCampaignCreationForm.missingObjectiveAlert.title" = "Selecteer een doel voor de Blaze-campagne";
 
 /* Message asking to select a destination URL for the Blaze campaign */
 "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound" = "Selecteer een URL van bestemming voor de Blaze-campagne";
@@ -9578,9 +9469,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert to add an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.addImage" = "Afbeelding toevoegen";
-
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "Annuleren";
 
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Voeg een afbeelding toe voor de Blaze-campagne";
@@ -9671,6 +9559,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "Wekelijks";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintSelected" = "Geselecteerd";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintUnselected" = "Niet geselecteerd";
+
+/* Button to dismiss the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.cancel" = "Annuleren";
+
+/* Error message when data syncing fails on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.errorMessage" = "Fout bij synchroniseren van campagnedoelen. Probeer het opnieuw.";
+
+/* Title for the explanation of a Blaze campaign objective. */
+"blazeCampaignObjectivePickerView.goodFor" = "Goed voor:";
+
+/* Message on the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.message" = "Campagnedoel kiezen";
+
+/* Button to save the selection on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.save" = "Opslaan";
+
+/* Toggle to save the selection of a Blaze campaign objective for future campaigns. */
+"blazeCampaignObjectivePickerView.saveSelection" = "Sla mijn selectie op voor toekomstige campagnes";
+
+/* Title of the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.title" = "Campagnedoel";
+
+/* Button to retry syncing data on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.tryAgain" = "Probeer opnieuw";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Reclamebeleid";
@@ -10201,6 +10119,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Bedrag bewerken";
 
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerHTML" = "HTML";
+
+/* Label for the Editor type picker */
+"customFieldEditorView.editorPickerLabel" = "Kies tekstbewerkingsmodus";
+
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerText" = "Tekst";
+
+/* Label for the Key field */
+"customFieldEditorView.keyLabel" = "Sleutel";
+
+/* Placeholder for the Key field */
+"customFieldEditorView.keyPlaceholder" = "Enter-toets";
+
+/* Label for the Value field */
+"customFieldEditorView.valueLabel" = "Waarde";
+
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "Klant zoeken";
 
@@ -10511,6 +10447,12 @@ which should be translated separately and considered part of this sentence. */
 /* The string to show on order taxes when they are calculated based on the shop base address */
 "editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "Berekend met winkelbasisadres.";
 
+/* Placeholder text inside the editor's text field. */
+"editorFactory.customFieldsValuePlaceholder" = "Waarde aangepast veld invoeren";
+
+/* The value of custom field to be edited. */
+"editorFactory.customFieldsValueTitle" = "Waarde";
+
 /* Message of the notice when inventory fails to be updatedReads like: 'There was an error updating My Product Name. Please try again.' */
 "errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel" = "Er is een fout opgetreden tijdens het bijwerken van %@. Probeer het opnieuw.";
 
@@ -10551,11 +10493,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.redactionInfoTitle" = "Gegevens over bezoekers en conversie zijn niet beschikbaar";
 
+/* Description of the filter used to show only favorite products. */
+"favoriteProductsFilter.favoriteProducts" = "Favoriete producten";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Klant";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
+
+/* Row title for filtering products by favorite products. */
+"filterProductListViewModel.favoriteProduct" = "Favoriete producten";
 
 /* Status name of a disabled Google Ads campaign */
 "googleAdsCampaign.status.disabled" = "Uitgeschakeld";
@@ -10625,6 +10573,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "Klantinzichten krijgen";
+
+/* Description of the POS menu in the hub menu */
+"hubMenu.pointOfSale.description" = "Accepteer betalingen in je fysieke winkel";
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Productbeoordeling";
@@ -10730,6 +10681,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Grondpakket LTD QTY - aerosolen, spuitontsmettingsmiddelen, spuitverf, haarspray, propaan, butaan, reinigingsproducten enz. - Parfums, nagellak, nagellakverwijderaar, oplosmiddelen, handreiniging, schoonmaakalcohol, ethanolproducten enz. - Andere oppervlaktematerialen in beperkte hoeveelheid (cosmetica, reinigingsproducten, verf enz.)";
+
+/* Message on the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.body" = "Zorg dat je producten door miljoenen worden gezien met Blaze en geef je verkoop een boost";
+
+/* Title of the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.title" = "Wil je jouw verkoop een boost geven?";
 
 /* Message on the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.body" = "Promoot je producten met Blaze Ads en verhoog nu je omzet.";
@@ -11217,6 +11174,13 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "Probeer een andere betaalmethode";
 
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
+   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "Probeer opnieuw te betalen";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "Fout bij betaling";
+
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "Een moment geduld...";
 
@@ -11448,6 +11412,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "Deze bestelling is mogelijk mislukt";
 
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Lezer loskoppelen";
 
@@ -11528,12 +11495,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "Alleen simpele producten weergeven";
-
-/* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "Laten we wat klanten helpen";
-
-/* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "Aan de slag";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "Verlaat POS en ga naar Producten om er een toe te voegen";
@@ -11748,6 +11709,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to undo the package photo removal action. */
 "productDetailPreviewViewModel.photoRemovedNotice.undo" = "Ongedaan maken";
 
+/* Text describing the value that has been entered in the discount textfield is not allowed */
+"productDiscountView.text.discountDisallowedLabel" = "De korting mag niet hoger liggen dan de prijs";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Fout bij uploaden van bestand. Probeer het nog eens.";
 
@@ -11777,6 +11741,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "De afbeeldingen zijn niet beschikbaar omdat je site als Privé is aangemerkt. Je kan dit wijzigingen door over te schakelen naar de modus Binnenkort beschikbaar.";
+
+/* Mark favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.markAsFavorite" = "Aan favorieten toevoegen";
+
+/* Remove favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.removeAsFavorite" = "Verwijderen uit favorieten";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "Annuleren";
@@ -12182,6 +12152,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Systeemstatusrapport";
 
+/* On a trial Tap to Pay order, this is the name of the line item for the trial amount. */
+"tap.to.pay.try.payment.amount.name" = "Tik om te betalen op iPhone proberen";
+
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Tik om te betalen-testbetaling automatisch terugstorten";
 
@@ -12397,6 +12370,99 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Weken";
+
+/* Info label for selected box as a package type */
+"wooShipping.createLabel.addPackage.box" = "Doos";
+
+/* Button to select a package to use for a shipment in the shipping label creation flow. */
+"wooShipping.createLabel.addPackage.button" = "Selecteer een pakket";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.createLabel.addPackage.cancel" = "Annuleren";
+
+/* Info label for carrier package option */
+"wooShipping.createLabel.addPackage.carrier" = "Bezorgservice";
+
+/* Info label for custom package option */
+"wooShipping.createLabel.addPackage.custom" = "Aangepast";
+
+/* Info label for selected envelope as a package type */
+"wooShipping.createLabel.addPackage.envelope" = "Envelop";
+
+/* Info label for height input field */
+"wooShipping.createLabel.addPackage.height" = "Hoogte";
+
+/* Info label for length input field */
+"wooShipping.createLabel.addPackage.length" = "Lengte";
+
+/* Info label for selecting package type */
+"wooShipping.createLabel.addPackage.packageType" = "Pakkettype";
+
+/* Info label for saving package as a new template toggle */
+"wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "Opslaan als nieuwe pakketsjabloon";
+
+/* Button for saving package as a new template */
+"wooShipping.createLabel.addPackage.savePackageTemplate" = "Pakketsjabloon opslaan";
+
+/* Info label for saved package option */
+"wooShipping.createLabel.addPackage.saved" = "Opgeslagen";
+
+/* Title for the Add Package screen */
+"wooShipping.createLabel.addPackage.title" = "Pakket toevoegen";
+
+/* Info label for width input field */
+"wooShipping.createLabel.addPackage.width" = "Breedte";
+
+/* Title of the button to dismiss the shipping label creation screen */
+"wooShipping.createLabel.cancelButton" = "Annuleren";
+
+/* Label for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatLabel" = "Ben je van plan om gevaarlijke goederen of gevaarlijke materialen te verzenden?";
+
+/* Message in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderMessage" = "Voer de afmetingen van je pakket in of kies een optie voor een vervoerder om de beschikbare verzendkosten te bekijken.";
+
+/* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderTitle" = "Selecteer een pakket om de verzendkosten te bekijken";
+
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.markComplete" = "Markeer deze bestelling als voltooid en informeer de klant";
+
+/* Header for order details section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.orderDetails" = "Bestelgegevens";
+
+/* Label for the menu to select a paper size on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paperSize" = "Kies papierformaat";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.purchase" = "Label aanschaffen";
+
+/* Label for address where the shipment is shipped from on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipFrom" = "Verzenden van";
+
+/* Label for address where the shipment is shipped to on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipTo" = "Bestemming";
+
+/* Header for shipment costs section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipmentCosts" = "Verzendkosten";
+
+/* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.subtotal" = "Subtotaal";
+
+/* Label on the bottom sheet that can be expanded to show shipment detailson the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.title" = "Verzendingsgegevens";
+
+/* Label for row showing the total for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.total" = "Totaal";
+
+/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.items.count" = "%1$@ artikelen";
+
+/* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
+"wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Title for the screen to create a shipping label */
+"wooShipping.createLabels.title" = "Verzendlabels aanmaken";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, mijn winkel, vandaag, deze week, deze maand, dit jaar, bestellingen, bezoekers, conversie, topconversie, verkochte artikelen";

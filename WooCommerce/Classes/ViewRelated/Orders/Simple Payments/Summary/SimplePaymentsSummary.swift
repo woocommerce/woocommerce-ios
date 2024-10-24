@@ -371,6 +371,7 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
                                                                     title: "State Tax (5.55%)",
                                                                     value: taxAmount)
         return .init(providedAmount: "40.0",
+                     amountName: nil,
                      totalWithTaxes: "$42.3",
                      taxLines: [taxLine],
                      noteContent: noteContent)

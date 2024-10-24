@@ -7,11 +7,13 @@ final class CelebrationHostingController: UIHostingController<CelebrationView> {
          subtitle: String,
          closeButtonTitle: String,
          image: UIImage = .checkSuccessImage,
+         feedbackConfiguration: FeedbackView.Configuration? = nil,
          onTappingDone: @escaping () -> Void) {
         super.init(rootView: CelebrationView(title: title,
                                              subtitle: subtitle,
                                              closeButtonTitle: closeButtonTitle,
                                              image: image,
+                                             feedbackConfiguration: feedbackConfiguration,
                                              onTappingDone: onTappingDone))
     }
 
@@ -27,17 +29,20 @@ struct CelebrationView: View {
     private let subtitle: String
     private let closeButtonTitle: String
     private let image: UIImage
+    private let feedbackConfiguration: FeedbackView.Configuration?
     private let onTappingDone: () -> Void
 
     init(title: String,
          subtitle: String,
          closeButtonTitle: String,
          image: UIImage = .checkSuccessImage,
+         feedbackConfiguration: FeedbackView.Configuration? = nil,
          onTappingDone: @escaping () -> Void) {
         self.title = title
         self.subtitle = subtitle
         self.closeButtonTitle = closeButtonTitle
         self.image = image
+        self.feedbackConfiguration = feedbackConfiguration
         self.onTappingDone = onTappingDone
     }
 
@@ -66,6 +71,10 @@ struct CelebrationView: View {
                 onTappingDone()
             }
             .buttonStyle(PrimaryButtonStyle())
+
+            if let feedbackConfiguration {
+                FeedbackView(configuration: feedbackConfiguration)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -83,6 +92,7 @@ struct CelebrationView_Previews: PreviewProvider {
         CelebrationView(title: "Success!",
                         subtitle: "You did it!",
                         closeButtonTitle: "Done",
+                        feedbackConfiguration: .init(title: "How was the experience with Blaze?", onVote: { _ in }),
                         onTappingDone: {})
 
         CelebrationView(title: "Success!",

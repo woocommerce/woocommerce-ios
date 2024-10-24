@@ -76,7 +76,7 @@ struct TotalsView: View {
     private var backgroundColor: Color {
         switch viewModel.paymentState {
         case .cardPaymentSuccessful:
-            colorScheme == .light ? Color(.wooCommerceEmerald(.shade20)) : Color(red: 0/255, green: 81/255, blue: 57/255)
+            .posSecondaryBackground
         case .processingPayment:
             colorScheme == .light ? Color(.wooCommercePurple(.shade70)) : Color(.wooCommercePurple(.shade10))
         default:
@@ -195,9 +195,6 @@ private extension TotalsView {
             viewModel.startNewOrder()
         }, label: {
             HStack(spacing: Constants.newOrderButtonSpacing) {
-                Image(systemName: Constants.newOrderImageName)
-                    .font(.body.bold())
-                    .aspectRatio(contentMode: .fit)
                 Text(Localization.newOrder)
                     .font(Constants.newOrderButtonFont)
             }
@@ -231,7 +228,7 @@ private extension TotalsView {
 
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.connectionStatus {
-        case .connected, .disconnecting:
+        case .connected, .disconnecting, .cancellingConnection:
             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                 HStack(alignment: .center) {
                     Spacer()
@@ -322,12 +319,11 @@ private extension TotalsView {
         static let subtotalsShimmeringHeight: CGFloat = 36
         static let totalShimmeringHeight: CGFloat = 40
 
-        static let paymentsButtonSpacing: CGFloat = 52
+        static let paymentsButtonSpacing: CGFloat = 80
         static let paymentsButtonButtonSpacingAnimationDelay: CGFloat = 0.3
         static let newOrderButtonSpacing: CGFloat = 12
-        static let newOrderButtonPadding: CGFloat = 22
+        static let newOrderButtonPadding: CGFloat = 32
         static let newOrderButtonFont: POSFontStyle = .posBodyEmphasized
-        static let newOrderImageName: String = "arrow.uturn.backward"
 
         /// Used for synchronizing animations of shimmeringLine and textField
         static let matchedGeometrySubtotalId: String = "pos_totals_view_subtotal_matched_geometry_id"

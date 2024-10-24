@@ -108,9 +108,9 @@ struct ProductDescriptionGenerationView: View {
                         .renderedIf(viewModel.isGenerationInProgress == false)
 
                         // Feedback banner
-                        FeedbackView(title: Localization.feedbackQuestion, onVote: { vote in
+                        FeedbackView(configuration: .init(title: Localization.feedbackQuestion, onVote: { vote in
                             viewModel.handleFeedback(vote)
-                        })
+                        }))
                         .renderedIf(viewModel.shouldShowFeedbackView)
                     }
                     .padding(Layout.suggestedTextInsets)

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-09-10 09:54:12+0000 */
+/* Translation-Revision-Date: 2024-10-16 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -361,9 +361,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "このアプリについて";
 
-/* Title on the add product features screen. */
-"About your product" = "商品について";
-
 /* No comment provided by engineer. */
 "Accept local payments'" = "現地での支払いを承認";
 
@@ -552,9 +549,6 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "各オプションを追加して Return キーを押します";
 
-/* Description for the text field on the add product features screen */
-"Add key features, benefits, or details to help your product get found online." = "主要な機能や利点、詳細を追加して商品をオンラインで見つけられるようにします。";
-
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "詳細を追加";
@@ -564,9 +558,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the option to generate just one variation */
 "Add new variation" = "新しいバリエーションを追加";
-
-/* Navigation bar title of the add product from image form. */
-"Add product" = "商品を追加";
 
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "商品へのリンクを追加";
@@ -600,9 +591,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "最初のストアを追加";
-
-/* Title on the add product name screen. */
-"Add your product name" = "商品名を追加する";
 
 /* Text field address in Shipping Label Address Validation */
 "Address" = "住所";
@@ -770,9 +758,6 @@ which should be translated separately and considered part of this sentence. */
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
 
-/* Text detection failed error message on the add product from image form. */
-"An error occurred while scanning the photo. Please select another packaging photo or enter product details manually." = "写真のスキャン中にエラーが発生しました。 別のパッケージ写真を選択するか、商品の詳細を手動で入力してください。";
-
 /* Message when it looks like a duplicate transaction is being attempted. */
 "An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "同一の取引が最近送信されています。 続行する場合は、別の支払方法をお試しください";
 
@@ -844,8 +829,7 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "アプリケーション名";
 
-/* Action button to apply the generated name for the new product
-   Apply navigation button in custom range date picker
+/* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
    Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
@@ -1225,7 +1209,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1260,7 +1243,6 @@ which should be translated separately and considered part of this sentence. */
    Cancel button in the More Options action sheet
    Cancel button in the navigation bar of the view for adding or editing a coupon.
    Cancel button label
-   Cancel button on the add product from image form.
    Cancel button on the alert when the user is cancelling the action on changing product type
    Cancel button on the alert when the user is cancelling the action on deleting a variation
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
@@ -1415,7 +1397,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
-   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "カテゴリー";
@@ -1829,8 +1810,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
-   Continue button on the add product from image form.
-   Continue button on the product name field
    Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
@@ -1866,13 +1845,10 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie ポリシー";
 
-/* Text in the notice after copying the generated text in the product description AI generator view.
-   Text in the notice after copying the generated text on the product name generation screen. */
+/* Text in the notice after copying the generated text in the product description AI generator view. */
 "Copied!" = "コピーしました。";
 
-/* Action button to copy the generated name for the new product
-   Button title to copy generated text in the add product from image form.
-   Button title to copy generated text in the product description AI generator view.
+/* Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "コピー";
 
@@ -1983,9 +1959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "クーポンを作成";
-
-/* Continue button on the add product features screen */
-"Create Product Details" = "商品情報を作成";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2231,15 +2204,11 @@ which should be translated separately and considered part of this sentence. */
 /* The default placeholder text for the of the Aztec editor screen. */
 "Describe your product to your future customers..." = "将来の顧客に商品を説明してください...";
 
-/* Product description placeholder on the add product from image form.
-   The navigation bar title of the Aztec editor screen.
+/* The navigation bar title of the Aztec editor screen.
    Title for the component description field in the Component Settings view
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "説明";
-
-/* Title of the details field on the add product with AI Preview screen. */
-"Details" = "詳細";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "%1$@ を使用して商品が郵送可能かわかります。";
@@ -2839,9 +2808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message in the Scan to Pay screen when the code cannot be generated. */
 "Error generating QR Code. Please try again later" = "QR コードの生成中にエラーが発生しました。 時間を置いてもう一度お試しください。";
 
-/* Default error message on the add product from image form. */
-"Error generating product details. Please try again." = "商品詳細の生成中にエラーが発生しました。 もう一度お試しください。";
-
 /* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
 "Error in finding the address in Apple Maps" = "Apple Maps で住所の検索中に発生したエラー";
 
@@ -3108,11 +3074,6 @@ which should be translated separately and considered part of this sentence. */
 /* User role badge */
 "Follower" = "フォロワー";
 
-/* Placeholder text on the product features field
-   Placeholder text on the product name field
-   Placeholder text on the product name generation screen */
-"For example, Soft fabric, durable stitching, unique design" = "例: やわらかな生地、丈夫な縫製、ユニークなデザインなど";
-
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "パスワードをお忘れですか ?";
 
@@ -3188,11 +3149,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "バリエーションを生成しています";
 
-/* Loading state for the suggested text in the add product from image form. */
-"Generating suggestion from photo..." = "写真からの参考情報を生成中...";
-
-/* Text to show the loading state on the product name generation screen
-   Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "生成中…";
 
 /* Error title for when there are too many variations to generate. */
@@ -3472,9 +3429,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "ストア設定リストを非表示";
 
-/* Subtitle on the add product features screen. */
-"Highlight what makes your product unique, and let AI do the magic." = "商品のユニークな点を強調したら、AI に活躍してもらいましょう。";
-
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "カスタマイズされた説明のキーワードを使用して商品の独自の機能と対象ユーザーを強調します。";
 
@@ -3555,8 +3509,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab
-   Value of the inventory field on the add product with AI Preview screen. */
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "在庫あり";
 
 /* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
@@ -3719,6 +3672,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is an error updating the product SKU */
 "Invalid Product SKU" = "無効な商品 SKU";
 
+/* Error when an empty SKU is returned from the barcode scanner */
+"Invalid SKU" = "間違った SKU です";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無効なサイトアドレスです";
 
@@ -3750,7 +3706,6 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "無効な重量";
 
 /* Product Inventory Settings navigation title
-   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "在庫";
@@ -3769,9 +3724,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "生成されたメッセージは役立つものですか ?";
-
-/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
-"Is the result helpful?" = "この結果は役に立ちましたか ?";
 
 /* Country option for a site address. */
 "Isle of Man" = "マン島";
@@ -4007,9 +3959,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Lesotho" = "レソト";
-
-/* Subtitle on the product name generation screen */
-"Let AI generate captivating titles for you." = "魅力的なタイトルを AI に作成してもらいましょう。";
 
 /* Message info on the support screen. */
 "Let us know your site address (URL) and tell us as much as you can about the problem," = "サイトアドレス (URL) をお知らせいただき、問題について可能な限り詳しく教えてください。";
@@ -4469,7 +4418,6 @@ which should be translated separately and considered part of this sentence. */
 "N\/A" = "該当なし";
 
 /* Name text field placeholder
-   Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
    Title of the customer search filter to search by name. */
@@ -4703,9 +4651,6 @@ which should be translated separately and considered part of this sentence. */
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "税区分がまだありません";
 
-/* No text detected message on the add product from image form. */
-"No text detected. Please select another packaging photo or enter product details manually." = "テキストが検出されませんでした。 別のパッケージ写真を選択するか、商品の詳細を手動で入力してください。";
-
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "生成するバリエーションはありません";
 
@@ -4889,9 +4834,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "またはタップして既存の属性を選択";
-
-/* Subtitle on the add product name screen. */
-"Or, expand your choices by tapping for more name suggestions." = "または、他の名前を提案するにはタップして選択肢を広げます。";
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
@@ -5470,8 +5412,7 @@ which should be translated separately and considered part of this sentence. */
 "Present card to refund" = "カードを提示して返金";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen.
-   Title on the add product with AI Preview screen. */
+   Title of the store onboarding > launch store screen. */
 "Preview" = "プレビュー";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5481,8 +5422,7 @@ which should be translated separately and considered part of this sentence. */
    Section header title for product price
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
-   Title for editing the price settings row on Product main screen
-   Title of the price field on the add product with AI Preview screen. */
+   Title for editing the price settings row on Product main screen */
 "Price" = "価格";
 
 /* The label that points to the updated price of a product after a discount has been applied */
@@ -5610,19 +5550,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user has copied a product */
 "Product copied" = "商品がコピーされました";
 
-/* Title of the description field on the add product with AI Preview screen. */
-"Product description" = "商品説明";
-
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "商品の下書きを保存しました";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "商品へのリンク";
-
-/* Product name text field's label on the add product name screen.
-   Title of the name field on the add product with AI Preview screen.
-   Title on the product name generation screen */
-"Product name" = "商品名";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "公開済みの商品";
@@ -5633,11 +5565,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when a user is saving a product */
 "Product saved" = "商品を保存しました";
 
-/* Title of the short description field on the add product with AI Preview screen. */
-"Product short description" = "商品の簡単な説明";
-
-/* Title of the product type field on the add product with AI Preview screen.
-   Title of the Product Type row on Product main screen */
+/* Title of the Product Type row on Product main screen */
 "Product type" = "商品タイプ";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -5879,9 +5807,7 @@ which should be translated separately and considered part of this sentence. */
 "Refunding payment" = "支払の返金を行っています";
 
 /* Action button to regenerate message on the product sharing message generation screen
-   Action button to regenerate title for a new product with AI.
-   Button title to regenerate product description with Jetpack AI.
-   Regenerate button on the add product from image form to regenerate product details. */
+   Button title to regenerate product description with Jetpack AI. */
 "Regenerate" = "再生成";
 
 /* Button in the view for adding or editing a coupon code. */
@@ -6031,7 +5957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
-   Button on the error alert displayed on the add product with AI Preview screen.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
@@ -6202,8 +6127,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "下書きとして保存";
 
-/* Button title to save a product as draft in Product More Options Action Sheet
-   Button to save product details on the add product with AI Preview screen. */
+/* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "下書きとして保存";
 
 /* Button title to save a shipping label to print later */
@@ -6375,9 +6299,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title that appears on top of the Product List screen when bulk editing starts. */
 "Select items" = "項目を選択";
 
-/* Instruction to select scanned text for product detail generation on the add product from image form. */
-"Select one or more scans to generate product details" = "1つ以上のスキャンを選択して商品の詳細を生成する";
-
 /* Accessibility label for selecting paragraph style button on formatting toolbar. */
 "Select paragraph style" = "段落スタイルを選択";
 
@@ -6450,12 +6371,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "任意の割引率を設定します。";
-
-/* Subtitle of the AI tone and voice selection sheet. */
-"Set the tone and voice to shape your product's presentation that aligns with your brand." = "ブランドイメージに合わせて商品を紹介するためにトーンとコンセプトを設定します。";
-
-/* Button to select tone and voice for generating product details with AI */
-"Set tone and voice" = "トーンとコンセプトを設定";
 
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "%1$@を設定";
@@ -6549,7 +6464,6 @@ which should be translated separately and considered part of this sentence. */
    Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
-   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
@@ -6956,12 +6870,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Sudan" = "スーダン";
 
-/* Suggest name button on the product name field */
-"Suggest a name" = "名前を提案";
-
-/* Header of the suggested text in the add product from image form. */
-"Suggestion from photo" = "写真からの参考情報";
-
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "商品と荷物の重量の合計";
 
@@ -7039,7 +6947,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
-   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "タグ";
 
@@ -7055,9 +6962,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the Payment Methods screens. %1$@ is a placeholder for the total amount to collect
    Text of the button that creates a simple payment order. %1$@ is a placeholder for the total amount to collect */
 "Take Payment (%1$@)" = "支払い (%1$@) を受け取る";
-
-/* Tip in the add product from image form to add a packaging image for AI-generated product details. */
-"Take a packaging photo to create product details with AI" = "パッケージ写真を撮影して、AI で商品の詳細を作成";
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "写真を撮る";
@@ -7218,9 +7122,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "ストアについて教えてください";
-
-/* Description text on the product name generation screen */
-"Tell us what your product is and what makes it unique!" = "商品の概要とその特徴的な点を説明してください。";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7796,9 +7697,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Tokelau" = "トケラウ";
 
-/* Title of the AI tone and voice selection sheet. */
-"Tone and voice" = "トーンとコンセプト";
-
 /* Country option for a site address. */
 "Tonga" = "トンガ";
 
@@ -7970,9 +7868,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Tuvalu" = "ツバル";
-
-/* Info text about the scanned text list on the add product from image form. */
-"Tweak your text: Unselect scans you don't need or tap to edit" = "テキストを微調整: 不要なスキャンの選択を解除するか編集をタップ";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "ストアの名前を入力してください";
@@ -8409,14 +8304,8 @@ which should be translated separately and considered part of this sentence. */
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "AI 搭載ツールを使用すると商品説明をすぐに生成できます。 キーワードを入力するだけで、あとはこちらで完了します。";
 
-/* Use package photo button on the add product name screen. */
-"Use package photo (Optional)" = "パッケージ写真を使用 (オプション)";
-
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "パスワードを使用してログイン";
-
-/* Description of the POS menu in the hub menu */
-"Use the app as a cash register" = "キャッシュレジスターとしてアプリを使用";
 
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "アプリを使用してテスト注文の返金を処理します。";
@@ -8880,7 +8769,6 @@ which should be translated separately and considered part of this sentence. */
 "Write a description" = "説明を入力してください";
 
 /* Action button to generate message on the product sharing message generation screen
-   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -8922,9 +8810,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@プランにサブスクリプション登録しました。 %2$@まですべての機能にアクセスできます。";
-
-/* Subtitle on the add product with AI Preview screen. */
-"You can always change the below details later." = "以下の情報は後からいつでも変更できます。";
 
 /* Info notice at the bottom of the bundled products screen */
 "You can edit bundled products in the web dashboard." = "ウェブダッシュボードでパッケージ同梱商品を編集できます。";
@@ -9476,6 +9361,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when attempting to start Blaze campaign creation flow without any product in the store */
 "blazeCampaignCreationCoordinator.NoProductAlert.title" = "商品が見つかりません";
 
+/* Question in the feedback banner after a Blaze campaign is successfully created */
+"blazeCampaignCreationCoordinator.feedbackQuestion" = "Blaze での体験はいかがでしたか ?";
+
 /* Button to dismiss the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successCTA" = "完了";
 
@@ -9525,9 +9413,6 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the Ad destination field when the destination URL is empty on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.adDestination.empty" = "リンク先 URL を選択";
 
-/* Dismiss button on the error alert displayed on the Blaze campaign creation screen */
-"blazeCampaignCreationForm.aiSuggestionsErrorAlert.cancel" = "キャンセル";
-
 /* Error message indicating that loading suggestions for tagline and description failed */
 "blazeCampaignCreationForm.aiSuggestionsErrorAlert.fetchingAISuggestions" = "キャッチフレーズと説明の提案を読み込めませんでした";
 
@@ -9539,6 +9424,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Budget field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.budget" = "予算";
+
+/* Dismiss button on an error alert on the Blaze campaign creation form */
+"blazeCampaignCreationForm.cancel" = "キャンセル";
 
 /* Description of the Campaign objective field on the Blaze campaign creation screen when no objective is specified */
 "blazeCampaignCreationForm.chooseObjective" = "キャンペーンの目的を選択";
@@ -9570,8 +9458,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Location field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.location" = "場所";
 
-/* Dismiss button on the alert asking to select a destination URL for the Blaze campaign */
-"blazeCampaignCreationForm.noDestinationURLAlert.cancel" = "キャンセル";
+/* Button on the alert to select an objective for the Blaze campaign */
+"blazeCampaignCreationForm.missingObjectiveAlert.selectObjective" = "目的を選択";
+
+/* No comment provided by engineer. */
+"blazeCampaignCreationForm.missingObjectiveAlert.title" = "Blaze キャンペーンの目的を選択してください";
 
 /* Message asking to select a destination URL for the Blaze campaign */
 "blazeCampaignCreationForm.noDestinationURLAlert.noURLFound" = "Blaze キャンペーンのリンク先 URL を選択してください";
@@ -9581,9 +9472,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert to add an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.addImage" = "画像を追加";
-
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"blazeCampaignCreationForm.noImageErrorAlert.cancel" = "キャンセル";
 
 /* Message asking to select an image for the Blaze campaign */
 "blazeCampaignCreationForm.noImageErrorAlert.noImageFound" = "Blaze キャンペーンの画像を追加してください";
@@ -9674,6 +9562,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the budget field of a Blaze campaign without an end date. */
 "blazeCampaignListItem.weeklyBudget" = "毎週";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintSelected" = "選択済み";
+
+/* Accessibility hint that an option is being selected on the campaign objective picker for Blaze campaign creation. */
+"blazeCampaignObjectivePickerView.accessibilityHintUnselected" = "選択解除済み";
+
+/* Button to dismiss the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.cancel" = "キャンセル";
+
+/* Error message when data syncing fails on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.errorMessage" = "キャンペーンの目的の同期中にエラーが発生しました。 もう一度お試しください。";
+
+/* Title for the explanation of a Blaze campaign objective. */
+"blazeCampaignObjectivePickerView.goodFor" = "効果:";
+
+/* Message on the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.message" = "キャンペーンの目的を選択";
+
+/* Button to save the selection on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.save" = "保存";
+
+/* Toggle to save the selection of a Blaze campaign objective for future campaigns. */
+"blazeCampaignObjectivePickerView.saveSelection" = "今後のキャンペーンのために選択を保存";
+
+/* Title of the campaign objective picker view for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.title" = "キャンペーンの目的";
+
+/* Button to retry syncing data on the campaign objective picker for Blaze campaign creation */
+"blazeCampaignObjectivePickerView.tryAgain" = "もう一度試す";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "広告ポリシー";
@@ -10204,6 +10122,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
 
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerHTML" = "HTML";
+
+/* Label for the Editor type picker */
+"customFieldEditorView.editorPickerLabel" = "テキスト編集モードを選択";
+
+/* Picker option for using Text Editor */
+"customFieldEditorView.editorPickerText" = "テキスト";
+
+/* Label for the Key field */
+"customFieldEditorView.keyLabel" = "キー";
+
+/* Placeholder for the Key field */
+"customFieldEditorView.keyPlaceholder" = "キーを入力";
+
+/* Label for the Value field */
+"customFieldEditorView.valueLabel" = "値";
+
 /* Accessibility title for the search button on the customer section. */
 "customer.search.button.accessibilityLabel" = "お客様を検索";
 
@@ -10514,6 +10450,12 @@ which should be translated separately and considered part of this sentence. */
 /* The string to show on order taxes when they are calculated based on the shop base address */
 "editableOrderViewModel.taxBasedOnSetting.shopBaseAddress" = "店舗の基本住所に基づいて計算されます。";
 
+/* Placeholder text inside the editor's text field. */
+"editorFactory.customFieldsValuePlaceholder" = "カスタムフィールド値を入力";
+
+/* The value of custom field to be edited. */
+"editorFactory.customFieldsValueTitle" = "値";
+
 /* Message of the notice when inventory fails to be updatedReads like: 'There was an error updating My Product Name. Please try again.' */
 "errorNoticeMessage.displayErrorNotice.UpdateProductInventoryViewModel" = "%@ の更新の際にエラーが発生しました。 もう一度お試しください。";
 
@@ -10554,11 +10496,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.redactionInfoTitle" = "訪問者データおよびコンバージョンデータは確認できません";
 
+/* Description of the filter used to show only favorite products. */
+"favoriteProductsFilter.favoriteProducts" = "お気に入り商品";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "顧客";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
+
+/* Row title for filtering products by favorite products. */
+"filterProductListViewModel.favoriteProduct" = "お気に入り商品";
 
 /* Status name of a disabled Google Ads campaign */
 "googleAdsCampaign.status.disabled" = "無効";
@@ -10628,6 +10576,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "顧客の統計概要の取得";
+
+/* Description of the POS menu in the hub menu */
+"hubMenu.pointOfSale.description" = "実店舗で支払いを受け取る";
 
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "製品のレビュー";
@@ -10733,6 +10684,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "数量限定の陸送便パッケージ - エアゾール、スプレー消毒剤、スプレー塗料、ヘアスプレー、プロパン、ブタン、洗浄剤など - フレグランス、マニキュア、除光液、溶剤、手指消毒剤、消毒用アルコール、エタノールベース製品など - その他数量限定の陸送物質 (化粧品、洗浄剤、塗料など)";
+
+/* Message on the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.body" = "Blaze で商品を何百万もの人に見てもらい、売上を伸ばしましょう";
+
+/* Title of the local notification to remind to continue the Blaze campaign creation. */
+"localNotification.AbandonedCampaignCreation.title" = "売上を伸ばしたいとお考えですか ?";
 
 /* Message on the local notification to remind scheduling a Blaze campaign. */
 "localNotification.BlazeNoCampaignReminder.body" = "Blaze 広告で商品を宣伝し、今すぐ売上を伸ばしましょう。";
@@ -11220,6 +11177,13 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button used on a card payment error from the Point of Sale Checkout to go back and try another payment method. */
 "pointOfSale.cardPresent.paymentErrorNonRetryable.tryAnotherPaymentMethod.button.title" = "別の支払い方法を試す";
 
+/* Button to come back to order editing when a card payment fails. Presented to users after payment intention creation fails on the Point of Sale Checkout
+   Button to try to collect a payment again. Presented to users after collecting a payment intention creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.backToCheckout.button.title" = "再度支払いを試す";
+
+/* Error message. Presented to users after payment intent creation fails on the Point of Sale Checkout */
+"pointOfSale.cardPresent.paymentIntentCreationError.title" = "支払い準備エラー";
+
 /* Indicates to wait while payment is processing. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.paymentProcessing.message" = "しばらくお待ちください...";
 
@@ -11454,6 +11418,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented when payment capture may have failed. This draws extra attention to the issue. */
 "pointOfSale.cardPresentPayment.paymentCaptureError.order.may.have.failed.title" = "この注文は失敗した可能性があります";
 
+/* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
+"pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "しばらくお待ちください";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
 "pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Reader の接続を解除";
 
@@ -11534,12 +11501,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the product selector header banner, which explains current POS limitations */
 "pos.itemlistview.headerBanner.title" = "シンプルな商品のみ表示中";
-
-/* Subtitle of the Point of Sale entry point loading */
-"pos.itemlistview.loading.subtitle" = "お客様にサービスを提供しましょう";
-
-/* Title of the Point of Sale entry point loading */
-"pos.itemlistview.loading.title" = "開始";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint" = "追加するには、POSを終了して「商品」に移動します";
@@ -11754,6 +11715,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to undo the package photo removal action. */
 "productDetailPreviewViewModel.photoRemovedNotice.undo" = "取り消す";
 
+/* Text describing the value that has been entered in the discount textfield is not allowed */
+"productDiscountView.text.discountDisallowedLabel" = "価格を超える割引はできません";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "ファイルのアップロードの際にエラーが発生しました。 もう一度お試しください。";
 
@@ -11783,6 +11747,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title message indicating that images are unavailable because the site is private. */
 "productFormTableViewDataSource.wpComStoreNotPublicTitle" = "サイトが「非公開」として設定されているため、画像が利用できません。 これは、「近日公開」モードに切り替えることで変更できます。";
+
+/* Mark favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.markAsFavorite" = "お気に入りに登録";
+
+/* Remove favorite button title in Edit Product More Options Action Sheet */
+"productFormViewController.removeAsFavorite" = "お気に入りから削除";
 
 /* Button to dismiss the product image picker screen */
 "productImagePickerView.cancel" = "キャンセル";
@@ -12188,6 +12158,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "システムステータスレポート";
 
+/* On a trial Tap to Pay order, this is the name of the line item for the trial amount. */
+"tap.to.pay.try.payment.amount.name" = "「iPhone でタップして支払う」を試してみる";
+
 /* After a trial Tap to Pay payment, we attempt to automatically refund the test amount. When this is sent to the server, we provide a reason for later identification. */
 "tap.to.pay.try.payment.refund.reason" = "Tap To Pay のお試し支払いの自動返金";
 
@@ -12403,6 +12376,99 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "週";
+
+/* Info label for selected box as a package type */
+"wooShipping.createLabel.addPackage.box" = "ボックス";
+
+/* Button to select a package to use for a shipment in the shipping label creation flow. */
+"wooShipping.createLabel.addPackage.button" = "荷物を選択";
+
+/* Cancel button in navigation bar to dismiss the screen */
+"wooShipping.createLabel.addPackage.cancel" = "キャンセル";
+
+/* Info label for carrier package option */
+"wooShipping.createLabel.addPackage.carrier" = "運送業者";
+
+/* Info label for custom package option */
+"wooShipping.createLabel.addPackage.custom" = "カスタム";
+
+/* Info label for selected envelope as a package type */
+"wooShipping.createLabel.addPackage.envelope" = "封筒";
+
+/* Info label for height input field */
+"wooShipping.createLabel.addPackage.height" = "高さ";
+
+/* Info label for length input field */
+"wooShipping.createLabel.addPackage.length" = "長さ";
+
+/* Info label for selecting package type */
+"wooShipping.createLabel.addPackage.packageType" = "パッケージの種類";
+
+/* Info label for saving package as a new template toggle */
+"wooShipping.createLabel.addPackage.saveNewPackageTemplate" = "これを新しいパッケージテンプレートとして保存";
+
+/* Button for saving package as a new template */
+"wooShipping.createLabel.addPackage.savePackageTemplate" = "パッケージのテンプレートを保存";
+
+/* Info label for saved package option */
+"wooShipping.createLabel.addPackage.saved" = "保存済み";
+
+/* Title for the Add Package screen */
+"wooShipping.createLabel.addPackage.title" = "パッケージを追加";
+
+/* Info label for width input field */
+"wooShipping.createLabel.addPackage.width" = "幅";
+
+/* Title of the button to dismiss the shipping label creation screen */
+"wooShipping.createLabel.cancelButton" = "キャンセル";
+
+/* Label for section in shipping label creation to declare when a package contains hazardous materials. */
+"wooShipping.createLabel.hazmatLabel" = "危険物または有害物質を発送しようとしていますか ?";
+
+/* Message in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderMessage" = "荷物の寸法を入力するか、配送業者の荷物オプションを選択して、利用可能な配送料金を確認してください。";
+
+/* Call to action in the shipping rate section during shipping label creation, when there is no selected package. */
+"wooShipping.createLabel.shippingRate.placeholderTitle" = "荷物を選択して配送料を取得";
+
+/* Label for the toggle to mark the order as complete on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.markComplete" = "この注文に完了のマークを付けてお客様に通知";
+
+/* Header for order details section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.orderDetails" = "注文詳細";
+
+/* Label for the menu to select a paper size on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.paperSize" = "ラベル用紙サイズを選択";
+
+/* Label for button to purchase the shipping label on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.purchase" = "ラベルを購入";
+
+/* Label for address where the shipment is shipped from on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipFrom" = "出荷元";
+
+/* Label for address where the shipment is shipped to on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipTo" = "配送先";
+
+/* Header for shipment costs section on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.shipmentCosts" = "配送料";
+
+/* Label for row showing the subtotal for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.subtotal" = "小計";
+
+/* Label on the bottom sheet that can be expanded to show shipment detailson the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.title" = "配送状況の詳細";
+
+/* Label for row showing the total for shipment costs on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.total" = "合計";
+
+/* Total number of items to ship during shipping label creation. Reads like: '3 items' */
+"wooShipping.createLabels.items.count" = "%1$@個のアイテム";
+
+/* Length, width, and height dimensions with the unit for an item to ship. Reads like: '20 x 35 x 5 cm' */
+"wooShipping.createLabels.items.dimensions" = "%1$@ x %2$@ x %3$@ %4$@";
+
+/* Title for the screen to create a shipping label */
+"wooShipping.createLabels.title" = "配送ラベルを作成";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Dashboard' tab. */
 "woocommerce, my store, today, this week, this month, this year,orders, visitors, conversion, top conversion, items sold" = "woocommerce, 自分のストア, 今日, 今週, 今月, 今年, 注文, 訪問者, コンバージョン, 上位コンバージョン, 販売済み商品";

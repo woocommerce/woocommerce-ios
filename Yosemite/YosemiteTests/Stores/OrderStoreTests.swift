@@ -647,7 +647,7 @@ final class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         orderStore.upsertStoredOrder(readOnlyOrder: remoteOrder, insertingSearchResults: true, in: viewStorage)
-        orderStore.upsertStoredResults(keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
+        orderStore.upsertStoredResults(for: sampleSiteID, keyword: defaultSearchKeyword, readOnlyOrder: remoteOrder, in: viewStorage)
 
         let storageSearchResults = viewStorage.loadOrderSearchResults(keyword: defaultSearchKeyword)
         let storageOrder = viewStorage.loadOrder(siteID: sampleSiteID, orderID: remoteOrder.orderID)
@@ -1165,6 +1165,7 @@ final class OrderStoreTests: XCTestCase {
         // Given
         let feeID: Int64 = 1234
         let amount = "100.00"
+        let amountName = "A simple amount"
         let taxable = true
         let note = "This is a note"
         let email = "email@email.com"
@@ -1178,6 +1179,7 @@ final class OrderStoreTests: XCTestCase {
                                                            feeID: feeID,
                                                            status: .pending,
                                                            amount: amount,
+                                                           amountName: amountName,
                                                            taxable: taxable,
                                                            orderNote: note,
                                                            email: email) { _ in }
@@ -1188,7 +1190,7 @@ final class OrderStoreTests: XCTestCase {
         let receivedFees = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
         let expectedFees: [String: AnyHashable] = [
             "id": 1234,
-            "name": "Simple Payments",
+            "name": "A simple amount",
             "tax_status": "taxable",
             "tax_class": "",
             "total": "100.00"
@@ -1210,6 +1212,42 @@ final class OrderStoreTests: XCTestCase {
 
         let receivedNote = try XCTUnwrap(request.parameters["customer_note"] as? String)
         assertEqual(receivedNote, note)
+    }
+
+    func test_update_simple_payments_order_sends_default_name_when_none_provided() throws {
+        // Given
+        let feeID: Int64 = 1234
+        let amount = "100.00"
+        let taxable = true
+        let note = "This is a note"
+        let email = "email@email.com"
+
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateSimplePaymentsOrder(siteID: sampleSiteID,
+                                                           orderID: sampleOrderID,
+                                                           feeID: feeID,
+                                                           status: .pending,
+                                                           amount: amount,
+                                                           amountName: nil,
+                                                           taxable: taxable,
+                                                           orderNote: note,
+                                                           email: email) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedFees = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expectedFees: [String: AnyHashable] = [
+            "id": 1234,
+            "name": "Simple Payments",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "total": "100.00"
+        ]
+        assertEqual(expectedFees, receivedFees)
     }
 
     func test_create_order_sends_expected_fields() throws {

@@ -61,6 +61,8 @@ public final class BlazeStore: Store {
                                       skip: skip,
                                       limit: limit,
                                       onCompletion: onCompletion)
+        case let .synchronizeCampaign(campaignID, siteID, onCompletion):
+            synchronizeCampaign(campaignID: campaignID, siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeTargetDevices(siteID, locale, onCompletion):
             synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
         case let .synchronizeTargetLanguages(siteID, locale, onCompletion):
@@ -114,6 +116,21 @@ private extension BlazeStore {
                 let hasNextPage = results.count == limit
                 upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
                     onCompletion(.success(hasNextPage))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func synchronizeCampaign(campaignID: String,
+                             siteID: Int64,
+                             onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let result = try await remote.retrieveCampaignDetails(campaignID: campaignID, from: siteID)
+                upsertStoredBlazeCampaignListItemsInBackground(readOnlyCampaigns: [result], siteID: siteID, shouldClearExistingCampaigns: false) {
+                    onCompletion(.success(()))
                 }
             } catch {
                 onCompletion(.failure(error))

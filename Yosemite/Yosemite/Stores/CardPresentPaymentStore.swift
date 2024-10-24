@@ -475,8 +475,6 @@ private extension CardPresentPaymentStore {
     }
 
     func loadWCPayAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any WCPay account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
 
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
@@ -487,19 +485,18 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let wcpayAccount):
                 let account = wcpayAccount.toPaymentGatewayAccount(siteID: siteID)
-                self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                self.upsertStoredAccountInBackground(readonlyAccount: account) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
-                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID)
-                onCompletion(.failure(error))
+                self.deleteStaleAccount(siteID: siteID, gatewayID: WCPayAccount.gatewayID) {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }
 
     func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        /// Delete any Stripe account present. There can be only one.
-        self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
-
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
             guard let self = self else {
                 return
@@ -508,11 +505,13 @@ private extension CardPresentPaymentStore {
             switch result {
             case .success(let stripeAccount):
                 let account = stripeAccount.toPaymentGatewayAccount(siteID: siteID)
-                self.upsertStoredAccountInBackground(readonlyAccount: account)
-                onCompletion(.success(()))
+                self.upsertStoredAccountInBackground(readonlyAccount: account) {
+                    onCompletion(.success(()))
+                }
             case .failure(let error):
-                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID)
-                onCompletion(.failure(error))
+                self.deleteStaleAccount(siteID: siteID, gatewayID: StripeAccount.gatewayID) {
+                    onCompletion(.failure(error))
+                }
             }
         }
     }
@@ -551,13 +550,17 @@ private extension CardPresentPaymentStore {
             remote.fetchCharge(for: siteID, chargeID: chargeID) { result in
                 switch result {
                 case .success(let charge):
-                    self.upsertCharge(readonlyCharge: charge)
-                    completion(.success(charge))
+                    self.upsertCharge(readonlyCharge: charge) {
+                        completion(.success(charge))
+                    }
                 case .failure(let error):
                     if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
-                        self.deleteCharge(siteID: siteID, chargeID: chargeID)
+                        self.deleteCharge(siteID: siteID, chargeID: chargeID) {
+                            completion(.failure(error))
+                        }
+                    } else {
+                        completion(.failure(error))
                     }
-                    completion(.failure(error))
                 }
             }
         case .stripe:
@@ -568,39 +571,50 @@ private extension CardPresentPaymentStore {
 
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
-    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount) {
-        let storage = storageManager.viewStorage
-        let storageAccount = storage.loadPaymentGatewayAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID) ??
-            storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
+    func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else {
+                return
+            }
+            /// Delete any account present. There can be only one.
+            deleteStaleAccount(siteID: readonlyAccount.siteID, gatewayID: readonlyAccount.gatewayID, in: storage)
 
-        storageAccount.update(with: readonlyAccount)
+            let storageAccount = storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
+            storageAccount.update(with: readonlyAccount)
+
+        }, completion: onCompletion, on: .main)
     }
 
-    func deleteStaleAccount(siteID: Int64, gatewayID: String) {
-        let storage = storageManager.viewStorage
+    func deleteStaleAccount(siteID: Int64, gatewayID: String, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            self?.deleteStaleAccount(siteID: siteID, gatewayID: gatewayID, in: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    func deleteStaleAccount(siteID: Int64, gatewayID: String, in storage: StorageType) {
         guard let storageAccount = storage.loadPaymentGatewayAccount(siteID: siteID, gatewayID: gatewayID) else {
             return
         }
-
         storage.deleteObject(storageAccount)
-        storage.saveIfNeeded()
     }
 
-    func upsertCharge(readonlyCharge: WCPayCharge) {
-        let storage = storageManager.viewStorage
-        let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
+    func upsertCharge(readonlyCharge: WCPayCharge, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let storageWCPayCharge = existingOrNewWCPayCharge(siteID: readonlyCharge.siteID, chargeID: readonlyCharge.id, in: storage)
 
-        switch readonlyCharge.paymentMethodDetails {
-        case .cardPresent(let details), .interacPresent(let details):
-            upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
-        case .card(let details):
-            upsertCardDetails(details, for: storageWCPayCharge, in: storage)
-        case .unknown:
-            storageWCPayCharge.cardDetails = nil
-            storageWCPayCharge.cardPresentDetails = nil
-        }
+            switch readonlyCharge.paymentMethodDetails {
+            case .cardPresent(let details), .interacPresent(let details):
+                upsertCardPresentDetails(details, for: storageWCPayCharge, in: storage)
+            case .card(let details):
+                upsertCardDetails(details, for: storageWCPayCharge, in: storage)
+            case .unknown:
+                storageWCPayCharge.cardDetails = nil
+                storageWCPayCharge.cardPresentDetails = nil
+            }
 
-        storageWCPayCharge.update(with: readonlyCharge)
+            storageWCPayCharge.update(with: readonlyCharge)
+        }, completion: onCompletion, on: .main)
     }
 
     private func existingOrNewWCPayCharge(siteID: Int64, chargeID: String, in storage: StorageType) -> Storage.WCPayCharge {
@@ -632,14 +646,14 @@ private extension CardPresentPaymentStore {
         storageWCPayCharge.cardPresentDetails = nil
     }
 
-    func deleteCharge(siteID: Int64, chargeID: String) {
-        let storage = storageManager.viewStorage
-        guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
-            return
-        }
+    func deleteCharge(siteID: Int64, chargeID: String, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let charge = storage.loadWCPayCharge(siteID: siteID, chargeID: chargeID) else {
+                return
+            }
 
-        storage.deleteObject(charge)
-        storage.saveIfNeeded()
+            storage.deleteObject(charge)
+        }, completion: onCompletion, on: .main)
     }
 }
 

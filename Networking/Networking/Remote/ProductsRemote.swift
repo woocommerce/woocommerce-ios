@@ -19,6 +19,7 @@ public protocol ProductsRemoteProtocol {
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
+                         productIDs: [Int64],
                          excludedProductIDs: [Int64],
                          completion: @escaping (Result<[Product], Error>) -> Void)
     func searchProducts(for siteID: Int64,
@@ -139,6 +140,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - productType: Optional product type filtering. Default to nil (no filtering).
     ///     - orderBy: the key to order the remote products. Default to product name.
     ///     - order: ascending or descending order. Default to ascending.
+    ///     - productIDs: a list of product IDs to be included in the results. All products will be fetched if empty.
     ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
     ///     - completion: Closure to be executed upon completion.
     ///
@@ -152,16 +154,26 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 productCategory: ProductCategory? = nil,
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
+                                productIDs: [Int64] = [],
                                 excludedProductIDs: [Int64] = [],
                                 completion: @escaping (Result<[Product], Error>) -> Void) {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
+        let stringOfProductIDs: String = {
+            guard productIDs.isEmpty == false else {
+                return ""
+            }
+            return productIDs.map { String($0) }
+                .joined(separator: ",")
+        }()
+
 
         let filterParameters = [
             ParameterKey.stockStatus: stockStatus?.rawValue ?? "",
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
             ParameterKey.productType: productType?.rawValue ?? "",
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
+            ParameterKey.include: stringOfProductIDs,
             ParameterKey.exclude: stringOfExcludedProductIDs
             ].filter({ $0.value.isEmpty == false })
 
@@ -184,10 +196,11 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     /// - Parameters:
     /// - siteID: Site for which we'll fetch remote products.
+    /// - pageNumber: Number of page that should be retrieved.
     ///
-    public func loadAllSimpleProductsForPointOfSale(for siteID: Int64) async throws -> [Product] {
+    public func loadSimpleProductsForPointOfSale(for siteID: Int64, pageNumber: Int = 1) async throws -> [Product] {
         let parameters = [
-            ParameterKey.page: POSConstants.page,
+            ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: POSConstants.productsPerPage,
             ParameterKey.productType: POSConstants.productType,
             ParameterKey.orderBy: OrderKey.name.value,
@@ -597,7 +610,6 @@ public extension ProductsRemote {
 
 private extension ProductsRemote {
     enum POSConstants {
-        static let page = "1"
         static let productsPerPage = "100"
         static let productType = "simple"
         static let productStatus = "publish"

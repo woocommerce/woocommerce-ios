@@ -1,6 +1,18 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 20.8
+This release includes several bug fixes and improvements to make your experience smoother. We're committed to continuously improving the WooCommerce app, and we have some exciting updates coming in the next few weeks. Stay tuned!
+
+## 20.7
+In this update we've resolved a couple of minor issues regarding automatic dismissal of different views, as well as improvement to the UI alignment on iPads. We've also fixed a crash when searching for products to add to an order. Lastly, entering discounts higher than the product price is no longer possible.
+
+## 20.6
+In this update, we’ve improved the dashboard with a cleaner, 2-column layout on larger screens. Jetpack setup is now smoother, and campaigns cancel instantly with immediate feedback options. Creating product categories is faster with an auto-opening keyboard, and your phone stays active during card reader updates for seamless transactions.
+
+## 20.5
+In this update, we've added a handy reminder feature to help you continue abandoned campaign creation and improved how notifications open directly to campaign creation in Blaze. We’ve also fixed formatting issues for discount and cash payments when device and store currency settings differ. Enjoy a smoother experience managing your store on the go!
+
 ## 20.4
 In this version we've fixed an issue related to the onboarding of payments. Blaze ads management has also been enhanced for better experiences.
 

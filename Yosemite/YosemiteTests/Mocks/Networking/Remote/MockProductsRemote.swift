@@ -13,6 +13,16 @@ final class MockProductsRemote {
     private(set) var searchProductWithProductType: ProductType?
     private(set) var searchProductWithProductCategory: ProductCategory?
 
+    private(set) var synchronizeProductsTriggered: Bool = false
+    private(set) var synchronizeProductsWithStockStatus: ProductStockStatus?
+    private(set) var synchronizeProductsWithProductStatus: ProductStatus?
+    private(set) var synchronizeProductsWithProductType: ProductType?
+    private(set) var synchronizeProductsWithProductCategory: ProductCategory?
+    private(set) var synchronizeProductsSortOrderBy: ProductsRemote.OrderKey?
+    private(set) var synchronizeProductsOrder: ProductsRemote.Order?
+    private(set) var synchronizeProductsProductIDs: [Int64]?
+    private(set) var synchronizeProductsExcludedProductIDs: [Int64]?
+
     private struct ResultKey: Hashable {
         let siteID: Int64
         let productIDs: [Int64]
@@ -35,6 +45,9 @@ final class MockProductsRemote {
 
     /// The results to return based on the given site ID in `loadAllProducts`
     private var loadAllProductsResultsBySiteID = [Int64: Result<[Product], Error>]()
+
+    /// List of product IDs requested for `loadProducts`
+    private(set) var requestedProductIDsForLoading: [Int64] = []
 
     /// The results to return based on the given site ID in `loadNumberOfProducts`.
     private var loadNumberOfProductsResultsBySiteID = [Int64: Result<Int64, Error>]()
@@ -171,6 +184,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
+        requestedProductIDsForLoading = productIDs
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
@@ -195,8 +209,18 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          productCategory: ProductCategory?,
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
+                         productIDs: [Int64],
                          excludedProductIDs: [Int64],
                          completion: @escaping (Result<[Product], Error>) -> Void) {
+        synchronizeProductsTriggered = true
+        synchronizeProductsWithStockStatus = stockStatus
+        synchronizeProductsWithProductStatus = productStatus
+        synchronizeProductsWithProductType = productType
+        synchronizeProductsWithProductCategory = productCategory
+        synchronizeProductsSortOrderBy = orderBy
+        synchronizeProductsOrder = order
+        synchronizeProductsProductIDs = productIDs
+        synchronizeProductsExcludedProductIDs = excludedProductIDs
         if let result = loadAllProductsResultsBySiteID[siteID] {
             completion(result)
         } else {

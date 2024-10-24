@@ -1,2 +1,1 @@
-In this version, we've enabled scanning order tracking numbers and improved product password management. We've also added enhancements for product scanner, cash payments and discounts. 
-Blaze ads campaign creation has been updated with a better experience for image picking and budget settings.
+In this update we've resolved a couple of minor issues regarding automatic dismissal of different views, as well as improvement to the UI alignment on iPads. We've also fixed a crash when searching for products to add to an order. Lastly, entering discounts higher than the product price is no longer possible.

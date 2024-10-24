@@ -16,9 +16,9 @@ struct BlazeCampaignItemView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            CollapsibleHStack(horizontalAlignment: .leading,
-                              verticalAlignment: .center,
-                              spacing: Layout.contentSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading,
+                          verticalAlignment: .center,
+                          spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     KFImage(URL(string: campaign.imageURL ?? ""))
@@ -102,6 +102,7 @@ struct BlazeCampaignItemView: View {
                 .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
         }
         .padding(Layout.strokeWidth)
+        .contentShape(Rectangle())
     }
 }
 

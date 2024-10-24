@@ -108,6 +108,7 @@ struct SupportForm: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .cornerRadius(Layout.cornerRadius)
                     }
 
                     // Site Address Text Field
@@ -124,6 +125,7 @@ struct SupportForm: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .cornerRadius(Layout.cornerRadius)
                     }
 
                     // Description Text Editor
@@ -138,6 +140,7 @@ struct SupportForm: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.separator))
                             )
+                            .cornerRadius(Layout.cornerRadius)
                     }
                 }
                 .padding()

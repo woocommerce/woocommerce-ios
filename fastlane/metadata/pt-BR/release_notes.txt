@@ -1,2 +1,1 @@
-Nesta versão, você pode escanear números de rastreio de pedidos. Também aprimoramos a gestão de senhas de produtos e fizemos melhorias nos descontos, escaneamento de produtos e pagamentos em dinheiro.
-Desfrute de uma experiência melhor nas configurações de orçamento e seleção de imagens durante a criação de campanhas de anúncios do Blaze.
+Nesta atualização, resolvemos alguns problemas menos relevantes relacionados à dispensa automática de diferentes visualizações, assim como à melhoria no alinhamento da IU em iPads. Também corrigimos uma falha que ocorria ao pesquisar produtos para adicionar a um pedido. Por fim, não é mais possível adicionar descontos superiores ao preço do produto.

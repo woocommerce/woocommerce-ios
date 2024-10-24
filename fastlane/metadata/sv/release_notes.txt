@@ -1,2 +1,1 @@
-I den här versionen har vi aktiverat skanning av spårningsnummer för beställningar och förbättrat produktlösenordshanteringen. Vi har också lagt till förbättringar för produktskannern, kontakta betalningar och rabatter.
-Skapandet av Blaze-annonskampanjer har uppdaterats med en bättre upplevelse för bildval och budgetinställningar.
+I den här uppdateringen har vi löst ett antal mindre problem gällande automatisk avvisning av olika vyer, samt förbättrat anpassningen av gränssnittet på iPads. Vi har även åtgärdat en krasch som kunde uppstå vid sökning efter produkter att lägga till i en beställning. Slutligen, det är inte längre möjligt att ange rabatter som är högre än produktpriset.

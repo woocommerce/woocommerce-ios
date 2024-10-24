@@ -176,7 +176,10 @@ private extension CustomFieldsListView {
                         value: updatedValue,
                         fieldId: customField?.fieldId
                     )
-                }
+                },
+                onDelete: customField != nil ? {
+                    viewModel.deleteField(customField!)
+                } : nil
             )
         }
     }

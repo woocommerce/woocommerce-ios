@@ -69,13 +69,24 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
     }
 
     convenience init(selected: Bool = false,
-                     signatureRequirement: SignatureRequirement = .none,
+                     signatureRequired: Bool = false,
+                     adultSignatureRequired: Bool = false,
                      rate: ShippingLabelCarrierRate,
                      signatureRate: ShippingLabelCarrierRate? = nil,
                      adultSignatureRate: ShippingLabelCarrierRate? = nil,
                      currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let signatureRequirement: SignatureRequirement = {
+            if signatureRequired {
+                return .signatureRequired
+            } else if adultSignatureRequired {
+                return .adultSignatureRequired
+            } else {
+                return .none
+            }
+        }()
+
         let rateLabel = {
             switch (signatureRequirement, signatureRate, adultSignatureRate) {
             case (.signatureRequired, .some(let signatureRate), _):

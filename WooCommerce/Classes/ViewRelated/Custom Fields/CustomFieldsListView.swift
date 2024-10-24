@@ -1,73 +1,103 @@
+import Combine
 import SwiftUI
+
+final class CustomFieldsListHostingController: UIHostingController<CustomFieldsListView> {
+    private let viewModel: CustomFieldsListViewModel
+    private var subscriptions: Set<AnyCancellable> = []
+
+    init(isEditable: Bool, viewModel: CustomFieldsListViewModel) {
+        self.viewModel = viewModel
+        super.init(rootView: CustomFieldsListView(isEditable: isEditable,
+                                                  viewModel: viewModel)
+        )
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        configureNavigation()
+        observeStateChange()
+    }
+
+    /// Create a `UIBarButtonItem` to be used as the add custom field button on the top-right.
+    ///
+    private lazy var addCustomFieldButtonItem: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: .plusImage,
+                style: .plain,
+                target: self,
+                action: #selector(openAddCustomFieldScreen))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.accessibilityLabelAddCustomField
+        button.accessibilityHint = Localization.accessibilityHintAddCustomField
+        button.accessibilityIdentifier = "add-custom-field-button"
+
+        return button
+    }()
+
+    /// Create a `UIBarButtonItem` to be used as the save custom field button on the top-right.
+    ///
+    private lazy var saveCustomFieldButtonItem =
+        UIBarButtonItem(title: Localization.save,
+                        style: .plain,
+                        target: self,
+                        action: #selector(saveCustomField))
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension CustomFieldsListHostingController {
+    func configureNavigation() {
+        title = Localization.title
+        navigationItem.rightBarButtonItems = [saveCustomFieldButtonItem, addCustomFieldButtonItem]
+    }
+
+    @objc func openAddCustomFieldScreen() {
+        viewModel.isAddingNewField = true
+    }
+
+    @objc func saveCustomField() {
+        // todo: call viewmodel's save function
+        navigationController?.popViewController(animated: true)
+    }
+
+    func observeStateChange() {
+        viewModel.$hasChanges
+            .sink { [weak self] hasChanges in
+                self?.saveCustomFieldButtonItem.isEnabled = hasChanges
+            }
+            .store(in: &subscriptions)
+    }
+}
 
 struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
     let isEditable: Bool
-    let onBackButtonTapped: () -> Void
 
     init(isEditable: Bool,
-         viewModel: CustomFieldsListViewModel,
-         onBackButtonTapped: @escaping () -> Void) {
+         viewModel: CustomFieldsListViewModel) {
         self.isEditable = isEditable
         self.viewModel = viewModel
-        self.onBackButtonTapped = onBackButtonTapped
     }
 
     var body: some View {
-        NavigationStack {
-            List(viewModel.combinedList) { customField in
-                if isEditable {
-                    NavigationLink(destination: CustomFieldEditorView(key: customField.key, value: customField.value, onSave: { updatedKey, updatedValue in
-                        viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                    })) {
-                        CustomFieldRow(isEditable: true,
-                                       title: customField.key,
-                                       content: customField.value.removedHTMLTags,
-                                       contentURL: nil)
-                    }
-                } else {
-                    CustomFieldRow(isEditable: false,
-                                   title: customField.key,
-                                   content: customField.value.removedHTMLTags,
-                                   contentURL: nil)
-                }
+        List(viewModel.combinedList) { customField in
+            Button(action: { viewModel.selectedCustomField = customField }) {
+                CustomFieldRow(isEditable: isEditable,
+                               title: customField.key,
+                               content: customField.value.removedHTMLTags,
+                               contentURL: nil)
             }
-            .listStyle(.plain)
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        onBackButtonTapped()
-                        presentationMode.wrappedValue.dismiss()
-                    }, label: {
-                        Image(systemName: "chevron.backward")
-                            .headlineLinkStyle()
-                    })
-                }
-
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if isEditable {
-                        HStack {
-                            Button {
-                                // todo-13493: add save handling
-                            } label: {
-                                Text("Save") // todo-13493: set String to be translatable
-                            }
-                            .disabled(!viewModel.hasChanges)
-                            Button(action: {
-                                // todo-13493: add addition handling
-                            }, label: {
-                                Image(systemName: "plus")
-                                    .renderingMode(.template)
-                            })
-                        }
-                    }
-                }
-            }
-            .wooNavigationBarStyle()
+        }
+        .listStyle(.plain)
+        .sheet(item: $viewModel.selectedCustomField) { customField in
+            buildCustomFieldEditorView(customField: customField)
+        }
+        .sheet(isPresented: $viewModel.isAddingNewField) {
+            buildCustomFieldEditorView(customField: nil)
         }
     }
 }
@@ -128,12 +158,52 @@ private struct CustomFieldRow: View {
     }
 }
 
+// MARK: - Helpers
+//
+private extension CustomFieldsListView {
+    /// Builds the Custom Field Editor View.
+    /// - When `customField` is provided, it configures the editor for editing an existing field
+    /// - When `customField` is nil, it configures the editor for creating a new field
+    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?) -> some View {
+        NavigationView {
+            CustomFieldEditorView(
+                key: customField?.key ?? "",
+                value: customField?.value ?? "",
+                onSave: { updatedKey, updatedValue in
+                    viewModel.saveField(
+                        key: updatedKey,
+                        value: updatedValue,
+                        fieldId: customField?.fieldId
+                    )
+                }
+            )
+        }
+    }
+}
 
 // MARK: - Constants
 //
-extension CustomFieldsListView {
+private extension CustomFieldsListHostingController {
     enum Localization {
-        static let title = NSLocalizedString("Custom Fields", comment: "Title for the order custom fields list")
+        static let title = NSLocalizedString(
+            "customFieldsListHostingController.title",
+            value: "Custom Fields",
+            comment: "Title for the order custom fields list")
+
+        static let accessibilityLabelAddCustomField = NSLocalizedString(
+            "customFieldsListHostingController.accessibilityLabelAddCustomField",
+            value: "Add custom field",
+            comment: "Accessibility label for the Add Custom Field button")
+
+        static let accessibilityHintAddCustomField = NSLocalizedString(
+            "customFieldsListHostingController.accessibilityHintAddCustomField",
+            value: "Add a new custom field to the list",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to add custom field.")
+
+        static let save = NSLocalizedString(
+            "customFieldsListHostingController.save",
+            value: "Save",
+            comment: "Button to save the changes on Custom Fields list")
     }
 }
 
@@ -155,9 +225,7 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
                 customFields: [
                     CustomFieldViewModel(id: 0, title: "First Title", content: "First Content"),
                     CustomFieldViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
-                ]),
-            onBackButtonTapped: { }
-            )
+                ]))
     }
 }
 

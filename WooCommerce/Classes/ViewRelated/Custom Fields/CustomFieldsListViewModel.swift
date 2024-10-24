@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 
 final class CustomFieldsListViewModel: ObservableObject {
@@ -7,18 +8,20 @@ final class CustomFieldsListViewModel: ObservableObject {
         savingError != nil
     }
 
+    @Published var selectedCustomField: CustomFieldUI? = nil
+    @Published var isAddingNewField: Bool = false
+
     @Published private(set) var savingError: Error?
     @Published private(set) var combinedList: [CustomFieldUI] = []
 
     @Published private var editedFields: [CustomFieldUI] = []
     @Published private var addedFields: [CustomFieldUI] = []
-    var hasChanges: Bool {
-        !editedFields.isEmpty || !addedFields.isEmpty
-    }
+    @Published private(set) var hasChanges: Bool = false
 
     init(customFields: [CustomFieldViewModel]) {
         self.originalCustomFields = customFields
         updateCombinedList()
+        configureHasChanges()
     }
 }
 
@@ -96,6 +99,12 @@ private extension CustomFieldsListViewModel {
             editedFields.first { $0.fieldId == field.id } ?? CustomFieldUI(customField: field)
         }
         combinedList = editedList + addedFields
+    }
+
+    func configureHasChanges() {
+        $editedFields.combineLatest($addedFields)
+            .map { !$0.isEmpty || !$1.isEmpty }
+            .assign(to: &$hasChanges)
     }
 }
 

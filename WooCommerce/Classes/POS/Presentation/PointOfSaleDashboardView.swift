@@ -139,6 +139,9 @@ private extension PointOfSaleDashboardView {
                         Text(Localization.cancelOnboarding)
                     }
                 }
+                .onDisappear {
+                    totalsViewModel.cancelOnboarding()
+                }
         }
     }
 }

@@ -5,7 +5,7 @@ struct WooShippingServiceCardView: View {
     @ObservedObject var viewModel: WooShippingServiceCardViewModel
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 16) {
+        HStack(alignment: .top, spacing: 16) {
             if let carrierLogo = viewModel.carrierLogo {
                 Image(uiImage: carrierLogo)
                     .resizable()

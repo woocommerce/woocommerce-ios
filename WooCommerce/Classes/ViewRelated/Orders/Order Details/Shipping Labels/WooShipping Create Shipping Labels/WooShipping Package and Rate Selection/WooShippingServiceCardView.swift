@@ -92,6 +92,9 @@ struct WooShippingServiceCardView: View {
         .roundedBorder(cornerRadius: 8,
                        lineColor: viewModel.selected ? Color(.primary) : Color(.separator),
                        lineWidth: viewModel.selected ? 2 : 1)
+        .onTapGesture {
+            viewModel.selectRate()
+        }
     }
 
     @ViewBuilder

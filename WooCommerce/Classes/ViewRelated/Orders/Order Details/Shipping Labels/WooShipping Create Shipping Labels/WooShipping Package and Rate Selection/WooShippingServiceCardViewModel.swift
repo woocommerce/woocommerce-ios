@@ -40,6 +40,11 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
     /// Label if there is an option to require an adult signature.
     let adultSignatureRequiredLabel: String?
 
+    /// Completion callback
+    typealias Completion = (_ rateTitle: String,
+                            _ signatureRequirement: SignatureRequirement) -> Void
+    private let onCompletion: Completion?
+
     init(id: String = UUID().uuidString,
          selected: Bool = false,
          signatureRequirement: SignatureRequirement = .none,
@@ -52,7 +57,8 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
          insuranceLabel: String?,
          hasFreePickup: Bool,
          signatureRequiredLabel: String?,
-         adultSignatureRequiredLabel: String?) {
+         adultSignatureRequiredLabel: String?,
+         completion: Completion? = nil) {
         self.id = id
         self.selected = selected
         self.signatureRequirement = signatureRequirement
@@ -66,6 +72,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         self.freePickupLabel = hasFreePickup ? Localization.freePickup : nil
         self.signatureRequiredLabel = signatureRequiredLabel
         self.adultSignatureRequiredLabel = adultSignatureRequiredLabel
+        self.onCompletion = completion
     }
 
     convenience init(selected: Bool = false,
@@ -74,7 +81,8 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
                      rate: ShippingLabelCarrierRate,
                      signatureRate: ShippingLabelCarrierRate? = nil,
                      adultSignatureRate: ShippingLabelCarrierRate? = nil,
-                     currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+                     currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                     completion: Completion? = nil) {
 
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let signatureRequirement: SignatureRequirement = {
@@ -141,8 +149,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             return String(format: Localization.adultSignatureRequired, amount)
         }()
 
-        self.init(id: rate.rateID,
-                  selected: selected,
+        self.init(selected: selected,
                   signatureRequirement: signatureRequirement,
                   carrierLogo: WooShippingCarrier(rawValue: rate.carrierID)?.logo,
                   title: rate.title,
@@ -153,7 +160,13 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
                   insuranceLabel: insuranceLabel,
                   hasFreePickup: rate.isPickupFree,
                   signatureRequiredLabel: signatureRequiredLabel,
-                  adultSignatureRequiredLabel: adultSignatureRequiredLabel)
+                  adultSignatureRequiredLabel: adultSignatureRequiredLabel,
+                  completion: completion)
+    }
+
+    /// Calls the completion callback with the rate title and signature requirement.
+    func selectRate() {
+        onCompletion?(title, signatureRequirement)
     }
 
     /// Sets `signatureRequirement` when a signature option is tapped.
@@ -163,6 +176,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         } else {
             self.signatureRequirement = signatureRequirement
         }
+        selectRate()
     }
 }
 

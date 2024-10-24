@@ -10,7 +10,7 @@
 - [Internal] Update Stripe Terminal SDK to 3.9.1 [https://github.com/woocommerce/woocommerce-ios/pull/14198]
 - [internal] Optimized storage usage in ProductAttributeStore and ProductAttributeTermStore [https://github.com/woocommerce/woocommerce-ios/pull/14145]
 - [internal] Additions to TopTabView for customization options [https://github.com/woocommerce/woocommerce-ios/pull/14192]
-
+- [*] Payments: Tap to Pay now requires iOS 16.7 as a minimum [https://github.com/woocommerce/woocommerce-ios/pull/14205]
 
 20.8
 -----

@@ -93,23 +93,11 @@ struct CustomFieldsListView: View {
             }
         }
         .listStyle(.plain)
-        .sheet(item: $viewModel.selectedCustomField, content: { customField in
-            NavigationView {
-                CustomFieldEditorView(key: customField.key,
-                                      value: customField.value,
-                                      onSave: { updatedKey, updatedValue in
-                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: customField.fieldId)
-                })
-            }
-        })
+        .sheet(item: $viewModel.selectedCustomField) { customField in
+            buildCustomFieldEditorView(customField: customField)
+        }
         .sheet(isPresented: $viewModel.isAddingNewField) {
-            NavigationView {
-                CustomFieldEditorView(key: "",
-                                      value: "",
-                                      onSave: { updatedKey, updatedValue in
-                    viewModel.saveField(key: updatedKey, value: updatedValue, fieldId: nil)
-                })
-            }
+            buildCustomFieldEditorView(customField: nil)
         }
     }
 }
@@ -170,6 +158,28 @@ private struct CustomFieldRow: View {
     }
 }
 
+// MARK: - Helpers
+//
+private extension CustomFieldsListView {
+    /// Builds the Custom Field Editor View.
+    /// - When `customField` is provided, it configures the editor for editing an existing field
+    /// - When `customField` is nil, it configures the editor for creating a new field
+    func buildCustomFieldEditorView(customField: CustomFieldsListViewModel.CustomFieldUI?) -> some View {
+        NavigationView {
+            CustomFieldEditorView(
+                key: customField?.key ?? "",
+                value: customField?.value ?? "",
+                onSave: { updatedKey, updatedValue in
+                    viewModel.saveField(
+                        key: updatedKey,
+                        value: updatedValue,
+                        fieldId: customField?.fieldId
+                    )
+                }
+            )
+        }
+    }
+}
 
 // MARK: - Constants
 //

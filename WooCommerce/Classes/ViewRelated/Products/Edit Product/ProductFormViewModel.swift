@@ -230,6 +230,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let featureFlagService: FeatureFlagService
 
+    private lazy var entityListener: EntityListener<Product> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: originalProduct.product)
+    }()
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -262,6 +266,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         updateVariationsPriceState()
         configureResultsController()
         updateBlazeEligibility()
+        configureEntityListener()
     }
 
     deinit {
@@ -770,6 +775,18 @@ private extension ProductFormViewModel {
     ///
     private func isNewTemplateProduct() -> Bool {
         originalProduct.productID == .zero && !originalProduct.isEmpty()
+    }
+
+    /// Listen to storage changes and update the product when needed
+    /// Only needed for updates that are saved remotely on other screens
+    ///
+    private func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] product in
+            guard let self = self else { return }
+            // Custom fields are updated on a different screen, update the product to reflect the last changes
+            resetProduct(EditableProductModel(product: originalProduct.product.copy(customFields: product.customFields)))
+            self.product = EditableProductModel(product: product.copy(customFields: product.customFields))
+        }
     }
 }
 

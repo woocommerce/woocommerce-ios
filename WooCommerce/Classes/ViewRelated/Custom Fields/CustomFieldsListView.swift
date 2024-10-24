@@ -187,7 +187,7 @@ private extension CustomFieldsListHostingController {
 
         static let accessibilityHintAddCustomField = NSLocalizedString(
             "customFieldsListHostingController.accessibilityHintAddCustomField",
-            value: "Add a new Custom FIeld to the list",
+            value: "Add a new custom field to the list",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to add custom field.")
 
         static let save = NSLocalizedString(

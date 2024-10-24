@@ -208,6 +208,16 @@ extension CustomFieldsListViewModel {
             self.value = customField.content
             self.fieldId = customField.id
         }
+
+        func asDictionary() -> [String: Any] {
+            var json: [String: Any] = [:]
+                if let fieldId = fieldId {
+                    json["id"] = fieldId
+                }
+                json["key"] = key
+                json["value"] = value
+            return json
+        }
     }
 
     struct PendingCustomFieldsChanges {
@@ -236,18 +246,8 @@ extension CustomFieldsListViewModel {
         }
 
         func asDictionary() -> [[String: Any?]] {
-            func metaDataAsDictionary(_ field: CustomFieldUI) -> [String: Any] {
-                var json: [String: Any] = [:]
-                if let fieldId = field.fieldId {
-                    json["id"] = fieldId
-                }
-                json["key"] = field.key
-                json["value"] = field.value
-                return json
-            }
-
-            return editedFields.map { metaDataAsDictionary($0) } +
-                addedFields.map { metaDataAsDictionary($0) } +
+            return editedFields.map { $0.asDictionary() } +
+                addedFields.map { $0.asDictionary() } +
                 deletedFieldIds.map { ["id": $0, "value": nil] }
         }
     }

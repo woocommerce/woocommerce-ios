@@ -305,6 +305,13 @@ public extension StorageType {
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
 
+    /// Retrieves all Stored Product Attribute Term by siteID and attributeID.
+    ///
+    func loadProductAttributeTerms(siteID: Int64, attributeID: Int64) -> [ProductAttributeTerm] {
+        let predicate = \ProductAttributeTerm.siteID == siteID && \ProductAttributeTerm.attribute?.attributeID == attributeID
+        return allObjects(ofType: ProductAttributeTerm.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored Product Attribute Term by, attribute and term ID.
     ///
     func loadProductAttributeTerm(siteID: Int64, termID: Int64, attributeID: Int64) -> ProductAttributeTerm? {

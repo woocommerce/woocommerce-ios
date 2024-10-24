@@ -1,25 +1,12 @@
 import SwiftUI
 
+/// Card to display the rate details for a shipping service with the Woo Shipping extension.
 struct WooShippingServiceCardView: View {
-    let carrierLogo: UIImage?
-    let title: String
-    let rate: String
-    let daysToDelivery: String
-    let extraInfo: String
-
-    let trackingLabel: String?
-    let insuranceLabel: String?
-    let freePickupLabel: String?
-    let signatureRequiredLabel: String?
-    let adultSignatureRequiredLabel: String?
-
-    @State var isSelected: Bool = false
-
-    @State private var signatureSelection: SignatureSelection = .none
+    @ObservedObject var viewModel: WooShippingServiceCardViewModel
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 16) {
-            if let carrierLogo {
+        HStack(alignment: .top, spacing: 16) {
+            if let carrierLogo = viewModel.carrierLogo {
                 Image(uiImage: carrierLogo)
                     .resizable()
                     .scaledToFit()
@@ -27,63 +14,57 @@ struct WooShippingServiceCardView: View {
             }
             VStack(alignment: .leading) {
                 AdaptiveStack(horizontalAlignment: .leading) {
-                    Text(title)
+                    Text(viewModel.title)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(rate)
+                    Text(viewModel.rateLabel)
                         .bold()
                 }
-                if isSelected {
+                if viewModel.selected {
                     VStack(alignment: .leading) {
-                        Text(daysToDelivery)
-                            .bold()
-                            .font(.footnote)
+                        if let daysToDelivery = viewModel.daysToDeliveryLabel {
+                            Text(daysToDelivery)
+                                .bold()
+                                .font(.footnote)
+                        }
                         Group {
                             VStack(alignment: .leading, spacing: 0) {
-                                if let trackingLabel {
+                                if let tracking = viewModel.trackingLabel {
                                     HStack {
                                         checkmark
-                                        Text(trackingLabel)
+                                        Text(tracking)
                                     }
                                 }
-                                if let insuranceLabel {
+                                if let insurance = viewModel.insuranceLabel {
                                     HStack {
                                         checkmark
-                                        Text(insuranceLabel)
+                                        Text(insurance)
                                     }
                                 }
-                                if let freePickupLabel {
+                                if let freePickup = viewModel.freePickupLabel {
                                     HStack {
                                         checkmark
-                                        Text(freePickupLabel)
+                                        Text(freePickup)
                                     }
                                 }
                             }
-                            if let signatureRequiredLabel {
+                            if let signatureRequired = viewModel.signatureRequiredLabel {
                                 HStack {
-                                    selectionCircle(selected: signatureSelection == .signatureRequired)
-                                    Text(signatureRequiredLabel)
+                                    selectionCircle(selected: viewModel.signatureRequirement == .signatureRequired)
+                                    Text(signatureRequired)
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    if signatureSelection == .signatureRequired {
-                                        signatureSelection = .none
-                                    } else {
-                                        signatureSelection = .signatureRequired
-                                    }
+                                    viewModel.handleTap(on: .signatureRequired)
                                 }
                             }
-                            if let adultSignatureRequiredLabel {
+                            if let adultSignatureRequired = viewModel.adultSignatureRequiredLabel {
                                 HStack {
-                                    selectionCircle(selected: signatureSelection == .adultSignatureRequired)
-                                    Text(adultSignatureRequiredLabel)
+                                    selectionCircle(selected: viewModel.signatureRequirement == .adultSignatureRequired)
+                                    Text(adultSignatureRequired)
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    if signatureSelection == .adultSignatureRequired {
-                                        signatureSelection = .none
-                                    } else {
-                                        signatureSelection = .adultSignatureRequired
-                                    }
+                                    viewModel.handleTap(on: .adultSignatureRequired)
                                 }
                             }
                         }
@@ -91,17 +72,26 @@ struct WooShippingServiceCardView: View {
                     }
                 } else {
                     Group {
-                        Text(daysToDelivery).bold() + Text("  •  ") + Text(extraInfo)
+                        if let daysToDelivery = viewModel.daysToDeliveryLabel,
+                           let extraInfo = viewModel.extraInfoLabel {
+                            Text(daysToDelivery).bold() + Text("  •  ") + Text(extraInfo)
+                        } else if let daysToDelivery = viewModel.daysToDeliveryLabel {
+                            Text(daysToDelivery).bold()
+                        } else if let extraInfo = viewModel.extraInfoLabel {
+                            Text(extraInfo)
+                        }
                     }
                     .font(.footnote)
                 }
             }
         }
         .padding(16)
-        .if(isSelected) { card in
+        .if(viewModel.selected) { card in
             card.background { Color(.wooCommercePurple(.shade0)) }
         }
-        .roundedBorder(cornerRadius: 8, lineColor: isSelected ? Color(.primary) : Color(.separator), lineWidth: isSelected ? 2 : 1)
+        .roundedBorder(cornerRadius: 8,
+                       lineColor: viewModel.selected ? Color(.primary) : Color(.separator),
+                       lineWidth: viewModel.selected ? 2 : 1)
     }
 
     @ViewBuilder
@@ -122,37 +112,32 @@ struct WooShippingServiceCardView: View {
             Image(uiImage: .checkEmptyCircleImage)
         }
     }
-
-    private enum SignatureSelection {
-        case none
-        case signatureRequired
-        case adultSignatureRequired
-    }
 }
 
 #Preview {
-    WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
-                               title: "USPS - Media Mail",
-                               rate: "$7.63",
-                               daysToDelivery: "7 business days",
-                               extraInfo: "Includes tracking, insurance (up to $100.00), free pickup",
-                               trackingLabel: nil,
-                               insuranceLabel: nil,
-                               freePickupLabel: nil,
-                               signatureRequiredLabel: nil,
-                               adultSignatureRequiredLabel: nil)
+    WooShippingServiceCardView(viewModel: WooShippingServiceCardViewModel(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
+                                                                          title: "USPS - Media Mail",
+                                                                          rateLabel: "$7.63",
+                                                                          daysToDeliveryLabel: "7 business days",
+                                                                          extraInfoLabel: "Includes tracking, insurance (up to $100.00), free pickup",
+                                                                          hasTracking: true,
+                                                                          insuranceLabel: nil,
+                                                                          hasFreePickup: true,
+                                                                          signatureRequiredLabel: nil,
+                                                                          adultSignatureRequiredLabel: nil))
 }
 
 #Preview {
-    WooShippingServiceCardView(carrierLogo: UIImage(named: "shipping-label-usps-logo"),
-                               title: "USPS - Media Mail",
-                               rate: "$7.63",
-                               daysToDelivery: "7 business days",
-                               extraInfo: "Includes tracking, insurance (up to $100.00), free pickup",
-                               trackingLabel: "Tracking",
-                               insuranceLabel: "Insurance (up to $100.00)",
-                               freePickupLabel: "Free pickup",
-                               signatureRequiredLabel: "Signature Required (+$3.70)",
-                               adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)",
-                               isSelected: true)
+    WooShippingServiceCardView(viewModel: WooShippingServiceCardViewModel(selected: true,
+                                                                          signatureRequirement: .signatureRequired,
+                                                                          carrierLogo: UIImage(named: "shipping-label-usps-logo"),
+                                                                          title: "USPS - Media Mail",
+                                                                          rateLabel: "$7.63",
+                                                                          daysToDeliveryLabel: "7 business days",
+                                                                          extraInfoLabel: "Includes tracking, insurance (up to $100.00), free pickup",
+                                                                          hasTracking: true,
+                                                                          insuranceLabel: "Insurance (up to $100.00)",
+                                                                          hasFreePickup: true,
+                                                                          signatureRequiredLabel: "Signature Required (+$3.70)",
+                                                                          adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)"))
 }

@@ -2,13 +2,16 @@ import SwiftUI
 
 struct TopTabItem<Content: View> {
     let name: String
+    let icon: UIImage?
     let content: () -> Content
     let onSelected: (() -> Void)?
 
     init(name: String,
+         icon: UIImage? = nil,
          @ViewBuilder content: @escaping () -> Content,
          onSelected: (() -> Void)? = nil) {
         self.name = name
+        self.icon = icon
         self.content = content
         self.onSelected = onSelected
     }
@@ -25,11 +28,76 @@ struct TopTabView<Content: View>: View {
 
     let tabs: [TopTabItem<Content>]
 
+    // // Tabs container customization
+    // Specifies horizontal padding for the entire container of tabs.
+    // - Default value is 0
+    let tabsContainerHorizontalPadding: CGFloat?
+    // Color used for tab name and underline selection indicator when selected
+    let selectedStateColor: Color
+    // Color used for tab name when not selected
+    let unselectedStateColor: Color
+    // Specifies the height of the selected tab indicator
+    // - Default value is Layout.selectedTabIndicatorHeight
+    let selectedTabIndicatorHeight: CGFloat
+    // Padding between tab items
+    let tabPadding: CGFloat
+
+    // // Individual tab item customization
+    let tabsNameFont: Font
+    // Specifies the height and width of the icon
+    // - Applied with the conditional modifier
+    let tabsIconSize: CGFloat?
+    let tabItemContentHorizontalPadding: CGFloat?
+    let tabItemContentVerticalPadding: CGFloat?
+
     init(tabs: [TopTabItem<Content>],
-         showTabs: Binding<Bool> = .constant(true)) {
+         showTabs: Binding<Bool> = .constant(true),
+         tabsContainerHorizontalPadding: CGFloat? = 0.0,
+         selectedStateColor: Color = Colors.selected,
+         unselectedStateColor: Color = .primary,
+         selectedTabIndicatorHeight: CGFloat = Layout.selectedTabIndicatorHeight,
+         tabPadding: CGFloat = Layout.tabPadding,
+         tabsNameFont: Font = .headline,
+         tabsIconSize: CGFloat? = 20.0,
+         tabItemContentHorizontalPadding: CGFloat? = nil,
+         tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
         self._showTabs = showTabs
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
+        self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
+        self.selectedStateColor = selectedStateColor
+        self.unselectedStateColor = unselectedStateColor
+        self.selectedTabIndicatorHeight = selectedTabIndicatorHeight
+        self.tabPadding = tabPadding
+        self.tabsNameFont = tabsNameFont
+        self.tabsIconSize = tabsIconSize
+        self.tabItemContentHorizontalPadding = tabItemContentHorizontalPadding
+        self.tabItemContentVerticalPadding = tabItemContentVerticalPadding
+    }
+
+    private func tabItemContentView(_ index: Int, selected: Bool) -> some View {
+        HStack {
+            if let icon = tabs[index].icon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .if(tabsIconSize != nil) {
+                        $0.frame(width: tabsIconSize, height: tabsIconSize)
+                    }
+            }
+            Text(tabs[index].name)
+                .font(tabsNameFont)
+                .foregroundColor(selected ? selectedStateColor : unselectedStateColor)
+                .id(index)
+                .onTapGesture {
+                    withAnimation {
+                        selectedTab = index
+                        tabs[selectedTab].onSelected?()
+                    }
+                }
+        }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAddTraits(selected ? [.isSelected, .isHeader] : [])
     }
 
     var body: some View {
@@ -37,53 +105,44 @@ struct TopTabView<Content: View>: View {
             if tabs.count > 1 && showTabs {
                 ScrollView(.horizontal, showsIndicators: false) {
                     ScrollViewReader { scrollViewProxy in
-                        HStack(spacing: Layout.tabPadding * 2) {
-                            ForEach(0..<tabs.count, id: \.self) { index in
-                                VStack {
-                                    Text(tabs[index].name)
-                                        .font(.headline)
-                                        .foregroundColor(selectedTab == index ? Colors.selected : .primary)
-                                        .id(index)
-                                        .onTapGesture {
-                                            withAnimation {
-                                                selectedTab = index
-                                                tabs[selectedTab].onSelected?()
-                                            }
-                                        }
-                                        .onChange(of: selectedTab, perform: { newSelectedTab in
-                                            withAnimation {
-                                                scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
-                                                underlineOffset = calculateOffset(index: newSelectedTab)
+                        HStack {
+                            HStack(spacing: tabPadding * 2) {
+                                ForEach(0..<tabs.count, id: \.self) { index in
+                                    tabItemContentView(index, selected: selectedTab == index)
+                                        .padding(.vertical, tabItemContentVerticalPadding)
+                                        .padding(.horizontal, tabItemContentHorizontalPadding)
+                                        .background(GeometryReader { geometry in
+                                            Color.clear.onAppear {
+                                                if index < tabWidths.count {
+                                                    tabWidths[index] = geometry.size.width
+                                                }
                                             }
                                         })
-                                        .accessibilityAddTraits(.isButton)
-                                        .accessibilityAddTraits(selectedTab == index ? [.isSelected, .isHeader] : [])
                                 }
-                                .padding()
-                                .background(GeometryReader { geometry in
-                                    Color.clear.onAppear {
-                                        if index < tabWidths.count {
-                                            tabWidths[index] = geometry.size.width
-                                        }
+                                .onAppear {
+                                    withAnimation {
+                                        scrollViewProxy.scrollTo(selectedTab, anchor: .center)
+                                        underlineOffset = calculateOffset(index: selectedTab)
                                     }
-                                })
-                            }
-                            .onAppear {
-                                withAnimation {
-                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
-                                    underlineOffset = calculateOffset(index: selectedTab)
                                 }
                             }
+                            .padding(.horizontal, tabPadding)
+                            .overlay(
+                                Rectangle()
+                                    .frame(width: selectedTabUnderlineWidth(),
+                                           height: selectedTabIndicatorHeight)
+                                    .foregroundColor(selectedStateColor)
+                                    .offset(x: underlineOffset),
+                                alignment: .bottomLeading
+                            )
+                            .onChange(of: selectedTab, perform: { newSelectedTab in
+                                withAnimation {
+                                    scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
+                                    underlineOffset = calculateOffset(index: newSelectedTab)
+                                }
+                            })
                         }
-                        .padding(.horizontal, Layout.tabPadding)
-                        .overlay(
-                            Rectangle()
-                                .frame(width: selectedTabUnderlineWidth(),
-                                       height: Layout.selectedTabIndicatorHeight)
-                                .foregroundColor(Colors.selected)
-                                .offset(x: underlineOffset),
-                            alignment: .bottomLeading
-                        )
+                        .padding(.horizontal, tabsContainerHorizontalPadding)
                     }
                 }
                 Divider()
@@ -163,12 +222,12 @@ struct TopTabView<Content: View>: View {
             DDLogError("Out of bounds tab selected at index \(selectedTab)")
             return 0
         }
-        return selectedTabWidth + (Layout.tabPadding * 2)
+        return selectedTabWidth + (tabPadding * 2)
     }
 
     private func calculateOffset(index: Int) -> CGFloat {
         // Takes all preceeding tab widths, and adds appropriate spacing to each side to get the overall offset
-        return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (Layout.tabPadding * 2)
+        return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (tabPadding * 2)
     }
 
     private func dragOffset(width: CGFloat) -> CGFloat {
@@ -221,7 +280,7 @@ struct ContentView_Previews: PreviewProvider {
                     .font(.largeTitle)
                     .padding()
             }),
-            TopTabItem(name: "A tab name", content: {
+            TopTabItem(name: "Tab with icon", content: {
                 Text("Content for Tab 2")
                     .font(.largeTitle)
                     .padding()
@@ -244,6 +303,62 @@ struct ContentView_Previews: PreviewProvider {
         ]
         TopTabView(tabs: tabs)
             .previewLayout(.sizeThatFits)
+            .previewDisplayName("Default Light Style")
+            .preferredColorScheme(.light)
+        TopTabView(tabs: tabs)
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Default Dark Style")
+            .preferredColorScheme(.dark)
+
+        let carrierTabs: [TopTabItem] = [
+            TopTabItem(name: "USPS", icon: UIImage(named: "shipping-label-usps-logo"), content: {
+                Text("Content for Tab 1")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "DHL Express", icon: UIImage(named: "shipping-label-dhl-logo"), content: {
+                Text("Content for Tab 2")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "USPS", icon: UIImage(named: "shipping-label-usps-logo"), content: {
+                Text("Content for Tab 3")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "DHL Express", icon: UIImage(named: "shipping-label-dhl-logo"), content: {
+                Text("Content for Tab 4")
+                    .font(.largeTitle)
+                    .padding()
+            }),
+            TopTabItem(name: "USPS", icon: UIImage(named: "shipping-label-usps-logo"), content: {
+                Text("Content for Tab 5")
+                    .font(.largeTitle)
+                    .padding()
+            })
+        ]
+        TopTabView(tabs: carrierTabs,
+                   tabsContainerHorizontalPadding: nil,
+                   unselectedStateColor: .secondary,
+                   selectedTabIndicatorHeight: 3.0,
+                   tabPadding: 0,
+                   tabsNameFont: Font.subheadline.bold(),
+                   tabItemContentHorizontalPadding: 16.0,
+                   tabItemContentVerticalPadding: 9.0)
+            .previewLayout(.sizeThatFits)
+            .preferredColorScheme(.light)
+            .previewDisplayName("Carrier Packages Light Style")
+        TopTabView(tabs: carrierTabs,
+                   tabsContainerHorizontalPadding: nil,
+                   unselectedStateColor: .secondary,
+                   selectedTabIndicatorHeight: 3.0,
+                   tabPadding: 0,
+                   tabsNameFont: Font.subheadline.bold(),
+                   tabItemContentHorizontalPadding: 16.0,
+                   tabItemContentVerticalPadding: 9.0)
+            .previewLayout(.sizeThatFits)
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Carrier Packages Dark Style")
 
         let oneTab: [TopTabItem] = [
             TopTabItem(name: "A tab name", content: {
@@ -254,5 +369,6 @@ struct ContentView_Previews: PreviewProvider {
         ]
         TopTabView(tabs: oneTab)
             .previewLayout(.sizeThatFits)
+            .previewDisplayName("One Tab")
     }
 }

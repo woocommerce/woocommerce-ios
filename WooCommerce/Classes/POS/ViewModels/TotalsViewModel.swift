@@ -324,12 +324,7 @@ private extension TotalsViewModel {
                 guard case let .showOnboarding(viewModel, onCancel) = event else {
                     return nil
                 }
-
                 onOnboardingCancellation = onCancel
-
-                viewModel.showURL = { [weak self] url in
-                    self?.cardPresentPaymentOnboardingURL = url
-                }
                 return viewModel
             }
             .assign(to: &$cardPresentPaymentOnboardingViewModel)

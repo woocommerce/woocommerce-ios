@@ -159,7 +159,13 @@ private extension DefaultBlazeLocalNotificationScheduler {
             self?.scheduleNoCampaignReminderIfNeeded()
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.scheduleNoCampaignReminderIfNeeded()
+            /// Upon logging out, `CoreDataManager` resets the storage and triggers the reset notification
+            /// causing refetching data. Checking the authentication state helps avoiding reloading data
+            /// in the unauthenticated state.
+            guard let self, stores.isAuthenticated else {
+                return
+            }
+            scheduleNoCampaignReminderIfNeeded()
         }
 
         do {

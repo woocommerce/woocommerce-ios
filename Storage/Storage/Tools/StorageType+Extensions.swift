@@ -766,6 +766,13 @@ public extension StorageType {
         return firstObject(ofType: MetaData.self, matching: predicate)
     }
 
+    /// Retrieves all stored MetaData of a given Order
+    /// 
+    func loadOrderMetaData(siteID: Int64, orderID: Int64) -> [MetaData] {
+        let predicate = \MetaData.order?.siteID == siteID && \MetaData.order?.orderID == orderID
+        return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored Metadata for a Product.
     ///
     func loadProductMetaData(siteID: Int64, productID: Int64, metadataID: Int64) -> MetaData? {
@@ -773,4 +780,10 @@ public extension StorageType {
         return firstObject(ofType: MetaData.self, matching: predicate)
     }
 
+    /// Retrieves all stored MetaData of a given Product
+    /// 
+    func loadProductMetaData(siteID: Int64, productID: Int64) -> [MetaData] {
+        let predicate = \MetaData.product?.siteID == siteID && \MetaData.product?.productID == productID
+        return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)
+    }
 }

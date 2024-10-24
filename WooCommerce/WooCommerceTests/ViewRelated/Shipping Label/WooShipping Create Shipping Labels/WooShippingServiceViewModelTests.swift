@@ -3,6 +3,14 @@ import XCTest
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 
+    func test_init_sets_expected_values() {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+    }
+
     func test_generateServiceTabs_returns_expected_data() throws {
         // Given
         let viewModel = WooShippingServiceViewModel()
@@ -53,6 +61,21 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(rate3.extraInfoLabel, "Includes tracking, insurance (up to $100.00), free pickup")
         XCTAssertNil(rate3.signatureRequiredLabel)
         XCTAssertNil(rate3.adultSignatureRequiredLabel)
+    }
+
+    func test_selecting_service_card_rate_updates_expected_values() throws {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+        let card = try XCTUnwrap(viewModel.serviceTabs.first?.cards.first)
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertFalse(card.selected)
+
+        // When
+        card.selectRate()
+
+        // Then
+        XCTAssertEqual(viewModel.selectedRate?.title, card.title)
+        XCTAssertEqual(viewModel.serviceTabs.first?.cards.first?.selected, true)
     }
 
 }

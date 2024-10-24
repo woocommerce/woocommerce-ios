@@ -10,6 +10,7 @@
 - [internal] Optimized storage usage in ProductStore [https://github.com/woocommerce/woocommerce-ios/pull/14139]
 - [internal] Optimized storage usage in ProductAttributeStore and ProductAttributeTermStore [https://github.com/woocommerce/woocommerce-ios/pull/14145]
 - [internal] Additions to TopTabView for customization options [https://github.com/woocommerce/woocommerce-ios/pull/14192]
+- [internal] Shipping Labels: Updated design to use responsive DHL logo [https://github.com/woocommerce/woocommerce-ios/pull/14206]
 
 
 20.8

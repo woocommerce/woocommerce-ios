@@ -132,6 +132,7 @@ private extension PointOfSaleDashboardView {
         NavigationStack {
             CardPresentPaymentsOnboardingView(viewModel: viewModel)
                 .navigationBarTitleDisplayMode(.inline)
+                .interactiveDismissDisabled()
                 .toolbar {
                     Button(action: {
                         totalsViewModel.cardPresentPaymentOnboardingViewModel = nil

@@ -117,9 +117,18 @@ private extension MetaDataStore {
                                                siteID: Int64,
                                                onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
+
         derivedStorage.perform {
+            let storedMetaData = derivedStorage.loadOrderMetaData(siteID: siteID, orderID: orderID)
+
             for readOnlyOrderMetaData in readOnlyOrderMetaDatas {
-                self.saveMetaData(derivedStorage, readOnlyOrderMetaData, orderID: orderID, siteID: siteID)
+                self.saveMetaData(derivedStorage, readOnlyOrderMetaData, storedMetaData, orderID: orderID, siteID: siteID)
+            }
+
+            storedMetaData.forEach { storedMetaData in
+                if !readOnlyOrderMetaDatas.contains(where: { $0.metadataID == storedMetaData.metadataID }) {
+                    derivedStorage.deleteObject(storedMetaData)
+                }
             }
         }
 
@@ -136,8 +145,8 @@ private extension MetaDataStore {
     ///   - orderID: ID of the order.
     ///   - siteID: Site id of the order.
     ///
-    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, orderID: Int64, siteID: Int64) {
-        if let existingStorageMetaData = storage.loadOrderMetaData(siteID: siteID, orderID: orderID, metadataID: readOnlyMetaData.metadataID) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], orderID: Int64, siteID: Int64) {
+        if let existingStorageMetaData = storedMetaData.first(where: { $0.metadataID == readOnlyMetaData.metadataID }) {
             existingStorageMetaData.update(with: readOnlyMetaData)
             return
         }
@@ -189,8 +198,16 @@ private extension MetaDataStore {
                                                  onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            let storedMetaData = derivedStorage.loadProductMetaData(siteID: siteID, productID: productID)
+
             for readOnlyProductMetaData in readOnlyProductMetaDatas {
-                self.saveMetaData(derivedStorage, readOnlyProductMetaData, productID: productID, siteID: siteID)
+                self.saveMetaData(derivedStorage, readOnlyProductMetaData, storedMetaData, productID: productID, siteID: siteID)
+            }
+
+            storedMetaData.forEach { storedMetaData in
+                if !readOnlyProductMetaDatas.contains(where: { $0.metadataID == storedMetaData.metadataID }) {
+                    derivedStorage.deleteObject(storedMetaData)
+                }
             }
         }
 
@@ -207,8 +224,8 @@ private extension MetaDataStore {
     ///   - productID: ID of the product.
     ///   - siteID: Site id of the product.
     ///
-    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, productID: Int64, siteID: Int64) {
-        if let existingStorageMetaData = storage.loadProductMetaData(siteID: siteID, productID: productID, metadataID: readOnlyMetaData.metadataID) {
+    func saveMetaData(_ storage: StorageType, _ readOnlyMetaData: MetaData, _ storedMetaData: [Storage.MetaData], productID: Int64, siteID: Int64) {
+        if let existingStorageMetaData = storedMetaData.first(where: { $0.metadataID == readOnlyMetaData.metadataID }) {
             existingStorageMetaData.update(with: readOnlyMetaData)
             return
         }

@@ -86,6 +86,34 @@ final class MetaDataStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    func test_updateOrderMetaData_removes_deleted_items() {
+        // Given
+        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
+                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let order = Yosemite.Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, customFields: metaData)
+        storageManager.insertSampleOrder(readOnlyOrder: order)
+
+        remote.whenUpdatingMetaData(thenReturn: .success([metaData.last!]))
+        let store = MetaDataStore(dispatcher: Dispatcher(),
+                                  storageManager: storageManager,
+                                  network: network,
+                                  remote: remote)
+
+        // When
+        waitFor { promise in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleOrderID,
+                                                         metaDataType: .order,
+                                                         metadata: [["id": 1, "value": nil]],
+                                                         onCompletion: { _ in promise(()) }))
+        }
+
+        // Then
+        let updatedOrder = storageManager.viewStorage.loadOrder(siteID: order.siteID, orderID: order.orderID)?.toReadOnly()
+        XCTAssertEqual(updatedOrder?.customFields.count, 1)
+        XCTAssertEqual(updatedOrder?.customFields.first, metaData.last)
+    }
+
     // MARK: - Update Product MetaData
 
     func test_updateProductMetaData_is_successful_when_updating_successfully() throws {
@@ -137,5 +165,42 @@ final class MetaDataStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+
+    func test_updateProductMetaData_removes_deleted_items() {
+        // Given
+        let metaData = [MetaData.fake().copy(metadataID: 1, key: "key", value: "value"),
+                        MetaData.fake().copy(metadataID: 2, key: "key", value: "value")]
+        let product = Yosemite.Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, customFields: metaData)
+        // Insert product with metadata
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        remote.whenUpdatingMetaData(thenReturn: .success([metaData.last!]))
+        let store = MetaDataStore(dispatcher: Dispatcher(),
+                                  storageManager: storageManager,
+                                  network: network,
+                                  remote: remote)
+
+        // When
+        waitFor { promise in
+            store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
+                                                         parentItemID: self.sampleProductID,
+                                                         metaDataType: .product,
+                                                         metadata: [["id": 1, "value": nil]],
+                                                         onCompletion: { _ in promise(()) }))
+        }
+
+        // Then
+        let updatedProduct = storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)?.toReadOnly()
+        XCTAssertEqual(updatedProduct?.customFields.count, 1)
+        XCTAssertEqual(updatedProduct?.customFields.first?.key, metaData.last!.key)
+    }
+}
+
+private extension MockStorageManager {
+    func insertSampleMetaData(_ metaData: Networking.MetaData) {
+        let storageObj = viewStorage.insertNewObject(ofType: MetaData.self)
+        storageObj.update(with: metaData)
     }
 }

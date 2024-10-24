@@ -17,7 +17,7 @@ PODS:
   - Sentry/Core (8.36.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
-  - StripeTerminal (3.3.1)
+  - StripeTerminal (3.9.1)
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.54.0)
   - UIDeviceIdentifier (2.3.0)
@@ -64,7 +64,7 @@ DEPENDENCIES:
   - Kingfisher (~> 7.6.2)
   - Sentry (~> 8.36.0)
   - Sourcery (~> 1.0.3)
-  - StripeTerminal (~> 3.3.1)
+  - StripeTerminal (~> 3.9.1)
   - SwiftLint (= 0.54.0)
   - WordPress-Editor-iOS (~> 1.19)
   - WordPressAuthenticator (~> 9.10.0)
@@ -121,7 +121,7 @@ SPEC CHECKSUMS:
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
-  StripeTerminal: 369ef0cf0b90d838f42be1a0b371475986f4b79f
+  StripeTerminal: f7f5e176979224ed76edb3724f41138fbb28053c
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: c1de071d9d08c8aba837545f6254315bc900e211
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
@@ -142,6 +142,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 2fbd2a9597af5d69760088bfb5e0e595e942f218
   ZendeskSupportSDK: 22156384d20d30b0aeb263c03f49bef44e1364b2
 
-PODFILE CHECKSUM: 13befb9700509f9984ff13fdd5d92ad6d71346f8
+PODFILE CHECKSUM: a6a6f05f8cb06ff4e707e8ed623df352e7d47ff5
 
 COCOAPODS: 1.15.2

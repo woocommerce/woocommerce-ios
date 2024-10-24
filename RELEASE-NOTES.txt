@@ -8,6 +8,7 @@
 - [*] Product scanner: Fixed a crash when configuring camera swap button in code scanner. [https://github.com/woocommerce/woocommerce-ios/pull/14188]
 - [internal] Replace unnecessary fetch requests for upserting orders and order search results [https://github.com/woocommerce/woocommerce-ios/pull/14128]
 - [internal] Optimized storage usage in ProductStore [https://github.com/woocommerce/woocommerce-ios/pull/14139]
+- [Internal] Update Stripe Terminal SDK to 3.9.1 [https://github.com/woocommerce/woocommerce-ios/pull/14198]
 - [internal] Optimized storage usage in ProductAttributeStore and ProductAttributeTermStore [https://github.com/woocommerce/woocommerce-ios/pull/14145]
 - [internal] Additions to TopTabView for customization options [https://github.com/woocommerce/woocommerce-ios/pull/14192]
 

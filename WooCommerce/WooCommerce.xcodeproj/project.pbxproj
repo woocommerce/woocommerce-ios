@@ -2455,6 +2455,8 @@
 		DA3F99BA2C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F99B92C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift */; };
 		DA40806E2CC29650002A4577 /* WooShippingAddCustomPackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA40806D2CC29650002A4577 /* WooShippingAddCustomPackageViewModelTests.swift */; };
 		DA4080722CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080712CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift */; };
+		DA4080752CC2A7BC002A4577 /* WooCarrierPackagesSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080732CC2A7BC002A4577 /* WooCarrierPackagesSelectionView.swift */; };
+		DA4080762CC2A7BC002A4577 /* WooSavedPackagesSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4080742CC2A7BC002A4577 /* WooSavedPackagesSelectionView.swift */; };
 		DA41043A2C247B6900E8456A /* POSOrderPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */; };
 		DA706BF92C8063B600E08A5B /* PushNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575472802452185300A94C3C /* PushNotification.swift */; };
 		DA706BFA2C80642800E08A5B /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
@@ -5521,6 +5523,8 @@
 		DA3F99B92C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsReadUseCaseTests.swift; sourceTree = "<group>"; };
 		DA40806D2CC29650002A4577 /* WooShippingAddCustomPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddCustomPackageViewModelTests.swift; sourceTree = "<group>"; };
 		DA4080712CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddCustomPackageViewModel.swift; sourceTree = "<group>"; };
+		DA4080732CC2A7BC002A4577 /* WooCarrierPackagesSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCarrierPackagesSelectionView.swift; sourceTree = "<group>"; };
+		DA4080742CC2A7BC002A4577 /* WooSavedPackagesSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSavedPackagesSelectionView.swift; sourceTree = "<group>"; };
 		DA4104392C247B6900E8456A /* POSOrderPreviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderPreviewService.swift; sourceTree = "<group>"; };
 		DAB4099E2CA5A329008EE1F2 /* WooShippingAddPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageView.swift; sourceTree = "<group>"; };
 		DABF35262C11B426006AF826 /* PointOfSaleDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModelTests.swift; sourceTree = "<group>"; };
@@ -11943,6 +11947,8 @@
 				CE2DF92D2CC16C95001AA394 /* WooShippingServiceCardView.swift */,
 				CEE125502CC66C8100D3183D /* WooShippingServiceCardViewModel.swift */,
 				DA4080712CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift */,
+				DA4080732CC2A7BC002A4577 /* WooCarrierPackagesSelectionView.swift */,
+				DA4080742CC2A7BC002A4577 /* WooSavedPackagesSelectionView.swift */,
 			);
 			path = "WooShipping Package and Rate Selection";
 			sourceTree = "<group>";
@@ -14887,6 +14893,8 @@
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				029700EC24FE38C900D242F8 /* ScrollWatcher.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
+				DA4080752CC2A7BC002A4577 /* WooCarrierPackagesSelectionView.swift in Sources */,
+				DA4080762CC2A7BC002A4577 /* WooSavedPackagesSelectionView.swift in Sources */,
 				20BBD62C2B3060A300A903F6 /* AddOrderComponentsSection.swift in Sources */,
 				D8C251D9230D256F00F49782 /* NoticePresenter.swift in Sources */,
 				EEBA02A52ADD606D001FE8E4 /* BlazeCampaignDashboardViewModel.swift in Sources */,

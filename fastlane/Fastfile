@@ -175,28 +175,29 @@ platform :ios do
     ensure_git_status_clean
 
     # Check out the up-to-date default branch, the designated starting point for the code freeze
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
+    # Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
+    Fastlane::Helper::GitHelper.checkout_and_pull('iangmaia/use-trusted-mac-agents-for-releases')
 
-    # Checks if internal dependencies are on a stable version
-    check_pods_references
+    # # Checks if internal dependencies are on a stable version
+    # check_pods_references
 
-    UI.important <<-MESSAGE
+    # UI.important <<-MESSAGE
 
-      Code Freeze:
-      • New release branch from #{DEFAULT_BRANCH}: release/#{release_version_next}
-      • Current release version and build code: #{release_version_current} (#{build_code_current}).
-      • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
+    #   Code Freeze:
+    #   • New release branch from #{DEFAULT_BRANCH}: release/#{release_version_next}
+    #   • Current release version and build code: #{release_version_current} (#{build_code_current}).
+    #   • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
 
-    MESSAGE
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+    # MESSAGE
+    # UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
-    # Create the release branch
-    new_release_branch = "release/#{release_version_next}"
-    ensure_branch_does_not_exist!(new_release_branch)
+    # # Create the release branch
+    # new_release_branch = "release/#{release_version_next}"
+    # ensure_branch_does_not_exist!(new_release_branch)
 
-    UI.message('Creating release branch...')
-    Fastlane::Helper::GitHelper.create_branch(new_release_branch, from: DEFAULT_BRANCH)
-    UI.success("Done! New release branch is: #{git_branch}")
+    # UI.message('Creating release branch...')
+    # Fastlane::Helper::GitHelper.create_branch(new_release_branch, from: DEFAULT_BRANCH)
+    # UI.success("Done! New release branch is: #{git_branch}")
 
     # Bump the release version and build code and write it to the `xcconfig` file
     UI.message('Bumping release version and build code...')
@@ -207,61 +208,61 @@ platform :ios do
     commit_version_bump
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
-    new_version = release_version_current
+    # new_version = release_version_current
 
-    extract_release_notes_for_version(
-      version: new_version,
-      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH,
-      extracted_notes_file_path: RELEASE_NOTES_PATH
-    )
-    ios_update_release_notes(
-      new_version: new_version,
-      release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
-    )
+    # extract_release_notes_for_version(
+    #   version: new_version,
+    #   release_notes_file_path: RELEASE_NOTES_SOURCE_PATH,
+    #   extracted_notes_file_path: RELEASE_NOTES_PATH
+    # )
+    # ios_update_release_notes(
+    #   new_version: new_version,
+    #   release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
+    # )
 
-    UI.important('Pushing changes to remote and configuring the release on GitHub')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
+    # UI.important('Pushing changes to remote and configuring the release on GitHub')
+    # UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
 
     push_to_git_remote(tags: false)
 
-    # Protect release/* branch
-    copy_branch_protection(
-      repository: GITHUB_REPO,
-      from_branch: DEFAULT_BRANCH,
-      to_branch: "release/#{new_version}"
-    )
+    # # Protect release/* branch
+    # copy_branch_protection(
+    #   repository: GITHUB_REPO,
+    #   from_branch: DEFAULT_BRANCH,
+    #   to_branch: "release/#{new_version}"
+    # )
 
-    begin
-      # Move PRs to next milestone
-      moved_prs = update_assigned_milestone(
-        repository: GITHUB_REPO,
-        from_milestone: new_version,
-        to_milestone: release_version_next,
-        comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
-      )
+    # begin
+    #   # Move PRs to next milestone
+    #   moved_prs = update_assigned_milestone(
+    #     repository: GITHUB_REPO,
+    #     from_milestone: new_version,
+    #     to_milestone: release_version_next,
+    #     comment: "Version `#{new_version}` has now entered code-freeze, so the milestone of this PR has been updated to `#{release_version_next}`."
+    #   )
 
-      # Add ❄️ marker to milestone title to indicate we entered code-freeze
-      set_milestone_frozen_marker(
-        repository: GITHUB_REPO,
-        milestone: new_version
-      )
-    rescue StandardError => e
-      moved_prs = []
+    #   # Add ❄️ marker to milestone title to indicate we entered code-freeze
+    #   set_milestone_frozen_marker(
+    #     repository: GITHUB_REPO,
+    #     milestone: new_version
+    #   )
+    # rescue StandardError => e
+    #   moved_prs = []
 
-      report_milestone_error(error_title: "Error freezing milestone `#{new_version}`: #{e.message}")
-    end
+    #   report_milestone_error(error_title: "Error freezing milestone `#{new_version}`: #{e.message}")
+    # end
 
-    UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
+    # UI.message("Moved the following PRs to milestone #{release_version_next}: #{moved_prs.join(', ')}")
 
-    # Annotate the build with the moved PRs
-    moved_prs_info = if moved_prs.empty?
-                       "👍 No open PR were targeting `#{new_version}` at the time of code-freeze"
-                     else
-                       "#{moved_prs.count} PRs targeting `#{new_version}` were still open and thus moved to `#{release_version_next}`:\n" \
-                         + moved_prs.map { |pr_num| "[##{pr_num}](https://github.com/#{GITHUB_REPO}/pull/#{pr_num})" }.join(', ')
-                     end
+    # # Annotate the build with the moved PRs
+    # moved_prs_info = if moved_prs.empty?
+    #                    "👍 No open PR were targeting `#{new_version}` at the time of code-freeze"
+    #                  else
+    #                    "#{moved_prs.count} PRs targeting `#{new_version}` were still open and thus moved to `#{release_version_next}`:\n" \
+    #                      + moved_prs.map { |pr_num| "[##{pr_num}](https://github.com/#{GITHUB_REPO}/pull/#{pr_num})" }.join(', ')
+    #                  end
 
-    buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze', message: moved_prs_info) if is_ci
+    # buildkite_annotate(style: moved_prs.empty? ? 'success' : 'warning', context: 'start-code-freeze', message: moved_prs_info) if is_ci
   end
 
   #####################################################################################

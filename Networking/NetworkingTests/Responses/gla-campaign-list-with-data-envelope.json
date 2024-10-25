@@ -18,9 +18,7 @@
             "type": "performance_max",
             "amount": 30,
             "country": nil,
-            "targeted_locations": [
-                "US"
-            ]
+            "targeted_locations": []
         }
     ]
 }

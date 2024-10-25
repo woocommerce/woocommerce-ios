@@ -16,9 +16,7 @@
         "status": "disabled",
         "type": "performance_max",
         "amount": 30,
-        "country": "US",
-        "targeted_locations": [
-            "US"
-        ]
+        "country": nil,
+        "targeted_locations": []
     }
 ]

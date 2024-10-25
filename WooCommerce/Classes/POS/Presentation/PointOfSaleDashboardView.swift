@@ -58,6 +58,9 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration), value: viewModel.showsConnectivityError)
         .background(Color.posPrimaryBackground)
         .navigationBarBackButtonHidden(true)
+        .sheet(item: $totalsViewModel.cardPresentPaymentOnboardingViewModel) { viewModel in
+            paymentsOnboardingView(from: viewModel)
+        }
         .posModal(item: $totalsViewModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
             totalsViewModel.cardPresentPaymentAlertViewModel?.onDismiss?()
@@ -124,6 +127,24 @@ private extension PointOfSaleDashboardView {
         }
         .navigationViewStyle(.stack)
     }
+
+    func paymentsOnboardingView(from viewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
+        NavigationStack {
+            CardPresentPaymentsOnboardingView(viewModel: viewModel)
+                .navigationBarTitleDisplayMode(.inline)
+                .interactiveDismissDisabled()
+                .toolbar {
+                    Button(action: {
+                        totalsViewModel.cardPresentPaymentOnboardingViewModel = nil
+                    }) {
+                        Text(Localization.cancelOnboarding)
+                    }
+                }
+                .onDisappear {
+                    totalsViewModel.cancelOnboarding()
+                }
+        }
+    }
 }
 
 struct FloatingControlAreaSizeKey: EnvironmentKey {
@@ -154,6 +175,11 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.support.done",
             value: "Done",
             comment: "Button to dismiss the support form from the POS dashboard."
+        )
+        static let cancelOnboarding = NSLocalizedString(
+            "pointOfSaleDashboard.payments.onboarding.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the payments onboarding sheet from the POS dashboard."
         )
     }
 }

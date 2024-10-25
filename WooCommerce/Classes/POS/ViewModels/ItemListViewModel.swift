@@ -10,7 +10,7 @@ final class ItemListViewModel: ItemListViewModelProtocol {
     @Published private(set) var isHeaderBannerDismissed: Bool = false
     @Published var showSimpleProductsModal: Bool = false
 
-    @Published private(set) var currentPage: Int = Constants.initialPage
+    @Published private var currentPage: Int = Constants.initialPage
 
     var shouldShowHeaderBanner: Bool {
         // The banner it's shown as long as it hasn't already been dismissed once:
@@ -54,8 +54,8 @@ final class ItemListViewModel: ItemListViewModelProtocol {
 
     @MainActor
     func loadNextItems() async {
-        // TODO:
-        // Optimize API calls. gh-14186
+        // TODO: Optimize API calls. gh-14186
+        // If there are no more pages to fetch, we can avoid the next call.
         let nextPage = currentPage + 1
         await fetchPage(pageNumber: nextPage)
     }
@@ -68,11 +68,11 @@ final class ItemListViewModel: ItemListViewModelProtocol {
             let uniqueNewItems = newItems.filter { newItem in
                 !items.contains(where: { $0.productID == newItem.productID })
             }
-            items.append(contentsOf: uniqueNewItems)
-
-            if items.count == 0 {
-                state = .empty
+            // If there are no new items, we just return what was already in memory
+            if (currentPage == pageNumber) && uniqueNewItems.count == 0 {
+                state = .loaded(items)
             } else {
+                items.append(contentsOf: uniqueNewItems)
                 state = .loaded(items)
                 currentPage = pageNumber
             }

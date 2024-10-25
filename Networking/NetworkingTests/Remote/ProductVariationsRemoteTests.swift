@@ -444,7 +444,7 @@ private extension ProductVariationsRemoteTests {
                                 status: .published,
                                 description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
                                 sku: "87%-strawberry-marble",
-								globalUniqueID: "12345",
+                                globalUniqueID: "12345",
                                 price: "14.99",
                                 regularPrice: "14.99",
                                 salePrice: "",

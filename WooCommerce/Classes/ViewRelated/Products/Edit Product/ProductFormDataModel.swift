@@ -47,6 +47,7 @@ protocol ProductFormDataModel {
 
     // Inventory
     var sku: String? { get }
+	var globalUniqueID: String? { get }
     var manageStock: Bool { get }
     var stockStatus: ProductStockStatus { get }
     var stockQuantity: Decimal? { get }

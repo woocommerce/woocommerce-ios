@@ -19,6 +19,9 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Available shipping rates with adult signature required.
     private let adultSignatureRates: [ShippingLabelCarrierRate]
 
+    /// Sort order for shipping services.
+    @Published var sortOrder: SortOrder = .price
+
     init() {
         // TODO: Replace with real data from remote
         standardRates = [ShippingLabelCarrierRate(title: "USPS - Media Mail",
@@ -130,10 +133,38 @@ final class WooShippingServiceViewModel: ObservableObject {
             }
             .sorted(by: { $0.id < $1.id })
     }
+}
 
+extension WooShippingServiceViewModel {
     /// Holds the data needed to display a tab in `WooShippingServiceViewModel`.
     struct WooShippingServiceTab: Identifiable {
         let id: WooShippingCarrier
         let cards: [WooShippingServiceCardViewModel]
+    }
+
+    /// Options for sorting available shipping services.
+    enum SortOrder: CaseIterable {
+        case price
+        case deliveryTime
+
+        var displayName: String {
+            switch self {
+            case .price:
+                Localization.sortByPrice
+            case .deliveryTime:
+                Localization.sortByDeliveryTime
+            }
+        }
+    }
+}
+
+private extension WooShippingServiceViewModel {
+    enum Localization {
+        static let sortByPrice = NSLocalizedString("wooShipping.createLabels.rates.sortBy.price",
+                                                   value: "Cheapest",
+                                                   comment: "Option to sort shipping rates by price in the shipping label creation screen.")
+        static let sortByDeliveryTime = NSLocalizedString("wooShipping.createLabels.rates.sortBy.deliveryTime",
+                                                          value: "Fastest",
+                                                          comment: "Option to sort shipping rates by delivery time in the shipping label creation screen.")
     }
 }

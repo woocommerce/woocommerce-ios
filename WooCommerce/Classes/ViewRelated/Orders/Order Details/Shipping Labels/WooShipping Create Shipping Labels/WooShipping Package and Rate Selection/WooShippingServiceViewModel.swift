@@ -5,9 +5,23 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
+    /// Selected standard shipping service rate.
+    private(set) var selectedStandardRate: ShippingLabelCarrierRate?
+    /// Selected signature shipping service rate (if signature is required).
+    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
+    /// Selected adult signature shipping service rate (if adult signature is required).
+    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
+
+    /// Available standard shipping rates.
+    private let standardRates: [ShippingLabelCarrierRate]
+    /// Available shipping rates with signature required.
+    private let signatureRates: [ShippingLabelCarrierRate]
+    /// Available shipping rates with adult signature required.
+    private let adultSignatureRates: [ShippingLabelCarrierRate]
+
     init() {
         // TODO: Replace with real data from remote
-        let standardRates = [ShippingLabelCarrierRate(title: "USPS - Media Mail",
+        standardRates = [ShippingLabelCarrierRate(title: "USPS - Media Mail",
                                               insurance: "100",
                                               retailRate: 8,
                                               rate: 7.53,
@@ -46,7 +60,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                                               isPickupFree: true,
                                               deliveryDays: 1,
                                               deliveryDateGuaranteed: false)]
-        let signatureRates = [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+        signatureRates = [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
                                                        insurance: "100",
                                                        retailRate: 42.76,
                                                        rate: 42.76,
@@ -59,7 +73,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                                                        isPickupFree: true,
                                                        deliveryDays: 2,
                                                        deliveryDateGuaranteed: false)]
-        let adultSignatureRates = [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+        adultSignatureRates = [ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
                                                             insurance: "100",
                                                             retailRate: 46.96,
                                                             rate: 46.96,
@@ -72,13 +86,11 @@ final class WooShippingServiceViewModel: ObservableObject {
                                                             isPickupFree: true,
                                                             deliveryDays: 2,
                                                             deliveryDateGuaranteed: false)]
-        generateServiceTabs(from: standardRates, signatureRates: signatureRates, adultSignatureRates: adultSignatureRates)
+        generateServiceTabs()
     }
 
     /// Generates the data to display available shipping rates, grouped by carrier ID.
-    private func generateServiceTabs(from standardRates: [ShippingLabelCarrierRate],
-                                     signatureRates: [ShippingLabelCarrierRate],
-                                     adultSignatureRates: [ShippingLabelCarrierRate]) {
+    private func generateServiceTabs() {
         serviceTabs = standardRates.grouped(by: { $0.carrierID })
             .compactMap { (carrierID, rates) -> WooShippingServiceTab? in
                 guard let carrier = WooShippingCarrier(rawValue: carrierID) else {
@@ -87,7 +99,32 @@ final class WooShippingServiceViewModel: ObservableObject {
                 let cards = rates.map { rate in
                     let signature = signatureRates.first { rate.title == $0.title }
                     let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                    return WooShippingServiceCardViewModel(rate: rate, signatureRate: signature, adultSignatureRate: adultSignature)
+                    return WooShippingServiceCardViewModel(selected: selectedStandardRate?.title == rate.title,
+                                                           signatureRequired: signature != nil && selectedSignatureRate == signature,
+                                                           adultSignatureRequired: adultSignature != nil && selectedAdultSignatureRate == adultSignature,
+                                                           rate: rate,
+                                                           signatureRate: signature,
+                                                           adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
+                        guard let self else { return }
+                        let standardRate = standardRates.first(where: { $0.title == rateTitle })
+                        let signatureRate = signatureRates.first(where: { $0.title == rateTitle })
+                        let adultSignatureRate = adultSignatureRates.first(where: { $0.title == rateTitle })
+                        switch signatureRequirement {
+                        case .none:
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = nil
+                            selectedAdultSignatureRate = nil
+                        case .signatureRequired:
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = signatureRate
+                            selectedAdultSignatureRate = nil
+                        case .adultSignatureRequired:
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = nil
+                            selectedAdultSignatureRate = adultSignatureRate
+                        }
+                        self.generateServiceTabs()
+                    }
                 }
                 return WooShippingServiceTab(id: carrier, cards: cards)
             }

@@ -22,7 +22,7 @@ struct WooShippingServiceView: View {
                 Menu {
                     ForEach(WooShippingServiceViewModel.SortOrder.allCases, id: \.self) { option in
                         Button {
-                            // TODO: Sort shipping rates on this tab
+                            viewModel.sortShipping(by: option)
                         } label: {
                             HStack {
                                 Text(option.displayName)

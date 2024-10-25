@@ -92,6 +92,12 @@ final class WooShippingServiceViewModel: ObservableObject {
         generateServiceTabs()
     }
 
+    /// Sorts the shipping services by the provided sort order.
+    func sortShipping(by order: SortOrder) {
+        sortOrder = order
+        generateServiceTabs()
+    }
+
     /// Generates the data to display available shipping rates, grouped by carrier ID.
     private func generateServiceTabs() {
         serviceTabs = standardRates.grouped(by: { $0.carrierID })
@@ -99,36 +105,48 @@ final class WooShippingServiceViewModel: ObservableObject {
                 guard let carrier = WooShippingCarrier(rawValue: carrierID) else {
                     return nil
                 }
-                let cards = rates.map { rate in
-                    let signature = signatureRates.first { rate.title == $0.title }
-                    let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                    return WooShippingServiceCardViewModel(selected: selectedStandardRate?.title == rate.title,
-                                                           signatureRequired: signature != nil && selectedSignatureRate == signature,
-                                                           adultSignatureRequired: adultSignature != nil && selectedAdultSignatureRate == adultSignature,
-                                                           rate: rate,
-                                                           signatureRate: signature,
-                                                           adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
-                        guard let self else { return }
-                        let standardRate = standardRates.first(where: { $0.title == rateTitle })
-                        let signatureRate = signatureRates.first(where: { $0.title == rateTitle })
-                        let adultSignatureRate = adultSignatureRates.first(where: { $0.title == rateTitle })
-                        switch signatureRequirement {
-                        case .none:
-                            selectedStandardRate = standardRate
-                            selectedSignatureRate = nil
-                            selectedAdultSignatureRate = nil
-                        case .signatureRequired:
-                            selectedStandardRate = standardRate
-                            selectedSignatureRate = signatureRate
-                            selectedAdultSignatureRate = nil
-                        case .adultSignatureRequired:
-                            selectedStandardRate = standardRate
-                            selectedSignatureRate = nil
-                            selectedAdultSignatureRate = adultSignatureRate
+                let cards = rates
+                    .sorted(by: { lhs, rhs in
+                        switch sortOrder {
+                        case .price:
+                            return lhs.rate < rhs.rate
+                        case .deliveryTime:
+                            guard let lhsDeliveryDays = lhs.deliveryDays, let rhsDeliveryDays = rhs.deliveryDays else {
+                                return lhs.deliveryDays != nil // Sort rates with nil delivery days to the end of the list
+                            }
+                            return lhsDeliveryDays < rhsDeliveryDays
                         }
-                        self.generateServiceTabs()
+                    })
+                    .map { rate in
+                        let signature = signatureRates.first { rate.title == $0.title }
+                        let adultSignature = adultSignatureRates.first { rate.title == $0.title }
+                        return WooShippingServiceCardViewModel(selected: selectedStandardRate?.title == rate.title,
+                                                               signatureRequired: signature != nil && selectedSignatureRate == signature,
+                                                               adultSignatureRequired: adultSignature != nil && selectedAdultSignatureRate == adultSignature,
+                                                               rate: rate,
+                                                               signatureRate: signature,
+                                                               adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
+                            guard let self else { return }
+                            let standardRate = standardRates.first(where: { $0.title == rateTitle })
+                            let signatureRate = signatureRates.first(where: { $0.title == rateTitle })
+                            let adultSignatureRate = adultSignatureRates.first(where: { $0.title == rateTitle })
+                            switch signatureRequirement {
+                            case .none:
+                                selectedStandardRate = standardRate
+                                selectedSignatureRate = nil
+                                selectedAdultSignatureRate = nil
+                            case .signatureRequired:
+                                selectedStandardRate = standardRate
+                                selectedSignatureRate = signatureRate
+                                selectedAdultSignatureRate = nil
+                            case .adultSignatureRequired:
+                                selectedStandardRate = standardRate
+                                selectedSignatureRate = nil
+                                selectedAdultSignatureRate = adultSignatureRate
+                            }
+                            self.generateServiceTabs()
+                        }
                     }
-                }
                 return WooShippingServiceTab(id: carrier, cards: cards)
             }
             .sorted(by: { $0.id < $1.id })

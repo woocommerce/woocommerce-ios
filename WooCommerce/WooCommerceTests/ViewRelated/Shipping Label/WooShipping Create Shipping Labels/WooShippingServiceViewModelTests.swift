@@ -63,10 +63,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(rate3.adultSignatureRequiredLabel)
     }
 
-    func test_selecting_service_card_standard_rate_updates_expected_values() throws {
+    func test_selecting_service_card_standard_rate_updates_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel()
-        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedStandardRate)
         XCTAssertFalse(card.selected)
 
@@ -81,10 +81,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
-    func test_selecting_service_card_signature_rate_updates_expected_values() throws {
+    func test_selecting_service_card_signature_rate_updates_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel()
-        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedStandardRate)
         XCTAssertNil(viewModel.selectedSignatureRate)
         XCTAssertFalse(card.selected)
@@ -100,10 +100,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
-    func test_selecting_service_card_adult_signature_rate_updates_expected_values() throws {
+    func test_selecting_service_card_adult_signature_rate_updates_expected_values() {
         // Given
         let viewModel = WooShippingServiceViewModel()
-        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        let card = viewModel.serviceTabs[0].cards[1]
         XCTAssertNil(viewModel.selectedStandardRate)
         XCTAssertNil(viewModel.selectedAdultSignatureRate)
         XCTAssertFalse(card.selected)
@@ -117,6 +117,32 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedSignatureRate)
         XCTAssertNotNil(viewModel.selectedAdultSignatureRate)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
+    }
+
+    func test_sortShipping_by_price_returns_sorted_list() {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+
+        // When
+        viewModel.sortShipping(by: .price)
+
+        // Then
+        let uspsCards = viewModel.serviceTabs.first?.cards
+        XCTAssertEqual(uspsCards?.count, 2)
+        XCTAssertEqual(uspsCards?.first?.title, "USPS - Media Mail")
+    }
+
+    func test_shortShipping_by_deliveryDays_returns_sorted_list() {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+
+        // When
+        viewModel.sortShipping(by: .deliveryTime)
+
+        // Then
+        let uspsCards = viewModel.serviceTabs.first?.cards
+        XCTAssertEqual(uspsCards?.count, 2)
+        XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
 }

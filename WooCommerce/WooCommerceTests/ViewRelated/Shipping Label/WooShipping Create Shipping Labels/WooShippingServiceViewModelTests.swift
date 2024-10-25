@@ -8,7 +8,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let viewModel = WooShippingServiceViewModel()
 
         // Then
-        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.selectedStandardRate)
     }
 
     func test_generateServiceTabs_returns_expected_data() throws {
@@ -63,19 +63,60 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(rate3.adultSignatureRequiredLabel)
     }
 
-    func test_selecting_service_card_rate_updates_expected_values() throws {
+    func test_selecting_service_card_standard_rate_updates_expected_values() throws {
         // Given
         let viewModel = WooShippingServiceViewModel()
-        let card = try XCTUnwrap(viewModel.serviceTabs.first?.cards.first)
-        XCTAssertNil(viewModel.selectedRate)
+        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        XCTAssertNil(viewModel.selectedStandardRate)
         XCTAssertFalse(card.selected)
 
         // When
         card.selectRate()
 
         // Then
-        XCTAssertEqual(viewModel.selectedRate?.title, card.title)
-        XCTAssertEqual(viewModel.serviceTabs.first?.cards.first?.selected, true)
+        XCTAssertNotNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedSignatureRate)
+        XCTAssertNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertEqual(viewModel.selectedStandardRate?.title, card.title)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
+    }
+
+    func test_selecting_service_card_signature_rate_updates_expected_values() throws {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        XCTAssertNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedSignatureRate)
+        XCTAssertFalse(card.selected)
+
+        // When
+        card.signatureRequirement = .signatureRequired
+        card.selectRate()
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedStandardRate)
+        XCTAssertNotNil(viewModel.selectedSignatureRate)
+        XCTAssertNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
+    }
+
+    func test_selecting_service_card_adult_signature_rate_updates_expected_values() throws {
+        // Given
+        let viewModel = WooShippingServiceViewModel()
+        let card = try XCTUnwrap(viewModel.serviceTabs[0].cards[1])
+        XCTAssertNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertFalse(card.selected)
+
+        // When
+        card.signatureRequirement = .adultSignatureRequired
+        card.selectRate()
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedStandardRate)
+        XCTAssertNil(viewModel.selectedSignatureRate)
+        XCTAssertNotNil(viewModel.selectedAdultSignatureRate)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
 }

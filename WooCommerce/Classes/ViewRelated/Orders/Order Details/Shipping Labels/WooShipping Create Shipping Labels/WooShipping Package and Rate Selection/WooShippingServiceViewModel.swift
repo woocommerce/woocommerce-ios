@@ -5,8 +5,12 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
-    /// Selected shipping service rate.
-    @Published private(set) var selectedRate: ShippingLabelCarrierRate?
+    /// Selected standard shipping service rate.
+    private(set) var selectedStandardRate: ShippingLabelCarrierRate?
+    /// Selected signature shipping service rate (if signature is required).
+    private(set) var selectedSignatureRate: ShippingLabelCarrierRate?
+    /// Selected adult signature shipping service rate (if adult signature is required).
+    private(set) var selectedAdultSignatureRate: ShippingLabelCarrierRate?
 
     /// Available standard shipping rates.
     private let standardRates: [ShippingLabelCarrierRate]
@@ -95,20 +99,29 @@ final class WooShippingServiceViewModel: ObservableObject {
                 let cards = rates.map { rate in
                     let signature = signatureRates.first { rate.title == $0.title }
                     let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                    return WooShippingServiceCardViewModel(selected: selectedRate?.title == rate.title,
-                                                           signatureRequired: signature != nil && selectedRate == signature,
-                                                           adultSignatureRequired: adultSignature != nil && selectedRate == adultSignature,
+                    return WooShippingServiceCardViewModel(selected: selectedStandardRate?.title == rate.title,
+                                                           signatureRequired: signature != nil && selectedSignatureRate == signature,
+                                                           adultSignatureRequired: adultSignature != nil && selectedAdultSignatureRate == adultSignature,
                                                            rate: rate,
                                                            signatureRate: signature,
                                                            adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
                         guard let self else { return }
+                        let standardRate = standardRates.first(where: { $0.title == rateTitle })
+                        let signatureRate = signatureRates.first(where: { $0.title == rateTitle })
+                        let adultSignatureRate = adultSignatureRates.first(where: { $0.title == rateTitle })
                         switch signatureRequirement {
                         case .none:
-                            selectedRate = standardRates.first(where: { $0.title == rateTitle })
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = nil
+                            selectedAdultSignatureRate = nil
                         case .signatureRequired:
-                            selectedRate = signatureRates.first(where: { $0.title == rateTitle })
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = signatureRate
+                            selectedAdultSignatureRate = nil
                         case .adultSignatureRequired:
-                            selectedRate = adultSignatureRates.first(where: { $0.title == rateTitle })
+                            selectedStandardRate = standardRate
+                            selectedSignatureRate = nil
+                            selectedAdultSignatureRate = adultSignatureRate
                         }
                         self.generateServiceTabs()
                     }
